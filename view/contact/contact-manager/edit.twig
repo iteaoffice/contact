@@ -1,0 +1,10 @@
+<div class="row-fluid">
+    <div class="span12">
+        <h1>{{ translate("txt-edit-%s")|format(entity.get('entity_name')) }}</h1>
+
+        <p class="lead">{{ translate("txt-%s-edit-explanation")|format(entity.get('entity_name')) }}</p>
+
+        {% include 'contact/partial/form/' ~ entity.get('underscore_entity_name') ~ '.twig' with {'entity': entity, 'form': form, 'fullVersion': true} %}
+
+    </div>
+</div>

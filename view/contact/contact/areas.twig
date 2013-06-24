@@ -1,0 +1,30 @@
+<h1>{{ translate("txt-area-list-title") }}</h1>
+<p class="lead">{{ translate("txt-area-list-explanation") }}</p>
+
+{% if areas|length > 0 %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-name") }}</th>
+            <th>{{ translate("txt-label") }}</th>
+            <th>{{ translate("txt-amount-of-equipment") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for area in areas %}
+            <tr>
+                <td>
+                    {{ areaLink(area, 'view', 'name') }}
+                    {{ areaLink(area, 'edit', 'icon') }}
+                </td>
+                <td>{{ areaLink(area, 'view', 'label') }}</td>
+                <td>{{ area.equipment.count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert.info(translate("txt-no-areas-found"))|raw }}
+{% endif %}

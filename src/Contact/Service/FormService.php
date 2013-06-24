@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * Japaveh Webdesign copyright message placeholder
+ *
+ * @category    Contact
+ * @package     Service
+ * @author      Johan van der Heide <info@japaveh.nl>
+ * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
+ */
+namespace Contact\Service;
+
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Form;
+
+use Contact\Service\ContactService;
+
+class FormService implements ServiceLocatorAwareInterface
+{
+
+    /**
+     * @var \Zend\Form\Form
+     */
+    protected $form;
+    /**
+     * @var \Contact\Service\ContactService
+     */
+    protected $contactService;
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
+    /**
+     * @param  null         $className
+     * @param  null         $entity
+     * @param  bool         $bind
+     * @return array|object
+     */
+    public function getForm($className = null, $entity = null, $bind = true)
+    {
+        if (!$entity) {
+            $entity = $this->getContactService()->getEntity($className);
+        }
+
+        $formName = 'contact_' . $entity->get('underscore_entity_name') . '_form';
+        $form     = $this->getServiceLocator()->get($formName);
+
+        $filterName = 'contact_' . $entity->get('underscore_entity_name') . '_form_filter';
+        $filter     = $this->getServiceLocator()->get($filterName);
+
+        $form->setInputFilter($filter);
+
+        if ($bind) {
+            $form->bind($entity);
+        }
+
+        return $form;
+    }
+
+    /**
+     * @param               $className
+     * @param  null         $entity
+     * @param               $data
+     * @return array|object
+     */
+    public function prepare($className, $entity = null, $data)
+    {
+        $form = $this->getForm($className, $entity, true);
+        $form->setData($data);
+
+        return $form;
+    }
+
+    /**
+     * @param ContactService $contactService
+     */
+    public function setContactService($contactService)
+    {
+        $this->contactService = $contactService;
+    }
+
+    /**
+     * Get contactService.
+     *
+     * @return ContactService.
+     */
+    public function getContactService()
+    {
+        if (null === $this->contactService) {
+            $this->contactService = $this->getServiceLocator()->get('contact_generic_service');
+        }
+
+        return $this->contactService;
+    }
+
+    /**
+     * Set the service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get the service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+}

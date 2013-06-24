@@ -1,0 +1,30 @@
+<h1>{{ translate("txt-operarea-list-title") }}</h1>
+<p class="lead">{{ translate("txt-operarea-list-explanation") }}</p>
+
+{% if operAreas|length > 0 %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-name") }}</th>
+            <th>{{ translate("txt-label") }}</th>
+            <th>{{ translate("txt-amount-of-equipment") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for operArea in operAreas %}
+            <tr>
+                <td>
+                    {{ operAreaLink(operArea, 'view', 'name') }}
+                    {{ operAreaLink(operArea, 'edit', 'icon') }}
+                </td>
+                <td>{{ operAreaLink(operArea, 'view', 'label') }}</td>
+                <td>{{ operArea.equipment.count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert.info(translate("txt-no-oper-areas-found"))|raw }}
+{% endif %}

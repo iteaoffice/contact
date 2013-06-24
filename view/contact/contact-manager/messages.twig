@@ -1,0 +1,48 @@
+<h1>{{ translate("txt-message-list-title") }}</h1>
+<p class="lead">{{ translate("txt-message-list-explanation") }} {{ messageLink(null,'new','button') }}</p>
+
+{% if messages|length > 0 %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-facilities") }}</th>
+            <th>{{ translate("txt-support-area") }}</th>
+            <th>{{ translate("txt-oper-area") }}</th>
+            <th>{{ translate("txt-type") }}</th>
+            <th>{{ translate("txt-message") }}</th>
+            <th>{{ translate("txt-last-update") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for message in messages %}
+            <tr>
+                <td>
+                    {% for facility in message.facility %}
+                        {{ facilityLink(facility,'view','name') }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for area in message.area %}
+                        {{ areaLink(area,'view','name') }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for operArea in message.operArea %}
+                        {{ operAreaLink(operArea,'view','name') }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ translate(message.getType(true)) }}</td>
+                <td title="{{ message }}">
+                    {{ messageLink(message, 'view', 'message') }}
+                    {{ messageLink(message, 'edit', 'icon') }}
+                    {{ messageLink(message, 'delete', 'icon') }}</td>
+                <td>{{ message.lastUpdate|dateformatter|raw }} {{ message.lastUpdateBy }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert.info(translate("txt-no-messages-found"))|raw }}
+{% endif %}

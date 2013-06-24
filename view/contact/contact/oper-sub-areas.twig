@@ -1,0 +1,30 @@
+<h1>{{ translate("txt-oper-sub-area-list-title") }}</h1>
+<p class="lead">{{ translate("txt-oper-sub-area-list-explanation") }}</p>
+
+{% if operSubAreas|length > 0 %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-name") }}</th>
+            <th>{{ translate("txt-label") }}</th>
+            <th>{{ translate("txt-amount-of-equipment") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for operSubArea in operSubAreas %}
+            <tr>
+                <td>
+                    {{ operSubAreaLink(operSubArea, 'view', 'name') }}
+                    {{ operSubAreaLink(operSubArea, 'edit', 'icon') }}
+                </td>
+                <td>{{ operSubAreaLink(operSubArea, 'view', 'label') }}</td>
+                <td>{{ operSubArea.equipment.count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert.info(translate("txt-no-oper-sub-areas-found"))|raw }}
+{% endif %}
