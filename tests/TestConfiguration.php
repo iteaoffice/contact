@@ -4,7 +4,6 @@ return array(
         'DoctrineModule',
         'DoctrineORMModule',
         'Contact',
-
     ),
     'module_listener_options' => array(
         'config_glob_paths' => array(

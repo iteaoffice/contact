@@ -11,7 +11,7 @@ if (file_exists('../vendor/autoload.php')) {
     throw new RuntimeException('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
 }
 
-$loader->add('Project', __DIR__);
+$loader->add('Contract\\', __DIR__);
 
 if (!$config = @include 'TestConfiguration.php') {
     $config = require 'configuration.php.dist';
