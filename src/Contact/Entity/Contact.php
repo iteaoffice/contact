@@ -22,6 +22,8 @@ use Gedmo\Mapping\Annotation AS Gedmo;
 
 use BjyAuthorize\Provider\Role\ProviderInterface;
 
+use ZfcUser\Entity\UserInterface;
+
 use Contact\Entity\EntityAbstract;
 
 /**
@@ -37,6 +39,7 @@ use Contact\Entity\EntityAbstract;
  */
 class Contact extends EntityAbstract implements
     ResourceInterface,
+    UserInterface,
     ProviderInterface
 {
     /**
@@ -85,6 +88,12 @@ class Contact extends EntityAbstract implements
      * @var string
      */
     private $lastName;
+    /**
+     * @ORM\Column(type="smallint",nullable=false)
+     * @Annotation\Exclude()
+     * @var int
+     */
+    private $state;
     /**
      * @ORM\Column(name="email",type="string",length=60,nullable=false, unique=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -174,6 +183,25 @@ class Contact extends EntityAbstract implements
      * @var \Contact\Entity\ContactAccess[]
      */
     private $access;
+    /**
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contacts", cascade={"all"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy=({"Name" =  "ASC"})
+     * @ORM\JoinTable(name="admin_user_role",
+     *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Admin\Entity\Role"})
+     * @Annotation\Attributes({"label":"txt-roles"})
+     * @var \Admin\Entity\Role[]
+     */
+    private $roles;
+    /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\ContactCV", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\ContactCV[]
+     */
+    private $cv;
 
     /**
      * Class constructor
@@ -576,5 +604,64 @@ class Contact extends EntityAbstract implements
     {
         return $this->title;
     }
+
+    /**
+     * @param int $state
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * @return int
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Get username.
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set username.
+     *
+     * @param string $username
+     * @return UserInterface
+     */
+    public function setUsername($username)
+    {
+        $this->email = $username;
+    }
+
+    /**
+     * Get displayName.
+     *
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    /**
+     * Set displayName.
+     *
+     * @param string $displayName
+     * @return UserInterface
+     */
+    public function setDisplayName($displayName)
+    {
+        return false;
+    }
+
 
 }

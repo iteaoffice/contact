@@ -1,5 +1,7 @@
 <?php
 
+namespace Contact\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,9 +45,9 @@ class ContactCv
     /**
      * @var \Contact
      *
-     * @ORM\ManyToOne(targetEntity="Contact")
+     * @ORM\ManyToOne(targetEntity="Contact", inversedBy="cv")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      */
     private $contact;
