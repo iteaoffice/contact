@@ -18,13 +18,6 @@ $config = array(
         'invokables' => array(
             'contactLink' => 'Contact\View\Helper\ContactLink',
             'contactIcon' => 'Contact\View\Helper\ContactIcon',
-            'facilityLink' => 'Contact\View\Helper\FacilityLink',
-            'areaLink' => 'Contact\View\Helper\AreaLink',
-            'area2Link' => 'Contact\View\Helper\Area2Link',
-            'subAreaLink' => 'Contact\View\Helper\SubAreaLink',
-            'operAreaLink' => 'Contact\View\Helper\OperAreaLink',
-            'operSubAreaLink' => 'Contact\View\Helper\OperSubAreaLink',
-            'messageLink' => 'Contact\View\Helper\MessageLink',
         )
     ),
     'service_manager' => array(
@@ -34,14 +27,6 @@ $config = array(
         'invokables' => array(
             'contact_generic_service' => 'Contact\Service\ContactService',
             'contact_form_service' => 'Contact\Service\FormService',
-            'contact_contact_form_filter' => 'Contact\Form\FilterCreateContact',
-            'contact_facility_form_filter' => 'Contact\Form\FilterCreateFacility',
-            'contact_area_form_filter' => 'Contact\Form\FilterCreateArea',
-            'contact_area2_form_filter' => 'Contact\Form\FilterCreateArea2',
-            'contact_sub_area_form_filter' => 'Contact\Form\FilterCreateSubArea',
-            'contact_oper_area_form_filter' => 'Contact\Form\FilterCreateOperArea',
-            'contact_oper_sub_area_form_filter' => 'Contact\Form\FilterCreateOperSubArea',
-            'contact_message_form_filter' => 'Contact\Form\FilterCreateMessage',
 
         )
     ),

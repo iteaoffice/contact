@@ -39,7 +39,6 @@ use Contact\Entity\EntityAbstract;
  */
 class Contact extends EntityAbstract implements
     ResourceInterface,
-    UserInterface,
     ProviderInterface
 {
     /**

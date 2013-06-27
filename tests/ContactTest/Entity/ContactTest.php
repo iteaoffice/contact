@@ -11,41 +11,91 @@ namespace ContactTest\Entity;
 
 use Contact\Entity\Contact;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use GeneralTest\Bootstrap;
 
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
 
-    protected $bootstrap;
     /**
-     * @var ServiceManager
+     * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
-    protected $sm;
+    protected $serviceManager;
 
     /**
-     * setup ZF application and service manager
-     * - $this->application Zend\Mvc\Application
-     * - $this->sm          Zend\ServiceManager\ServiceManager
-     *
-     * @return void
+     * {@inheritDoc}
      */
-//    public function setUp()
-//    {
-//        $application = require 'C:\Users\jvdheide\wamp\www\itea\tests\Bootstrap.php';
-//        $this->application = $application;
-//        $this->sm = $application->getServiceManager();
-//    }
-
+    public function setUp()
+    {
+        $this->serviceManager = Bootstrap::getServiceManager();
+    }
 
     public function testCanCreateEntity()
     {
         $contact = new Contact();
         $this->assertInstanceOf("Contact\Entity\Contact", $contact);
+
+        $this->assertNull($contact->getFirstName(), 'The "Firstname" should be null');
     }
 
-    public function testHasFilter()
+//    public function testExchangeArraySetsPropertiesCorrectly()
+//    {
+//        $contact = new Contact();
+//        $data = array(
+//            'firstName' => 'Jan',
+//            'middleName' => 'van der',
+//            'lastName' => 'Vliet',
+//            'email' => 'info@example.com',
+//            'password' => md5(microtime()),
+//            'position' => 1,
+//            'addDate' => new \DateTime(),
+//            'lastUpdate' => new \DateTime(),
+//            'dateEnd' => new \DateTime(),
+//            'messenger' => 'Lorem Ipsum',
+//            'gender' => 1,
+//            'title' => 1,
+//        );
+//
+//        $contact->exchangeArray($data);
+//
+//        $this->assertSame($data['firstName'], $contact->getFirstName(), '"firstname" was not set correctly');
+//        $this->assertSame($data['middleName'], $contact->getMiddleName(), '"middleName" was not set correctly');
+//        $this->assertSame($data['lastName'], $contact->getLastName(), '"lastName" was not set correctly');
+//    }
+
+
+    public function testCanHydrateEntity()
     {
-        $project = new Contact();
-        return $this->assertInstanceOf('Zend\InputFilter\InputFilter', $project->getInputFilter());
+
+        $hydrator = new DoctrineObject(
+            $this->serviceManager->get('doctrine.entitymanager.orm_default'),
+            'Contact\Entity\Contact'
+        );
+
+
+        $contact = new Contact();
+        $data = array(
+            'firstName' => 'Jan',
+            'middleName' => 'van der',
+            'lastName' => 'Vliet',
+            'email' => 'info@example.com',
+            'password' => md5(microtime()),
+            'position' => 1,
+            'addDate' => new \DateTime(),
+            'lastUpdate' => new \DateTime(),
+            'dateEnd' => new \DateTime(),
+            'messenger' => 'Lorem Ipsum',
+            'gender' => 1,
+            'title' => 1,
+        );
+
+        $contact = $hydrator->hydrate($data, $contact);
+
+        $dataArray = $hydrator->extract($contact);
+
+        $this->assertSame($data['firstName'], $dataArray['firstName']);
+        $this->assertSame($data['middleName'], $dataArray['middleName']);
+        $this->assertSame($data['lastName'], $dataArray['lastName']);
     }
+
 
 }
