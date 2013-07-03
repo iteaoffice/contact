@@ -24,15 +24,13 @@ use BjyAuthorize\Provider\Role\ProviderInterface;
 
 use ZfcUser\Entity\UserInterface;
 
-use Contact\Entity\EntityAbstract;
-
 /**
  * Entity for the Contact
  *
  * @ORM\Table(name="contact")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
- * @Annotation\Name("contact")
+ * @Annotation\Name("contact_contact")
  *
  * @category    Contact
  * @package     Entity
@@ -59,7 +57,7 @@ class Contact extends EntityAbstract implements
     );
 
     /**
-     * @ORM\Column(name="contact_id", type="integer", nullable=false)
+     * @ORM\Column(name="contact_id", type="integer", length=10, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
@@ -176,29 +174,29 @@ class Contact extends EntityAbstract implements
      * @var int
      */
     private $messenger;
+//    /**
+//     * @ORM\OneToMany(targetEntity="\Contact\Entity\ContactAccess", cascade={"persist"}, mappedBy="contact")
+//     * @Annotation\Exclude()
+//     * @var \Contact\Entity\ContactAccess[]
+//     */
+//    private $access;
+//    /**
+//     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contacts", cascade={"all"}, fetch="EXTRA_LAZY")
+//     * @ORM\OrderBy=({"Name" =  "ASC"})
+//     * @ORM\JoinTable(name="admin_user_role",
+//     *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+//     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+//     * )
+//     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+//     * @Annotation\Options({"target_class":"Admin\Entity\Role"})
+//     * @Annotation\Attributes({"label":"txt-roles"})
+//     * @var \Admin\Entity\Role[]
+//     */
+//    private $roles;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\ContactAccess", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\CV", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\ContactAccess[]
-     */
-    private $access;
-    /**
-     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contacts", cascade={"all"}, fetch="EXTRA_LAZY")
-     * @ORM\OrderBy=({"Name" =  "ASC"})
-     * @ORM\JoinTable(name="admin_user_role",
-     *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
-     * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Admin\Entity\Role"})
-     * @Annotation\Attributes({"label":"txt-roles"})
-     * @var \Admin\Entity\Role[]
-     */
-    private $roles;
-    /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\ContactCV", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Contact\Entity\ContactCV[]
+     * @var \Contact\Entity\CV[]
      */
     private $cv;
 

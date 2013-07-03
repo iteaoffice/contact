@@ -1,4 +1,8 @@
 <?php
+namespace Contact;
+
+use Zend\Stdlib\ArrayUtils;
+
 /**
  * Japaveh Webdesign copyright message placeholder
  *
@@ -41,9 +45,10 @@ $config = array(
             'orm_default' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\DriverChain',
                 'drivers' => array(
-                    'Contact\Entity' => 'contact_annotation_driver',
+                    __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
+                    'General\Entity' => 'contact_annotation_driver',
                 )
-            )
+            ),
         ),
         'eventmanager' => array(
             'orm_default' => array(
@@ -63,7 +68,7 @@ $configFiles = array(
 );
 
 foreach ($configFiles as $configFile) {
-    $config = Zend\Stdlib\ArrayUtils::merge($config, include $configFile);
+    $config = ArrayUtils::merge($config, include $configFile);
 }
 
 return $config;

@@ -24,8 +24,6 @@ class Bootstrap
 
     public static function init()
     {
-        include 'TestConfiguration.php';
-
         $zf2ModulePaths = array(dirname(dirname(__DIR__)));
         if (($path = static::findParentPath('vendor'))) {
             $zf2ModulePaths[] = $path;
@@ -40,7 +38,7 @@ class Bootstrap
         $config = array(
             'module_listener_options' => array(
                 'config_glob_paths' => array(
-                    __DIR__ . '/config/autoload/{,*.}{global,local}.php',
+                    __DIR__ . '/config/autoload/{,*.}{global,local,testing}.php',
                 ),
                 'module_paths' => $zf2ModulePaths,
             ),

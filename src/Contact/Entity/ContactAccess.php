@@ -30,22 +30,22 @@ class ContactAccess
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $contactAccessId;
-    /**
-     * @ORM\ManyToOne(targetEntity="\Admin\Entity\Access", inversedBy="contact")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="access_id", referencedColumnName="access_id")
-     * })
-     * @var \Admin\Entity\Access
-     */
-    private $access;
-    /**
-     * @ORM\ManyToOne(targetEntity="\Contact\Entity\Contact", inversedBy="access")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * })
-     * @var \Contact\Entity\Contact
-     */
-    private $contact;
+//    /**
+//     * @ORM\ManyToOne(targetEntity="\Admin\Entity\Access", inversedBy="contact")
+//     * @ORM\JoinColumns({
+//     * @ORM\JoinColumn(name="access_id", referencedColumnName="access_id")
+//     * })
+//     * @var \Admin\Entity\Access
+//     */
+//    private $access;
+//    /**
+//     * @ORM\ManyToOne(targetEntity="\Contact\Entity\Contact", inversedBy="access")
+//     * @ORM\JoinColumns({
+//     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+//     * })
+//     * @var \Contact\Entity\Contact
+//     */
+//    private $contact;
 
     /**
      * Magic Getter
