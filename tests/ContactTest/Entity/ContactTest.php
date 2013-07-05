@@ -10,10 +10,13 @@
 namespace ContactTest\Entity;
 
 use Contact\Entity\Contact;
+use ContactTest\Bootstrap;
+
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+
 use General\Entity\Title;
 use General\Entity\Gender;
-use GeneralTest\Bootstrap;
+
 
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,8 +50,17 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-        $this->gender = $this->entityManager->find('General\Entity\Gender', 1);
-        $this->title = $this->entityManager->find('General\Entity\Title', 1);
+        $this->gender = new Gender();
+        $this->gender->setName("This is the gender");
+        $this->gender->setAttention("This is the attention");
+        $this->gender->setSalutation("This is the salutation");
+
+        $this->title = new Title();
+
+        $this->title->setName("This is the title");
+        $this->title->setAttention("This is the attention");
+        $this->title->salutation = "This is the salutation";
+
 
         $this->contactData = array(
             'firstName' => 'Jan',
@@ -99,7 +111,7 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
     public function testHasInputFilter()
     {
-        return $this->assertInstanceOf('Zend\InputFilter\InputFilter', $this->contact->getInputFilter());
+        $this->assertInstanceOf('Zend\InputFilter\InputFilter', $this->contact->getInputFilter());
     }
 
     public function testCanSaveEntityInDatabase()

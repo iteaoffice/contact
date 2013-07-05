@@ -1,6 +1,6 @@
 <?php
 
-namespace GeneralTest;
+namespace ContactTest;
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
@@ -34,28 +34,22 @@ class Bootstrap
 
         static::initAutoloader();
 
-        // use ModuleManager to load this module and it's dependencies
-        $config = array(
-            'module_listener_options' => array(
-                'config_glob_paths' => array(
-                    __DIR__ . '/config/autoload/{,*.}{global,local,testing}.php',
-                ),
-                'module_paths' => $zf2ModulePaths,
-            ),
-
-            'modules' => array(
-                'DoctrineModule',
-                'DoctrineORMModule',
-                'General',
-                'Contact',
-            )
-        );
+        $config = include 'config/application.config.php';
 
 
         $serviceManager = new ServiceManager(new ServiceManagerConfig());
         $serviceManager->setService('ApplicationConfig', $config);
         $serviceManager->get('ModuleManager')->loadModules();
         static::$serviceManager = $serviceManager;
+
+        $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+
+        //Create the schema
+        $tool = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
+        $mdFactory = $entityManager->getMetadataFactory();
+        $mdFactory->getAllMetadata();
+        $tool->dropDatabase();
+        $tool->createSchema($mdFactory->getAllMetadata());
     }
 
     public static function getServiceManager()

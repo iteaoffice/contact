@@ -16,7 +16,7 @@ use Contact\Entity\Cv;
 
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
-use GeneralTest\Bootstrap;
+use ContactTest\Bootstrap;
 
 
 class CvTest extends \PHPUnit_Framework_TestCase

@@ -65,7 +65,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", inversedBy="cv")
+     * @ORM\ManyToOne(targetEntity="Contact", inversedBy="cvs")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })

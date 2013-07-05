@@ -16,7 +16,7 @@ use Contact\Entity\Web;
 
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
-use GeneralTest\Bootstrap;
+use ContactTest\Bootstrap;
 
 class WebTest extends \PHPUnit_Framework_TestCase
 {

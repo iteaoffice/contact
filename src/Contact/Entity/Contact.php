@@ -199,6 +199,12 @@ class Contact extends EntityAbstract implements
      * @var \Contact\Entity\CV[]
      */
     private $cv;
+    /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\CV", cascade={"persist"}, mappedBy="addresses")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\CV[]
+     */
+    private $address;
 
     /**
      * Class constructor

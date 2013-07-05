@@ -46,7 +46,6 @@ $config = array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\DriverChain',
                 'drivers' => array(
                     __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
-                    'General\Entity' => 'contact_annotation_driver',
                 )
             ),
         ),
