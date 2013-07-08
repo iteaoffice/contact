@@ -14,25 +14,11 @@
             "email": "andre.hebben@artemis-ia.eu"
         }
     ],
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "version": "master",
-                "name": "debranova/general",
-                "source": {
-                    "type": "git",
-                    "url": "git@github.com:debranova/general.git",
-                    "reference": "master"
-                }
-            }
-        }
-    ],
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
         "zendframework/zendframework": "2.2.*",
-        "debranova/general": "master",
+        "debranova/general": "dev-master",
         "bjyoungblood/bjy-authorize": "dev-master",
         "doctrine/doctrine-orm-module": "dev-master",
         "gedmo/doctrine-extensions": "dev-master"
