@@ -64,7 +64,7 @@ class Address extends EntityAbstract
     /**
      * @ORM\ManyToOne(targetEntity="AddressType", cascade={"persist"}, inversedBy="addresses")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false)
      * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\Type"})

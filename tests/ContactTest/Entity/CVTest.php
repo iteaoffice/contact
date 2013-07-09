@@ -45,41 +45,13 @@ class CvTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-        $contact = new Contact();
-        $contact->setFirstName('Jan');
-        $contact->setLastName('Dam');
-        $contact->setEmail('cv_test@example.com');
-        $contact->setState(1);
-        $contact->setPassword('password');
-        $contact->setMessenger('messenger');
-        $contact->setDateOfBirth(new \DateTime());
-
-        $gender = new \General\Entity\Gender();
-        $gender->setName('gender for ' . __CLASS__);
-        $gender->setAttention('gender');
-        $gender->setSalutation('gender');
-
-        $contact->setGender($gender);
-
-        $title = new \General\Entity\Title();
-        $title->setName('title for ' . __CLASS__);
-        $title->setAttention('title');
-        $title->setSalutation('title');
-
-        $contact->setTitle($title);
-
-
-        $country = new \General\Entity\Country();
-        $country->setCountry('country');
-        $country->setCd('cd');
-        $country->setNumcode(100);
-        $country->setIso3('CCD');
+        $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
 
         $this->cvData = array(
             'contact' => $contact,
-            'cv' => file_get_contents(__DIR__ . '/../_files/php.exe'));
+            'cv'      => file_get_contents(__DIR__ . '/../_files/php.exe'));
 
         $this->cv = new Cv();
     }

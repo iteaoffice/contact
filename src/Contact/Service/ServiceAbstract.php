@@ -28,10 +28,6 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
      */
     protected $entityManager;
     /**
-     * @var AuthenticationService;
-     */
-    protected $authenticationService;
-    /**
      * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
@@ -42,7 +38,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
      *
      * @return array
      */
-    public function findAll($entity, $toArray = false)
+    public function findAll($entity)
     {
         return $this->getEntityManager()->getRepository($this->getFullEntityName($entity))->findAll();
     }
@@ -56,13 +52,14 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
      *
      * @return object
      */
-    public function findEntityById($entity, $id, $populate = false)
+    public function findEntityById($entity, $id)
     {
-        $entity = $this->getEntityManager()->getRepository($this->getFullEntityName($entity))->find($id);
+        $entity = $this->getEntityManager()->find($this->getFullEntityName($entity), $id);
         if ($entity) {
             return $entity;
         }
     }
+
 
     /**
      * @param  \Contact\Entity\EntityAbstract $entity
@@ -177,18 +174,6 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
         }
 
         return $this->entityManager;
-    }
-
-    /**
-     * @return AuthenticationService
-     */
-    public function getAuthenticationService()
-    {
-        if (null === $this->authenticationService) {
-            $this->authenticationService = $this->getServiceLocator()->get('zfcuser_auth_service');
-        }
-
-        return $this->authenticationService;
     }
 
 }

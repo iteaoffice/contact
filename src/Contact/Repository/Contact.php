@@ -23,7 +23,7 @@ class Contact extends EntityRepository
     /**
      * @param $email
      *
-     * @return Contact
+     * @return Contact|null
      */
     public function findContactByEmail($email)
     {

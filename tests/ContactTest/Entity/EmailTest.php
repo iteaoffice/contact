@@ -71,11 +71,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $contact->setTitle($title);
 
 
-        $country = new \General\Entity\Country();
-        $country->setCountry('country');
-        $country->setCd('cd');
-        $country->setNumcode(100);
-        $country->setIso3('CCD');
+       
 
         $this->emailData = array(
             'contact' => $contact,

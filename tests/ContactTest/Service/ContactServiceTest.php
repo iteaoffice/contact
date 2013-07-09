@@ -44,7 +44,7 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testCanFindContactByEmail()
     {
-        $contactEmail = 'info@example.com';
+        $contactEmail = 'test@example.com';
         $contact      = $this->contactService->findContactByEmail($contactEmail);
 
         $this->assertNotNull($contact);
@@ -62,5 +62,58 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($contact);
         $this->assertEquals($contact->getId(), $contactId);
     }
+
+    public function testCanFindAllContacts()
+    {
+        $contacts = $this->contactService->findAll('contact');
+        $this->assertTrue(is_array($contacts));
+        foreach ($contacts as $contact) {
+            $this->assertInstanceOf('Contact\Entity\Contact', $contact);
+        }
+    }
+
+    public function testCanFindContactById()
+    {
+        $contact = $this->contactService->findEntityById('contact', 1);
+        $this->isInstanceOf('Contact\Entity\Contact', $contact);
+        $this->assertEquals(1, $contact->getId());
+    }
+
+    public function testCanUpdateContact()
+    {
+        $contact = $this->contactService->findEntityById('contact', 1);
+        $contact->setPassword('newPassword');
+        $this->assertInstanceOf('Contact\Entity\Contact', $this->contactService->updateEntity($contact));
+        $contact = $this->contactService->findEntityById('contact', 1);
+        $this->assertEquals('newPassword', $contact->getPassword());
+        $this->assertEquals(1, $contact->getId());
+    }
+
+    public function testCanCreateContact()
+    {
+        $contact = $this->contactService->findEntityById('contact', 1);
+        $contact->setEmail('new-test@example.com');
+        $contact = $this->contactService->newEntity($contact);
+        $this->assertInstanceOf('Contact\Entity\Contact', $contact);
+    }
+
+    public function testCanRemoveContact()
+    {
+        $contact = $this->contactService->findEntityById('contact', 2);
+        $this->assertTrue($this->contactService->removeEntity($contact));
+
+        $contact = $this->contactService->findEntityById('contact', 2);
+        $this->assertNull($contact);
+    }
+
+    public function getEntity()
+    {
+        $entity         = 'contact';
+        $fullEntity     = $this->contactService->getEntity($entity);
+        $fullEntityName = $this->contactService->getFullEntityName($entity);
+        $this->assertInstanceOf($fullEntityName, $fullEntity);
+
+    }
+
 
 }

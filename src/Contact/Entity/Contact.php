@@ -222,6 +222,18 @@ class Contact extends EntityAbstract implements
      * @var \Contact\Entity\Web[]
      */
     private $web;
+    /**
+     * @ORM\ManyToMany(targetEntity="Contact\Entity\OptIn", cascade={"persist"},inversedBy="contact")
+     * @ORM\JoinTable(name="contact_optin",
+     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+     *    inverseJoinColumns={@ORM\JoinColumn(name="optin_id", referencedColumnName="optin_id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Contact\Entity\OptIn"})
+     * @Annotation\Attributes({"label":"txt-opt-in"})
+     * @var \Contact\Entity\OptIn[]
+     */
+    private $optIn;
 
 
     /**
@@ -234,6 +246,7 @@ class Contact extends EntityAbstract implements
         $this->web            = new Collections\ArrayCollection();
         $this->addresses      = new Collections\ArrayCollection();
         $this->emailAddresses = new Collections\ArrayCollection();
+        $this->optIn          = new Collections\ArrayCollection();
     }
 
     /**
@@ -820,6 +833,22 @@ class Contact extends EntityAbstract implements
     public function getEmailAddresses()
     {
         return $this->emailAddresses;
+    }
+
+    /**
+     * @param \Contact\Entity\OptIn[] $optIn
+     */
+    public function setOptIn($optIn)
+    {
+        $this->optIn = $optIn;
+    }
+
+    /**
+     * @return \Contact\Entity\OptIn[]
+     */
+    public function getOptIn()
+    {
+        return $this->optIn;
     }
 
 }

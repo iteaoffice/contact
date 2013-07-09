@@ -2,10 +2,18 @@
 
 namespace ContactTest;
 
+use ContactTest\Fixture\LoadCountryData;
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
+
 use Doctrine\ORM\Tools\SchemaValidator;
+use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+
+use ContactTest\Fixture\LoadContactData;
+
 use RuntimeException;
 
 error_reporting(E_ALL | E_STRICT);
@@ -67,6 +75,18 @@ class Bootstrap
 
         $tool->dropDatabase();
         $tool->createSchema($mdFactory->getAllMetadata());
+
+        $loader = new Loader();
+        $loader->addFixture(new LoadContactData());
+        $loader->addFixture(new LoadCountryData());
+
+        $purger = new ORMPurger();
+        $executor = new ORMExecutor($entityManager, $purger);
+        $executor->execute($loader->getFixtures());
+
+
+
+
     }
 
     public static function getServiceManager()

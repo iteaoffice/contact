@@ -9,7 +9,6 @@
  */
 namespace Contact\Entity;
 
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
@@ -21,34 +20,36 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation AS Gedmo;
 
 /**
- * Entity for a CV
+ * Optin
  *
- * @ORM\Table(name="contact_cv")
+ * @ORM\Table(name="optin")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
- * @Annotation\Name("contact_cv")
- *
- * @category    Contact
- * @package     Entity
  */
-class Cv extends EntityAbstract implements ResourceInterface
+class OptIn extends EntityAbstract
 {
     /**
-     * @ORM\Column(name="cv_id", type="integer", nullable=false)
+     * @ORM\Column(name="optin_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Exclude()
      * @var integer
      */
     private $id;
     /**
-     * @ORM\Column(name="cv", type="blob", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\File")
-     * @Annotation\Options({"label":"txt-cv-file"})
-     * @Annotation\Exclude()
+     * @ORM\Column(name="optin", type="string", length=40, nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Options({"label":"txt-opt-in"})
+     * @Annotation\Attributes({"class":"span3"})
      * @var string
      */
-    private $cv;
+    private $optIn;
+    /**
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Options({"label":"txt-description"})
+     * @Annotation\Attributes({"class":"span3"})
+     * @var string
+     */
+    private $description;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
@@ -64,15 +65,16 @@ class Cv extends EntityAbstract implements ResourceInterface
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="cv")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
-     * @Annotation\Exclude()
-     * @var \Contact\Entity\Contact
+     * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="optIn")
+     * @Annotation\Exclude();
+     * @var \Contact\Entity\Contact[]
      */
     private $contact;
 
+    public function __construct()
+    {
+        $this->contact = new Collections\ArrayCollection();
+    }
 
     /**
      * Magic Getter
@@ -100,16 +102,6 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Returns the string identifier of the Resource
-     *
-     * @return string
-     */
-    public function getResourceId()
-    {
-        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
-    }
-
-    /**
      * Set input filter
      *
      * @param  InputFilterInterface $inputFilter
@@ -134,11 +126,21 @@ class Cv extends EntityAbstract implements ResourceInterface
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'     => 'web',
+                        'name'     => 'optIn',
                         'required' => true,
                     )
                 )
             );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'description',
+                        'required' => true,
+                    )
+                )
+            );
+
             $this->inputFilter = $inputFilter;
         }
 
@@ -168,7 +170,33 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $contact
+     */
+    public function addContact(Collections\Collection $contact)
+    {
+        foreach ($contact as $singleContact) {
+            $singleContact->optIn = $this;
+            $this->contact->add($singleContact);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $contact
+     */
+    public function removeContact(Collections\Collection $contact)
+    {
+        foreach ($contact as $singleContact) {
+            $this->contact->removeElement($singleContact);
+        }
+    }
+
+
+    /**
+     * @param \Contact\Entity\Contact[] $contact
      */
     public function setContact($contact)
     {
@@ -176,27 +204,11 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return \Contact\Entity\Contact[]
      */
     public function getContact()
     {
         return $this->contact;
-    }
-
-    /**
-     * @param string $cv
-     */
-    public function setCv($cv)
-    {
-        $this->cv = $cv;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCv()
-    {
-        return $this->cv;
     }
 
     /**
@@ -232,6 +244,22 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * @param int $id
      */
     public function setId($id)
@@ -245,6 +273,22 @@ class Cv extends EntityAbstract implements ResourceInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $optIn
+     */
+    public function setOptIn($optIn)
+    {
+        $this->optIn = $optIn;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOptIn()
+    {
+        return $this->optIn;
     }
 
 

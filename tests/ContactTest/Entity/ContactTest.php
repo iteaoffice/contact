@@ -54,33 +54,24 @@ class ContactTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-        $this->gender = new Gender();
-        $this->gender->setName("This is the gender");
-        $this->gender->setAttention("attention for ContactTest");
-        $this->gender->setSalutation("Salutation for ContactTest");
-
-        $this->title = new Title();
-
-        $this->title->setName("This is the title");
-        $this->title->setAttention("Attention for ContactTest");
-        $this->title->salutation = "Salutation for ContactTest";
-
+        $this->gender = $this->entityManager->find("General\Entity\Gender", 1);
+        $this->title  = $this->entityManager->find("General\Entity\Title", 1);
 
         $this->contactData = array(
-            'firstName' => 'Jan',
+            'firstName'  => 'Jan',
             'middleName' => 'van der',
-            'lastName' => 'Vliet',
-            'email' => 'info@example.com',
-            'state' => 1,
-            'password' => md5(microtime()),
+            'lastName'   => 'Vliet',
+            'email'      => 'info@example.com',
+            'state'      => 1,
+            'password'   => md5(microtime()),
             'department' => 'department',
-            'position' => 'position',
-            'dateEnd' => new \DateTime(),
-            'messenger' => 'Lorem Ipsum',
-            'gender' => $this->gender,
-            'title' => $this->title,
+            'position'   => 'position',
+            'dateEnd'    => new \DateTime(),
+            'messenger'  => 'Lorem Ipsum',
+            'gender'     => $this->gender,
+            'title'      => $this->title,
         );
 
         $this->contact = new Contact();

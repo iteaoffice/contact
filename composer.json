@@ -28,7 +28,8 @@
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "phpmd/phpmd": "1.4.*",
-        "phploc/phploc": "*"
+        "phploc/phploc": "*",
+        "doctrine/data-fixtures": "dev-master"
     },
     "autoload": {
         "psr-0": {

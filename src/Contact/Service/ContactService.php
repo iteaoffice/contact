@@ -53,14 +53,5 @@ class ContactService extends ServiceAbstract
         return $this->getEntityManager()->find($this->getFullEntityName('contact'), $contactId);
     }
 
-    public function get($name)
-    {
-        // TODO: Implement get() method.
-    }
-
-    public function has($name)
-    {
-        // TODO: Implement has() method.
-    }
 
 }

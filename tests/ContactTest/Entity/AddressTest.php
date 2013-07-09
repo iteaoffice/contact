@@ -45,45 +45,21 @@ class AddressTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-        $contact = new Contact();
-        $contact->setFirstName('Jan');
-        $contact->setLastName('Dam');
-        $contact->setEmail('address_test@example.com');
-        $contact->setState(1);
-        $contact->setPassword('password');
-        $contact->setMessenger('messenger');
-        $contact->setDateOfBirth(new \DateTime());
+        $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
+        $country = $this->entityManager->find("General\Entity\Country", 1);
 
-        $gender = new \General\Entity\Gender();
-        $gender->setName('name for AddressTest');
-        $gender->setAttention('attention for AddressTest');
-        $gender->setSalutation('salutation for AddressTest');
-
-        $contact->setGender($gender);
-
-        $title = new \General\Entity\Title();
-        $title->setName('name for AddressTest');
-        $title->setAttention('attention for AddressTest');
-        $title->setSalutation('salutation for AddressTest');
-
-        $contact->setTitle($title);
-
-
-        $country = new \General\Entity\Country();
-        $country->setCountry('country');
-        $country->setCd('cd');
-        $country->setNumcode(100);
-        $country->setIso3('CCD');
-
+        $type = new \Contact\Entity\AddressType();
+        $type->setType('This is the type');
 
         $this->addressData = array(
             'contact' => $contact,
             'country' => $country,
+            'type'    => $type,
             'address' => 'This is the Address',
             'zipcode' => '1234',
-            'city' => 'This is the City');
+            'city'    => 'This is the City');
 
         $this->address = new Address();
     }
