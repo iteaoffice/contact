@@ -73,7 +73,7 @@ class ContactPhoto
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      */
     private $contact;

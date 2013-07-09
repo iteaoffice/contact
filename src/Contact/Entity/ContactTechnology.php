@@ -24,7 +24,7 @@ class ContactTechnology
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      */
     private $contact;
@@ -34,7 +34,7 @@ class ContactTechnology
      *
      * @ORM\ManyToOne(targetEntity="Technology")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="technology_id", referencedColumnName="technology_id")
+     * @ORM\JoinColumn(name="technology_id", referencedColumnName="technology_id")
      * })
      */
     private $technology;

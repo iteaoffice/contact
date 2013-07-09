@@ -24,7 +24,7 @@ class ContactOptin
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      */
     private $contact;
@@ -34,7 +34,7 @@ class ContactOptin
      *
      * @ORM\ManyToOne(targetEntity="Optin")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="optin_id", referencedColumnName="optin_id")
+     * @ORM\JoinColumn(name="optin_id", referencedColumnName="optin_id")
      * })
      */
     private $optin;

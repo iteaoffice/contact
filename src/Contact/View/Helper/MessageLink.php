@@ -27,8 +27,9 @@ class MessageLink extends AbstractHelper
 
     /**
      * @param \Contact\Entity\Message $message
-     * @param $action
-     * @param $show
+     * @param                         $action
+     * @param                         $show
+     *
      * @return string
      * @throws \RuntimeException
      * @throws \Exception
@@ -57,8 +58,8 @@ class MessageLink extends AbstractHelper
                 break;
             case 'delete':
                 $javascript[] = ' onclick="return confirm(\'' . $translate(
-                    'txt-this-will-remove-the-message-are-you-sure?'
-                ) . '\');"';
+                        'txt-this-will-remove-the-message-are-you-sure?'
+                    ) . '\');"';
                 $router       = 'zfcadmin/contact-manager/delete';
                 $text         = $translate("txt-delete-message");
                 break;

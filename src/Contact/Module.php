@@ -67,7 +67,7 @@ class Module implements
             'initializers' => array(
                 function ($instance, $sm) {
                     if ($instance instanceof FormServiceAwareInterface) {
-                        $sm = $sm->getServiceLocator();
+                        $sm          = $sm->getServiceLocator();
                         $formService = $sm->get('project_form_service');
                         $instance->setFormService($formService);
                     }
@@ -80,6 +80,7 @@ class Module implements
      * Listen to the bootstrap event
      *
      * @param  EventInterface $e
+     *
      * @return array
      */
     public function onBootstrap(EventInterface $e)

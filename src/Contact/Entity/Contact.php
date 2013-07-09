@@ -14,6 +14,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
+use Zend\Crypt\BlockCipher;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,7 +29,7 @@ use ZfcUser\Entity\UserInterface;
  * Entity for the Contact
  *
  * @ORM\Table(name="contact")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Contact\Repository\Contact")
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_contact")
  *
@@ -39,6 +40,10 @@ class Contact extends EntityAbstract implements
     ResourceInterface,
     ProviderInterface
 {
+    /**
+     * Key needed for the encryption and decryption of the Keys
+     */
+    const CRYPT_KEY = 'afc26c5daef5373cf4acb7ee107d423f';
     /**
      * Constant for messenger;
      */
@@ -194,30 +199,48 @@ class Contact extends EntityAbstract implements
 //     */
 //    private $roles;
     /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Email", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Email[]
+     */
+    private $emailAddresses;
+    /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\CV", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\CV[]
      */
     private $cv;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\CV", cascade={"persist"}, mappedBy="addresses")
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\CV[]
      */
-    private $address;
+    private $addresses;
+    /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Web", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Web[]
+     */
+    private $web;
+
 
     /**
      * Class constructor
      */
     public function __construct()
     {
-        $this->projects = new Collections\ArrayCollection();
+        $this->projects       = new Collections\ArrayCollection();
+        $this->cv             = new Collections\ArrayCollection();
+        $this->web            = new Collections\ArrayCollection();
+        $this->addresses      = new Collections\ArrayCollection();
+        $this->emailAddresses = new Collections\ArrayCollection();
     }
 
     /**
      * Magic Getter
      *
      * @param $property
+     *
      * @return mixed
      */
     public function __get($property)
@@ -230,6 +253,7 @@ class Contact extends EntityAbstract implements
      *
      * @param $property
      * @param $value
+     *
      * @return void
      */
     public function __set($property, $value)
@@ -261,6 +285,7 @@ class Contact extends EntityAbstract implements
      * Set input filter
      *
      * @param  InputFilterInterface $inputFilter
+     *
      * @return void
      * @throws \Exception
      */
@@ -276,24 +301,24 @@ class Contact extends EntityAbstract implements
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
+            $factory     = new InputFactory();
 
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name' => 'name',
-                        'required' => true,
-                        'filters' => array(
+                        'name'       => 'name',
+                        'required'   => true,
+                        'filters'    => array(
                             array('name' => 'StripTags'),
                             array('name' => 'StringTrim'),
                         ),
                         'validators' => array(
                             array(
-                                'name' => 'StringLength',
+                                'name'    => 'StringLength',
                                 'options' => array(
                                     'encoding' => 'UTF-8',
-                                    'min' => 1,
-                                    'max' => 100,
+                                    'min'      => 1,
+                                    'max'      => 100,
                                 ),
                             ),
                         ),
@@ -304,19 +329,19 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name' => 'label',
-                        'required' => true,
-                        'filters' => array(
+                        'name'       => 'label',
+                        'required'   => true,
+                        'filters'    => array(
                             array('name' => 'StripTags'),
                             array('name' => 'StringTrim'),
                         ),
                         'validators' => array(
                             array(
-                                'name' => 'StringLength',
+                                'name'    => 'StringLength',
                                 'options' => array(
                                     'encoding' => 'UTF-8',
-                                    'min' => 1,
-                                    'max' => 100,
+                                    'min'      => 1,
+                                    'max'      => 100,
                                 ),
                             ),
                         ),
@@ -339,14 +364,46 @@ class Contact extends EntityAbstract implements
     public function getArrayCopy()
     {
         return array(
-            'project' => $this->equipment,
-            'roles' => $this->roles
+            'projects'  => $this->projects,
+            'addresses' => $this->addresses,
+            'web'       => $this->web,
+            'cv'        => $this->cv,
+            'email'     => $this->email,
+//            'roles' => $this->roles
         );
     }
 
     public function populate()
     {
         return $this->getArrayCopy();
+    }
+
+    /**
+     * Create a hash for a user
+     *
+     * @return string
+     */
+    public function parseHash()
+    {
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
+        $blockCipher->setKey(self::CRYPT_KEY);
+
+        return $blockCipher->encrypt($this->id);
+    }
+
+    /**
+     * Decrypt a given hash
+     *
+     * @param $hash
+     *
+     * @return bool|string
+     */
+    public function decryptHash($hash)
+    {
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
+        $blockCipher->setKey(self::CRYPT_KEY);
+
+        return $blockCipher->decrypt($hash);
     }
 
     /**
@@ -384,20 +441,21 @@ class Contact extends EntityAbstract implements
         }
     }
 
+
     /**
-     * @param \datetime $addDate
+     * @param \datetime $dateCreated
      */
-    public function setAddDate($addDate)
+    public function setDateCreated($dateCreated)
     {
-        $this->addDate = $addDate;
+        $this->dateCreated = $dateCreated;
     }
 
     /**
      * @return \datetime
      */
-    public function getAddDate()
+    public function getDateCreated()
     {
-        return $this->addDate;
+        return $this->dateCreated;
     }
 
     /**
@@ -465,7 +523,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Gender $gender
+     * @param \General\Entity\Gender $gender
      */
     public function setGender($gender)
     {
@@ -473,7 +531,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Gender
+     * @return \General\Entity\Gender
      */
     public function getGender()
     {
@@ -593,7 +651,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Title $title
+     * @param \General\Entity\Title $title
      */
     public function setTitle($title)
     {
@@ -601,7 +659,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Title
+     * @return \General\Entity\Title
      */
     public function getTitle()
     {
@@ -638,6 +696,7 @@ class Contact extends EntityAbstract implements
      * Set username.
      *
      * @param string $username
+     *
      * @return UserInterface
      */
     public function setUsername($username)
@@ -652,13 +711,14 @@ class Contact extends EntityAbstract implements
      */
     public function getDisplayName()
     {
-        return $this->getFirstName() . ' ' . $this->getLastName();
+        return trim($this->getFirstName() . ' ' . $this->getLastName());
     }
 
     /**
      * Set displayName.
      *
      * @param string $displayName
+     *
      * @return UserInterface
      */
     public function setDisplayName($displayName)
@@ -666,5 +726,100 @@ class Contact extends EntityAbstract implements
         return false;
     }
 
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $projects
+     */
+    public function setProjects($projects)
+    {
+        $this->projects = $projects;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * @param \Contact\Entity\CV[] $addresses
+     */
+    public function setAddresses($addresses)
+    {
+        $this->addresses = $addresses;
+    }
+
+    /**
+     * @return \Contact\Entity\CV[]
+     */
+    public function getAddresses()
+    {
+        return $this->addresses;
+    }
+
+    /**
+     * @param \Contact\Entity\CV[] $cv
+     */
+    public function setCv($cv)
+    {
+        $this->cv = $cv;
+    }
+
+    /**
+     * @return \Contact\Entity\CV[]
+     */
+    public function getCv()
+    {
+        return $this->cv;
+    }
+
+    /**
+     * @param \Contact\Entity\Web[] $web
+     */
+    public function setWeb($web)
+    {
+        $this->web = $web;
+    }
+
+    /**
+     * @return \Contact\Entity\Web[]
+     */
+    public function getWeb()
+    {
+        return $this->web;
+    }
+
+    /**
+     * @param string $department
+     */
+    public function setDepartment($department)
+    {
+        $this->department = $department;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param \Contact\Entity\Email[] $emailAddresses
+     */
+    public function setEmailAddresses($emailAddresses)
+    {
+        $this->emailAddresses = $emailAddresses;
+    }
+
+    /**
+     * @return \Contact\Entity\Email[]
+     */
+    public function getEmailAddresses()
+    {
+        return $this->emailAddresses;
+    }
 
 }

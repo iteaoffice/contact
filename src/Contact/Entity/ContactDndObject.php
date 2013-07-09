@@ -31,7 +31,7 @@ class ContactDndObject
      *
      * @ORM\ManyToOne(targetEntity="ContactDnd")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="dnd_id", referencedColumnName="dnd_id")
+     * @ORM\JoinColumn(name="dnd_id", referencedColumnName="dnd_id")
      * })
      */
     private $dnd;

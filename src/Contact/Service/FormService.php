@@ -33,9 +33,10 @@ class FormService implements ServiceLocatorAwareInterface
     protected $serviceLocator;
 
     /**
-     * @param  null         $className
-     * @param  null         $entity
-     * @param  bool         $bind
+     * @param  null $className
+     * @param  null $entity
+     * @param  bool $bind
+     *
      * @return array|object
      */
     public function getForm($className = null, $entity = null, $bind = true)
@@ -63,6 +64,7 @@ class FormService implements ServiceLocatorAwareInterface
      * @param               $className
      * @param  null         $entity
      * @param               $data
+     *
      * @return array|object
      */
     public function prepare($className, $entity = null, $data)

@@ -17,20 +17,20 @@ return array(
                 )
             )
         ), // now you define the entity manager configuration
-        'entitymanager' => array(
-            'orm_default' => array(
-                'connection' => 'orm_default',
-                'configuration' => 'orm_default'
-            ),
-        ),
-        //Add the dependency to the Contact namespace here for testing purposes
-        'driver' => array(
-            'orm_default' => array(
-                'drivers' => array(
-                    'Contact\Entity' => 'general_annotation_driver',
-                    'General\Entity' => 'general_annotation_driver',
-                )
-            )
-        )
+//        'entitymanager' => array(
+//            'orm_default' => array(
+//                'connection' => 'orm_default',
+//                'configuration' => 'orm_default'
+//            ),
+//        ),
+//        //Add the dependency to the Contact namespace here for testing purposes
+//        'driver' => array(
+//            'orm_default' => array(
+//                'drivers' => array(
+//                    'Contact\Entity' => 'contact_annotation_driver',
+//                    'General\Entity' => 'contact_annotation_driver',
+//                )
+//            )
+//        )
     ),
 );

@@ -38,10 +38,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
      * @var Address;
      */
     protected $address;
-    /**
-     * @var Contact;
-     */
-    protected $contact;
 
     /**
      * {@inheritDoc}
@@ -51,11 +47,43 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-        $this->contact = $this->entityManager->find("Contact\Entity\Contact", 1);
+        $contact = new Contact();
+        $contact->setFirstName('Jan');
+        $contact->setLastName('Dam');
+        $contact->setEmail('address_test@example.com');
+        $contact->setState(1);
+        $contact->setPassword('password');
+        $contact->setMessenger('messenger');
+        $contact->setDateOfBirth(new \DateTime());
+
+        $gender = new \General\Entity\Gender();
+        $gender->setName('name for AddressTest');
+        $gender->setAttention('attention for AddressTest');
+        $gender->setSalutation('salutation for AddressTest');
+
+        $contact->setGender($gender);
+
+        $title = new \General\Entity\Title();
+        $title->setName('name for AddressTest');
+        $title->setAttention('attention for AddressTest');
+        $title->setSalutation('salutation for AddressTest');
+
+        $contact->setTitle($title);
+
+
+        $country = new \General\Entity\Country();
+        $country->setCountry('country');
+        $country->setCd('cd');
+        $country->setNumcode(100);
+        $country->setIso3('CCD');
+
 
         $this->addressData = array(
-            'contact' => $this->contact,
-            'address' => file_get_contents(__DIR__ . '/../_files/php.exe'));
+            'contact' => $contact,
+            'country' => $country,
+            'address' => 'This is the Address',
+            'zipcode' => '1234',
+            'city' => 'This is the City');
 
         $this->address = new Address();
     }
@@ -63,17 +91,18 @@ class AddressTest extends \PHPUnit_Framework_TestCase
     public function testCanCreateEntity()
     {
         $this->assertInstanceOf("Contact\Entity\Address", $this->address);
+        $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->address);
         $this->assertNull($this->address->getId(), 'The "Id" should be null');
 
         $today = new \DateTime();
         $this->address->setDateCreated($today);
-        $this->address->setDateUpdated($today);
+        $this->address->setLastUpdate($today);
 
         $id = 1;
         $this->address->setId($id);
 
         $this->assertEquals($today, $this->address->getDateCreated(), 'The "DateCreated" should be the same as the setter');
-        $this->assertEquals($today, $this->address->getDateUpdated(), 'The "DateUpdated" should be the same as the setter');
+        $this->assertEquals($today, $this->address->getLastUpdate(), 'The "LastUpdate" should be the same as the setter');
         $this->assertEquals($id, $this->address->getId(), 'The "Id" should be the same as the setter');
 
         $this->assertTrue(is_array($this->address->getArrayCopy()));
@@ -115,9 +144,12 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contact\Entity\Address', $this->address);
         $this->assertNotNull($this->address->getId());
         $this->assertNotNull($this->address->getDateCreated());
-        $this->assertNotNull($this->address->getDateUpdated());
+        $this->assertNotNull($this->address->getLastUpdate());
         $this->assertEquals($this->address->getContact()->getId(), $this->addressData['contact']->getId());
         $this->assertEquals($this->address->getAddress(), $this->addressData['address']);
+        $this->assertEquals($this->address->getZipcode(), $this->addressData['zipcode']);
+        $this->assertEquals($this->address->getCity(), $this->addressData['city']);
+        $this->assertEquals($this->address->getCountry()->getId(), $this->addressData['country']->getId());
 
         $this->assertNotNull($this->address->getResourceId());
     }

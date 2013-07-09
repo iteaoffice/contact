@@ -9,6 +9,8 @@
  */
 namespace Contact\Service;
 
+use Contact\Entity\Contact;
+
 /**
  * ContactService
  *
@@ -19,7 +21,7 @@ namespace Contact\Service;
  * method.
  *
  */
-class LocationService extends ServiceAbstract
+class ContactService extends ServiceAbstract
 {
     /**
      * @var ContactService
@@ -27,17 +29,28 @@ class LocationService extends ServiceAbstract
     protected $contactService;
 
     /**
-     * Find 1 entity based on the name
+     * @param $email
      *
-     * @param         $entity
-     * @param         $name
-     * @return object
+     * @return null|Contact
      */
-    public function findEntityByName($entity, $name)
+    public function findContactByEmail($email)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName($entity))->findOneBy(
-            array('name' => $name)
-        );
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContactByEmail($email);
+    }
+
+    /**
+     * Find a contact based on a hash
+     *
+     * @param $hash
+     *
+     * @return null|Contact
+     */
+    public function findContactByHash($hash)
+    {
+        $contact   = new Contact();
+        $contactId = $contact->decryptHash($hash);
+
+        return $this->getEntityManager()->find($this->getFullEntityName('contact'), $contactId);
     }
 
     public function get($name)

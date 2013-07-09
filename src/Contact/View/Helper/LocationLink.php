@@ -29,6 +29,7 @@ class LocationLink extends AbstractHelper
      * @param  Entity\Contact $contact
      * @param                 $action
      * @param                 $show
+     *
      * @return null|string
      * @throws \Exception
      */
@@ -49,8 +50,8 @@ class LocationLink extends AbstractHelper
 
         switch ($action) {
             case 'new':
-                $router   = 'zfcadmin/contact-manager/new';
-                $text     = sprintf($translate("txt-new-contact"));
+                $router  = 'zfcadmin/contact-manager/new';
+                $text    = sprintf($translate("txt-new-contact"));
                 $contact = new Entity\Contact();
                 break;
             case 'edit':

@@ -294,6 +294,7 @@ class LocationController extends AbstractActionController
 
     /**
      * @param $formService
+     *
      * @return ContactController
      */
     public function setFormService($formService)
@@ -315,6 +316,7 @@ class LocationController extends AbstractActionController
 
     /**
      * @param $contactService
+     *
      * @return ContactController
      */
     public function setContactService($contactService)

@@ -31,7 +31,7 @@ class ContactPhone
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      */
     private $contact;
@@ -41,7 +41,7 @@ class ContactPhone
      *
      * @ORM\ManyToOne(targetEntity="PhoneType")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
      * })
      */
     private $type;

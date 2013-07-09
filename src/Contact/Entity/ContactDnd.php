@@ -45,7 +45,7 @@ class ContactDnd
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      */
     private $contact;
@@ -55,7 +55,7 @@ class ContactDnd
      *
      * @ORM\ManyToOne(targetEntity="Contenttype")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id")
+     * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id")
      * })
      */
     private $contenttype;
@@ -65,7 +65,7 @@ class ContactDnd
      *
      * @ORM\ManyToOne(targetEntity="Program")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="program_id", referencedColumnName="program_id")
+     * @ORM\JoinColumn(name="program_id", referencedColumnName="program_id")
      * })
      */
     private $program;

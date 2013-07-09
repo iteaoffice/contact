@@ -5,6 +5,7 @@ namespace ContactTest;
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
+use Doctrine\ORM\Tools\SchemaValidator;
 use RuntimeException;
 
 error_reporting(E_ALL | E_STRICT);
@@ -44,10 +45,26 @@ class Bootstrap
 
         $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
 
+        //Validate the schema;
+        $validator = new SchemaValidator($entityManager);
+        $errors = $validator->validateMapping();
+
+        if (count($errors) > 0) {
+            foreach ($errors AS $entity => $errors) {
+                echo "Error in Entity: '" . $entity . "':\n";
+                echo implode("\n", $errors);
+                echo "\n";
+            }
+            die();
+        }
+
+
         //Create the schema
         $tool = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
         $mdFactory = $entityManager->getMetadataFactory();
         $mdFactory->getAllMetadata();
+
+
         $tool->dropDatabase();
         $tool->createSchema($mdFactory->getAllMetadata());
     }

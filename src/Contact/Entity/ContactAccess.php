@@ -30,6 +30,7 @@ class ContactAccess
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $contactAccessId;
+
 //    /**
 //     * @ORM\ManyToOne(targetEntity="\Admin\Entity\Access", inversedBy="contact")
 //     * @ORM\JoinColumns({
@@ -51,6 +52,7 @@ class ContactAccess
      * Magic Getter
      *
      * @param $property
+     *
      * @return mixed
      */
     public function __get($property)
@@ -63,6 +65,7 @@ class ContactAccess
      *
      * @param $property
      * @param $value
+     *
      * @return void
      */
     public function __set($property, $value)

@@ -24,7 +24,7 @@ class ContactDomain
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      */
     private $contact;
@@ -34,7 +34,7 @@ class ContactDomain
      *
      * @ORM\ManyToOne(targetEntity="Domain")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="domain_id", referencedColumnName="domain_id")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="domain_id")
      * })
      */
     private $domain;

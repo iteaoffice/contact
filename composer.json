@@ -19,7 +19,9 @@
         "php": ">=5.4.0",
         "zendframework/zendframework": "2.2.*",
         "debranova/general": "dev-master",
+        "debranova/project": "dev-master",
         "bjyoungblood/bjy-authorize": "dev-master",
+        "zf-commons/zfc-user": "dev-master",
         "doctrine/doctrine-orm-module": "dev-master",
         "gedmo/doctrine-extensions": "dev-master"
     },

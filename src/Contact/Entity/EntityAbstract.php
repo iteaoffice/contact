@@ -18,6 +18,7 @@ abstract class EntityAbstract implements EntityInterface, InputFilterAwareInterf
 
     /**
      * @param $prop
+     *
      * @return bool
      */
     public function has($prop)
@@ -35,6 +36,7 @@ abstract class EntityAbstract implements EntityInterface, InputFilterAwareInterf
 
     /**
      * @param $switch
+     *
      * @return mixed|string
      */
     public function get($switch)

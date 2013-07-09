@@ -30,6 +30,7 @@ class OperAreaLink extends AbstractHelper
      * @param  Entity\OperArea $operArea
      * @param                  $action
      * @param                  $show
+     *
      * @return null|string
      * @throws \Exception
      */

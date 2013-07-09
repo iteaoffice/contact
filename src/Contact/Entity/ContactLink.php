@@ -24,7 +24,7 @@ class ContactLink
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact1_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact1_id", referencedColumnName="contact_id")
      * })
      */
     private $contact1;
@@ -34,7 +34,7 @@ class ContactLink
      *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contact2_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact2_id", referencedColumnName="contact_id")
      * })
      */
     private $contact2;

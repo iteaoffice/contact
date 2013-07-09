@@ -30,6 +30,7 @@ class AreaLink extends AbstractHelper
      * @param  Entity\Area $area
      * @param              $action
      * @param              $show
+     *
      * @return null|string
      * @throws \Exception
      */

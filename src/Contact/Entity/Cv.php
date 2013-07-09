@@ -65,7 +65,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", inversedBy="cvs")
+     * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="cv")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
@@ -78,6 +78,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      * Magic Getter
      *
      * @param $property
+     *
      * @return mixed
      */
     public function __get($property)
@@ -90,6 +91,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      *
      * @param $property
      * @param $value
+     *
      * @return void
      */
     public function __set($property, $value)
@@ -111,6 +113,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      * Set input filter
      *
      * @param  InputFilterInterface $inputFilter
+     *
      * @return void
      * @throws \Exception
      */
@@ -126,18 +129,19 @@ class Cv extends EntityAbstract implements ResourceInterface
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
+            $factory     = new InputFactory();
 
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name' => 'web',
+                        'name'     => 'web',
                         'required' => true,
                     )
                 )
             );
             $this->inputFilter = $inputFilter;
         }
+
         return $this->inputFilter;
     }
 

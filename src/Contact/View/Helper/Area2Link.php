@@ -29,6 +29,7 @@ class Area2Link extends AbstractHelper
      * @param  Entity\Area2 $area2
      * @param               $action
      * @param               $show
+     *
      * @return null|string
      * @throws \Exception
      */

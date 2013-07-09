@@ -37,10 +37,6 @@ class WebTest extends \PHPUnit_Framework_TestCase
      * @var Web;
      */
     protected $web;
-    /**
-     * @var Contact;
-     */
-    protected $contact;
 
     /**
      * {@inheritDoc}
@@ -50,10 +46,37 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-        $this->contact = $this->entityManager->find("Contact\Entity\Contact", 1);
+        $contact = new Contact();
+        $contact->setFirstName('Jan');
+        $contact->setLastName('Dam');
+        $contact->setEmail('web_test@example.com');
+        $contact->setState(1);
+        $contact->setPassword('password');
+        $contact->setMessenger('messenger');
+        $contact->setDateOfBirth(new \DateTime());
+
+        $gender = new \General\Entity\Gender();
+        $gender->setName('gender for Webtest');
+        $gender->setAttention('attention for WebTest');
+        $gender->setSalutation('salutation for WebTest');
+
+        $contact->setGender($gender);
+
+        $title = new \General\Entity\Title();
+        $title->setName('title for WebTest');
+        $title->setAttention('attention for WebTest');
+        $title->setSalutation('salutation for WebTest');
+
+        $contact->setTitle($title);
+
+        $country = new \General\Entity\Country();
+        $country->setCountry('country');
+        $country->setCd('cd');
+        $country->setNumcode(100);
+        $country->setIso3('CCD');
 
         $this->webData = array(
-            'contact' => $this->contact,
+            'contact' => $contact,
             'web' => 'http://www.example.com');
 
         $this->web = new Web();
@@ -62,6 +85,8 @@ class WebTest extends \PHPUnit_Framework_TestCase
     public function testCanCreateEntity()
     {
         $this->assertInstanceOf("Contact\Entity\Web", $this->web);
+        $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->web);
+
         $this->assertNull($this->web->getId(), 'The "Id" should be null');
 
         $id = 1;

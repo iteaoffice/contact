@@ -95,7 +95,7 @@ class LocationManagerController
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->newEntity($form->getData());
             $this->redirect()->toRoute('zfcadmin/contact-manager/' .
-                strtolower($this->params('entity')), array('id' => $result->getId()));
+            strtolower($this->params('entity')), array('id' => $result->getId()));
         }
 
         return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
@@ -120,7 +120,7 @@ class LocationManagerController
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
             $this->redirect()->toRoute('zfcadmin/contact/' .
-                strtolower($entity->get('dashed_entity_name')), array('id' => $result->getId()));
+            strtolower($entity->get('dashed_entity_name')), array('id' => $result->getId()));
         }
 
         return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
@@ -156,6 +156,7 @@ class LocationManagerController
 
     /**
      * @param $formService
+     *
      * @return ContactManagerController
      */
     public function setFormService($formService)
@@ -177,6 +178,7 @@ class LocationManagerController
 
     /**
      * @param $contactService
+     *
      * @return ContactManagerController
      */
     public function setContactService($contactService)

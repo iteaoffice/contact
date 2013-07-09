@@ -30,6 +30,7 @@ class FacilityLink extends AbstractHelper
      * @param  Entity\Facility $facility
      * @param                  $action
      * @param                  $show
+     *
      * @return null|string
      * @throws \Exception
      */

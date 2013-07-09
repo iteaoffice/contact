@@ -9,6 +9,8 @@
  */
 namespace ContactTest\Entity;
 
+use Zend\Crypt\BlockCipher;
+
 use Contact\Entity\Contact;
 use ContactTest\Bootstrap;
 
@@ -34,6 +36,10 @@ class ContactTest extends \PHPUnit_Framework_TestCase
      */
     protected $contact;
     /**
+     * @var array
+     */
+    protected $contactData;
+    /**
      * @var Gender;
      */
     protected $gender;
@@ -52,25 +58,25 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
         $this->gender = new Gender();
         $this->gender->setName("This is the gender");
-        $this->gender->setAttention("This is the attention");
-        $this->gender->setSalutation("This is the salutation");
+        $this->gender->setAttention("attention for ContactTest");
+        $this->gender->setSalutation("Salutation for ContactTest");
 
         $this->title = new Title();
 
         $this->title->setName("This is the title");
-        $this->title->setAttention("This is the attention");
-        $this->title->salutation = "This is the salutation";
+        $this->title->setAttention("Attention for ContactTest");
+        $this->title->salutation = "Salutation for ContactTest";
 
 
         $this->contactData = array(
             'firstName' => 'Jan',
             'middleName' => 'van der',
             'lastName' => 'Vliet',
-            'email' => 'info@example.com' . microtime(),
+            'email' => 'info@example.com',
             'state' => 1,
             'password' => md5(microtime()),
-            'addDate' => new \DateTime(),
-            'lastUpdate' => new \DateTime(),
+            'department' => 'department',
+            'position' => 'position',
             'dateEnd' => new \DateTime(),
             'messenger' => 'Lorem Ipsum',
             'gender' => $this->gender,
@@ -84,9 +90,31 @@ class ContactTest extends \PHPUnit_Framework_TestCase
     {
 
         $this->assertInstanceOf("Contact\Entity\Contact", $this->contact);
+        $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->contact);
 
         $this->assertNull($this->contact->getFirstName(), 'The "Firstname" should be null');
+
+        $today = new \DateTime();
+        $this->contact->setDateCreated($today);
+        $this->contact->setLastUpdate($today);
+
+        $id = 1;
+        $this->contact->setId($id);
+
+        $this->assertEquals($today, $this->contact->getDateCreated(), 'The "DateCreated" should be the same as the setter');
+        $this->assertEquals($today, $this->contact->getLastUpdate(), 'The "LastUpdate" should be the same as the setter');
+        $this->assertEquals($id, $this->contact->getId(), 'The "Id" should be the same as the setter');
+
+        $this->assertTrue(is_array($this->contact->getArrayCopy()));
+        $this->assertTrue(is_array($this->contact->populate()));
     }
+
+    public function testMagicGettersAndSetters()
+    {
+        $this->contact->username = 'test';
+        $this->assertEquals('test', $this->contact->username);
+    }
+
 
     public function testCanHydrateEntity()
     {
@@ -130,11 +158,40 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->contactData['firstName'], $this->contact->getFirstName());
         $this->assertSame($this->contactData['middleName'], $this->contact->getMiddleName());
         $this->assertSame($this->contactData['lastName'], $this->contact->getLastName());
+        $this->assertSame($this->contactData['department'], $this->contact->getDepartment());
+        $this->assertSame($this->contactData['position'], $this->contact->getPosition());
+        $this->assertSame($this->contactData['email'], $this->contact->getUsername()); //We use the email addressa as username
         $this->assertSame($this->contactData['state'], $this->contact->getState());
         $this->assertSame($this->contactData['gender']->getName(), $this->contact->getGender()->getName());
         $this->assertSame($this->contactData['gender']->getId(), $this->contact->getGender()->getId());
         $this->assertSame($this->contactData['title']->getName(), $this->contact->getTitle()->getName());
         $this->assertSame($this->contactData['title']->getId(), $this->contact->getTitle()->getId());
+
+
+        $this->assertNotNull($this->contact->getDisplayName());
+    }
+
+    public function testParseHash()
+    {
+        $contactId = 1;
+        $this->contact->setId($contactId);
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
+        $blockCipher->setKey(Contact::CRYPT_KEY);
+        $result = $blockCipher->decrypt($this->contact->parseHash());
+        $this->assertEquals($result, $contactId);
+    }
+
+    public function testDecryptHash()
+    {
+        $contactId = 1;
+
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
+        $blockCipher->setKey(Contact::CRYPT_KEY);
+        $hash = $blockCipher->encrypt($contactId);
+
+        $result = $this->contact->decryptHash($hash);
+
+        $this->assertEquals($result, $contactId);
     }
 
 

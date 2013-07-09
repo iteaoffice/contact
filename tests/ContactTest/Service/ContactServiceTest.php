@@ -1,0 +1,66 @@
+<?php
+/**
+ * ITEA copyright message placeholder
+ *
+ * @category    ContactTest
+ * @package     Entity
+ * @author      Johan van der Heide <info@japaveh.nl>
+ * @copyright   Copyright (c) 2004-2013 ITEA
+ */
+namespace ContactTest\Service;
+
+use Zend\Crypt\BlockCipher;
+
+use Contact\Entity\Contact;
+use Contact\Service\ContactService;
+use ContactTest\Bootstrap;
+
+class ContactServiceTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @var \Zend\ServiceManager\ServiceLocatorInterface
+     */
+    protected $serviceManager;
+    /**
+     * @var \Doctrine\ORM\EntityManager;
+     */
+    protected $entityManager;
+    /**
+     * @var ContactService;
+     */
+    protected $contactService;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        $this->serviceManager = Bootstrap::getServiceManager();
+        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+
+        $this->contactService = new ContactService();
+        $this->contactService->setServiceLocator($this->serviceManager);
+    }
+
+    public function testCanFindContactByEmail()
+    {
+        $contactEmail = 'info@example.com';
+        $contact      = $this->contactService->findContactByEmail($contactEmail);
+
+        $this->assertNotNull($contact);
+        $this->assertEquals($contact->getEmail(), $contactEmail);
+    }
+
+    public function testCanFindContactByHash()
+    {
+        $contactId   = 1;
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
+        $blockCipher->setKey(Contact::CRYPT_KEY);
+        $hash = $blockCipher->encrypt($contactId);
+
+        $contact = $this->contactService->findContactByHash($hash);
+        $this->assertNotNull($contact);
+        $this->assertEquals($contact->getId(), $contactId);
+    }
+
+}

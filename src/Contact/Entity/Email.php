@@ -9,11 +9,11 @@
  */
 namespace Contact\Entity;
 
-
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
+use Zend\Validator\EmailAddress;
 use Zend\Form\Annotation;
 
 use Doctrine\Common\Collections;
@@ -22,37 +22,53 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation AS Gedmo;
 
 /**
- * Entity for a web-address of a contact
+ * ContactEmail
  *
- * @ORM\Table(name="contact_web")
+ * @ORM\Table(name="contact_email")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
- * @Annotation\Name("contact_web")
+ * @Annotation\Name("contact_cv")
  *
  * @category    Contact
  * @package     Entity
  */
-class Web extends EntityAbstract implements ResourceInterface
+class Email extends EntityAbstract implements ResourceInterface
 {
     /**
-     * @ORM\Column(name="web_id", type="integer", nullable=false)
+     * @ORM\Column(name="email_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
      * @var integer
      */
     private $id;
+
     /**
-     * @ORM\Column(name="web", type="string", length=60, nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-web-address"})
+     * @ORM\Column(name="email", type="string", length=60, nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\File")
+     * @Annotation\Options({"label":"txt-cv-file"})
+     * @Annotation\Exclude()
      * @var string
      */
-    private $web;
+    private $email;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", cascade="persist", inversedBy="web")
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     * @Gedmo\Timestampable(on="update")
+     * @Annotation\Exclude()
+     * @var \DateTime
+     */
+    private $dateCreated;
+    /**
+     * @ORM\Column(name="date_updated", type="datetime", nullable=false)
+     * @Gedmo\Timestampable(on="update")
+     * @Annotation\Exclude()
+     * @var \DateTime
+     */
+    private $dateUpdated;
+    /**
+     * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="emailAddresses")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @Annotation\Exclude()
      * @var \Contact\Entity\Contact
@@ -119,8 +135,9 @@ class Web extends EntityAbstract implements ResourceInterface
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'     => 'web',
-                        'required' => true,
+                        'name'      => 'email',
+                        'required'  => true,
+                        'validator' => new EmailAddress()
                     )
                 )
             );
@@ -169,6 +186,54 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @param \DateTime $dateCreated
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->dateCreated = $dateCreated;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateUpdated
+     */
+    public function setDateUpdated($dateUpdated)
+    {
+        $this->dateUpdated = $dateUpdated;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->dateUpdated;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
      * @param int $id
      */
     public function setId($id)
@@ -184,19 +249,5 @@ class Web extends EntityAbstract implements ResourceInterface
         return $this->id;
     }
 
-    /**
-     * @param string $web
-     */
-    public function setWeb($web)
-    {
-        $this->web = $web;
-    }
 
-    /**
-     * @return string
-     */
-    public function getWeb()
-    {
-        return $this->web;
-    }
 }

@@ -39,6 +39,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     /**
      * @param        $entity
      * @param  bool  $toArray
+     *
      * @return array
      */
     public function findAll($entity, $toArray = false)
@@ -52,6 +53,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
      * @param         $entity
      * @param         $id
      * @param  bool   $populate
+     *
      * @return object
      */
     public function findEntityById($entity, $id, $populate = false)
@@ -64,19 +66,11 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
 
     /**
      * @param  \Contact\Entity\EntityAbstract $entity
+     *
      * @return \Contact\Entity\EntityAbstract
      */
     public function newEntity(EntityAbstract $entity)
     {
-        if (method_exists($entity, 'getLastUpdateBy')) {
-            $authService = $this->getServiceLocator()->get('zfcuser_auth_service');
-            if ($authService->hasIdentity()) {
-                $entity->setLastUpdateBy($authService->getIdentity()->getDisplayName());
-            } else {
-                $entity->setLastUpdateBy('guest');
-            }
-        }
-
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
 
@@ -85,19 +79,11 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
 
     /**
      * @param  \Contact\Entity\EntityAbstract $entity
+     *
      * @return \Contact\Entity\EntityAbstract
      */
     public function updateEntity(EntityAbstract $entity)
     {
-        if (method_exists($entity, 'getLastUpdateBy')) {
-            $authService = $this->getServiceLocator()->get('zfcuser_auth_service');
-            if ($authService->hasIdentity()) {
-                $entity->setLastUpdateBy($authService->getIdentity()->getDisplayName());
-            } else {
-                $entity->setLastUpdateBy('guest');
-            }
-        }
-
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
 
@@ -106,6 +92,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
 
     /**
      * @param  \Contact\Entity\EntityAbstract $entity
+     *
      * @return bool
      */
     public function removeEntity(EntityAbstract $entity)
@@ -120,6 +107,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
      * Build dynamically a entity based on the full entity name
      *
      * @param $entity
+     *
      * @return mixed
      */
     public function getEntity($entity)
@@ -133,6 +121,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
      * Create a full path to the entity for Doctrine
      *
      * @param $entity
+     *
      * @return string
      */
     public function getFullEntityName($entity)
@@ -152,6 +141,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
 
     /**
      * @param  ServiceLocatorInterface $serviceLocator
+     *
      * @return ServiceAbstract
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)

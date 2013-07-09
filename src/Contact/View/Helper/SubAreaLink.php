@@ -29,6 +29,7 @@ class SubAreaLink extends AbstractHelper
      * @param  \Contact\Entity\SubArea $subArea
      * @param                          $action
      * @param                          $show
+     *
      * @return string
      * @throws \RuntimeException
      * @throws \Exception
