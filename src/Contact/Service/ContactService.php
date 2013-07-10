@@ -35,8 +35,9 @@ class ContactService extends ServiceAbstract
      */
     public function findContactByEmail($email)
     {
-        return $this->getEntityManager()->getRepository(
-            $this->getFullEntityName('contact'))->findContactByEmail($email);
+        return $this->getEntityManager()
+            ->getRepository($this->getFullEntityName('contact'))
+            ->findContactByEmail($email);
     }
 
     /**

@@ -21,8 +21,8 @@ use Contact\Service\FormService;
 /**
  *
  */
-class ContactManagerController extends AbstractActionController implements FormServiceAwareInterface,
-    ServiceLocatorAwareInterface
+class ContactManagerController extends AbstractActionController implements
+    FormServiceAwareInterface, ServiceLocatorAwareInterface
 {
 
     /**
@@ -94,8 +94,8 @@ class ContactManagerController extends AbstractActionController implements FormS
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->newEntity($form->getData());
             $this->redirect()->toRoute(
-                'zfcadmin/contact-manager/' .
-                strtolower($this->params('entity')), array('id' => $result->getId())
+                'zfcadmin/contact-manager/' . strtolower($this->params('entity')),
+                array('id' => $result->getId())
             );
         }
 
@@ -121,8 +121,8 @@ class ContactManagerController extends AbstractActionController implements FormS
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
             $this->redirect()->toRoute(
-                'zfcadmin/contact/' .
-                strtolower($entity->get('dashed_entity_name')), array('id' => $result->getId())
+                'zfcadmin/contact/' . strtolower($entity->get('dashed_entity_name')),
+                array('id' => $result->getId())
             );
         }
 

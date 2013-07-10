@@ -71,7 +71,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $contact->setTitle($title);
 
 
-       
+
 
         $this->emailData = array(
             'contact' => $contact,

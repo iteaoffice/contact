@@ -67,12 +67,14 @@ class ContactLink extends AbstractHelper
         }
 
         if (is_null($area2)) {
-            throw new \RuntimeException(sprintf(
-                "Area needs to be an instance of %s, %s given in %s",
-                "Contact\Entity\Area2",
-                get_class($area2),
-                __CLASS__
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    "Area needs to be an instance of %s, %s given in %s",
+                    "Contact\Entity\Area2",
+                    get_class($area2),
+                    __CLASS__
+                )
+            );
         }
 
         $params = array(
