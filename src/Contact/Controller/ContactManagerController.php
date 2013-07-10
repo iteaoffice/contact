@@ -22,7 +22,8 @@ use Contact\Service\FormService;
  *
  */
 class ContactManagerController extends AbstractActionController implements
-    FormServiceAwareInterface, ServiceLocatorAwareInterface
+    FormServiceAwareInterface,
+    ServiceLocatorAwareInterface
 {
 
     /**

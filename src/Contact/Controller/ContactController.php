@@ -23,7 +23,8 @@ use Contact\Entity;
  * @package     Controller
  */
 class ContactController extends AbstractActionController implements
-    FormServiceAwareInterface, ServiceLocatorAwareInterface
+    FormServiceAwareInterface,
+    ServiceLocatorAwareInterface
 {
     /**
      * @var ContactService

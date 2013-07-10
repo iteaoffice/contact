@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Japaveh Webdesign copyright message placeholder
  *
@@ -109,7 +108,13 @@ class ContactLink extends AbstractHelper
 
         $uri = '<a href="%s" title="%s" class="%s">%s</a>';
 
-        return sprintf($uri, $serverUrl->__invoke() . $url($router, $params), $text, implode($classes), implode($linkContent));
+        return sprintf(
+            $uri,
+            $serverUrl->__invoke() . $url($router, $params),
+            $text,
+            implode($classes),
+            implode($linkContent)
+        );
 
     }
 }
