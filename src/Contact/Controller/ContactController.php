@@ -22,8 +22,8 @@ use Contact\Entity;
  * @category    Contact
  * @package     Controller
  */
-class LocationController extends AbstractActionController
-    implements FormServiceAwareInterface, ServiceLocatorAwareInterface
+class ContactController extends AbstractActionController implements FormServiceAwareInterface,
+    ServiceLocatorAwareInterface
 {
     /**
      * @var ContactService
@@ -325,5 +325,4 @@ class LocationController extends AbstractActionController
 
         return $this;
     }
-
 }

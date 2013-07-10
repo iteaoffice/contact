@@ -16,10 +16,9 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\Validator\EmailAddress;
 use Zend\Form\Annotation;
 
-use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 
-use Gedmo\Mapping\Annotation AS Gedmo;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * ContactEmail
@@ -113,7 +112,7 @@ class Email extends EntityAbstract implements ResourceInterface
     /**
      * Set input filter
      *
-     * @param  InputFilterInterface $inputFilter
+     * @param InputFilterInterface $inputFilter
      *
      * @return void
      * @throws \Exception
@@ -248,6 +247,4 @@ class Email extends EntityAbstract implements ResourceInterface
     {
         return $this->id;
     }
-
-
 }

@@ -12,7 +12,6 @@
 namespace Contact;
 
 use Zend\ModuleManager\Feature; //Makes the module class more strict
-use Zend\EventManager\EventInterface;
 
 use Project\Service\FormServiceAwareInterface;
 
@@ -75,17 +74,4 @@ class Module implements
             ),
         );
     }
-
-    /**
-     * Listen to the bootstrap event
-     *
-     * @param  EventInterface $e
-     *
-     * @return array
-     */
-    public function onBootstrap(EventInterface $e)
-    {
-        // TODO: Implement onBootstrap() method.
-    }
-
 }

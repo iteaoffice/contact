@@ -13,12 +13,10 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 
-use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 
-use Gedmo\Mapping\Annotation AS Gedmo;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Entity for the Contact
@@ -69,7 +67,7 @@ class Address extends EntityAbstract
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\Type"})
      * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
-     * @var \AddressType
+     * @var \Contact\Entity\AddressType
      */
     private $type;
     /**
@@ -145,7 +143,7 @@ class Address extends EntityAbstract
     /**
      * Set input filter
      *
-     * @param  InputFilterInterface $inputFilter
+     * @param InputFilterInterface $inputFilter
      *
      * @return void
      * @throws \Exception
@@ -233,7 +231,6 @@ class Address extends EntityAbstract
                 )
             );
 
-
             $this->inputFilter = $inputFilter;
         }
 
@@ -249,7 +246,6 @@ class Address extends EntityAbstract
     public function getArrayCopy()
     {
         return array(
-//            'zipCode' => $this->zipcode,
             'contact' => $this->contact,
             'country' => $this->country
         );
@@ -259,7 +255,6 @@ class Address extends EntityAbstract
     {
         return $this->getArrayCopy();
     }
-
 
     /**
      * @param string $address

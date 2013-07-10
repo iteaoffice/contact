@@ -11,7 +11,6 @@ namespace Contact\Service;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Authentication\AuthenticationService;
 
 use Doctrine\ORM\EntityManager;
 
@@ -33,8 +32,8 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     protected $serviceLocator;
 
     /**
-     * @param        $entity
-     * @param  bool  $toArray
+     * @param      $entity
+     * @param bool $toArray
      *
      * @return array
      */
@@ -46,9 +45,9 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     /**
      * Find 1 entity based on the id
      *
-     * @param         $entity
-     * @param         $id
-     * @param  bool   $populate
+     * @param      $entity
+     * @param      $id
+     * @param bool $populate
      *
      * @return object
      */
@@ -60,9 +59,8 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
         }
     }
 
-
     /**
-     * @param  \Contact\Entity\EntityAbstract $entity
+     * @param \Contact\Entity\EntityAbstract $entity
      *
      * @return \Contact\Entity\EntityAbstract
      */
@@ -75,7 +73,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     }
 
     /**
-     * @param  \Contact\Entity\EntityAbstract $entity
+     * @param \Contact\Entity\EntityAbstract $entity
      *
      * @return \Contact\Entity\EntityAbstract
      */
@@ -88,7 +86,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     }
 
     /**
-     * @param  \Contact\Entity\EntityAbstract $entity
+     * @param \Contact\Entity\EntityAbstract $entity
      *
      * @return bool
      */
@@ -137,7 +135,7 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     }
 
     /**
-     * @param  ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $serviceLocator
      *
      * @return ServiceAbstract
      */
@@ -175,5 +173,4 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
 
         return $this->entityManager;
     }
-
 }

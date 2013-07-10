@@ -8,7 +8,6 @@
  * @subpackage  Helper
  * @author      Johan van der Heide <info@japaveh.nl>
  * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
- * @version     4.0
  */
 namespace Contact\View\Helper;
 
@@ -17,33 +16,33 @@ use Zend\View\Helper\AbstractHelper;
 use Contact\Entity;
 
 /**
- * Create a link to an facility
+ * Create a link to an area2
  *
  * @category    Contact
  * @package     View
  * @subpackage  Helper
  */
-class FacilityLink extends AbstractHelper
+class ContactLink extends AbstractHelper
 {
 
     /**
-     * @param  Entity\Facility $facility
-     * @param                  $action
-     * @param                  $show
+     * @param Entity\Area2 $area2
+     * @param              $action
+     * @param              $show
      *
      * @return null|string
      * @throws \Exception
      */
-    public function __invoke(Entity\Facility $facility = null, $action, $show)
+    public function __invoke(Entity\Area2 $area2 = null, $action = 'view', $show = 'name')
     {
-        $translate = $this->view->plugin('translate');
-        $url       = $this->view->plugin('url');
-        $serverUrl = $this->view->plugin('serverUrl');
         $isAllowed = $this->view->plugin('isAllowed');
+        $translate = $this->view->plugin('translate');
+        $serverUrl = $this->view->plugin('serverUrl');
+        $url       = $this->view->plugin('url');
 
         if (!$isAllowed('contact', $action)) {
             if ($action === 'view' && $show === 'name') {
-                return $facility;
+                return $area2;
             }
 
             return '';
@@ -51,34 +50,34 @@ class FacilityLink extends AbstractHelper
 
         switch ($action) {
             case 'new':
-                $router   = 'zfcadmin/contact-manager/new';
-                $text     = sprintf($translate("txt-new-facility"));
-                $facility = new Entity\Facility();
+                $router = 'zfcadmin/contact-manager/new';
+                $text   = sprintf($translate("txt-new-area2"));
+                $area2  = new Entity\Area2();
                 break;
             case 'edit':
                 $router = 'zfcadmin/contact-manager/edit';
-                $text   = sprintf($translate("txt-edit-facility-%s"), $facility);
+                $text   = sprintf($translate("txt-edit-area2-%s"), $area2);
                 break;
             case 'view':
-                $router = 'contact/facility';
-                $text   = sprintf($translate("txt-view-facility-%s"), $facility);
+                $router = 'contact/area2';
+                $text   = sprintf($translate("txt-view-area2-%s"), $area2);
                 break;
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $action, __CLASS__));
         }
 
-        if (is_null($facility)) {
+        if (is_null($area2)) {
             throw new \RuntimeException(sprintf(
-                "Facility needs to be an instance of %s, %s given in %s",
-                "Contact\Entity\Facility",
-                'null',
+                "Area needs to be an instance of %s, %s given in %s",
+                "Contact\Entity\Area2",
+                get_class($area2),
                 __CLASS__
             ));
         }
 
         $params = array(
-            'id'     => $facility->getId(),
-            'entity' => 'facility'
+            'id'     => $area2->getId(),
+            'entity' => 'area2'
         );
 
         $classes     = array();
@@ -99,10 +98,10 @@ class FacilityLink extends AbstractHelper
                 $classes[]     = "btn btn-primary";
                 break;
             case 'name':
-                $linkContent[] = $facility->getName();
+                $linkContent[] = $area2->getName();
                 break;
             default:
-                $linkContent[] = $facility;
+                $linkContent[] = $area2;
                 break;
         }
 

@@ -17,7 +17,7 @@ use Zend\Form\Annotation;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 
-use Gedmo\Mapping\Annotation AS Gedmo;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Optin
@@ -104,7 +104,7 @@ class OptIn extends EntityAbstract
     /**
      * Set input filter
      *
-     * @param  InputFilterInterface $inputFilter
+     * @param InputFilterInterface $inputFilter
      *
      * @return void
      * @throws \Exception
@@ -193,7 +193,6 @@ class OptIn extends EntityAbstract
             $this->contact->removeElement($singleContact);
         }
     }
-
 
     /**
      * @param \Contact\Entity\Contact[] $contact
@@ -290,6 +289,4 @@ class OptIn extends EntityAbstract
     {
         return $this->optIn;
     }
-
-
 }

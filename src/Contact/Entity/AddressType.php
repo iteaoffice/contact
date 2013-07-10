@@ -13,12 +13,9 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-
-use Gedmo\Mapping\Annotation AS Gedmo;
 
 /**
  * AddressType
@@ -93,7 +90,7 @@ class AddressType extends EntityAbstract
     /**
      * Set input filter
      *
-     * @param  InputFilterInterface $inputFilter
+     * @param InputFilterInterface $inputFilter
      *
      * @return void
      * @throws \Exception
@@ -206,6 +203,5 @@ class AddressType extends EntityAbstract
     {
         return $this->type;
     }
-
 
 }

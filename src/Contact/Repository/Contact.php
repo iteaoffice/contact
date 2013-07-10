@@ -41,5 +41,4 @@ class Contact extends EntityRepository
         //Limit to 1 to have only 1 match
         return $queryBuilder->getQuery()->getSingleResult();
     }
-
 }

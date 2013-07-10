@@ -21,9 +21,8 @@ use Contact\Service\FormService;
 /**
  *
  */
-class LocationManagerController
-    extends AbstractActionController
-    implements FormServiceAwareInterface, ServiceLocatorAwareInterface
+class ContactManagerController extends AbstractActionController implements FormServiceAwareInterface,
+    ServiceLocatorAwareInterface
 {
 
     /**
@@ -94,8 +93,10 @@ class LocationManagerController
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->newEntity($form->getData());
-            $this->redirect()->toRoute('zfcadmin/contact-manager/' .
-            strtolower($this->params('entity')), array('id' => $result->getId()));
+            $this->redirect()->toRoute(
+                'zfcadmin/contact-manager/' .
+                strtolower($this->params('entity')), array('id' => $result->getId())
+            );
         }
 
         return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
@@ -119,8 +120,10 @@ class LocationManagerController
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
-            $this->redirect()->toRoute('zfcadmin/contact/' .
-            strtolower($entity->get('dashed_entity_name')), array('id' => $result->getId()));
+            $this->redirect()->toRoute(
+                'zfcadmin/contact/' .
+                strtolower($entity->get('dashed_entity_name')), array('id' => $result->getId())
+            );
         }
 
         return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
@@ -207,5 +210,4 @@ class LocationManagerController
 
         return $this;
     }
-
 }
