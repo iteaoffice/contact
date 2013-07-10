@@ -53,7 +53,7 @@ class Bootstrap
 
         //Validate the schema;
         $validator = new SchemaValidator($entityManager);
-        $errors = $validator->validateMapping();
+        $errors    = $validator->validateMapping();
 
         if (count($errors) > 0) {
             foreach ($errors AS $entity => $errors) {
@@ -66,7 +66,7 @@ class Bootstrap
 
 
         //Create the schema
-        $tool = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
+        $tool      = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
         $mdFactory = $entityManager->getMetadataFactory();
         $mdFactory->getAllMetadata();
 
@@ -75,14 +75,12 @@ class Bootstrap
         $tool->createSchema($mdFactory->getAllMetadata());
 
         $loader = new Loader();
-        $loader->addFixture(new LoadContactData());
-        $loader->addFixture(new LoadCountryData());
+        $loader->addFixture(new \ContactTest\Fixture\LoadContactData());
+        $loader->addFixture(new \ContactTest\Fixture\LoadCountryData());
 
-        $purger = new ORMPurger();
+        $purger   = new ORMPurger();
         $executor = new ORMExecutor($entityManager, $purger);
         $executor->execute($loader->getFixtures());
-
-
 
 
     }
@@ -119,7 +117,7 @@ class Bootstrap
         AutoloaderFactory::factory(array(
             'Zend\Loader\StandardAutoloader' => array(
                 'autoregister_zf' => true,
-                'namespaces' => array(
+                'namespaces'      => array(
                     __NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
                 ),
             ),
@@ -128,13 +126,14 @@ class Bootstrap
 
     protected static function findParentPath($path)
     {
-        $dir = __DIR__;
+        $dir         = __DIR__;
         $previousDir = '.';
         while (!is_dir($dir . '/' . $path)) {
             $dir = dirname($dir);
             if ($previousDir === $dir) return false;
             $previousDir = $dir;
         }
+
         return $dir . '/' . $path;
     }
 }
