@@ -24,7 +24,8 @@ test:
         standard: "PSR2"
     php_cpd:
         allow_failures: true
-    php_md:
+    php_mess_detector:
+            allow_failures: true
     php_spec:
     php_cs_fixer:
            verbose: true
