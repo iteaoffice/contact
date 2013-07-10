@@ -2,7 +2,6 @@ build_settings:
     ignore:
         - "vendor"
         - "tests"
-    verbose: true
     mysql:
         host: "localhost"
         user: "phpci"
@@ -25,6 +24,8 @@ test:
         standard: "PSR2"
     php_cpd:
         allow_failures: true
+    php_md:
+    php_spec:
     php_cs_fixer:
            verbose: true
            dryrun: true
