@@ -205,7 +205,7 @@ class Contact extends EntityAbstract implements
      */
     private $emailAddresses;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\CV", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Cv", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\CV[]
      */

@@ -12,8 +12,6 @@ use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
-use ContactTest\Fixture\LoadContactData;
-
 use RuntimeException;
 
 error_reporting(E_ALL | E_STRICT);
