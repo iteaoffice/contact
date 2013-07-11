@@ -30,7 +30,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @category    Contact
  * @package     Entity
  */
-class Dnd extends EntityAbstract implements ResourceInterface
+class Dnd //extends EntityAbstract implements ResourceInterface
 {
     /**
      * @ORM\Column(name="dnd_id", type="integer", nullable=false)
@@ -67,7 +67,7 @@ class Dnd extends EntityAbstract implements ResourceInterface
      * })
      * @var \Contact\Entity\Contact
      */
-    private $contact;
+    //    private $contact;
     /**
      * @var \Contenttype
      *
@@ -76,7 +76,7 @@ class Dnd extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id")
      * })
      */
-    private $contenttype;
+    //    private $contenttype;
     /**
      * @var \Program
      *
@@ -85,6 +85,6 @@ class Dnd extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumn(name="program_id", referencedColumnName="program_id")
      * })
      */
-    private $program;
+    //    private $program;
 
 }
