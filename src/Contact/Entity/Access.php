@@ -9,6 +9,7 @@
  */
 namespace Contact\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
@@ -23,33 +24,39 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * ContactEmail
  *
- * @ORM\Table(name="contact_email")
+ * @ORM\Table(name="access")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
- * @Annotation\Name("contact_cv")
+ * @Annotation\Name("contact_access")
  *
  * @category    Contact
  * @package     Entity
  */
-class Email extends EntityAbstract implements ResourceInterface
+class Access extends EntityAbstract
 {
     /**
-     * @ORM\Column(name="email_id", type="integer", nullable=false)
+     * @ORM\Column(name="access_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Exclude()
      * @var integer
      */
     private $id;
-
     /**
-     * @ORM\Column(name="email", type="string", length=60, nullable=false)
+     * @ORM\Column(name="access", type="string", length=20, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-cv-file"})
+     * @Annotation\Options({"label":"txt-access"})
      * @Annotation\Exclude()
      * @var string
      */
-    private $email;
+    private $access;
+    /**
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @Annotation\Options({"label":"txt-description"})
+     * @Annotation\Exclude()
+     * @var string
+     */
+    private $description;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
@@ -65,14 +72,19 @@ class Email extends EntityAbstract implements ResourceInterface
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="emailAddresses")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
-     * @Annotation\Exclude()
-     * @var \Contact\Entity\Contact
+     * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="access")
+     * @Annotation\Exclude();
+     * @var \Contact\Entity\Contact[]
      */
     private $contact;
+
+    /**
+     * Class constructor
+     */
+    public function __construct()
+    {
+        $this->contact = new ArrayCollection();
+    }
 
     /**
      * Magic Getter
@@ -100,16 +112,6 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Returns the string identifier of the Resource
-     *
-     * @return string
-     */
-    public function getResourceId()
-    {
-        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
-    }
-
-    /**
      * Set input filter
      *
      * @param InputFilterInterface $inputFilter
@@ -134,12 +136,20 @@ class Email extends EntityAbstract implements ResourceInterface
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'      => 'email',
-                        'required'  => true,
-                        'validator' => new EmailAddress()
+                        'name' => 'access',
                     )
                 )
             );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'description',
+                        'required' => true,
+                    )
+                )
+            );
+
             $this->inputFilter = $inputFilter;
         }
 
@@ -169,7 +179,39 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param string $access
+     */
+    public function setAccess($access)
+    {
+        $this->access = $access;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccess()
+    {
+        return $this->access;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param \Contact\Entity\Contact[] $contact
      */
     public function setContact($contact)
     {
@@ -177,7 +219,7 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return \Contact\Entity\Contact[]
      */
     public function getContact()
     {
@@ -217,34 +259,18 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param string $email
+     * @param string $description
      */
-    public function setEmail($email)
+    public function setDescription($description)
     {
-        $this->email = $email;
+        $this->description = $description;
     }
 
     /**
      * @return string
      */
-    public function getEmail()
+    public function getDescription()
     {
-        return $this->email;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
+        return $this->description;
     }
 }

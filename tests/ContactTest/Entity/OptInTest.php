@@ -131,7 +131,6 @@ class OptInTest extends \PHPUnit_Framework_TestCase
         $this->entityManager->flush();
 
         $this->assertEquals(1, sizeof($contact->getOptIn()));
-
     }
 
     public function testCanAddMultipleOptInToUser()
@@ -151,8 +150,5 @@ class OptInTest extends \PHPUnit_Framework_TestCase
         $this->entityManager->flush();
 
         $this->assertEquals(2, sizeof($contact->getOptIn()));
-
     }
-
-
 }

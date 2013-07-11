@@ -179,12 +179,18 @@ class Contact extends EntityAbstract implements
      * @var int
      */
     private $messenger;
-    //    /**
-    //     * @ORM\OneToMany(targetEntity="\Contact\Entity\ContactAccess", cascade={"persist"}, mappedBy="contact")
-    //     * @Annotation\Exclude()
-    //     * @var \Contact\Entity\ContactAccess[]
-    //     */
-    //    private $access;
+    /**
+     * @ORM\ManyToMany(targetEntity="Contact\Entity\Access", cascade={"persist"},inversedBy="contact")
+     * @ORM\JoinTable(name="contact_access",
+     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+     *    inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Contact\Entity\Access"})
+     * @Annotation\Attributes({"label":"txt-access"})
+     * @var \Contact\Entity\Access[]
+     */
+    private $access;
     //    /**
     //     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contacts", cascade={"all"}, fetch="EXTRA_LAZY")
     //     * @ORM\OrderBy=({"Name" =  "ASC"})
@@ -245,6 +251,7 @@ class Contact extends EntityAbstract implements
         $this->web            = new Collections\ArrayCollection();
         $this->addresses      = new Collections\ArrayCollection();
         $this->emailAddresses = new Collections\ArrayCollection();
+        $this->access         = new Collections\ArrayCollection();
         $this->optIn          = new Collections\ArrayCollection();
     }
 
@@ -450,6 +457,56 @@ class Contact extends EntityAbstract implements
     {
         foreach ($roles as $role) {
             $this->roles->removeElement($role);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $optInCollection
+     */
+    public function addOptIn(Collections\Collection $optInCollection)
+    {
+        foreach ($optInCollection as $optIn) {
+            $optIn->contact = $this;
+            $this->optIn->add($optIn);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $optInCollection
+     */
+    public function removeOptIn(Collections\Collection $optInCollection)
+    {
+        foreach ($optInCollection as $optIn) {
+            $this->optIn->removeElement($optIn);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $accessCollection
+     */
+    public function addAccess(Collections\Collection $accessCollection)
+    {
+        foreach ($accessCollection as $access) {
+            $access->contact = $this;
+            $this->access->add($access);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $accessCollection
+     */
+    public function removeAccess(Collections\Collection $accessCollection)
+    {
+        foreach ($accessCollection as $single) {
+            $this->access->removeElement($single);
         }
     }
 
@@ -849,4 +906,19 @@ class Contact extends EntityAbstract implements
         return $this->optIn;
     }
 
+    /**
+     * @param \Contact\Entity\Access[] $access
+     */
+    public function setAccess($access)
+    {
+        $this->access = $access;
+    }
+
+    /**
+     * @return \Contact\Entity\Access[]
+     */
+    public function getAccess()
+    {
+        return $this->access;
+    }
 }

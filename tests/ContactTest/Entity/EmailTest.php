@@ -45,37 +45,13 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-        $contact = new Contact();
-        $contact->setFirstName('Jan');
-        $contact->setLastName('Dam');
-        $contact->setEmail('email_test@example.com');
-        $contact->setState(1);
-        $contact->setPassword('password');
-        $contact->setMessenger('messenger');
-        $contact->setDateOfBirth(new \DateTime());
-
-        $gender = new \General\Entity\Gender();
-        $gender->setName('name for EmailTest');
-        $gender->setAttention('attention for EmailTest');
-        $gender->setSalutation('salutation for EmailTest');
-
-        $contact->setGender($gender);
-
-        $title = new \General\Entity\Title();
-        $title->setName('name for EmailTest');
-        $title->setAttention('attention for EmailTest');
-        $title->setSalutation('salutation for EmailTest');
-
-        $contact->setTitle($title);
-
-
-
+        $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
 
         $this->emailData = array(
             'contact' => $contact,
-            'email' => 'example@example.com');
+            'email'   => 'example@example.com');
 
         $this->email = new Email();
     }
@@ -143,6 +119,4 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotNull($this->email->getResourceId());
     }
-
-
 }
