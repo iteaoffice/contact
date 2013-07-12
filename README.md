@@ -1,6 +1,10 @@
 contact
 =======
 
+**Current Build Status**
+
+![Build Status](http://ci.debranova.org/build-status/image/2)
+
 DebraNova Contact repository
 
 Pdepend results
