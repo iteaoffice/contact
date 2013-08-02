@@ -1,9 +1,12 @@
 {
     "name": "debranova/contact",
-    "type": "module",
+    "type": "library",
     "description": "General code for Debranova contacts",
     "keywords": ["contact"],
     "homepage": "http://debranova.org",
+    "support": {
+        "email": "ticket@itea2.org"
+    },
     "authors": [
         {
             "name": "Johan van der Heide",
