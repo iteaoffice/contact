@@ -21,8 +21,8 @@
     "require": {
         "php": ">=5.3.23",
         "zendframework/zendframework": "2.2.*",
-        "debranova/general": "dev-master",
-        "debranova/project": "dev-master",
+        "debranova/general": "dev-develop",
+        "debranova/project": "dev-develop",
         "bjyoungblood/bjy-authorize": "dev-master",
         "zf-commons/zfc-user": "dev-master",
         "doctrine/doctrine-orm-module": "dev-master",
