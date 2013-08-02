@@ -1,8 +1,8 @@
 {
     "name": "debranova/contact",
-    "type": "library",
+    "type": "module",
     "description": "General code for Debranova contacts",
-    "keywords": ["project"],
+    "keywords": ["contact"],
     "homepage": "http://debranova.org",
     "authors": [
         {
@@ -33,12 +33,14 @@
     },
     "autoload": {
         "psr-0": {
-            "Contact\\": "src/"
+            "Contact\\": "src/",
+            "ContactTest\\": "tests/"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "1.0.x",
+            "dev-develop": "1.0.x-dev"
         }
     }
 }
