@@ -3,10 +3,17 @@
     "type": "library",
     "description": "General code for Debranova contacts",
     "keywords": ["contact"],
+    "license": "proprietary",
     "homepage": "http://debranova.org",
     "support": {
         "email": "ticket@itea2.org"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages.debranova.org"
+        }
+    ],
     "authors": [
         {
             "name": "Johan van der Heide",
