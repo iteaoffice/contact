@@ -240,13 +240,19 @@ class Contact extends EntityAbstract implements
      * @var \Contact\Entity\OptIn[]
      */
     private $optIn;
+    /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Project[]
+     */
+    private $project;
 
     /**
      * Class constructor
      */
     public function __construct()
     {
-        $this->projects       = new Collections\ArrayCollection();
+        $this->project        = new Collections\ArrayCollection();
         $this->cv             = new Collections\ArrayCollection();
         $this->web            = new Collections\ArrayCollection();
         $this->addresses      = new Collections\ArrayCollection();
@@ -372,7 +378,6 @@ class Contact extends EntityAbstract implements
         }
 
         return $this->inputFilter;
-
     }
 
     /**
@@ -383,7 +388,7 @@ class Contact extends EntityAbstract implements
     public function getArrayCopy()
     {
         return array(
-            'projects'  => $this->projects,
+            'project'  => $this->project,
             'addresses' => $this->addresses,
             'web'       => $this->web,
             'cv'        => $this->cv,
@@ -795,19 +800,19 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Doctrine\Common\Collections\ArrayCollection $projects
+     * @param \Doctrine\Common\Collections\ArrayCollection $project
      */
-    public function setProjects($projects)
+    public function setProject($project)
     {
-        $this->projects = $projects;
+        $this->project = $project;
     }
 
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function getProjects()
+    public function getProject()
     {
-        return $this->projects;
+        return $this->project;
     }
 
     /**
