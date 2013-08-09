@@ -246,6 +246,12 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Project[]
      */
     private $project;
+    /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Version", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Project[]
+     */
+    private $projectVersion;
 
     /**
      * Class constructor
@@ -253,6 +259,7 @@ class Contact extends EntityAbstract implements
     public function __construct()
     {
         $this->project        = new Collections\ArrayCollection();
+        $this->projectVersion = new Collections\ArrayCollection();
         $this->cv             = new Collections\ArrayCollection();
         $this->web            = new Collections\ArrayCollection();
         $this->addresses      = new Collections\ArrayCollection();
@@ -388,7 +395,7 @@ class Contact extends EntityAbstract implements
     public function getArrayCopy()
     {
         return array(
-            'project'  => $this->project,
+            'project'   => $this->project,
             'addresses' => $this->addresses,
             'web'       => $this->web,
             'cv'        => $this->cv,
