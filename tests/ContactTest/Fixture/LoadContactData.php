@@ -16,6 +16,7 @@ class LoadContactData extends AbstractFixture implements DependentFixtureInterfa
     {
         $contact = new \Contact\Entity\Contact();
         $contact->setFirstName('Jan');
+        $contact->setMiddleName('van der');
         $contact->setLastName('Dam');
         $contact->setEmail('test@example.com');
         $contact->setState(1);

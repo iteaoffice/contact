@@ -90,12 +90,12 @@ class Contact extends EntityAbstract implements
      * @var string
      */
     private $lastName;
-    /**
-     * @ORM\Column(type="smallint",nullable=false)
-     * @Annotation\Exclude()
-     * @var int
-     */
-    private $state;
+//    /**
+//     * @ORM\Column(type="smallint",nullable=false)
+//     * @Annotation\Exclude()
+//     * @var int
+//     */
+//    private $state;
     /**
      * @ORM\Column(name="email",type="string",length=60,nullable=false, unique=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -300,7 +300,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return implode(' ', array($this->firstName, $this->middleName, $this->lastName));
+        return trim(implode(' ', array($this->firstName, $this->middleName, $this->lastName)));
     }
 
     /**
