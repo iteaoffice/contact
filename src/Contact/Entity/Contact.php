@@ -191,19 +191,19 @@ class Contact extends EntityAbstract implements
      * @var \Contact\Entity\Access[]
      */
     private $access;
-    //    /**
-    //     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contacts", cascade={"all"}, fetch="EXTRA_LAZY")
-    //     * @ORM\OrderBy=({"Name" =  "ASC"})
-    //     * @ORM\JoinTable(name="admin_user_role",
-    //     *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
-    //     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
-    //     * )
-    //     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-    //     * @Annotation\Options({"target_class":"Admin\Entity\Role"})
-    //     * @Annotation\Attributes({"label":"txt-roles"})
-    //     * @var \Admin\Entity\Role[]
-    //     */
-    //    private $roles;
+    /**
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contacts", cascade={"all"}, fetch="EXTRA_LAZY")
+     * @ORM\OrderBy=({"Name" =  "ASC"})
+     * @ORM\JoinTable(name="admin_user_role",
+     *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Admin\Entity\Role"})
+     * @Annotation\Attributes({"label":"txt-roles"})
+     * @var \Admin\Entity\Role[]
+     */
+    private $roles;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Email", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
