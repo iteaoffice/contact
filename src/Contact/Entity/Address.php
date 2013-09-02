@@ -60,7 +60,7 @@ class Address extends EntityAbstract
      */
     private $city;
     /**
-     * @ORM\ManyToOne(targetEntity="AddressType", cascade={"persist"}, inversedBy="addresses")
+     * @ORM\ManyToOne(targetEntity="AddressType", cascade={"persist"}, inversedBy="address")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false)
      * })
@@ -85,7 +85,7 @@ class Address extends EntityAbstract
      */
     private $lastUpdate;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="addresses")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="address")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
@@ -94,7 +94,7 @@ class Address extends EntityAbstract
      */
     private $contact;
     /**
-     * @ORM\ManyToOne(targetEntity="General\Entity\Country", cascade={"persist"}, inversedBy="addresses")
+     * @ORM\ManyToOne(targetEntity="General\Entity\Country", cascade={"persist"}, inversedBy="address")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id", nullable=false)
      * })
@@ -235,7 +235,6 @@ class Address extends EntityAbstract
         }
 
         return $this->inputFilter;
-
     }
 
     /**

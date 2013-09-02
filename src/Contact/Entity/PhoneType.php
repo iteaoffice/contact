@@ -9,49 +9,42 @@
  */
 namespace Contact\Entity;
 
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Domain
+ * Phone
  *
- * @ORM\Table(name="contact_idea")
+ * @ORM\Table(name="phone_type")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
- * @Annotation\Name("contact_idea")
+ * @Annotation\Name("phone_type")
  *
  * @category    Contact
  * @package     Entity
  */
-class Idea
+class PhoneType
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="contact_idea_id", type="integer", nullable=false)
+     * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @var \Contact
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Contact")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * })
+     * @ORM\Column(name="type", type="string", length=20, nullable=false)
      */
-    private $contact;
-
-    /**
-     * @var \Idea
-     *
-     * @ORM\ManyToOne(targetEntity="Idea")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="idea_id", referencedColumnName="idea_id")
-     * })
-     */
-    private $idea;
+    private $type;
 }

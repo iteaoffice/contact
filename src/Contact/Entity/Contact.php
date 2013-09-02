@@ -209,7 +209,7 @@ class Contact extends EntityAbstract implements
      * @Annotation\Exclude()
      * @var \Contact\Entity\Email[]
      */
-    private $emailAddresses;
+    private $emailAddress;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Cv", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -221,7 +221,7 @@ class Contact extends EntityAbstract implements
      * @Annotation\Exclude()
      * @var \Contact\Entity\CV[]
      */
-    private $addresses;
+    private $address;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Web", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -252,6 +252,69 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Project[]
      */
     private $projectVersion;
+    /**
+     * @ORM\OneToMany(targetEntity="\Program\Entity\Dnd", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Project[]
+     */
+    private $dnd;
+    /**
+     * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Project[]
+     */
+    private $nda;
+    /**
+     * @ORM\OneToMany(targetEntity="\Program\Entity\ProgramDoa", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Program\Entity\ProgramDoa[]
+     */
+    private $programDoa;
+    /**
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\ContactOrganisation[]
+     */
+    private $contactOrganisation;
+    /**
+     * @ORM\ManyToMany(targetEntity="Program\Entity\Domain", cascade={"persist"}, inversedBy="contact")
+     * @ORM\JoinTable(name="contact_domain",
+     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+     *    inverseJoinColumns={@ORM\JoinColumn(name="domain_id", referencedColumnName="domain_id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Program\Entity\Domain"})
+     * @Annotation\Attributes({"label":"txt-domain"})
+     * @var \Program\Entity\Domain[]
+     */
+    private $domain;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Exhibition\Entity\Idea", cascade={"persist"},inversedBy="contact")
+     * @ORM\JoinTable(name="contact_idea",
+     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+     *    inverseJoinColumns={@ORM\JoinColumn(name="idea_id", referencedColumnName="idea_id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Exhibition\Entity\Idea"})
+     * @Annotation\Attributes({"label":"txt-idea"})
+     * @var \Event\Entity\Idea[]
+     * @todo
+     * private $idea;
+     */
+    /**
+     * @ORM\ManyToMany(targetEntity="Program\Entity\Technology", cascade={"persist"}, inversedBy="contact")
+     * @ORM\JoinTable(name="contact_technology",
+     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
+     *    inverseJoinColumns={@ORM\JoinColumn(name="technology_id", referencedColumnName="technology_id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Program\Entity\Technology"})
+     * @Annotation\Attributes({"label":"txt-technology"})
+     * @var \Program\Entity\Technology[]
+     */
+    private $technology;
+
 
     /**
      * Class constructor
@@ -262,10 +325,17 @@ class Contact extends EntityAbstract implements
         $this->projectVersion = new Collections\ArrayCollection();
         $this->cv             = new Collections\ArrayCollection();
         $this->web            = new Collections\ArrayCollection();
-        $this->addresses      = new Collections\ArrayCollection();
-        $this->emailAddresses = new Collections\ArrayCollection();
+        $this->address        = new Collections\ArrayCollection();
+        $this->emailAddress   = new Collections\ArrayCollection();
         $this->access         = new Collections\ArrayCollection();
         $this->optIn          = new Collections\ArrayCollection();
+        $this->domain         = new Collections\ArrayCollection();
+        $this->technology     = new Collections\ArrayCollection();
+        $this->dnd            = new Collections\ArrayCollection();
+        $this->nda            = new Collections\ArrayCollection();
+        $this->programDoa     = new Collections\ArrayCollection();
+        $this->domain         = new Collections\ArrayCollection();
+        $this->technology     = new Collections\ArrayCollection();
     }
 
     /**
@@ -361,6 +431,29 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
+                        'name'       => 'email',
+                        'required'   => true,
+                        'filters'    => array(
+                            array('name' => 'StripTags'),
+                            array('name' => 'StringTrim'),
+                        ),
+                        'validators' => array(
+                            array(
+                                'name'    => 'StringLength',
+                                'options' => array(
+                                    'encoding' => 'UTF-8',
+                                    'min'      => 1,
+                                    'max'      => 100,
+                                ),
+                            ),
+                        ),
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
                         'name'       => 'label',
                         'required'   => true,
                         'filters'    => array(
@@ -381,6 +474,33 @@ class Contact extends EntityAbstract implements
                 )
             );
 
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'address',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'emailAddress',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'roles',
+                        'required' => false,
+                    )
+                )
+            );
+
             $this->inputFilter = $inputFilter;
         }
 
@@ -395,14 +515,24 @@ class Contact extends EntityAbstract implements
     public function getArrayCopy()
     {
         return array(
-            'project'   => $this->project,
-            'addresses' => $this->addresses,
-            'web'       => $this->web,
-            'cv'        => $this->cv,
-            'email'     => $this->email,
-//            'roles' => $this->roles
+            'project'        => $this->project,
+            'projectVersion' => $this->projectVersion,
+            'address'        => $this->address,
+            'emailAddress'   => $this->emailAddress,
+            'access'         => $this->access,
+            'optIn'          => $this->optIn,
+            'web'            => $this->web,
+            'domain'         => $this->domain,
+            'technology'     => $this->technology,
+            'cv'             => $this->cv,
+            'email'          => $this->email,
+            'roles'          => $this->roles,
+            'dnd'            => $this->dnd,
+            'nda'            => $this->nda,
+            'programDoa'     => $this->programDoa,
         );
     }
+
 
     public function populate()
     {
@@ -932,5 +1062,85 @@ class Contact extends EntityAbstract implements
     public function getAccess()
     {
         return $this->access;
+    }
+
+    /**
+     * @param \Project\Entity\Project[] $dnd
+     */
+    public function setDnd($dnd)
+    {
+        $this->dnd = $dnd;
+    }
+
+    /**
+     * @return \Project\Entity\Project[]
+     */
+    public function getDnd()
+    {
+        return $this->dnd;
+    }
+
+    /**
+     * @param \Project\Entity\Project[] $nda
+     */
+    public function setNda($nda)
+    {
+        $this->nda = $nda;
+    }
+
+    /**
+     * @return \Project\Entity\Project[]
+     */
+    public function getNda()
+    {
+        return $this->nda;
+    }
+
+    /**
+     * @param \Program\Entity\ProgramDoa[] $programDoa
+     */
+    public function setProgramDoa($programDoa)
+    {
+        $this->programDoa = $programDoa;
+    }
+
+    /**
+     * @return \Program\Entity\ProgramDoa[]
+     */
+    public function getProgramDoa()
+    {
+        return $this->programDoa;
+    }
+
+    /**
+     * @param \Project\Entity\Project[] $projectVersion
+     */
+    public function setProjectVersion($projectVersion)
+    {
+        $this->projectVersion = $projectVersion;
+    }
+
+    /**
+     * @return \Project\Entity\Project[]
+     */
+    public function getProjectVersion()
+    {
+        return $this->projectVersion;
+    }
+
+    /**
+     * @param \Program\Entity\Domain[] $domain
+     */
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
+    }
+
+    /**
+     * @return \Program\Entity\Domain[]
+     */
+    public function getDomain()
+    {
+        return $this->domain;
     }
 }

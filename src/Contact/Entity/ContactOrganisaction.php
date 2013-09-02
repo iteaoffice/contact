@@ -20,55 +20,46 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Domain
+ * Organisation
  *
- * @ORM\Table(name="contact_note")
+ * @ORM\Table(name="contact_organisation")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
- * @Annotation\Name("contact_note")
+ * @Annotation\Name("contact_organisation")
  *
  * @category    Contact
  * @package     Entity
  */
-class Note
+class ContactOrganisation
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="note_id", type="integer", nullable=false)
+     * @ORM\Column(name="contact_organisation_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
     /**
+     * @ORM\Column(name="branch", type="string", length=40, nullable=true)
      * @var string
-     *
-     * @ORM\Column(name="note", type="string", length=255, nullable=true)
      */
-    private $note;
-
+    private $branch;
     /**
-     * @var string
-     *
-     * @ORM\Column(name="source", type="string", length=32, nullable=true)
-     */
-    private $source;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date_created", type="datetime", nullable=true)
-     */
-    private $dateCreated;
-
-    /**
-     * @var \Contact
-     *
-     * @ORM\ManyToOne(targetEntity="Contact")
+     * @ORM\OneToOne(targetEntity="Contact\Entity\Contact",  cascade={"persist"}, inversedBy="contactOrganisation")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
+     * @var \Contact\Entity\Contact[]
      */
     private $contact;
+    /**
+     * @ORM\OneToOne(targetEntity="Organisation",  cascade={"persist"}, inversedBy="contactOrganisation")
+     * @ORM\JoinColumns({
+     * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id")
+     * })
+     * @var Organisation
+     * @todo
+     * private $organisation;
+     */
 }

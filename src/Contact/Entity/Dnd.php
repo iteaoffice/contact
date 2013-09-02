@@ -58,30 +58,33 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      */
     private $size;
     /**
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\DndObject", cascade={"persist"}, mappedBy="dnd")
+     * @Annotation\Exclude()
+     * @var \Content\Entity\DndObject
+     */
+    private $object;
+    /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="dnd")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @var \Contact\Entity\Contact
      */
-    //    private $contact;
+    private $contact;
     /**
-     * @var \Contenttype
-     *
-     * @ORM\ManyToOne(targetEntity="Contenttype")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id")
-     * })
+     * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade={"persist"}, inversedBy="contactDnd")
+     * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\File")
+     * @Annotation\Options({"label":"txt-dnd-file"})
+     * @var \General\Entity\ContentType
      */
-    //    private $contenttype;
+    private $contentType;
     /**
-     * @var \Program
-     *
-     * @ORM\ManyToOne(targetEntity="Program")
+     * @ORM\ManyToOne(targetEntity="Program\Entity\Program", cascade="persist", inversedBy="contactDnd")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="program_id", referencedColumnName="program_id")
      * })
+     * @var \Program\Entity\Program
      */
-    //    private $program;
-
+    private $program;
 }

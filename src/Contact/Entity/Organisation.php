@@ -9,17 +9,23 @@
  */
 namespace Contact\Entity;
 
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
+use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * Organisation
+ * Entity for the Contact
  *
- * @ORM\Table(name="contact_organisation")
+ * @ORM\Table(name="organisation")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
- * @Annotation\Name("contact_organisation")
+ * @Annotation\Name("organisation")
  *
  * @category    Contact
  * @package     Entity
@@ -29,36 +35,58 @@ class Organisation
     /**
      * @var integer
      *
-     * @ORM\Column(name="contact_organisation_id", type="integer", nullable=false)
+     * @ORM\Column(name="organisation_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
     /**
+     * @ORM\Column(name="organisation", type="string", length=60, nullable=false)
      * @var string
-     *
-     * @ORM\Column(name="branch", type="string", length=40, nullable=true)
-     */
-    private $branch;
-
-    /**
-     * @var \Contact
-     *
-     * @ORM\ManyToOne(targetEntity="Contact")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * })
-     */
-    private $contact;
-
-    /**
-     * @var \Organisation
-     *
-     * @ORM\ManyToOne(targetEntity="Organisation")
-     * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id")
-     * })
      */
     private $organisation;
+    /**
+     * @ORM\Column(name="date_created", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="create")
+     * @var \DateTime
+     */
+    private $dateCreated;
+
+    /**
+     * @ORM\Column(name="date_updated", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="update")
+     * @var \DateTime
+     */
+    private $dateUpdated;
+    /**
+     * @ORM\ManyToOne(targetEntity="General\Entity\Country", cascade={"persist"}, inversedBy="organisation")
+     * @ORM\JoinColumns({
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id")
+     * })
+     * @var \General\Entity\Country
+     */
+    private $country;
+    /**
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\OrganisationType", cascade={"persist"}, inversedBy="organisation")
+     * @ORM\JoinColumns({
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
+     * })
+     * @var \Contact\Entity\OrganisationType
+     */
+    private $type;
+    /**
+     * @ORM\OneToMany(targetEntity="\Program\Entity\ProgramDoa", cascade={"persist"}, mappedBy="organisation")
+     * @Annotation\Exclude()
+     * @var \Program\Entity\ProgramDoa[]
+     */
+    private $programDoa;
+
+    /**
+     * Class constructor
+     */
+    public function __construct()
+    {
+        $this->call       = new Collections\ArrayCollection();
+        $this->programDoa = new Collections\ArrayCollection();
+    }
 }

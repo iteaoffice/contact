@@ -42,14 +42,14 @@ class AddressType extends EntityAbstract
      * @Annotation\Exclude()
      * @var \Contact\Entity\Address[]
      */
-    private $addresses;
+    private $address;
 
     /**
      * Class constructor
      */
     public function __construct()
     {
-        $this->addresses = new Collections\ArrayCollection();
+        $this->address = new Collections\ArrayCollection();
     }
 
     /**
@@ -136,7 +136,6 @@ class AddressType extends EntityAbstract
         }
 
         return $this->inputFilter;
-
     }
 
     /**
@@ -173,19 +172,19 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Address[] $addresses
+     * @param \Contact\Entity\Address[] $address
      */
-    public function setAddresses($addresses)
+    public function setAddress($address)
     {
-        $this->addresses = $addresses;
+        $this->address = $address;
     }
 
     /**
      * @return \Contact\Entity\Address[]
      */
-    public function getAddresses()
+    public function getAddress()
     {
-        return $this->addresses;
+        return $this->address;
     }
 
     /**
@@ -203,5 +202,4 @@ class AddressType extends EntityAbstract
     {
         return $this->type;
     }
-
 }

@@ -65,7 +65,7 @@ class Email extends EntityAbstract implements ResourceInterface
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="emailAddresses")
+     * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="emailAddress")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })

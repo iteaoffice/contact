@@ -9,9 +9,15 @@
  */
 namespace Contact\Entity;
 
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Domain
@@ -33,7 +39,7 @@ class Photo
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $photoId;
+    private $id;
 
     /**
      * @var string
@@ -61,7 +67,7 @@ class Photo
      *
      * @ORM\Column(name="contenttype", type="string", length=20, nullable=true)
      */
-    private $contenttype;
+    private $contentType;
 
     /**
      * @var string

@@ -51,14 +51,12 @@ class Community
      * })
      */
     private $contact;
-
     /**
-     * @var \ContactCommunityType
-     *
-     * @ORM\ManyToOne(targetEntity="ContactCommunityType")
+     * @ORM\ManyToOne(targetEntity="General\Entity\CommunityType", inversedBy="community")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
      * })
+     * @var \General\Entity\CommunityType
      */
     private $type;
 }
