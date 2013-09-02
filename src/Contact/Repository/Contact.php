@@ -30,7 +30,7 @@ class Contact extends EntityRepository
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
         $queryBuilder->from('Contact\Entity\Contact', 'c');
-        $queryBuilder->leftJoin('c.emailAddresses', 'e');
+        $queryBuilder->leftJoin('c.emailAddress', 'e');
 
         $queryBuilder->orWhere('c.email = ?1');
         $queryBuilder->orWhere('e.email = ?2');

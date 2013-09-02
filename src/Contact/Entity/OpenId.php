@@ -34,21 +34,17 @@ class OpenId
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
     /**
-     * @var string
-     *
      * @ORM\Column(name="identity", type="string", length=255, nullable=false)
+     * @var string
      */
     private $identity;
-
     /**
-     * @var \Contact
-     *
-     * @ORM\ManyToOne(targetEntity="Contact")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", inversedBy="openId")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
+     * @var \Contact\Entity\Contact
      */
     private $contact;
 }

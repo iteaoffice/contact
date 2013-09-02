@@ -271,6 +271,12 @@ class Contact extends EntityAbstract implements
      */
     private $programDoa;
     /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\OpenId", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\OpenId[]
+     */
+    private $openId;
+    /**
      * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\ContactOrganisation[]
@@ -335,6 +341,7 @@ class Contact extends EntityAbstract implements
         $this->programDoa     = new Collections\ArrayCollection();
         $this->domain         = new Collections\ArrayCollection();
         $this->technology     = new Collections\ArrayCollection();
+        $this->openId         = new Collections\ArrayCollection();
     }
 
     /**
@@ -529,6 +536,7 @@ class Contact extends EntityAbstract implements
             'dnd'            => $this->dnd,
             'nda'            => $this->nda,
             'programDoa'     => $this->programDoa,
+            'openId'         => $this->openId,
         );
     }
 
@@ -951,19 +959,19 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\CV[] $addresses
+     * @param \Contact\Entity\CV[] $address
      */
-    public function setAddresses($addresses)
+    public function setAddress($address)
     {
-        $this->addresses = $addresses;
+        $this->address = $address;
     }
 
     /**
      * @return \Contact\Entity\CV[]
      */
-    public function getAddresses()
+    public function getAddress()
     {
-        return $this->addresses;
+        return $this->address;
     }
 
     /**
@@ -1015,19 +1023,19 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Email[] $emailAddresses
+     * @param \Contact\Entity\Email[] $emailAddress
      */
-    public function setEmailAddresses($emailAddresses)
+    public function setEmailAddress($emailAddress)
     {
-        $this->emailAddresses = $emailAddresses;
+        $this->emailAddress = $emailAddress;
     }
 
     /**
      * @return \Contact\Entity\Email[]
      */
-    public function getEmailAddresses()
+    public function getEmailAddress()
     {
-        return $this->emailAddresses;
+        return $this->emailAddress;
     }
 
     /**

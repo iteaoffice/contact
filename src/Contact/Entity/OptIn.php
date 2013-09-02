@@ -15,7 +15,7 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -172,11 +172,11 @@ class OptIn extends EntityAbstract
     /**
      * New function needed to make the hydrator happy
      *
-     * @param Collections\Collection $contact
+     * @param Collections\Collection $collection
      */
-    public function addContact(Collections\Collection $contact)
+    public function addContact(Collections\Collection $collection)
     {
-        foreach ($contact as $singleContact) {
+        foreach ($collection as $singleContact) {
             $singleContact->optIn = $this;
             $this->contact->add($singleContact);
         }
@@ -187,9 +187,9 @@ class OptIn extends EntityAbstract
      *
      * @param Collections\Collection $contact
      */
-    public function removeContact(Collections\Collection $contact)
+    public function removeContact(Collections\Collection $collection)
     {
-        foreach ($contact as $singleContact) {
+        foreach ($collection as $singleContact) {
             $this->contact->removeElement($singleContact);
         }
     }

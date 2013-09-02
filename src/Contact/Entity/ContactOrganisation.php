@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @category    Contact
  * @package     Entity
  */
-class ContactOrganisaction
+class ContactOrganisation
 {
     /**
      * @var integer
