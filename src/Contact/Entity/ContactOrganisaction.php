@@ -9,15 +9,9 @@
  */
 namespace Contact\Entity;
 
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
-use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Organisation
@@ -30,7 +24,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @category    Contact
  * @package     Entity
  */
-class ContactOrganisation
+class ContactOrganisaction
 {
     /**
      * @var integer

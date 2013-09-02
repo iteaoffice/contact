@@ -315,7 +315,6 @@ class Contact extends EntityAbstract implements
      */
     private $technology;
 
-
     /**
      * Class constructor
      */
@@ -532,7 +531,6 @@ class Contact extends EntityAbstract implements
             'programDoa'     => $this->programDoa,
         );
     }
-
 
     public function populate()
     {
