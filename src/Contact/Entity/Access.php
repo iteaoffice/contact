@@ -10,11 +10,9 @@
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
-use Zend\Validator\EmailAddress;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;

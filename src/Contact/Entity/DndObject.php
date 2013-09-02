@@ -1,14 +1,26 @@
 <?php
+/**
+ * Debranova copyright message placeholder
+ *
+ * @category    Contact
+ * @package     Entity
+ * @author      Johan van der Heide <info@japaveh.nl>
+ * @copyright   Copyright (c) 2004-2013 Debranova
+ */
+namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ContactDndObject
+ * Entity for a DND
  *
- * @ORM\Table(name="contact_dnd_object")
+ * @ORM\Table(name="contact_dnd")
  * @ORM\Entity
+ *
+ * @category    Contact
+ * @package     Entity
  */
-class ContactDndObject
+class DndObject //extends EntityAbstract implements ResourceInterface
 {
     /**
      * @var integer
@@ -17,7 +29,7 @@ class ContactDndObject
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $objectId;
+    private $id;
 
     /**
      * @var string
@@ -35,5 +47,4 @@ class ContactDndObject
      * })
      */
     private $dnd;
-
 }

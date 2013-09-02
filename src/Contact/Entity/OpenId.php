@@ -1,14 +1,30 @@
 <?php
+/**
+ * Debranova copyright message placeholder
+ *
+ * @category    Contact
+ * @package     Entity
+ * @author      Johan van der Heide <info@japaveh.nl>
+ * @copyright   Copyright (c) 2004-2013 Debranova
+ */
+namespace Contact\Entity;
+
+use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ContactOpenid
+ * OpenId
  *
  * @ORM\Table(name="contact_openid")
  * @ORM\Entity
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Name("contact_openid")
+ *
+ * @category    Contact
+ * @package     Entity
  */
-class ContactOpenid
+class OpenId
 {
     /**
      * @var integer
@@ -17,7 +33,7 @@ class ContactOpenid
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $openidId;
+    private $id;
 
     /**
      * @var string
@@ -35,5 +51,4 @@ class ContactOpenid
      * })
      */
     private $contact;
-
 }
