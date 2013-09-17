@@ -46,9 +46,9 @@ class Web extends EntityAbstract implements ResourceInterface
      */
     private $web;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", cascade="persist", inversedBy="web")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade="persist", inversedBy="web")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @Annotation\Exclude()
      * @var \Contact\Entity\Contact

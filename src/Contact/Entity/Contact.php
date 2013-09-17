@@ -304,7 +304,7 @@ class Contact extends EntityAbstract implements
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
      * @Annotation\Options({"target_class":"Exhibition\Entity\Idea"})
      * @Annotation\Attributes({"label":"txt-idea"})
-     * @var \Event\Entity\Idea[]
+     * \Event\Entity\Idea[]
      * @todo
      * private $idea;
      */
@@ -320,28 +320,71 @@ class Contact extends EntityAbstract implements
      * @var \Program\Entity\Technology[]
      */
     private $technology;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\Log", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Organisation\Entity\Log[]
+     */
+    private $organisationLog;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Affiliation[]
+     */
+    private $affiliation;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Log", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Log[]
+     */
+    private $affiliationLog;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Financial", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Financial[]
+     */
+    private $financial;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Description", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Description[]
+     */
+    private $affiliationDescription;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Version", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Version[]
+     */
+    private $affiliationVersion;
 
     /**
      * Class constructor
      */
     public function __construct()
     {
-        $this->project        = new Collections\ArrayCollection();
-        $this->projectVersion = new Collections\ArrayCollection();
-        $this->cv             = new Collections\ArrayCollection();
-        $this->web            = new Collections\ArrayCollection();
-        $this->address        = new Collections\ArrayCollection();
-        $this->emailAddress   = new Collections\ArrayCollection();
-        $this->access         = new Collections\ArrayCollection();
-        $this->optIn          = new Collections\ArrayCollection();
-        $this->domain         = new Collections\ArrayCollection();
-        $this->technology     = new Collections\ArrayCollection();
-        $this->dnd            = new Collections\ArrayCollection();
-        $this->nda            = new Collections\ArrayCollection();
-        $this->programDoa     = new Collections\ArrayCollection();
-        $this->domain         = new Collections\ArrayCollection();
-        $this->technology     = new Collections\ArrayCollection();
-        $this->openId         = new Collections\ArrayCollection();
+        $this->project                = new Collections\ArrayCollection();
+        $this->projectVersion         = new Collections\ArrayCollection();
+        $this->cv                     = new Collections\ArrayCollection();
+        $this->web                    = new Collections\ArrayCollection();
+        $this->roles                  = new Collections\ArrayCollection();
+        $this->address                = new Collections\ArrayCollection();
+        $this->emailAddress           = new Collections\ArrayCollection();
+        $this->access                 = new Collections\ArrayCollection();
+        $this->optIn                  = new Collections\ArrayCollection();
+        $this->domain                 = new Collections\ArrayCollection();
+        $this->technology             = new Collections\ArrayCollection();
+        $this->dnd                    = new Collections\ArrayCollection();
+        $this->nda                    = new Collections\ArrayCollection();
+        $this->programDoa             = new Collections\ArrayCollection();
+        $this->domain                 = new Collections\ArrayCollection();
+        $this->technology             = new Collections\ArrayCollection();
+        $this->openId                 = new Collections\ArrayCollection();
+        $this->organisationLog        = new Collections\ArrayCollection();
+        $this->affiliationLog         = new Collections\ArrayCollection();
+        $this->affiliationDescription = new Collections\ArrayCollection();
+        $this->affiliation            = new Collections\ArrayCollection();
+        $this->financial              = new Collections\ArrayCollection();
     }
 
     /**
@@ -591,7 +634,6 @@ class Contact extends EntityAbstract implements
     public function addRoles(Collections\Collection $roles)
     {
         foreach ($roles as $role) {
-            $role->user = $this;
             $this->roles->add($role);
         }
     }
@@ -1148,5 +1190,149 @@ class Contact extends EntityAbstract implements
     public function getDomain()
     {
         return $this->domain;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Log[] $affiliationLog
+     */
+    public function setAffiliationLog($affiliationLog)
+    {
+        $this->affiliationLog = $affiliationLog;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Log[]
+     */
+    public function getAffiliationLog()
+    {
+        return $this->affiliationLog;
+    }
+
+    /**
+     * @param \Contact\Entity\ContactOrganisation[] $contactOrganisation
+     */
+    public function setContactOrganisation($contactOrganisation)
+    {
+        $this->contactOrganisation = $contactOrganisation;
+    }
+
+    /**
+     * @return \Contact\Entity\ContactOrganisation[]
+     */
+    public function getContactOrganisation()
+    {
+        return $this->contactOrganisation;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Financial[] $financial
+     */
+    public function setFinancial($financial)
+    {
+        $this->financial = $financial;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Financial[]
+     */
+    public function getFinancial()
+    {
+        return $this->financial;
+    }
+
+    /**
+     * @param \Organisation\Entity\Log[] $organisationLog
+     */
+    public function setOrganisationLog($organisationLog)
+    {
+        $this->organisationLog = $organisationLog;
+    }
+
+    /**
+     * @return \Organisation\Entity\Log[]
+     */
+    public function getOrganisationLog()
+    {
+        return $this->organisationLog;
+    }
+
+    /**
+     * @param \Program\Entity\Technology[] $technology
+     */
+    public function setTechnology($technology)
+    {
+        $this->technology = $technology;
+    }
+
+    /**
+     * @return \Program\Entity\Technology[]
+     */
+    public function getTechnology()
+    {
+        return $this->technology;
+    }
+
+    /**
+     * @param \Contact\Entity\OpenId[] $openId
+     */
+    public function setOpenId($openId)
+    {
+        $this->openId = $openId;
+    }
+
+    /**
+     * @return \Contact\Entity\OpenId[]
+     */
+    public function getOpenId()
+    {
+        return $this->openId;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Affiliation[] $affiliation
+     */
+    public function setAffiliation($affiliation)
+    {
+        $this->affiliation = $affiliation;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Affiliation[]
+     */
+    public function getAffiliation()
+    {
+        return $this->affiliation;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Description[] $affiliationDescription
+     */
+    public function setAffiliationDescription($affiliationDescription)
+    {
+        $this->affiliationDescription = $affiliationDescription;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Description[]
+     */
+    public function getAffiliationDescription()
+    {
+        return $this->affiliationDescription;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Version[] $affiliationVersion
+     */
+    public function setAffiliationVersion($affiliationVersion)
+    {
+        $this->affiliationVersion = $affiliationVersion;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Version[]
+     */
+    public function getAffiliationVersion()
+    {
+        return $this->affiliationVersion;
     }
 }

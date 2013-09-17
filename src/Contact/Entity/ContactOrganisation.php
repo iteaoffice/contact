@@ -48,12 +48,11 @@ class ContactOrganisation
      */
     private $contact;
     /**
-     * @ORM\OneToOne(targetEntity="Organisation",  cascade={"persist"}, inversedBy="contactOrganisation")
+     * @ORM\ManyToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"})
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id")
      * })
-     * @var Organisation
-     * @todo
-     * private $organisation;
+     * @var \Organisation\Entity\Organisation
      */
+    private $organisation;
 }
