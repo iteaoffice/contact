@@ -11,6 +11,8 @@ namespace Contact\Service;
 
 use Contact\Entity\Contact;
 
+use Project\Service\ProjectService;
+
 /**
  * ContactService
  *
@@ -24,9 +26,24 @@ use Contact\Entity\Contact;
 class ContactService extends ServiceAbstract
 {
     /**
-     * @var ContactService
+     * @var ProjectService
      */
-    protected $contactService;
+    protected $projectService;
+    /**
+     * @var Contact
+     */
+    protected $contact;
+
+    /** @param int $id
+     *
+     * @return ContactService;
+     */
+    public function setProjectId($id)
+    {
+        $this->setContact($this->findEntityById('contact', $id));
+
+        return $this;
+    }
 
     /**
      * @param $email
@@ -52,6 +69,64 @@ class ContactService extends ServiceAbstract
         $contact   = new Contact();
         $contactId = $contact->decryptHash($hash);
 
-        return $this->getEntityManager()->find($this->getFullEntityName('contact'), $contactId);
+        return $this->findEntityById('contact', $contactId);
+    }
+
+    /**
+     * @return \Project\Service\ProjectService[]
+     */
+    public function findProjects()
+    {
+        return $this->getProjectService()->findProjectByContact($this->getContact());
+    }
+
+    /**
+     * @param Contact $contact
+     *
+     * @return ContactService
+     */
+    private function createServiceElement(Contact $contact)
+    {
+        $contactService = new self();
+        $contactService->setServiceLocator($this->getServiceLocator());
+        $contactService->setContact($contact);
+
+        return $contactService;
+    }
+
+    /**
+     * @param \Contact\Entity\Contact $contact
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
+    }
+
+    /**
+     * @return \Contact\Entity\Contact
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param ProjectService $projectService
+     */
+    public function setProjectService($projectService)
+    {
+        $this->projectService = $projectService;
+    }
+
+    /**
+     * @return ProjectService
+     */
+    public function getProjectService()
+    {
+        if (!$this->projectService instanceof ProjectService) {
+            $this->setProjectService($this->getServiceLocator()->get('project_project_service'));
+        }
+
+        return $this->projectService;
     }
 }

@@ -75,13 +75,20 @@ class Access extends EntityAbstract
      * @var \Contact\Entity\Contact[]
      */
     private $contact;
+    /**
+     * @ORM\ManyToMany(targetEntity="Publication\Entity\Type", cascade={"persist"}, mappedBy="access")
+     * @Annotation\Exclude();
+     * @var \Publication\Entity\Type[]
+     */
+    private $publicationType;
 
     /**
      * Class constructor
      */
     public function __construct()
     {
-        $this->contact = new ArrayCollection();
+        $this->contact         = new ArrayCollection();
+        $this->publicationType = new ArrayCollection();
     }
 
     /**
@@ -270,5 +277,21 @@ class Access extends EntityAbstract
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @param \Publication\Entity\Type[] $publicationType
+     */
+    public function setPublicationType($publicationType)
+    {
+        $this->publicationType = $publicationType;
+    }
+
+    /**
+     * @return \Publication\Entity\Type[]
+     */
+    public function getPublicationType()
+    {
+        return $this->publicationType;
     }
 }

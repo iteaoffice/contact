@@ -8,5 +8,68 @@
  * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
  */
 return array(
-    'router' => array()
+    'router' => array(
+        'routes' => array(
+            'contact_shortcut' => array(
+                'type'     => 'Segment',
+                'priority' => -1000,
+                'options'  => array(
+                    'route'       => 'c/:id',
+                    'constraints' => array(
+                        'id' => '\d+',
+                    ),
+                    'defaults'    => array(
+                        'controller' => 'contact',
+                        'action'     => 'contactRedirect',
+                    ),
+                ),
+            ),
+            'assets'           => array(
+                'type'          => 'Literal',
+                'priority'      => 1000,
+                'options'       => array(
+                    'route'    => '/assets',
+                    'defaults' => array(
+                        'controller' => 'index',
+                        'action'     => 'index',
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes'  => array(
+                    'contact-logo' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => "/contact-logo/[:hash].[:ext]",
+                            'defaults' => array(
+                                'action' => 'display',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            'contact'          => array(
+                'type'          => 'Literal',
+                'priority'      => 1000,
+                'options'       => array(
+                    'route'    => '/contact',
+                    'defaults' => array(
+                        'controller' => 'project',
+                        'action'     => 'index',
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes'  => array(
+                    'photo' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/photo/[:hash].[:ext]',
+                            'defaults' => array(
+                                'action' => 'photo',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    )
 );

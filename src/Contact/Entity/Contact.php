@@ -350,13 +350,40 @@ class Contact extends EntityAbstract implements
      * @var \Affiliation\Entity\Description[]
      */
     private $affiliationDescription;
-
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Affiliation\Entity\Version[]
      */
     private $affiliationVersion;
+    /**
+     * @ORM\OneToMany(targetEntity="Invoice\Entity\Invoice", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Invoice\Entity\Invoice[]
+     */
+    private $invoice;
+    /**
+     * @ORM\OneToMany(targetEntity="Publication\Entity\Publication", cascade={"persist"}, mappedBy="contact")
+     * @var \Publication\Entity\Publication[]
+     */
+    private $publication;
+    /**
+     * @ORM\OneToMany(targetEntity="Publication\Entity\Download", cascade={"persist"}, mappedBy="contact")
+     * @var \Publication\Entity\Download[]
+     */
+    private $publicationDownload;
+    /**
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Photo", cascade={"persist"}, mappedBy="contact")
+     * @var \Contact\Entity\Photo[]
+     */
+    private $photo;
+    /**
+     * @ORM\ManyToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="associate")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Affiliation[]
+     */
+    private $associate;
+
 
     /**
      * Class constructor
@@ -385,6 +412,11 @@ class Contact extends EntityAbstract implements
         $this->affiliationDescription = new Collections\ArrayCollection();
         $this->affiliation            = new Collections\ArrayCollection();
         $this->financial              = new Collections\ArrayCollection();
+        $this->invoice                = new Collections\ArrayCollection();
+        $this->publication            = new Collections\ArrayCollection();
+        $this->publicationDownload    = new Collections\ArrayCollection();
+        $this->photo                  = new Collections\ArrayCollection();
+        $this->associate              = new Collections\ArrayCollection();
     }
 
     /**
@@ -1334,5 +1366,92 @@ class Contact extends EntityAbstract implements
     public function getAffiliationVersion()
     {
         return $this->affiliationVersion;
+    }
+
+    /**
+     * @param \Invoice\Entity\Invoice[] $invoice
+     */
+    public function setInvoice($invoice)
+    {
+        $this->invoice = $invoice;
+    }
+
+    /**
+     * @return \Invoice\Entity\Invoice[]
+     */
+    public function getInvoice()
+    {
+        return $this->invoice;
+    }
+
+    /**
+     * @param \Publication\Entity\Publication[] $publication
+     */
+    public function setPublication($publication)
+    {
+        $this->publication = $publication;
+    }
+
+    /**
+     * @return \Publication\Entity\Publication[]
+     */
+    public function getPublication()
+    {
+        return $this->publication;
+    }
+
+    /**
+     * @param \Publication\Entity\Download[] $publicationDownload
+     */
+    public function setPublicationDownload($publicationDownload)
+    {
+        $this->publicationDownload = $publicationDownload;
+    }
+
+    /**
+     * @return \Publication\Entity\Download[]
+     */
+    public function getPublicationDownload()
+    {
+        return $this->publicationDownload;
+    }
+
+    /**
+     * @param \Contact\Entity\Photo $photo
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+    }
+
+    /**
+     * Find the photo. We need to apply a trick here since the photo has a 1:n relation in the entities to avoid
+     * the eager loading of the BLOB but we know that we only have 1 photo
+     *
+     * @return \Contact\Entity\Photo
+     */
+    public function getPhoto()
+    {
+        if ($this->photo->count() > 0) {
+            return $this->photo[0];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param \Affiliation\Entity\Affiliation[] $associate
+     */
+    public function setAssociate($associate)
+    {
+        $this->associate = $associate;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Affiliation[]
+     */
+    public function getAssociate()
+    {
+        return $this->associate;
     }
 }

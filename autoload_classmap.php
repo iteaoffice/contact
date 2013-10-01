@@ -36,4 +36,13 @@ return array(
   'Contact\Service\ServiceAbstract'             => __DIR__ . '/src/Contact/Service/ServiceAbstract.php',
   'Contact\Service\ServiceInterface'            => __DIR__ . '/src/Contact/Service/ServiceInterface.php',
   'Contact\View\Helper\ContactLink'             => __DIR__ . '/src/Contact/View/Helper/ContactLink.php',
+  'MemberFinancial'                             => __DIR__ . '/src/Member/Entity/Financial.php',
+  'MemberInvoice'                               => __DIR__ . '/src/Member/Entity/Invoice.php',
+  'MemberInvoiceAdvance'                        => __DIR__ . '/src/Member/Entity/InvoiceAdvance.php',
+  'MemberInvoiceCredit'                         => __DIR__ . '/src/Member/Entity/InvoiceCredit.php',
+  'Member'                                      => __DIR__ . '/src/Member/Entity/Member.php',
+  'MemberSubtype'                               => __DIR__ . '/src/Member/Entity/Subtype.php',
+  'MemberType'                                  => __DIR__ . '/src/Member/Entity/Type.php',
+  'MemberTypeImage'                             => __DIR__ . '/src/Member/Entity/TypeImage.php',
+  'MemberTypeLogo'                              => __DIR__ . '/src/Member/Entity/TypeLogo.php',
 );

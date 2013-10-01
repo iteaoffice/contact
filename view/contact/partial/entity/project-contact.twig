@@ -1,0 +1,34 @@
+<h2>{{ contactService.contact.firstname }}</h2>
+
+{{ contactPhoto(contactService.contact) }}
+
+{#href="/shared/profile/edit">Upload your<br />profile picture</a>';#}
+
+
+{#{{ contact.contactOrganisation }}#}
+
+<h2>{{ translate("txt-project-involvement") }}</h2>
+
+{% for projectService in contactService.findProjects() %}
+    {{ projectService.parseFullName }}
+{% endfor %}
+
+
+}
+echo '        </div>';
+echo '        <a href="' . $this->objContact->getContactOrganisation()->getOrganisation()->parseUrl('view') . '">' .
+    $this->objContact->getContactOrganisation()->parseOrganisationWithBranch() . '</a>' .
+'        <br/ >';
+echo '        <a href="' . $this->objectUrl(
+        'project_country',
+        'view',
+        $this->objContact->getContactOrganisation()->getOrganisation()->country_id) . '">' .
+    $this->objContact->getContactOrganisation()->getOrganisation()->getCountry()->country . '</a>' .
+'        <br/ >';
+
+
+if ($this->objContact->hasProfile())
+{
+echo '    <a class="button" href="/shared/profile/view/contact/' .$this->objContact->parseHash() . '">Profile</a>';
+}
+echo '    </div>';

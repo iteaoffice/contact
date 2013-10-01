@@ -12,38 +12,44 @@ use Zend\Stdlib\ArrayUtils;
  * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
  */
 $config = array(
-    'controllers' => array(
+    'controllers'     => array(
         'invokables' => array(
-            'contact' => 'Contact\Controller\ContactController',
+            'contact'         => 'Contact\Controller\ContactController',
             'contact-manager' => 'Contact\Controller\ContactManagerController',
         ),
     ),
-    'view_helpers' => array(
+    'view_helpers'    => array(
         'invokables' => array(
-            'contactLink' => 'Contact\View\Helper\ContactLink',
-            'contactIcon' => 'Contact\View\Helper\ContactIcon',
+            'contactLink'  => 'Contact\View\Helper\ContactLink',
+            'contactIcon'  => 'Contact\View\Helper\ContactIcon',
+            'contactPhoto' => 'Contact\View\Helper\ContactPhoto',
         )
     ),
+    'view_manager'    => array(
+        'template_path_stack' => array(
+            __DIR__ . '/../view'
+        ),
+    ),
     'service_manager' => array(
-        'factories' => array(
+        'factories'  => array(
             'contact-assertion' => 'Contact\Acl\Assertion\Contact',
         ),
         'invokables' => array(
-            'contact_generic_service' => 'Contact\Service\ContactService',
-            'contact_form_service' => 'Contact\Service\FormService',
+            'contact_contact_service' => 'Contact\Service\ContactService',
+            'contact_form_service'    => 'Contact\Service\FormService',
 
         )
     ),
-    'doctrine' => array(
-        'driver' => array(
+    'doctrine'        => array(
+        'driver'       => array(
             'contact_annotation_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => array(
                     __DIR__ . '/../src/Contact/Entity/'
                 )
             ),
-            'orm_default' => array(
-                'class' => 'Doctrine\ORM\Mapping\Driver\DriverChain',
+            'orm_default'               => array(
+                'class'   => 'Doctrine\ORM\Mapping\Driver\DriverChain',
                 'drivers' => array(
                     __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
                 )
@@ -57,7 +63,7 @@ $config = array(
                 )
             ),
         ),
-    )
+    ),
 );
 
 $configFiles = array(
