@@ -67,7 +67,6 @@ class ContactPhoto extends AbstractHelper
             'id'   => $photo->getContact()->getId()
         );
 
-
         $image = sprintf(
             $imageUrl,
             $url($router, $params),

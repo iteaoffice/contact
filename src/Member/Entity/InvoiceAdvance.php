@@ -1,6 +1,13 @@
 <?php
-
-
+/**
+ * Debranova copyright message placeholder
+ *
+ * @category    Member
+ * @package     Entity
+ * @author      Johan van der Heide <info@japaveh.nl>
+ * @copyright   Copyright (c) 2004-2013 Debranova
+ */
+namespace Member\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="member_invoice_advance")
  * @ORM\Entity
  */
-class MemberInvoiceAdvance
+class InvoiceAdvance
 {
     /**
      * @var integer
@@ -47,6 +54,4 @@ class MemberInvoiceAdvance
      * })
      */
     private $member;
-
-
 }

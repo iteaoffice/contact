@@ -384,7 +384,6 @@ class Contact extends EntityAbstract implements
      */
     private $associate;
 
-
     /**
      * Class constructor
      */

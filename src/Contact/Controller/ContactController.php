@@ -15,7 +15,6 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
-use Contact\Entity;
 
 /**
  * @category    Contact
@@ -59,7 +58,6 @@ class ContactController extends AbstractActionController implements ServiceLocat
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public");
 
-
         if (!is_null($contact->getPhoto())) {
 
             $file = stream_get_contents($contact->getPhoto()->getPhoto());
@@ -67,7 +65,7 @@ class ContactController extends AbstractActionController implements ServiceLocat
             $response->getHeaders()
                 ->addHeaderLine('Content-Type: ' .
                 $contact->getPhoto()->getContentType()->getContentType())
-                ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+                ->addHeaderLine('Content-Length: ' . (string) strlen($file));
 
             $response->setContent($file);
 
@@ -78,7 +76,6 @@ class ContactController extends AbstractActionController implements ServiceLocat
             $response->setStatusCode(404);
         }
     }
-
 
     /**
      * Gateway to the Contact Service

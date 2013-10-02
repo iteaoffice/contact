@@ -36,6 +36,7 @@ return array(
   'Contact\Service\ServiceAbstract'             => __DIR__ . '/src/Contact/Service/ServiceAbstract.php',
   'Contact\Service\ServiceInterface'            => __DIR__ . '/src/Contact/Service/ServiceInterface.php',
   'Contact\View\Helper\ContactLink'             => __DIR__ . '/src/Contact/View/Helper/ContactLink.php',
+  'Contact\View\Helper\ContactPhoto'            => __DIR__ . '/src/Contact/View/Helper/ContactPhoto.php',
   'MemberFinancial'                             => __DIR__ . '/src/Member/Entity/Financial.php',
   'MemberInvoice'                               => __DIR__ . '/src/Member/Entity/Invoice.php',
   'MemberInvoiceAdvance'                        => __DIR__ . '/src/Member/Entity/InvoiceAdvance.php',
