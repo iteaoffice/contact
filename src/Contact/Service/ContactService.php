@@ -13,6 +13,8 @@ use Contact\Entity\Contact;
 
 use Project\Service\ProjectService;
 
+use Organisation\Service\OrganisationService;
+
 /**
  * ContactService
  *
@@ -29,6 +31,10 @@ class ContactService extends ServiceAbstract
      * @var ProjectService
      */
     protected $projectService;
+    /**
+     * @var OrganisationService
+     */
+    protected $organisationService;
     /**
      * @var Contact
      */
@@ -71,6 +77,16 @@ class ContactService extends ServiceAbstract
 
         return $this->findEntityById('contact', $contactId);
     }
+
+    /**
+     * @return OrganisationService
+     */
+    public function findOrganisationService()
+    {
+        return $this->getOrganisationService()->setOrganisationId(
+            $this->getContact()->getContactOrganisation()->getOrganisation()->getId());
+    }
+
 
     /**
      * @return \Project\Service\ProjectService[]
@@ -128,5 +144,25 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->projectService;
+    }
+
+    /**
+     * @param OrganisationService $organisationService
+     */
+    public function setOrganisationService($organisationService)
+    {
+        $this->organisationService = $organisationService;
+    }
+
+    /**
+     * @return OrganisationService
+     */
+    public function getOrganisationService()
+    {
+        if (!$this->organisationService instanceof OrganisationService) {
+            $this->setOrganisationService($this->getServiceLocator()->get('organisation_organisation_service'));
+        }
+
+        return $this->organisationService;
     }
 }

@@ -279,7 +279,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\ContactOrganisation[]
+     * @var \Contact\Entity\ContactOrganisation
      */
     private $contactOrganisation;
     /**
@@ -383,6 +383,7 @@ class Contact extends EntityAbstract implements
      * @var \Affiliation\Entity\Affiliation[]
      */
     private $associate;
+
 
     /**
      * Class constructor
@@ -1240,7 +1241,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\ContactOrganisation[] $contactOrganisation
+     * @param \Contact\Entity\ContactOrganisation $contactOrganisation
      */
     public function setContactOrganisation($contactOrganisation)
     {
@@ -1248,7 +1249,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\ContactOrganisation[]
+     * @return \Contact\Entity\ContactOrganisation
      */
     public function getContactOrganisation()
     {

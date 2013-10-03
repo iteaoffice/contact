@@ -1,34 +1,37 @@
-<h2>{{ contactService.contact.firstname }}</h2>
+<h2>{{ contactService.contact }}</h2>
 
 {{ contactPhoto(contactService.contact) }}
 
 {#href="/shared/profile/edit">Upload your<br />profile picture</a>';#}
 
+<h3>{{ translate("txt-organisation") }}</h3>
+{{ organisationLink(
+    contactService.findOrganisationService,'view', 'name',contactService.contact.contactOrganisation.branch
+) }}
+{{ translate("txt-at") }} {{ contactService.contact.contactOrganisation.organisation.country }}
 
-{#{{ contact.contactOrganisation }}#}
+<h3>{{ translate("txt-project-involvement") }}</h3>
 
-<h2>{{ translate("txt-project-involvement") }}</h2>
-
-{% for projectService in contactService.findProjects() %}
-    {{ projectService.parseFullName }}
-{% endfor %}
-
-
-}
-echo '        </div>';
-echo '        <a href="' . $this->objContact->getContactOrganisation()->getOrganisation()->parseUrl('view') . '">' .
-    $this->objContact->getContactOrganisation()->parseOrganisationWithBranch() . '</a>' .
-'        <br/ >';
-echo '        <a href="' . $this->objectUrl(
-        'project_country',
-        'view',
-        $this->objContact->getContactOrganisation()->getOrganisation()->country_id) . '">' .
-    $this->objContact->getContactOrganisation()->getOrganisation()->getCountry()->country . '</a>' .
-'        <br/ >';
+<ul>
+    {% for projectService in contactService.findProjects() %}
+        <li>{{ projectLink(projectService,'view', 'name') }} {{ projectService.project.country }}</li>
+    {% endfor %}
+</ul>
 
 
-if ($this->objContact->hasProfile())
-{
-echo '    <a class="button" href="/shared/profile/view/contact/' .$this->objContact->parseHash() . '">Profile</a>';
-}
-echo '    </div>';
+{#<a href="' . $this->objContact->getContactOrganisation()->getOrganisation()->parseUrl('view') . '">' .#}
+    {#$this->objContact->getContactOrganisation()->parseOrganisationWithBranch() . '</a>' .#}
+{#'        <br/ >';#}
+{#echo '        <a href="' . $this->objectUrl(#}
+        {#'project_country',#}
+        {#'view',#}
+        {#$this->objContact->getContactOrganisation()->getOrganisation()->country_id) . '">' .#}
+    {#$this->objContact->getContactOrganisation()->getOrganisation()->getCountry()->country . '</a>' .#}
+{#'        <br/ >';#}
+
+
+{#if ($this->objContact->hasProfile())#}
+{#{#}
+{#echo '    <a class="button" href="/shared/profile/view/contact/' .$this->objContact->parseHash() . '">Profile</a>';#}
+{#}#}
+{#echo '    </div>';#}

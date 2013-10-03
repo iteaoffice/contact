@@ -44,15 +44,79 @@ class ContactOrganisation
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
-     * @var \Contact\Entity\Contact[]
+     * @var \Contact\Entity\Contact
      */
     private $contact;
     /**
-     * @ORM\ManyToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"})
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id")
      * })
      * @var \Organisation\Entity\Organisation
      */
     private $organisation;
+
+    /**
+     * @param string $branch
+     */
+    public function setBranch($branch)
+    {
+        $this->branch = $branch;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBranch()
+    {
+        return $this->branch;
+    }
+
+    /**
+     * @param \Contact\Entity\Contact $contact
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
+    }
+
+    /**
+     * @return \Contact\Entity\Contact
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param \Organisation\Entity\Organisation $organisation
+     */
+    public function setOrganisation($organisation)
+    {
+        $this->organisation = $organisation;
+    }
+
+    /**
+     * @return \Organisation\Entity\Organisation
+     */
+    public function getOrganisation()
+    {
+        return $this->organisation;
+    }
 }

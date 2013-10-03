@@ -81,6 +81,16 @@ class Photo
     private $contact;
 
     /**
+     * Although an alternative doesn't have a clear hash, we can create one based on the id;
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return sha1($this->id . $this->getContact()->getId());
+    }
+
+    /**
      * Get the corresponding fileName of a file if it was cached
      * Use a dash (-) to make the distinction between the format to avoid the need of an extra folder
      *
@@ -93,7 +103,7 @@ class Photo
             DIRECTORY_SEPARATOR . 'contact-photo';
 
         return $cacheDir . DIRECTORY_SEPARATOR
-        . $this->getContact()->parseHash() . '.'
+        . $this->getHash() . '.'
         . $this->getContentType()->getExtension();
     }
 
