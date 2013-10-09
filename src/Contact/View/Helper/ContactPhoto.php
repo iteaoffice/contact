@@ -50,7 +50,7 @@ class ContactPhoto extends AbstractHelper
             if ($photo->getDateUpdated()->getTimestamp() > filemtime($photo->getCacheFileName())) {
                 unlink($photo->getCacheFileName());
             } else {
-                $router = 'assets/project-photo';
+                $router = 'assets/contact-photo';
             }
         } else {
             file_put_contents(
@@ -66,6 +66,7 @@ class ContactPhoto extends AbstractHelper
             'ext'  => $photo->getContentType()->getExtension(),
             'id'   => $photo->getContact()->getId()
         );
+
 
         $image = sprintf(
             $imageUrl,

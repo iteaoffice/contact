@@ -105,11 +105,16 @@ class Contact extends EntityAbstract implements
     private $email;
     /**
      * @ORM\Column(name="password", type="string", length=40, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-password"})
+     * @Annotation\Exclude()
      * @var string
      */
     private $password;
+    /**
+     * @ORM\Column(name="salted_password", type="string", length=100, nullable=true)
+     * @Annotation\Exclude()
+     * @var string
+     */
+    private $saltedPassword;
     /**
      * @ORM\ManyToOne(targetEntity="General\Entity\Gender", cascade={"persist"}, inversedBy="contacts")
      * @ORM\JoinColumn(name="gender_id", referencedColumnName="gender_id", nullable=false)
@@ -203,7 +208,7 @@ class Contact extends EntityAbstract implements
      * @Annotation\Attributes({"label":"txt-roles"})
      * @var \Admin\Entity\Role[]
      */
-    private $roles;
+    private $role;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Email", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -394,7 +399,7 @@ class Contact extends EntityAbstract implements
         $this->projectVersion         = new Collections\ArrayCollection();
         $this->cv                     = new Collections\ArrayCollection();
         $this->web                    = new Collections\ArrayCollection();
-        $this->roles                  = new Collections\ArrayCollection();
+        $this->role                   = new Collections\ArrayCollection();
         $this->address                = new Collections\ArrayCollection();
         $this->emailAddress           = new Collections\ArrayCollection();
         $this->access                 = new Collections\ArrayCollection();
@@ -576,7 +581,7 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'     => 'roles',
+                        'name'     => 'role',
                         'required' => false,
                     )
                 )
@@ -607,7 +612,7 @@ class Contact extends EntityAbstract implements
             'technology'     => $this->technology,
             'cv'             => $this->cv,
             'email'          => $this->email,
-            'roles'          => $this->roles,
+            'role'           => $this->role,
             'dnd'            => $this->dnd,
             'nda'            => $this->nda,
             'programDoa'     => $this->programDoa,
@@ -655,7 +660,7 @@ class Contact extends EntityAbstract implements
      */
     public function getRoles()
     {
-        return $this->roles;
+        return $this->role;
     }
 
     /**
@@ -666,7 +671,7 @@ class Contact extends EntityAbstract implements
     public function addRoles(Collections\Collection $roles)
     {
         foreach ($roles as $role) {
-            $this->roles->add($role);
+            $this->role->add($role);
         }
     }
 
@@ -678,7 +683,7 @@ class Contact extends EntityAbstract implements
     public function removeRoles(Collections\Collection $roles)
     {
         foreach ($roles as $role) {
-            $this->roles->removeElement($role);
+            $this->role->removeElement($role);
         }
     }
 
@@ -922,6 +927,22 @@ class Contact extends EntityAbstract implements
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * @param string $saltedPassword
+     */
+    public function setSaltedPassword($saltedPassword)
+    {
+        $this->saltedPassword = $saltedPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSaltedPassword()
+    {
+        return $this->saltedPassword;
     }
 
     /**

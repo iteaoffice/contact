@@ -36,10 +36,10 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes'  => array(
-                    'contact-logo' => array(
+                    'contact-photo' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => "/contact-logo/[:hash].[:ext]",
+                            'route'    => "/contact-photo/[:hash].[:ext]",
                             'defaults' => array(
                                 'action' => 'display',
                             ),

@@ -20,7 +20,7 @@ class LoadContactData extends AbstractFixture implements DependentFixtureInterfa
         $contact->setLastName('Dam');
         $contact->setEmail('test@example.com');
         $contact->setState(1);
-        $contact->setPassword('password');
+        $contact->setPassword(md5('password'));
         $contact->setMessenger('messenger');
         $contact->setDateOfBirth(new \DateTime());
 

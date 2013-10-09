@@ -38,7 +38,13 @@ class Contact extends EntityRepository
         $queryBuilder->setParameter(2, $email);
         $queryBuilder->setMaxResults(1);
 
+        $result = $queryBuilder->getQuery()->getResult();
+
         //Limit to 1 to have only 1 match
-        return $queryBuilder->getQuery()->getSingleResult();
+        if (sizeof($result) > 0) {
+            return $result[0];
+        } else {
+            return null;
+        }
     }
 }

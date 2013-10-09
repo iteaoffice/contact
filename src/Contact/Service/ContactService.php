@@ -44,7 +44,7 @@ class ContactService extends ServiceAbstract
      *
      * @return ContactService;
      */
-    public function setProjectId($id)
+    public function setContactId($id)
     {
         $this->setContact($this->findEntityById('contact', $id));
 
