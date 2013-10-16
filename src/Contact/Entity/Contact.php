@@ -90,12 +90,12 @@ class Contact extends EntityAbstract implements
      * @var string
      */
     private $lastName;
-//    /**
-//     * @ORM\Column(type="smallint",nullable=false)
-//     * @Annotation\Exclude()
-//     * @var int
-//     */
-//    private $state;
+    //    /**
+    //     * @ORM\Column(type="smallint",nullable=false)
+    //     * @Annotation\Exclude()
+    //     * @var int
+    //     */
+    //    private $state;
     /**
      * @ORM\Column(name="email",type="string",length=60,nullable=false, unique=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -197,7 +197,7 @@ class Contact extends EntityAbstract implements
      */
     private $access;
     /**
-     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contacts", cascade={"all"}, fetch="EXTRA_LAZY")
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contact", cascade={"all"}, fetch="EXTRA_LAZY")
      * @ORM\OrderBy=({"Name" =  "ASC"})
      * @ORM\JoinTable(name="admin_user_role",
      *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
@@ -1026,13 +1026,9 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Set displayName.
-     *
-     * @param string $displayName
-     *
-     * @return UserInterface
+     * @return bool
      */
-    public function setDisplayName($displayName)
+    public function setDisplayName()
     {
         return false;
     }
