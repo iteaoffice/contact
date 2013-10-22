@@ -299,7 +299,6 @@ class Contact extends EntityAbstract implements
      * @var \Program\Entity\Domain[]
      */
     private $domain;
-
     /**
      * @ORM\ManyToMany(targetEntity="Exhibition\Entity\Idea", cascade={"persist"},inversedBy="contact")
      * @ORM\JoinTable(name="contact_idea",
@@ -388,6 +387,12 @@ class Contact extends EntityAbstract implements
      * @var \Affiliation\Entity\Affiliation[]
      */
     private $associate;
+    /**
+     * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Program\Entity\Funder
+     */
+    private $funder;
 
 
     /**
@@ -1470,5 +1475,37 @@ class Contact extends EntityAbstract implements
     public function getAssociate()
     {
         return $this->associate;
+    }
+
+    /**
+     * @param \Program\Entity\Funder $funder
+     */
+    public function setFunder($funder)
+    {
+        $this->funder = $funder;
+    }
+
+    /**
+     * @return \Program\Entity\Funder
+     */
+    public function getFunder()
+    {
+        return $this->funder;
+    }
+
+    /**
+     * @param \Admin\Entity\Role[] $role
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+    }
+
+    /**
+     * @return \Admin\Entity\Role[]
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 }

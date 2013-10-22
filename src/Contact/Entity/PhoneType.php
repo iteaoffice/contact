@@ -26,6 +26,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PhoneType
 {
+    const PHONE_TYPE_DIRECT = 1;
+    const PHONE_TYPE_MOBILE = 2;
+    const PHONE_TYPE_HOME   = 3;
+    const PHONE_TYPE_FAX    = 4;
     /**
      * @var integer
      *
@@ -41,4 +45,36 @@ class PhoneType
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
      */
     private $type;
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 }

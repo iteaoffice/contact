@@ -25,6 +25,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AddressType extends EntityAbstract
 {
+    const ADDRESS_TYPE_MAIL      = 1;
+    const ADDRESS_TYPE_VISIT     = 2;
+    const ADDRESS_TYPE_FINANCIAL = 3;
+    const ADDRESS_TYPE_HOME      = 4;
+
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
@@ -43,6 +48,18 @@ class AddressType extends EntityAbstract
      * @var \Contact\Entity\Address[]
      */
     private $address;
+    /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\AddressTypeSort", cascade={"persist"}, mappedBy="mainType")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\AddressTypeSort[]
+     */
+    private $sort;
+    /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\AddressTypeSort", cascade={"persist"}, mappedBy="subType")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\AddressTypeSort[]
+     */
+    private $subSort;
 
     /**
      * Class constructor
@@ -201,5 +218,37 @@ class AddressType extends EntityAbstract
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @param \Contact\Entity\AddressTypeSort[] $sort
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+    }
+
+    /**
+     * @return \Contact\Entity\AddressTypeSort[]
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+
+    /**
+     * @param \Contact\Entity\AddressTypeSort[] $subSort
+     */
+    public function setSubSort($subSort)
+    {
+        $this->subSort = $subSort;
+    }
+
+    /**
+     * @return \Contact\Entity\AddressTypeSort[]
+     */
+    public function getSubSort()
+    {
+        return $this->subSort;
     }
 }

@@ -22,7 +22,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Entity for the Contact
  *
  * @ORM\Table(name="contact_address")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Contact\Repository\Address")
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_address")
  *
@@ -51,7 +51,7 @@ class Address extends EntityAbstract
      * @Annotation\Options({"label":"txt-zip-code"})
      * @var string
      */
-    private $zipcode;
+    private $zipCode;
     /**
      * @ORM\Column(name="city", type="string", length=40, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -70,20 +70,6 @@ class Address extends EntityAbstract
      * @var \Contact\Entity\AddressType
      */
     private $type;
-    /**
-     * @ORM\Column(name="date_created", type="datetime", nullable=true)
-     * @Gedmo\Timestampable(on="create")
-     * @Annotation\Exclude()
-     * @var \datetime
-     */
-    private $dateCreated;
-    /**
-     * @ORM\Column(name="date_updated", type="datetime", nullable=true)
-     * @Gedmo\Timestampable(on="update")
-     * @Annotation\Exclude()
-     * @var \datetime
-     */
-    private $lastUpdate;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="address")
      * @ORM\JoinColumns({
@@ -211,7 +197,7 @@ class Address extends EntityAbstract
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'       => 'zipcode',
+                        'name'       => 'zipCode',
                         'required'   => true,
                         'filters'    => array(
                             array('name' => 'StripTags'),
@@ -231,6 +217,24 @@ class Address extends EntityAbstract
                 )
             );
 
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'type',
+                        'required' => true,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'country',
+                        'required' => true,
+                    )
+                )
+            );
+
             $this->inputFilter = $inputFilter;
         }
 
@@ -246,7 +250,8 @@ class Address extends EntityAbstract
     {
         return array(
             'contact' => $this->contact,
-            'country' => $this->country
+            'country' => $this->country,
+            'type'    => $this->type
         );
     }
 
@@ -352,50 +357,18 @@ class Address extends EntityAbstract
     }
 
     /**
-     * @param \datetime $dateCreated
+     * @param string $zipCode
      */
-    public function setDateCreated($dateCreated)
+    public function setZipCode($zipCode)
     {
-        $this->dateCreated = $dateCreated;
-    }
-
-    /**
-     * @return \datetime
-     */
-    public function getDateCreated()
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param \datetime $lastUpdate
-     */
-    public function setLastUpdate($lastUpdate)
-    {
-        $this->lastUpdate = $lastUpdate;
-    }
-
-    /**
-     * @return \datetime
-     */
-    public function getLastUpdate()
-    {
-        return $this->lastUpdate;
-    }
-
-    /**
-     * @param string $zipcode
-     */
-    public function setZipCode($zipcode)
-    {
-        $this->zipcode = $zipcode;
+        $this->zipCode = $zipCode;
     }
 
     /**
      * @return string
      */
-    public function getZipcode()
+    public function getZipCode()
     {
-        return $this->zipcode;
+        return $this->zipCode;
     }
 }

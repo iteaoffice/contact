@@ -59,6 +59,16 @@ class Module implements
     }
 
     /**
+     * Go to the service configuration
+     *
+     * @return array
+     */
+    public function getViewHelperConfig()
+    {
+        return include __DIR__ . '/../../config/viewhelpers.config.php';
+    }
+
+    /**
      * @return array
      */
     public function getControllerConfig()

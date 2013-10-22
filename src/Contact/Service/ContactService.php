@@ -9,10 +9,12 @@
  */
 namespace Contact\Service;
 
+use Contact\Entity\AddressType;
+use Contact\Entity\PhoneType;
 use Contact\Entity\Contact;
 
+use Contact\Service\AddressService;
 use Project\Service\ProjectService;
-
 use Organisation\Service\OrganisationService;
 
 /**
@@ -27,6 +29,10 @@ use Organisation\Service\OrganisationService;
  */
 class ContactService extends ServiceAbstract
 {
+    /**
+     * @var AddressService
+     */
+    protected $addressService;
     /**
      * @var ProjectService
      */
@@ -79,6 +85,56 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Parse the fullname of a project
+     *
+     * @return string
+     */
+    public function parseFullName()
+    {
+        return
+            trim(
+                $this->getContact()->getFirstName() . ' ' .
+                $this->getContact()->getMiddleName()) . ' ' .
+            $this->getContact()->getLastName();
+    }
+
+    /**
+     * Find the visit address of a contact
+     *
+     * @throws \RunTimeException
+     * @return AddressService
+     */
+    public function getVisitAddress()
+    {
+        if (is_null($this->getContact())) {
+            throw new \RunTimeException(sprintf("A contact should be set"));
+        }
+
+        return $this->getAddressService()->findAddressByContactAndType(
+            $this->getContact(),
+            AddressType::ADDRESS_TYPE_VISIT
+        );
+    }
+
+    /**
+     * Find the direct phone number of a contact
+     *
+     * @return null|object
+     * @throws \RunTimeException
+     */
+    public function getDirectPhone()
+    {
+        if (is_null($this->getContact())) {
+            throw new \RunTimeException(sprintf("A contact should be set"));
+        }
+
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('phone'))->findOneBy(
+            array('contact' => $this->contact,
+                  'type'    => PhoneType::PHONE_TYPE_DIRECT)
+        );
+    }
+
+    /**
      * @return OrganisationService
      */
     public function findOrganisationService()
@@ -112,10 +168,14 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param \Contact\Entity\Contact $contact
+     *
+     * @return ContactService;
      */
     public function setContact($contact)
     {
         $this->contact = $contact;
+
+        return $this;
     }
 
     /**
@@ -164,5 +224,25 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->organisationService;
+    }
+
+    /**
+     * @param AddressService $addressService
+     */
+    public function setAddressService($addressService)
+    {
+        $this->addressService = $addressService;
+    }
+
+    /**
+     * @return AddressService
+     */
+    public function getAddressService()
+    {
+        if (!$this->addressService instanceof AddressService) {
+            $this->setAddressService($this->getServiceLocator()->get('contact_address_service'));
+        }
+
+        return $this->addressService;
     }
 }

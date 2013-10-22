@@ -1,8 +1,4 @@
 <?php
-namespace Contact;
-
-use Zend\Stdlib\ArrayUtils;
-
 /**
  * Japaveh Webdesign copyright message placeholder
  *
@@ -11,19 +7,18 @@ use Zend\Stdlib\ArrayUtils;
  * @author      Johan van der Heide <info@japaveh.nl>
  * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
  */
+
+namespace Contact;
+
+use Zend\Stdlib\ArrayUtils;
+
+
 $config = array(
     'controllers'     => array(
         'invokables' => array(
             'contact'         => 'Contact\Controller\ContactController',
             'contact-manager' => 'Contact\Controller\ContactManagerController',
         ),
-    ),
-    'view_helpers'    => array(
-        'invokables' => array(
-            'contactLink'  => 'Contact\View\Helper\ContactLink',
-            'contactIcon'  => 'Contact\View\Helper\ContactIcon',
-            'contactPhoto' => 'Contact\View\Helper\ContactPhoto',
-        )
     ),
     'view_manager'    => array(
         'template_path_stack' => array(
@@ -36,6 +31,7 @@ $config = array(
         ),
         'invokables' => array(
             'contact_contact_service' => 'Contact\Service\ContactService',
+            'contact_address_service' => 'Contact\Service\AddressService',
             'contact_form_service'    => 'Contact\Service\FormService',
 
         )
