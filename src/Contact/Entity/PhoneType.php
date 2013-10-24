@@ -30,21 +30,25 @@ class PhoneType
     const PHONE_TYPE_MOBILE = 2;
     const PHONE_TYPE_HOME   = 3;
     const PHONE_TYPE_FAX    = 4;
+
     /**
-     * @var integer
-     *
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var integer
      */
     private $id;
-
     /**
-     * @var string
-     *
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     * @var string
      */
     private $type;
+    /**
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="type")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Phone[]
+     */
+    private $phone;
 
     /**
      * @param int $id
