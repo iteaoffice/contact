@@ -38,7 +38,8 @@ use ZfcUser\Entity\UserInterface;
  */
 class Contact extends EntityAbstract implements
     ResourceInterface,
-    ProviderInterface
+    ProviderInterface,
+    UserInterface
 {
     /**
      * Key needed for the encryption and decryption of the Keys
@@ -180,7 +181,7 @@ class Contact extends EntityAbstract implements
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"messengerTemplates"})
      * @Annotation\Attributes({"label":"txt-messenger", "required":"true"})
-     * @Annotation\Required("true")
+     * @Annotation\Required(true)
      * @var int
      */
     private $messenger;
@@ -190,6 +191,7 @@ class Contact extends EntityAbstract implements
      *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
      *    inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
      * )
+     * @ORM\OrderBy({"access"="ASC"})
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
      * @Annotation\Options({"target_class":"Contact\Entity\Access"})
      * @Annotation\Attributes({"label":"txt-access"})
@@ -393,7 +395,84 @@ class Contact extends EntityAbstract implements
      * @var \Program\Entity\Funder
      */
     private $funder;
-
+    /**
+     * @ORM\OneToMany(targetEntity="Deeplink\Entity\Contact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Deeplink\Entity\Contact[]
+     */
+    private $deeplinkContact;
+    /**
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Profile
+     */
+    private $profile;
+    /**
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Community[]
+     */
+    private $community;
+    /**
+     * @ORM\OneToMany(targetEntity="Event\Entity\Registration", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Event\Entity\Registration[]
+     */
+    private $registration;
+    /**
+     * @ORM\OneToMany(targetEntity="Event\Entity\Badge\Badge", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Event\Entity\Badge\Badge[]
+     */
+    private $badge;
+    /**
+     * @ORM\OneToMany(targetEntity="Event\Entity\Badge\Contact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Event\Entity\Badge\Contact[]
+     */
+    private $badgeContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Booth", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Event\Entity\Booth\Booth[]
+     */
+    private $booth;
+    /**
+     * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Financial", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Event\Entity\Booth\Financial[]
+     */
+    private $boothFinancial;
+    /**
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Note", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Note[]
+     */
+    private $note;
+    /**
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Selection", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Selection[]
+     */
+    private $selection;
+    /**
+     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\SelectionContact[]
+     */
+    private $selectionContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Mailing\Entity\Contact[]
+     */
+    private $mailingContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Mailing\Entity\Mailing[]
+     */
+    private $mailing;
 
     /**
      * Class constructor
@@ -427,6 +506,16 @@ class Contact extends EntityAbstract implements
         $this->publicationDownload    = new Collections\ArrayCollection();
         $this->photo                  = new Collections\ArrayCollection();
         $this->associate              = new Collections\ArrayCollection();
+        $this->deeplinkContact        = new Collections\ArrayCollection();
+        $this->community              = new Collections\ArrayCollection();
+        $this->registration           = new Collections\ArrayCollection();
+        $this->badge                  = new Collections\ArrayCollection();
+        $this->badgeContact           = new Collections\ArrayCollection();
+        $this->boothFinancial         = new Collections\ArrayCollection();
+        $this->selection              = new Collections\ArrayCollection();
+        $this->selectionContact       = new Collections\ArrayCollection();
+        $this->mailingContact         = new Collections\ArrayCollection();
+        $this->mailing                = new Collections\ArrayCollection();
     }
 
     /**
@@ -622,6 +711,7 @@ class Contact extends EntityAbstract implements
             'nda'            => $this->nda,
             'programDoa'     => $this->programDoa,
             'openId'         => $this->openId,
+            'note'           => $this->note,
         );
     }
 
@@ -637,7 +727,7 @@ class Contact extends EntityAbstract implements
      */
     public function parseHash()
     {
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'cast-256'));
         $blockCipher->setKey(self::CRYPT_KEY);
 
         return $blockCipher->encrypt($this->id);
@@ -652,20 +742,21 @@ class Contact extends EntityAbstract implements
      */
     public function decryptHash($hash)
     {
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'cast-256'));
         $blockCipher->setKey(self::CRYPT_KEY);
 
         return $blockCipher->decrypt($hash);
     }
 
     /**
-     * Returns the string identifier of the Role
+     * Returns the string identifier of the Role.
+     * We return the access here since that entity keeps the access roles
      *
      * @return string
      */
     public function getRoles()
     {
-        return $this->role;
+        return $this->access;
     }
 
     /**
@@ -987,7 +1078,7 @@ class Contact extends EntityAbstract implements
      */
     public function setState($state)
     {
-        $this->state = $state;
+        return null;
     }
 
     /**
@@ -995,7 +1086,7 @@ class Contact extends EntityAbstract implements
      */
     public function getState()
     {
-        return $this->state;
+        return null;
     }
 
     /**
@@ -1027,13 +1118,15 @@ class Contact extends EntityAbstract implements
      */
     public function getDisplayName()
     {
-        return trim($this->getFirstName() . ' ' . $this->getLastName());
+        return (string)$this;
     }
 
     /**
-     * @return bool
+     * @param string $displayName
+     *
+     * @return bool|UserInterface
      */
-    public function setDisplayName()
+    public function setDisplayName($displayName)
     {
         return false;
     }
@@ -1507,5 +1600,197 @@ class Contact extends EntityAbstract implements
     public function getRole()
     {
         return $this->role;
+    }
+
+    /**
+     * @param \Deeplink\Entity\Contact[] $deeplinkContact
+     */
+    public function setDeeplinkContact($deeplinkContact)
+    {
+        $this->deeplinkContact = $deeplinkContact;
+    }
+
+    /**
+     * @return \Deeplink\Entity\Contact[]
+     */
+    public function getDeeplinkContact()
+    {
+        return $this->deeplinkContact;
+    }
+
+    /**
+     * @param \Contact\Entity\Profile $profile
+     */
+    public function setProfile($profile)
+    {
+        $this->profile = $profile;
+    }
+
+    /**
+     * @return \Contact\Entity\Profile
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param \Contact\Entity\Community[] $community
+     */
+    public function setCommunity($community)
+    {
+        $this->community = $community;
+    }
+
+    /**
+     * @return \Contact\Entity\Community[]
+     */
+    public function getCommunity()
+    {
+        return $this->community;
+    }
+
+    /**
+     * @param \Event\Entity\Registration[] $registration
+     */
+    public function setRegistration($registration)
+    {
+        $this->registration = $registration;
+    }
+
+    /**
+     * @return \Event\Entity\Registration[]
+     */
+    public function getRegistration()
+    {
+        return $this->registration;
+    }
+
+    /**
+     * @param \Event\Entity\Badge\Badge[] $badge
+     */
+    public function setBadge($badge)
+    {
+        $this->badge = $badge;
+    }
+
+    /**
+     * @return \Event\Entity\Badge\Badge[]
+     */
+    public function getBadge()
+    {
+        return $this->badge;
+    }
+
+    /**
+     * @param \Event\Entity\Badge\Contact[] $badgeContact
+     */
+    public function setBadgeContact($badgeContact)
+    {
+        $this->badgeContact = $badgeContact;
+    }
+
+    /**
+     * @return \Event\Entity\Badge\Contact[]
+     */
+    public function getBadgeContact()
+    {
+        return $this->badgeContact;
+    }
+
+    /**
+     * @param \Event\Entity\Booth\Booth[] $booth
+     */
+    public function setBooth($booth)
+    {
+        $this->booth = $booth;
+    }
+
+    /**
+     * @return \Event\Entity\Booth\Booth[]
+     */
+    public function getBooth()
+    {
+        return $this->booth;
+    }
+
+    /**
+     * @param \Event\Entity\Booth\Financial[] $boothFinancial
+     */
+    public function setBoothFinancial($boothFinancial)
+    {
+        $this->boothFinancial = $boothFinancial;
+    }
+
+    /**
+     * @return \Event\Entity\Booth\Financial[]
+     */
+    public function getBoothFinancial()
+    {
+        return $this->boothFinancial;
+    }
+
+    /**
+     * @param \Contact\Entity\Note[] $note
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+    }
+
+    /**
+     * @return \Contact\Entity\Note[]
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param \Contact\Entity\SelectionContact[] $selectionContact
+     */
+    public function setSelectionContact($selectionContact)
+    {
+        $this->selectionContact = $selectionContact;
+    }
+
+    /**
+     * @return \Contact\Entity\SelectionContact[]
+     */
+    public function getSelectionContact()
+    {
+        return $this->selectionContact;
+    }
+
+    /**
+     * @param \Contact\Entity\Selection[] $selection
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
+    }
+
+    /**
+     * @return \Contact\Entity\Selection[]
+     */
+    public function getSelection()
+    {
+        return $this->selection;
+    }
+
+    /**
+     * @param \Mailing\Entity\Contact[] $mailingContact
+     */
+    public function setMailingContact($mailingContact)
+    {
+        $this->mailingContact = $mailingContact;
+    }
+
+    /**
+     * @return \Mailing\Entity\Contact[]
+     */
+    public function getMailingContact()
+    {
+        return $this->mailingContact;
     }
 }

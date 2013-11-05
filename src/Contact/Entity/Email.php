@@ -41,7 +41,6 @@ class Email extends EntityAbstract implements ResourceInterface
      * @var integer
      */
     private $id;
-
     /**
      * @ORM\Column(name="email", type="string", length=60, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")

@@ -23,31 +23,27 @@ use Doctrine\ORM\Mapping as ORM;
 class Link
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="link_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var integer
      */
     private $id;
 
     /**
-     * @var \Contact
-     *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact1_id", referencedColumnName="contact_id")
      * })
+     * @var \Contact\Entity\Contact
      */
     private $contact1;
-
     /**
-     * @var \Contact
-     *
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact2_id", referencedColumnName="contact_id")
      * })
+     * @var \Contact\Entity\Contact
      */
     private $contact2;
 }

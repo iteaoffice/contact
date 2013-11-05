@@ -32,6 +32,7 @@ class ContactPhoto extends AbstractHelper
      */
     public function __invoke(Contact $contact)
     {
+
         $url   = $this->getView()->plugin('url');
         $photo = $contact->getPhoto();
 
@@ -43,7 +44,9 @@ class ContactPhoto extends AbstractHelper
          * Check if the file is cached and if so, pull it from the assets-folder
          */
         $router = 'contact/photo';
+
         if (file_exists($photo->getCacheFileName())) {
+
             /**
              * The file exists, but is it not updated?
              */
@@ -62,9 +65,10 @@ class ContactPhoto extends AbstractHelper
         $imageUrl = '<img src="%s?%s" id="%s">';
 
         $params = array(
-            'hash' => $photo->getHash(),
-            'ext'  => $photo->getContentType()->getExtension(),
-            'id'   => $photo->getContact()->getId()
+            'contactHash' => $photo->getContact()->parseHash(),
+            'hash'        => $photo->getHash(),
+            'ext'         => $photo->getContentType()->getExtension(),
+            'id'          => $photo->getContact()->getId()
         );
 
 

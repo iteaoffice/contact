@@ -135,6 +135,24 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Find the mobile phone number of a contact
+     *
+     * @return null|object
+     * @throws \RunTimeException
+     */
+    public function getMobilePhone()
+    {
+        if (is_null($this->getContact())) {
+            throw new \RunTimeException(sprintf("A contact should be set"));
+        }
+
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('phone'))->findOneBy(
+            array('contact' => $this->contact,
+                  'type'    => PhoneType::PHONE_TYPE_MOBILE)
+        );
+    }
+
+    /**
      * @return OrganisationService
      */
     public function findOrganisationService()
@@ -150,6 +168,15 @@ class ContactService extends ServiceAbstract
     public function findProjects()
     {
         return $this->getProjectService()->findProjectByContact($this->getContact());
+    }
+
+    /**
+     * @param $email
+     */
+    public function register($email)
+    {
+        die($email);
+        die();
     }
 
     /**

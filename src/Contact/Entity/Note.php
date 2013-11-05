@@ -27,42 +27,33 @@ use Doctrine\ORM\Mapping as ORM;
 class Note
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="note_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var integer
      */
     private $id;
-
     /**
-     * @var string
-     *
      * @ORM\Column(name="note", type="string", length=255, nullable=true)
+     * @var string
      */
     private $note;
-
     /**
-     * @var string
-     *
      * @ORM\Column(name="source", type="string", length=32, nullable=true)
+     * @var string
      */
     private $source;
-
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
+     * @var \DateTime
      */
     private $dateCreated;
-
     /**
-     * @var \Contact
-     *
-     * @ORM\ManyToOne(targetEntity="Contact")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="note")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
+     * @var \Contact\Entity\Contact
      */
     private $contact;
 }

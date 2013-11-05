@@ -59,18 +59,13 @@ class Photo
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade={"persist"}, inversedBy="contactDnd")
+     * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade="all", inversedBy="contactPhoto")
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\File")
      * @Annotation\Options({"label":"txt-dnd-file"})
      * @var \General\Entity\ContentType
      */
     private $contentType;
-    /**
-     * @ORM\Column(name="contenttype", type="string", nullable=true)
-     * @var integer
-     */
-    private $oldContentType;
     /**
      * @ORM\ManyToOne(targetEntity="Contact", inversedBy="photo", cascade={"persist"})
      * @ORM\JoinColumns({
@@ -88,6 +83,11 @@ class Photo
     public function getHash()
     {
         return sha1($this->id . $this->getContact()->getId());
+    }
+
+    public function __construct()
+    {
+        $this->contentType = null;
     }
 
     /**
@@ -187,21 +187,21 @@ class Photo
         return $this->id;
     }
 
-    /**
-     * @param int $oldContentType
-     */
-    public function setOldContentType($oldContentType)
-    {
-        $this->oldContentType = $oldContentType;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOldContentType()
-    {
-        return $this->oldContentType;
-    }
+//    /**
+//     * @param int $oldContentType
+//     */
+//    public function setOldContentType($oldContentType)
+//    {
+//        $this->oldContentType = $oldContentType;
+//    }
+//
+//    /**
+//     * @return int
+//     */
+//    public function getOldContentType()
+//    {
+//        return $this->oldContentType;
+//    }
 
     /**
      * @param resource $photo

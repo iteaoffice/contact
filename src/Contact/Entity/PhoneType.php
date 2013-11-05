@@ -12,6 +12,7 @@ namespace Contact\Entity;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections;
 
 /**
  * Phone
@@ -50,6 +51,11 @@ class PhoneType
      */
     private $phone;
 
+    public function __construct()
+    {
+        $this->phone = new Collection\ArrayCollection();
+    }
+
     /**
      * @param int $id
      */
@@ -81,4 +87,22 @@ class PhoneType
     {
         return $this->type;
     }
+
+    /**
+     * @param \Contact\Entity\Phone[] $phone
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return \Contact\Entity\Phone[]
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+
 }

@@ -9,7 +9,9 @@
  */
 namespace Contact\Entity;
 
-use Zend\Permissions\Acl\Resource\ResourceInterface;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -58,9 +60,9 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      */
     private $size;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\DndObject", cascade={"persist"}, mappedBy="dnd")
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\DndObject", cascade={"persist"}, mappedBy="dnd")
      * @Annotation\Exclude()
-     * @var \Content\Entity\DndObject
+     * @var \Contact\Entity\DndObject
      */
     private $object;
     /**

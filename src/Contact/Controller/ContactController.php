@@ -46,11 +46,11 @@ class ContactController extends AbstractActionController implements ServiceLocat
      */
     public function photoAction()
     {
-        $this->layout(false);
+//        $this->layout(false);
         $response = $this->getResponse();
 
         $contact = $this->getContactService()->findContactByHash(
-            $this->getEvent()->getRouteMatch()->getParam('hash')
+            $this->getEvent()->getRouteMatch()->getParam('contactHash')
         );
 
         $response->getHeaders()
@@ -58,14 +58,14 @@ class ContactController extends AbstractActionController implements ServiceLocat
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public");
 
-        if (!is_null($contact->getPhoto())) {
+        if (!is_null($contact) && !is_null($contact->getPhoto())) {
 
             $file = stream_get_contents($contact->getPhoto()->getPhoto());
 
             $response->getHeaders()
                 ->addHeaderLine('Content-Type: ' .
-                $contact->getPhoto()->getContentType()->getContentType())
-                ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+                    $contact->getPhoto()->getContentType()->getContentType())
+                ->addHeaderLine('Content-Length: ' . (string)strlen($file));
 
             $response->setContent($file);
 
@@ -84,7 +84,7 @@ class ContactController extends AbstractActionController implements ServiceLocat
      */
     public function getContactService()
     {
-        return $this->getServiceLocator()->get('contact_generic_service');
+        return $this->getServiceLocator()->get('contact_contact_service');
     }
 
     /**

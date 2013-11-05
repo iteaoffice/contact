@@ -53,7 +53,7 @@ return array(
                 'options'       => array(
                     'route'    => '/contact',
                     'defaults' => array(
-                        'controller' => 'project',
+                        'controller' => 'contact',
                         'action'     => 'index',
                     ),
                 ),
@@ -62,7 +62,7 @@ return array(
                     'photo' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/photo/[:hash].[:ext]',
+                            'route'    => '/photo/[:contactHash].[:ext]',
                             'defaults' => array(
                                 'action' => 'photo',
                             ),

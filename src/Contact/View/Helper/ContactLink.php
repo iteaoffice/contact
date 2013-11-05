@@ -15,7 +15,7 @@ use Zend\View\Helper\AbstractHelper;
 use Contact\Entity;
 
 /**
- * Create a link to an area2
+ * Create a link to an contact
  *
  * @category    Contact
  * @package     View
@@ -25,14 +25,14 @@ class ContactLink extends AbstractHelper
 {
 
     /**
-     * @param Entity\Area2 $area2
-     * @param              $action
-     * @param              $show
+     * @param Entity\Contact $contact
+     * @param                $action
+     * @param                $show
      *
      * @return null|string
      * @throws \Exception
      */
-    public function __invoke(Entity\Area2 $area2 = null, $action = 'view', $show = 'name')
+    public function __invoke(Entity\Contact $contact = null, $action = 'view', $show = 'name')
     {
         $isAllowed = $this->view->plugin('isAllowed');
         $translate = $this->view->plugin('translate');
@@ -41,7 +41,7 @@ class ContactLink extends AbstractHelper
 
         if (!$isAllowed('contact', $action)) {
             if ($action === 'view' && $show === 'name') {
-                return $area2;
+                return $contact;
             }
 
             return '';
@@ -49,36 +49,36 @@ class ContactLink extends AbstractHelper
 
         switch ($action) {
             case 'new':
-                $router = 'zfcadmin/contact-manager/new';
-                $text   = sprintf($translate("txt-new-area2"));
-                $area2  = new Entity\Area2();
+                $router  = 'zfcadmin/contact-manager/new';
+                $text    = sprintf($translate("txt-new-contact"));
+                $contact = new Entity\Contact();
                 break;
             case 'edit':
                 $router = 'zfcadmin/contact-manager/edit';
-                $text   = sprintf($translate("txt-edit-area2-%s"), $area2);
+                $text   = sprintf($translate("txt-edit-contact-%s"), $contact);
                 break;
             case 'view':
-                $router = 'contact/area2';
-                $text   = sprintf($translate("txt-view-area2-%s"), $area2);
+                $router = 'contact/contact';
+                $text   = sprintf($translate("txt-view-contact-%s"), $contact);
                 break;
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $action, __CLASS__));
         }
 
-        if (is_null($area2)) {
+        if (is_null($contact)) {
             throw new \RuntimeException(
                 sprintf(
                     "Area needs to be an instance of %s, %s given in %s",
-                    "Contact\Entity\Area2",
-                    get_class($area2),
+                    "Contact\Entity\Contact",
+                    get_class($contact),
                     __CLASS__
                 )
             );
         }
 
         $params = array(
-            'id'     => $area2->getId(),
-            'entity' => 'area2'
+            'id'     => $contact->getId(),
+            'entity' => 'contact'
         );
 
         $classes     = array();
@@ -99,10 +99,10 @@ class ContactLink extends AbstractHelper
                 $classes[]     = "btn btn-primary";
                 break;
             case 'name':
-                $linkContent[] = $area2->getName();
+                $linkContent[] = $contact->getFirstName();
                 break;
             default:
-                $linkContent[] = $area2;
+                $linkContent[] = $contact;
                 break;
         }
 
@@ -115,6 +115,5 @@ class ContactLink extends AbstractHelper
             implode($classes),
             implode($linkContent)
         );
-
     }
 }

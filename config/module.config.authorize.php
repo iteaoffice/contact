@@ -27,8 +27,8 @@ return array(
                 'allow' => array(
                     // allow guests and users (and admins, through inheritance)
                     // the "wear" privilege on the resource "pants"d
-                    array(array(4, 2, 3), 'contact', array('listings', 'view')),
-                    array(array(1), 'contact', array('edit', 'new', 'delete'))
+                    array(array('public'), 'contact', array('listings', 'view')),
+                    array(array('admin'), 'contact', array('edit', 'new', 'delete'))
                 ),
                 // Don't mix allow/deny rules if you are using role inheritance.
                 // There are some weird bugs.
@@ -43,7 +43,8 @@ return array(
              * access to all routes unless they are specified here.
              */
             'BjyAuthorize\Guard\Route' => array(
-                array('route' => 'contact/edit', 'roles' => array(2)),
+                array('route' => 'contact/edit', 'roles' => array()),
+                array('route' => 'contact/photo', 'roles' => array()),
             ),
         ),
     ),

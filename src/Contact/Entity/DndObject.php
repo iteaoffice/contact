@@ -36,11 +36,11 @@ class DndObject //extends EntityAbstract implements ResourceInterface
      */
     private $object;
     /**
-     * @ORM\OneToOne(targetEntity="Contact\Entity\Dnd", cascade="persist", inversedBy="object")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Dnd", cascade="persist", inversedBy="object")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="dnd_id", referencedColumnName="dnd_id", unique=true)
      * })
-     * @var Dnd;
+     * @var \Contact\Entity\Dnd;
      */
     private $dnd;
 

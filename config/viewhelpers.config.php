@@ -11,14 +11,15 @@
 return array(
     'factories'  => array(
         'contactHandler'      => function ($sm) {
-                return new \Contact\View\Helper\ContactHandler($sm);
-            },
+            return new \Contact\View\Helper\ContactHandler($sm);
+        },
         'contactServiceProxy' => function ($sm) {
-                return new \Contact\View\Helper\ContactServiceProxy($sm);
-            }
+            return new \Contact\View\Helper\ContactServiceProxy($sm);
+        }
     ),
     'invokables' => array(
-        'contactLink'  => 'Contact\View\Helper\ContactLink',
-        'contactPhoto' => 'Contact\View\Helper\ContactPhoto',
+        'contactLink'   => 'Contact\View\Helper\ContactLink',
+        'communityLink' => 'Contact\View\Helper\CommunityLink',
+        'contactPhoto'  => 'Contact\View\Helper\ContactPhoto',
     )
 );

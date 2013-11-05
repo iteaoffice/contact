@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Zend\Permissions\Acl\Role\RoleInterface;
 
 /**
  * ContactEmail
@@ -30,7 +31,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @category    Contact
  * @package     Entity
  */
-class Access extends EntityAbstract
+class Access extends EntityAbstract implements RoleInterface
 {
     /**
      * @ORM\Column(name="access_id", type="integer", nullable=false)
@@ -55,20 +56,6 @@ class Access extends EntityAbstract
      * @var string
      */
     private $description;
-    /**
-     * @ORM\Column(name="date_created", type="datetime", nullable=false)
-     * @Gedmo\Timestampable(on="update")
-     * @Annotation\Exclude()
-     * @var \DateTime
-     */
-    private $dateCreated;
-    /**
-     * @ORM\Column(name="date_updated", type="datetime", nullable=false)
-     * @Gedmo\Timestampable(on="update")
-     * @Annotation\Exclude()
-     * @var \DateTime
-     */
-    private $dateUpdated;
     /**
      * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="access")
      * @Annotation\Exclude();
@@ -114,6 +101,14 @@ class Access extends EntityAbstract
     public function __set($property, $value)
     {
         $this->$property = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return strtolower($this->access);
     }
 
     /**
@@ -183,6 +178,7 @@ class Access extends EntityAbstract
         return $this->getArrayCopy();
     }
 
+
     /**
      * @param string $access
      */
@@ -210,6 +206,14 @@ class Access extends EntityAbstract
     /**
      * @return int
      */
+    public function getRoleId()
+    {
+        return strtolower($this->access);
+    }
+
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
@@ -229,38 +233,6 @@ class Access extends EntityAbstract
     public function getContact()
     {
         return $this->contact;
-    }
-
-    /**
-     * @param \DateTime $dateCreated
-     */
-    public function setDateCreated($dateCreated)
-    {
-        $this->dateCreated = $dateCreated;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param \DateTime $dateUpdated
-     */
-    public function setDateUpdated($dateUpdated)
-    {
-        $this->dateUpdated = $dateUpdated;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->dateUpdated;
     }
 
     /**
