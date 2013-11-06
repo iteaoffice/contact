@@ -473,6 +473,18 @@ class Contact extends EntityAbstract implements
      * @var \Mailing\Entity\Mailing[]
      */
     private $mailing;
+    /**
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Result[]
+     */
+    private $result;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Result[]
+     */
+    private $resultContact;
 
     /**
      * Class constructor
@@ -516,6 +528,8 @@ class Contact extends EntityAbstract implements
         $this->selectionContact       = new Collections\ArrayCollection();
         $this->mailingContact         = new Collections\ArrayCollection();
         $this->mailing                = new Collections\ArrayCollection();
+        $this->resultContact          = new Collections\ArrayCollection();
+        $this->result                 = new Collections\ArrayCollection();
     }
 
     /**
