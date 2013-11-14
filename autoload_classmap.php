@@ -27,7 +27,7 @@ return array(
   'Contact\Entity\Profile'                      => __DIR__ . '/src/Contact/Entity/Profile.php',
   'Contact\Entity\Selection'                    => __DIR__ . '/src/Contact/Entity/Selection.php',
   'Contact\Entity\SelectionContact'             => __DIR__ . '/src/Contact/Entity/SelectionContact.php',
-  'Contact\Entity\SelectionMailingList'         => __DIR__ . '/src/Contact/Entity/SelectionMailingList.php',
+  'Contact\Entity\SelectionMailingList'         => __DIR__ . '/src/Contact/Entity/SelectionMailinglist.php',
   'Contact\Entity\SelectionSql'                 => __DIR__ . '/src/Contact/Entity/SelectionSql.php',
   'Contact\Entity\Web'                          => __DIR__ . '/src/Contact/Entity/Web.php',
   'Contact\Form\CreateObject'                   => __DIR__ . '/src/Contact/Form/CreateObject.php',

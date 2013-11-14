@@ -33,6 +33,9 @@ use Zend\Permissions\Acl\Role\RoleInterface;
  */
 class Access extends EntityAbstract implements RoleInterface
 {
+    const ACCESS_OFFICE = 'Office';
+    const ACCESS_PUBLIC = 'Public';
+
     /**
      * @ORM\Column(name="access_id", type="integer", nullable=false)
      * @ORM\Id
@@ -68,6 +71,12 @@ class Access extends EntityAbstract implements RoleInterface
      * @var \Publication\Entity\Type[]
      */
     private $publicationType;
+    /**
+     * @ORM\ManyToMany(targetEntity="Project\Entity\ResultType", cascade={"persist"}, mappedBy="access")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\ResultType[]
+     */
+    private $resultType;
 
     /**
      * Class constructor
@@ -76,6 +85,7 @@ class Access extends EntityAbstract implements RoleInterface
     {
         $this->contact         = new ArrayCollection();
         $this->publicationType = new ArrayCollection();
+        $this->resultType      = new ArrayCollection();
     }
 
     /**
@@ -265,5 +275,21 @@ class Access extends EntityAbstract implements RoleInterface
     public function getPublicationType()
     {
         return $this->publicationType;
+    }
+
+    /**
+     * @param \Project\Entity\ResultType[] $resultType
+     */
+    public function setResultType($resultType)
+    {
+        $this->resultType = $resultType;
+    }
+
+    /**
+     * @return \Project\Entity\ResultType[]
+     */
+    public function getResultType()
+    {
+        return $this->resultType;
     }
 }

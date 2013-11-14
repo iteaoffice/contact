@@ -85,6 +85,20 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Give the access object, based on the name of the access
+     *
+     * @param $name
+     *
+     * @return \Contact\Entity\Access|null
+     */
+    public function findAccessByName($name)
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('access'))->findOneBy(
+            array('access' => $name)
+        );
+    }
+
+    /**
      * Parse the fullname of a project
      *
      * @return string
@@ -171,12 +185,18 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param $email
+     * @param $emailAddress
      */
-    public function register($email)
+    public function register($emailAddress)
     {
-        die($email);
-        die();
+        $emailService = $this->getServiceLocator()->get('email');
+        $emailService->setTemplate("/auth/register:mail");
+
+        $email = $emailService->create();
+        $email->addTo($emailAddress, "Johan van der heide");
+        $email->setVariable('test');
+
+        $emailService->send($email);
     }
 
     /**

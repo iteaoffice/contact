@@ -474,17 +474,29 @@ class Contact extends EntityAbstract implements
      */
     private $mailing;
     /**
-     * @ORM\ManyToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Result[]
      */
     private $result;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="contact")
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="resultContact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Result[]
      */
     private $resultContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Workpackage[]
+     */
+    private $workpackage;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\WorkpackageDocument", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\WorkpackageDocument[]
+     */
+    private $workpackageDocument;
 
     /**
      * Class constructor
@@ -530,6 +542,8 @@ class Contact extends EntityAbstract implements
         $this->mailing                = new Collections\ArrayCollection();
         $this->resultContact          = new Collections\ArrayCollection();
         $this->result                 = new Collections\ArrayCollection();
+        $this->workpackage            = new Collections\ArrayCollection();
+        $this->workpackageDocument    = new Collections\ArrayCollection();
     }
 
     /**
@@ -1806,5 +1820,85 @@ class Contact extends EntityAbstract implements
     public function getMailingContact()
     {
         return $this->mailingContact;
+    }
+
+    /**
+     * @param \Mailing\Entity\Mailing[] $mailing
+     */
+    public function setMailing($mailing)
+    {
+        $this->mailing = $mailing;
+    }
+
+    /**
+     * @return \Mailing\Entity\Mailing[]
+     */
+    public function getMailing()
+    {
+        return $this->mailing;
+    }
+
+    /**
+     * @param \Project\Entity\Result[] $result
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+    }
+
+    /**
+     * @return \Project\Entity\Result[]
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     * @param \Project\Entity\Result[] $resultContact
+     */
+    public function setResultContact($resultContact)
+    {
+        $this->resultContact = $resultContact;
+    }
+
+    /**
+     * @return \Project\Entity\Result[]
+     */
+    public function getResultContact()
+    {
+        return $this->resultContact;
+    }
+
+    /**
+     * @param \Project\Entity\Workpackage[] $workpackage
+     */
+    public function setWorkpackage($workpackage)
+    {
+        $this->workpackage = $workpackage;
+    }
+
+    /**
+     * @return \Project\Entity\Workpackage[]
+     */
+    public function getWorkpackage()
+    {
+        return $this->workpackage;
+    }
+
+    /**
+     * @param \Project\Entity\WorkpackageDocument[] $workpackageDocument
+     */
+    public function setWorkpackageDocument($workpackageDocument)
+    {
+        $this->workpackageDocument = $workpackageDocument;
+    }
+
+    /**
+     * @return \Project\Entity\WorkpackageDocument[]
+     */
+    public function getWorkpackageDocument()
+    {
+        return $this->workpackageDocument;
     }
 }
