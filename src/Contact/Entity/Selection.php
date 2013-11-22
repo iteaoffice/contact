@@ -162,6 +162,12 @@ class Selection extends EntityAbstract
      * @var \Mailing\Entity\Mailing[]
      */
     private $mailing;
+    /**
+     * @ORM\OneToMany(targetEntity="Event\Entity\Exempt", cascade={"persist"}, mappedBy="selection")
+     * @Annotation\Exclude()
+     * @var \Event\Entity\Exempt[]
+     */
+    private $exempt;
 
     /**
      * Class constructor
@@ -171,6 +177,7 @@ class Selection extends EntityAbstract
         $this->selectionContact = new Collections\ArrayCollection();
         $this->mailingList      = new Collections\ArrayCollection();
         $this->mailing          = new Collections\ArrayCollection();
+        $this->exempt           = new Collections\ArrayCollection();
     }
 
 
@@ -557,4 +564,22 @@ class Selection extends EntityAbstract
     {
         return $this->mailing;
     }
+
+    /**
+     * @param \Event\Entity\Exempt[] $exempt
+     */
+    public function setExempt($exempt)
+    {
+        $this->exempt = $exempt;
+    }
+
+    /**
+     * @return \Event\Entity\Exempt[]
+     */
+    public function getExempt()
+    {
+        return $this->exempt;
+    }
+
+
 }

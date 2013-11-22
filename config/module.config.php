@@ -66,6 +66,7 @@ $configFiles = array(
     __DIR__ . '/module.config.routes.php',
     __DIR__ . '/module.config.navigation.php',
     __DIR__ . '/module.config.authorize.php',
+    __DIR__ . '/module.config.community.php',
 );
 
 foreach ($configFiles as $configFile) {

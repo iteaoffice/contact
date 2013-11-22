@@ -12,8 +12,10 @@ namespace Contact\Service;
 use Contact\Entity\AddressType;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Contact;
+use Contact\Entity\Selection;
 
 use Contact\Service\AddressService;
+use Contact\Options\CommunityOptionsInterface;
 use Project\Service\ProjectService;
 use Organisation\Service\OrganisationService;
 
@@ -41,6 +43,10 @@ class ContactService extends ServiceAbstract
      * @var OrganisationService
      */
     protected $organisationService;
+    /**
+     * @var CommunityOptionsInterface
+     */
+    protected $communityOptions;
     /**
      * @var Contact
      */
@@ -200,6 +206,90 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Return true or false depending if a user is in the community
+     *
+     * @return bool
+     */
+    public function isCommunity()
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact')
+        )->findIsCommunityMember($this->getContact(), $this->getCommunityOptions());
+    }
+
+    /**
+     * Returns true when a user is in a selection
+     *
+     * @param int|array $selection
+     */
+    public function inSelection($selection)
+    {
+        if (!is_array($selection)) {
+            $selection = array($selection);
+        }
+
+        foreach ($selection as $selectionResult) {
+            if (!$selectionResult instanceof Selection) {
+                throw new \InvalidArgumentException("Selection should be instance of Selection");
+            }
+
+            if (is_null($selectionResult->getId())) {
+                throw new \InvalidArgumentException("The given selection cannot be empty");
+            }
+        }
+
+        if (is_null($this->getContact())) {
+            throw new \InvalidArgumentException("The contact cannot be null");
+        }
+
+        foreach ($selection as $givenSelection) {
+            if ($this->findContactInSelection($givenSelection)) {
+                return true;
+            }
+        }
+        die();
+    }
+
+    /**
+     * @param Selection $selection
+     *
+     * @return bool;
+     */
+    public function findContactInSelection(Selection $selection)
+    {
+
+        if (is_null($this->getContact())) {
+            throw new \InvalidArgumentException("The contact cannot be null");
+        }
+
+        if (!is_null($selection->getSql())) {
+            //We have a dynamic query
+
+            $contacts = $this->getEntityManager()->getRepository(
+                $this->getFullEntityName('contact')
+            )->findContactsBySelectionSQL($selection->getSql());
+        }
+
+        /**
+         * The selection contains contacts, do an extra query to find the contact
+         */
+        if (false && sizeof($selection->getSelectionContact()) > 0) {
+            $contact = $this->getEntityManager()->getRepository($this->getFullEntityName('SelectionContact'))->findOneBy(
+                array(
+                    'contact'   => $this->getContact(),
+                    'selection' => $selection
+                )
+            );
+
+            /**
+             * Return true when we found a contact
+             */
+            if (!is_null($contact)) {
+                return true;
+            }
+        }
+    }
+
+    /**
      * @param Contact $contact
      *
      * @return ContactService
@@ -291,5 +381,27 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->addressService;
+    }
+
+    /**
+     * get community options
+     *
+     * @return CommunityOptionsInterface
+     */
+    public function getCommunityOptions()
+    {
+        if (!$this->communityOptions instanceof CommunityOptionsInterface) {
+            $this->setCommunityOptions($this->getServiceLocator()->get('contact_community_options'));
+        }
+
+        return $this->communityOptions;
+    }
+
+    /**
+     * @param \Contact\Options\CommunityOptionsInterface $communityOptions
+     */
+    public function setCommunityOptions($communityOptions)
+    {
+        $this->communityOptions = $communityOptions;
     }
 }
