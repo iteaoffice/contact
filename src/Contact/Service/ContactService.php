@@ -219,40 +219,44 @@ class ContactService extends ServiceAbstract
     /**
      * Returns true when a user is in a selection
      *
-     * @param int|array $selection
+     * @param Selection|Selection[] $selections
+     *
+     * @return bool
+     * @throws \InvalidArgumentException
      */
-    public function inSelection($selection)
+    public function inSelection($selections)
     {
-        if (!is_array($selection)) {
-            $selection = array($selection);
-        }
-
-        foreach ($selection as $selectionResult) {
-            if (!$selectionResult instanceof Selection) {
-                throw new \InvalidArgumentException("Selection should be instance of Selection");
-            }
-
-            if (is_null($selectionResult->getId())) {
-                throw new \InvalidArgumentException("The given selection cannot be empty");
-            }
-        }
 
         if (is_null($this->getContact())) {
             throw new \InvalidArgumentException("The contact cannot be null");
         }
 
-        foreach ($selection as $givenSelection) {
-            if ($this->findContactInSelection($givenSelection)) {
+        if (!is_array($selections)) {
+            $selections = array($selections);
+        }
+
+        foreach ($selections as $selection) {
+            if (!$selection instanceof Selection) {
+                throw new \InvalidArgumentException("Selection should be instance of Selection");
+            }
+
+            if (is_null($selection->getId())) {
+                throw new \InvalidArgumentException("The given selection cannot be empty");
+            }
+
+            if ($this->findContactInSelection($selection)) {
                 return true;
             }
         }
-        die();
+
+        return false;
     }
 
     /**
      * @param Selection $selection
      *
-     * @return bool;
+     * @return bool
+     * @throws \InvalidArgumentException
      */
     public function findContactInSelection(Selection $selection)
     {
@@ -262,17 +266,16 @@ class ContactService extends ServiceAbstract
         }
 
         if (!is_null($selection->getSql())) {
-            //We have a dynamic query
-
-            $contacts = $this->getEntityManager()->getRepository(
+            //We have a dynamic query, check if the contact is in the selection
+            return $this->getEntityManager()->getRepository(
                 $this->getFullEntityName('contact')
-            )->findContactsBySelectionSQL($selection->getSql());
+            )->isContactInSelectionSQL($this->getContact(), $selection->getSql());
         }
 
         /**
          * The selection contains contacts, do an extra query to find the contact
          */
-        if (false && sizeof($selection->getSelectionContact()) > 0) {
+        if (sizeof($selection->getSelectionContact()) > 0) {
             $contact = $this->getEntityManager()->getRepository($this->getFullEntityName('SelectionContact'))->findOneBy(
                 array(
                     'contact'   => $this->getContact(),
