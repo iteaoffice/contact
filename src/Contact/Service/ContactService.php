@@ -16,6 +16,7 @@ use Contact\Entity\Selection;
 
 use Contact\Service\AddressService;
 use Contact\Options\CommunityOptionsInterface;
+use Doctrine\ORM\PersistentCollection;
 use Project\Service\ProjectService;
 use Organisation\Service\OrganisationService;
 
@@ -231,7 +232,7 @@ class ContactService extends ServiceAbstract
             throw new \InvalidArgumentException("The contact cannot be null");
         }
 
-        if (!is_array($selections)) {
+        if (!is_array($selections) && !$selections instanceof PersistentCollection) {
             $selections = array($selections);
         }
 

@@ -17,5 +17,7 @@ return array(
 
                 return new Options\ModuleOptions(isset($config['community']) ? $config['community'] : array());
             },
+        'Contact\Provider\Identity\AuthenticationIdentityProvider'
+                                    => 'Contact\Service\AuthenticationIdentityProviderServiceFactory',
     ),
 );

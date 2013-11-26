@@ -62,7 +62,7 @@ class ContactPhoto extends AbstractHelper
             );
         }
 
-        $imageUrl = '<img src="%s?%s" id="%s">';
+        $imageUrl = '<img src="%s?%s" class="img-responsive" id="%s">';
 
         $params = array(
             'contactHash' => $photo->getContact()->parseHash(),

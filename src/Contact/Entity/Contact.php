@@ -784,7 +784,7 @@ class Contact extends EntityAbstract implements
      */
     public function getRoles()
     {
-        return $this->access;
+        return array_merge(array('user'), $this->access->toArray());
     }
 
     /**

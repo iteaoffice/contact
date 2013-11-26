@@ -66,6 +66,29 @@ class Access extends EntityAbstract implements RoleInterface
      */
     private $contact;
     /**
+     * @ORM\ManyToMany(targetEntity="Contact\Entity\Selection", inversedBy="access", cascade={"persist"})
+     * @ORM\JoinTable(name="access_selection",
+     *    joinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")},
+     *    inverseJoinColumns={@ORM\JoinColumn(name="selection_id", referencedColumnName="selection_id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({
+     *      "target_class":"Contact\Entity\Selection",
+     *      "find_method":{
+     *          "name":"findBy",
+     *          "params": {
+     *              "criteria":{},
+     *              "orderBy":{
+     *                  "selection":"ASC"}
+     *              }
+     *          }
+     *      }
+     * )
+     * @Annotation\Attributes({"label":"txt-selection"})
+     * @var \Contact\Entity\Selection[]
+     */
+    private $selection;
+    /**
      * @ORM\ManyToMany(targetEntity="Publication\Entity\Type", cascade={"persist"}, mappedBy="access")
      * @Annotation\Exclude();
      * @var \Publication\Entity\Type[]
@@ -86,6 +109,7 @@ class Access extends EntityAbstract implements RoleInterface
         $this->contact         = new ArrayCollection();
         $this->publicationType = new ArrayCollection();
         $this->resultType      = new ArrayCollection();
+        $this->selection       = new ArrayCollection();
     }
 
     /**
@@ -291,5 +315,21 @@ class Access extends EntityAbstract implements RoleInterface
     public function getResultType()
     {
         return $this->resultType;
+    }
+
+    /**
+     * @param \Contact\Entity\Selection[] $selection
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
+    }
+
+    /**
+     * @return \Contact\Entity\Selection[]
+     */
+    public function getSelection()
+    {
+        return $this->selection;
     }
 }
