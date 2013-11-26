@@ -57,10 +57,11 @@ class ContactLink extends AbstractHelper
                 $router = 'zfcadmin/contact-manager/edit';
                 $text   = sprintf($translate("txt-edit-contact-%s"), $contact);
                 break;
-            case 'view':
-                $router = 'contact/contact';
-                $text   = sprintf($translate("txt-view-contact-%s"), $contact);
+            case 'edit-profile':
+                $router = 'contact/profile-edit';
+                $text   = sprintf($translate("txt-edit-your-profile"));
                 break;
+
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $action, __CLASS__));
         }
@@ -68,7 +69,7 @@ class ContactLink extends AbstractHelper
         if (is_null($contact)) {
             throw new \RuntimeException(
                 sprintf(
-                    "Area needs to be an instance of %s, %s given in %s",
+                    "Contact needs to be an instance of %s, %s given in %s",
                     "Contact\Entity\Contact",
                     get_class($contact),
                     __CLASS__

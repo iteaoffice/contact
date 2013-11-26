@@ -40,12 +40,12 @@ class Phone extends EntityAbstract
     /**
      * @ORM\Column(name="phone", type="string", length=40, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-city"})
+     * @Annotation\Options({"label":"txt-phone-number"})
      * @var string
      */
     private $phone;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="address")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="phone")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
@@ -59,7 +59,7 @@ class Phone extends EntityAbstract
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false)
      * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
-     * @Annotation\Options({"target_class":"Phone\Entity\Type"})
+     * @Annotation\Options({"target_class":"Contact\Entity\PhoneType"})
      * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
      * @var \Contact\Entity\PhoneType
      */

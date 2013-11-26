@@ -147,7 +147,6 @@ class ContactManagerController extends AbstractActionController implements
         return $this->redirect()->toRoute(
             'zfcadmin/contact-manager/' . $entity->get('dashed_entity_name') . 's'
         );
-
     }
 
     /**
@@ -177,7 +176,7 @@ class ContactManagerController extends AbstractActionController implements
      */
     public function getContactService()
     {
-        return $this->getServiceLocator()->get('contact_generic_service');
+        return $this->getServiceLocator()->get('contact_contact_service');
     }
 
     /**

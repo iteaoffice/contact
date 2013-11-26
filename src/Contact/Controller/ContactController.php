@@ -14,13 +14,16 @@ use Zend\View\Model\ViewModel;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 use Contact\Service\ContactService;
+use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\FormService;
 
 /**
  * @category    Contact
  * @package     Controller
  */
-class ContactController extends AbstractActionController implements ServiceLocatorAwareInterface
+class ContactController extends AbstractActionController implements
+    FormServiceAwareInterface,
+    ServiceLocatorAwareInterface
 {
     /**
      * @var ContactService
@@ -46,7 +49,6 @@ class ContactController extends AbstractActionController implements ServiceLocat
      */
     public function photoAction()
     {
-//        $this->layout(false);
         $response = $this->getResponse();
 
         $contact = $this->getContactService()->findContactByHash(
@@ -78,6 +80,40 @@ class ContactController extends AbstractActionController implements ServiceLocat
     }
 
     /**
+     * @return ViewModel
+     */
+    public function profileAction()
+    {
+        $contactService = $this->getContactService()->setContact(
+            $this->zfcUserAuthentication()->getIdentity()
+        );
+
+        return new ViewModel(array('contactService' => $contactService));
+    }
+
+    /**
+     * Edit the profile of the person
+     * @return ViewModel
+     */
+    public function profileEditAction()
+    {
+        $entity = $this->getContactService()->findEntityById(
+            'contact',
+            $this->zfcUserAuthentication()->getIdentity()->getId()
+        );
+
+        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
+
+        $form->setAttribute('class', 'form-horizontal');
+
+        if ($this->getRequest()->isPost() && $form->isValid()) {
+            $result = $this->getContactService()->newEntity($form->getData());
+        }
+
+        return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
+    }
+
+    /**
      * Gateway to the Contact Service
      *
      * @return ContactService
@@ -95,6 +131,26 @@ class ContactController extends AbstractActionController implements ServiceLocat
     public function setContactService($contactService)
     {
         $this->contactService = $contactService;
+
+        return $this;
+    }
+
+    /**
+     * @return \Contact\Service\FormService
+     */
+    public function getFormService()
+    {
+        return $this->formService;
+    }
+
+    /**
+     * @param $formService
+     *
+     * @return ContactManagerController
+     */
+    public function setFormService($formService)
+    {
+        $this->formService = $formService;
 
         return $this;
     }

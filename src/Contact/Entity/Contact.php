@@ -80,7 +80,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\Column(name="middlename", type="string", length=20, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-first-name"})
+     * @Annotation\Options({"label":"txt-middle-name"})
      * @var string
      */
     private $middleName;
@@ -121,7 +121,7 @@ class Contact extends EntityAbstract implements
      * @ORM\JoinColumn(name="gender_id", referencedColumnName="gender_id", nullable=false)
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Gender"})
-     * @Annotation\Attributes({"label":"txt-gender", "required":"true","class":"span3"})
+     * @Annotation\Attributes({"label":"txt-attention", "required":"true","class":"span3"})
      * @var \General\Entity\Gender
      */
     private $gender;
@@ -226,9 +226,15 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\CV[]
+     * @var \Contact\Entity\Address[]
      */
     private $address;
+    /**
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Phone", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Contact\Entity\Phone[]
+     */
+    private $phone;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Web", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -509,6 +515,7 @@ class Contact extends EntityAbstract implements
         $this->web                    = new Collections\ArrayCollection();
         $this->role                   = new Collections\ArrayCollection();
         $this->address                = new Collections\ArrayCollection();
+        $this->phone                  = new Collections\ArrayCollection();
         $this->emailAddress           = new Collections\ArrayCollection();
         $this->access                 = new Collections\ArrayCollection();
         $this->optIn                  = new Collections\ArrayCollection();
@@ -616,7 +623,7 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'       => 'name',
+                        'name'       => 'firstName',
                         'required'   => true,
                         'filters'    => array(
                             array('name' => 'StripTags'),
@@ -639,7 +646,7 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'       => 'email',
+                        'name'       => 'lastName',
                         'required'   => true,
                         'filters'    => array(
                             array('name' => 'StripTags'),
@@ -659,28 +666,6 @@ class Contact extends EntityAbstract implements
                 )
             );
 
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'       => 'label',
-                        'required'   => true,
-                        'filters'    => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
-                                'name'    => 'StringLength',
-                                'options' => array(
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 100,
-                                ),
-                            ),
-                        ),
-                    )
-                )
-            );
 
             $inputFilter->add(
                 $factory->createInput(
@@ -1176,7 +1161,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\CV[] $address
+     * @param \Contact\Entity\Address[] $address
      */
     public function setAddress($address)
     {
@@ -1184,7 +1169,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\CV[]
+     * @return \Contact\Entity\Address[]
      */
     public function getAddress()
     {
@@ -1206,6 +1191,23 @@ class Contact extends EntityAbstract implements
     {
         return $this->cv;
     }
+
+    /**
+     * @param \Contact\Entity\Phone[] $phone
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return \Contact\Entity\Phone[]
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
 
     /**
      * @param \Contact\Entity\Web[] $web

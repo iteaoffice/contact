@@ -41,8 +41,12 @@ class FormService implements ServiceLocatorAwareInterface
      */
     public function getForm($className = null, $entity = null, $bind = true)
     {
-        if (!$entity) {
+        if (!is_null($className) && is_null($entity)) {
             $entity = $this->getContactService()->getEntity($className);
+        }
+
+        if (!is_object($entity)) {
+            throw new \InvalidArgumentException("No entity created given");
         }
 
         $formName = 'contact_' . $entity->get('underscore_entity_name') . '_form';

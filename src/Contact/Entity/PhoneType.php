@@ -51,9 +51,20 @@ class PhoneType
      */
     private $phone;
 
+    /**
+     * Class constructor
+     */
     public function __construct()
     {
-        $this->phone = new Collection\ArrayCollection();
+        $this->phone = new Collections\ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->type;
     }
 
     /**
@@ -103,6 +114,4 @@ class PhoneType
     {
         return $this->phone;
     }
-
-
 }

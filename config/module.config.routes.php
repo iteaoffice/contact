@@ -59,12 +59,30 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes'  => array(
-                    'photo' => array(
+                    'photo'        => array(
                         'type'    => 'Segment',
                         'options' => array(
                             'route'    => '/photo/[:contactHash].[:ext]',
                             'defaults' => array(
                                 'action' => 'photo',
+                            ),
+                        ),
+                    ),
+                    'profile'      => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/profile.html',
+                            'defaults' => array(
+                                'action' => 'profile',
+                            ),
+                        ),
+                    ),
+                    'profile-edit' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/edit/profile.html',
+                            'defaults' => array(
+                                'action' => 'profile-edit',
                             ),
                         ),
                     ),

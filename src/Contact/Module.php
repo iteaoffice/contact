@@ -14,7 +14,7 @@ namespace Contact;
 use Zend\ModuleManager\Feature; //Makes the module class more strict
 use Zend\EventManager\EventInterface;
 
-use Project\Service\FormServiceAwareInterface;
+use Contact\Service\FormServiceAwareInterface;
 
 /**
  *
@@ -78,7 +78,7 @@ class Module implements
                 function ($instance, $sm) {
                     if ($instance instanceof FormServiceAwareInterface) {
                         $sm          = $sm->getServiceLocator();
-                        $formService = $sm->get('project_form_service');
+                        $formService = $sm->get('contact_form_service');
                         $instance->setFormService($formService);
                     }
                 },

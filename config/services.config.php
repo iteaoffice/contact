@@ -9,6 +9,7 @@
  */
 use Contact\Form;
 use Contact\Options;
+use Contact\Entity;
 
 return array(
     'factories' => array(
@@ -16,6 +17,9 @@ return array(
                 $config = $sm->get('Config');
 
                 return new Options\ModuleOptions(isset($config['community']) ? $config['community'] : array());
+            },
+        'contact_contact_form'      => function ($sm) {
+                return new Form\Contact($sm, new Entity\Contact());
             },
         'Contact\Provider\Identity\AuthenticationIdentityProvider'
                                     => 'Contact\Service\AuthenticationIdentityProviderServiceFactory',

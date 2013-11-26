@@ -1,0 +1,133 @@
+{% set contactService = contactServiceProxy(zfcUserIdentity()) %}
+
+{% do headTitle().append(translate("txt-profile")) %}
+{% do headTitle().append(contactService.parseFullname()) %}
+
+
+<div class="pull-right">
+    {{ gravatar(zfcUserIdentity().getEmail()|lower) }}
+</div>
+
+<h1>{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
+
+<ul id="tab" class="nav nav-tabs">
+    <li class="active"><a href="#profile" data-toggle="tab">{{ translate("txt-profile")|capitalize }}</a></li>
+    <li><a href="#organisation" data-toggle="tab">{{ translate("txt-organisation")|capitalize }}</a></li>
+    <li><a href="#event" data-toggle="tab">{{ translate("txt-event")|capitalize }}</a></li>
+    <li><a href="#updates" data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
+</ul>
+
+<div id="tabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="profile">
+        <h2>{{ translate("txt-personal-profile") }}</h2>
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-name") }}</dt>
+            <dd>{{ contactService.parseFullName() }} ({{ contactService.contact.id }})</dd>
+            <dt>{{ translate("txt-email") }}</dt>
+            <dd>{{ contactService.contact.email }}</dd>
+            <dt>{{ translate("txt-direct-phone") }}</dt>
+            <dd>{{ contactService.getDirectPhone() }}</dd>
+            <dt>{{ translate("txt-mobile-phone") }}</dt>
+            <dd>{{ contactService.getMobilePhone() }}</dd>
+            <dt>{{ translate("txt-profile-picture") }}</dt>
+            <dd>{{ contactPhoto(contactService.getContact()) }}</dd>
+            <dt>{{ translate("txt-profile-visibility") }}</dt>
+            <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
+            <dt>{{ translate("txt-expertise") }}</dt>
+            <dd>{{ contactService.contact.profile.description }}</dd>
+            <dt>{{ translate("txt-community") }}</dt>
+            {% for community in contactService.contact.community %}
+                <dd>{{ communityLink(community) }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-community-known") }}</dd>
+            {% endfor %}
+            <dt>{{ translate("txt-opt-in") }}</dt>
+            {% for openId in contactService.contact.openId %}
+                <dd>{{ translate("txt-open-id") }} - {{ openId }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-open-in-known") }}</dd>
+            {% endfor %}
+        </dl>
+
+        {{ contactLink(contactService.contact,'edit-profile', 'button') }}
+    </div>
+
+
+    <div class="tab-pane fade in" id="organisation">
+        {% set organisationService = contactService.findOrganisationService() %}
+
+        <h2>{{ translate("txt-organisation") }}</h2>
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-organisation") }}</dt>
+            <dd>{{ organisationService.parseOrganisationWithBranch(contactService.contact.contactOrganisation.branch) }}</dd>
+            <dt>{{ translate("txt-organisation-type") }}</dt>
+            <dd>{{ organisationService.organisation.type.description }}</dd>
+            <dt>{{ translate("txt-country") }}</dt>
+            <dd>{{ organisationService.organisation.country }}</dd>
+            {% if contactService.contact.department %}
+                <dt>{{ translate("txt-department") }}</dt>
+                <dd>{{ contactService.contact.department }}</dd>
+            {% endif %}
+            {% if contactService.contact.position %}
+                <dt>{{ translate("txt-position") }}</dt>
+                <dd>{{ contactService.contact.position }}</dd>
+            {% endif %}
+            <dt>{{ translate("txt-general-description") }}</dt>
+            <dd>{{ organisationService.organisation.description|raw }}</dd>
+        </dl>
+    </div>
+
+    <div class="tab-pane fade in" id="event">
+        <h2>{{ translate("txt-events") }}</h2>
+
+        <h3>{{ translate("txt-my-event-registrations") }}</h3>
+        <table class="table table-bordered table-hover table-condensed">
+            <thead>
+            <tr>
+                <th>{{ translate("txt-meeting-name") }}</th>
+                <th>{{ translate("txt-date") }}</th>
+                <th>{{ translate("txt-location") }}</th>
+                <th>{{ translate("txt-nda") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for registration in contactService.contact.registration %}
+                <tr>
+                    <td>{{ meetingLink(registration.meeting,'view', 'name') }}</td>
+                    <td>{{ registration.meeting.dateFrom|from_to_date(registration.meeting.dateUntil) }}</td>
+                    <td>{{ registration.meeting.location }}</td>
+                    <td>
+                        {% for call in registration.meeting.call %}
+                            {% set programService = programServiceProxy() %}
+                            {% set nda = programService.findNdaByCallAndContact(call, contactService.contact) %}
+                            {% if nda %}
+                                {% if nda.dateApproved %}
+                                    {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved) }}
+                                {% else %}
+                                    {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
+                                {% endif %}
+                            {% else %}
+                                {{ ndaLink(null, 'view-call', 'text', call) }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane fade in" id="updates">
+        <h2>{{ translate("txt-updates") }}</h2>
+
+        <dl class="dl-horizontal">
+            {% for optIn in contactService.findAll('optIn') %}
+                <dt>{{ optIn }}</dt>
+                <dd>{% if optIn in contactService.contact.optIn.toArray() %}{{ translate("txt-yes") }}{% else %}{{ translate("txt-no") }}{% endif %}</dd>
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+
+

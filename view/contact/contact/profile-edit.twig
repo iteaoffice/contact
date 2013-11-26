@@ -1,0 +1,27 @@
+<h1>{{ translate("txt-edit-profile") }}</h1>
+
+{% do form.prepare() %}
+
+{{ form().openTag(form)|raw }}
+
+{% set contact = form.get('contact') %}
+
+{{ ztbformelement(contact.get('gender')) }}
+{{ ztbformelement(contact.get('title')) }}
+{{ ztbformelement(contact.get('firstName')) }}
+{{ ztbformelement(contact.get('middleName')) }}
+{{ ztbformelement(contact.get('lastName')) }}
+{% set emailFormElement = contact.get('email') %}
+{% do emailFormElement.setAttribute('disabled','disabled') %}
+{{ ztbformelement(emailFormElement) }}
+
+{#{{ formcollection(contact.get('phone')) }}#}
+
+
+{% set profile = contact.get('profile') %}
+{{ ztbformelement(profile.get('visible')) }}
+
+{{ ztbformelement(form.get('csrf')) }}
+{{ ztbformelement(form.get('submit')) }}
+
+{{ form().closeTag()|raw }}
