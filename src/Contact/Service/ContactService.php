@@ -15,10 +15,13 @@ use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 
 use Contact\Service\AddressService;
+use Deeplink\Service\DeeplinkService;
 use Contact\Options\CommunityOptionsInterface;
 use Doctrine\ORM\PersistentCollection;
+use Organisation\Entity\Organisation;
 use Project\Service\ProjectService;
 use Organisation\Service\OrganisationService;
+use General\Service\GeneralService;
 
 /**
  * ContactService
@@ -37,6 +40,10 @@ class ContactService extends ServiceAbstract
      */
     protected $addressService;
     /**
+     * @var DeeplinkService
+     */
+    protected $deeplinkService;
+    /**
      * @var ProjectService
      */
     protected $projectService;
@@ -44,6 +51,10 @@ class ContactService extends ServiceAbstract
      * @var OrganisationService
      */
     protected $organisationService;
+    /**
+     * @var GeneralService
+     */
+    protected $generalService;
     /**
      * @var CommunityOptionsInterface
      */
@@ -204,6 +215,11 @@ class ContactService extends ServiceAbstract
         $email->setVariable('test');
 
         $emailService->send($email);
+        //Create the account
+
+        //Create a deeplink for the user which redirects to the profile-page
+        $this->getDeeplinkService()->createDeeplink()
+        
     }
 
     /**
@@ -292,6 +308,62 @@ class ContactService extends ServiceAbstract
             }
         }
     }
+
+    /**
+     * We use this function to update the contactOrganisation of a user.
+     * As input we use the corresponding contact entity and the array containing the
+     * contactOrganisation information
+     *
+     * $contactOrganisation['organisation'] > Name of the organisation
+     * $contactOrganisation['country'] > CountryId
+     *
+     * @param Contact $contact
+     * @param array   $contactOrganisation
+     */
+    public function updateContactOrganisation(Contact $contact, array $contactOrganisation)
+    {
+        $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+
+        $organisation = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
+            $contactOrganisation['organisation'],
+            $country,
+            $contact->getEmail()
+        );
+
+        $currentContactOrganisation = $contact->getContactOrganisation();
+
+        /**
+         * We did nt find an organisation, so we need to create it
+         */
+        if (sizeof($organisation) === 0) {
+            $organisation = new Organisation();
+            $organisation->setOrganisation($contactOrganisation['organisation']);
+            $organisation->setCountry($country);
+            $organisation->setType($this->organisationService->findEntityById('type', 0)); //Unknown
+            $currentContactOrganisation->setOrganisation($organisation);
+        } else {
+            /**
+             * Go over the found organisation to match the branching
+             */
+            foreach ($organisation as $foundOrganisation) {
+                if (strpos($foundOrganisation->getOrganisation(), $contactOrganisation['organisation']) !== false &&
+                    strlen($foundOrganisation->getOrganisation()) > $contactOrganisation['organisation']
+                ) {
+                    /**
+                     * We have found a match of the organisation in the string and
+                     */
+                    $currentContactOrganisation->setBranch(
+                        str_replace($contactOrganisation['organisation'], '~', $foundOrganisation->getOrganisation())
+                    );
+                }
+                $currentContactOrganisation->setOrganisation($foundOrganisation);
+            }
+        }
+
+
+        $this->updateEntity($currentContactOrganisation);
+    }
+
 
     /**
      * @param Contact $contact
@@ -388,6 +460,54 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * @param GeneralService $generalService
+     */
+    public function setGeneralService($generalService)
+    {
+        $this->generalService = $generalService;
+    }
+
+    /**
+     * @return GeneralService
+     */
+    public function getGeneralService()
+    {
+        if (!$this->generalService instanceof GeneralService) {
+            $this->setGeneralService($this->getServiceLocator()->get('general_general_service'));
+        }
+
+        return $this->generalService;
+    }
+
+    /**
+     * @param DeeplinkService $deeplinkService
+     */
+    public function setDeeplinkService($deeplinkService)
+    {
+        $this->deeplinkService = $deeplinkService;
+    }
+
+    /**
+     * @return DeeplinkService
+     */
+    public function getDeeplinkService()
+    {
+        if (!$this->deeplinkService instanceof DeeplinkService) {
+            $this->setDeeplinkService($this->getServiceLocator()->get('deeplink_deeplink_service'));
+        }
+
+        return $this->deeplinkService;
+    }
+
+    /**
+     * @param \Contact\Options\CommunityOptionsInterface $communityOptions
+     */
+    public function setCommunityOptions($communityOptions)
+    {
+        $this->communityOptions = $communityOptions;
+    }
+
+    /**
      * get community options
      *
      * @return CommunityOptionsInterface
@@ -399,13 +519,5 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->communityOptions;
-    }
-
-    /**
-     * @param \Contact\Options\CommunityOptionsInterface $communityOptions
-     */
-    public function setCommunityOptions($communityOptions)
-    {
-        $this->communityOptions = $communityOptions;
     }
 }

@@ -77,5 +77,49 @@ class ContactFieldset extends Fieldset
 
         $contactProfileFieldset = new \Contact\Form\ContactProfileFieldset($entityManager, new Entity\Profile());
         $this->add($contactProfileFieldset);
+
+        $contactPhotoFieldset = new \Contact\Form\ContactPhotoFieldset($entityManager, new Entity\Photo());
+        $this->add($contactPhotoFieldset);
+
+        $contactAddress = new ContactAddressFieldset($entityManager, new Entity\Address());
+        $contactAddress->setObject(new Entity\Address());
+
+        $this->add(
+            array(
+                'type'    => 'Zend\Form\Element\Collection',
+                'name'    => 'address',
+                'options' => array(
+                    'label'                  => "txt-address-information",
+                    'count'                  => 1,
+                    'should_create_template' => true,
+                    'template_placeholder'   => '__placeholder__',
+                    'allow_add'              => true,
+                    'target_element'         => $contactAddress
+
+                )
+            )
+        );
+
+        $contactCommunity = new ContactCommunityFieldset($entityManager, new Entity\Community());
+        $contactCommunity->setObject(new Entity\Community());
+
+        $this->add(
+            array(
+                'type'    => 'Zend\Form\Element\Collection',
+                'name'    => 'community',
+                'options' => array(
+                    'label'                  => "txt-community-information",
+                    'count'                  => 1,
+                    'should_create_template' => true,
+                    'template_placeholder'   => '__placeholder__',
+                    'allow_add'              => true,
+                    'target_element'         => $contactCommunity
+
+                )
+            )
+        );
+
+        $contactOrganisationFieldset = new \Contact\Form\ContactOrganisationFieldset($entityManager, new Entity\ContactOrganisation());
+        $this->add($contactOrganisationFieldset);
     }
 }

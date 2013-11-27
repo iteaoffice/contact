@@ -33,7 +33,6 @@ class Phone extends EntityAbstract
      * @ORM\Column(name="phone_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Exclude()
      * @var integer
      */
     private $id;
@@ -47,9 +46,9 @@ class Phone extends EntityAbstract
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="phone")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
-     * @Annotation\Exclude()
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -64,6 +63,14 @@ class Phone extends EntityAbstract
      * @var \Contact\Entity\PhoneType
      */
     private $type;
+
+    /**
+     * Class constructor
+     */
+    public function __construct()
+    {
+    }
+
 
     /**
      * Magic Getter
@@ -144,15 +151,6 @@ class Phone extends EntityAbstract
                 )
             );
 
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'type',
-                        'required' => true,
-                    )
-                )
-            );
-
 
             $this->inputFilter = $inputFilter;
         }
@@ -169,10 +167,13 @@ class Phone extends EntityAbstract
     {
         return array(
             'contact' => $this->contact,
-            'type'    => $this->type
+            'type'    => $this->type,
         );
     }
 
+    /**
+     * @return array
+     */
     public function populate()
     {
         return $this->getArrayCopy();

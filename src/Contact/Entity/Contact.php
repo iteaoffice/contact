@@ -178,10 +178,7 @@ class Contact extends EntityAbstract implements
     private $dateEnd;
     /**
      * @ORM\Column(name="messenger", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
-     * @Annotation\Attributes({"array":"messengerTemplates"})
-     * @Annotation\Attributes({"label":"txt-messenger", "required":"true"})
-     * @Annotation\Required(true)
+     * @Annotation\Exclude()
      * @var int
      */
     private $messenger;
@@ -200,14 +197,7 @@ class Contact extends EntityAbstract implements
     private $access;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contact", cascade={"all"}, fetch="EXTRA_LAZY")
-     * @ORM\OrderBy=({"Name" =  "ASC"})
-     * @ORM\JoinTable(name="admin_user_role",
-     *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
-     * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Admin\Entity\Role"})
-     * @Annotation\Attributes({"label":"txt-roles"})
+     * @Annotation\Exclude()
      * @var \Admin\Entity\Role[]
      */
     private $role;
@@ -225,19 +215,19 @@ class Contact extends EntityAbstract implements
     private $cv;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
+     * @@Annotation\ComposedObject("\Contact\Entity\Address")
      * @var \Contact\Entity\Address[]
      */
     private $address;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Phone", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\ComposedObject("\Contact\Entity\Phone")
      * @var \Contact\Entity\Phone[]
      */
     private $phone;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Web", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
+     * Annotation\ComposedObject("\Contact\Entity\Web")
      * @var \Contact\Entity\Web[]
      */
     private $web;
@@ -247,9 +237,7 @@ class Contact extends EntityAbstract implements
      *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
      *    inverseJoinColumns={@ORM\JoinColumn(name="optin_id", referencedColumnName="optin_id")}
      * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Contact\Entity\OptIn"})
-     * @Annotation\Attributes({"label":"txt-opt-in"})
+     * @Annotation\Exclude()
      * @var \Contact\Entity\OptIn[]
      */
     private $optIn;
@@ -301,9 +289,7 @@ class Contact extends EntityAbstract implements
      *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
      *    inverseJoinColumns={@ORM\JoinColumn(name="domain_id", referencedColumnName="domain_id")}
      * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Program\Entity\Domain"})
-     * @Annotation\Attributes({"label":"txt-domain"})
+     * @Annotation\Exclude()
      * @var \Program\Entity\Domain[]
      */
     private $domain;
@@ -326,9 +312,7 @@ class Contact extends EntityAbstract implements
      *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
      *    inverseJoinColumns={@ORM\JoinColumn(name="technology_id", referencedColumnName="technology_id")}
      * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Program\Entity\Technology"})
-     * @Annotation\Attributes({"label":"txt-technology"})
+     * @Annotation\Exclude()
      * @var \Program\Entity\Technology[]
      */
     private $technology;
@@ -376,16 +360,19 @@ class Contact extends EntityAbstract implements
     private $invoice;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Publication", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
      * @var \Publication\Entity\Publication[]
      */
     private $publication;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Download", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
      * @var \Publication\Entity\Download[]
      */
     private $publicationDownload;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Photo", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
      * @var \Contact\Entity\Photo[]
      */
     private $photo;
@@ -579,13 +566,14 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * toString returns the name
+     * toString returns the id (for form population)
+     * Revert to the contactService to have the full parsed name
      *
      * @return string
      */
     public function __toString()
     {
-        return trim(implode(' ', array($this->firstName, $this->middleName, $this->lastName)));
+        return (string)$this->id;
     }
 
     /**
@@ -646,6 +634,15 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
+                        'name'     => 'middleName',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
                         'name'       => 'lastName',
                         'required'   => true,
                         'filters'    => array(
@@ -670,6 +667,15 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
+                        'name'     => 'phone',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
                         'name'     => 'address',
                         'required' => false,
                     )
@@ -688,11 +694,39 @@ class Contact extends EntityAbstract implements
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'     => 'role',
+                        'name'     => 'dateOfBirth',
                         'required' => false,
                     )
                 )
             );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'dateEnd',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'messenger',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'access',
+                        'required' => false,
+                    )
+                )
+            );
+
 
             $this->inputFilter = $inputFilter;
         }
@@ -711,6 +745,7 @@ class Contact extends EntityAbstract implements
             'project'        => $this->project,
             'projectVersion' => $this->projectVersion,
             'address'        => $this->address,
+            'phone'          => $this->phone,
             'emailAddress'   => $this->emailAddress,
             'access'         => $this->access,
             'optIn'          => $this->optIn,
@@ -804,7 +839,6 @@ class Contact extends EntityAbstract implements
     public function addOptIn(Collections\Collection $optInCollection)
     {
         foreach ($optInCollection as $optIn) {
-            $optIn->contact = $this;
             $this->optIn->add($optIn);
         }
     }
@@ -829,7 +863,6 @@ class Contact extends EntityAbstract implements
     public function addAccess(Collections\Collection $accessCollection)
     {
         foreach ($accessCollection as $access) {
-            $access->contact = $this;
             $this->access->add($access);
         }
     }
@@ -843,6 +876,78 @@ class Contact extends EntityAbstract implements
     {
         foreach ($accessCollection as $single) {
             $this->access->removeElement($single);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $addressCollection
+     */
+    public function addAddress(Collections\Collection $addressCollection)
+    {
+        foreach ($addressCollection as $address) {
+            $this->address->add($address);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $addressCollection
+     */
+    public function removeAddress(Collections\Collection $addressCollection)
+    {
+        foreach ($addressCollection as $single) {
+            $this->address->removeElement($single);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $phoneCollection
+     */
+    public function addPhone(Collections\Collection $phoneCollection)
+    {
+        foreach ($phoneCollection as $phone) {
+            $this->phone->add($phone);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $phoneCollection
+     */
+    public function removePhone(Collections\Collection $phoneCollection)
+    {
+        foreach ($phoneCollection as $single) {
+            $this->phone->removeElement($single);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $communityCollection
+     */
+    public function addCommunity(Collections\Collection $communityCollection)
+    {
+        foreach ($communityCollection as $community) {
+            $this->community->add($community);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $communityCollection
+     */
+    public function removeCommunity(Collections\Collection $communityCollection)
+    {
+        foreach ($communityCollection as $single) {
+            $this->community->removeElement($single);
         }
     }
 
@@ -1131,7 +1236,7 @@ class Contact extends EntityAbstract implements
      */
     public function getDisplayName()
     {
-        return (string)$this;
+        return trim(implode(' ', array($this->firstName, $this->middleName, $this->lastName)));
     }
 
     /**

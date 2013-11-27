@@ -9,6 +9,9 @@
  */
 namespace Contact\Entity;
 
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @category    Contact
  * @package     Entity
  */
-class Photo
+class Photo extends EntityAbstract
 {
     /**
      * @ORM\Column(name="photo_id", type="integer", nullable=false)
@@ -35,6 +38,8 @@ class Photo
     private $id;
     /**
      * @ORM\Column(name="photo", type="blob", nullable=true)
+     * @Annotation\Type("Zend\Form\Element\File")
+     * @Annotation\Options({"label":"txt-photo-file"})
      * @var resource
      */
     private $photo;
@@ -61,13 +66,12 @@ class Photo
     /**
      * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade="all", inversedBy="contactPhoto")
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\File")
-     * @Annotation\Options({"label":"txt-dnd-file"})
+     * @Annotation\Exclude()
      * @var \General\Entity\ContentType
      */
     private $contentType;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", inversedBy="photo", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", inversedBy="photo", cascade={"persist"})
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
@@ -76,7 +80,7 @@ class Photo
     private $contact;
 
     /**
-     * Although an alternative doesn't have a clear hash, we can create one based on the id;
+     * Although an alternative does not have a clear hash, we can create one based on the id;
      *
      * @return string
      */
@@ -85,10 +89,86 @@ class Photo
         return sha1($this->id . $this->getContact()->getId());
     }
 
+    /**
+     * Class constructor
+     */
     public function __construct()
     {
         $this->contentType = null;
     }
+
+    /**
+     * Magic Getter
+     *
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        return $this->$property;
+    }
+
+    /**
+     * Magic Setter
+     *
+     * @param $property
+     * @param $value
+     *
+     * @return void
+     */
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->phone;
+    }
+
+    /**
+     * Set input filter
+     *
+     * @param InputFilterInterface $inputFilter
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Setting an inputFilter is currently not supported");
+    }
+
+    /**
+     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
+     */
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+            $factory     = new InputFactory();
+
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'photo',
+                        'required' => false,
+                    )
+                )
+            );
+
+
+            $this->inputFilter = $inputFilter;
+        }
+
+        return $this->inputFilter;
+    }
+
 
     /**
      * Get the corresponding fileName of a file if it was cached

@@ -20,7 +20,7 @@ use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 
 use Contact\Entity;
 
-class ContactProfileFieldset extends Fieldset
+class ContactAddressFieldset extends Fieldset
 {
     /**
      * @param EntityManager         $entityManager
@@ -28,11 +28,11 @@ class ContactProfileFieldset extends Fieldset
      */
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
-        parent::__construct('profile');
+        parent::__construct($object->get('underscore_entity_name'));
 
-        $profile          = new Entity\Profile();
-        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Profile');
-        $this->setHydrator($doctrineHydrator)->setObject($profile);
+        $address          = new Entity\Address();
+        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Address');
+        $this->setHydrator($doctrineHydrator)->setObject($address);
 
         $builder = new AnnotationBuilder();
 

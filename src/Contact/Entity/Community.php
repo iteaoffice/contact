@@ -40,6 +40,8 @@ class Community extends EntityAbstract
     private $id;
     /**
      * @ORM\Column(name="community", type="string", length=40, nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Options({"label":"txt-community"})
      * @var string
      */
     private $community;
@@ -48,7 +50,7 @@ class Community extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
-     * @Annotation\Exclude()
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var \Contact\Entity\Contact
      */
     private $contact;

@@ -15,12 +15,11 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Element\EntitySelect;
-use Zend\Form\Element\Radio;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 
 use Contact\Entity;
 
-class ContactProfileFieldset extends Fieldset
+class ContactPhotoFieldset extends Fieldset
 {
     /**
      * @param EntityManager         $entityManager
@@ -28,11 +27,11 @@ class ContactProfileFieldset extends Fieldset
      */
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
-        parent::__construct('profile');
+        parent::__construct($object->get('underscore_entity_name'));
 
-        $profile          = new Entity\Profile();
-        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Profile');
-        $this->setHydrator($doctrineHydrator)->setObject($profile);
+        $photo            = new Entity\Photo();
+        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Photo');
+        $this->setHydrator($doctrineHydrator)->setObject($photo);
 
         $builder = new AnnotationBuilder();
 
@@ -47,17 +46,6 @@ class ContactProfileFieldset extends Fieldset
                 $element->setOptions(
                     array(
                         'object_manager' => $entityManager
-                    )
-                );
-            }
-
-            if ($element instanceof Radio) {
-                $attributes        = $element->getAttributes();
-                $valueOptionsArray = 'get' . ucfirst($attributes['array']);
-
-                $element->setOptions(
-                    array(
-                        'value_options' => $object->$valueOptionsArray()
                     )
                 );
             }

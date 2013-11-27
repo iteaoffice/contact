@@ -121,8 +121,8 @@ class Profile extends EntityAbstract
     private $hidePhoto;
     /**
      * @ORM\Column(name="description", type="text", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-description"})
+     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @Annotation\Options({"label":"txt-expertise"})
      * @var string
      */
     private $description;

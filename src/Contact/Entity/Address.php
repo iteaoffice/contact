@@ -60,12 +60,12 @@ class Address extends EntityAbstract
      */
     private $city;
     /**
-     * @ORM\ManyToOne(targetEntity="AddressType", cascade={"persist"}, inversedBy="address")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\AddressType", cascade={"persist"}, inversedBy="address")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false)
      * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
-     * @Annotation\Options({"target_class":"Contact\Entity\Type"})
+     * @Annotation\Options({"target_class":"Contact\Entity\AddressType"})
      * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
      * @var \Contact\Entity\AddressType
      */
@@ -75,7 +75,7 @@ class Address extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
-     * @Annotation\Exclude()
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var Contact
      */
     private $contact;
@@ -255,6 +255,9 @@ class Address extends EntityAbstract
         );
     }
 
+    /**
+     * @return array
+     */
     public function populate()
     {
         return $this->getArrayCopy();

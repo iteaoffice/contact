@@ -17,6 +17,8 @@ use Contact\Service\ContactService;
 use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\FormService;
 
+use General\Service\GeneralService;
+
 /**
  * @category    Contact
  * @package     Controller
@@ -88,6 +90,7 @@ class ContactController extends AbstractActionController implements
             $this->zfcUserAuthentication()->getIdentity()
         );
 
+
         return new ViewModel(array('contactService' => $contactService));
     }
 
@@ -107,7 +110,31 @@ class ContactController extends AbstractActionController implements
         $form->setAttribute('class', 'form-horizontal');
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            $result = $this->getContactService()->newEntity($form->getData());
+            $contact = $this->getContactService()->updateEntity($form->getData());
+
+            /**
+             * The contact_organisation is different and not a drop-down.
+             * we will extract the organisation name from the contact_organisation text-field
+             */
+            $formData = $this->params()->fromPost('contact');
+            $this->getContactService()->updateContactOrganisation($contact, $formData['contact_organisation']);
+        } else {
+            /**
+             * Pre fill some values
+             */
+            $contactService = $this->getContactService()->setContact($entity);
+
+            $form->get('contact')->get('contact_organisation')->get('organisation')->setValue(
+                $contactService->findOrganisationService()->parseOrganisationWithBranch(
+                    $contactService->getContact()->getContactOrganisation()->getBranch()
+                )
+            );
+
+            $form->get('contact')->get('contact_organisation')->get('country')->setValue(
+                is_null($contactService->findOrganisationService()->getOrganisation()->getCountry()) ?
+                    $this->getGeneralService()->findLocationByIPAddress() :
+                    $contactService->findOrganisationService()->getOrganisation()->getCountry()->getId()
+            );
         }
 
         return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
@@ -134,6 +161,17 @@ class ContactController extends AbstractActionController implements
 
         return $this;
     }
+
+    /**
+     * Gateway to the General Service
+     *
+     * @return GeneralService
+     */
+    public function getGeneralService()
+    {
+        return $this->getServiceLocator()->get('general_general_service');
+    }
+
 
     /**
      * @return \Contact\Service\FormService

@@ -15,11 +15,23 @@
 {% do emailFormElement.setAttribute('disabled','disabled') %}
 {{ ztbformelement(emailFormElement) }}
 
-{#{{ formcollection(contact.get('phone')) }}#}
+{{ ztbformcollection(contact.get('phone')) }}
+
+{{ ztbformcollection(contact.get('address')) }}
+{{ ztbformcollection(contact.get('community')) }}
+
+{{ ztbformelement(contact.get('department')) }}
+{{ ztbformelement(contact.get('position')) }}
+
+{{ ztbformelement(contact.get('contact_organisation').get('organisation')) }}
+{{ ztbformelement(contact.get('contact_organisation').get('country')) }}
 
 
 {% set profile = contact.get('profile') %}
 {{ ztbformelement(profile.get('visible')) }}
+{{ ztbformelement(profile.get('description')) }}
+
+{{ ztbformelement(contact.get('photo').get('photo')) }}
 
 {{ ztbformelement(form.get('csrf')) }}
 {{ ztbformelement(form.get('submit')) }}
