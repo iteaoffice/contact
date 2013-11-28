@@ -47,6 +47,9 @@ class ContactLink extends AbstractHelper
             return '';
         }
 
+        $classes     = array();
+        $linkContent = array();
+
         switch ($action) {
             case 'new':
                 $router  = 'zfcadmin/contact-manager/new';
@@ -60,6 +63,20 @@ class ContactLink extends AbstractHelper
             case 'edit-profile':
                 $router = 'contact/profile-edit';
                 $text   = sprintf($translate("txt-edit-your-profile"));
+                break;
+            case 'change-password':
+                $router = 'contact/change-password';
+                /**
+                 * Users can have access without a password (via the deeplink)
+                 * We will therefore have the option to set a password
+                 */
+                if (is_null($contact->getSaltedPassword())) {
+                    $text      = sprintf($translate("txt-set-your-password"));
+                    $classes[] = 'btn-danger';
+                } else {
+                    $text = sprintf($translate("txt-update-your-password"));
+                }
+
                 break;
 
             default:
@@ -82,8 +99,6 @@ class ContactLink extends AbstractHelper
             'entity' => 'contact'
         );
 
-        $classes     = array();
-        $linkContent = array();
 
         switch ($show) {
             case 'icon':
@@ -113,8 +128,8 @@ class ContactLink extends AbstractHelper
             $uri,
             $serverUrl->__invoke() . $url($router, $params),
             $text,
-            implode($classes),
-            implode($linkContent)
+            implode(' ', $classes),
+            implode(' ', $linkContent)
         );
     }
 }

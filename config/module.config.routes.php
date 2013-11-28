@@ -59,7 +59,7 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes'  => array(
-                    'photo'        => array(
+                    'photo'                   => array(
                         'type'    => 'Segment',
                         'options' => array(
                             'route'    => '/photo/[:contactHash].[:ext]',
@@ -68,7 +68,7 @@ return array(
                             ),
                         ),
                     ),
-                    'profile'      => array(
+                    'profile'                 => array(
                         'type'    => 'Segment',
                         'options' => array(
                             'route'    => '/profile.html',
@@ -77,12 +77,21 @@ return array(
                             ),
                         ),
                     ),
-                    'profile-edit' => array(
+                    'profile-edit'            => array(
                         'type'    => 'Segment',
                         'options' => array(
                             'route'    => '/edit/profile.html',
                             'defaults' => array(
                                 'action' => 'profile-edit',
+                            ),
+                        ),
+                    ),
+                    'change-password' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/edit/password.html',
+                            'defaults' => array(
+                                'action' => 'change-password',
                             ),
                         ),
                     ),

@@ -23,6 +23,9 @@ use Project\Service\ProjectService;
 use Organisation\Service\OrganisationService;
 use General\Service\GeneralService;
 
+use ZfcUser\Options\UserServiceOptionsInterface;
+use Zend\Crypt\Password\Bcrypt;
+
 /**
  * ContactService
  *
@@ -59,6 +62,10 @@ class ContactService extends ServiceAbstract
      * @var CommunityOptionsInterface
      */
     protected $communityOptions;
+    /**
+     * @var UserServiceOptionsInterface
+     */
+    protected $zfcUserOptions;
     /**
      * @var Contact
      */
@@ -123,11 +130,7 @@ class ContactService extends ServiceAbstract
      */
     public function parseFullName()
     {
-        return
-            trim(
-                $this->getContact()->getFirstName() . ' ' .
-                $this->getContact()->getMiddleName()) . ' ' .
-            $this->getContact()->getLastName();
+        return $this->getContact()->getDisplayName();
     }
 
     /**
@@ -185,10 +188,17 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @return OrganisationService
+     * @return OrganisationService|null
      */
     public function findOrganisationService()
     {
+        /**
+         * Return null when the contactOrganisation is not defined
+         */
+        if (is_null($this->getContact()->getContactOrganisation())) {
+            return null;
+        }
+
         return $this->getOrganisationService()->setOrganisationId(
             $this->getContact()->getContactOrganisation()->getOrganisation()->getId());
     }
@@ -203,23 +213,40 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Create an account and send an emailaddress
+     *
      * @param $emailAddress
+     *
+     * @return Contact
      */
     public function register($emailAddress)
     {
+        //Create the account
+        $contact = new Contact();
+        $contact->setEmail($emailAddress);
+
+        //Fix the gender
+        $contact->setGender($this->getGeneralService()->findEntityById('gender', 0)); //Unknown
+        $contact->setTitle($this->getGeneralService()->findEntityById('title', 0)); //Unknown
+
+        $contact = $this->newEntity($contact);
+
+        //Create a target
+        $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
+        //Create a deeplink for the user which redirects to the profile-page
+        $deeplink = $this->getDeeplinkService()->createDeeplink($contact, $target);
+
+        /**
+         * Send the email tot he user
+         */
         $emailService = $this->getServiceLocator()->get('email');
         $emailService->setTemplate("/auth/register:mail");
-
         $email = $emailService->create();
         $email->addTo($emailAddress, "Johan van der heide");
-        $email->setVariable('test');
-
+        $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $emailService->send($email);
-        //Create the account
 
-        //Create a deeplink for the user which redirects to the profile-page
-        $this->getDeeplinkService()->createDeeplink()
-        
+        return $contact;
     }
 
     /**
@@ -307,6 +334,35 @@ class ContactService extends ServiceAbstract
                 return true;
             }
         }
+    }
+
+    /**
+     * Update the password for a contact. Check with the current password when given
+     * New accounts have no password so this check is not always needed
+     *
+     * @param string  $password
+     * @param Contact $contact
+     * @param string  $currentPassword
+     *
+     * @return bool
+     */
+    public function updatePasswordForContact($password, Contact $contact, $currentPassword = null)
+    {
+        $Bcrypt = new Bcrypt;
+        $Bcrypt->setCost($this->getZfcUserOptions()->getPasswordCost());
+
+        if (!is_null($currentPassword) && !$Bcrypt->verify(md5($currentPassword), $contact->getSaltedPassword())) {
+            return false;
+        }
+
+        $pass = $Bcrypt->create(md5($password));
+        $contact->setPassword(md5($password));
+        $contact->setSaltedPassword($pass);
+
+
+        $this->updateEntity($contact);
+
+        return true;
     }
 
     /**
@@ -519,5 +575,27 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->communityOptions;
+    }
+
+    /**
+     * @param UserServiceOptionsInterface $zfcUserOptions
+     */
+    public function setZfcUserOptions($zfcUserOptions)
+    {
+        $this->zfcUserOptions = $zfcUserOptions;
+    }
+
+    /**
+     * get service options
+     *
+     * @return UserServiceOptionsInterface
+     */
+    public function getZfcUserOptions()
+    {
+        if (!$this->zfcUserOptions instanceof UserServiceOptionsInterface) {
+            $this->setZfcUserOptions($this->getServiceLocator()->get('zfcuser_module_options'));
+        }
+
+        return $this->zfcUserOptions;
     }
 }

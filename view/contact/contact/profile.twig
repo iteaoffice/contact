@@ -33,7 +33,11 @@
             <dt>{{ translate("txt-profile-picture") }}</dt>
             <dd>{{ contactPhoto(contactService.getContact()) }}</dd>
             <dt>{{ translate("txt-profile-visibility") }}</dt>
-            <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
+            {% if contactService.contact.profile.visible %}
+                <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
+            {% endif %}
             <dt>{{ translate("txt-expertise") }}</dt>
             <dd>{{ contactService.contact.profile.description }}</dd>
             <dt>{{ translate("txt-community") }}</dt>
@@ -51,6 +55,7 @@
         </dl>
 
         {{ contactLink(contactService.contact,'edit-profile', 'button') }}
+        {{ contactLink(contactService.contact,'change-password', 'button') }}
     </div>
 
 

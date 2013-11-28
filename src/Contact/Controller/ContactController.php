@@ -124,21 +124,64 @@ class ContactController extends AbstractActionController implements
              */
             $contactService = $this->getContactService()->setContact($entity);
 
-            $form->get('contact')->get('contact_organisation')->get('organisation')->setValue(
-                $contactService->findOrganisationService()->parseOrganisationWithBranch(
-                    $contactService->getContact()->getContactOrganisation()->getBranch()
-                )
-            );
+            /**
+             * Populate the form fields, when known
+             */
+            if (!is_null($contactService->getContact()->getContactOrganisation())) {
+                $form->get('contact')->get('contact_organisation')->get('organisation')->setValue(
+                    $contactService->findOrganisationService()->parseOrganisationWithBranch(
+                        $contactService->getContact()->getContactOrganisation()->getBranch()
+                    )
+                );
 
-            $form->get('contact')->get('contact_organisation')->get('country')->setValue(
-                is_null($contactService->findOrganisationService()->getOrganisation()->getCountry()) ?
-                    $this->getGeneralService()->findLocationByIPAddress() :
-                    $contactService->findOrganisationService()->getOrganisation()->getCountry()->getId()
-            );
+                $form->get('contact')->get('contact_organisation')->get('country')->setValue(
+                    is_null($contactService->findOrganisationService()->getOrganisation()->getCountry()) ?
+                        $this->getGeneralService()->findLocationByIPAddress() :
+                        $contactService->findOrganisationService()->getOrganisation()->getCountry()->getId()
+                );
+            }
         }
 
         return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
     }
+
+    /**
+     * Function to save the password of the user
+     */
+    public function changePasswordAction()
+    {
+        $form = $this->getServiceLocator()->get('contact_password_form');
+        $form->setInputFilter($this->getServiceLocator()->get('contact_password_form_filter'));
+
+        $form->setAttribute('class', 'form-horizontal');
+
+        $hasAlreadyAPassword =
+            !is_null($this->zfcUserAuthentication()->getIdentity()->getSaltedPassword()) ? true : false;
+
+        $form->setData($_POST);
+
+
+        if ($this->getRequest()->isPost() && $form->isValid()) {
+            $formData = $form->getData();
+
+            if ($this->getContactService()->updatePasswordForContact(
+                $formData['password'],
+                $this->zfcUserAuthentication()->getIdentity(),
+                $hasAlreadyAPassword ? $formData['currentPassword'] : null
+            )
+            ) {
+                $this->flashMessenger()->setNamespace('success')->addMessage(
+                    _("txt-password-successfully-been-updated")
+                );
+                $this->redirect()->toRoute('contact/profile');
+            } else {
+                $form->get('currentPassword')->setMessages(array('The given current password is incorrect'));
+            }
+        }
+
+        return new ViewModel(array('form' => $form));
+    }
+
 
     /**
      * Gateway to the Contact Service

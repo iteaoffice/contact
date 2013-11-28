@@ -30,10 +30,12 @@ $config = array(
             'contact-assertion' => 'Contact\Acl\Assertion\Contact',
         ),
         'invokables' => array(
-            'contact_contact_service'     => 'Contact\Service\ContactService',
-            'contact_address_service'     => 'Contact\Service\AddressService',
-            'contact_form_service'        => 'Contact\Service\FormService',
-            'contact_contact_form_filter' => 'Contact\Form\FilterContact',
+            'contact_contact_service'      => 'Contact\Service\ContactService',
+            'contact_address_service'      => 'Contact\Service\AddressService',
+            'contact_form_service'         => 'Contact\Service\FormService',
+            'contact_contact_form_filter'  => 'Contact\Form\FilterContact',
+            'contact_password_form'        => 'Contact\Form\Password',
+            'contact_password_form_filter' => 'Contact\Form\PasswordFilter',
 
         )
     ),

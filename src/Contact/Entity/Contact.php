@@ -538,6 +538,11 @@ class Contact extends EntityAbstract implements
         $this->result                 = new Collections\ArrayCollection();
         $this->workpackage            = new Collections\ArrayCollection();
         $this->workpackageDocument    = new Collections\ArrayCollection();
+
+        /**
+         * Set these values for legacy reasons
+         */
+        $this->messenger = self::MESSENGER_ACTIVE;
     }
 
     /**
@@ -1230,13 +1235,15 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Get displayName.
+     * Get displayName, or the emailaddress
      *
      * @return string
      */
     public function getDisplayName()
     {
-        return trim(implode(' ', array($this->firstName, $this->middleName, $this->lastName)));
+        $name = trim(implode(' ', array($this->firstName, $this->middleName, $this->lastName)));
+
+        return !empty($name) ? $name : $this->email;
     }
 
     /**
