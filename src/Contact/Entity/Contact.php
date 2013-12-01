@@ -196,12 +196,6 @@ class Contact extends EntityAbstract implements
      */
     private $access;
     /**
-     * @ORM\ManyToMany(targetEntity="Admin\Entity\Role", inversedBy="contact", cascade={"all"}, fetch="EXTRA_LAZY")
-     * @Annotation\Exclude()
-     * @var \Admin\Entity\Role[]
-     */
-    private $role;
-    /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Email", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\Email[]
@@ -294,18 +288,17 @@ class Contact extends EntityAbstract implements
      */
     private $domain;
     /**
-     * @ORM\ManyToMany(targetEntity="Exhibition\Entity\Idea", cascade={"persist"},inversedBy="contact")
-     * @ORM\JoinTable(name="contact_idea",
-     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
-     *    inverseJoinColumns={@ORM\JoinColumn(name="idea_id", referencedColumnName="idea_id")}
-     * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Exhibition\Entity\Idea"})
-     * @Annotation\Attributes({"label":"txt-idea"})
-     * \Event\Entity\Idea[]
-     * @todo
-     * private $idea;
+     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Idea\Idea[]
      */
+    private $idea;
+    /**
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="favourite")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Idea\Idea[]
+     */
+    private $favouriteIdea;
     /**
      * @ORM\ManyToMany(targetEntity="Program\Entity\Technology", cascade={"persist"}, inversedBy="contact")
      * @ORM\JoinTable(name="contact_technology",
@@ -490,6 +483,12 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\WorkpackageDocument[]
      */
     private $workpackageDocument;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Message", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Idea\Message[]
+     */
+    private $ideaMessage;
 
     /**
      * Class constructor
@@ -538,6 +537,9 @@ class Contact extends EntityAbstract implements
         $this->result                 = new Collections\ArrayCollection();
         $this->workpackage            = new Collections\ArrayCollection();
         $this->workpackageDocument    = new Collections\ArrayCollection();
+        $this->idea                   = new Collections\ArrayCollection();
+        $this->favouriteIdea          = new Collections\ArrayCollection();
+        $this->ideaMessage            = new Collections\ArrayCollection();
 
         /**
          * Set these values for legacy reasons
@@ -765,6 +767,7 @@ class Contact extends EntityAbstract implements
             'programDoa'     => $this->programDoa,
             'openId'         => $this->openId,
             'note'           => $this->note,
+            'idea'           => $this->idea,
         );
     }
 
@@ -2014,5 +2017,53 @@ class Contact extends EntityAbstract implements
     public function getWorkpackageDocument()
     {
         return $this->workpackageDocument;
+    }
+
+    /**
+     * @param \Project\Entity\Idea\Idea[] $idea
+     */
+    public function setIdea($idea)
+    {
+        $this->idea = $idea;
+    }
+
+    /**
+     * @return \Project\Entity\Idea\Idea[]
+     */
+    public function getIdea()
+    {
+        return $this->idea;
+    }
+
+    /**
+     * @param \Project\Entity\Idea\Idea[] $favouriteIdea
+     */
+    public function setFavouriteIdea($favouriteIdea)
+    {
+        $this->favouriteIdea = $favouriteIdea;
+    }
+
+    /**
+     * @return \Project\Entity\Idea\Idea[]
+     */
+    public function getFavouriteIdea()
+    {
+        return $this->favouriteIdea;
+    }
+
+    /**
+     * @param \Project\Entity\Idea\Message[] $ideaMessage
+     */
+    public function setIdeaMessage($ideaMessage)
+    {
+        $this->ideaMessage = $ideaMessage;
+    }
+
+    /**
+     * @return \Project\Entity\Idea\Message[]
+     */
+    public function getIdeaMessage()
+    {
+        return $this->ideaMessage;
     }
 }
