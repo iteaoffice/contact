@@ -27,18 +27,23 @@ class ContactPhoto extends AbstractHelper
 
     /**
      * @param Contact $contact
+     * @param int     $width
+     * @param bool    $style
      *
      * @return string
      */
-    public function __invoke(Contact $contact)
+    public function __invoke(Contact $contact, $width = 100, $style = false)
     {
 
         $url   = $this->getView()->plugin('url');
         $photo = $contact->getPhoto();
 
-        if (is_null($photo)) {
-            return '<img src="style/image/anonymous.jpg">';
+        if (sizeof($photo) === 0) {
+            return ''; //<img class="img-responsive" src="style/image/anonymous.jpg">';
         }
+
+        //Take the first photo
+        $photo = $photo[0];
 
         /**
          * Check if the file is cached and if so, pull it from the assets-folder
@@ -62,7 +67,7 @@ class ContactPhoto extends AbstractHelper
             );
         }
 
-        $imageUrl = '<img src="%s?%s" class="img-responsive" id="%s">';
+        $imageUrl = '<img src="%s?%s" width="%s" style="%s" id="%s">';
 
         $params = array(
             'contactHash' => $photo->getContact()->parseHash(),
@@ -76,6 +81,8 @@ class ContactPhoto extends AbstractHelper
             $imageUrl,
             $url($router, $params),
             $photo->getDateUpdated()->getTimestamp(),
+            $width,
+            $style,
             'contact_photo_' . $contact->getId()
         );
 

@@ -21,6 +21,7 @@ return array(
         'contact_contact_form'      => function ($sm) {
                 return new Form\Contact($sm, new Entity\Contact());
             },
+
         'Contact\Provider\Identity\AuthenticationIdentityProvider'
                                     => 'Contact\Service\AuthenticationIdentityProviderServiceFactory',
     ),

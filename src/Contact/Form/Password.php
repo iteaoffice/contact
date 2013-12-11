@@ -33,7 +33,8 @@ class Password extends Form
         $this->add(array(
             'name'       => 'currentPassword',
             'options'    => array(
-                'label' => _("txt-current-password"),
+                'label'      => _("txt-current-password"),
+                'help-block' => _("txt-current-password-form-help")
             ),
             'attributes' => array(
                 'type' => 'password'
@@ -43,7 +44,8 @@ class Password extends Form
         $this->add(array(
             'name'       => 'password',
             'options'    => array(
-                'label' => _("txt-new-password"),
+                'label'      => _("txt-new-password"),
+                'help-block' => _("txt-new-password-form-help")
             ),
             'attributes' => array(
                 'type' => 'password'

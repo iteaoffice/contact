@@ -10,6 +10,7 @@
 namespace Contact\Service;
 
 use Contact\Entity\AddressType;
+use Contact\Entity\OptIn;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
@@ -17,6 +18,7 @@ use Contact\Entity\Selection;
 use Contact\Service\AddressService;
 use Deeplink\Service\DeeplinkService;
 use Contact\Options\CommunityOptionsInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Organisation\Entity\Organisation;
 use Project\Service\ProjectService;
@@ -213,7 +215,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * Create an account and send an emailaddress
+     * Create an account and send an email address
      *
      * @param $emailAddress
      *
@@ -359,7 +361,6 @@ class ContactService extends ServiceAbstract
         $contact->setPassword(md5($password));
         $contact->setSaltedPassword($pass);
 
-
         $this->updateEntity($contact);
 
         return true;
@@ -386,6 +387,7 @@ class ContactService extends ServiceAbstract
             $contact->getEmail()
         );
 
+
         $currentContactOrganisation = $contact->getContactOrganisation();
 
         /**
@@ -401,6 +403,7 @@ class ContactService extends ServiceAbstract
             /**
              * Go over the found organisation to match the branching
              */
+
             foreach ($organisation as $foundOrganisation) {
                 if (strpos($foundOrganisation->getOrganisation(), $contactOrganisation['organisation']) !== false &&
                     strlen($foundOrganisation->getOrganisation()) > $contactOrganisation['organisation']
@@ -416,8 +419,29 @@ class ContactService extends ServiceAbstract
             }
         }
 
-
         $this->updateEntity($currentContactOrganisation);
+    }
+
+    /**
+     * @param int     $optInId
+     * @param bool    $enable
+     * @param Contact $contact
+     *
+     * @return void
+     */
+    public function updateOptInForContact($optInId, $enable, Contact $contact)
+    {
+        $optIn      = $this->findEntityById('optIn', $optInId);
+        $collection = new ArrayCollection();
+        $collection->add($optIn);
+
+        if ($enable) {
+            $contact->addOptIn($collection);
+        } else {
+            $contact->removeOptIn($collection);
+        }
+
+        $this->updateEntity($contact);
     }
 
 

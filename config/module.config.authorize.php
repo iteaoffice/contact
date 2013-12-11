@@ -45,6 +45,7 @@ return array(
                 array('route' => 'contact/edit', 'roles' => array('user')),
                 array('route' => 'contact/profile', 'roles' => array('user')),
                 array('route' => 'contact/profile-edit', 'roles' => array('user')),
+                array('route' => 'contact/opt-in-update', 'roles' => array('user')),
                 array('route' => 'contact/change-password', 'roles' => array('user')),
                 array('route' => 'contact/photo', 'roles' => array()),
             ),

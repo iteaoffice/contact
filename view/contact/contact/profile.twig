@@ -5,7 +5,7 @@
 
 
 <div class="pull-right">
-    {{ gravatar(zfcUserIdentity().getEmail()|lower) }}
+    {{ contactPhoto(contactService.getContact(), 78) }}
 </div>
 
 <h1>{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
@@ -30,8 +30,6 @@
             <dd>{{ contactService.getDirectPhone() }}</dd>
             <dt>{{ translate("txt-mobile-phone") }}</dt>
             <dd>{{ contactService.getMobilePhone() }}</dd>
-            <dt>{{ translate("txt-profile-picture") }}</dt>
-            <dd>{{ contactPhoto(contactService.getContact()) }}</dd>
             <dt>{{ translate("txt-profile-visibility") }}</dt>
             {% if contactService.contact.profile.visible %}
                 <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
@@ -127,10 +125,17 @@
     <div class="tab-pane fade in" id="updates">
         <h2>{{ translate("txt-updates") }}</h2>
 
+        <p>{{ translate("txt-updates-explanation") }}</p>
+
         <dl class="dl-horizontal">
             {% for optIn in contactService.findAll('optIn') %}
                 <dt>{{ optIn }}</dt>
-                <dd>{% if optIn in contactService.contact.optIn.toArray() %}{{ translate("txt-yes") }}{% else %}{{ translate("txt-no") }}{% endif %}</dd>
+                <dd>{% if optIn in contactService.contact.optIn.toArray() %}
+                        <span class="update-opt-in disable" rel="{{ optIn.id }}">{{ translate("txt-yes") }}</span>
+                    {% else %}
+                        <span class="update-opt-in enable" rel="{{ optIn.id }}">{{ translate("txt-no") }}</span>
+                    {% endif %}
+                </dd>
             {% endfor %}
         </dl>
     </div>

@@ -52,7 +52,7 @@ class CommunityLink extends AbstractHelper
         return sprintf(
             $uri,
             $link,
-            $translate("txt-go-to-%s-profile", $community->getType()->getType()),
+            sprintf($translate("txt-go-to-%s-profile"), $community->getType()->getType()),
             implode($classes),
             sprintf($img, $url('content/image-name', array('image' => $community->getType()->getImage())))
         );

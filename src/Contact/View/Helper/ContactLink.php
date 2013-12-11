@@ -64,6 +64,10 @@ class ContactLink extends AbstractHelper
                 $router = 'contact/profile-edit';
                 $text   = sprintf($translate("txt-edit-your-profile"));
                 break;
+            case 'opt-in-edit':
+                $router = 'contact/opt-in-edit';
+                $text   = sprintf($translate("txt-edit-opt-in"));
+                break;
             case 'change-password':
                 $router = 'contact/change-password';
                 /**

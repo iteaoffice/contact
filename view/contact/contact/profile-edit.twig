@@ -1,5 +1,6 @@
 {% do headTitle().append(translate("txt-edit-profile")) %}
 <h1>{{ translate("txt-edit-profile") }}</h1>
+<p class="lead">{{ translate("txt-edit-profile-explanation") }}</p>
 
 {% do form.prepare() %}
 
@@ -32,7 +33,7 @@
 {{ ztbformelement(profile.get('visible')) }}
 {{ ztbformelement(profile.get('description')) }}
 
-{{ ztbformelement(contact.get('photo').get('photo')) }}
+{{ ztbformcollection(contact.get('photo')) }}
 
 {{ ztbformelement(form.get('csrf')) }}
 {{ ztbformelement(form.get('submit')) }}

@@ -9,13 +9,17 @@
  */
 namespace Contact\Controller;
 
+use DoctrineExtensions\Versionable\Exception;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Validator\File\ImageSize;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 use Contact\Service\ContactService;
 use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\FormService;
+use Contact\Entity\Photo;
 
 use General\Service\GeneralService;
 
@@ -35,14 +39,6 @@ class ContactController extends AbstractActionController implements
      * @var FormService
      */
     protected $formService;
-
-    /**
-     * Message container
-     * @return array|void
-     */
-    public function indexAction()
-    {
-    }
 
     /**
      * Show the details of 1 project
@@ -95,6 +91,30 @@ class ContactController extends AbstractActionController implements
     }
 
     /**
+     * Ajax controller to update the OptIn
+     *
+     * @return \Zend\View\Model\JsonModel
+     */
+    public function optInUpdateAction()
+    {
+        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+
+        $this->getContactService()->updateOptInForContact(
+            $optInId,
+            $enable,
+            $this->zfcUserAuthentication()->getIdentity()
+        );
+
+        return new JsonModel(
+            array(
+                'result' => 'success',
+                'enable' => ($enable ? 1 : 0)
+            )
+        );
+    }
+
+    /**
      * Edit the profile of the person
      * @return ViewModel
      */
@@ -105,19 +125,61 @@ class ContactController extends AbstractActionController implements
             $this->zfcUserAuthentication()->getIdentity()->getId()
         );
 
-        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
+        $data = array_merge_recursive(
+            $this->getRequest()->getPost()->toArray(),
+            $this->getRequest()->getFiles()->toArray()
+        );
+
+        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $data);
 
         $form->setAttribute('class', 'form-horizontal');
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            $contact = $this->getContactService()->updateEntity($form->getData());
 
+            $contact = $form->getData();
+
+            $fileData = $this->params()->fromFiles();
+
+            if (isset($fileData['contact']['photo'])) {
+                foreach ($fileData['contact']['photo'] as $photoElement) {
+                    if (!empty($photoElement['file']['name'])) {
+
+                        //Delete all the current photo's
+                        foreach ($contact->getPhoto() as $photo) {
+                            $this->getContactService()->removeEntity($photo);
+                        }
+
+                        //Create a photo element
+                        $photo = new Photo();
+                        $photo->setPhoto(file_get_contents($photoElement['file']['tmp_name']));
+                        $photo->setThumb(file_get_contents($photoElement['file']['tmp_name']));
+
+                        $imageSizeValidator = new ImageSize();
+                        $imageSizeValidator->isValid($photoElement['file']);
+
+                        $photo->setWidth($imageSizeValidator->width);
+                        $photo->setHeight($imageSizeValidator->height);
+
+                        $photo->setContentType(
+                            $this->getGeneralService()->findContentTypeByContentTypeName($photoElement['file']['type'])
+                        );
+                        $photo->setContact($contact);
+                        $this->getContactService()->updateEntity($photo);
+                    }
+                }
+            }
+
+            $contact = $this->getContactService()->updateEntity($contact);
             /**
              * The contact_organisation is different and not a drop-down.
              * we will extract the organisation name from the contact_organisation text-field
              */
             $formData = $this->params()->fromPost('contact');
             $this->getContactService()->updateContactOrganisation($contact, $formData['contact_organisation']);
+            $this->flashMessenger()->setNamespace('success')->addMessage(
+                _("txt-profile-has-successfully-been-updated")
+            );
+            $this->redirect()->toRoute('contact/profile');
         } else {
             /**
              * Pre fill some values
@@ -148,7 +210,8 @@ class ContactController extends AbstractActionController implements
     /**
      * Function to save the password of the user
      */
-    public function changePasswordAction()
+    public
+    function changePasswordAction()
     {
         $form = $this->getServiceLocator()->get('contact_password_form');
         $form->setInputFilter($this->getServiceLocator()->get('contact_password_form_filter'));
@@ -229,7 +292,8 @@ class ContactController extends AbstractActionController implements
      *
      * @return ContactManagerController
      */
-    public function setFormService($formService)
+    public
+    function setFormService($formService)
     {
         $this->formService = $formService;
 

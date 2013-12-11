@@ -64,7 +64,7 @@ class ContactFieldset extends Fieldset
                 'type'    => 'Zend\Form\Element\Collection',
                 'name'    => 'phone',
                 'options' => array(
-                    'label'                  => "txt-phone-information",
+                    'label'                  => _("txt-phone-information"),
                     'count'                  => 1,
                     'should_create_template' => true,
                     'template_placeholder'   => '__placeholder__',
@@ -78,8 +78,24 @@ class ContactFieldset extends Fieldset
         $contactProfileFieldset = new \Contact\Form\ContactProfileFieldset($entityManager, new Entity\Profile());
         $this->add($contactProfileFieldset);
 
-        $contactPhotoFieldset = new \Contact\Form\ContactPhotoFieldset($entityManager, new Entity\Photo());
-        $this->add($contactPhotoFieldset);
+        $contactPhoto = new \Contact\Form\ContactPhotoFieldset($entityManager, new Entity\Photo());
+        $contactPhoto->setObject(new Entity\Photo());
+
+        $this->add(
+            array(
+                'type'    => 'Zend\Form\Element\Collection',
+                'name'    => 'photo',
+                'options' => array(
+                    'label'                  => _("txt-profile-photo"),
+                    'count'                  => 1,
+                    'should_create_template' => true,
+                    'template_placeholder'   => '__placeholder__',
+                    'allow_add'              => false,
+                    'target_element'         => $contactPhoto
+
+                )
+            )
+        );
 
         $contactAddress = new ContactAddressFieldset($entityManager, new Entity\Address());
         $contactAddress->setObject(new Entity\Address());
@@ -89,7 +105,7 @@ class ContactFieldset extends Fieldset
                 'type'    => 'Zend\Form\Element\Collection',
                 'name'    => 'address',
                 'options' => array(
-                    'label'                  => "txt-address-information",
+                    'label'                  => _("txt-address-information"),
                     'count'                  => 1,
                     'should_create_template' => true,
                     'template_placeholder'   => '__placeholder__',
@@ -108,7 +124,7 @@ class ContactFieldset extends Fieldset
                 'type'    => 'Zend\Form\Element\Collection',
                 'name'    => 'community',
                 'options' => array(
-                    'label'                  => "txt-community-information",
+                    'label'                  => _("txt-community-information"),
                     'count'                  => 1,
                     'should_create_template' => true,
                     'template_placeholder'   => '__placeholder__',

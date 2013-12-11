@@ -768,6 +768,7 @@ class Contact extends EntityAbstract implements
             'openId'         => $this->openId,
             'note'           => $this->note,
             'idea'           => $this->idea,
+            'photo'          => $this->photo,
         );
     }
 
@@ -932,6 +933,30 @@ class Contact extends EntityAbstract implements
     {
         foreach ($phoneCollection as $single) {
             $this->phone->removeElement($single);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $photoCollection
+     */
+    public function addPhoto(Collections\Collection $photoCollection)
+    {
+        foreach ($photoCollection as $photo) {
+            $this->photo->add($photo);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $photoCollection
+     */
+    public function removePhoto(Collections\Collection $photoCollection)
+    {
+        foreach ($photoCollection as $single) {
+            $this->photo->removeElement($single);
         }
     }
 
@@ -1692,11 +1717,7 @@ class Contact extends EntityAbstract implements
      */
     public function getPhoto()
     {
-        if ($this->photo->count() > 0) {
-            return $this->photo[0];
-        } else {
-            return null;
-        }
+        return $this->photo;
     }
 
     /**

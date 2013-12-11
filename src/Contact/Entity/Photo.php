@@ -11,9 +11,10 @@ namespace Contact\Entity;
 
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
+use Zend\InputFilter\FileInput;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,18 +39,19 @@ class Photo extends EntityAbstract
     private $id;
     /**
      * @ORM\Column(name="photo", type="blob", nullable=true)
-     * @Annotation\Type("Zend\Form\Element\File")
-     * @Annotation\Options({"label":"txt-photo-file"})
+     * @Annotation\Exclude()
      * @var resource
      */
     private $photo;
     /**
      * @ORM\Column(name="height", type="integer", nullable=true)
+     * @Annotation\Exclude()
      * @var integer
      */
     private $height;
     /**
      * @ORM\Column(name="width", type="integer", nullable=true)
+     * @Annotation\Exclude()
      * @var integer
      */
     private $width;
@@ -60,11 +62,12 @@ class Photo extends EntityAbstract
     private $thumb;
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="update")
      * @var \DateTime
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade="all", inversedBy="contactPhoto")
+     * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade="persist", inversedBy="contactPhoto")
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
      * @Annotation\Exclude()
      * @var \General\Entity\ContentType
@@ -150,17 +153,41 @@ class Photo extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
 
+            $fileUpload = new FileInput('file');
 
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'photo',
-                        'required' => false,
-                    )
+            $fileUpload->setRequired(false);
+            $fileUpload->getValidatorChain()->attachByName(
+                'File\Extension',
+                array(
+                    'extension' => array('jpg', 'jpeg', 'png'),
                 )
             );
+            $fileUpload->getValidatorChain()->attachByName(
+                'File\MimeType',
+                array(
+                    'image/jpeg',
+                    'image/jpg',
+                    'image/png'
+                )
+            );
+            $fileUpload->getValidatorChain()->attachByName(
+                'File\Size',
+                array(
+                    'min' => '20kB',
+                    'max' => '4MB',
+                )
+            );
+
+            $fileUpload->getValidatorChain()->attachByName(
+                'File\ImageSize',
+                array(
+                    'minWidth'  => 100,
+                    'minHeight' => 100
+                )
+            );
+
+            $inputFilter->add($fileUpload);
 
 
             $this->inputFilter = $inputFilter;

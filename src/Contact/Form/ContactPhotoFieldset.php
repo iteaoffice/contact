@@ -55,5 +55,16 @@ class ContactPhotoFieldset extends Fieldset
                 $this->add($element);
             }
         }
+
+        $this->add(
+            array(
+                'type'    => '\Zend\Form\Element\File',
+                'name'    => 'file',
+                'options' => array(
+                    "label"      => "txt-photo-file",
+                    "help-block" => _("txt-photo-requirements")
+                )
+            )
+        );
     }
 }
