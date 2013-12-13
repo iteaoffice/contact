@@ -107,15 +107,13 @@ class ContactLink extends AbstractHelper
         switch ($show) {
             case 'icon':
                 if ($action === 'edit') {
-                    $linkContent[] = '<i class="icon-pencil"></i>';
-                } elseif ($action === 'delete') {
-                    $linkContent[] = '<i class="icon-remove"></i>';
+                    $linkContent[] = '<span class="glyphicon glyphicon-edit"></span>';
                 } else {
-                    $linkContent[] = '<i class="icon-info-sign"></i>';
+                    $linkContent[] = '<span class="glyphicon glyphicon-info-sign"></span>';
                 }
                 break;
             case 'button':
-                $linkContent[] = '<i class="icon-pencil icon-white"></i> ' . $text;
+                $linkContent[] = '<span class="glyphicon glyphicon-info"></span> ' . $text;
                 $classes[]     = "btn btn-primary";
                 break;
             case 'name':
