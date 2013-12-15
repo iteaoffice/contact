@@ -272,7 +272,8 @@ class Contact extends EntityAbstract implements
      */
     private $openId;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact",
+     * fetch="EAGER")
      * @Annotation\Exclude()
      * @var \Contact\Entity\ContactOrganisation
      */
