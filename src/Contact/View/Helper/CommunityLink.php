@@ -54,7 +54,7 @@ class CommunityLink extends AbstractHelper
             $link,
             sprintf($translate("txt-go-to-%s-profile"), $community->getType()->getType()),
             implode($classes),
-            sprintf($img, $url('content/image-name', array('image' => $community->getType()->getImage())))
+            sprintf($img, $url('assets/style-image', array('source' => $community->getType()->getImage())))
         );
     }
 }
