@@ -51,7 +51,8 @@ class ContactOrganisation extends EntityAbstract
      */
     private $contact;
     /**
-     * @ORM\OneToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"},
+     * fetch="EAGER")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id")
      * })
