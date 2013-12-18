@@ -39,7 +39,7 @@ class ContactPhoto extends AbstractHelper
         $photo = $contact->getPhoto();
 
         if (sizeof($photo) === 0) {
-            return ''; //<img class="img-responsive" src="style/image/anonymous.jpg">';
+            return '<img class="img-responsive" src="assets/itea/style/image/anonymous.jpg">';
         }
 
         //Take the first photo
