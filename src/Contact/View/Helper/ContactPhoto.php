@@ -38,7 +38,10 @@ class ContactPhoto extends AbstractHelper
         $url   = $this->getView()->plugin('url');
         $photo = $contact->getPhoto()->first();
 
-        if (!$photo) {
+        /**
+         * Return an empty photo when there is no, or only a empty object
+         */
+        if (!$photo || is_null($photo->getId())) {
             return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg">';
         }
 
