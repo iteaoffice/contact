@@ -38,7 +38,7 @@ class ContactPhoto extends AbstractHelper
         $url   = $this->getView()->plugin('url');
         $photo = $contact->getPhoto()->first();
 
-        if (is_null($photo)) {
+        if (!$photo) {
             return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg">';
         }
 

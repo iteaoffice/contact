@@ -145,7 +145,7 @@ class ContactController extends AbstractActionController implements
                     if (!empty($photoElement['file']['name'])) {
 
                         //Delete all the current photo's
-                        foreach ($contact->getPhoto() as $photo) {
+                        foreach ($entity->getPhoto() as $photo) {
                             $this->getContactService()->removeEntity($photo);
                         }
 
@@ -163,7 +163,7 @@ class ContactController extends AbstractActionController implements
                         $photo->setContentType(
                             $this->getGeneralService()->findContentTypeByContentTypeName($photoElement['file']['type'])
                         );
-                        $photo->setContact($contact);
+                        $photo->setContact($entity);
                         $this->getContactService()->newEntity($photo);
                     }
                 }
