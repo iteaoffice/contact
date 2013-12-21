@@ -84,12 +84,13 @@ class Photo extends EntityAbstract
 
     /**
      * Although an alternative does not have a clear hash, we can create one based on the id;
+     * Don't use the elements from underlying objects since this gives confusion
      *
      * @return string
      */
     public function getHash()
     {
-        return sha1($this->id . $this->getContact()->getId() . $this->getContact()->getEmail());
+        return sha1($this->id . '-' . $this->dateUpdated->format('dmYhis'));
     }
 
     /**
