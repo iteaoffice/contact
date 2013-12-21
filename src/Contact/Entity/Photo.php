@@ -89,7 +89,7 @@ class Photo extends EntityAbstract
      */
     public function getHash()
     {
-        return sha1($this->id . $this->getContact()->getId());
+        return sha1($this->id . $this->getContact()->getId() . $this->getContact()->getEmail());
     }
 
     /**

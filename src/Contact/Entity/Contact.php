@@ -1035,10 +1035,14 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param string $email
+     *
+     * @return void|UserInterface
      */
     public function setEmail($email)
     {
         $this->email = $email;
+
+        return $this;
     }
 
     /**
@@ -1050,11 +1054,15 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param string $firstName
+     * @param $firstName
+     *
+     * @return $this
      */
     public function setFirstName($firstName)
     {
         $this->firstName = $firstName;
+
+        return $this;
     }
 
     /**

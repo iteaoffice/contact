@@ -10,12 +10,10 @@
 namespace Contact\Service;
 
 use Contact\Entity\AddressType;
-use Contact\Entity\OptIn;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 
-use Contact\Service\AddressService;
 use Deeplink\Service\DeeplinkService;
 use Contact\Options\CommunityOptionsInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,6 +22,7 @@ use Organisation\Entity\Organisation;
 use Project\Service\ProjectService;
 use Organisation\Service\OrganisationService;
 use General\Service\GeneralService;
+use Event\Service\MeetingService;
 
 use ZfcUser\Options\UserServiceOptionsInterface;
 use Zend\Crypt\Password\Bcrypt;
@@ -52,6 +51,10 @@ class ContactService extends ServiceAbstract
      * @var ProjectService
      */
     protected $projectService;
+    /**
+     * @var MeetingService
+     */
+    protected $meetingService;
     /**
      * @var OrganisationService
      */
@@ -123,6 +126,16 @@ class ContactService extends ServiceAbstract
         return $this->getEntityManager()->getRepository($this->getFullEntityName('access'))->findOneBy(
             array('access' => $name)
         );
+    }
+
+    /**
+     * Find a list of upcoming meetings were a user has not registered yet
+     *
+     * @return \Event\Entity\Meeting[]
+     */
+    public function findUpcomingMeetings()
+    {
+        return $this->getMeetingService()->findUnregisteredMeetingsByContact($this->getContact());
     }
 
     /**
@@ -558,6 +571,27 @@ class ContactService extends ServiceAbstract
 
         return $this->generalService;
     }
+
+    /**
+     * @param MeetingService $meetingService
+     */
+    public function setMeetingService($meetingService)
+    {
+        $this->meetingService = $meetingService;
+    }
+
+    /**
+     * @return MeetingService
+     */
+    public function getMeetingService()
+    {
+        if (!$this->meetingService instanceof MeetingService) {
+            $this->setMeetingService($this->getServiceLocator()->get('event_meeting_service'));
+        }
+
+        return $this->meetingService;
+    }
+
 
     /**
      * @param DeeplinkService $deeplinkService

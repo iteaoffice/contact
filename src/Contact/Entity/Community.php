@@ -35,6 +35,7 @@ class Community extends EntityAbstract
      * @ORM\Column(name="community_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var integer
      */
     private $id;
@@ -50,7 +51,6 @@ class Community extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -116,7 +116,7 @@ class Community extends EntityAbstract
                 $factory->createInput(
                     array(
                         'name'     => 'community',
-                        'required' => true,
+                        'required' => false,
                         'filters'  => array(
                             array('name' => 'StripTags'),
                             array('name' => 'StringTrim'),
@@ -129,7 +129,7 @@ class Community extends EntityAbstract
                 $factory->createInput(
                     array(
                         'name'     => 'type',
-                        'required' => true,
+                        'required' => false,
                     )
                 )
             );

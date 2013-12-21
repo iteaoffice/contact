@@ -5,7 +5,7 @@
 
 
 <div class="pull-right">
-    {{ contactPhoto(contactService.getContact(), 78) }}
+    {{ contactPhoto(contactService.getContact(), 75) }}
 </div>
 
 <h1>{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
@@ -44,7 +44,7 @@
             {% else %}
                 <dd>{{ translate("txt-no-community-known") }}</dd>
             {% endfor %}
-            <dt>{{ translate("txt-opt-in") }}</dt>
+            <dt>{{ translate("txt-open-id") }}</dt>
             {% for openId in contactService.contact.openId %}
                 <dd>{{ translate("txt-open-id") }} - {{ openId }}</dd>
             {% else %}
@@ -89,6 +89,7 @@
             <thead>
             <tr>
                 <th>{{ translate("txt-meeting-name") }}</th>
+                <th>{{ translate("txt-registration") }}</th>
                 <th>{{ translate("txt-date") }}</th>
                 <th>{{ translate("txt-location") }}</th>
                 <th>{{ translate("txt-nda") }}</th>
@@ -97,7 +98,12 @@
             <tbody>
             {% for registration in contactService.contact.registration %}
                 <tr>
-                    <td>{{ meetingLink(registration.meeting,'view', 'name') }}</td>
+                    <td>
+                        {{ meetingLink(registration.meeting,'view', 'name') }}
+                    </td>
+                    <td>
+                        {{ registrationLink(registration,'view', 'text') }}
+                    </td>
                     <td>{{ registration.meeting.dateFrom|from_to_date(registration.meeting.dateUntil) }}</td>
                     <td>{{ registration.meeting.location }}</td>
                     <td>
@@ -120,7 +126,59 @@
 
             </tbody>
         </table>
+
+        <h3>{{ translate("txt-upcoming-events") }}</h3>
+        <table class="table table-bordered table-hover table-condensed">
+            <thead>
+            <tr>
+                <th>{{ translate("txt-meeting-name") }}</th>
+                <th>{{ translate("txt-registration") }}</th>
+                <th>{{ translate("txt-date") }}</th>
+                <th>{{ translate("txt-location") }}</th>
+                <th>{{ translate("txt-nda") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for meeting in contactService.findUpcomingMeetings %}
+
+                {# Try to see if we can find a registration of the event #}
+                {% set registrationService =
+                registrationSerivce.findRegistrationByMeetingAndContact(meeting,contactService.contact ) %}
+
+                <tr {% if registrationService.isCancelled %}class="danger"{% elseif (registrationService) %}class="success"}{% endif %} >
+                <td>{{ meetingLink(meeting,'view', 'name') }}</td>
+                <td>{% if registrationService %}
+                        {# The user is registered #}
+                        {{ registrationLink(registrationService.registration,'view', 'text') }}
+                    {% else %}
+                        {# The user will register now #}
+                        {{ registrationLink(null,'register', 'text',meeting) }}
+                    {% endif %}
+                </td>
+                <td>{{ meeting.dateFrom|from_to_date(meeting.dateUntil) }}</td>
+                <td>{{ meeting.location }}</td>
+                <td>
+                    {% for call in meeting.call %}
+                        {% set programService = programServiceProxy() %}
+                        {% set nda = programService.findNdaByCallAndContact(call, contactService.contact) %}
+                        {% if nda %}
+                            {% if nda.dateApproved %}
+                                {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}
+                            {% else %}
+                                {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
+                            {% endif %}
+                        {% else %}
+                            {{ ndaLink(null, 'view-call', 'text', call) }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
     </div>
+
 
     <div class="tab-pane fade in" id="updates">
         <h2>{{ translate("txt-updates") }}</h2>
@@ -140,5 +198,3 @@
         </dl>
     </div>
 </div>
-
-

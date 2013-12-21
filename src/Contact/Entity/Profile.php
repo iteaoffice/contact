@@ -221,7 +221,7 @@ class Profile extends EntityAbstract
                 $factory->createInput(
                     array(
                         'name'     => 'description',
-                        'required' => true,
+                        'required' => false,
                         'filters'  => array(
                             array('name' => 'StripTags'),
                             array('name' => 'StringTrim'),

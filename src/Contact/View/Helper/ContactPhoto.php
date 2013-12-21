@@ -36,14 +36,11 @@ class ContactPhoto extends AbstractHelper
     {
 
         $url   = $this->getView()->plugin('url');
-        $photo = $contact->getPhoto();
+        $photo = $contact->getPhoto()->first();
 
-        if (sizeof($photo) === 0) {
+        if (is_null($photo)) {
             return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg">';
         }
-
-        //Take the first photo
-        $photo = $photo[0];
 
         /**
          * Check if the file is cached and if so, pull it from the assets-folder

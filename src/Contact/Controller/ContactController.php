@@ -60,11 +60,11 @@ class ContactController extends AbstractActionController implements
 
         if (!is_null($contact) && !is_null($contact->getPhoto())) {
 
-            $file = stream_get_contents($contact->getPhoto()->getPhoto());
+            $file = stream_get_contents($contact->getPhoto()->first()->getPhoto());
 
             $response->getHeaders()
                 ->addHeaderLine('Content-Type: ' .
-                    $contact->getPhoto()->getContentType()->getContentType())
+                    $contact->getPhoto()->first()->getContentType()->getContentType())
                 ->addHeaderLine('Content-Length: ' . (string)strlen($file));
 
             $response->setContent($file);
@@ -164,7 +164,7 @@ class ContactController extends AbstractActionController implements
                             $this->getGeneralService()->findContentTypeByContentTypeName($photoElement['file']['type'])
                         );
                         $photo->setContact($contact);
-                        $this->getContactService()->updateEntity($photo);
+                        $this->getContactService()->newEntity($photo);
                     }
                 }
             }
@@ -210,8 +210,7 @@ class ContactController extends AbstractActionController implements
     /**
      * Function to save the password of the user
      */
-    public
-    function changePasswordAction()
+    public function changePasswordAction()
     {
         $form = $this->getServiceLocator()->get('contact_password_form');
         $form->setInputFilter($this->getServiceLocator()->get('contact_password_form_filter'));
@@ -292,8 +291,7 @@ class ContactController extends AbstractActionController implements
      *
      * @return ContactManagerController
      */
-    public
-    function setFormService($formService)
+    public function setFormService($formService)
     {
         $this->formService = $formService;
 
