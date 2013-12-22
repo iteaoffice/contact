@@ -581,7 +581,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -905,6 +905,7 @@ class Contact extends EntityAbstract implements
     public function addAddress(Collections\Collection $addressCollection)
     {
         foreach ($addressCollection as $address) {
+            $address->contact = $this;
             $this->address->add($address);
         }
     }
@@ -954,6 +955,7 @@ class Contact extends EntityAbstract implements
     public function addPhoto(Collections\Collection $photoCollection)
     {
         foreach ($photoCollection as $photo) {
+            $photo->contact = $this;
             $this->photo->add($photo);
         }
     }

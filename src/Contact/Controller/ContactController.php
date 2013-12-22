@@ -163,7 +163,7 @@ class ContactController extends AbstractActionController implements
                             $this->getGeneralService()->findContentTypeByContentTypeName($photoElement['file']['type'])
                         );
 
-                        $this->getContactService()->updateEntity($photo);
+                        $entity->addPhoto($photo);
                     }
                 }
             }
