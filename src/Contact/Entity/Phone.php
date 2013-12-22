@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -33,6 +33,7 @@ class Phone extends EntityAbstract
      * @ORM\Column(name="phone_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var integer
      */
     private $id;
@@ -48,7 +49,6 @@ class Phone extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -70,7 +70,6 @@ class Phone extends EntityAbstract
     public function __construct()
     {
     }
-
 
     /**
      * Magic Getter
@@ -102,7 +101,7 @@ class Phone extends EntityAbstract
      */
     public function __toString()
     {
-        return (string)$this->phone;
+        return (string) $this->phone;
     }
 
     /**
@@ -127,7 +126,6 @@ class Phone extends EntityAbstract
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
 
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -151,6 +149,23 @@ class Phone extends EntityAbstract
                 )
             );
 
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'contact',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'type',
+                        'required' => true,
+                    )
+                )
+            );
 
             $this->inputFilter = $inputFilter;
         }

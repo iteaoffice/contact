@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -14,9 +14,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
-use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * ContactCommunity
@@ -35,7 +33,6 @@ class Community extends EntityAbstract
      * @ORM\Column(name="community_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var integer
      */
     private $id;
@@ -51,6 +48,7 @@ class Community extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -149,7 +147,7 @@ class Community extends EntityAbstract
     {
         return array(
             'community' => $this->community,
-            'contact'   => $this->contact,
+            'contact'   => $this->contact->getId(),
             'type'      => $this->type,
 
         );

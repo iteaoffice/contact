@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -68,7 +68,6 @@ class Selection extends EntityAbstract
         self::NOT_PRIVATE => 'txt-not-private',
         self::IS_PRIVATE  => 'txt-private',
     );
-
 
     /**
      * @ORM\Column(name="selection_id", length=10, type="integer", nullable=false)
@@ -175,7 +174,6 @@ class Selection extends EntityAbstract
      */
     private $access;
 
-
     /**
      * Class constructor
      */
@@ -187,7 +185,6 @@ class Selection extends EntityAbstract
         $this->exempt           = new Collections\ArrayCollection();
         $this->access           = new Collections\ArrayCollection();
     }
-
 
     /**
      * Magic Getter

@@ -8,7 +8,6 @@
 
 namespace Contact\Provider\Identity;
 
-
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 use Zend\Authentication\AuthenticationService;
 use Contact\Service\ContactService;

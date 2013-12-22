@@ -57,6 +57,7 @@ return array(
   'Contact\Service\FormServiceAwareInterface'                    => __DIR__ . '/src/Contact/Service/FormServiceAwareInterface.php',
   'Contact\Service\ServiceAbstract'                              => __DIR__ . '/src/Contact/Service/ServiceAbstract.php',
   'Contact\Service\ServiceInterface'                             => __DIR__ . '/src/Contact/Service/ServiceInterface.php',
+  'Contact\Version\Version'                                      => __DIR__ . '/src/Contact/Version/Version.php',
   'Contact\View\Helper\CommunityLink'                            => __DIR__ . '/src/Contact/View/Helper/CommunityLink.php',
   'Contact\View\Helper\ContactLink'                              => __DIR__ . '/src/Contact/View/Helper/ContactLink.php',
   'Contact\View\Helper\ContactPhoto'                             => __DIR__ . '/src/Contact/View/Helper/ContactPhoto.php',

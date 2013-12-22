@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @category    Contact
  * @package     Entity
  */
-class SelectionMailingList
+class SelectionMailinglist
 {
     /**
      * Constant for main = 0 (not main)

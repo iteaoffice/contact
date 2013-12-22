@@ -1,11 +1,11 @@
 <?php
 /**
- * Japaveh Webdesign copyright message placeholder
+ * ITEA Office copyright message placeholder
  *
  * @category    Content
  * @package     Form
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
 namespace Contact\Form;
 
@@ -28,7 +28,7 @@ class ContactProfileFieldset extends Fieldset
      */
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
-        parent::__construct('profile');
+        parent::__construct($object->get('underscore_entity_name'));
 
         $profile          = new Entity\Profile();
         $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Profile');

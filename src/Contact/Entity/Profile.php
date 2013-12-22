@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -14,9 +14,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 
-use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Profile
@@ -60,7 +58,6 @@ class Profile extends EntityAbstract
      */
     const VISIBLE_PUBLIC = 2;
 
-
     /**
      * Textual versions of the hideForOthers
      *
@@ -91,7 +88,6 @@ class Profile extends EntityAbstract
         self::VISIBLE_COMMUNITY => 'txt-visibility-community',
         self::VISIBLE_PUBLIC    => 'txt-visibility-public',
     );
-
 
     /**
      * @ORM\Column(name="profile_id", type="integer", nullable=false)
@@ -194,7 +190,6 @@ class Profile extends EntityAbstract
         return $this->visibleTemplates;
     }
 
-
     /**
      * Set input filter
      *
@@ -295,6 +290,7 @@ class Profile extends EntityAbstract
     public function getArrayCopy()
     {
         return array(
+            'contact'       => $this->contact,
             'description'   => $this->description,
             'hideForOthers' => $this->hideForOthers,
             'hidePhoto'     => $this->hidePhoto,

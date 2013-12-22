@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -581,7 +581,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**
@@ -671,7 +671,6 @@ class Contact extends EntityAbstract implements
                 )
             );
 
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -685,6 +684,15 @@ class Contact extends EntityAbstract implements
                 $factory->createInput(
                     array(
                         'name'     => 'address',
+                        'required' => false,
+                    )
+                )
+            );
+
+            $inputFilter->add(
+                $factory->createInput(
+                    array(
+                        'name'     => 'community',
                         'required' => false,
                     )
                 )
@@ -735,7 +743,6 @@ class Contact extends EntityAbstract implements
                 )
             );
 
-
             $this->inputFilter = $inputFilter;
         }
 
@@ -754,6 +761,7 @@ class Contact extends EntityAbstract implements
             'projectVersion' => $this->projectVersion,
             'address'        => $this->address,
             'phone'          => $this->phone,
+            'community'      => $this->community,
             'emailAddress'   => $this->emailAddress,
             'access'         => $this->access,
             'optIn'          => $this->optIn,
@@ -921,6 +929,7 @@ class Contact extends EntityAbstract implements
     public function addPhone(Collections\Collection $phoneCollection)
     {
         foreach ($phoneCollection as $phone) {
+            $phone->contact = $this;
             $this->phone->add($phone);
         }
     }
@@ -969,6 +978,7 @@ class Contact extends EntityAbstract implements
     public function addCommunity(Collections\Collection $communityCollection)
     {
         foreach ($communityCollection as $community) {
+            $community->contact = $this;
             $this->community->add($community);
         }
     }
@@ -1356,7 +1366,6 @@ class Contact extends EntityAbstract implements
     {
         return $this->phone;
     }
-
 
     /**
      * @param \Contact\Entity\Web[] $web

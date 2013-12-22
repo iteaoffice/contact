@@ -1,11 +1,11 @@
 <?php
 /**
- * Japaveh Webdesign copyright message placeholder
+ * ITEA Office copyright message placeholder
  *
  * @category    Contact
  * @package     Form
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
 namespace Contact\Form;
 
@@ -30,16 +30,16 @@ class Password extends Form
     {
         parent::__construct();
 
-        $this->add(array(
-            'name'       => 'currentPassword',
-            'options'    => array(
-                'label'      => _("txt-current-password"),
-                'help-block' => _("txt-current-password-form-help")
-            ),
-            'attributes' => array(
-                'type' => 'password'
-            ),
-        ));
+        //        $this->add(array(
+        //            'name'       => 'currentPassword',
+        //            'options'    => array(
+        //                'label'      => _("txt-current-password"),
+        //                'help-block' => _("txt-current-password-form-help")
+        //            ),
+        //            'attributes' => array(
+        //                'type' => 'password'
+        //            ),
+        //        ));
 
         $this->add(array(
             'name'       => 'password',

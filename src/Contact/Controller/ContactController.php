@@ -1,15 +1,14 @@
 <?php
 /**
- * Japaveh Webdesign copyright message placeholder
+ * ITEA Office copyright message placeholder
  *
  * @category    Contact
  * @package     Controller
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
 namespace Contact\Controller;
 
-use DoctrineExtensions\Versionable\Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\File\ImageSize;
 use Zend\View\Model\ViewModel;
@@ -65,7 +64,7 @@ class ContactController extends AbstractActionController implements
             $response->getHeaders()
                 ->addHeaderLine('Content-Type: ' .
                     $contact->getPhoto()->first()->getContentType()->getContentType())
-                ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+                ->addHeaderLine('Content-Length: ' . (string) strlen($file));
 
             $response->setContent($file);
 
@@ -86,7 +85,6 @@ class ContactController extends AbstractActionController implements
             $this->zfcUserAuthentication()->getIdentity()
         );
 
-
         return new ViewModel(array('contactService' => $contactService));
     }
 
@@ -97,8 +95,8 @@ class ContactController extends AbstractActionController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
 
         $this->getContactService()->updateOptInForContact(
             $optInId,
@@ -217,9 +215,6 @@ class ContactController extends AbstractActionController implements
 
         $form->setAttribute('class', 'form-horizontal');
 
-        $hasAlreadyAPassword =
-            !is_null($this->zfcUserAuthentication()->getIdentity()->getSaltedPassword()) ? true : false;
-
         $form->setData($_POST);
 
 
@@ -228,16 +223,13 @@ class ContactController extends AbstractActionController implements
 
             if ($this->getContactService()->updatePasswordForContact(
                 $formData['password'],
-                $this->zfcUserAuthentication()->getIdentity(),
-                $hasAlreadyAPassword ? $formData['currentPassword'] : null
+                $this->zfcUserAuthentication()->getIdentity()
             )
             ) {
                 $this->flashMessenger()->setNamespace('success')->addMessage(
                     _("txt-password-successfully-been-updated")
                 );
                 $this->redirect()->toRoute('contact/profile');
-            } else {
-                $form->get('currentPassword')->setMessages(array('The given current password is incorrect'));
             }
         }
 
@@ -276,7 +268,6 @@ class ContactController extends AbstractActionController implements
     {
         return $this->getServiceLocator()->get('general_general_service');
     }
-
 
     /**
      * @return \Contact\Service\FormService

@@ -1,12 +1,12 @@
 <?php
 /**
- * Japaveh Webdesign copyright message placeholder
+ * ITEA Office copyright message placeholder
  *
  * @category    Contact
  * @package     View
  * @subpackage  Helper
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
 namespace Contact\View\Helper;
 
@@ -39,12 +39,10 @@ class CommunityLink extends AbstractHelper
         $image     = $this->view->plugin('image');
         $url       = $this->view->plugin('url');
 
-
         $uri = '<a href="%s" title="%s" class="%s">%s</a>';
         $img = '<img src="%s">';
 
         $classes = array();
-
 
         $link = preg_replace('/^([^\~]+)(\~(.*))?$/', '${1}' . $community->getCommunity() . '$3',
             $community->getType()->getLink());

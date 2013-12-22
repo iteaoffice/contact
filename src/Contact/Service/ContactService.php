@@ -1,11 +1,11 @@
 <?php
 /**
- * Japaveh Webdesign copyright message placeholder
+ * ITEA Office copyright message placeholder
  *
  * @category    Contact
  * @package     Service
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Japaveh Webdesign (http://japaveh.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
 namespace Contact\Service;
 
@@ -218,7 +218,6 @@ class ContactService extends ServiceAbstract
             $this->getContact()->getContactOrganisation()->getOrganisation()->getId());
     }
 
-
     /**
      * @return \Project\Service\ProjectService[]
      */
@@ -258,6 +257,47 @@ class ContactService extends ServiceAbstract
         $emailService->setTemplate("/auth/register:mail");
         $email = $emailService->create();
         $email->addTo($emailAddress, "Johan van der heide");
+        $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
+        $emailService->send($email);
+
+        return $contact;
+    }
+
+    /**
+     * Create an account and send an email address
+     *
+     * @param $emailAddress
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return Contact
+     */
+    public function lostPassword($emailAddress)
+    {
+        //Create the account
+        $contact = $this->findContactByEmail($emailAddress);
+
+        if (is_null($contact)) {
+            throw new \InvalidArgumentException(
+                sprintf("The contact with emailAddress %s cannot be found", $emailAddress)
+            );
+        }
+
+        $contactService = $this->createServiceElement($contact);
+
+        //Create a target
+        $target = $this->getDeeplinkService()->createTargetFromRoute('contact/change-password');
+        //Create a deeplink for the user which redirects to the profile-page
+        $deeplink = $this->getDeeplinkService()->createDeeplink($contact, $target);
+
+        /**
+         * Send the email tot he user
+         */
+        $emailService = $this->getServiceLocator()->get('email');
+        $emailService->setTemplate("/auth/forgotpassword:mail");
+        $email = $emailService->create();
+        $email->addTo($emailAddress, $contactService->parseFullName());
+        $email->setFullname($contactService->parseFullName());
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $emailService->send($email);
 
@@ -357,18 +397,13 @@ class ContactService extends ServiceAbstract
      *
      * @param string  $password
      * @param Contact $contact
-     * @param string  $currentPassword
      *
      * @return bool
      */
-    public function updatePasswordForContact($password, Contact $contact, $currentPassword = null)
+    public function updatePasswordForContact($password, Contact $contact)
     {
         $Bcrypt = new Bcrypt;
         $Bcrypt->setCost($this->getZfcUserOptions()->getPasswordCost());
-
-        if (!is_null($currentPassword) && !$Bcrypt->verify(md5($currentPassword), $contact->getSaltedPassword())) {
-            return false;
-        }
 
         $pass = $Bcrypt->create(md5($password));
         $contact->setPassword(md5($password));
@@ -392,14 +427,13 @@ class ContactService extends ServiceAbstract
      */
     public function updateContactOrganisation(Contact $contact, array $contactOrganisation)
     {
-        $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+        $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
 
         $organisation = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
             $contactOrganisation['organisation'],
             $country,
             $contact->getEmail()
         );
-
 
         $currentContactOrganisation = $contact->getContactOrganisation();
 
@@ -456,7 +490,6 @@ class ContactService extends ServiceAbstract
 
         $this->updateEntity($contact);
     }
-
 
     /**
      * @param Contact $contact
@@ -591,7 +624,6 @@ class ContactService extends ServiceAbstract
 
         return $this->meetingService;
     }
-
 
     /**
      * @param DeeplinkService $deeplinkService

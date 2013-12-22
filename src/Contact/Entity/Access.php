@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -17,7 +17,6 @@ use Zend\Form\Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Permissions\Acl\Role\RoleInterface;
 
 /**
@@ -211,7 +210,6 @@ class Access extends EntityAbstract implements RoleInterface
     {
         return $this->getArrayCopy();
     }
-
 
     /**
      * @param string $access

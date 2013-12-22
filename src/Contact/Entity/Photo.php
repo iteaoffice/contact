@@ -4,8 +4,8 @@
  *
  * @category    Contact
  * @package     Entity
- * @author      Johan van der Heide <info@japaveh.nl>
- * @copyright   Copyright (c) 2004-2013 Debranova
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2014 Debranova
  */
 namespace Contact\Entity;
 
@@ -131,7 +131,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string)$this->phone;
+        return (string) $this->phone;
     }
 
     /**

@@ -20,14 +20,34 @@
 {{ ztbformcollection(contact.get('phone')) }}
 
 {{ ztbformcollection(contact.get('address')) }}
-{{ ztbformcollection(contact.get('community')) }}
 
-{{ ztbformelement(contact.get('department')) }}
-{{ ztbformelement(contact.get('position')) }}
 
-{{ ztbformelement(contact.get('contact_organisation').get('organisation')) }}
-{{ ztbformelement(contact.get('contact_organisation').get('country')) }}
+<fieldset>
+    <legend>{{ translate("txt-community") }}</legend>
+    {% for elements in contact.get('community') %}
+        <div class="form-group">
 
+            <label for="input_{{ loop.index }}"
+                   class="col-lg-3 control-label">{% if loop.first %}{{ translate("txt-community") }}{% endif %}</label>
+
+            <div class="col-lg-3">
+                {{ formelement(elements.get('type').setAttribute('class','form-control disabled').setValue(loop.index)) }}
+            </div>
+            <div class="col-lg-4">
+                {{ formelement(elements.get('community').setAttribute('class','form-control')) }}
+            </div>
+        </div>
+    {% endfor %}
+</fieldset>
+
+<fieldset>
+    <legend>{{ translate("txt-organisation") }}</legend>
+    {{ ztbformelement(contact.get('department')) }}
+    {{ ztbformelement(contact.get('position')) }}
+
+    {{ ztbformelement(contact.get('contact_organisation').get('organisation')) }}
+    {{ ztbformelement(contact.get('contact_organisation').get('country')) }}
+</fieldset>
 
 {% set profile = contact.get('profile') %}
 {{ ztbformelement(profile.get('visible')) }}
