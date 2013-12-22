@@ -64,7 +64,7 @@ class ContactController extends AbstractActionController implements
             $response->getHeaders()
                 ->addHeaderLine('Content-Type: ' .
                     $contact->getPhoto()->first()->getContentType()->getContentType())
-                ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+                ->addHeaderLine('Content-Length: ' . (string)strlen($file));
 
             $response->setContent($file);
 
@@ -95,8 +95,8 @@ class ContactController extends AbstractActionController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
 
         $this->getContactService()->updateOptInForContact(
             $optInId,
@@ -142,13 +142,14 @@ class ContactController extends AbstractActionController implements
                 foreach ($fileData['contact']['photo'] as $photoElement) {
                     if (!empty($photoElement['file']['name'])) {
 
-                        //Delete all the current photo's
-                        foreach ($entity->getPhoto() as $photo) {
-                            $this->getContactService()->removeEntity($photo);
+                        $photo = $entity->getPhoto()->first();
+                        if (!$photo) {
+                            //Create a photo element
+                            $photo = new Photo();
+                            $photo->setContact($entity);
                         }
 
-                        //Create a photo element
-                        $photo = new Photo();
+
                         $photo->setPhoto(file_get_contents($photoElement['file']['tmp_name']));
                         $photo->setThumb(file_get_contents($photoElement['file']['tmp_name']));
 
@@ -161,8 +162,8 @@ class ContactController extends AbstractActionController implements
                         $photo->setContentType(
                             $this->getGeneralService()->findContentTypeByContentTypeName($photoElement['file']['type'])
                         );
-                        $photo->setContact($entity);
-                        $this->getContactService()->newEntity($photo);
+
+                        $this->getContactService()->updateEntity($photo);
                     }
                 }
             }
