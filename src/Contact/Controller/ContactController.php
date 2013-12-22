@@ -9,6 +9,7 @@
  */
 namespace Contact\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\File\ImageSize;
 use Zend\View\Model\ViewModel;
@@ -146,7 +147,6 @@ class ContactController extends AbstractActionController implements
                         if (!$photo) {
                             //Create a photo element
                             $photo = new Photo();
-                            $photo->setContact($entity);
                         }
 
 
@@ -163,7 +163,10 @@ class ContactController extends AbstractActionController implements
                             $this->getGeneralService()->findContentTypeByContentTypeName($photoElement['file']['type'])
                         );
 
-                        $entity->addPhoto($photo);
+                        $collection = new ArrayCollection();
+                        $collection->add($photo);
+
+                        $entity->addPhoto($collection);
                     }
                 }
             }
