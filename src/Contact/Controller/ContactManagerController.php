@@ -9,14 +9,22 @@
  */
 namespace Contact\Controller;
 
+use Contact\Form\Impersonate;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\Paginator\Paginator;
+
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 
 use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
+use Contact\Form\Search;
+
+use Deeplink\Service\DeeplinkService;
 
 /**
  *
@@ -31,6 +39,10 @@ class ContactManagerController extends AbstractActionController implements
      */
     protected $contactService;
     /**
+     * @var DeeplinkService;
+     */
+    protected $deeplinkService;
+    /**
      * @var FormService
      */
     protected $formService;
@@ -40,44 +52,66 @@ class ContactManagerController extends AbstractActionController implements
     protected $serviceLocator;
 
     /**
-     * Trigger to switch layout
-     *
-     * @param $layout
+     * @return ViewModel
      */
-    public function layout($layout)
+    public function listAction()
     {
-        if (false === $layout) {
-            $this->getEvent()->getViewModel()->setTemplate('layout/nolayout');
-        } else {
-            $this->getEvent()->getViewModel()->setTemplate('layout/' . $layout);
-        }
-    }
+        $projectQuery = $this->getContactService()->findAllContacts();
 
-    /**
-     * Give a list of messages
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function messagesAction()
-    {
-        $messages = $this->getContactService()->findAll('message');
 
-        return new ViewModel(array('messages' => $messages));
-    }
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($projectQuery)));
+        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
 
-    /**
-     * Show the details of 1 message
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function messageAction()
-    {
-        $message = $this->getContactService()->findEntityById(
-            'message',
-            $this->getEvent()->getRouteMatch()->getParam('id')
+        $searchForm = new Search();
+
+        return new ViewModel(
+            array(
+                'paginator' => $paginator,
+                'form'      => $searchForm
+            )
         );
+    }
 
-        return new ViewModel(array('message' => $message));
+    /**
+     * @return ViewModel
+     */
+    public function viewAction()
+    {
+        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+
+        return new ViewModel(array('contactService' => $contactService));
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function impersonateAction()
+    {
+        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+
+        $form = $this->getServiceLocator()->get('contact_impersonate_form');
+        $form->setData($_POST);
+
+        $deeplink = false;
+        if ($this->getRequest()->isPost() && $form->isValid()) {
+
+            $data = $form->getData();
+            //Create a target
+            $target = $this->getDeeplinkService()->findEntityById('target', $data['target']);
+
+            //Create a deeplink for the user which redirects to the profile-page
+            $deeplink = $this->getDeeplinkService()->createDeeplink($contactService->getContact(), $target);
+        }
+
+        return new ViewModel(
+            array(
+                'deeplink'       => $deeplink,
+                'contactService' => $contactService,
+                'form'           => $form
+            )
+        );
     }
 
     /**
@@ -167,6 +201,16 @@ class ContactManagerController extends AbstractActionController implements
         $this->formService = $formService;
 
         return $this;
+    }
+
+    /**
+     * Gateway to the Deeplink Service
+     *
+     * @return DeeplinkService
+     */
+    public function getDeeplinkService()
+    {
+        return $this->getServiceLocator()->get('deeplink_deeplink_service');
     }
 
     /**

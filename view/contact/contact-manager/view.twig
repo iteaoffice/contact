@@ -1,0 +1,21 @@
+<h1>{{ contactService.parseFullname() }}</h1>
+
+{{ contactPhoto(contactService.contact) }}
+
+{% if contactService.contact.contactOrganisation %}
+    <h3>{{ translate("txt-organisation") }}</h3>
+    {{ organisationLink(
+    contactService.findOrganisationService,'view', 'name',contactService.contact.contactOrganisation.branch
+    ) }}
+    {{ translate("txt-in") }} {{ contactService.contact.contactOrganisation.organisation.country }}
+{% endif %}
+
+<h3>{{ translate("txt-project-involvement") }}</h3>
+
+<ul>
+    {% for projectService in contactService.findProjects() %}
+        <li>{{ projectLink(projectService,'view', 'name') }} {{ projectService.project.country }}</li>
+    {% endfor %}
+</ul>
+
+{{ contactLink(contactService.contact,'impersonate','button') }}

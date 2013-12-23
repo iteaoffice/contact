@@ -16,10 +16,14 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
+use Zend\Paginator\Adapter\ArrayAdapter;
+use Zend\Paginator\Paginator;
+
 use Contact\Service\ContactService;
 use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\FormService;
 use Contact\Entity\Photo;
+use Contact\Form\Search;
 
 use General\Service\GeneralService;
 
@@ -75,6 +79,33 @@ class ContactController extends AbstractActionController implements
                 ->addHeaderLine('Content-Type: image/jpg');
             $response->setStatusCode(404);
         }
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function searchAction()
+    {
+        $this->layout(false);
+        $searchItem = $this->getRequest()->getQuery()->get('search_item');
+        $maxResults = $this->getRequest()->getQuery()->get('max_rows');
+
+        $projectSearchResult = $this->getContactService()->searchContacts($searchItem, $maxResults);
+        $searchForm          = new Search();
+        $searchForm->setData($_POST);
+
+        /**
+         * Include a paginator to be able to have later paginated search results in pages
+         */
+        $paginator = new Paginator(new ArrayAdapter($projectSearchResult));
+        $paginator->setDefaultItemCountPerPage($maxResults);
+        $paginator->setCurrentPageNumber(1);
+        $paginator->setPageRange(1);
+
+        $viewModel = new ViewModel(array('paginator' => $paginator, 'form' => $searchForm));
+        $viewModel->setTemplate('project/partial/list/project');
+
+        return $viewModel;
     }
 
     /**
@@ -157,13 +188,11 @@ class ContactController extends AbstractActionController implements
             if (isset($fileData['contact']['photo'])) {
                 foreach ($fileData['contact']['photo'] as $photoElement) {
                     if (!empty($photoElement['file']['name'])) {
-
                         $photo = $entity->getPhoto()->first();
                         if (!$photo) {
                             //Create a photo element
                             $photo = new Photo();
                         }
-
 
                         $photo->setPhoto(file_get_contents($photoElement['file']['tmp_name']));
                         $photo->setThumb(file_get_contents($photoElement['file']['tmp_name']));
@@ -180,11 +209,21 @@ class ContactController extends AbstractActionController implements
 
                         $collection = new ArrayCollection();
                         $collection->add($photo);
-
                         $entity->addPhoto($collection);
                     }
                 }
             }
+
+            /**
+             * Remove any, unwanted photo's
+             */
+            foreach ($contact->getPhoto() as $photo) {
+                if (is_null($photo->getWidth())) {
+                    $collection = new ArrayCollection();
+                    $collection->add($photo);
+                    $entity->removePhoto($collection);
+                }
+            };
 
             $contact = $this->getContactService()->updateEntity($contact);
             /**

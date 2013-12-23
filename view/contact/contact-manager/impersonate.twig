@@ -1,0 +1,16 @@
+<h1>{{ translate("txt-impersonate-user-%s")|format(contactService.parseFullname()) }}</h1>
+<p>{{ translate("txt-select-a-target-and-press-submit-to-get-the-deeplinks") }}</p>
+
+{% do form.prepare() %}
+{{ form().openTag(form)|raw }}
+{{ ztbformelement(form.get('target')) }}
+{{ ztbformelement(form.get('key')) }}
+{{ ztbformelement(form.get('submit')) }}
+{{ form().closeTag()|raw }}
+
+{% if deeplink %}
+    <h2>{{ translate("txt-deeplinks") }}</h2>
+    <p>{{ translate("txt-use-the-deeplink-to-visit-the-target-use-a-new-private-session") }}</p>
+    {{ deeplinkLink(deeplink,'view') }}
+    {{ deeplinkLink(deeplink,'view','qr-code') }}
+{% endif %}

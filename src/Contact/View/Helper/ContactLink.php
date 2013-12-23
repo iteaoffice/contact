@@ -26,13 +26,17 @@ class ContactLink extends AbstractHelper
 
     /**
      * @param Entity\Contact $contact
-     * @param                $action
-     * @param                $show
+     * @param string         $action
+     * @param string         $show
+     * @param null           $page
+     * @param null           $alternativeShow
      *
-     * @return null|string
+     * @return Entity\Contact|string
+     * @throws \RuntimeException
      * @throws \Exception
      */
-    public function __invoke(Entity\Contact $contact = null, $action = 'view', $show = 'name')
+    public function __invoke(Entity\Contact $contact = null, $action = 'view', $show = 'name', $page = null,
+                             $alternativeShow = null)
     {
         $isAllowed = $this->view->plugin('isAllowed');
         $translate = $this->view->plugin('translate');
@@ -52,13 +56,26 @@ class ContactLink extends AbstractHelper
 
         switch ($action) {
             case 'new':
-                $router  = 'zfcadmin/contact-manager/new';
+                $router  = 'zfcadmin/contact/new';
                 $text    = sprintf($translate("txt-new-contact"));
                 $contact = new Entity\Contact();
                 break;
-            case 'edit':
-                $router = 'zfcadmin/contact-manager/edit';
+            case 'list':
+                $router  = 'zfcadmin/contact/list';
+                $contact = new Entity\Contact();
+                $text    = sprintf($translate("txt-list-contacts"));
+                break;
+            case 'edit-admin':
+                $router = 'zfcadmin/contact/edit';
                 $text   = sprintf($translate("txt-edit-contact-%s"), $contact);
+                break;
+            case 'view-admin':
+                $router = 'zfcadmin/contact/view';
+                $text   = sprintf($translate("txt-view-contact-%s"), $contact);
+                break;
+            case 'impersonate':
+                $router = 'zfcadmin/contact/impersonate';
+                $text   = sprintf($translate("txt-impersonate-contact-%s"), $contact);
                 break;
             case 'edit-profile':
                 $router = 'contact/profile-edit';
@@ -103,6 +120,8 @@ class ContactLink extends AbstractHelper
             'entity' => 'contact'
         );
 
+        $params['page'] = !is_null($page) ? $page : null;
+
         switch ($show) {
             case 'icon':
                 if ($action === 'edit') {
@@ -116,7 +135,14 @@ class ContactLink extends AbstractHelper
                 $classes[]     = "btn btn-primary";
                 break;
             case 'name':
-                $linkContent[] = $contact->getFirstName();
+                $linkContent[] = $contact->getDisplayName();
+                break;
+            case 'email':
+                $linkContent[] = $contact->getEmail();
+                break;
+            case 'paginator':
+
+                $linkContent[] = $alternativeShow;
                 break;
             default:
                 $linkContent[] = $contact;

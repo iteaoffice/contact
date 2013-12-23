@@ -1,0 +1,86 @@
+<div id="contact-list">
+
+    <h1 id="title">{{ translate("txt-contact-list") }}</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <p class="lead">{{ translate("txt-contact-list-explanation") }}</p>
+        </div>
+
+        <div class="col-md-6">
+            <div id="throbber"></div>
+            {% do form.prepare() %}
+            {{ form().openTag(form)|raw }}
+            {{ formelement(form.get('search')) }}
+            {{ form().closeTag()|raw }}
+        </div>
+
+    </div>
+
+
+    {% if   paginator.pageRange > 0 %}
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+            <tr>
+                <th class="col-md-2">{{ translate("txt-name") }}</th>
+                <th class="col-md-2">{{ translate("txt-email") }}</th>
+                <th>{{ translate("txt-organisation") }}</th>
+                <th>{{ translate("txt-projects") }}</th>
+            </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+            <tbody>
+            {% for contact in paginator.getCurrentItems() %}
+                <tr>
+                    <td>{{ contactLink(contact,'view-admin', 'name') }}</td>
+                    <td>{{ contactLink(contact,'view-admin', 'email') }}</td>
+                    <td>
+                        {% if contact.contactOrganiation %}
+                            {{ organisationLink(contact.contactOrganisation.organisation, 'view', 'email') }}
+                        {% endif %}
+                    </td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        {{ ztbalert().info(translate("txt-no-contacts-found"))|raw }}
+    {% endif %}
+
+    {% include 'contact/partial/pagination-control.twig' with {'paginator': paginator} %}
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#search").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: 'contact/search',
+                    data: {
+                        max_rows: 12,
+                        search_item: request.term
+                    },
+                    success: function (data) {
+                        $("#contact-list").html(data);
+                    },
+                    error: function (event, ui) {
+                        alert("Search Failed");
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                log(ui.item ?
+                        "Selected: " + ui.item.label :
+                        "Nothing selected, input was " + this.value);
+            },
+            search: function () {
+                var throb = new Throbber({color: '#00A651'});
+                throb.appendTo(document.getElementById('title'));
+                throb.start();
+            }
+        });
+    });
+</script>

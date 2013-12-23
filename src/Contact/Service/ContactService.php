@@ -13,6 +13,7 @@ use Contact\Entity\AddressType;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
+use Contact\Entity\ContactOrganisation;
 
 use Deeplink\Service\DeeplinkService;
 use Contact\Options\CommunityOptionsInterface;
@@ -85,6 +86,14 @@ class ContactService extends ServiceAbstract
         $this->setContact($this->findEntityById('contact', $id));
 
         return $this;
+    }
+
+    /**
+     * @return \Doctrine\ORM\Query
+     */
+    public function findAllContacts()
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContacts();
     }
 
     /**
@@ -168,6 +177,37 @@ class ContactService extends ServiceAbstract
         } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
+    }
+
+    /**
+     * Dedicated function to have the organisation of a contact (or null)
+     *
+     * @return null|string
+     */
+    public function parseOrganisation()
+    {
+        if (is_null($this->getContact()->getContactOrganisation())) {
+            return null;
+        }
+
+        return $this->findOrganisationService()->parseOrganisationWithBranch(
+            $this->getContact()->getContactOrganisation()->getBranch()
+
+        );
+    }
+
+    /**
+     * Dedicated function to have the organisation of a contact (or null)
+     *
+     * @return null|string
+     */
+    public function parseCountry()
+    {
+        if (is_null($this->getContact()->getContactOrganisation())) {
+            return null;
+        }
+
+        return $this->getContact()->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
     }
 
     /**
@@ -459,9 +499,13 @@ class ContactService extends ServiceAbstract
         );
 
         $currentContactOrganisation = $contact->getContactOrganisation();
+        if (is_null($currentContactOrganisation)) {
+            $currentContactOrganisation = new ContactOrganisation();
+            $currentContactOrganisation->setContact($contact);
+        }
 
         /**
-         * We did nt find an organisation, so we need to create it
+         * We did not find an organisation, so we need to create it
          */
         if (sizeof($organisation) === 0) {
             $organisation = new Organisation();
@@ -512,6 +556,20 @@ class ContactService extends ServiceAbstract
         }
 
         $this->updateEntity($contact);
+    }
+
+    /**
+     * Search for contacts based on a search-item
+     *
+     * @param $searchItem
+     * @param $maxResults
+     *
+     * @return Contact[]
+     */
+    public function searchContacts($searchItem, $maxResults)
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
+            ->searchContacts($searchItem, $maxResults);
     }
 
     /**

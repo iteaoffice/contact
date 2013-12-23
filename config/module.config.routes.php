@@ -59,6 +59,15 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes'  => array(
+                    'search'          => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/search',
+                            'defaults' => array(
+                                'action' => 'search',
+                            ),
+                        ),
+                    ),
                     'photo'           => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -101,6 +110,97 @@ return array(
                             'route'    => '/edit/password.html',
                             'defaults' => array(
                                 'action' => 'change-password',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            'zfcadmin'         => array(
+                'type'          => 'Literal',
+                'priority'      => 1000,
+                'options'       => array(
+                    'route'    => '/admin',
+                    'defaults' => array(
+                        'controller' => 'admin',
+                        'action'     => 'index',
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes'  => array(
+                    'contact' => array(
+                        'type'          => 'Segment',
+                        'options'       => array(
+                            'route'    => '/contact',
+                            'defaults' => array(
+                                'controller' => 'contact-manager',
+                                'action'     => 'list'
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes'  => array(
+                            'list'        => array(
+                                'type'     => 'Literal',
+                                'priority' => 1000,
+                                'options'  => array(
+                                    'route'    => '/list[/:page].html',
+                                    'defaults' => array(
+                                        'action' => 'list',
+                                    ),
+                                ),
+                            ),
+                            'view'        => array(
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => array(
+                                    'route'    => '/view/[:id].html',
+                                    'defaults' => array(
+                                        'action' => 'view',
+                                    ),
+                                ),
+                            ),
+                            'impersonate' => array(
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => array(
+                                    'route'    => '/impersonate/[:id].html',
+                                    'defaults' => array(
+                                        'action' => 'impersonate',
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                    'access'  => array(
+                        'type'          => 'Segment',
+                        'options'       => array(
+                            'route'    => '/access',
+                            'defaults' => array(
+                                'controller' => 'access-manager',
+                                'action'     => 'list'
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes'  => array(
+                            'list' => array(
+                                'type'     => 'Literal',
+                                'priority' => 1000,
+                                'options'  => array(
+                                    'route'    => '/list.html',
+                                    'defaults' => array(
+                                        'action' => 'list',
+                                    ),
+                                ),
+                            ),
+
+                            'view' => array(
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => array(
+                                    'route'    => '/view/[:id].html',
+                                    'defaults' => array(
+                                        'action' => 'view',
+                                    ),
+                                ),
                             ),
                         ),
                     ),

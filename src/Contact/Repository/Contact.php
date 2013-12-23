@@ -26,6 +26,32 @@ use Project\Repository\Project;
 class Contact extends EntityRepository
 {
     /**
+     * Return a list of all contacts
+     *
+     * @param null $limit
+     *
+     * @return \Doctrine\ORM\Query
+     */
+    public function findContacts($limit = null)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('c');
+        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->distinct('c.id');
+
+        $qb->orderBy('c.id', 'DESC');
+
+        /**
+         * Only add a limit when asked
+         */
+        if (!is_null($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery();
+    }
+
+    /**
      * @param $email
      *
      * @return Contact|null
@@ -174,5 +200,32 @@ class Contact extends EntityRepository
         } else {
             return false;
         }
+    }
+
+    /**
+     * This is basic search for contacts (based on the name, and email
+     *
+     * @param string $searchItem
+     * @param int    $maxResults
+     *
+     * @return Entity\Contact[]
+     */
+    public function searchContacts($searchItem, $maxResults = 12)
+    {
+
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('p');
+        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->distinct('c.id');
+
+        $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR p.emailAddress LIKE :searchItem');
+
+        $qb->setParameter('searchItem', "%" . $searchItem . "%");
+
+        $qb->setMaxResults($maxResults);
+
+        $qb->orderBy('p.id', 'DESC');
+
+        return $qb->getQuery()->getResult();
     }
 }

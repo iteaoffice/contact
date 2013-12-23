@@ -9,27 +9,23 @@
  */
 return array(
     'navigation' => array(
-//        'default' => array(
-//            'contact' => array(
-//                'label' => _("txt-contact"),
-//                'route' => 'contact',
-//                'pages' => array(
-//                    'contacts' => array(
-//                        'label'     => _("txt-list-contacts"),
-//                        'route'     => 'contact/contacts',
-//                        'resource'  => 'contact',
-//                        'privilege' => 'listings',
-//                    ),
-//                ),
-//            ),
-//            'admin'   => array(
-//                'pages' => array(
-//                    'messages' => array(
-//                        'label' => _('txt-messages'),
-//                        'route' => 'zfcadmin/contact-manager/messages',
-//                    ),
-//                ),
-//            ),
-//        ),
+        'admin' => array(
+            // And finally, here is where we define our page hierarchy
+            'contacts' => array(
+                'label'    => _("txt-contact-admin"),
+                'route'    => 'zfcadmin',
+                'resource' => 'zfcadmin',
+                'pages'    => array(
+                    'contacts' => array(
+                        'label' => "txt-contacts",
+                        'route' => 'zfcadmin/contact',
+                    ),
+                    'access'   => array(
+                        'label' => "txt-access",
+                        'route' => 'zfcadmin/access/list',
+                    ),
+                ),
+            ),
+        ),
     ),
 );
