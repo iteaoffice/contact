@@ -136,7 +136,7 @@ class Profile extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
-     * @Annotation\Exclude()
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -158,7 +158,8 @@ class Profile extends EntityAbstract
      */
     public function __construct()
     {
-        $this->hideForOthers = 0;
+        $this->hideForOthers = self::NOT_HIDE_FOR_OTHERS;
+        $this->hidePhoto     = self::NOT_HIDE_PHOTO;
     }
 
     /**

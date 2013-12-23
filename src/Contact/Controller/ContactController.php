@@ -137,6 +137,21 @@ class ContactController extends AbstractActionController implements
 
             $contact = $form->getData();
 
+            /**
+             * Add the contact to the profile
+             */
+            $contact->getProfile()->setContact($contact);
+
+
+            /**
+             * Remove the empty communities
+             */
+            foreach ($contact->getCommunity() as $community) {
+                if ($community->getCommunity() === '') {
+                    $contact->getCommunity()->remove($community->getId());
+                }
+            }
+
             $fileData = $this->params()->fromFiles();
 
             if (isset($fileData['contact']['photo'])) {

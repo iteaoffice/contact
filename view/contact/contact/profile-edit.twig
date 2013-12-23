@@ -52,6 +52,7 @@
 {% set profile = contact.get('profile') %}
 {{ ztbformelement(profile.get('visible')) }}
 {{ ztbformelement(profile.get('description')) }}
+{{ ztbformelement(profile.get('contact')) }}
 
 {{ ztbformcollection(contact.get('photo')) }}
 

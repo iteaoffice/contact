@@ -39,7 +39,7 @@
             <dt>{{ translate("txt-expertise") }}</dt>
             <dd>{{ contactService.contact.profile.description }}</dd>
             <dt>{{ translate("txt-community") }}</dt>
-            {% for community in contactService.contact.community %}
+            {% for community in contactService.contact.community if community.community != '' %}
                 <dd>{{ communityLink(community) }}</dd>
             {% else %}
                 <dd>{{ translate("txt-no-community-known") }}</dd>

@@ -149,6 +149,28 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Get the lastname
+     *
+     * @return string
+     */
+    public function parseLastName()
+    {
+        return trim(implode(' ', array($this->getContact()->getMiddleName(), $this->getContact()->getLastName())));
+    }
+
+    /**
+     * Create the attention of a contact
+     */
+    public function parseAttention()
+    {
+        if (!is_null($this->getContact()->getTitle()->getAttention())) {
+            return $this->getContact()->getTitle()->getAttention();
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+            return $this->getContact()->getGender()->getAttention();
+        }
+    }
+
+    /**
      * Find the visit address of a contact
      *
      * @throws \RunTimeException
@@ -295,6 +317,7 @@ class ContactService extends ServiceAbstract
          */
         $emailService = $this->getServiceLocator()->get('email');
         $emailService->setTemplate("/auth/forgotpassword:mail");
+
         $email = $emailService->create();
         $email->addTo($emailAddress, $contactService->parseFullName());
         $email->setFullname($contactService->parseFullName());
