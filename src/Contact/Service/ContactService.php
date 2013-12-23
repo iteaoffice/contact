@@ -256,7 +256,7 @@ class ContactService extends ServiceAbstract
         $emailService = $this->getServiceLocator()->get('email');
         $emailService->setTemplate("/auth/register:mail");
         $email = $emailService->create();
-        $email->addTo($emailAddress, "Johan van der heide");
+        $email->addTo($emailAddress);
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $emailService->send($email);
 
@@ -427,7 +427,7 @@ class ContactService extends ServiceAbstract
      */
     public function updateContactOrganisation(Contact $contact, array $contactOrganisation)
     {
-        $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
+        $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
 
         $organisation = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
             $contactOrganisation['organisation'],

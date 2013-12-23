@@ -154,6 +154,14 @@ class Profile extends EntityAbstract
     }
 
     /**
+     * Default value when a new profile is created
+     */
+    public function __construct()
+    {
+        $this->hideForOthers = 0;
+    }
+
+    /**
      * Magic Setter
      *
      * @param $property
