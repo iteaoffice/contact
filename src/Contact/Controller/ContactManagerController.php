@@ -57,6 +57,7 @@ class ContactManagerController extends AbstractActionController implements
     public function listAction()
     {
         $projectQuery = $this->getContactService()->findAllContacts();
+        $page         = $this->getEvent()->getRouteMatch()->getParam('page');
 
 
         $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($projectQuery)));

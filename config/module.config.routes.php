@@ -133,13 +133,14 @@ return array(
                             'route'    => '/contact',
                             'defaults' => array(
                                 'controller' => 'contact-manager',
-                                'action'     => 'list'
+                                'action'     => 'list',
+                                'page'       => 1,
                             ),
                         ),
                         'may_terminate' => true,
                         'child_routes'  => array(
                             'list'        => array(
-                                'type'     => 'Literal',
+                                'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => array(
                                     'route'    => '/list[/:page].html',

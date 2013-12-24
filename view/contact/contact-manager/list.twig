@@ -36,8 +36,9 @@
                     <td>{{ contactLink(contact,'view-admin', 'name') }}</td>
                     <td>{{ contactLink(contact,'view-admin', 'email') }}</td>
                     <td>
-                        {% if contact.contactOrganiation %}
-                            {{ organisationLink(contact.contactOrganisation.organisation, 'view', 'email') }}
+                        {% if contact.contactOrganisation %}
+                            {% set organisationService = organisationServiceProxy(contact.contactOrganisation.organisation) %}
+                            {{ organisationLink(organisationService, 'view', 'name') }}
                         {% endif %}
                     </td>
                     <td></td>
