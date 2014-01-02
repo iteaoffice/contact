@@ -144,7 +144,7 @@ class Selection extends EntityAbstract
      */
     private $selectionContact;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionMailingList", cascade={"persist"}, mappedBy="selection")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionMailinglist", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      * @var \Contact\Entity\SelectionMailingList[]
      */
