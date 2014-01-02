@@ -81,7 +81,7 @@
                 <tr>
                     <td valign="top" width="400">
                         <strong>{{ contactService.parseFullName() }}</strong><br>
-                        {{ contactService.contact.position }}
+                        {{ contactService.contact.position }}<br>
                         {% for note in contactService.contact.note if note.source == 'signature' %}
                             <em>{{ note.note }}</em>
                         {% endfor %}
