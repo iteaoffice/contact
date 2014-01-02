@@ -45,6 +45,19 @@ class ContactController extends AbstractActionController implements
     protected $formService;
 
     /**
+     * @return ViewModel
+     */
+    public function signatureAction()
+    {
+        $contactService = $this->getContactService()->setContact(
+            $this->zfcUserAuthentication()->getIdentity()
+        );
+
+        return new ViewModel(array('contactService' => $contactService));
+    }
+
+
+    /**
      * Show the details of 1 project
      *
      * @return \Zend\View\Model\ViewModel
@@ -345,5 +358,17 @@ class ContactController extends AbstractActionController implements
         $this->formService = $formService;
 
         return $this;
+    }
+
+    /**
+     * @param \Zend\Mvc\Controller\string $layout
+     *
+     * @return void|\Zend\Mvc\Controller\Plugin\Layout|\Zend\View\Model\ModelInterface
+     */
+    public function layout($layout)
+    {
+        if (false === $layout) {
+            $this->getEvent()->getViewModel()->setTemplate('layout/nolayout');
+        }
     }
 }

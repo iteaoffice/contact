@@ -48,6 +48,7 @@ return array(
                 array('route' => 'contact/profile-edit', 'roles' => array('user')),
                 array('route' => 'contact/opt-in-update', 'roles' => array('user')),
                 array('route' => 'contact/change-password', 'roles' => array('user')),
+                array('route' => 'contact/signature', 'roles' => array('office')),
                 array('route' => 'contact/photo', 'roles' => array()),
                 array('route' => 'contact/search', 'roles' => array('office')),
                 array('route' => 'zfcadmin/contact', 'roles' => array('office')),

@@ -3,11 +3,6 @@
 {% do headTitle().append(translate("txt-profile")) %}
 {% do headTitle().append(contactService.parseFullname()) %}
 
-
-<div class="pull-right">
-    {{ contactPhoto(contactService.getContact(), 75) }}
-</div>
-
 <h1>{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
 
 <ul id="tab" class="nav nav-tabs">
@@ -16,7 +11,6 @@
     <li><a href="#event" data-toggle="tab">{{ translate("txt-event")|capitalize }}</a></li>
     <li><a href="#updates" data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
 </ul>
-
 
 <div id="tabContent" class="tab-content">
     <div class="tab-pane fade in active" id="profile">

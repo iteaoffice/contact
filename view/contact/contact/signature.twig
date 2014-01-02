@@ -1,0 +1,14 @@
+<h1>{{ translate("txt-signature") }}</h1>
+
+<p>
+    Copy the HTML content of the signature below and save this at the following location
+    <code>%appdata%\Microsoft\signatures\signature.htm</code>
+
+    In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and replies
+</p>
+
+<h2>{{ translate("txt-preview") }}</h2>
+{% include 'contact/partial/signature' %}
+
+{#<h2>{{ translate("txt-source") }}</h2>#}
+{#{% include 'contact/partial/signature'|escape|escape %}#}

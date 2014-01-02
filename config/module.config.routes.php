@@ -68,6 +68,15 @@ return array(
                             ),
                         ),
                     ),
+                    'signature'       => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/signature.html',
+                            'defaults' => array(
+                                'action' => 'signature',
+                            ),
+                        ),
+                    ),
                     'photo'           => array(
                         'type'    => 'Segment',
                         'options' => array(
