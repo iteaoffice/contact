@@ -106,7 +106,7 @@
                             {% set nda = programService.findNdaByCallAndContact(call, contactService.contact) %}
                             {% if nda %}
                                 {% if nda.dateApproved %}
-                                    {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved) }}
+                                    {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}
                                 {% elseif nda.dateSigned %}
                                     {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
                                 {% else %}
