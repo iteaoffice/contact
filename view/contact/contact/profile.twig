@@ -107,8 +107,10 @@
                             {% if nda %}
                                 {% if nda.dateApproved %}
                                     {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved) }}
-                                {% else %}
+                                {% elseif nda.dateSigned %}
                                     {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
+                                {% else %}
+                                    {{ translate("txt-nda-submitted-but-not-approved-yet") }}
                                 {% endif %}
                             {% else %}
                                 {{ ndaLink(null, 'view-call', 'text', call) }}
