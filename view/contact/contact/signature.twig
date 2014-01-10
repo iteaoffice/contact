@@ -10,5 +10,17 @@
 <h2>{{ translate("txt-preview") }}</h2>
 {% include 'contact/partial/signature' %}
 
-{#<h2>{{ translate("txt-source") }}</h2>#}
-{#{% include 'contact/partial/signature'|escape|escape %}#}
+<h2>{{ translate("txt-source") }}</h2>
+<form role="form">
+    <div class="form-group">
+        <textarea cols="100" rows="20">{% include 'contact/partial/signature' %}</textarea>
+    </div>
+</form>
+
+
+<style type="text/css">
+    textarea {
+        width: 100%;
+        font-family: Courier, monospace;
+    }
+</style>
