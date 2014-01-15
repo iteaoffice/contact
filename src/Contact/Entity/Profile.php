@@ -132,7 +132,7 @@ class Profile extends EntityAbstract
      */
     private $visible;
     /**
-     * @ORM\OneToOne(targetEntity="Contact", cascade="persist", inversedBy="profile")
+     * @ORM\OneToOne(targetEntity="Contact\Entity\Contact", cascade="persist", inversedBy="profile")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
@@ -272,7 +272,7 @@ class Profile extends EntityAbstract
                 $factory->createInput(
                     array(
                         'name'       => 'visible',
-                        'required'   => false,
+                        'required'   => true,
                         'validators' => array(
                             array(
                                 'name'    => 'InArray',

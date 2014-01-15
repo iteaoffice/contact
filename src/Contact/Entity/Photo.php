@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="contact_photo")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_photo")
  *
@@ -131,7 +132,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
@@ -213,6 +214,16 @@ class Photo extends EntityAbstract
         return $cacheDir . DIRECTORY_SEPARATOR
         . $this->getHash() . '.'
         . $this->getContentType()->getExtension();
+    }
+
+    /**
+     * Remove all the cached images of a user
+     *
+     * @ORM\PreUpdate
+     */
+    public function removeCachedImageFile()
+    {
+        unlink($this->getCacheFileName());
     }
 
     /**

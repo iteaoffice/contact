@@ -33,6 +33,7 @@ class Address extends EntityAbstract
      * @ORM\Column(name="address_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Annotation\Exclude()
      * @var integer
      */
     private $id;

@@ -228,7 +228,7 @@ class ContactController extends AbstractActionController implements
             }
 
             /**
-             * Remove any, unwanted photo's
+             * Remove any unwanted photo's
              */
             foreach ($contact->getPhoto() as $photo) {
                 if (is_null($photo->getWidth())) {
