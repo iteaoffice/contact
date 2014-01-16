@@ -12,7 +12,6 @@ namespace Contact;
 
 use Zend\Stdlib\ArrayUtils;
 
-
 $config = array(
     'controllers'     => array(
         'invokables' => array(

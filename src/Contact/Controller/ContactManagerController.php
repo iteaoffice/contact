@@ -9,7 +9,6 @@
  */
 namespace Contact\Controller;
 
-use Contact\Form\Impersonate;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -58,7 +57,6 @@ class ContactManagerController extends AbstractActionController implements
     {
         $projectQuery = $this->getContactService()->findAllContacts();
         $page         = $this->getEvent()->getRouteMatch()->getParam('page');
-
 
         $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($projectQuery)));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);

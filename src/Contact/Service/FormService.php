@@ -14,8 +14,6 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Form;
 
-use Contact\Service\ContactService;
-
 class FormService implements ServiceLocatorAwareInterface
 {
 

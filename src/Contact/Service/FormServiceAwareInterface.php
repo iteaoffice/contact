@@ -9,8 +9,6 @@
  */
 namespace Contact\Service;
 
-use Contact\Service\FormService;
-
 interface FormServiceAwareInterface
 {
     /**

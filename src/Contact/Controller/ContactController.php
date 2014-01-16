@@ -56,7 +56,6 @@ class ContactController extends AbstractActionController implements
         return new ViewModel(array('contactService' => $contactService));
     }
 
-
     /**
      * Show the details of 1 project
      *
@@ -82,7 +81,7 @@ class ContactController extends AbstractActionController implements
             $response->getHeaders()
                 ->addHeaderLine('Content-Type: ' .
                     $contact->getPhoto()->first()->getContentType()->getContentType())
-                ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+                ->addHeaderLine('Content-Length: ' . (string) strlen($file));
 
             $response->setContent($file);
 
@@ -140,8 +139,8 @@ class ContactController extends AbstractActionController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
 
         $this->getContactService()->updateOptInForContact(
             $optInId,
@@ -185,7 +184,6 @@ class ContactController extends AbstractActionController implements
              * Add the contact to the profile
              */
             $contact->getProfile()->setContact($contact);
-
 
             /**
              * Remove the empty communities

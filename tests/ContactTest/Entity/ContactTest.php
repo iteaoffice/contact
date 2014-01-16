@@ -19,7 +19,6 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use General\Entity\Title;
 use General\Entity\Gender;
 
-
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -106,7 +105,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $this->contact->username);
     }
 
-
     public function testCanHydrateEntity()
     {
         $hydrator = new DoctrineObject(
@@ -158,7 +156,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->contactData['title']->getName(), $this->contact->getTitle()->getName());
         $this->assertSame($this->contactData['title']->getId(), $this->contact->getTitle()->getId());
 
-
         $this->assertNotNull($this->contact->getDisplayName());
     }
 
@@ -184,6 +181,5 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($result, $contactId);
     }
-
 
 }

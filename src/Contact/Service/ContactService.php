@@ -174,7 +174,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
     }
@@ -490,7 +490,7 @@ class ContactService extends ServiceAbstract
      */
     public function updateContactOrganisation(Contact $contact, array $contactOrganisation)
     {
-        $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+        $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
 
         $organisation = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
             $contactOrganisation['organisation'],

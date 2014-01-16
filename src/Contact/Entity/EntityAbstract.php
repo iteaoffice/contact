@@ -10,7 +10,6 @@
 namespace Contact\Entity;
 
 use Zend\InputFilter\InputFilterAwareInterface;
-use Contact\Entity\EntityInterface;
 
 abstract class EntityAbstract implements EntityInterface, InputFilterAwareInterface
 {

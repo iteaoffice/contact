@@ -47,7 +47,6 @@ class Impersonate extends Form
                     'id'    => "target",
                 )
 
-
             )
         );
 
@@ -63,7 +62,6 @@ class Impersonate extends Form
                 )
             )
         );
-
 
         $this->add(
             array(

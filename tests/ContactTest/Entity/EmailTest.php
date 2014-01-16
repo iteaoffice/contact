@@ -18,7 +18,6 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
 use ContactTest\Bootstrap;
 
-
 class EmailTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -92,12 +91,10 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->email->setInputFilter(new InputFilter());
     }
 
-
     public function testHasInputFilter()
     {
         $this->assertInstanceOf('Zend\InputFilter\InputFilter', $this->email->getInputFilter());
     }
-
 
     public function testCanSaveEntityInDatabase()
     {

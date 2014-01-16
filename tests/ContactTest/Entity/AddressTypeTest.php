@@ -92,7 +92,6 @@ class AddressTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $this->addressType->type);
     }
 
-
     public function testCanSaveEntityInDatabase()
     {
         $hydrator = new DoctrineObject(
@@ -112,8 +111,7 @@ class AddressTypeTest extends \PHPUnit_Framework_TestCase
     public function testToString()
     {
         $this->addressType->type = $this->addressTypeData['type'];
-        $this->assertEquals((string)$this->addressType, $this->addressTypeData['type']);
+        $this->assertEquals((string) $this->addressType, $this->addressTypeData['type']);
     }
-
 
 }

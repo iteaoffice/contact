@@ -14,7 +14,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 use Doctrine\ORM\EntityManager;
 
-use Contact\Service\ServiceInterface;
 use Contact\Entity\EntityAbstract;
 
 /**

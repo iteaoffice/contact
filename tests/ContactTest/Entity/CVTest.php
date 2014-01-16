@@ -18,7 +18,6 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
 use ContactTest\Bootstrap;
 
-
 class CvTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -92,12 +91,10 @@ class CvTest extends \PHPUnit_Framework_TestCase
         $this->cv->setInputFilter(new InputFilter());
     }
 
-
     public function testHasInputFilter()
     {
         $this->assertInstanceOf('Zend\InputFilter\InputFilter', $this->cv->getInputFilter());
     }
-
 
     public function testCanSaveEntityInDatabase()
     {
@@ -119,6 +116,5 @@ class CvTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotNull($this->cv->getResourceId());
     }
-
 
 }

@@ -89,7 +89,6 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $this->web->web);
     }
 
-
     public function testCanSaveEntityInDatabase()
     {
         $hydrator = new DoctrineObject(
@@ -107,6 +106,5 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->web->getContact()->getId(), $this->webData['contact']->getId());
         $this->assertEquals($this->web->getWeb(), $this->webData['web']);
     }
-
 
 }

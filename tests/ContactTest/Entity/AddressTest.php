@@ -18,7 +18,6 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
 use ContactTest\Bootstrap;
 
-
 class AddressTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -99,12 +98,10 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->address->setInputFilter(new InputFilter());
     }
 
-
     public function testHasInputFilter()
     {
         $this->assertInstanceOf('Zend\InputFilter\InputFilter', $this->address->getInputFilter());
     }
-
 
     public function testCanSaveEntityInDatabase()
     {
@@ -129,6 +126,5 @@ class AddressTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotNull($this->address->getResourceId());
     }
-
 
 }
