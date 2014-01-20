@@ -242,11 +242,23 @@ class Contact extends EntityAbstract implements
      */
     private $project;
     /**
+     * @ORM\ManyToMany(targetEntity="\Project\Entity\Description\Description", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Description\Description[]
+     */
+    private $projectDescription;
+    /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Project[]
      */
     private $projectVersion;
+    /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Document\Document[]
+     */
+    private $projectDocument;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Dnd", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -490,6 +502,12 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Idea\Message[]
      */
     private $ideaMessage;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Evaluation\Evaluation", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Evaluation\Evaluation[]
+     */
+    private $evaluation;
 
     /**
      * Class constructor
@@ -498,6 +516,8 @@ class Contact extends EntityAbstract implements
     {
         $this->project                = new Collections\ArrayCollection();
         $this->projectVersion         = new Collections\ArrayCollection();
+        $this->projectDescription     = new Collections\ArrayCollection();
+        $this->projectDocument        = new Collections\ArrayCollection();
         $this->cv                     = new Collections\ArrayCollection();
         $this->web                    = new Collections\ArrayCollection();
         $this->role                   = new Collections\ArrayCollection();
@@ -541,6 +561,7 @@ class Contact extends EntityAbstract implements
         $this->idea                   = new Collections\ArrayCollection();
         $this->favouriteIdea          = new Collections\ArrayCollection();
         $this->ideaMessage            = new Collections\ArrayCollection();
+        $this->evaluation             = new Collections\ArrayCollection();
 
         /**
          * Set these values for legacy reasons
@@ -581,7 +602,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -2106,5 +2127,53 @@ class Contact extends EntityAbstract implements
     public function getIdeaMessage()
     {
         return $this->ideaMessage;
+    }
+
+    /**
+     * @param \Project\Entity\Description\Description[] $projectDescription
+     */
+    public function setProjectDescription($projectDescription)
+    {
+        $this->projectDescription = $projectDescription;
+    }
+
+    /**
+     * @return \Project\Entity\Description\Description[]
+     */
+    public function getProjectDescription()
+    {
+        return $this->projectDescription;
+    }
+
+    /**
+     * @param \Project\Entity\Document\Document[] $projectDocument
+     */
+    public function setProjectDocument($projectDocument)
+    {
+        $this->projectDocument = $projectDocument;
+    }
+
+    /**
+     * @return \Project\Entity\Document\Document[]
+     */
+    public function getProjectDocument()
+    {
+        return $this->projectDocument;
+    }
+
+    /**
+     * @param \Project\Entity\Evaluation\Evaluation[] $evaluation
+     */
+    public function setEvaluation($evaluation)
+    {
+        $this->evaluation = $evaluation;
+    }
+
+    /**
+     * @return \Project\Entity\Evaluation\Evaluation[]
+     */
+    public function getEvaluation()
+    {
+        return $this->evaluation;
     }
 }

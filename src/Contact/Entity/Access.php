@@ -99,6 +99,12 @@ class Access extends EntityAbstract implements RoleInterface
      * @var \Project\Entity\ResultType[]
      */
     private $resultType;
+    /**
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Document\Type", cascade={"persist"}, mappedBy="access")
+     * @Annotation\Exclude();
+     * @var \Project\Entity\Document\Type[]
+     */
+    private $documentType;
 
     /**
      * Class constructor
@@ -109,6 +115,7 @@ class Access extends EntityAbstract implements RoleInterface
         $this->publicationType = new ArrayCollection();
         $this->resultType      = new ArrayCollection();
         $this->selection       = new ArrayCollection();
+        $this->documentType    = new ArrayCollection();
     }
 
     /**
@@ -329,5 +336,21 @@ class Access extends EntityAbstract implements RoleInterface
     public function getSelection()
     {
         return $this->selection;
+    }
+
+    /**
+     * @param \Project\Entity\Document\Type[] $documentType
+     */
+    public function setDocumentType($documentType)
+    {
+        $this->documentType = $documentType;
+    }
+
+    /**
+     * @return \Project\Entity\Document\Type[]
+     */
+    public function getDocumentType()
+    {
+        return $this->documentType;
     }
 }
