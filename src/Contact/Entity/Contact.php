@@ -839,11 +839,18 @@ class Contact extends EntityAbstract implements
      * Returns the string identifier of the Role.
      * We return the access here since that entity keeps the access roles
      *
-     * @return string
+     * We return only the name of the roles as this is sufficient
+     *
+     * @return array
      */
     public function getRoles()
     {
-        return array_merge(array('user'), $this->access->toArray());
+        $accessRoles = array('user');
+        foreach ($this->access as $access) {
+            $accessRoles[] = strtolower($access->getAccess());
+        }
+
+        return $accessRoles;
     }
 
     /**

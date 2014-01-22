@@ -8,12 +8,16 @@
 
 namespace Contact\Provider\Identity;
 
-use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
+
 use Zend\Authentication\AuthenticationService;
+use Zend\Permissions\Acl\Role\RoleInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Cache\StorageFactory;
+
 use Contact\Service\ContactService;
 
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
-use Zend\Permissions\Acl\Role\RoleInterface;
+use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 
 /**
  * Simple identity provider to handle simply guest|user
@@ -23,18 +27,32 @@ use Zend\Permissions\Acl\Role\RoleInterface;
 class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityProvider
 {
     /**
-     * ServiceLocatorAwareInterface
+     * ServiceLocatorInterface
      */
     protected $serviceLocator;
+    /**
+     * @var ContactService;
+     */
+    protected $contactService;
+    /**
+     * @var StorageFactory
+     */
+    protected $cache;
+    /**
+     * @var array
+     */
+    protected $config;
 
     /**
-     * @param AuthenticationService $authService
-     * @param ContactService        $contactService
+     * @param AuthenticationService   $authService
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function __construct(AuthenticationService $authService, ContactService $contactService)
+    public function __construct(AuthenticationService $authService, ServiceLocatorInterface $serviceLocator)
     {
         parent::__construct($authService);
-        $this->contactService = $contactService;
+        $this->contactService = $serviceLocator->get('contact_contact_service');
+        $this->cache          = $serviceLocator->get('contact_cache');
+        $this->config         = $serviceLocator->get('contact_module_config');
     }
 
     /**
@@ -42,6 +60,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      */
     public function getIdentityRoles()
     {
+
         if (!$identity = $this->authService->getIdentity()) {
             return array($this->defaultRole);
         }
@@ -52,18 +71,29 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
 
         if ($identity instanceof RoleProviderInterface) {
 
-            //Get also the roles assigned via selections
-            $this->contactService->setContact($identity);
-            $localRoles = array();
-            foreach ($this->contactService->findAll('access') as $access) {
-                if ($this->contactService->inSelection($access->getSelection())) {
-                    $localRoles[] = $access;
-                }
-            };
+            $success = false;
+            $key     = $this->config['cache_key'] . '-role-list-identity-' . $identity->getId();
+            $roles   = $this->cache->getItem($key, $success);
 
-            return array_merge($localRoles, $identity->getRoles());
+            if (!$success) {
+                //Get also the roles assigned via selections
+                $this->contactService->setContact($identity);
+                $localRoles = array();
+                foreach ($this->contactService->findAll('access') as $access) {
+                    if ($this->contactService->inSelection($access->getSelection())) {
+                        $localRoles[] = strtolower($access->getAccess());
+                    }
+                };
+
+                $roles = array_merge($localRoles, $identity->getRoles());
+
+                $this->cache->setItem($key, $roles);
+            }
+
+            return $roles;
         }
 
         return array($this->authenticatedRole);
     }
 }
+

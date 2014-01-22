@@ -20,14 +20,12 @@ $config = array(
         ),
     ),
     'view_manager'    => array(
-        'template_path_stack' => array(
-            __DIR__ . '/../view'
-        ),
-        'template_map'        => include __DIR__ . '/../template_map.php',
+        'template_map' => include __DIR__ . '/../template_map.php',
     ),
     'service_manager' => array(
         'factories'  => array(
-            'contact-assertion' => 'Contact\Acl\Assertion\Contact',
+            'contact_module_config' => 'Contact\Service\ConfigServiceFactory',
+            'contact_cache'         => 'Contact\Service\CacheFactory',
         ),
         'invokables' => array(
             'contact_contact_service'      => 'Contact\Service\ContactService',
@@ -70,6 +68,7 @@ $configFiles = array(
     __DIR__ . '/module.config.navigation.php',
     __DIR__ . '/module.config.authorize.php',
     __DIR__ . '/module.config.community.php',
+    __DIR__ . '/module.config.contact.php',
 );
 
 foreach ($configFiles as $configFile) {
