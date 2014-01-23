@@ -861,6 +861,7 @@ class Contact extends EntityAbstract implements
     public function addRoles(Collections\Collection $roles)
     {
         foreach ($roles as $role) {
+            $role->contact = $this;
             $this->role->add($role);
         }
     }
@@ -885,6 +886,7 @@ class Contact extends EntityAbstract implements
     public function addOptIn(Collections\Collection $optInCollection)
     {
         foreach ($optInCollection as $optIn) {
+            $optIn->contact = $this;
             $this->optIn->add($optIn);
         }
     }
@@ -909,6 +911,7 @@ class Contact extends EntityAbstract implements
     public function addAccess(Collections\Collection $accessCollection)
     {
         foreach ($accessCollection as $access) {
+            $access->contact = $this;
             $this->access->add($access);
         }
     }

@@ -50,7 +50,7 @@
         {{ ztbalert().info(translate("txt-no-contacts-found"))|raw }}
     {% endif %}
 
-    {% include 'contact/partial/pagination-control.twig' with {'paginator': paginator} %}
+    {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
 </div>
 
 <script type="text/javascript">
