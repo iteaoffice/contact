@@ -1,4 +1,5 @@
 <?php
+_("txt-search-item");
 _("txt-not-hide-for-others");
 _("txt-hide-for-others");
 _("txt-not-hide-photo");
