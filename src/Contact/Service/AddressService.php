@@ -46,13 +46,17 @@ class AddressService extends ServiceAbstract
      * @param Contact $contact
      * @param         $type
      *
-     * @return AddressService;
+     * @return AddressService|null;
      */
     public function findAddressByContactAndType(Contact $contact, $type)
     {
         $address = $this->getEntityManager()->getRepository(
             $this->getFullEntityName('address')
         )->findAddressByContactAndType($contact, $type);
+
+        if (is_null($address)) {
+            return null;
+        }
 
         return $this->createServiceElement($address);
     }
