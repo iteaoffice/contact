@@ -508,6 +508,43 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Evaluation\Evaluation[]
      */
     private $evaluation;
+    /**
+     * @ORM\OneToMany(targetEntity="Calendar\Entity\Calendar", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Calendar\Entity\Calendar[]
+     */
+    private $calendar;
+    /**
+     * @ORM\OneToMany(targetEntity="Calendar\Entity\Contact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Calendar\Entity\Contact[]
+     */
+    private $calendarContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Calendar\Entity\Document", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\WorkpackageDocument[]
+     */
+    private $calendarDocument;
+    /**
+     * @ORM\OneToMany(targetEntity="Calendar\Entity\ScheduleContact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Calendar\Entity\ScheduleContact[]
+     */
+    private $scheduleContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Review\Review", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Review\Review
+     */
+    private $projectReview;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Review\VersionReview", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Review\VersionReview
+     */
+    private $projectVersionReview;
+
 
     /**
      * Class constructor
@@ -562,6 +599,12 @@ class Contact extends EntityAbstract implements
         $this->favouriteIdea          = new Collections\ArrayCollection();
         $this->ideaMessage            = new Collections\ArrayCollection();
         $this->evaluation             = new Collections\ArrayCollection();
+        $this->calendarContact        = new Collections\ArrayCollection();
+        $this->calendarDocument       = new Collections\ArrayCollection();
+        $this->calendar               = new Collections\ArrayCollection();
+        $this->scheduleContact        = new Collections\ArrayCollection();
+        $this->projectReview          = new Collections\ArrayCollection();
+        $this->projectVersionReview   = new Collections\ArrayCollection();
 
         /**
          * Set these values for legacy reasons
@@ -2185,5 +2228,101 @@ class Contact extends EntityAbstract implements
     public function getEvaluation()
     {
         return $this->evaluation;
+    }
+
+    /**
+     * @param \Calendar\Entity\Contact[] $calendarContact
+     */
+    public function setCalendarContact($calendarContact)
+    {
+        $this->calendarContact = $calendarContact;
+    }
+
+    /**
+     * @return \Calendar\Entity\Contact[]
+     */
+    public function getCalendarContact()
+    {
+        return $this->calendarContact;
+    }
+
+    /**
+     * @param \Calendar\Entity\Calendar[] $calendar
+     */
+    public function setCalendar($calendar)
+    {
+        $this->calendar = $calendar;
+    }
+
+    /**
+     * @return \Calendar\Entity\Calendar[]
+     */
+    public function getCalendar()
+    {
+        return $this->calendar;
+    }
+
+    /**
+     * @param \Calendar\Entity\ScheduleContact[] $scheduleContact
+     */
+    public function setScheduleContact($scheduleContact)
+    {
+        $this->scheduleContact = $scheduleContact;
+    }
+
+    /**
+     * @return \Calendar\Entity\ScheduleContact[]
+     */
+    public function getScheduleContact()
+    {
+        return $this->scheduleContact;
+    }
+
+    /**
+     * @param \Project\Entity\WorkpackageDocument[] $calendarDocument
+     */
+    public function setCalendarDocument($calendarDocument)
+    {
+        $this->calendarDocument = $calendarDocument;
+    }
+
+    /**
+     * @return \Project\Entity\WorkpackageDocument[]
+     */
+    public function getCalendarDocument()
+    {
+        return $this->calendarDocument;
+    }
+
+    /**
+     * @param \Project\Entity\Review\Review $projectReview
+     */
+    public function setProjectReview($projectReview)
+    {
+        $this->projectReview = $projectReview;
+    }
+
+    /**
+     * @return \Project\Entity\Review\Review
+     */
+    public function getProjectReview()
+    {
+        return $this->projectReview;
+    }
+
+    /**
+     * @param \Project\Entity\Review\VersionReview $projectVersionReview
+     */
+    public function setProjectVersionReview($projectVersionReview)
+    {
+        $this->projectVersionReview = $projectVersionReview;
+    }
+
+    /**
+     * @return \Project\Entity\Review\VersionReview
+     */
+    public function getProjectVersionReview()
+    {
+        return $this->projectVersionReview;
     }
 }

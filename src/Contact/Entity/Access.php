@@ -105,6 +105,12 @@ class Access extends EntityAbstract implements RoleInterface
      * @var \Project\Entity\Document\Type[]
      */
     private $documentType;
+    /**
+     * @ORM\ManyToMany(targetEntity="Calendar\Entity\Type", cascade={"persist"}, mappedBy="access")
+     * @Annotation\Exclude();
+     * @var \Calendar\Entity\Type[]
+     */
+    private $calendarType;
 
     /**
      * Class constructor
@@ -116,6 +122,7 @@ class Access extends EntityAbstract implements RoleInterface
         $this->resultType      = new ArrayCollection();
         $this->selection       = new ArrayCollection();
         $this->documentType    = new ArrayCollection();
+        $this->calendarType    = new ArrayCollection();
     }
 
     /**
@@ -352,5 +359,21 @@ class Access extends EntityAbstract implements RoleInterface
     public function getDocumentType()
     {
         return $this->documentType;
+    }
+
+    /**
+     * @param \Calendar\Entity\Type[] $calendarType
+     */
+    public function setCalendarType($calendarType)
+    {
+        $this->calendarType = $calendarType;
+    }
+
+    /**
+     * @return \Calendar\Entity\Type[]
+     */
+    public function getCalendarType()
+    {
+        return $this->calendarType;
     }
 }

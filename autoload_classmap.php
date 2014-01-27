@@ -54,6 +54,8 @@ return array(
   'Contact\Repository\Contact'                                   => __DIR__ . '/src/Contact/Repository/Contact.php',
   'Contact\Service\AddressService'                               => __DIR__ . '/src/Contact/Service/AddressService.php',
   'Contact\Service\AuthenticationIdentityProviderServiceFactory' => __DIR__ . '/src/Contact/Service/AuthenticationIdentityProviderServiceFactory.php',
+  'Contact\Service\CacheFactory'                                 => __DIR__ . '/src/Contact/Service/CacheFactory.php',
+  'Contact\Service\ConfigServiceFactory'                         => __DIR__ . '/src/Contact/Service/ConfigServiceFactory.php',
   'Contact\Service\ContactService'                               => __DIR__ . '/src/Contact/Service/ContactService.php',
   'Contact\Service\FormService'                                  => __DIR__ . '/src/Contact/Service/FormService.php',
   'Contact\Service\FormServiceAwareInterface'                    => __DIR__ . '/src/Contact/Service/FormServiceAwareInterface.php',
