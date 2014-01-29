@@ -535,16 +535,21 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Review\Review
+     * @var \Project\Entity\Review\Review[]
      */
     private $projectReview;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\VersionReview", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Review\VersionReview
+     * @var \Project\Entity\Review\VersionReview[]
      */
     private $projectVersionReview;
-
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Report\Report", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Report\Report[]
+     */
+    private $projectReport;
 
     /**
      * Class constructor
@@ -605,6 +610,7 @@ class Contact extends EntityAbstract implements
         $this->scheduleContact        = new Collections\ArrayCollection();
         $this->projectReview          = new Collections\ArrayCollection();
         $this->projectVersionReview   = new Collections\ArrayCollection();
+        $this->projectReport          = new Collections\ArrayCollection();
 
         /**
          * Set these values for legacy reasons
@@ -2295,7 +2301,23 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Review\Review $projectReview
+     * @param \Project\Entity\Report\Report[] $projectReport
+     */
+    public function setProjectReport($projectReport)
+    {
+        $this->projectReport = $projectReport;
+    }
+
+    /**
+     * @return \Project\Entity\Report\Report[]
+     */
+    public function getProjectReport()
+    {
+        return $this->projectReport;
+    }
+
+    /**
+     * @param \Project\Entity\Review\Review[] $projectReview
      */
     public function setProjectReview($projectReview)
     {
@@ -2303,7 +2325,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Review\Review
+     * @return \Project\Entity\Review\Review[]
      */
     public function getProjectReview()
     {
@@ -2311,7 +2333,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Review\VersionReview $projectVersionReview
+     * @param \Project\Entity\Review\VersionReview[] $projectVersionReview
      */
     public function setProjectVersionReview($projectVersionReview)
     {
@@ -2319,7 +2341,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Review\VersionReview
+     * @return \Project\Entity\Review\VersionReview[]
      */
     public function getProjectVersionReview()
     {

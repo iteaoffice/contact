@@ -4,6 +4,6 @@
 
         <p class="lead">{{ translate("txt-%s-new-explanation")|format(entity) }}</p>
 
-        {% include 'contact/partial/form/' ~ entity ~ '.twig' with [{'entity': entity}, {'form': form}] %}
+        {% include 'contact/partial/form/' ~ entity with [{'entity': entity}, {'form': form}] %}
     </div>
 </div>
