@@ -199,7 +199,7 @@ class ContactService extends ServiceAbstract
     /**
      * Dedicated function to have the organisation of a contact (or null)
      *
-     * @return null|string
+     * @return null|Entity\Country
      */
     public function parseCountry()
     {
@@ -207,7 +207,7 @@ class ContactService extends ServiceAbstract
             return null;
         }
 
-        return $this->getContact()->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
+        return $this->getContact()->getContactOrganisation()->getOrganisation()->getCountry();
     }
 
     /**

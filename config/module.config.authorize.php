@@ -27,7 +27,7 @@ return array(
                 'allow' => array(
                     // allow guests and users (and admins, through inheritance)
                     // the "wear" privilege on the resource "pants"d
-                    array(array('user'), 'contact', array('edit-profile', 'change-password')),
+                    array(array('user'), 'contact', array('edit-profile', 'change-password', 'profile')),
                     array(array('office'), 'contact', array('view-admin', 'edit-admin', 'impersonate', 'list')),
                 ),
                 // Don't mix allow/deny rules if you are using role inheritance.
