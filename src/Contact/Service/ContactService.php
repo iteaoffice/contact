@@ -23,6 +23,7 @@ use Organisation\Entity\Organisation;
 use Project\Service\ProjectService;
 use Organisation\Service\OrganisationService;
 use General\Service\GeneralService;
+use General\Entity\Country;
 use Event\Service\MeetingService;
 
 use ZfcUser\Options\UserServiceOptionsInterface;
@@ -140,7 +141,7 @@ class ContactService extends ServiceAbstract
     /**
      * Find a list of upcoming meetings were a user has not registered yet
      *
-     * @return \Event\Entity\Meeting[]
+     * @return \Event\Entity\Meeting\Meeting[]
      */
     public function findUpcomingMeetings()
     {
@@ -148,7 +149,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * Parse the fullname of a project
+     * Parse the full name of a project
      *
      * @return string
      */
@@ -199,7 +200,7 @@ class ContactService extends ServiceAbstract
     /**
      * Dedicated function to have the organisation of a contact (or null)
      *
-     * @return null|Entity\Country
+     * @return null|Country
      */
     public function parseCountry()
     {
@@ -569,6 +570,74 @@ class ContactService extends ServiceAbstract
     {
         return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
             ->searchContacts($searchItem, $maxResults);
+    }
+
+    /**
+     * Create an array with the incomplete items in the profile and the relative weight
+     */
+    public function getProfileInCompleteness()
+    {
+        $inCompleteness = array();
+        $totalWeight    = 0;
+
+        $totalWeight += 10;
+        if (is_null($this->getContact()->getFirstName())) {
+            $inCompleteness['firstName']['message'] = _("txt-first-name-is-missing");
+            $inCompleteness['firstName']['weight']  = 10;
+        }
+
+        $totalWeight += 10;
+        if (is_null($this->getContact()->getLastName())) {
+            $inCompleteness['lastName']['message'] = _("txt-last-name-is-missing");
+            $inCompleteness['lastName']['weight']  = 10;
+        }
+
+        $totalWeight += 10;
+        if (sizeof($this->getContact()->getPhone()) === 0) {
+            $inCompleteness['phone']['message'] = _("txt-no-telephone-number-known");
+            $inCompleteness['phone']['weight']  = 10;
+        }
+
+        $totalWeight += 10;
+        if (sizeof($this->getContact()->getAddress()) === 0) {
+            $inCompleteness['address']['message'] = _("txt-no-address-known");
+            $inCompleteness['address']['weight']  = 10;
+        }
+
+        $totalWeight += 10;
+        if (sizeof($this->getContact()->getPhoto()) === 0) {
+            $inCompleteness['photo']['message'] = _("txt-no-profile-photo-given");
+            $inCompleteness['photo']['weight']  = 10;
+        }
+
+        $totalWeight += 10;
+        if (is_null($this->getContact()->getSaltedPassword())) {
+            $inCompleteness['password']['message'] = _("txt-no-password-given");
+            $inCompleteness['password']['weight']  = 10;
+        }
+
+        $totalWeight += 20;
+        if (is_null($this->getContact()->getContactOrganisation()) === 0) {
+            $inCompleteness['organisation']['message'] = _("txt-no-organisation-known");
+            $inCompleteness['organisation']['weight']  = 20;
+        }
+
+        /**
+         * Determine the total weight
+         */
+        $incompletenessWeight = 0;
+        /**
+         * Update the values in the table to create a total weight of 100%
+         */
+        foreach ($inCompleteness as &$itemPerType) {
+            $itemPerType['weight'] = ($itemPerType['weight'] / $totalWeight * 100);
+            $incompletenessWeight += $itemPerType['weight'];
+        }
+
+        return array(
+            'items'                => $inCompleteness,
+            'incompletenessWeight' => $incompletenessWeight,
+        );
     }
 
     /**

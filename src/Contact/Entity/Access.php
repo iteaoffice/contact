@@ -94,9 +94,9 @@ class Access extends EntityAbstract implements RoleInterface
      */
     private $publicationType;
     /**
-     * @ORM\ManyToMany(targetEntity="Project\Entity\ResultType", cascade={"persist"}, mappedBy="access")
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Result\Type", cascade={"persist"}, mappedBy="access")
      * @Annotation\Exclude()
-     * @var \Project\Entity\ResultType[]
+     * @var \Project\Entity\Result\Type[]
      */
     private $resultType;
     /**
@@ -314,7 +314,7 @@ class Access extends EntityAbstract implements RoleInterface
     }
 
     /**
-     * @param \Project\Entity\ResultType[] $resultType
+     * @param \Project\Entity\Result\Type[] $resultType
      */
     public function setResultType($resultType)
     {
@@ -322,7 +322,7 @@ class Access extends EntityAbstract implements RoleInterface
     }
 
     /**
-     * @return \Project\Entity\ResultType[]
+     * @return \Project\Entity\Result\Type[]
      */
     public function getResultType()
     {

@@ -248,9 +248,9 @@ class Contact extends EntityAbstract implements
      */
     private $projectDescription;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Version", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Version\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Project[]
+     * @var \Project\Entity\Version\Version[]
      */
     private $projectVersion;
     /**
@@ -473,27 +473,27 @@ class Contact extends EntityAbstract implements
      */
     private $mailing;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Result[]
+     * @var \Project\Entity\Result\Result[]
      */
     private $result;
     /**
-     * @ORM\ManyToMany(targetEntity="Project\Entity\Result", cascade={"persist"}, mappedBy="resultContact")
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="resultContact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Result[]
+     * @var \Project\Entity\Result\Result[]
      */
     private $resultContact;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Workpackage", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Workpackage[]
+     * @var \Project\Entity\Workpackage\Workpackage[]
      */
     private $workpackage;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\WorkpackageDocument", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\WorkpackageDocument[]
+     * @var \Project\Entity\Workpackage\Document[]
      */
     private $workpackageDocument;
     /**
@@ -523,7 +523,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\WorkpackageDocument[]
+     * @var \Calendar\Entity\Document[]
      */
     private $calendarDocument;
     /**
@@ -550,6 +550,18 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Report\Report[]
      */
     private $projectReport;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Invite[]
+     */
+    private $invite;
+    /**
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="inviteContact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Invite[]
+     */
+    private $inviteContact;
 
     /**
      * Class constructor
@@ -611,6 +623,8 @@ class Contact extends EntityAbstract implements
         $this->projectReview          = new Collections\ArrayCollection();
         $this->projectVersionReview   = new Collections\ArrayCollection();
         $this->projectReport          = new Collections\ArrayCollection();
+        $this->invite                 = new Collections\ArrayCollection();
+        $this->inviteContact          = new Collections\ArrayCollection();
 
         /**
          * Set these values for legacy reasons
@@ -1578,7 +1592,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Project[] $projectVersion
+     * @param \Project\Entity\Version\Version[] $projectVersion
      */
     public function setProjectVersion($projectVersion)
     {
@@ -1586,7 +1600,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Project[]
+     * @return \Project\Entity\Version\Version[]
      */
     public function getProjectVersion()
     {
@@ -2077,7 +2091,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Result[] $result
+     * @param \Project\Entity\Result\Result[] $result
      */
     public function setResult($result)
     {
@@ -2085,7 +2099,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Result[]
+     * @return \Project\Entity\Result\Result[]
      */
     public function getResult()
     {
@@ -2093,7 +2107,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Result[] $resultContact
+     * @param \Project\Entity\Result\Result[] $resultContact
      */
     public function setResultContact($resultContact)
     {
@@ -2101,7 +2115,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Result[]
+     * @return \Project\Entity\Result\Result[]
      */
     public function getResultContact()
     {
@@ -2109,7 +2123,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Workpackage[] $workpackage
+     * @param \Project\Entity\Workpackage\Workpackage[] $workpackage
      */
     public function setWorkpackage($workpackage)
     {
@@ -2117,7 +2131,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Workpackage[]
+     * @return \Project\Entity\Workpackage\Workpackage[]
      */
     public function getWorkpackage()
     {
@@ -2125,7 +2139,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\WorkpackageDocument[] $workpackageDocument
+     * @param \Project\Entity\Workpackage\Document[] $workpackageDocument
      */
     public function setWorkpackageDocument($workpackageDocument)
     {
@@ -2133,7 +2147,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\WorkpackageDocument[]
+     * @return \Project\Entity\Workpackage\Document[]
      */
     public function getWorkpackageDocument()
     {
@@ -2285,7 +2299,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\WorkpackageDocument[] $calendarDocument
+     * @param \Calendar\Entity\Document[] $calendarDocument
      */
     public function setCalendarDocument($calendarDocument)
     {
@@ -2293,7 +2307,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\WorkpackageDocument[]
+     * @return \Calendar\Entity\Document[]
      */
     public function getCalendarDocument()
     {
@@ -2346,5 +2360,37 @@ class Contact extends EntityAbstract implements
     public function getProjectVersionReview()
     {
         return $this->projectVersionReview;
+    }
+
+    /**
+     * @param \Project\Entity\Invite[] $invite
+     */
+    public function setInvite($invite)
+    {
+        $this->invite = $invite;
+    }
+
+    /**
+     * @return \Project\Entity\Invite[]
+     */
+    public function getInvite()
+    {
+        return $this->invite;
+    }
+
+    /**
+     * @param \Project\Entity\Invite[] $inviteContact
+     */
+    public function setInviteContact($inviteContact)
+    {
+        $this->inviteContact = $inviteContact;
+    }
+
+    /**
+     * @return \Project\Entity\Invite[]
+     */
+    public function getInviteContact()
+    {
+        return $this->inviteContact;
     }
 }

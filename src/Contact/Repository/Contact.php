@@ -51,6 +51,61 @@ class Contact extends EntityRepository
         return $qb->getQuery();
     }
 
+    public function findContactByProjectId($projectId)
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from("Contact\Entity\Contact", 'c');
+        $queryBuilder->distinct('c.id');
+
+
+        //Add the associates
+        $associates = $this->_em->createQueryBuilder();
+        $associates->select('associateContact.id');
+        $associates->from('Affiliation\Entity\Affiliation', 'associateAffiliation');
+        $associates->join('associateAffiliation.associate', 'associateContact');
+        $associates->join('associateAffiliation.project', 'associateProject');
+        $associates->andWhere('associateProject.project = ?1');
+
+        //Add the affiliates
+        $affiliates = $this->_em->createQueryBuilder();
+        $affiliates->select('affiliationContact.id');
+        $affiliates->from('Affiliation\Entity\Affiliation', 'affiliation');
+        $affiliates->join('affiliation.project', 'affiliationProject');
+        $affiliates->join('affiliation.contact', 'affiliationContact');
+        $affiliates->andWhere('affiliationProject.project = ?1');
+
+        //Add the workpackage leaders
+        $workpackage = $this->_em->createQueryBuilder();
+        $workpackage->select('workpackageContact.id');
+        $workpackage->from('Project\Entity\Workpackage\Workpackage', 'workpackage');
+        $workpackage->join('workpackage.project', 'workpackageProject');
+        $workpackage->join('workpackage.contact', 'workpackageContact');
+        $workpackage->andWhere('workpackageProject.project = ?1');
+
+        //Add the project leaders
+        $projectLeaders = $this->_em->createQueryBuilder();
+        $projectLeaders->select('projectContact.id');
+        $projectLeaders->from('Project\Entity\Project', 'project');
+        $projectLeaders->join('project.contact', 'projectContact');
+        $projectLeaders->andWhere('project.id = ?1');
+
+
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->orX(
+                $queryBuilder->expr()->in('c.id', $associates->getDQL()),
+                $queryBuilder->expr()->in('c.id', $affiliates->getDQL()),
+                $queryBuilder->expr()->in('c.id', $workpackage->getDQL()),
+                $queryBuilder->expr()->in('c.id', $projectLeaders->getDQL())
+            )
+        );
+
+        $queryBuilder->setParameter(1, $projectId);
+
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
     /**
      * @param $email
      *
@@ -69,14 +124,7 @@ class Contact extends EntityRepository
         $queryBuilder->setParameter(2, $email);
         $queryBuilder->setMaxResults(1);
 
-        $result = $queryBuilder->getQuery()->getResult();
-
-        //Limit to 1 to have only 1 match
-        if (sizeof($result) > 0) {
-            return $result[0];
-        } else {
-            return null;
-        }
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
     /**
