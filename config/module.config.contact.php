@@ -9,7 +9,7 @@ $settings = array(
     // cache options have to be compatible with Zend\Cache\StorageFactory::factory
     'cache_options' => array(
         'adapter' => array(
-            'name' => 'apc',
+            'name' => 'filesystem',
         ),
         'plugins' => array(
             'serializer',
