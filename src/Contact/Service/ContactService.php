@@ -230,6 +230,25 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Find the financial address of a contact
+     *
+     * @throws \RunTimeException
+     * @return AddressService
+     */
+    public function getFinancialAddress()
+    {
+        if (is_null($this->getContact())) {
+            throw new \RunTimeException(sprintf("A contact should be set"));
+        }
+
+        return $this->getAddressService()->findAddressByContactAndType(
+            $this->getContact(),
+            AddressType::ADDRESS_TYPE_FINANCIAL
+        );
+    }
+
+
+    /**
      * Find the direct phone number of a contact
      *
      * @return null|object
@@ -638,6 +657,50 @@ class ContactService extends ServiceAbstract
             'items'                => $inCompleteness,
             'incompletenessWeight' => $incompletenessWeight,
         );
+    }
+
+    /**
+     * Produce a list of contacts which are active in a project
+     *
+     * @param ProjectService $projectService
+     *
+     * @return Contact[]
+     * @throws \InvalidArgumentException
+     */
+    public function findContactsInProject(ProjectService $projectService)
+    {
+        /**
+         * Throw an exception when no project is selected
+         */
+        if (is_null($projectService->getProject())) {
+            throw new \InvalidArgumentException(sprintf("No project selected"));
+        }
+
+        $contacts = array();
+        /**
+         * Add the project leader
+         */
+        $contacts[$projectService->getProject()->getContact()->getId()] = $projectService->getProject()->getContact();
+
+        /**
+         * Add the contacts form the affiliations and the associates
+         */
+        foreach ($projectService->getProject()->getAffiliation() as $affiliation) {
+            $contacts[$affiliation->getContact()->getId()] = $affiliation->getContact();
+
+            foreach ($affiliation->getAssociate() as $associate) {
+                $contacts[$associate->getId()] = $associate;
+            }
+        }
+
+        /**
+         * Add the workpackage leaders
+         */
+        foreach ($projectService->getProject()->getWorkpackage() as $workpackage) {
+            $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();
+        }
+
+        return $contacts;
     }
 
     /**

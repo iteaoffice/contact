@@ -562,6 +562,12 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Invite[]
      */
     private $inviteContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Loi[]
+     */
+    private $loi;
 
     /**
      * Class constructor
@@ -625,6 +631,7 @@ class Contact extends EntityAbstract implements
         $this->projectReport          = new Collections\ArrayCollection();
         $this->invite                 = new Collections\ArrayCollection();
         $this->inviteContact          = new Collections\ArrayCollection();
+        $this->loi                    = new Collections\ArrayCollection();
 
         /**
          * Set these values for legacy reasons
@@ -2392,5 +2399,21 @@ class Contact extends EntityAbstract implements
     public function getInviteContact()
     {
         return $this->inviteContact;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Loi[] $loi
+     */
+    public function setLoi($loi)
+    {
+        $this->loi = $loi;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Loi[]
+     */
+    public function getLoi()
+    {
+        return $this->loi;
     }
 }

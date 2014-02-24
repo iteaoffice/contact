@@ -243,11 +243,7 @@ class Contact extends EntityRepository
                     WHERE contact_id IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
             $resultSetMap);
 
-        if (sizeof($query->getResult()) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return sizeof($query->getResult()) > 0;
     }
 
     /**
@@ -262,17 +258,17 @@ class Contact extends EntityRepository
     {
 
         $qb = $this->_em->createQueryBuilder();
-        $qb->select('p');
+        $qb->select('c');
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->distinct('c.id');
 
-        $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR p.emailAddress LIKE :searchItem');
+        $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR c.email LIKE :searchItem');
 
         $qb->setParameter('searchItem', "%" . $searchItem . "%");
 
         $qb->setMaxResults($maxResults);
 
-        $qb->orderBy('p.id', 'DESC');
+        $qb->orderBy('c.id', 'DESC');
 
         return $qb->getQuery()->getResult();
     }
