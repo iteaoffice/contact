@@ -325,6 +325,11 @@ class ContactService extends ServiceAbstract
         $contact->setGender($this->getGeneralService()->findEntityById('gender', 0)); //Unknown
         $contact->setTitle($this->getGeneralService()->findEntityById('title', 0)); //Unknown
 
+        /**
+         * Include all the optIns
+         */
+        $contact->setOptIn($this->findAll('optIn'));
+
         $contact = $this->newEntity($contact);
 
         //Create a target
@@ -506,9 +511,19 @@ class ContactService extends ServiceAbstract
      *
      * @param Contact $contact
      * @param array   $contactOrganisation
+     *
+     * @return void
      */
     public function updateContactOrganisation(Contact $contact, array $contactOrganisation)
     {
+
+        /**
+         * Don't do anything when the organisationName = empty
+         */
+        if (empty($contactOrganisation['organisation'])) {
+            return;
+        }
+
         $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
 
         $organisation = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
@@ -538,7 +553,8 @@ class ContactService extends ServiceAbstract
              */
 
             foreach ($organisation as $foundOrganisation) {
-                if (strpos($foundOrganisation->getOrganisation(), $contactOrganisation['organisation']) !== false &&
+                if (!empty($contactOrganisation['organisation']) &&
+                    strpos($foundOrganisation->getOrganisation(), $contactOrganisation['organisation']) !== false &&
                     strlen($foundOrganisation->getOrganisation()) > $contactOrganisation['organisation']
                 ) {
                     /**
@@ -564,7 +580,8 @@ class ContactService extends ServiceAbstract
      */
     public function updateOptInForContact($optInId, $enable, Contact $contact)
     {
-        $optIn      = $this->findEntityById('optIn', $optInId);
+        $optIn = $this->findEntityById('optIn', $optInId);
+
         $collection = new ArrayCollection();
         $collection->add($optIn);
 

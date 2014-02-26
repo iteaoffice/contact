@@ -956,7 +956,11 @@ class Contact extends EntityAbstract implements
     public function addOptIn(Collections\Collection $optInCollection)
     {
         foreach ($optInCollection as $optIn) {
-            $optIn->contact = $this;
+            /**
+             * No extra reference
+             * $optIn->contact = $this;
+             * here as we use the collections here in a different way
+             */
             $this->optIn->add($optIn);
         }
     }
