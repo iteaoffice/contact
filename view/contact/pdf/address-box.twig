@@ -1,0 +1,9 @@
+{% set contactService = contactServiceProxy(contact) %}
+{% set visitAddress = contactService.getVisitAddress() %}
+{{ contactService.parseOrganisation() }}<br>
+{{ translate("txt-attn:-%s")|format(contactService.parseFullName()) }}<br>
+{{ visitAddress.address }}<br>
+{{ visitAddress.zipCode }} {{ visitAddress.city }}<br>
+{{ contactService.parseCountry() }}
+
+

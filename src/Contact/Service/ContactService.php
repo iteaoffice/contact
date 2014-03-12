@@ -125,6 +125,18 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Find all contacts which are active and have a date of birth
+     *
+     * @return Contact[]
+     */
+    public function findContactsWithDateOfBirth()
+    {
+        return $this->getEntityManager()
+            ->getRepository($this->getFullEntityName('contact'))
+            ->findContactsWithDateOfBirth();
+    }
+
+    /**
      * Give the access object, based on the name of the access
      *
      * @param $name

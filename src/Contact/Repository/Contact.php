@@ -128,6 +128,22 @@ class Contact extends EntityRepository
     }
 
     /**
+     * @return Contact[]
+     */
+    public function findContactsWithDateOfBirth()
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from('Contact\Entity\Contact', 'c');
+
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
+        $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('c.dateOfBirth'));
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+
+    /**
      *  Returns true of false depending if a contact is a community member
      *
      * @param Entity\Contact                    $contact

@@ -14,4 +14,5 @@ return array(
     'contact/partial/form/contact'        => __DIR__ . '//view/contact/partial/form/contact.twig',
     'contact/partial/pagination-control'  => __DIR__ . '//view/contact/partial/pagination-control.twig',
     'contact/partial/signature'           => __DIR__ . '//view/contact/partial/signature.twig',
+    'contact/pdf/address-box'             => __DIR__ . '//view/contact/pdf/address-box.twig',
 );
