@@ -27,7 +27,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.23",
-        "zendframework/zendframework": "2.3.*",
+        "zendframework/zendframework": "dev-master",
         "debranova/general": "dev-develop",
         "debranova/project": "dev-develop",
         "bjyoungblood/bjy-authorize": "dev-master",
