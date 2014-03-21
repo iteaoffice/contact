@@ -24,8 +24,14 @@
             <dd>{{ contactService.getDirectPhone() }}</dd>
             <dt>{{ translate("txt-mobile-phone") }}</dt>
             <dd>{{ contactService.getMobilePhone() }}</dd>
+            {% if  contactService.getMailAddress() %}
+                <dt>{{ translate("txt-postal-address") }}</dt>
+                <dd>{{ contactService.getMailAddress().address.address }}</dd>
+                <dd>{{ contactService.getMailAddress().address.zipCode }} {{ contactService.getMailAddress().address.city }}</dd>
+                <dd>{{ contactService.getMailAddress().address.country|upper }}</dd>
+            {% endif %}
             <dt>{{ translate("txt-profile-visibility") }}</dt>
-            {% if contactService.contact.profile.visible %}
+            {% if contactService.contact.profile.visible is not null %}
                 <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
             {% else %}
                 <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
@@ -33,8 +39,8 @@
             <dt>{{ translate("txt-expertise") }}</dt>
             <dd>{{ contactService.contact.profile.description }}</dd>
             <dt>{{ translate("txt-community") }}</dt>
-            {% for community in contactService.contact.community if community.community != '' %}
-                <dd>{{ communityLink(community) }}</dd>
+            {% for community in contactService.contact.community %}
+                {% if loop.first %}<dd>{% endif %}{{ communityLink(community) }}{% if loop.last %}</dd>{% endif %}
             {% else %}
                 <dd>{{ translate("txt-no-community-known") }}</dd>
             {% endfor %}

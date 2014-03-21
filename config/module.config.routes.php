@@ -30,8 +30,7 @@ return array(
                 'options'       => array(
                     'route'    => '/assets/' . DEBRANOVA_HOST,
                     'defaults' => array(
-                        'controller' => 'index',
-                        'action'     => 'index',
+                        'controller' => 'contact-index',
                     ),
                 ),
                 'may_terminate' => true,
@@ -41,7 +40,8 @@ return array(
                         'options' => array(
                             'route'    => "/contact-photo/[:hash].[:ext]",
                             'defaults' => array(
-                                'action' => 'display',
+                                'controller' => 'contact-index',
+                                'action'     => 'display',
                             ),
                         ),
                     ),
@@ -53,7 +53,7 @@ return array(
                 'options'       => array(
                     'route'    => '/contact',
                     'defaults' => array(
-                        'controller' => 'contact',
+                        'controller' => 'contact-index',
                         'action'     => 'index',
                     ),
                 ),
@@ -136,7 +136,7 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes'  => array(
-                    'contact' => array(
+                    'contact-manager' => array(
                         'type'          => 'Segment',
                         'options'       => array(
                             'route'    => '/contact',
@@ -180,7 +180,7 @@ return array(
                             ),
                         ),
                     ),
-                    'access'  => array(
+                    'access-manager'  => array(
                         'type'          => 'Segment',
                         'options'       => array(
                             'route'    => '/access',

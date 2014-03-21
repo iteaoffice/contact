@@ -208,13 +208,13 @@ class Contact extends EntityAbstract implements
      */
     private $cv;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @@Annotation\ComposedObject("\Contact\Entity\Address")
      * @var \Contact\Entity\Address[]
      */
     private $address;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\ComposedObject("\Contact\Entity\Phone")
      * @var \Contact\Entity\Phone[]
      */
@@ -401,13 +401,13 @@ class Contact extends EntityAbstract implements
      */
     private $deeplinkContact;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist"}, mappedBy="contact",  orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Contact\Entity\Profile
      */
     private $profile;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Contact\Entity\Community[]
      */

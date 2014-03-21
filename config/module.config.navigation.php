@@ -11,18 +11,18 @@ return array(
     'navigation' => array(
         'admin' => array(
             // And finally, here is where we define our page hierarchy
-            'contacts' => array(
+            'contact' => array(
                 'label'    => _("txt-contact-admin"),
                 'route'    => 'zfcadmin',
                 'resource' => 'zfcadmin',
                 'pages'    => array(
                     'contacts' => array(
                         'label' => "txt-contacts",
-                        'route' => 'zfcadmin/contact',
+                        'route' => 'zfcadmin/contact-manager',
                     ),
                     'access'   => array(
                         'label' => "txt-access",
-                        'route' => 'zfcadmin/access/list',
+                        'route' => 'zfcadmin/access-manager/list',
                     ),
                 ),
             ),

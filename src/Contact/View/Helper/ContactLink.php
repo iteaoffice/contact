@@ -56,17 +56,17 @@ class ContactLink extends AbstractHelper
 
         switch ($action) {
             case 'new':
-                $router  = 'zfcadmin/contact/new';
+                $router  = 'zfcadmin/contact-manager/new';
                 $text    = sprintf($translate("txt-new-contact"));
                 $contact = new Entity\Contact();
                 break;
             case 'list':
-                $router  = 'zfcadmin/contact/list';
+                $router  = 'zfcadmin/contact-manager/list';
                 $contact = new Entity\Contact();
                 $text    = sprintf($translate("txt-list-contacts"));
                 break;
             case 'edit-admin':
-                $router = 'zfcadmin/contact/edit';
+                $router = 'zfcadmin/contact-manager/edit';
                 $text   = sprintf($translate("txt-edit-contact-%s"), $contact);
                 break;
             case 'profile':
@@ -74,11 +74,11 @@ class ContactLink extends AbstractHelper
                 $text   = sprintf($translate("txt-view-profile-of-contact-%s"), $contact);
                 break;
             case 'view-admin':
-                $router = 'zfcadmin/contact/view';
+                $router = 'zfcadmin/contact-manager/view';
                 $text   = sprintf($translate("txt-view-contact-%s"), $contact);
                 break;
             case 'impersonate':
-                $router = 'zfcadmin/contact/impersonate';
+                $router = 'zfcadmin/contact-manager/impersonate';
                 $text   = sprintf($translate("txt-impersonate-contact-%s"), $contact);
                 break;
             case 'edit-profile':

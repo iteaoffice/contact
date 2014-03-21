@@ -1,11 +1,17 @@
 <h1>{{ translate("txt-impersonate-user-%s")|format(contactService.parseFullname()) }}</h1>
-<p>{{ translate("txt-select-a-target-and-press-submit-to-get-the-deeplinks") }}</p>
+<p class="lead">{{ translate("txt-select-a-target-and-press-submit-to-get-the-deeplinks") }}</p>
 
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
 {{ ztbformelement(form.get('target')) }}
 {{ ztbformelement(form.get('key')) }}
-{{ ztbformelement(form.get('submit')) }}
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+    </div>
+</div>
+
 {{ form().closeTag()|raw }}
 
 {% if deeplink %}

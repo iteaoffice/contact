@@ -15,7 +15,7 @@ use Zend\Stdlib\ArrayUtils;
 $config = array(
     'controllers'     => array(
         'invokables' => array(
-            'contact'         => 'Contact\Controller\ContactController',
+            'contact-index'   => 'Contact\Controller\ContactController',
             'contact-manager' => 'Contact\Controller\ContactManagerController',
         ),
     ),

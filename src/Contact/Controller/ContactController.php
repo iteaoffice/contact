@@ -9,7 +9,7 @@
  */
 namespace Contact\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
+
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\File\ImageSize;
 use Zend\View\Model\ViewModel;
@@ -25,6 +25,9 @@ use Contact\Service\FormService;
 use Contact\Entity\Photo;
 use Contact\Form\Search;
 
+use Contact\Form\Profile;
+
+use Doctrine\Common\Collections\ArrayCollection;
 use General\Service\GeneralService;
 
 /**
@@ -98,14 +101,10 @@ class ContactController extends AbstractActionController implements
      */
     public function searchAction()
     {
-        $this->layout(false);
         $searchItem = $this->getRequest()->getQuery()->get('search_item');
         $maxResults = $this->getRequest()->getQuery()->get('max_rows');
 
         $projectSearchResult = $this->getContactService()->searchContacts($searchItem, $maxResults);
-        $searchForm          = new Search();
-        $searchForm->setData($_POST);
-
         /**
          * Include a paginator to be able to have later paginated search results in pages
          */
@@ -114,8 +113,9 @@ class ContactController extends AbstractActionController implements
         $paginator->setCurrentPageNumber(1);
         $paginator->setPageRange(1);
 
-        $viewModel = new ViewModel(array('paginator' => $paginator, 'form' => $searchForm));
-        $viewModel->setTemplate('project/partial/list/project');
+        $viewModel = new ViewModel(array('paginator' => $paginator, 'searchItem' => $searchItem));
+        $viewModel->setTerminal(true);
+        $viewModel->setTemplate('contact/contact-manager/list');
 
         return $viewModel;
     }
@@ -162,67 +162,46 @@ class ContactController extends AbstractActionController implements
      */
     public function profileEditAction()
     {
-        $entity = $this->getContactService()->findEntityById(
-            'contact',
-            $this->zfcUserAuthentication()->getIdentity()->getId()
-        );
+        $contactService = $this->getContactService()->setContactId($this->zfcUserAuthentication()->getIdentity()->getId());
 
         $data = array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
         );
 
-        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $data);
+        $form = new Profile($this->getServiceLocator(), $contactService->getContact());
+        $form->bind($contactService->getContact());
 
-        $form->setAttribute('class', 'form-horizontal');
+        $form->setData($data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
-
             $contact = $form->getData();
-
-            /**
-             * Add the contact to the profile
-             */
-            $contact->getProfile()->setContact($contact);
-
-            /**
-             * Remove the empty communities
-             */
-            foreach ($contact->getCommunity() as $community) {
-                if ($community->getCommunity() === '') {
-                    $contact->getCommunity()->remove($community->getId());
-                }
-            }
 
             $fileData = $this->params()->fromFiles();
 
-            if (isset($fileData['contact']['photo'])) {
-                foreach ($fileData['contact']['photo'] as $photoElement) {
-                    if (!empty($photoElement['file']['name'])) {
-                        $photo = $entity->getPhoto()->first();
-                        if (!$photo) {
-                            //Create a photo element
-                            $photo = new Photo();
-                        }
-
-                        $photo->setPhoto(file_get_contents($photoElement['file']['tmp_name']));
-                        $photo->setThumb(file_get_contents($photoElement['file']['tmp_name']));
-
-                        $imageSizeValidator = new ImageSize();
-                        $imageSizeValidator->isValid($photoElement['file']);
-
-                        $photo->setWidth($imageSizeValidator->width);
-                        $photo->setHeight($imageSizeValidator->height);
-
-                        $photo->setContentType(
-                            $this->getGeneralService()->findContentTypeByContentTypeName($photoElement['file']['type'])
-                        );
-
-                        $collection = new ArrayCollection();
-                        $collection->add($photo);
-                        $entity->addPhoto($collection);
-                    }
+            if (!empty($fileData['file']['name'])) {
+                $photo = $contactService->getContact()->getPhoto()->first();
+                if (!$photo) {
+                    //Create a photo element
+                    $photo = new Photo();
                 }
+
+                $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
+                $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
+
+                $imageSizeValidator = new ImageSize();
+                $imageSizeValidator->isValid($fileData['file']);
+
+                $photo->setWidth($imageSizeValidator->width);
+                $photo->setHeight($imageSizeValidator->height);
+
+                $photo->setContentType(
+                    $this->getGeneralService()->findContentTypeByContentTypeName($fileData['file']['type'])
+                );
+
+                $collection = new ArrayCollection();
+                $collection->add($photo);
+                $contact->addPhoto($collection);
             }
 
             /**
@@ -232,53 +211,24 @@ class ContactController extends AbstractActionController implements
                 if (is_null($photo->getWidth())) {
                     $collection = new ArrayCollection();
                     $collection->add($photo);
-                    $entity->removePhoto($collection);
+                    $contact->removePhoto($collection);
                 }
             };
 
-            /**
-             * Add the contact to the address
-             */
-            foreach ($contact->getAddress() as $address) {
-                $address->setContact($contact);
-            }
-
             $contact = $this->getContactService()->updateEntity($contact);
+
             /**
              * The contact_organisation is different and not a drop-down.
              * we will extract the organisation name from the contact_organisation text-field
              */
-            $formData = $this->params()->fromPost('contact');
-            $this->getContactService()->updateContactOrganisation($contact, $formData['contact_organisation']);
+            $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
             $this->flashMessenger()->setNamespace('success')->addMessage(
                 _("txt-profile-has-successfully-been-updated")
             );
             $this->redirect()->toRoute('contact/profile');
-        } else {
-            /**
-             * Pre fill some values
-             */
-            $contactService = $this->getContactService()->setContact($entity);
-
-            /**
-             * Populate the form fields, when known
-             */
-            if (!is_null($contactService->getContact()->getContactOrganisation())) {
-                $form->get('contact')->get('contact_organisation')->get('organisation')->setValue(
-                    $contactService->findOrganisationService()->parseOrganisationWithBranch(
-                        $contactService->getContact()->getContactOrganisation()->getBranch()
-                    )
-                );
-
-                $form->get('contact')->get('contact_organisation')->get('country')->setValue(
-                    is_null($contactService->findOrganisationService()->getOrganisation()->getCountry()) ?
-                        $this->getGeneralService()->findLocationByIPAddress() :
-                        $contactService->findOrganisationService()->getOrganisation()->getCountry()->getId()
-                );
-            }
         }
 
-        return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
+        return new ViewModel(array('form' => $form, 'contactService' => $contactService, 'fullVersion' => true));
     }
 
     /**
@@ -363,17 +313,5 @@ class ContactController extends AbstractActionController implements
         $this->formService = $formService;
 
         return $this;
-    }
-
-    /**
-     * @param \Zend\Mvc\Controller\string $layout
-     *
-     * @return void|\Zend\Mvc\Controller\Plugin\Layout|\Zend\View\Model\ModelInterface
-     */
-    public function layout($layout)
-    {
-        if (false === $layout) {
-            $this->getEvent()->getViewModel()->setTemplate('layout/nolayout');
-        }
     }
 }

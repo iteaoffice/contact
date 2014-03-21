@@ -97,11 +97,13 @@ class ContactManagerController extends AbstractActionController implements
         if ($this->getRequest()->isPost() && $form->isValid()) {
 
             $data = $form->getData();
+
             //Create a target
             $target = $this->getDeeplinkService()->findEntityById('target', $data['target']);
+            $key    = (!empty($data['key']) ? $data['key'] : null);
 
             //Create a deeplink for the user which redirects to the profile-page
-            $deeplink = $this->getDeeplinkService()->createDeeplink($contactService->getContact(), $target);
+            $deeplink = $this->getDeeplinkService()->createDeeplink($contactService->getContact(), $target, null, $key);
         }
 
         return new ViewModel(

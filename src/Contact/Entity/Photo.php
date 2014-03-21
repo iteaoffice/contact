@@ -132,7 +132,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
@@ -306,24 +306,8 @@ class Photo extends EntityAbstract
         return $this->id;
     }
 
-//    /**
-//     * @param int $oldContentType
-//     */
-//    public function setOldContentType($oldContentType)
-//    {
-//        $this->oldContentType = $oldContentType;
-//    }
-//
-//    /**
-//     * @return int
-//     */
-//    public function getOldContentType()
-//    {
-//        return $this->oldContentType;
-//    }
-
     /**
-     * @param resource $photo
+     * @param string $photo
      */
     public function setPhoto($photo)
     {
@@ -339,7 +323,7 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * @param mixed $thumb
+     * @param string $thumb
      */
     public function setThumb($thumb)
     {
@@ -347,7 +331,7 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * @return mixed
+     * @return resource
      */
     public function getThumb()
     {

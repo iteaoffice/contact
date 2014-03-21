@@ -6,57 +6,79 @@
 
 {{ form().openTag(form)|raw }}
 
-{% set contact = form.get('contact') %}
+{{ ztbformelement(form.get('gender')) }}
+{{ ztbformelement(form.get('title')) }}
+{{ ztbformelement(form.get('firstName')) }}
+{{ ztbformelement(form.get('middleName')) }}
+{{ ztbformelement(form.get('lastName')) }}
 
-{{ ztbformelement(contact.get('gender')) }}
-{{ ztbformelement(contact.get('title')) }}
-{{ ztbformelement(contact.get('firstName')) }}
-{{ ztbformelement(contact.get('middleName')) }}
-{{ ztbformelement(contact.get('lastName')) }}
-{% set emailFormElement = contact.get('email') %}
-{% do emailFormElement.setAttribute('disabled','disabled') %}
-{{ ztbformelement(emailFormElement) }}
+<div class="form-group">
+    <label class="col-sm-3 control-label">{{ translate("txt-email-address") }}</label>
 
-{{ ztbformcollection(contact.get('phone')) }}
+    <div class="col-sm-9">
+        <p class="form-control-static">{{ contactService.contact.email }}</p>
+    </div>
+</div>
 
-{{ ztbformcollection(contact.get('address')) }}
+
+{% for fieldset in form.get('community').getFieldsets() %}
+    {{ ztbformelement(fieldset.get('community')) }}
+{% endfor %}
 
 
 <fieldset>
-    <legend>{{ translate("txt-community") }}</legend>
-    {% for elements in contact.get('community') %}
-        <div class="form-group">
-
-            <label for="input_{{ loop.index }}"
-                   class="col-lg-3 control-label">{% if loop.first %}{{ translate("txt-community") }}{% endif %}</label>
-
-            <div class="col-lg-3">
-                {{ formelement(elements.get('type').setAttribute('class','form-control disabled').setValue(loop.index)) }}
-            </div>
-            <div class="col-lg-4">
-                {{ formelement(elements.get('community').setAttribute('class','form-control')) }}
-            </div>
-        </div>
+    <legend>{{ translate("txt-phone-information") }}</legend>
+    {% for fieldset in form.get('phone').getFieldsets() %}
+        {{ ztbformelement(fieldset.get('phone')) }}
     {% endfor %}
 </fieldset>
 
 <fieldset>
-    <legend>{{ translate("txt-organisation") }}</legend>
-    {{ ztbformelement(contact.get('department')) }}
-    {{ ztbformelement(contact.get('position')) }}
+    <legend>{{ translate("txt-postal-address") }}</legend>
+    {% set address = form.get('address') %}
 
-    {{ ztbformelement(contact.get('contact_organisation').get('organisation')) }}
-    {{ ztbformelement(contact.get('contact_organisation').get('country')) }}
+    {{ ztbformelement(address.get('address')) }}
+    {{ ztbformelement(address.get('zipCode')) }}
+    {{ ztbformelement(address.get('city')) }}
+    {{ ztbformelement(address.get('country')) }}
+
 </fieldset>
 
-{% set profile = contact.get('profile') %}
-{{ ztbformelement(profile.get('visible')) }}
-{{ ztbformelement(profile.get('description')) }}
-{{ ztbformelement(profile.get('contact')) }}
 
-{{ ztbformcollection(contact.get('photo')) }}
+<fieldset>
+    <legend>{{ translate("txt-organisation") }}</legend>
+    {{ ztbformelement(form.get('department')) }}
+    {{ ztbformelement(form.get('position')) }}
+
+    {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
+    {{ ztbformelement(form.get('contact_organisation').get('country')) }}
+</fieldset>
+
+<fieldset>
+    <legend>{{ translate("txt-profile") }}</legend>
+    {% set profile = form.get('profile') %}
+    {{ ztbformelement(profile.get('visible')) }}
+    {{ ztbformelement(profile.get('description')) }}
+</fieldset>
+
+
+<div class="form-group">
+    <label class="col-sm-3 control-label">{{ translate("txt-current-photo") }}</label>
+
+    <div class="col-sm-9">
+        <p class="form-control-static">{{ contactPhoto(contactService.contact) }}</p>
+    </div>
+</div>
+
+{{ ztbformelement(form.get('file')) }}
 
 {{ ztbformelement(form.get('csrf')) }}
-{{ ztbformelement(form.get('submit')) }}
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('cancel')) }}
+    </div>
+</div>
 
 {{ form().closeTag()|raw }}

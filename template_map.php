@@ -11,7 +11,6 @@ return array(
     'contact/contact-manager/new'         => __DIR__ . '//view/contact/contact-manager/new.twig',
     'contact/contact-manager/view'        => __DIR__ . '//view/contact/contact-manager/view.twig',
     'contact/partial/entity/contact'      => __DIR__ . '//view/contact/partial/entity/contact.twig',
-    'contact/partial/form/contact'        => __DIR__ . '//view/contact/partial/form/contact.twig',
     'contact/partial/pagination-control'  => __DIR__ . '//view/contact/partial/pagination-control.twig',
     'contact/partial/signature'           => __DIR__ . '//view/contact/partial/signature.twig',
     'contact/pdf/address-box'             => __DIR__ . '//view/contact/pdf/address-box.twig',

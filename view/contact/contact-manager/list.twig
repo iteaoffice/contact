@@ -8,11 +8,17 @@
         </div>
 
         <div class="col-md-6">
-            <div id="throbber"></div>
-            {% do form.prepare() %}
-            {{ form().openTag(form)|raw }}
-            {{ formelement(form.get('search')) }}
-            {{ form().closeTag()|raw }}
+            <div class="pull-right">
+                <form class="form-inline" role="form" id="contactSearch">
+                    <div class="form-group">
+                        <label class="sr-only" for="search-box">{{ translate("txt-search") }}</label>
+                        <input type="search" class="form-control col-md-12" id="search" name="q"
+                               value="{{ searchItem }}"
+                               placeholder="{{ translate("txt-search-item") }}">
+                    </div>
+                    <input type="submit" value="{{ translate("txt-search") }}" class="btn btn-primary">
+                </form>
+            </div>
         </div>
 
     </div>
@@ -54,34 +60,22 @@
 </div>
 
 <script type="text/javascript">
-    $(function () {
-        $("#search").autocomplete({
-            source: function (request, response) {
+    $("#contactSearch").on('submit', function (e) {
+                e.preventDefault();
                 $.ajax({
                     url: 'contact/search',
                     data: {
                         max_rows: 12,
-                        search_item: request.term
+                        search_item: $("#search").val()
                     },
                     success: function (data) {
                         $("#contact-list").html(data);
+                        $("#throbber").remove();
                     },
                     error: function (event, ui) {
                         alert("Search Failed");
                     }
                 });
-            },
-            minLength: 2,
-            select: function (event, ui) {
-                log(ui.item ?
-                        "Selected: " + ui.item.label :
-                        "Nothing selected, input was " + this.value);
-            },
-            search: function () {
-                var throb = new Throbber({color: '#00A651'});
-                throb.appendTo(document.getElementById('title'));
-                throb.start();
             }
-        });
-    });
+    );
 </script>

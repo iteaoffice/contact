@@ -34,15 +34,16 @@ class Impersonate extends Form
                     'target_class'   => 'Deeplink\Entity\Target',
                     'object_manager' => $sm->get('doctrine.entitymanager.orm_default'),
                     'find_method'    => array(
-                        'name'   => 'findBy',
+                        'name'   => 'findTargetsWithRoute',
                         'params' => array(
                             'criteria' => array(),
-                            'orderBy'  => array('route' => 'DESC'),
+                            'orderBy'  => array(),
                         ),
                     ),
+                    'help-block'     => _("txt-deeplink-target-form-element-explanation"),
                 ),
                 'attributes' => array(
-                    'label' => 'target',
+                    'label' => ucfirst(_("txt-target")),
                     'class' => 'form-control',
                     'id'    => "target",
                 )
@@ -54,8 +55,11 @@ class Impersonate extends Form
             array(
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'key',
+                'options'    => array(
+                    'help-block' => _("txt-deeplink-key-form-element-explanation"),
+                ),
                 'attributes' => array(
-                    'label'       => 'key',
+                    'label'       => ucfirst(_("txt-key")),
                     'class'       => 'form-control',
                     'id'          => "key",
                     'placeholder' => _("txt-key")

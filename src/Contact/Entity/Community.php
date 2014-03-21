@@ -147,7 +147,7 @@ class Community extends EntityAbstract
     {
         return array(
             'community' => $this->community,
-            'contact'   => $this->contact->getId(),
+            'contact'   => $this->contact,
             'type'      => $this->type,
 
         );

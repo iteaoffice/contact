@@ -10,7 +10,6 @@
 namespace Contact\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
 
 use Contact\Entity;
 
@@ -43,13 +42,6 @@ class Address extends EntityRepository
 
         $queryBuilder->setMaxResults(1);
 
-        $result = $queryBuilder->getQuery()->getResult();
-
-        //Limit to 1 to have only 1 match
-        if (sizeof($result) > 0) {
-            return $result[0];
-        } else {
-            return null;
-        }
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }
