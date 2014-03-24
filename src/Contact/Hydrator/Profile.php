@@ -15,7 +15,6 @@ use Contact\Entity\Contact;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
 use Contact\Service\ContactService;
-use Doctrine\Common\Collections\ArrayCollection;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use Contact\Entity\Address;
 use General\Entity\CommunityType;
@@ -38,7 +37,6 @@ class Profile extends DoctrineObject
     {
         $this->prepare($object);
         $values = $this->extractByValue($object);
-
 
         unset($values['phone']);
         foreach ($object->getPhone() as $phone) {
@@ -87,15 +85,14 @@ class Profile extends DoctrineObject
             }
         }
 
-
         return $values;
     }
 
     /**
      * Hydrate $object with the provided $data.
      *
-     * @param  array   $data
-     * @param  Contact $object
+     * @param array   $data
+     * @param Contact $object
      *
      * @return object
      */

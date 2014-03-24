@@ -9,7 +9,6 @@
  */
 namespace Contact\Controller;
 
-
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\File\ImageSize;
 use Zend\View\Model\ViewModel;
@@ -84,7 +83,7 @@ class ContactController extends AbstractActionController implements
             $response->getHeaders()
                 ->addHeaderLine('Content-Type: ' .
                     $contact->getPhoto()->first()->getContentType()->getContentType())
-                ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+                ->addHeaderLine('Content-Length: ' . (string) strlen($file));
 
             $response->setContent($file);
 
@@ -139,8 +138,8 @@ class ContactController extends AbstractActionController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
 
         $this->getContactService()->updateOptInForContact(
             $optInId,

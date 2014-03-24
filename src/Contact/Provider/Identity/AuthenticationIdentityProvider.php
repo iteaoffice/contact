@@ -8,7 +8,6 @@
 
 namespace Contact\Provider\Identity;
 
-
 use Zend\Authentication\AuthenticationService;
 use Zend\Permissions\Acl\Role\RoleInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -96,4 +95,3 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
         return array($this->authenticatedRole);
     }
 }
-

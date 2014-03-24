@@ -551,6 +551,12 @@ class Contact extends EntityAbstract implements
      */
     private $projectReport;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Calendar\Review", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Calendar\Review[]
+     */
+    private $projectCalendarReview;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Invite[]
@@ -629,6 +635,7 @@ class Contact extends EntityAbstract implements
         $this->projectReview          = new Collections\ArrayCollection();
         $this->projectVersionReview   = new Collections\ArrayCollection();
         $this->projectReport          = new Collections\ArrayCollection();
+        $this->projectCalendarReview  = new Collections\ArrayCollection();
         $this->invite                 = new Collections\ArrayCollection();
         $this->inviteContact          = new Collections\ArrayCollection();
         $this->loi                    = new Collections\ArrayCollection();
@@ -2419,5 +2426,21 @@ class Contact extends EntityAbstract implements
     public function getLoi()
     {
         return $this->loi;
+    }
+
+    /**
+     * @param \Project\Entity\Calendar\Review[] $projectCalendarReview
+     */
+    public function setProjectCalendarReview($projectCalendarReview)
+    {
+        $this->projectCalendarReview = $projectCalendarReview;
+    }
+
+    /**
+     * @return \Project\Entity\Calendar\Review[]
+     */
+    public function getProjectCalendarReview()
+    {
+        return $this->projectCalendarReview;
     }
 }

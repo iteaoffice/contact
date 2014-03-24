@@ -14,7 +14,6 @@ use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Form\Fieldset;
 
-
 use DoctrineORMModule\Options\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 
@@ -95,7 +94,6 @@ class Profile extends Form
                 )
             )
         );
-
 
         $this->add(
             array(
@@ -195,7 +193,6 @@ class Profile extends Form
 
         $this->add($phoneFieldSet);
 
-
         /**
          * Add the form field for the address
          */
@@ -262,7 +259,6 @@ class Profile extends Form
         );
 
         $this->add($addressFieldSet);
-
 
         /**
          * Produce a list of all phone numbers
@@ -332,7 +328,6 @@ class Profile extends Form
             )
         );
 
-
         /**
          * Produce a list of all phone numbers
          */
@@ -366,7 +361,6 @@ class Profile extends Form
                 )
             )
         );
-
 
         $this->add($profileFieldSet);
 

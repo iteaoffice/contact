@@ -58,7 +58,6 @@ class Contact extends EntityRepository
         $queryBuilder->from("Contact\Entity\Contact", 'c');
         $queryBuilder->distinct('c.id');
 
-
         //Add the associates
         $associates = $this->_em->createQueryBuilder();
         $associates->select('associateContact.id');
@@ -90,7 +89,6 @@ class Contact extends EntityRepository
         $projectLeaders->join('project.contact', 'projectContact');
         $projectLeaders->andWhere('project.id = ?1');
 
-
         $queryBuilder->andWhere(
             $queryBuilder->expr()->orX(
                 $queryBuilder->expr()->in('c.id', $associates->getDQL()),
@@ -101,7 +99,6 @@ class Contact extends EntityRepository
         );
 
         $queryBuilder->setParameter(1, $projectId);
-
 
         return $queryBuilder->getQuery()->getResult();
     }
@@ -141,7 +138,6 @@ class Contact extends EntityRepository
 
         return $queryBuilder->getQuery()->getResult();
     }
-
 
     /**
      *  Returns true of false depending if a contact is a community member

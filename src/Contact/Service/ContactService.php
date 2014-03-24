@@ -189,7 +189,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
     }
@@ -224,7 +224,6 @@ class ContactService extends ServiceAbstract
 
         return $this->getContact()->getContactOrganisation()->getOrganisation()->getCountry();
     }
-
 
     /**
      * Find the mail address of a contact
@@ -279,7 +278,6 @@ class ContactService extends ServiceAbstract
             AddressType::ADDRESS_TYPE_FINANCIAL
         );
     }
-
 
     /**
      * Find the direct phone number of a contact
@@ -557,7 +555,7 @@ class ContactService extends ServiceAbstract
             return;
         }
 
-        $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+        $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
 
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {

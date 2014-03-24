@@ -16,7 +16,6 @@ use Zend\Mvc\Router\Http\RouteMatch;
 
 use Contact\Service\ContactService;
 
-
 /**
  * Factory for the Project admin navigation
  *
@@ -33,7 +32,6 @@ class ContactNavigationFactory extends DefaultNavigationFactory
      * @var ContactService;
      */
     protected $contactService;
-
 
     /**
      * @param ServiceLocatorInterface $serviceLocator
@@ -62,7 +60,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['contact']['pages']['view'] = array(
-                'label'      => (string)$this->contactService->parseFullName(),
+                'label'      => (string) $this->contactService->parseFullName(),
                 'route'      => 'zfcadmin/contact-manager/view',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -108,7 +106,6 @@ class ContactNavigationFactory extends DefaultNavigationFactory
                 )
             );
         }
-
 
         return $pages;
     }
