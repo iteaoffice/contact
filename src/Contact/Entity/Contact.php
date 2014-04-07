@@ -183,16 +183,16 @@ class Contact extends EntityAbstract implements
      */
     private $messenger;
     /**
-     * @ORM\ManyToMany(targetEntity="Contact\Entity\Access", cascade={"persist"},inversedBy="contact")
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"},inversedBy="contact")
      * @ORM\JoinTable(name="contact_access",
      *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
      *    inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
      * )
      * @ORM\OrderBy({"access"="ASC"})
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Contact\Entity\Access"})
+     * @Annotation\Options({"target_class":"Admin\Entity\Access"})
      * @Annotation\Attributes({"label":"txt-access"})
-     * @var \Contact\Entity\Access[]
+     * @var \Admin\Entity\Access[]
      */
     private $access;
     /**
@@ -272,9 +272,9 @@ class Contact extends EntityAbstract implements
      */
     private $nda;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\ProgramDoa", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Program\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Program\Entity\ProgramDoa[]
+     * @var \Program\Entity\Doa[]
      */
     private $programDoa;
     /**
@@ -574,6 +574,18 @@ class Contact extends EntityAbstract implements
      * @var \Affiliation\Entity\Loi[]
      */
     private $loi;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Doa[]
+     */
+    private $affiliationDoa;
+    /**
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Permit\Contact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Admin\Entity\Permit\Contact
+     */
+    private $permitContact;
 
     /**
      * Class constructor
@@ -639,6 +651,8 @@ class Contact extends EntityAbstract implements
         $this->invite                 = new Collections\ArrayCollection();
         $this->inviteContact          = new Collections\ArrayCollection();
         $this->loi                    = new Collections\ArrayCollection();
+        $this->affiliationDoa         = new Collections\ArrayCollection();
+        $this->permitContact          = new Collections\ArrayCollection();
 
         /**
          * Set these values for legacy reasons
@@ -1546,7 +1560,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Access[] $access
+     * @param \Admin\Entity\Access[] $access
      */
     public function setAccess($access)
     {
@@ -1554,7 +1568,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Access[]
+     * @return \Admin\Entity\Access[]
      */
     public function getAccess()
     {
@@ -1594,7 +1608,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Program\Entity\ProgramDoa[] $programDoa
+     * @param \Program\Entity\Doa[] $programDoa
      */
     public function setProgramDoa($programDoa)
     {
@@ -1602,7 +1616,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Program\Entity\ProgramDoa[]
+     * @return \Program\Entity\Doa[]
      */
     public function getProgramDoa()
     {
@@ -2442,5 +2456,37 @@ class Contact extends EntityAbstract implements
     public function getProjectCalendarReview()
     {
         return $this->projectCalendarReview;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Doa[]
+     */
+    public function getAffiliationDoa()
+    {
+        return $this->affiliationDoa;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Doa[] $affiliationDoa
+     */
+    public function setAffiliationDoa($affiliationDoa)
+    {
+        $this->affiliationDoa = $affiliationDoa;
+    }
+
+    /**
+     * @return \Admin\Entity\Permit\Contact
+     */
+    public function getPermitContact()
+    {
+        return $this->permitContact;
+    }
+
+    /**
+     * @param \Admin\Entity\Permit\Contact $permitContact
+     */
+    public function setPermitContact($permitContact)
+    {
+        $this->permitContact = $permitContact;
     }
 }

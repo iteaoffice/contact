@@ -20,10 +20,6 @@ return array(
                         'label' => "txt-contacts",
                         'route' => 'zfcadmin/contact-manager',
                     ),
-                    'access'   => array(
-                        'label' => "txt-access",
-                        'route' => 'zfcadmin/access-manager/list',
-                    ),
                 ),
             ),
         ),

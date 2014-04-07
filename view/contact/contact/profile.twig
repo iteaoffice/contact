@@ -110,8 +110,8 @@
                         <td>{{ registration.meeting.location }}</td>
                         <td>
                             {% for call in registration.meeting.call %}
-                                {% set programService = programServiceProxy() %}
-                                {% set nda = programService.findNdaByCallAndContact(call, contactService.contact) %}
+                                {% set callService = callServiceProxy() %}
+                                {% set nda = callService.findNdaByCallAndContact(call, contactService.contact) %}
                                 {% if nda %}
                                     {% if nda.dateApproved %}
                                         {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}
@@ -168,8 +168,8 @@
                     <td>{{ meeting.location }}</td>
                     <td>
                         {% for call in meeting.call %}
-                            {% set programService = programServiceProxy() %}
-                            {% set nda = programService.findNdaByCallAndContact(call, contactService.contact) %}
+                            {% set callService = callServiceProxy() %}
+                            {% set nda = callService.findNdaByCallAndContact(call, contactService.contact) %}
                             {% if nda %}
                                 {% if nda.dateApproved %}
                                     {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}

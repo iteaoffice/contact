@@ -168,9 +168,9 @@ class Selection extends EntityAbstract
      */
     private $exempt;
     /**
-     * @ORM\ManyToMany(targetEntity="Contact\Entity\Access", cascade={"persist"}, mappedBy="selection")
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude();
-     * @var \Contact\Entity\Access[]
+     * @var \Admin\Entity\Access[]
      */
     private $access;
 
@@ -587,7 +587,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Access[] $access
+     * @param \Admin\Entity\Access[] $access
      */
     public function setAccess($access)
     {
@@ -595,7 +595,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\Access[]
+     * @return \Admin\Entity\Access[]
      */
     public function getAccess()
     {

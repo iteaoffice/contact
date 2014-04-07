@@ -67,19 +67,19 @@ class ContactLink extends AbstractHelper
                 break;
             case 'edit-admin':
                 $router = 'zfcadmin/contact-manager/edit';
-                $text   = sprintf($translate("txt-edit-contact-%s"), $contact);
+                $text   = sprintf($translate("txt-edit-contact-%s"), $contact->getDisplayName());
                 break;
             case 'profile':
                 $router = 'contact/profile';
-                $text   = sprintf($translate("txt-view-profile-of-contact-%s"), $contact);
+                $text   = sprintf($translate("txt-view-profile-of-contact-%s"), $contact->getDisplayName());
                 break;
             case 'view-admin':
                 $router = 'zfcadmin/contact-manager/view';
-                $text   = sprintf($translate("txt-view-contact-%s"), $contact);
+                $text   = sprintf($translate("txt-view-contact-%s"), $contact->getDisplayName());
                 break;
             case 'impersonate':
                 $router = 'zfcadmin/contact-manager/impersonate';
-                $text   = sprintf($translate("txt-impersonate-contact-%s"), $contact);
+                $text   = sprintf($translate("txt-impersonate-contact-%s"), $contact->getDisplayName());
                 break;
             case 'edit-profile':
                 $router = 'contact/profile-edit';

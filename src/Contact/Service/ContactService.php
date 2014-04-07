@@ -31,6 +31,8 @@ use ZfcUser\Options\UserServiceOptionsInterface;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Validator\EmailAddress;
 
+use Admin\Service\AdminService;
+
 /**
  * ContactService
  *
@@ -139,20 +141,6 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * Give the access object, based on the name of the access
-     *
-     * @param $name
-     *
-     * @return \Contact\Entity\Access|null
-     */
-    public function findAccessByName($name)
-    {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('access'))->findOneBy(
-            array('access' => $name)
-        );
-    }
-
-    /**
      * Find a list of upcoming meetings were a user has not registered yet
      *
      * @return \Event\Entity\Meeting\Meeting[]
@@ -189,7 +177,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
     }
@@ -470,6 +458,20 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * @param $role
+     * @param $entity
+     *
+     * @return bool
+     */
+    public function hasPermit($role, $entity)
+    {
+        return $this->getAdminService()->contactHasPermit(
+            $this->getContact(),
+            $role,
+            strtolower($entity->get('entity_name')), $entity->getId());
+    }
+
+    /**
      * @param Selection $selection
      *
      * @return bool
@@ -555,7 +557,7 @@ class ContactService extends ServiceAbstract
             return;
         }
 
-        $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
+        $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
 
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -834,6 +836,14 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->projectService;
+    }
+
+    /**
+     * @return AdminService
+     */
+    public function getAdminService()
+    {
+        return $this->getServiceLocator()->get('admin_admin_service');
     }
 
     /**

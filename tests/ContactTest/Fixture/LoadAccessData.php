@@ -14,17 +14,17 @@ class LoadAccessData extends AbstractFixture
      */
     public function load(ObjectManager $manager)
     {
-        $access = new \Contact\Entity\Access();
+        $access = new \Admin\Entity\Access();
         $access->setAccess('office');
         $manager->persist($access);
         $manager->flush();
 
-        $access = new \Contact\Entity\Access();
+        $access = new \Admin\Entity\Access();
         $access->setAccess('user');
         $manager->persist($access);
         $manager->flush();
 
-        $access = new \Contact\Entity\Access();
+        $access = new \Admin\Entity\Access();
         $access->setAccess('public');
         $manager->persist($access);
         $manager->flush();

@@ -12,7 +12,7 @@ namespace ContactTest\Entity;
 use Zend\InputFilter\InputFilter;
 
 use Contact\Entity\Contact;
-use Contact\Entity\Access;
+use Admin\Entity\Access;
 
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
@@ -55,7 +55,7 @@ class AccessTest extends \PHPUnit_Framework_TestCase
 
     public function testCanCreateEntity()
     {
-        $this->assertInstanceOf("Contact\Entity\Access", $this->access);
+        $this->assertInstanceOf("Admin\Entity\Access", $this->access);
         $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->access);
 
         $this->assertNull($this->access->getId(), 'The "Id" should be null');
@@ -98,14 +98,14 @@ class AccessTest extends \PHPUnit_Framework_TestCase
     {
         $hydrator = new DoctrineObject(
             $this->entityManager,
-            'Contact\Entity\Access'
+            'Admin\Entity\Access'
         );
 
         $this->access = $hydrator->hydrate($this->accessData, new Access());
         $this->entityManager->persist($this->access);
         $this->entityManager->flush();
 
-        $this->assertInstanceOf('Contact\Entity\Access', $this->access);
+        $this->assertInstanceOf('Admin\Entity\Access', $this->access);
         $this->assertNotNull($this->access->getId());
         $this->assertNotNull($this->access->getDateCreated());
         $this->assertNotNull($this->access->getDateUpdated());
@@ -117,7 +117,7 @@ class AccessTest extends \PHPUnit_Framework_TestCase
     {
         $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
 
-        $access = new \Contact\Entity\Access();
+        $access = new \Admin\Entity\Access();
         $access->setAccess('this is a first access');
         $access->setDescription('This is a first description');
 
@@ -132,11 +132,11 @@ class AccessTest extends \PHPUnit_Framework_TestCase
     {
         $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
 
-        $access = new \Contact\Entity\Access();
+        $access = new \Admin\Entity\Access();
         $access->setAccess('this is a first access');
         $access->setDescription('This is a first description');
 
-        $access2 = new \Contact\Entity\Access();
+        $access2 = new \Admin\Entity\Access();
         $access2->setAccess('this is a second access');
         $access2->setDescription('This is a second description');
 
@@ -151,7 +151,7 @@ class AccessTest extends \PHPUnit_Framework_TestCase
     {
         $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
 
-        $access = new \Contact\Entity\Access();
+        $access = new \Admin\Entity\Access();
         $access->setAccess('this is a first access');
         $access->setDescription('This is a first description');
 

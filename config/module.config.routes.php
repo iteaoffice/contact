@@ -180,40 +180,6 @@ return array(
                             ),
                         ),
                     ),
-                    'access-manager'  => array(
-                        'type'          => 'Segment',
-                        'options'       => array(
-                            'route'    => '/access',
-                            'defaults' => array(
-                                'controller' => 'access-manager',
-                                'action'     => 'list'
-                            ),
-                        ),
-                        'may_terminate' => true,
-                        'child_routes'  => array(
-                            'list' => array(
-                                'type'     => 'Literal',
-                                'priority' => 1000,
-                                'options'  => array(
-                                    'route'    => '/list.html',
-                                    'defaults' => array(
-                                        'action' => 'list',
-                                    ),
-                                ),
-                            ),
-
-                            'view' => array(
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => array(
-                                    'route'    => '/view/[:id].html',
-                                    'defaults' => array(
-                                        'action' => 'view',
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
                 ),
             ),
         )
