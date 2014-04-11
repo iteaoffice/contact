@@ -63,7 +63,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="cv")
+     * @ORM\OneToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="cv")
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
@@ -106,6 +106,15 @@ class Cv extends EntityAbstract implements ResourceInterface
     {
         return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
+
+    /**
+     *
+     */
+    public function __toString()
+    {
+        return stream_get_contents($this->cv);
+    }
+
 
     /**
      * Set input filter

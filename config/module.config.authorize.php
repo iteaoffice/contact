@@ -55,8 +55,7 @@ return array(
                 array('route' => 'zfcadmin/contact-manager/list', 'roles' => array('office')),
                 array('route' => 'zfcadmin/contact-manager/view', 'roles' => array('office')),
                 array('route' => 'zfcadmin/contact-manager/impersonate', 'roles' => array('office')),
-                array('route' => 'zfcadmin/access-manager', 'roles' => array('office')),
-                array('route' => 'zfcadmin/access-manager/view', 'roles' => array('office')),
+
             ),
         ),
     ),

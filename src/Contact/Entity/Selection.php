@@ -212,6 +212,14 @@ class Selection extends EntityAbstract
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->selection;
+    }
+
+    /**
      * @return array
      */
     public function getPersonalTemplates()

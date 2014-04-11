@@ -511,6 +511,19 @@ class ContactService extends ServiceAbstract
         }
     }
 
+    public function findContactsInSelection(Selection $selection)
+    {
+        /**
+         * A selection can have 2 methods, either SQL or a contacts. We need to query both
+         */
+        if (!is_null($selection->getSql())) {
+            //We have a dynamic query, check if the contact is in the selection
+            return $this->getEntityManager()->getRepository(
+                $this->getFullEntityName('Contact')
+            )->findContactsBySelectionSQL($selection->getSql());
+        }
+    }
+
     /**
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed

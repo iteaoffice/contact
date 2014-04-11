@@ -51,6 +51,13 @@ class Contact extends EntityRepository
         return $qb->getQuery();
     }
 
+    /**
+     * @param $projectId
+     *
+     * @return array
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \InvalidArgumentException
+     */
     public function findContactByProjectId($projectId)
     {
         $queryBuilder = $this->_em->createQueryBuilder();
@@ -232,7 +239,10 @@ class Contact extends EntityRepository
         $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
         $resultSetMap->addFieldResult('c', 'contact_id', 'id');
         $resultSetMap->addFieldResult('c', 'email', 'email');
-        $query = $this->getEntityManager()->createNativeQuery("SELECT contact_id, email FROM contact
+        $resultSetMap->addFieldResult('c', 'firstname', 'firstName');
+        $resultSetMap->addFieldResult('c', 'middlename', 'middleName');
+        $resultSetMap->addFieldResult('c', 'lastname', 'lastName');
+        $query = $this->getEntityManager()->createNativeQuery("SELECT contact_id, email, firstname, middlename, lastname FROM contact
                     WHERE contact_id IN (" . $sql->getQuery() . ")", $resultSetMap);
 
         return $query->getResult();

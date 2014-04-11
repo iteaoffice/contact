@@ -14,6 +14,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Cache\StorageFactory;
 
 use Contact\Service\ContactService;
+use Admin\Service\AdminService;
 
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
@@ -34,6 +35,10 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      */
     protected $contactService;
     /**
+     * @var ContactService;
+     */
+    protected $adminService;
+    /**
      * @var StorageFactory
      */
     protected $cache;
@@ -50,6 +55,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     {
         parent::__construct($authService);
         $this->contactService = $serviceLocator->get('contact_contact_service');
+        $this->adminService   = $serviceLocator->get('admin_admin_service');
         $this->cache          = $serviceLocator->get('contact_cache');
         $this->config         = $serviceLocator->get('contact_module_config');
     }
@@ -78,7 +84,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
                 //Get also the roles assigned via selections
                 $this->contactService->setContact($identity);
                 $localRoles = array();
-                foreach ($this->contactService->findAll('access') as $access) {
+                foreach ($this->adminService->findAll('access') as $access) {
                     if ($this->contactService->inSelection($access->getSelection())) {
                         $localRoles[] = strtolower($access->getAccess());
                     }

@@ -202,9 +202,9 @@ class Contact extends EntityAbstract implements
      */
     private $emailAddress;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Cv", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\Cv", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\CV[]
+     * @var \Contact\Entity\CV
      */
     private $cv;
     /**
@@ -596,7 +596,6 @@ class Contact extends EntityAbstract implements
         $this->projectVersion         = new Collections\ArrayCollection();
         $this->projectDescription     = new Collections\ArrayCollection();
         $this->projectDocument        = new Collections\ArrayCollection();
-        $this->cv                     = new Collections\ArrayCollection();
         $this->web                    = new Collections\ArrayCollection();
         $this->role                   = new Collections\ArrayCollection();
         $this->address                = new Collections\ArrayCollection();
@@ -1464,7 +1463,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\CV[] $cv
+     * @param \Contact\Entity\CV $cv
      */
     public function setCv($cv)
     {
@@ -1472,7 +1471,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\CV[]
+     * @return \Contact\Entity\CV
      */
     public function getCv()
     {
