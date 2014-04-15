@@ -45,6 +45,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
         $this->routeMatch     = $application->getMvcEvent()->getRouteMatch();
         $router               = $application->getMvcEvent()->getRouter();
         $this->contactService = $serviceLocator->get('contact_contact_service');
+        $authService          = $serviceLocator->get('zfcuser_auth_service');
 
         if (in_array($this->routeMatch->getMatchedRouteName(),
             array(
@@ -60,7 +61,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['contact']['pages']['view'] = array(
-                'label'      => (string) $this->contactService->parseFullName(),
+                'label'      => (string)$this->contactService->parseFullName(),
                 'route'      => 'zfcadmin/contact-manager/view',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -95,7 +96,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
 
-            $pages['contact']['pages']['contact']['pages']['edit'] = array(
+            $pages['contact']['pages']['view']['pages']['edit'] = array(
                 'label'      => sprintf(_("txt-edit-contact-%s"), $this->contactService->parseFullName()),
                 'route'      => 'zfcadmin/contact-manager/edit',
                 'routeMatch' => $this->routeMatch,
@@ -106,6 +107,105 @@ class ContactNavigationFactory extends DefaultNavigationFactory
                 )
             );
         }
+
+        /**
+         * Profile page
+         */
+        if ($this->routeMatch->getMatchedRouteName() === 'contact/profile') {
+
+            $this->contactService->setContact($authService->getIdentity());
+
+            $pages['community'] = array(
+                'label'      => _("txt-community"),
+                'route'      => 'community',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+            );
+
+            /**
+             * Go over both arrays and check if the new entities can be added
+             */
+            $pages['community']['pages']['profile'] = array(
+                'label'      => sprintf(_("txt-profile-of-%s"), $this->contactService->parseFullName()),
+                'route'      => 'contact/profile',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+                'active'     => true,
+            );
+        }
+
+        /**
+         * Profile page
+         */
+        if ($this->routeMatch->getMatchedRouteName() === 'contact/profile-edit') {
+
+            $this->contactService->setContact($authService->getIdentity());
+
+            $pages['community'] = array(
+                'label'      => _("txt-community"),
+                'route'      => 'community',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+            );
+
+            /**
+             * Go over both arrays and check if the new entities can be added
+             */
+            $pages['community']['pages']['profile'] = array(
+                'label'      => sprintf(_("txt-profile-of-%s"), $this->contactService->parseFullName()),
+                'route'      => 'contact/profile',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+            );
+
+            /**
+             * Go over both arrays and check if the new entities can be added
+             */
+            $pages['community']['pages']['profile']['pages']['edit'] = array(
+                'label'      => sprintf(_("txt-edit-profile")),
+                'route'      => 'contact/profile-edit',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+                'active'     => true,
+            );
+        }
+
+        /**
+         * Profile page
+         */
+        if ($this->routeMatch->getMatchedRouteName() === 'contact/change-password') {
+
+            $this->contactService->setContact($authService->getIdentity());
+
+            $pages['community'] = array(
+                'label'      => _("txt-community"),
+                'route'      => 'community',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+            );
+
+            /**
+             * Go over both arrays and check if the new entities can be added
+             */
+            $pages['community']['pages']['profile'] = array(
+                'label'      => sprintf(_("txt-profile-of-%s"), $this->contactService->parseFullName()),
+                'route'      => 'contact/profile',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+            );
+
+            /**
+             * Go over both arrays and check if the new entities can be added
+             */
+            $pages['community']['pages']['profile']['pages']['change-password'] = array(
+                'label'      => sprintf(_("txt-change-password")),
+                'route'      => 'contact/change-password',
+                'routeMatch' => $this->routeMatch,
+                'router'     => $router,
+                'active'     => true,
+            );
+        }
+
 
         return $pages;
     }
