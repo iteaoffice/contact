@@ -121,7 +121,7 @@
                                         {{ translate("txt-nda-submitted-but-not-approved-yet") }}
                                     {% endif %}
                                 {% else %}
-                                    {{ ndaLink(null, 'view', 'text', call) }}
+                                    {{ ndaLink(null, 'upload', 'text', call) }}
                                 {% endif %}
                             {% endfor %}
                         </td>
@@ -177,7 +177,7 @@
                                     {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
                                 {% endif %}
                             {% else %}
-                                {{ ndaLink(null, 'view', 'text', call) }}
+                                {{ ndaLink(null, 'upload', 'text', call) }}
                             {% endif %}
                         {% endfor %}
                     </td>
