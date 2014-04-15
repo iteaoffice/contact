@@ -46,6 +46,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
         $router               = $application->getMvcEvent()->getRouter();
         $this->contactService = $serviceLocator->get('contact_contact_service');
         $authService          = $serviceLocator->get('zfcuser_auth_service');
+        $translate            = $serviceLocator->get('viewhelpermanager')->get('translate');
 
         if (in_array($this->routeMatch->getMatchedRouteName(),
             array(
@@ -78,7 +79,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['contact']['pages']['view']['pages']['edit'] = array(
-                'label'      => sprintf(_("txt-impersonate-contact-%s"), $this->contactService->parseFullName()),
+                'label'      => sprintf($translate("txt-impersonate-contact-%s"), $this->contactService->parseFullName()),
                 'route'      => 'zfcadmin/contact-manager/impersonate',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -97,7 +98,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              */
 
             $pages['contact']['pages']['view']['pages']['edit'] = array(
-                'label'      => sprintf(_("txt-edit-contact-%s"), $this->contactService->parseFullName()),
+                'label'      => sprintf($translate("txt-edit-contact-%s"), $this->contactService->parseFullName()),
                 'route'      => 'zfcadmin/contact-manager/edit',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -116,8 +117,8 @@ class ContactNavigationFactory extends DefaultNavigationFactory
             $this->contactService->setContact($authService->getIdentity());
 
             $pages['community'] = array(
-                'label'      => _("txt-community"),
-                'route'      => 'community',
+                'label'      => $translate("txt-account-information"),
+                'route'      => 'contact/profile',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
             );
@@ -126,7 +127,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['community']['pages']['profile'] = array(
-                'label'      => sprintf(_("txt-profile-of-%s"), $this->contactService->parseFullName()),
+                'label'      => sprintf($translate("txt-profile-of-%s"), $this->contactService->parseFullName()),
                 'route'      => 'contact/profile',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -142,17 +143,18 @@ class ContactNavigationFactory extends DefaultNavigationFactory
             $this->contactService->setContact($authService->getIdentity());
 
             $pages['community'] = array(
-                'label'      => _("txt-community"),
-                'route'      => 'community',
+                'label'      => $translate("txt-account-information"),
+                'route'      => 'contact/profile',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
             );
+
 
             /**
              * Go over both arrays and check if the new entities can be added
              */
             $pages['community']['pages']['profile'] = array(
-                'label'      => sprintf(_("txt-profile-of-%s"), $this->contactService->parseFullName()),
+                'label'      => sprintf($translate("txt-profile-of-%s"), $this->contactService->parseFullName()),
                 'route'      => 'contact/profile',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -162,7 +164,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['community']['pages']['profile']['pages']['edit'] = array(
-                'label'      => sprintf(_("txt-edit-profile")),
+                'label'      => sprintf($translate("txt-edit-profile")),
                 'route'      => 'contact/profile-edit',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -177,18 +179,19 @@ class ContactNavigationFactory extends DefaultNavigationFactory
 
             $this->contactService->setContact($authService->getIdentity());
 
-            $pages['community'] = array(
-                'label'      => _("txt-community"),
-                'route'      => 'community',
+            $$pages['community'] = array(
+                'label'      => $translate("txt-account-information"),
+                'route'      => 'contact/profile',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
             );
+
 
             /**
              * Go over both arrays and check if the new entities can be added
              */
             $pages['community']['pages']['profile'] = array(
-                'label'      => sprintf(_("txt-profile-of-%s"), $this->contactService->parseFullName()),
+                'label'      => sprintf($translate("txt-profile-of-%s"), $this->contactService->parseFullName()),
                 'route'      => 'contact/profile',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -198,7 +201,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['community']['pages']['profile']['pages']['change-password'] = array(
-                'label'      => sprintf(_("txt-change-password")),
+                'label'      => sprintf($translate("txt-change-password")),
                 'route'      => 'contact/change-password',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
