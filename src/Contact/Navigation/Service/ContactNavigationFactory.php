@@ -48,6 +48,20 @@ class ContactNavigationFactory extends DefaultNavigationFactory
         $authService          = $serviceLocator->get('zfcuser_auth_service');
         $translate            = $serviceLocator->get('viewhelpermanager')->get('translate');
 
+        /**
+         * Return $pages when no match is found
+         */
+        if (is_null($this->routeMatch)) {
+            return $pages;
+        }
+
+        /**
+         * Return $pages when no match is found
+         */
+        if (is_null($this->routeMatch)) {
+            return $pages;
+        }
+
         if (in_array($this->routeMatch->getMatchedRouteName(),
             array(
                 'zfcadmin/contact-manager/view',

@@ -30,8 +30,6 @@
         "zendframework/zendframework": "dev-master",
         "debranova/general": "dev-develop",
         "debranova/project": "dev-develop",
-        "bjyoungblood/bjy-authorize": "dev-master",
-        "zf-commons/zfc-user": "dev-master",
         "doctrine/doctrine-orm-module": "dev-master",
         "gedmo/doctrine-extensions": "dev-master"
     },
