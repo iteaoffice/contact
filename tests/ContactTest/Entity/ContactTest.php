@@ -91,8 +91,16 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $id = 1;
         $this->contact->setId($id);
 
-        $this->assertEquals($today, $this->contact->getDateCreated(), 'The "DateCreated" should be the same as the setter');
-        $this->assertEquals($today, $this->contact->getLastUpdate(), 'The "LastUpdate" should be the same as the setter');
+        $this->assertEquals(
+            $today,
+            $this->contact->getDateCreated(),
+            'The "DateCreated" should be the same as the setter'
+        );
+        $this->assertEquals(
+            $today,
+            $this->contact->getLastUpdate(),
+            'The "LastUpdate" should be the same as the setter'
+        );
         $this->assertEquals($id, $this->contact->getId(), 'The "Id" should be the same as the setter');
 
         $this->assertTrue(is_array($this->contact->getArrayCopy()));
@@ -140,7 +148,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
         $this->contact = $hydrator->hydrate($this->contactData, new Contact());
         $this->entityManager->persist($this->contact);
-        $this->entityManager->flush();
 
         $this->assertInstanceOf('Contact\Entity\Contact', $this->contact);
         $this->assertNotNull($this->contact->getId());
@@ -149,7 +156,10 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->contactData['lastName'], $this->contact->getLastName());
         $this->assertSame($this->contactData['department'], $this->contact->getDepartment());
         $this->assertSame($this->contactData['position'], $this->contact->getPosition());
-        $this->assertSame($this->contactData['email'], $this->contact->getUsername()); //We use the email addressa as username
+        $this->assertSame(
+            $this->contactData['email'],
+            $this->contact->getUsername()
+        ); //We use the email address as username
         $this->assertSame($this->contactData['state'], $this->contact->getState());
         $this->assertSame($this->contactData['gender']->getName(), $this->contact->getGender()->getName());
         $this->assertSame($this->contactData['gender']->getId(), $this->contact->getGender()->getId());
@@ -181,5 +191,4 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($result, $contactId);
     }
-
 }

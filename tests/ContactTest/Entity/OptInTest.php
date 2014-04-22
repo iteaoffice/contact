@@ -61,15 +61,9 @@ class OptInTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($this->optIn->getId(), 'The "Id" should be null');
 
-        $today = new \DateTime();
-        $this->optIn->setDateCreated($today);
-        $this->optIn->setDateUpdated($today);
-
         $id = 1;
         $this->optIn->setId($id);
 
-        $this->assertEquals($today, $this->optIn->getDateCreated(), 'The "DateCreated" should be the same as the setter');
-        $this->assertEquals($today, $this->optIn->getDateUpdated(), 'The "DateUpdated" should be the same as the setter');
         $this->assertEquals($id, $this->optIn->getId(), 'The "Id" should be the same as the setter');
 
         $this->assertTrue(is_array($this->optIn->getArrayCopy()));
@@ -109,16 +103,13 @@ class OptInTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Contact\Entity\OptIn', $this->optIn);
         $this->assertNotNull($this->optIn->getId());
-        $this->assertNotNull($this->optIn->getDateCreated());
-        $this->assertNotNull($this->optIn->getDateUpdated());
         $this->assertEquals($this->optIn->getOptIn(), $this->optInData['optIn']);
-
     }
 
     public function testCanAddOptInToUser()
     {
         $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
-
+var_dump($contact->getId());
         $optIn = new \Contact\Entity\OptIn();
         $optIn->setOptIn(2);
         $optIn->setDescription('This is the description');

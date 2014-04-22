@@ -58,7 +58,8 @@ class AddressTest extends \PHPUnit_Framework_TestCase
             'type'    => $type,
             'address' => 'This is the Address',
             'zipcode' => '1234',
-            'city'    => 'This is the City');
+            'city'    => 'This is the City'
+        );
 
         $this->address = new Address();
     }
@@ -69,15 +70,9 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->address);
         $this->assertNull($this->address->getId(), 'The "Id" should be null');
 
-        $today = new \DateTime();
-        $this->address->setDateCreated($today);
-        $this->address->setLastUpdate($today);
-
         $id = 1;
         $this->address->setId($id);
 
-        $this->assertEquals($today, $this->address->getDateCreated(), 'The "DateCreated" should be the same as the setter');
-        $this->assertEquals($today, $this->address->getLastUpdate(), 'The "LastUpdate" should be the same as the setter');
         $this->assertEquals($id, $this->address->getId(), 'The "Id" should be the same as the setter');
 
         $this->assertTrue(is_array($this->address->getArrayCopy()));
@@ -126,5 +121,4 @@ class AddressTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotNull($this->address->getResourceId());
     }
-
 }
