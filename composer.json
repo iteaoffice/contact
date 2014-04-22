@@ -28,8 +28,6 @@
     "require": {
         "php": ">=5.3.23",
         "zendframework/zendframework": "dev-master",
-        "debranova/general": "dev-develop",
-        "debranova/project": "dev-develop",
         "doctrine/doctrine-orm-module": "dev-master",
         "gedmo/doctrine-extensions": "dev-master"
     },
@@ -37,6 +35,8 @@
         "phpunit/phpunit": "3.7.*",
         "phpmd/phpmd": "1.4.*",
         "phploc/phploc": "*",
+        "debranova/general": "dev-develop",
+        "debranova/project": "dev-develop",
         "doctrine/data-fixtures": "dev-master"
     },
     "autoload": {
