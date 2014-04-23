@@ -27,7 +27,6 @@ class Subtype
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $subtypeId;
-
     /**
      * @var string
      *

@@ -26,7 +26,6 @@ use Contact\Entity\Profile as ProfileEntity;
  */
 class Profile extends Form
 {
-
     /**
      * @var EntityManager
      */

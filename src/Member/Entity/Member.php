@@ -27,28 +27,24 @@ class Member
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $memberId;
-
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_created", type="date", nullable=false)
      */
     private $dateCreated;
-
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_end", type="date", nullable=true)
      */
     private $dateEnd;
-
     /**
      * @var string
      *
      * @ORM\Column(name="branch", type="string", length=40, nullable=true)
      */
     private $branch;
-
     /**
      * @var \Contact
      *
@@ -58,7 +54,6 @@ class Member
      * })
      */
     private $contact;
-
     /**
      * @var \MemberType
      *
@@ -68,7 +63,6 @@ class Member
      * })
      */
     private $type;
-
     /**
      * @var \Organisation
      *

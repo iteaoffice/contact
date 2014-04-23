@@ -20,7 +20,6 @@ use ContactTest\Bootstrap;
 
 class OptInTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
@@ -109,7 +108,7 @@ class OptInTest extends \PHPUnit_Framework_TestCase
     public function testCanAddOptInToUser()
     {
         $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
-var_dump($contact->getId());
+        var_dump($contact->getId());
         $optIn = new \Contact\Entity\OptIn();
         $optIn->setOptIn(2);
         $optIn->setDescription('This is the description');

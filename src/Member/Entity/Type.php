@@ -27,35 +27,30 @@ class Type
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $typeId;
-
     /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=20, nullable=true)
      */
     private $type;
-
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=60, nullable=true)
      */
     private $description;
-
     /**
      * @var float
      *
      * @ORM\Column(name="fee", type="decimal", nullable=false)
      */
     private $fee;
-
     /**
      * @var float
      *
      * @ORM\Column(name="advance", type="decimal", nullable=false)
      */
     private $advance;
-
     /**
      * @var \MemberSubtype
      *

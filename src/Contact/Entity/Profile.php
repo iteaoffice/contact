@@ -57,7 +57,6 @@ class Profile extends EntityAbstract
      * Constant for visible = 1 (public)
      */
     const VISIBLE_PUBLIC = 2;
-
     /**
      * Textual versions of the hideForOthers
      *
@@ -67,7 +66,6 @@ class Profile extends EntityAbstract
         self::NOT_HIDE_FOR_OTHERS => 'txt-not-hide-for-others',
         self::HIDE_FOR_OTHERS     => 'txt-hide-for-others',
     );
-
     /**
      * Textual versions of the hideForOthers
      *
@@ -77,7 +75,6 @@ class Profile extends EntityAbstract
         self::NOT_HIDE_PHOTO => 'txt-not-hide-photo',
         self::HIDE_PHOTO     => 'txt-hide-photo',
     );
-
     /**
      * Textual versions of the visibility
      *
@@ -88,7 +85,6 @@ class Profile extends EntityAbstract
         self::VISIBLE_COMMUNITY => 'txt-visibility-community',
         self::VISIBLE_PUBLIC    => 'txt-visibility-public',
     );
-
     /**
      * @ORM\Column(name="profile_id", type="integer", nullable=false)
      * @ORM\Id

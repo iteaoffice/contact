@@ -48,7 +48,6 @@ class Selection extends EntityAbstract
      * Constant for private = 1 (hidden)
      */
     const IS_PRIVATE = 1;
-
     /**
      * Textual versions of the hideForOthers
      *
@@ -58,7 +57,6 @@ class Selection extends EntityAbstract
         self::NOT_PERSONAL => 'txt-not-personal',
         self::PERSONAL     => 'txt-personal',
     );
-
     /**
      * Textual versions of the hideForOthers
      *
@@ -68,7 +66,6 @@ class Selection extends EntityAbstract
         self::NOT_PRIVATE => 'txt-not-private',
         self::IS_PRIVATE  => 'txt-private',
     );
-
     /**
      * @ORM\Column(name="selection_id", length=10, type="integer", nullable=false)
      * @ORM\Id
@@ -216,7 +213,7 @@ class Selection extends EntityAbstract
      */
     public function __toString()
     {
-        return (string)$this->selection;
+        return (string) $this->selection;
     }
 
     /**

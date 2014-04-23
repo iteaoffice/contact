@@ -32,7 +32,6 @@ class ContactManagerController extends AbstractActionController implements
     FormServiceAwareInterface,
     ServiceLocatorAwareInterface
 {
-
     /**
      * @var ContactService;
      */

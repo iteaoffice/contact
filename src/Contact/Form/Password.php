@@ -41,33 +41,39 @@ class Password extends Form
         //            ),
         //        ));
 
-        $this->add(array(
-            'name'       => 'password',
-            'options'    => array(
-                'label'      => _("txt-new-password"),
-                'help-block' => _("txt-new-password-form-help")
-            ),
-            'attributes' => array(
-                'type' => 'password'
-            ),
-        ));
+        $this->add(
+            array(
+                'name'       => 'password',
+                'options'    => array(
+                    'label'      => _("txt-new-password"),
+                    'help-block' => _("txt-new-password-form-help")
+                ),
+                'attributes' => array(
+                    'type' => 'password'
+                ),
+            )
+        );
 
-        $this->add(array(
-            'name'       => 'passwordVerify',
-            'options'    => array(
-                'label' => _("txt-new-password-verify"),
-            ),
-            'attributes' => array(
-                'type' => 'password'
-            ),
-        ));
+        $this->add(
+            array(
+                'name'       => 'passwordVerify',
+                'options'    => array(
+                    'label' => _("txt-new-password-verify"),
+                ),
+                'attributes' => array(
+                    'type' => 'password'
+                ),
+            )
+        );
 
         $submitElement = new Element\Button('submit');
         $submitElement
             ->setLabel(_("txt-submit"))
-            ->setAttributes(array(
-                'type' => 'submit',
-            ));
+            ->setAttributes(
+                array(
+                    'type' => 'submit',
+                )
+            );
 
         $this->add(
             array(

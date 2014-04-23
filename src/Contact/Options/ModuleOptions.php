@@ -18,7 +18,6 @@ class ModuleOptions extends AbstractOptions implements
      * Turn off strict options mode
      */
     protected $__strictMode__ = false;
-
     /**
      * Trigger to see if the community consists of members
      *

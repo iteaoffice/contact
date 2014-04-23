@@ -21,7 +21,6 @@ use General\Entity\Gender;
 
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */

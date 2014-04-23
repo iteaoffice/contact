@@ -29,7 +29,6 @@ class Link
      * @var integer
      */
     private $id;
-
     /**
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumns({

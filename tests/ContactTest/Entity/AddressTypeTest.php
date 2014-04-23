@@ -20,7 +20,6 @@ use ContactTest\Bootstrap;
 
 class AddressTypeTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
@@ -48,7 +47,7 @@ class AddressTypeTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
         $this->contact = $this->entityManager->find("Contact\Entity\Contact", 1);
 
@@ -113,5 +112,4 @@ class AddressTypeTest extends \PHPUnit_Framework_TestCase
         $this->addressType->type = $this->addressTypeData['type'];
         $this->assertEquals((string) $this->addressType, $this->addressTypeData['type']);
     }
-
 }

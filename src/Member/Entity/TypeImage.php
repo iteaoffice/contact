@@ -27,14 +27,12 @@ class TypeImage
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $memberTypeImageId;
-
     /**
      * @var integer
      *
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      */
     private $typeId;
-
     /**
      * @var \Image
      *

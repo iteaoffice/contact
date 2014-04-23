@@ -24,7 +24,6 @@ use Content\Entity\Image;
  */
 class CommunityLink extends AbstractHelper
 {
-
     /**
      * @param Community $community
      *
@@ -44,8 +43,11 @@ class CommunityLink extends AbstractHelper
 
         $classes = array();
 
-        $link = preg_replace('/^([^\~]+)(\~(.*))?$/', '${1}' . $community->getCommunity() . '$3',
-            $community->getType()->getLink());
+        $link = preg_replace(
+            '/^([^\~]+)(\~(.*))?$/',
+            '${1}' . $community->getCommunity() . '$3',
+            $community->getType()->getLink()
+        );
 
         return sprintf(
             $uri,

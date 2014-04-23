@@ -191,13 +191,11 @@ class Photo extends EntityAbstract
 
             $inputFilter->add($fileUpload);
 
-
             $this->inputFilter = $inputFilter;
         }
 
         return $this->inputFilter;
     }
-
 
     /**
      * Get the corresponding fileName of a file if it was cached

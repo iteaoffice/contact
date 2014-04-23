@@ -20,7 +20,6 @@ use ContactTest\Bootstrap;
 
 class WebTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
@@ -50,7 +49,8 @@ class WebTest extends \PHPUnit_Framework_TestCase
 
         $this->webData = array(
             'contact' => $contact,
-            'web'     => 'http://www.example.com');
+            'web'     => 'http://www.example.com'
+        );
 
         $this->web = new Web();
     }
@@ -106,5 +106,4 @@ class WebTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->web->getContact()->getId(), $this->webData['contact']->getId());
         $this->assertEquals($this->web->getWeb(), $this->webData['web']);
     }
-
 }

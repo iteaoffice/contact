@@ -27,14 +27,12 @@ class InvoiceAdvance
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $memberInvoiceAdvanceId;
-
     /**
      * @var float
      *
      * @ORM\Column(name="amount_invoiced", type="decimal", nullable=false)
      */
     private $amountInvoiced;
-
     /**
      * @var \Invoice
      *
@@ -44,7 +42,6 @@ class InvoiceAdvance
      * })
      */
     private $invoice;
-
     /**
      * @var \Member
      *

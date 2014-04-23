@@ -61,7 +61,6 @@ class Contact extends EntityAbstract implements
     protected $messengerTemplates = array(
         self::MESSENGER_ACTIVE => self::MESSENGER_ACTIVE_VALUE,
     );
-
     /**
      * @ORM\Column(name="contact_id", type="integer", length=10, nullable=false)
      * @ORM\Id
@@ -692,7 +691,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**

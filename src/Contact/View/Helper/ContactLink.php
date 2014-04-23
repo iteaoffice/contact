@@ -23,7 +23,6 @@ use Contact\Entity;
  */
 class ContactLink extends AbstractHelper
 {
-
     /**
      * @param Entity\Contact $contact
      * @param string         $action
@@ -35,9 +34,13 @@ class ContactLink extends AbstractHelper
      * @throws \RuntimeException
      * @throws \Exception
      */
-    public function __invoke(Entity\Contact $contact = null, $action = 'view', $show = 'name', $page = null,
-                             $alternativeShow = null)
-    {
+    public function __invoke(
+        Entity\Contact $contact = null,
+        $action = 'view',
+        $show = 'name',
+        $page = null,
+        $alternativeShow = null
+    ) {
         $isAllowed = $this->view->plugin('isAllowed');
         $translate = $this->view->plugin('translate');
         $serverUrl = $this->view->plugin('serverUrl');

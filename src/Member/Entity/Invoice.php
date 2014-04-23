@@ -27,21 +27,18 @@ class Invoice
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $memberInvoiceId;
-
     /**
      * @var integer
      *
      * @ORM\Column(name="year", type="integer", nullable=false)
      */
     private $year;
-
     /**
      * @var float
      *
      * @ORM\Column(name="amount_invoiced", type="decimal", nullable=false)
      */
     private $amountInvoiced;
-
     /**
      * @var \Invoice
      *
@@ -51,7 +48,6 @@ class Invoice
      * })
      */
     private $invoice;
-
     /**
      * @var \Member
      *

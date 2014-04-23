@@ -34,7 +34,6 @@ class SelectionMailinglist
      * Constant for main = 1 (main)
      */
     const MAIN = 1;
-
     /**
      * Textual versions of the main
      *
@@ -44,7 +43,6 @@ class SelectionMailinglist
         self::NOT_MAIN => 'txt-not-main',
         self::MAIN     => 'txt-main',
     );
-
     /**
      * @var integer
      *

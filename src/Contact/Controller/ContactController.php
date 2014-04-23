@@ -81,9 +81,9 @@ class ContactController extends AbstractActionController implements
             $file = stream_get_contents($contact->getPhoto()->first()->getPhoto());
 
             $response->getHeaders()
-                ->addHeaderLine('Content-Type: ' .
-                    $contact->getPhoto()->first()->getContentType()->getContentType())
-                ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+                ->addHeaderLine(
+                    'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
+                )->addHeaderLine('Content-Length: ' . (string) strlen($file));
 
             $response->setContent($file);
 
@@ -161,7 +161,9 @@ class ContactController extends AbstractActionController implements
      */
     public function profileEditAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->zfcUserAuthentication()->getIdentity()->getId());
+        $contactService = $this->getContactService()->setContactId(
+            $this->zfcUserAuthentication()->getIdentity()->getId()
+        );
 
         $data = array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
@@ -242,7 +244,6 @@ class ContactController extends AbstractActionController implements
 
         $form->setData($_POST);
 
-
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
 
@@ -260,7 +261,6 @@ class ContactController extends AbstractActionController implements
 
         return new ViewModel(array('form' => $form));
     }
-
 
     /**
      * Gateway to the Contact Service

@@ -27,7 +27,6 @@ use Organisation\Service\OrganisationService;
  */
 class Profile extends DoctrineObject
 {
-
     /**
      * @param Contact $object
      *
@@ -59,8 +58,10 @@ class Profile extends DoctrineObject
         }
 
         unset($values['profile']);
-        $values['profile']['visible']     = !is_null($object->getProfile()) ? $object->getProfile()->getVisible() : null;
-        $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription() : null;
+        $values['profile']['visible']     = !is_null($object->getProfile()) ? $object->getProfile()->getVisible(
+        ) : null;
+        $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription(
+        ) : null;
 
         /**
          * Set the contact organisation
@@ -132,10 +133,13 @@ class Profile extends DoctrineObject
             }
 
             foreach ($currentPhoneNumbers as $phone) {
-                if (!in_array($phone->getType()->getId(), array(
-                    PhoneType::PHONE_TYPE_MOBILE,
-                    PhoneType::PHONE_TYPE_DIRECT
-                ))
+                if (!in_array(
+                    $phone->getType()->getId(),
+                    array(
+                        PhoneType::PHONE_TYPE_MOBILE,
+                        PhoneType::PHONE_TYPE_DIRECT
+                    )
+                )
                 ) {
                     $contact->getPhone()->add($phone);
                 }
@@ -150,12 +154,16 @@ class Profile extends DoctrineObject
             if (array_key_exists('address', $addressInfo)) {
                 if (!empty($addressInfo['address'])) {
                     $address = new Address();
-                    $address->setType($this->objectManager->getReference('Contact\Entity\AddressType', AddressType::ADDRESS_TYPE_MAIL));
+                    $address->setType(
+                        $this->objectManager->getReference('Contact\Entity\AddressType', AddressType::ADDRESS_TYPE_MAIL)
+                    );
                     $address->setAddress($addressInfo['address']);
                     $address->setZipCode($addressInfo['zipCode']);
                     $address->setCity($addressInfo['city']);
                     $address->setContact($contact);
-                    $address->setCountry($this->objectManager->getReference('General\Entity\Country', $addressInfo['country']));
+                    $address->setCountry(
+                        $this->objectManager->getReference('General\Entity\Country', $addressInfo['country'])
+                    );
                     $contact->getAddress()->add($address);
                 }
             }
@@ -173,7 +181,9 @@ class Profile extends DoctrineObject
             foreach ($communityData as $communityTypeId => $communityInfo) {
                 if (!empty($communityInfo['community'])) {
                     $community = new Community();
-                    $community->setType($this->objectManager->getReference('General\Entity\CommunityType', $communityTypeId));
+                    $community->setType(
+                        $this->objectManager->getReference('General\Entity\CommunityType', $communityTypeId)
+                    );
                     $community->setCommunity($communityInfo['community']);
                     $community->setContact($contact);
                     $contact->getCommunity()->add($community);

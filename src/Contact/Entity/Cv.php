@@ -115,7 +115,6 @@ class Cv extends EntityAbstract implements ResourceInterface
         return stream_get_contents($this->cv);
     }
 
-
     /**
      * Set input filter
      *

@@ -112,7 +112,5 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
         $fullEntity     = $this->contactService->getEntity($entity);
         $fullEntityName = $this->contactService->getFullEntityName($entity);
         $this->assertInstanceOf($fullEntityName, $fullEntity);
-
     }
-
 }

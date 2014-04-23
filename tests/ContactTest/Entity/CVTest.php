@@ -18,9 +18,8 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
 use ContactTest\Bootstrap;
 
-class CvTest extends \PHPUnit_Framework_TestCase
+class CVTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
@@ -50,7 +49,8 @@ class CvTest extends \PHPUnit_Framework_TestCase
 
         $this->cvData = array(
             'contact' => $contact,
-            'cv'      => file_get_contents(__DIR__ . '/../_files/php.exe'));
+            'cv'      => file_get_contents(__DIR__ . '/../_files/php.exe')
+        );
 
         $this->cv = new Cv();
     }
@@ -116,5 +116,4 @@ class CvTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotNull($this->cv->getResourceId());
     }
-
 }

@@ -62,7 +62,8 @@ class ContactNavigationFactory extends DefaultNavigationFactory
             return $pages;
         }
 
-        if (in_array($this->routeMatch->getMatchedRouteName(),
+        if (in_array(
+            $this->routeMatch->getMatchedRouteName(),
             array(
                 'zfcadmin/contact-manager/view',
                 'zfcadmin/contact-manager/edit',
@@ -76,7 +77,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['contact']['pages']['view'] = array(
-                'label'      => (string)$this->contactService->parseFullName(),
+                'label'      => (string) $this->contactService->parseFullName(),
                 'route'      => 'zfcadmin/contact-manager/view',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -93,7 +94,10 @@ class ContactNavigationFactory extends DefaultNavigationFactory
              * Go over both arrays and check if the new entities can be added
              */
             $pages['contact']['pages']['view']['pages']['edit'] = array(
-                'label'      => sprintf($translate("txt-impersonate-contact-%s"), $this->contactService->parseFullName()),
+                'label'      => sprintf(
+                    $translate("txt-impersonate-contact-%s"),
+                    $this->contactService->parseFullName()
+                ),
                 'route'      => 'zfcadmin/contact-manager/impersonate',
                 'routeMatch' => $this->routeMatch,
                 'router'     => $router,
@@ -163,7 +167,6 @@ class ContactNavigationFactory extends DefaultNavigationFactory
                 'router'     => $router,
             );
 
-
             /**
              * Go over both arrays and check if the new entities can be added
              */
@@ -200,7 +203,6 @@ class ContactNavigationFactory extends DefaultNavigationFactory
                 'router'     => $router,
             );
 
-
             /**
              * Go over both arrays and check if the new entities can be added
              */
@@ -222,7 +224,6 @@ class ContactNavigationFactory extends DefaultNavigationFactory
                 'active'     => true,
             );
         }
-
 
         return $pages;
     }

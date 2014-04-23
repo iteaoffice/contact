@@ -27,28 +27,24 @@ class TypeLogo
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $logoId;
-
     /**
      * @var string
      *
      * @ORM\Column(name="logo", type="blob", nullable=false)
      */
     private $logo;
-
     /**
      * @var integer
      *
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      */
     private $typeId;
-
     /**
      * @var integer
      *
      * @ORM\Column(name="contenttype_id", type="integer", nullable=false)
      */
     private $contenttypeId;
-
     /**
      * @var string
      *

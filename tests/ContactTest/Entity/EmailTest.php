@@ -20,7 +20,6 @@ use ContactTest\Bootstrap;
 
 class EmailTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
@@ -50,7 +49,8 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 
         $this->emailData = array(
             'contact' => $contact,
-            'email'   => 'example@example.com');
+            'email'   => 'example@example.com'
+        );
 
         $this->email = new Email();
     }
@@ -69,8 +69,16 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $id = 1;
         $this->email->setId($id);
 
-        $this->assertEquals($today, $this->email->getDateCreated(), 'The "DateCreated" should be the same as the setter');
-        $this->assertEquals($today, $this->email->getDateUpdated(), 'The "DateUpdated" should be the same as the setter');
+        $this->assertEquals(
+            $today,
+            $this->email->getDateCreated(),
+            'The "DateCreated" should be the same as the setter'
+        );
+        $this->assertEquals(
+            $today,
+            $this->email->getDateUpdated(),
+            'The "DateUpdated" should be the same as the setter'
+        );
         $this->assertEquals($id, $this->email->getId(), 'The "Id" should be the same as the setter');
 
         $this->assertTrue(is_array($this->email->getArrayCopy()));

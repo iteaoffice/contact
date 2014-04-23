@@ -242,8 +242,11 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('c', 'firstname', 'firstName');
         $resultSetMap->addFieldResult('c', 'middlename', 'middleName');
         $resultSetMap->addFieldResult('c', 'lastname', 'lastName');
-        $query = $this->getEntityManager()->createNativeQuery("SELECT contact_id, email, firstname, middlename, lastname FROM contact
-                    WHERE contact_id IN (" . $sql->getQuery() . ")", $resultSetMap);
+        $query = $this->getEntityManager()->createNativeQuery(
+            "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (" .
+            $sql->getQuery() . ")",
+            $resultSetMap
+        );
 
         return $query->getResult();
     }
@@ -261,9 +264,11 @@ class Contact extends EntityRepository
         $resultSetMap = new ResultSetMapping();
         $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
         $resultSetMap->addFieldResult('c', 'contact_id', 'id');
-        $query = $this->getEntityManager()->createNativeQuery("SELECT contact_id FROM contact
-                    WHERE contact_id IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
-            $resultSetMap);
+        $query = $this->getEntityManager()->createNativeQuery(
+            "SELECT contact_id FROM contact
+                                WHERE contact_id IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
+            $resultSetMap
+        );
 
         return sizeof($query->getResult()) > 0;
     }

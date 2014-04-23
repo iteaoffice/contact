@@ -27,7 +27,6 @@ class Financial
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $memberFinancialId;
-
     /**
      * @var \Contact
      *
@@ -37,7 +36,6 @@ class Financial
      * })
      */
     private $contact;
-
     /**
      * @var \Member
      *
@@ -47,7 +45,6 @@ class Financial
      * })
      */
     private $member;
-
     /**
      * @var \Organisation
      *

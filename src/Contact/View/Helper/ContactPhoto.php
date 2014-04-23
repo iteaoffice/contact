@@ -24,7 +24,6 @@ use Contact\Entity\Contact;
  */
 class ContactPhoto extends AbstractHelper
 {
-
     /**
      * @param Contact $contact
      * @param int     $width
