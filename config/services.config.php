@@ -14,17 +14,16 @@ use Contact\Entity;
 return array(
     'factories' => array(
         'contact_community_options' => function ($sm) {
-                $config = $sm->get('Config');
+            $config = $sm->get('Config');
 
-                return new Options\ModuleOptions(isset($config['community']) ? $config['community'] : array());
-            },
+            return new Options\ModuleOptions(isset($config['community']) ? $config['community'] : array());
+        },
         'contact_contact_form'      => function ($sm) {
-                return new Form\Contact($sm, new Entity\Contact());
-            },
+            return new Form\Contact($sm, new Entity\Contact());
+        },
         'contact_impersonate_form'  => function ($sm) {
-                return new Form\Impersonate($sm);
-            },
-
+            return new Form\Impersonate($sm);
+        },
         'Contact\Provider\Identity\AuthenticationIdentityProvider'
                                     => 'Contact\Service\AuthenticationIdentityProviderServiceFactory',
     ),
