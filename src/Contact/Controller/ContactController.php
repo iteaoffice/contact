@@ -14,16 +14,16 @@ use Zend\Validator\File\ImageSize;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-
 use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Paginator;
+
+use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
+use Zend\Mvc\Controller\Plugin\FlashMessenger;
 
 use Contact\Service\ContactService;
 use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\FormService;
 use Contact\Entity\Photo;
-use Contact\Form\Search;
-
 use Contact\Form\Profile;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,6 +32,9 @@ use General\Service\GeneralService;
 /**
  * @category    Contact
  * @package     Controller
+ * @method      ZfcUserAuthentication zfcUserAuthentication()
+ * @method      FlashMessenger flashMessenger()
+ * @method      bool isAllowed($resource, $action)
  */
 class ContactController extends AbstractActionController implements
     FormServiceAwareInterface,
@@ -83,7 +86,7 @@ class ContactController extends AbstractActionController implements
             $response->getHeaders()
                 ->addHeaderLine(
                     'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
-                )->addHeaderLine('Content-Length: ' . (string) strlen($file));
+                )->addHeaderLine('Content-Length: ' . (string)strlen($file));
 
             $response->setContent($file);
 
@@ -138,8 +141,8 @@ class ContactController extends AbstractActionController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
 
         $this->getContactService()->updateOptInForContact(
             $optInId,

@@ -16,11 +16,6 @@ use RuntimeException;
 error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
 
-define('DEBRANOVA_HOST', 'test');
-define('DEBRANOVA_APP', 'test');
-define('DEBRANOVA_APPLICATION', 'test');
-define('DEBRANOVA_ENV', 'development');
-
 /**
  * Test bootstrap, for setting up autoloading
  */
