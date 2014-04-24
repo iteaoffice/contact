@@ -14,7 +14,6 @@ use Contact\Entity\PhoneType;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 use Contact\Entity\ContactOrganisation;
-
 use Deeplink\Service\DeeplinkService;
 use Contact\Options\CommunityOptionsInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,11 +25,9 @@ use Organisation\Service\OrganisationService;
 use General\Service\GeneralService;
 use General\Entity\Country;
 use Event\Service\MeetingService;
-
 use ZfcUser\Options\UserServiceOptionsInterface;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Validator\EmailAddress;
-
 use Admin\Service\AdminService;
 
 /**

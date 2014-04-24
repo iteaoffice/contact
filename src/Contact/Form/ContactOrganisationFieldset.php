@@ -10,11 +10,9 @@
 namespace Contact\Form;
 
 use Zend\Form\Fieldset;
-
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Element\EntitySelect;
-
 use Contact\Entity;
 
 class ContactOrganisationFieldset extends Fieldset

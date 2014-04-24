@@ -16,16 +16,13 @@ use Zend\View\Model\JsonModel;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Paginator;
-
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
-
 use Contact\Service\ContactService;
 use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\FormService;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use General\Service\GeneralService;
 
@@ -64,7 +61,7 @@ class ContactController extends AbstractActionController implements
     /**
      * Show the details of 1 project
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Stdlib\ResponseInterface|null
      */
     public function photoAction()
     {
@@ -86,7 +83,7 @@ class ContactController extends AbstractActionController implements
             $response->getHeaders()
                 ->addHeaderLine(
                     'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
-                )->addHeaderLine('Content-Length: ' . (string)strlen($file));
+                )->addHeaderLine('Content-Length: ' . (string) strlen($file));
 
             $response->setContent($file);
 
@@ -141,8 +138,8 @@ class ContactController extends AbstractActionController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
 
         $this->getContactService()->updateOptInForContact(
             $optInId,
@@ -308,7 +305,7 @@ class ContactController extends AbstractActionController implements
     /**
      * @param $formService
      *
-     * @return ContactManagerController
+     * @return ContactController
      */
     public function setFormService($formService)
     {

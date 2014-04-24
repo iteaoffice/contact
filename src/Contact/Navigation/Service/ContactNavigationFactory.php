@@ -13,7 +13,6 @@ namespace Contact\Navigation\Service;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Navigation\Service\DefaultNavigationFactory;
 use Zend\Mvc\Router\Http\RouteMatch;
-
 use Contact\Service\ContactService;
 
 /**

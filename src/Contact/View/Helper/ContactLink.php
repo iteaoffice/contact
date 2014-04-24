@@ -11,7 +11,6 @@
 namespace Contact\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-
 use Contact\Entity;
 
 /**

@@ -13,7 +13,6 @@ namespace Contact;
 
 use Zend\ModuleManager\Feature; //Makes the module class more strict
 use Zend\EventManager\EventInterface;
-
 use Contact\Service\FormServiceAwareInterface;
 
 /**

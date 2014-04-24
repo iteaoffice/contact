@@ -11,9 +11,7 @@ namespace Contact\Service;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-
 use Doctrine\ORM\EntityManager;
-
 use Contact\Entity\EntityAbstract;
 
 /**
@@ -31,10 +29,9 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     protected $serviceLocator;
 
     /**
-     * @param      $entity
-     * @param bool $toArray
+     * @param   $entity
      *
-     * @return array
+     * @return \Contact\Entity\OptIn[]
      */
     public function findAll($entity)
     {
@@ -44,9 +41,8 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     /**
      * Find 1 entity based on the id
      *
-     * @param      $entity
-     * @param      $id
-     * @param bool $populate
+     * @param string $entity
+     * @param        $id
      *
      * @return object
      */

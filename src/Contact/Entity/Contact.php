@@ -15,14 +15,10 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\Form\Annotation;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\Crypt\BlockCipher;
-
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-
 use Gedmo\Mapping\Annotation as Gedmo;
-
 use BjyAuthorize\Provider\Role\ProviderInterface;
-
 use ZfcUser\Entity\UserInterface;
 
 /**
@@ -930,7 +926,7 @@ class Contact extends EntityAbstract implements
      *
      * We return only the name of the roles as this is sufficient
      *
-     * @return array
+     * @return string[]
      */
     public function getRoles()
     {
@@ -1172,7 +1168,7 @@ class Contact extends EntityAbstract implements
     /**
      * @param string $email
      *
-     * @return void|UserInterface
+     * @return Contact
      */
     public function setEmail($email)
     {
@@ -1422,7 +1418,7 @@ class Contact extends EntityAbstract implements
     /**
      * @param string $displayName
      *
-     * @return bool|UserInterface
+     * @return boolean
      */
     public function setDisplayName($displayName)
     {

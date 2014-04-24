@@ -13,7 +13,6 @@ namespace Contact\View\Helper;
 
 use Zend\View\HelperPluginManager;
 use Zend\View\Helper\AbstractHelper;
-
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 

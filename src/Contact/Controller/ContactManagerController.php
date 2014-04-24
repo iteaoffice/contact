@@ -14,15 +14,12 @@ use Zend\View\Model\ViewModel;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\Paginator\Paginator;
-
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-
 use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Contact\Form\Search;
-
 use Deeplink\Service\DeeplinkService;
 
 /**
@@ -167,7 +164,7 @@ class ContactManagerController extends AbstractActionController implements
     /**
      * (soft-delete) an entity
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response
      */
     public function deleteAction()
     {
@@ -246,7 +243,7 @@ class ContactManagerController extends AbstractActionController implements
     /**
      * @param ServiceLocatorInterface $serviceLocator
      *
-     * @return ContactManagerController|void
+     * @return ContactManagerController
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {

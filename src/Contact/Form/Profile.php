@@ -13,10 +13,7 @@ use Contact\Entity\PhoneType;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Form\Fieldset;
-
 use DoctrineORMModule\Options\EntityManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-
 use Contact\Entity\Contact;
 use Contact\Hydrator\Profile as ProfileHydrator;
 use Contact\Entity\Profile as ProfileEntity;

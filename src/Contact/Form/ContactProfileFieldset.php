@@ -11,13 +11,11 @@ namespace Contact\Form;
 
 use Zend\Form\Fieldset;
 use Zend\Form\Annotation\AnnotationBuilder;
-
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use Zend\Form\Element\Radio;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
-
 use Contact\Entity;
 
 class ContactProfileFieldset extends Fieldset

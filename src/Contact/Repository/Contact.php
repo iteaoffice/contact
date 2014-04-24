@@ -11,12 +11,9 @@ namespace Contact\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\QueryBuilder;
-
 use Contact\Entity;
 use Contact\Options;
 use Contact\Entity\SelectionSql;
-
 use Project\Repository\Project;
 
 /**
@@ -152,7 +149,7 @@ class Contact extends EntityRepository
      * @param Entity\Contact                    $contact
      * @param Options\CommunityOptionsInterface $options
      *
-     * @return bool
+     * @return boolean|null
      */
     public function findIsCommunityMember(Entity\Contact $contact, Options\CommunityOptionsInterface $options)
     {

@@ -11,7 +11,6 @@ namespace Contact\Form;
 
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceManager;
-
 use Content\Entity\EntityAbstract;
 
 /**

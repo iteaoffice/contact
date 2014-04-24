@@ -12,10 +12,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Permissions\Acl\Role\RoleInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Cache\StorageFactory;
-
 use Contact\Service\ContactService;
-use Admin\Service\AdminService;
-
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 

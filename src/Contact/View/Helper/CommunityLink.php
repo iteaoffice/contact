@@ -11,9 +11,7 @@
 namespace Contact\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-
 use Contact\Entity\Community;
-use Content\Entity\Image;
 
 /**
  * Create a link to an area2
@@ -27,7 +25,7 @@ class CommunityLink extends AbstractHelper
     /**
      * @param Community $community
      *
-     * @return null|string
+     * @return string
      * @throws \Exception
      */
     public function __invoke(Community $community)

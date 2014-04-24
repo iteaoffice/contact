@@ -10,7 +10,6 @@
 namespace Contact\Repository;
 
 use Doctrine\ORM\EntityRepository;
-
 use Contact\Entity;
 
 /**
