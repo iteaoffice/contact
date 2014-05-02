@@ -195,7 +195,7 @@ class ContactNavigationFactory extends DefaultNavigationFactory
 
             $this->contactService->setContact($authService->getIdentity());
 
-            $$pages['community'] = array(
+            $pages['community'] = array(
                 'label'      => $translate("txt-account-information"),
                 'route'      => 'contact/profile',
                 'routeMatch' => $this->routeMatch,

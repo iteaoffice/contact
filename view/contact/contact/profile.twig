@@ -110,7 +110,7 @@
                     <td>{{ registration.meeting.location }}</td>
                     <td>
                         {% for call in registration.meeting.call %}
-                            {% set callService = callServiceProxy() %}
+                            {% set callService = callServiceProxy(call) %}
                             {% set nda = callService.findNdaByCallAndContact(call, contactService.contact) %}
                             {% if nda %}
                                 {% if nda.dateApproved %}
@@ -170,7 +170,7 @@
                 <td>{{ meeting.location }}</td>
                 <td>
                     {% for call in meeting.call %}
-                        {% set callService = callServiceProxy() %}
+                        {% set callService = callServiceProxy(call) %}
                         {% set nda = callService.findNdaByCallAndContact(call, contactService.contact) %}
                         {% if nda %}
                             {% if nda.dateApproved %}
