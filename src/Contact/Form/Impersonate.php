@@ -10,13 +10,20 @@
 namespace Contact\Form;
 
 use Zend\Form\Form;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceManager;
 
 /**
  *
  */
-class Impersonate extends Form
+class Impersonate extends Form implements ServiceLocatorAwareInterface
 {
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
     /**
      * Class constructor
      */
@@ -32,7 +39,7 @@ class Impersonate extends Form
                 'name'       => 'target',
                 'options'    => array(
                     'target_class'   => 'Deeplink\Entity\Target',
-                    'object_manager' => $sm->get('doctrine.entitymanager.orm_default'),
+                    'object_manager' => $this->getServiceLocator()->get('doctrine.entitymanager.orm_default'),
                     'find_method'    => array(
                         'name'   => 'findTargetsWithRoute',
                         'params' => array(
@@ -77,5 +84,25 @@ class Impersonate extends Form
                 )
             )
         );
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
     }
 }

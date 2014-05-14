@@ -9,43 +9,17 @@
  */
 namespace Contact\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\Paginator\Paginator;
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Contact\Service\FormServiceAwareInterface;
-use Contact\Service\ContactService;
-use Contact\Service\FormService;
 use Contact\Form\Search;
-use Deeplink\Service\DeeplinkService;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
+use Zend\Paginator\Paginator;
+use Zend\View\Model\ViewModel;
 
 /**
  *
  */
-class ContactManagerController extends AbstractActionController implements
-    FormServiceAwareInterface,
-    ServiceLocatorAwareInterface
+class ContactManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService;
-     */
-    protected $contactService;
-    /**
-     * @var DeeplinkService;
-     */
-    protected $deeplinkService;
-    /**
-     * @var FormService
-     */
-    protected $formService;
-    /**
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
-
     /**
      * @return ViewModel
      */
@@ -178,77 +152,5 @@ class ContactManagerController extends AbstractActionController implements
         return $this->redirect()->toRoute(
             'zfcadmin/contact-manager/' . $entity->get('dashed_entity_name') . 's'
         );
-    }
-
-    /**
-     * @return \Contact\Service\FormService
-     */
-    public function getFormService()
-    {
-        return $this->formService;
-    }
-
-    /**
-     * @param $formService
-     *
-     * @return ContactManagerController
-     */
-    public function setFormService($formService)
-    {
-        $this->formService = $formService;
-
-        return $this;
-    }
-
-    /**
-     * Gateway to the Deeplink Service
-     *
-     * @return DeeplinkService
-     */
-    public function getDeeplinkService()
-    {
-        return $this->getServiceLocator()->get('deeplink_deeplink_service');
-    }
-
-    /**
-     * Gateway to the Contact Service
-     *
-     * @return ContactService
-     */
-    public function getContactService()
-    {
-        return $this->getServiceLocator()->get('contact_contact_service');
-    }
-
-    /**
-     * @param $contactService
-     *
-     * @return ContactManagerController
-     */
-    public function setContactService($contactService)
-    {
-        $this->contactService = $contactService;
-
-        return $this;
-    }
-
-    /**
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return ContactManagerController
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-
-        return $this;
     }
 }

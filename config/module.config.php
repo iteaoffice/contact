@@ -13,31 +13,19 @@ namespace Contact;
 use Zend\Stdlib\ArrayUtils;
 
 $config = array(
-    'controllers'     => array(
-        'invokables' => array(
+    'controllers'  => array(
+        'initializers' => array(
+            'contact_controller_initializer' => 'Contact\Controller\ControllerInitializer'
+        ),
+        'invokables'   => array(
             'contact-index'   => 'Contact\Controller\ContactController',
             'contact-manager' => 'Contact\Controller\ContactManagerController',
         ),
     ),
-    'view_manager'    => array(
+    'view_manager' => array(
         'template_map' => include __DIR__ . '/../template_map.php',
     ),
-    'service_manager' => array(
-        'factories'  => array(
-            'contact_module_config' => 'Contact\Service\ConfigServiceFactory',
-            'contact_cache'         => 'Contact\Service\CacheFactory',
-        ),
-        'invokables' => array(
-            'contact_contact_service'      => 'Contact\Service\ContactService',
-            'contact_address_service'      => 'Contact\Service\AddressService',
-            'contact_form_service'         => 'Contact\Service\FormService',
-            'contact_contact_form_filter'  => 'Contact\Form\FilterContact',
-            'contact_password_form'        => 'Contact\Form\Password',
-            'contact_password_form_filter' => 'Contact\Form\PasswordFilter',
-
-        )
-    ),
-    'doctrine'        => array(
+    'doctrine'     => array(
         'driver'       => array(
             'contact_annotation_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',

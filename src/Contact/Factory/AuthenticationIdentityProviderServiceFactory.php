@@ -7,7 +7,7 @@
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Contact\Service;
+namespace Contact\Factory;
 
 use Contact\Provider\Identity\AuthenticationIdentityProvider;
 use Zend\ServiceManager\FactoryInterface;

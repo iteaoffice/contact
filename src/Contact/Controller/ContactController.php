@@ -9,22 +9,16 @@
  */
 namespace Contact\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\File\ImageSize;
-use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Paginator\Paginator;
-use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
-use Zend\Mvc\Controller\Plugin\FlashMessenger;
-use Contact\Service\ContactService;
-use Contact\Service\FormServiceAwareInterface;
-use Contact\Service\FormService;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
-use General\Service\GeneralService;
+use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Zend\Paginator\Adapter\ArrayAdapter;
+use Zend\Paginator\Paginator;
+use Zend\Validator\File\ImageSize;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ViewModel;
+use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
  * @category    Contact
@@ -33,19 +27,8 @@ use General\Service\GeneralService;
  * @method      FlashMessenger flashMessenger()
  * @method      bool isAllowed($resource, $action)
  */
-class ContactController extends AbstractActionController implements
-    FormServiceAwareInterface,
-    ServiceLocatorAwareInterface
+class ContactController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    protected $contactService;
-    /**
-     * @var FormService
-     */
-    protected $formService;
-
     /**
      * @return ViewModel
      */
@@ -72,25 +55,25 @@ class ContactController extends AbstractActionController implements
         );
 
         $response->getHeaders()
-            ->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
-            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
-            ->addHeaderLine("Pragma: public");
+                 ->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
+                 ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
+                 ->addHeaderLine("Pragma: public");
 
         if (!is_null($contact) && !is_null($contact->getPhoto())) {
 
             $file = stream_get_contents($contact->getPhoto()->first()->getPhoto());
 
             $response->getHeaders()
-                ->addHeaderLine(
-                    'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
-                )->addHeaderLine('Content-Length: ' . (string) strlen($file));
+                     ->addHeaderLine(
+                         'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
+                     )->addHeaderLine('Content-Length: ' . (string) strlen($file));
 
             $response->setContent($file);
 
             return $response;
         } else {
             $response->getHeaders()
-                ->addHeaderLine('Content-Type: image/jpg');
+                     ->addHeaderLine('Content-Type: image/jpg');
             $response->setStatusCode(404);
         }
     }
@@ -260,57 +243,5 @@ class ContactController extends AbstractActionController implements
         }
 
         return new ViewModel(array('form' => $form));
-    }
-
-    /**
-     * Gateway to the Contact Service
-     *
-     * @return ContactService
-     */
-    public function getContactService()
-    {
-        return $this->getServiceLocator()->get('contact_contact_service');
-    }
-
-    /**
-     * @param $contactService
-     *
-     * @return ContactController
-     */
-    public function setContactService($contactService)
-    {
-        $this->contactService = $contactService;
-
-        return $this;
-    }
-
-    /**
-     * Gateway to the General Service
-     *
-     * @return GeneralService
-     */
-    public function getGeneralService()
-    {
-        return $this->getServiceLocator()->get('general_general_service');
-    }
-
-    /**
-     * @return \Contact\Service\FormService
-     */
-    public function getFormService()
-    {
-        return $this->formService;
-    }
-
-    /**
-     * @param $formService
-     *
-     * @return ContactController
-     */
-    public function setFormService($formService)
-    {
-        $this->formService = $formService;
-
-        return $this;
     }
 }

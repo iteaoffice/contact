@@ -129,8 +129,8 @@ class ContactService extends ServiceAbstract
     public function findContactsWithDateOfBirth()
     {
         return $this->getEntityManager()
-            ->getRepository($this->getFullEntityName('contact'))
-            ->findContactsWithDateOfBirth();
+                    ->getRepository($this->getFullEntityName('contact'))
+                    ->findContactsWithDateOfBirth();
     }
 
     /**
@@ -546,8 +546,8 @@ class ContactService extends ServiceAbstract
     public function findContactByEmail($email)
     {
         return $this->getEntityManager()
-            ->getRepository($this->getFullEntityName('contact'))
-            ->findContactByEmail($email);
+                    ->getRepository($this->getFullEntityName('contact'))
+                    ->findContactByEmail($email);
     }
 
     /**
@@ -902,7 +902,7 @@ class ContactService extends ServiceAbstract
     public function searchContacts($searchItem, $maxResults)
     {
         return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-            ->searchContacts($searchItem, $maxResults);
+                    ->searchContacts($searchItem, $maxResults);
     }
 
     /**

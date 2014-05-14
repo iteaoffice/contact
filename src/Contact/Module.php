@@ -13,7 +13,6 @@ namespace Contact;
 
 use Zend\ModuleManager\Feature; //Makes the module class more strict
 use Zend\EventManager\EventInterface;
-use Contact\Service\FormServiceAwareInterface;
 
 /**
  *
@@ -72,15 +71,11 @@ class Module implements
     public function getControllerConfig()
     {
         return array(
-            'initializers' => array(
-                function ($instance, $sm) {
-                    if ($instance instanceof FormServiceAwareInterface) {
-                        $sm          = $sm->getServiceLocator();
-                        $formService = $sm->get('contact_form_service');
-                        $instance->setFormService($formService);
-                    }
-                },
-            ),
+//            'initializers' => array(
+//                function ($instance, $sm) {
+//
+//                },
+//            ),
         );
     }
 
