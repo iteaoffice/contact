@@ -9,10 +9,10 @@
  */
 namespace Contact\Service;
 
+use Contact\Entity\Contact;
+use Contact\Entity\EntityAbstract;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Doctrine\ORM\EntityManager;
-use Contact\Entity\EntityAbstract;
 
 /**
  * ServiceAbstract
@@ -39,19 +39,78 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
     }
 
     /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getEntityManager()
+    {
+        if (null === $this->entityManager) {
+            $this->entityManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        }
+
+        return $this->entityManager;
+    }
+
+    /**
+     * @param \Doctrine\ORM\EntityManager $entityManager
+     */
+    public function setEntityManager($entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @return \Zend\ServiceManager\ServiceManager
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return ServiceAbstract
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+
+        return $this;
+    }
+
+    /**
+     * Create a full path to the entity for Doctrine
+     *
+     * @param $entity
+     *
+     * @return string
+     */
+    public function getFullEntityName($entity)
+    {
+        /**
+         * Convert a - to a camelCased situation
+         */
+        if (strpos($entity, '-') !== false) {
+            $entity = explode('-', $entity);
+            $entity = $entity[0] . ucfirst($entity[1]);
+        }
+
+        return ucfirst(join('', array_slice(explode('\\', __NAMESPACE__), 0, 1))) . '\\' . 'Entity' . '\\' . ucfirst(
+            $entity
+        );
+    }
+
+    /**
      * Find 1 entity based on the id
      *
      * @param string $entity
      * @param        $id
      *
-     * @return object
+     * @return null|Contact
      */
     public function findEntityById($entity, $id)
     {
-        $entity = $this->getEntityManager()->find($this->getFullEntityName($entity), $id);
-        if ($entity) {
-            return $entity;
-        }
+        return $this->getEntityManager()->find($this->getFullEntityName($entity), $id);
     }
 
     /**
@@ -105,67 +164,5 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
         $entity = $this->getFullEntityName($entity);
 
         return new $entity();
-    }
-
-    /**
-     * Create a full path to the entity for Doctrine
-     *
-     * @param $entity
-     *
-     * @return string
-     */
-    public function getFullEntityName($entity)
-    {
-        /**
-         * Convert a - to a camelCased situation
-         */
-        if (strpos($entity, '-') !== false) {
-            $entity = explode('-', $entity);
-            $entity = $entity[0] . ucfirst($entity[1]);
-        }
-
-        return ucfirst(join('', array_slice(explode('\\', __NAMESPACE__), 0, 1))) . '\\' . 'Entity' . '\\' . ucfirst(
-            $entity
-        );
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return ServiceAbstract
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-
-        return $this;
-    }
-
-    /**
-     * @return \Zend\ServiceManager\ServiceManager
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-
-    /**
-     * @param \Doctrine\ORM\EntityManager $entityManager
-     */
-    public function setEntityManager($entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getEntityManager()
-    {
-        if (null === $this->entityManager) {
-            $this->entityManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-        }
-
-        return $this->entityManager;
     }
 }

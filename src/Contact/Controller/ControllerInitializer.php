@@ -11,7 +11,9 @@
  */
 namespace Contact\Controller;
 
+use Contact\Service\FormService;
 use Contact\Service\FormServiceAwareInterface;
+use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -28,15 +30,22 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class ControllerInitializer implements InitializerInterface
 {
     /**
-     * @param                         $instance
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param                                           $instance
+     * @param ServiceLocatorInterface|ControllerManager $serviceLocator
      *
      * @return ContactAbstractController
      */
     public function initialize($instance, ServiceLocatorInterface $serviceLocator)
     {
+        /**
+         * @var $sm ServiceLocatorInterface
+         */
+        $sm = $serviceLocator->getServiceLocator();
+
         if ($instance instanceof FormServiceAwareInterface) {
-            $sm          = $serviceLocator->getServiceLocator();
+            /**
+             * @var $formService FormService
+             */
             $formService = $sm->get('contact_form_service');
             $instance->setFormService($formService);
         }

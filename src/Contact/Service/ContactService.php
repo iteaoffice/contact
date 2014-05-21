@@ -21,6 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Event\Service\MeetingService;
 use General\Entity\Country;
+use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Web;
@@ -184,7 +185,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * Get the lastname
+     * Get the last name
      *
      * @return string
      */
@@ -445,6 +446,7 @@ class ContactService extends ServiceAbstract
 
         /**
          * Send the email tot he user
+         * @var $emailService EmailService
          */
         $emailService = $this->getServiceLocator()->get('email');
         $emailService->setTemplate("/auth/register:mail");
@@ -525,6 +527,7 @@ class ContactService extends ServiceAbstract
 
         /**
          * Send the email tot he user
+         * @var $emailService EmailService
          */
         $emailService = $this->getServiceLocator()->get('email');
         $emailService->setTemplate("/auth/forgotpassword:mail");
@@ -709,6 +712,11 @@ class ContactService extends ServiceAbstract
         return $this->getServiceLocator()->get('admin_admin_service');
     }
 
+    /**
+     * @param Selection $selection
+     *
+     * @return Contact[]
+     */
     public function findContactsInSelection(Selection $selection)
     {
         /**
@@ -720,6 +728,7 @@ class ContactService extends ServiceAbstract
                 $this->getFullEntityName('Contact')
             )->findContactsBySelectionSQL($selection->getSql());
         }
+        //@todo, return the other
     }
 
     /**
@@ -832,6 +841,7 @@ class ContactService extends ServiceAbstract
 
             $currentContactOrganisation->setOrganisation($organisation);
         } else {
+            $foundOrganisation = null;
             /**
              * Go over the found organisation to match the branching
              */

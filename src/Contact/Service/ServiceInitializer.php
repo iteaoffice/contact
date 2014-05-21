@@ -35,6 +35,9 @@ class ServiceInitializer implements InitializerInterface
     public function initialize($instance, ServiceLocatorInterface $serviceLocator)
     {
         if ($instance instanceof ContactServiceAwareInterface) {
+            /**
+             * @var $contactService ContactService;
+             */
             $contactService = $serviceLocator->get('contact_contact_service');
             $instance->setContactService($contactService);
         }

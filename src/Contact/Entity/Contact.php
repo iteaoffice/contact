@@ -899,7 +899,7 @@ class Contact extends EntityAbstract implements
      */
     public function parseHash()
     {
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'cast-256'));
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
         $blockCipher->setKey(self::CRYPT_KEY);
 
         return $blockCipher->encrypt($this->id);
@@ -914,7 +914,7 @@ class Contact extends EntityAbstract implements
      */
     public function decryptHash($hash)
     {
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'cast-256'));
+        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
         $blockCipher->setKey(self::CRYPT_KEY);
 
         return $blockCipher->decrypt($hash);
