@@ -11,8 +11,11 @@
  */
 namespace Contact;
 
-use Zend\ModuleManager\Feature; //Makes the module class more strict
 use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature;
+use Zend\Mvc\MvcEvent;
+
+//Makes the module class more strict
 
 /**
  *
@@ -66,20 +69,6 @@ class Module implements
     }
 
     /**
-     * @return array
-     */
-    public function getControllerConfig()
-    {
-        return array(
-//            'initializers' => array(
-//                function ($instance, $sm) {
-//
-//                },
-//            ),
-        );
-    }
-
-    /**
      * Listen to the bootstrap event
      *
      * @param EventInterface $e
@@ -88,6 +77,14 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
-        // TODO: Implement onBootstrap() method.
+        $app = $e->getParam('application');
+        $em  = $app->getEventManager();
+
+        $em->attach(
+            MvcEvent::EVENT_DISPATCH,
+            function (MvcEvent $event) {
+                $event->getApplication()->getServiceManager()->get('contact_contact_navigation_service')->update();
+            }
+        );
     }
 }

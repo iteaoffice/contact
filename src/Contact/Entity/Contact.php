@@ -1586,7 +1586,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Project[] $nda
+     * @param \Program\Entity\Nda[] $nda
      */
     public function setNda($nda)
     {
@@ -1594,7 +1594,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Project[]
+     * @return \Program\Entity\Nda[]
      */
     public function getNda()
     {

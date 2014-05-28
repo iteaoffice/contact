@@ -53,6 +53,7 @@ return array(
                 'options'       => array(
                     'route'    => '/contact',
                     'defaults' => array(
+                        'namespace'  => 'contact',
                         'controller' => 'contact-index',
                         'action'     => 'index',
                     ),

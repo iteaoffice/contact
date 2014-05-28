@@ -17,18 +17,19 @@ return array(
     ),
     'factories'    => array(
 
-        'contact_community_options' => function ($sm) {
+        'contact_community_options'          => function ($sm) {
             $config = $sm->get('Config');
 
             return new Options\ModuleOptions(isset($config['community']) ? $config['community'] : array());
         },
-        'contact_module_config'     => 'Contact\Factory\ConfigServiceFactory',
-        'contact_cache'             => 'Contact\Factory\CacheFactory',
-        'contact_contact_form'      => function ($sm) {
+        'contact_contact_navigation_service' => 'Contact\Navigation\Factory\ContactNavigationServiceFactory',
+        'contact_module_config'              => 'Contact\Factory\ConfigServiceFactory',
+        'contact_cache'                      => 'Contact\Factory\CacheFactory',
+        'contact_contact_form'               => function ($sm) {
             return new Form\Contact($sm, new Entity\Contact());
         },
         'Contact\Provider\Identity\AuthenticationIdentityProvider'
-                                    => 'Contact\Factory\AuthenticationIdentityProviderServiceFactory',
+                                             => 'Contact\Factory\AuthenticationIdentityProviderServiceFactory',
     ),
     'invokables'   => array(
         'contact_impersonate_form'     => 'Contact\Form\Impersonate',
