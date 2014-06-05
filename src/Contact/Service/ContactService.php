@@ -448,7 +448,7 @@ class ContactService extends ServiceAbstract
          * Send the email tot he user
          * @var $emailService EmailService
          */
-        $emailService = $this->getServiceLocator()->get('email');
+        $emailService = $this->getServiceLocator()->get('general_email_service');
         $emailService->setTemplate("/auth/register:mail");
         $email = $emailService->create();
         $email->addTo($emailAddress);
@@ -529,7 +529,7 @@ class ContactService extends ServiceAbstract
          * Send the email tot he user
          * @var $emailService EmailService
          */
-        $emailService = $this->getServiceLocator()->get('email');
+        $emailService = $this->getServiceLocator()->get('general_email_service');
         $emailService->setTemplate("/auth/forgotpassword:mail");
 
         $email = $emailService->create();
@@ -560,8 +560,7 @@ class ContactService extends ServiceAbstract
      */
     private function createServiceElement(Contact $contact)
     {
-        $contactService = new self();
-        $contactService->setServiceLocator($this->getServiceLocator());
+        $contactService = clone $this;
         $contactService->setContact($contact);
 
         return $contactService;
@@ -699,7 +698,7 @@ class ContactService extends ServiceAbstract
         return $this->getAdminService()->contactHasPermit(
             $this->getContact(),
             $role,
-            strtolower($entity->get('entity_name')),
+            strtolower($entity->get('underscore_full_entity_name')),
             $entity->getId()
         );
     }
