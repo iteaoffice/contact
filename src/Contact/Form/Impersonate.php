@@ -43,8 +43,8 @@ class Impersonate extends Form implements ServiceLocatorAwareInterface
                     'find_method'    => array(
                         'name'   => 'findTargetsWithRoute',
                         'params' => array(
-                            'criteria' => array(),
-                            'orderBy'  => array(),
+                            'criteria' => [],
+                            'orderBy'  => [],
                         ),
                     ),
                     'help-block'     => _("txt-deeplink-target-form-element-explanation"),

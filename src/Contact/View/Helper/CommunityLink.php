@@ -39,7 +39,7 @@ class CommunityLink extends AbstractHelper
         $uri = '<a href="%s" title="%s" class="%s">%s</a>';
         $img = '<img src="%s">';
 
-        $classes = array();
+        $classes = [];
 
         $link = preg_replace(
             '/^([^\~]+)(\~(.*))?$/',

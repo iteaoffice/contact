@@ -10,12 +10,15 @@
 namespace Contact\Controller;
 
 use Contact\Service\ContactService;
+use Contact\Service\ContactServiceAwareInterface;
 use Contact\Service\FormService;
 use Contact\Service\FormServiceAwareInterface;
+use Deeplink\Service\DeeplinkService;
+use Deeplink\Service\DeeplinkServiceAwareInterface;
 use General\Service\GeneralService;
+use General\Service\GeneralServiceAwareInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
@@ -27,12 +30,22 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  */
 abstract class ContactAbstractController extends AbstractActionController implements
     FormServiceAwareInterface,
-    ServiceLocatorAwareInterface
+    ContactServiceAwareInterface,
+    DeeplinkServiceAwareInterface,
+    GeneralServiceAwareInterface
 {
     /**
      * @var ContactService
      */
     protected $contactService;
+    /**
+     * @var GeneralService
+     */
+    protected $generalService;
+    /**
+     * @var DeeplinkService
+     */
+    protected $deeplinkService;
     /**
      * @var FormService
      */
@@ -45,15 +58,15 @@ abstract class ContactAbstractController extends AbstractActionController implem
      */
     public function getContactService()
     {
-        return $this->getServiceLocator()->get('contact_contact_service');
+        return $this->contactService;
     }
 
     /**
      * @param $contactService
      *
-     * @return ContactController
+     * @return ContactAbstractController
      */
-    public function setContactService($contactService)
+    public function setContactService(ContactService $contactService)
     {
         $this->contactService = $contactService;
 
@@ -61,13 +74,45 @@ abstract class ContactAbstractController extends AbstractActionController implem
     }
 
     /**
-     * Gateway to the General Service
-     *
      * @return GeneralService
      */
     public function getGeneralService()
     {
-        return $this->getServiceLocator()->get('general_general_service');
+        return $this->generalService;
+    }
+
+    /**
+     * @param GeneralService $generalService
+     *
+     * @return ContactAbstractController
+     */
+    public function setGeneralService(GeneralService $generalService)
+    {
+        $this->generalService = $generalService;
+
+        return $this;
+    }
+
+    /**
+     * Gateway to the Deeplink Service
+     *
+     * @return DeeplinkService
+     */
+    public function getDeeplinkService()
+    {
+        return $this->deeplinkService;
+    }
+
+    /**
+     * @param $deeplinkService
+     *
+     * @return ContactAbstractController
+     */
+    public function setDeeplinkService(DeeplinkService $deeplinkService)
+    {
+        $this->deeplinkService = $deeplinkService;
+
+        return $this;
     }
 
     /**

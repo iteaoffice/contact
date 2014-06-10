@@ -10,9 +10,6 @@
 
 return array(
     'factories'  => array(
-        'contactHandler'      => function ($sm) {
-            return new \Contact\View\Helper\ContactHandler($sm);
-        },
         'contactServiceProxy' => function ($sm) {
             return new \Contact\View\Helper\ContactServiceProxy($sm);
         }

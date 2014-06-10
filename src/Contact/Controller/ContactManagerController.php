@@ -73,7 +73,7 @@ class ContactManagerController extends ContactAbstractController
             $key    = (!empty($data['key']) ? $data['key'] : null);
 
             //Create a deeplink for the user which redirects to the profile-page
-            $deeplink = $this->getDeeplinkService()->createDeeplink($contactService->getContact(), $target, null, $key);
+            $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contactService->getContact(), null, $key);
         }
 
         return new ViewModel(

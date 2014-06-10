@@ -53,8 +53,8 @@ class ContactLink extends AbstractHelper
             return '';
         }
 
-        $classes     = array();
-        $linkContent = array();
+        $classes     = [];
+        $linkContent = [];
 
         switch ($action) {
             case 'new':

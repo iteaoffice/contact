@@ -110,11 +110,11 @@ class Profile extends DoctrineObject
              * Reset the data array and store the values locally
              */
             $phoneData         = $data['phone'];
-            $data['phone']     = array();
+            $data['phone']     = [];
             $addressInfo       = $data['address'];
-            $data['address']   = array();
+            $data['address']   = [];
             $communityData     = $data['community'];
-            $data['community'] = array();
+            $data['community'] = [];
 
             $contact = $this->hydrateByValue($data, $object);
 

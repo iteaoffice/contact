@@ -11,13 +11,31 @@ namespace Contact\Service;
 
 use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
+use Deeplink\Service\DeeplinkService;
+use Deeplink\Service\DeeplinkServiceAwareInterface;
+use Event\Service\MeetingService;
+use General\Service\EmailService;
+use General\Service\EmailServiceAwareInterface;
+use General\Service\GeneralService;
+use General\Service\GeneralServiceAwareInterface;
+use Organisation\Service\OrganisationService;
+use Organisation\Service\OrganisationServiceAwareInterface;
+use Project\Service\ProjectService;
+use Project\Service\ProjectServiceAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * ServiceAbstract
  */
-abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceInterface
+abstract class ServiceAbstract implements
+    ServiceLocatorAwareInterface,
+    ServiceInterface,
+    DeeplinkServiceAwareInterface,
+    EmailServiceAwareInterface,
+    GeneralServiceAwareInterface,
+    OrganisationServiceAwareInterface,
+    ProjectServiceAwareInterface
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -27,6 +45,30 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
      * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
+    /**
+     * @var DeeplinkService
+     */
+    protected $deeplinkService;
+    /**
+     * @var ProjectService
+     */
+    protected $projectService;
+    /**
+     * @var MeetingService
+     */
+    protected $meetingService;
+    /**
+     * @var OrganisationService
+     */
+    protected $organisationService;
+    /**
+     * @var GeneralService
+     */
+    protected $generalService;
+    /**
+     * @var EmailService
+     */
+    protected $emailService;
 
     /**
      * @param   $entity
@@ -164,5 +206,125 @@ abstract class ServiceAbstract implements ServiceLocatorAwareInterface, ServiceI
         $entity = $this->getFullEntityName($entity);
 
         return new $entity();
+    }
+
+    /**
+     * @return GeneralService
+     */
+    public function getGeneralService()
+    {
+        return $this->generalService;
+    }
+
+    /**
+     * @param GeneralService $generalService
+     *
+     * @return ServiceAbstract
+     */
+    public function setGeneralService(GeneralService $generalService)
+    {
+        $this->generalService = $generalService;
+
+        return $this;
+    }
+
+    /**
+     * @return DeeplinkService
+     */
+    public function getDeeplinkService()
+    {
+        return $this->deeplinkService;
+    }
+
+    /**
+     * @param DeeplinkService $deeplinkService
+     *
+     * @return ServiceAbstract
+     */
+    public function setDeeplinkService(DeeplinkService $deeplinkService)
+    {
+        $this->deeplinkService = $deeplinkService;
+
+        return $this;
+    }
+
+    /**
+     * @return EmailService
+     */
+    public function getEmailService()
+    {
+        return $this->emailService;
+    }
+
+    /**
+     * @param EmailService $emailService
+     *
+     * @return ServiceAbstract
+     */
+    public function setEmailService(EmailService $emailService)
+    {
+        $this->emailService = $emailService;
+
+        return $this;
+    }
+
+    /**
+     * @return OrganisationService
+     */
+    public function getOrganisationService()
+    {
+        return $this->organisationService;
+    }
+
+    /**
+     * @param OrganisationService $organisationService
+     *
+     * @return ServiceAbstract
+     */
+    public function setOrganisationService(OrganisationService $organisationService)
+    {
+        $this->organisationService = $organisationService;
+
+        return $this;
+    }
+
+    /**
+     * @return MeetingService
+     */
+    public function getMeetingService()
+    {
+        return $this->getServiceLocator()->get('event_meeting_service');
+    }
+
+    /**
+     * @param MeetingService $meetingService
+     *
+     * @return ServiceAbstract
+     */
+    public function setMeetingService(MeetingService $meetingService)
+    {
+        $this->meetingService = $meetingService;
+
+        return $this;
+    }
+
+    /**
+     * @return ProjectService
+     */
+    public function getProjectService()
+    {
+        return $this->projectService;
+    }
+
+    /**
+     * @param ProjectService $projectService
+     *
+     * @return ServiceAbstract
+     */
+    public function setProjectService(ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
+
+        return $this;
     }
 }

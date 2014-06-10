@@ -16,17 +16,14 @@ use Contact\Entity\ContactOrganisation;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Selection;
 use Contact\Options\CommunityOptionsInterface;
-use Deeplink\Service\DeeplinkService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use Event\Service\MeetingService;
 use General\Entity\Country;
-use General\Service\EmailService;
-use General\Service\GeneralService;
+use General\Entity\Gender;
+use General\Entity\Title;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
-use Project\Service\ProjectService;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Validator\EmailAddress;
 use ZfcUser\Options\UserServiceOptionsInterface;
@@ -47,26 +44,6 @@ class ContactService extends ServiceAbstract
      * @var AddressService
      */
     protected $addressService;
-    /**
-     * @var DeeplinkService
-     */
-    protected $deeplinkService;
-    /**
-     * @var ProjectService
-     */
-    protected $projectService;
-    /**
-     * @var MeetingService
-     */
-    protected $meetingService;
-    /**
-     * @var OrganisationService
-     */
-    protected $organisationService;
-    /**
-     * @var GeneralService
-     */
-    protected $generalService;
     /**
      * @var CommunityOptionsInterface
      */
@@ -145,26 +122,6 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @return MeetingService
-     */
-    public function getMeetingService()
-    {
-        if (!$this->meetingService instanceof MeetingService) {
-            $this->setMeetingService($this->getServiceLocator()->get('event_meeting_service'));
-        }
-
-        return $this->meetingService;
-    }
-
-    /**
-     * @param MeetingService $meetingService
-     */
-    public function setMeetingService($meetingService)
-    {
-        $this->meetingService = $meetingService;
-    }
-
-    /**
      * @return \Contact\Entity\Contact
      */
     public function getContact()
@@ -237,26 +194,6 @@ class ContactService extends ServiceAbstract
         return $this->getOrganisationService()->setOrganisationId(
             $this->getContact()->getContactOrganisation()->getOrganisation()->getId()
         );
-    }
-
-    /**
-     * @return OrganisationService
-     */
-    public function getOrganisationService()
-    {
-        if (!$this->organisationService instanceof OrganisationService) {
-            $this->setOrganisationService($this->getServiceLocator()->get('organisation_organisation_service'));
-        }
-
-        return $this->organisationService;
-    }
-
-    /**
-     * @param OrganisationService $organisationService
-     */
-    public function setOrganisationService($organisationService)
-    {
-        $this->organisationService = $organisationService;
     }
 
     /**
@@ -396,26 +333,6 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @return ProjectService
-     */
-    public function getProjectService()
-    {
-        if (!$this->projectService instanceof ProjectService) {
-            $this->setProjectService($this->getServiceLocator()->get('project_project_service'));
-        }
-
-        return $this->projectService;
-    }
-
-    /**
-     * @param ProjectService $projectService
-     */
-    public function setProjectService($projectService)
-    {
-        $this->projectService = $projectService;
-    }
-
-    /**
      * Create an account and send an email address
      *
      * @param $emailAddress
@@ -429,8 +346,8 @@ class ContactService extends ServiceAbstract
         $contact->setEmail($emailAddress);
 
         //Fix the gender
-        $contact->setGender($this->getGeneralService()->findEntityById('gender', 0)); //Unknown
-        $contact->setTitle($this->getGeneralService()->findEntityById('title', 0)); //Unknown
+        $contact->setGender($this->getGeneralService()->findEntityById('gender', Gender::GENDER_UNKNOWN));
+        $contact->setTitle($this->getGeneralService()->findEntityById('title', Title::TITLE_UNKNOWN));
 
         /**
          * Include all the optIns
@@ -442,60 +359,14 @@ class ContactService extends ServiceAbstract
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
         //Create a deeplink for the user which redirects to the profile-page
-        $deeplink = $this->getDeeplinkService()->createDeeplink($contact, $target);
+        $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
 
-        /**
-         * Send the email tot he user
-         * @var $emailService EmailService
-         */
-        $emailService = $this->getServiceLocator()->get('general_email_service');
-        $emailService->setTemplate("/auth/register:mail");
-        $email = $emailService->create();
+        $email = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
         $email->addTo($emailAddress);
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
-        $emailService->send($email);
+        $this->getEmailService()->send($email);
 
         return $contact;
-    }
-
-    /**
-     * @return GeneralService
-     */
-    public function getGeneralService()
-    {
-        if (!$this->generalService instanceof GeneralService) {
-            $this->setGeneralService($this->getServiceLocator()->get('general_general_service'));
-        }
-
-        return $this->generalService;
-    }
-
-    /**
-     * @param GeneralService $generalService
-     */
-    public function setGeneralService($generalService)
-    {
-        $this->generalService = $generalService;
-    }
-
-    /**
-     * @return DeeplinkService
-     */
-    public function getDeeplinkService()
-    {
-        if (!$this->deeplinkService instanceof DeeplinkService) {
-            $this->setDeeplinkService($this->getServiceLocator()->get('deeplink_deeplink_service'));
-        }
-
-        return $this->deeplinkService;
-    }
-
-    /**
-     * @param DeeplinkService $deeplinkService
-     */
-    public function setDeeplinkService($deeplinkService)
-    {
-        $this->deeplinkService = $deeplinkService;
     }
 
     /**
@@ -523,20 +394,16 @@ class ContactService extends ServiceAbstract
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/change-password');
         //Create a deeplink for the user which redirects to the profile-page
-        $deeplink = $this->getDeeplinkService()->createDeeplink($contact, $target);
+        $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
 
         /**
          * Send the email tot he user
-         * @var $emailService EmailService
          */
-        $emailService = $this->getServiceLocator()->get('general_email_service');
-        $emailService->setTemplate("/auth/forgotpassword:mail");
-
-        $email = $emailService->create();
+        $email = $this->getEmailService()->setTemplate("/auth/forgotpassword:mail")->create();
         $email->addTo($emailAddress, $contactService->parseFullName());
         $email->setFullname($contactService->parseFullName());
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
-        $emailService->send($email);
+        $this->getEmailService()->send($email);
 
         return $contact;
     }
@@ -919,7 +786,7 @@ class ContactService extends ServiceAbstract
      */
     public function getProfileInCompleteness()
     {
-        $inCompleteness = array();
+        $inCompleteness = [];
         $totalWeight    = 0;
 
         $totalWeight += 10;
@@ -999,7 +866,7 @@ class ContactService extends ServiceAbstract
             throw new \InvalidArgumentException(sprintf("No project selected"));
         }
 
-        $contacts = array();
+        $contacts = [];
         /**
          * Add the project leader
          */

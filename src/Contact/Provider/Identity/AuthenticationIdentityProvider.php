@@ -80,7 +80,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
             if (!$success) {
                 //Get also the roles assigned via selections
                 $this->contactService->setContact($identity);
-                $localRoles = array();
+                $localRoles = [];
                 foreach ($this->adminService->findAll('access') as $access) {
                     if ($this->contactService->inSelection($access->getSelection())) {
                         $localRoles[] = strtolower($access->getAccess());
