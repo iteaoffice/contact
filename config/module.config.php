@@ -10,13 +10,14 @@
 
 namespace Contact;
 
+use Contact\Controller\ControllerInitializer;
 use Contact\Service\ServiceInitializer;
 use Zend\Stdlib\ArrayUtils;
 
 $config = [
     'controllers'     => [
         'initializers' => [
-            'contact_controller_initializer' => 'Contact\Controller\ControllerInitializer'
+            ControllerInitializer::class
         ],
         'invokables'   => [
             'contact-index'   => 'Contact\Controller\ContactController',

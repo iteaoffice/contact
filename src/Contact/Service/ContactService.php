@@ -562,10 +562,13 @@ class ContactService extends ServiceAbstract
      */
     public function hasPermit($role, $entity)
     {
+        /**
+         * @todo: Created a workaround for the proxied entites
+         */
         return $this->getAdminService()->contactHasPermit(
             $this->getContact(),
             $role,
-            strtolower($entity->get('underscore_full_entity_name')),
+            str_replace('doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_full_entity_name'))),
             $entity->getId()
         );
     }
