@@ -40,7 +40,7 @@ class ContactPhoto extends AbstractHelper
          * Return an empty photo when there is no, or only a empty object
          */
         if (!$photo || is_null($photo->getId())) {
-            return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg">';
+            return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg" class="img-responsive">';
         }
 
         /**
@@ -65,7 +65,7 @@ class ContactPhoto extends AbstractHelper
             );
         }
 
-        $imageUrl = '<img src="%s?%s" width="%s" style="%s" id="%s">';
+        $imageUrl = '<img src="%s?%s" width="%s" style="%s" id="%s" class="img-responsive">';
 
         $params = array(
             'contactHash' => $photo->getContact()->parseHash(),

@@ -2,7 +2,7 @@
 /**
  * ITEA Office copyright message placeholder
  *
- * @category    Contact
+ * @category    Project
  * @package     View
  * @subpackage  Helper
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -11,29 +11,22 @@
 
 namespace Contact\View\Helper;
 
-use Zend\View\HelperPluginManager;
-use Zend\View\Helper\AbstractHelper;
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Helper\AbstractHelper;
 
 /**
- * Class ContactHandler
- * @package Contact\View\Helper
+ * Class VersionServiceProxy
+ * @package General\View\Helper
  */
-class ContactServiceProxy extends AbstractHelper
+class ContactServiceProxy extends AbstractHelper implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ContactService
+     * @var ServiceLocatorInterface
      */
-    protected $contactService;
-
-    /**
-     * @param HelperPluginManager $helperPluginManager
-     */
-    public function __construct(HelperPluginManager $helperPluginManager)
-    {
-        $this->contactService = $helperPluginManager->getServiceLocator()->get('contact_contact_service');
-    }
+    protected $serviceLocator;
 
     /**
      * @param Contact $contact
@@ -42,6 +35,31 @@ class ContactServiceProxy extends AbstractHelper
      */
     public function __invoke(Contact $contact)
     {
-        return $this->contactService->setContact($contact);
+        $contactService = clone $this->serviceLocator->getServiceLocator()->get('contact_contact_service');
+        return $contactService->setContact($contact);
+    }
+
+    /**
+     * Get the service locator.
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * Set the service locator.
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return AbstractHelper
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+
+        return $this;
     }
 }

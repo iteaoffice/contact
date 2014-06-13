@@ -12,6 +12,7 @@ namespace Contact;
 
 use Contact\Controller\ControllerInitializer;
 use Contact\Service\ServiceInitializer;
+use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
 
 $config = [
@@ -28,10 +29,14 @@ $config = [
         'template_map' => include __DIR__ . '/../template_map.php',
     ],
     'view_helpers'    => [
-        'invokables' => [
-            'contactLink'   => 'Contact\View\Helper\ContactLink',
-            'communityLink' => 'Contact\View\Helper\CommunityLink',
-            'contactPhoto'  => 'Contact\View\Helper\ContactPhoto',
+        'initializers' => [
+            ViewHelperInitializer::class
+        ],
+        'invokables'   => [
+            'contactServiceProxy' => 'Contact\View\Helper\ContactServiceProxy',
+            'contactLink'         => 'Contact\View\Helper\ContactLink',
+            'communityLink'       => 'Contact\View\Helper\CommunityLink',
+            'contactPhoto'        => 'Contact\View\Helper\ContactPhoto',
         ]
     ],
     'service_manager' => [

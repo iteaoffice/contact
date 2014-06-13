@@ -9,16 +9,16 @@
  */
 namespace Contact\Entity;
 
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
-use Zend\Crypt\BlockCipher;
+use BjyAuthorize\Provider\Role\ProviderInterface;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use BjyAuthorize\Provider\Role\ProviderInterface;
+use Zend\Crypt\BlockCipher;
+use Zend\Form\Annotation;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 use ZfcUser\Entity\UserInterface;
 
 /**
@@ -687,7 +687,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -926,11 +926,11 @@ class Contact extends EntityAbstract implements
      *
      * We return only the name of the roles as this is sufficient
      *
-     * @return string[]
+     * @return array
      */
     public function getRoles()
     {
-        $accessRoles = array('user');
+        $accessRoles = ['user'];
         foreach ($this->access as $access) {
             $accessRoles[] = strtolower($access->getAccess());
         }
