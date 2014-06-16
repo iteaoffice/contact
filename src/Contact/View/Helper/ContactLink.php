@@ -149,6 +149,7 @@ class ContactLink extends LinkAbstract
         if (is_null($this->contact)) {
             $this->contact = new Contact();
         }
+
         return $this->contact;
     }
 

@@ -687,7 +687,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**
