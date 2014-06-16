@@ -41,7 +41,7 @@ class ContactProfileFieldset extends Fieldset
             /**
              * Go over each element to add the objectManager to the EntitySelect
              */
-            if ($element instanceof EntitySelect or $element instanceof EntityMultiCheckbox) {
+            if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
                 $element->setOptions(
                     array(
                         'object_manager' => $entityManager

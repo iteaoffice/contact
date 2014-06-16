@@ -293,7 +293,7 @@ abstract class ServiceAbstract implements
      */
     public function getMeetingService()
     {
-        return $this->getServiceLocator()->get('event_meeting_service');
+        return $this->getServiceLocator()->get(MeetingService::class);
     }
 
     /**

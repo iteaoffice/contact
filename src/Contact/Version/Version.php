@@ -9,6 +9,8 @@
  */
 namespace Contact\Version;
 
+use Zend\Json\Json;
+
 /**
  * @category    Contact
  * @package     Version

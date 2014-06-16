@@ -24,6 +24,7 @@ use General\Entity\Title;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
+use Project\Service\ProjectService;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Validator\EmailAddress;
 use ZfcUser\Options\UserServiceOptionsInterface;
