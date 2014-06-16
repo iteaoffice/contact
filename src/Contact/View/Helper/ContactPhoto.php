@@ -11,8 +11,8 @@
  */
 namespace Contact\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
 use Contact\Entity\Contact;
+use Contact\Entity\Photo;
 
 /**
  * Create a link to an project
@@ -21,19 +21,21 @@ use Contact\Entity\Contact;
  * @package     View
  * @subpackage  Helper
  */
-class ContactPhoto extends AbstractHelper
+class ContactPhoto extends HelperAbstract
 {
     /**
      * @param Contact $contact
      * @param int     $width
-     * @param bool    $style
+     * @param bool    $responsive
      *
      * @return string
      */
-    public function __invoke(Contact $contact, $width = 100, $style = false)
+    public function __invoke(Contact $contact, $width = 100, $responsive = true)
     {
 
-        $url   = $this->getView()->plugin('url');
+        /**
+         * @var $photo Photo
+         */
         $photo = $contact->getPhoto()->first();
 
         /**
@@ -41,6 +43,11 @@ class ContactPhoto extends AbstractHelper
          */
         if (!$photo || is_null($photo->getId())) {
             return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg" class="img-responsive">';
+        }
+
+        $classes = [];
+        if ($responsive) {
+            $classes[] = 'img-responsive';
         }
 
         /**
@@ -65,22 +72,22 @@ class ContactPhoto extends AbstractHelper
             );
         }
 
-        $imageUrl = '<img src="%s?%s" width="%s" style="%s" id="%s" class="img-responsive">';
+        $imageUrl = '<img src="%s?%s" width="%s" id="%s" class="%s">';
 
-        $params = array(
+        $params = [
             'contactHash' => $photo->getContact()->parseHash(),
             'hash'        => $photo->getHash(),
             'ext'         => $photo->getContentType()->getExtension(),
             'id'          => $photo->getContact()->getId()
-        );
+        ];
 
         $image = sprintf(
             $imageUrl,
-            $url($router, $params),
+            $this->getUrl($router, $params),
             $photo->getDateUpdated()->getTimestamp(),
             $width,
-            $style,
-            'contact_photo_' . $contact->getId()
+            'contact_photo_' . $contact->getId(),
+            implode(' ', $classes)
         );
 
         return $image;

@@ -10,7 +10,6 @@
  */
 namespace Contact\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
 use Contact\Entity\Community;
 
 /**
@@ -20,7 +19,7 @@ use Contact\Entity\Community;
  * @package     View
  * @subpackage  Helper
  */
-class CommunityLink extends AbstractHelper
+class CommunityLink extends HelperAbstract
 {
     /**
      * @param Community $community
@@ -30,12 +29,6 @@ class CommunityLink extends AbstractHelper
      */
     public function __invoke(Community $community)
     {
-        $isAllowed = $this->view->plugin('isAllowed');
-        $translate = $this->view->plugin('translate');
-        $serverUrl = $this->view->plugin('serverUrl');
-        $image     = $this->view->plugin('image');
-        $url       = $this->view->plugin('url');
-
         $uri = '<a href="%s" title="%s" class="%s">%s</a>';
         $img = '<img src="%s">';
 
@@ -50,9 +43,9 @@ class CommunityLink extends AbstractHelper
         return sprintf(
             $uri,
             $link,
-            sprintf($translate("txt-go-to-%s-profile"), $community->getType()->getType()),
+            sprintf($this->translate("txt-go-to-%s-profile"), $community->getType()->getType()),
             implode($classes),
-            sprintf($img, $url('assets/style-image', array('source' => $community->getType()->getImage())))
+            sprintf($img, $this->getUrl('assets/style-image', array('source' => $community->getType()->getImage())))
         );
     }
 }

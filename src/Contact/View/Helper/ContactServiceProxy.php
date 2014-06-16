@@ -13,21 +13,13 @@ namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\View\Helper\AbstractHelper;
 
 /**
  * Class VersionServiceProxy
  * @package General\View\Helper
  */
-class ContactServiceProxy extends AbstractHelper implements ServiceLocatorAwareInterface
+class ContactServiceProxy extends HelperAbstract
 {
-    /**
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
-
     /**
      * @param Contact $contact
      *
@@ -37,29 +29,5 @@ class ContactServiceProxy extends AbstractHelper implements ServiceLocatorAwareI
     {
         $contactService = clone $this->serviceLocator->getServiceLocator()->get('contact_contact_service');
         return $contactService->setContact($contact);
-    }
-
-    /**
-     * Get the service locator.
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-
-    /**
-     * Set the service locator.
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return AbstractHelper
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-
-        return $this;
     }
 }

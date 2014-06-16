@@ -10,8 +10,10 @@
 
 namespace Contact;
 
+use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Controller\ControllerInitializer;
 use Contact\Service\ServiceInitializer;
+use Contact\View\Helper\CommunityLink;
 use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
 
@@ -33,9 +35,9 @@ $config = [
             ViewHelperInitializer::class
         ],
         'invokables'   => [
+            'communityLink'       => CommunityLink::class,
             'contactServiceProxy' => 'Contact\View\Helper\ContactServiceProxy',
             'contactLink'         => 'Contact\View\Helper\ContactLink',
-            'communityLink'       => 'Contact\View\Helper\CommunityLink',
             'contactPhoto'        => 'Contact\View\Helper\ContactPhoto',
         ]
     ],
@@ -51,7 +53,7 @@ $config = [
                                                  => 'Contact\Factory\AuthenticationIdentityProviderServiceFactory',
         ],
         'invokables'   => [
-            'contact_impersonate_form'     => 'Contact\Form\Impersonate',
+            ContactAssertion::class        => ContactAssertion::class,
             'contact_contact_service'      => 'Contact\Service\ContactService',
             'contact_address_service'      => 'Contact\Service\AddressService',
             'contact_form_service'         => 'Contact\Service\FormService',

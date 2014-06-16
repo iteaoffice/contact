@@ -40,7 +40,6 @@ class ServiceInitializer implements InitializerInterface
         if (!is_object($instance)) {
             return;
         }
-
         /**
          * Have a central place to inject the service locator
          * @todo: why is this needed for an invokable?

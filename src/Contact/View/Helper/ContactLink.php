@@ -10,8 +10,8 @@
  */
 namespace Contact\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
-use Contact\Entity;
+use Contact\Acl\Assertion\Contact as ContactAssertion;
+use Contact\Entity\Contact;
 
 /**
  * Create a link to an contact
@@ -20,149 +20,143 @@ use Contact\Entity;
  * @package     View
  * @subpackage  Helper
  */
-class ContactLink extends AbstractHelper
+class ContactLink extends LinkAbstract
 {
     /**
-     * @param Entity\Contact $contact
-     * @param string         $action
-     * @param string         $show
-     * @param null           $page
-     * @param null           $alternativeShow
+     * @var Contact
+     */
+    protected $contact;
+
+    /**
+     * @param Contact $contact
+     * @param string  $action
+     * @param string  $show
+     * @param null    $page
+     * @param null    $alternativeShow
      *
-     * @return Entity\Contact|string
+     * @return string
      * @throws \RuntimeException
      * @throws \Exception
      */
     public function __invoke(
-        Entity\Contact $contact = null,
+        Contact $contact = null,
         $action = 'view',
         $show = 'name',
         $page = null,
         $alternativeShow = null
     ) {
-        $isAllowed = $this->view->plugin('isAllowed');
-        $translate = $this->view->plugin('translate');
-        $serverUrl = $this->view->plugin('serverUrl');
-        $url       = $this->view->plugin('url');
 
-        if (!$isAllowed('contact', $action)) {
-            if ($action === 'view' && $show === 'name') {
-                return $contact;
-            }
+        $this->setContact($contact);
+        $this->setAction($action);
+        $this->setShow($show);
 
-            return '';
+        /**
+         * If the alternativeShow is not null, use it an otherwise take the page
+         */
+        if (!is_null($alternativeShow)) {
+            $this->setAlternativeShow($alternativeShow);
+        } else {
+            $this->setAlternativeShow($page);
         }
 
-        $classes     = [];
-        $linkContent = [];
+        if (!$this->hasAccess(
+            $this->getContact(),
+            ContactAssertion::class,
+            $this->getAction()
+        )
+        ) {
+            return 'Access denied';
+        }
 
-        switch ($action) {
+        $this->setShowOptions(
+            [
+                'email'     => $this->getContact()->getEmail(),
+                'paginator' => $this->getAlternativeShow(),
+                'name'      => $this->getContact()->getDisplayName(),
+            ]
+        );
+
+        $this->addRouterParam('page', $page);
+        $this->addRouterParam('id', $this->getContact()->getId());
+
+        return $this->createLink();
+    }
+
+    public function parseAction()
+    {
+
+        switch ($this->getAction()) {
             case 'new':
-                $router  = 'zfcadmin/contact-manager/new';
-                $text    = sprintf($translate("txt-new-contact"));
-                $contact = new Entity\Contact();
+                $this->setRouter('zfcadmin/contact-manager/new');
+                $this->setText($this->translate("txt-new-contact"));
                 break;
             case 'list':
-                $router  = 'zfcadmin/contact-manager/list';
-                $contact = new Entity\Contact();
-                $text    = sprintf($translate("txt-list-contacts"));
+                $this->setRouter('zfcadmin/contact-manager/list');
+                $this->setText($this->translate("txt-list-contacts"));
                 break;
             case 'edit-admin':
-                $router = 'zfcadmin/contact-manager/edit';
-                $text   = sprintf($translate("txt-edit-contact-%s"), $contact->getDisplayName());
+                $this->setRouter('zfcadmin/contact-manager/edit');
+                $this->setText(sprintf($this->translate("txt-edit-contact-%s"), $this->getContact()->getDisplayName()));
                 break;
             case 'profile':
-                $router = 'contact/profile';
-                $text   = sprintf($translate("txt-view-profile-of-contact-%s"), $contact->getDisplayName());
+                $this->setRouter('contact/profile');
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-view-profile-of-contact-%s"),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
             case 'view-admin':
-                $router = 'zfcadmin/contact-manager/view';
-                $text   = sprintf($translate("txt-view-contact-%s"), $contact->getDisplayName());
+                $this->setRouter('zfcadmin/contact-manager/view');
+                $this->setText(sprintf($this->translate("txt-view-contact-%s"), $this->getContact()->getDisplayName()));
                 break;
             case 'impersonate':
-                $router = 'zfcadmin/contact-manager/impersonate';
-                $text   = sprintf($translate("txt-impersonate-contact-%s"), $contact->getDisplayName());
+                $this->setRouter('zfcadmin/contact-manager/impersonate');
+                $this->setText(
+                    sprintf($this->translate("txt-impersonate-contact-%s"), $this->getContact()->getDisplayName())
+                );
                 break;
             case 'edit-profile':
-                $router = 'contact/profile-edit';
-                $text   = sprintf($translate("txt-edit-your-profile"));
-                break;
-            case 'opt-in-edit':
-                $router = 'contact/opt-in-edit';
-                $text   = sprintf($translate("txt-edit-opt-in"));
+                $this->setRouter('contact/profile-edit');
+                $this->setText($this->translate("txt-edit-your-profile"));
                 break;
             case 'change-password':
-                $router = 'contact/change-password';
+                $this->setRouter('contact/change-password');
                 /**
                  * Users can have access without a password (via the deeplink)
                  * We will therefore have the option to set a password
                  */
-                if (is_null($contact->getSaltedPassword())) {
-                    $text      = sprintf($translate("txt-set-your-password"));
-                    $classes[] = 'btn-danger';
+                if (is_null($this->getContact()->getSaltedPassword())) {
+                    $this->setText($this->translate("txt-set-your-password"));
+                    $this->addClasses('btn-danger');
                 } else {
-                    $text = sprintf($translate("txt-update-your-password"));
+                    $this->setText($this->translate("txt-update-your-password"));
                 }
 
                 break;
 
             default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $action, __CLASS__));
+                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
+    }
 
-        if (is_null($contact)) {
-            throw new \RuntimeException(
-                sprintf(
-                    "Contact needs to be an instance of %s, %s given in %s",
-                    "Contact\Entity\Contact",
-                    get_class($contact),
-                    __CLASS__
-                )
-            );
+    /**
+     * @return Contact
+     */
+    public function getContact()
+    {
+        if (is_null($this->contact)) {
+            $this->contact = new Contact();
         }
+        return $this->contact;
+    }
 
-        $params = array(
-            'id'     => $contact->getId(),
-            'entity' => 'contact'
-        );
-
-        $params['page'] = !is_null($page) ? $page : null;
-
-        switch ($show) {
-            case 'icon':
-                if ($action === 'edit') {
-                    $linkContent[] = '<span class="glyphicon glyphicon-edit"></span>';
-                } else {
-                    $linkContent[] = '<span class="glyphicon glyphicon-info-sign"></span>';
-                }
-                break;
-            case 'button':
-                $linkContent[] = '<span class="glyphicon glyphicon-info"></span> ' . $text;
-                $classes[]     = "btn btn-primary";
-                break;
-            case 'name':
-                $linkContent[] = $contact->getDisplayName();
-                break;
-            case 'email':
-                $linkContent[] = $contact->getEmail();
-                break;
-            case 'paginator':
-
-                $linkContent[] = $alternativeShow;
-                break;
-            default:
-                $linkContent[] = $contact;
-                break;
-        }
-
-        $uri = '<a href="%s" title="%s" class="%s">%s</a>';
-
-        return sprintf(
-            $uri,
-            $serverUrl->__invoke() . $url($router, $params),
-            $text,
-            implode(' ', $classes),
-            implode(' ', $linkContent)
-        );
+    /**
+     * @param Contact $contact
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
     }
 }

@@ -21,5 +21,8 @@ return array(
         'contact_contact_form'      => function ($sm) {
             return new Form\Contact($sm, new Entity\Contact());
         },
+        'contact_impersonate_form'  => function ($sm) {
+            return new Form\Impersonate($sm);
+        },
     ),
 );

@@ -7,6 +7,9 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
  */
+
+use Contact\Acl\Assertion\Contact as ContactAssertion;
+
 return [
     'bjyauthorize' => [
         // resource providers provide a list of resources that will be tracked
@@ -24,16 +27,10 @@ return [
          */
         'rule_providers'     => [
             'BjyAuthorize\Provider\Rule\Config' => [
-                'allow' => [
-                    // allow guests and users (and admins, through inheritance]
-                    // the "wear" privilege on the resource "pants"d
-                    [['user'], 'contact', ['edit-profile', 'change-password', 'profile']],
-                    [['office'], 'contact', ['view-admin', 'edit-admin', 'impersonate', 'list']],
-                ],
+                'allow' => [],
                 // Don't mix allow/deny rules if you are using role inheritance.
                 // There are some weird bugs.
-                'deny'  => [ // ...
-                ],
+                'deny'  => [],
             ],
         ],
         /* Currently, only controller and route guards exist
@@ -43,18 +40,21 @@ return [
              * access to all routes unless they are specified here.
              */
             'BjyAuthorize\Guard\Route' => [
-                ['route' => 'contact/edit', 'roles' => ['user']],
-                ['route' => 'contact/profile', 'roles' => ['user']],
-                ['route' => 'contact/profile-edit', 'roles' => ['user']],
-                ['route' => 'contact/opt-in-update', 'roles' => ['user']],
-                ['route' => 'contact/change-password', 'roles' => ['user']],
-                ['route' => 'contact/signature', 'roles' => ['office']],
-                ['route' => 'contact/photo', 'roles' => []],
-                ['route' => 'contact/search', 'roles' => ['office']],
-                ['route' => 'zfcadmin/contact-manager', 'roles' => ['office']],
-                ['route' => 'zfcadmin/contact-manager/list', 'roles' => ['office']],
-                ['route' => 'zfcadmin/contact-manager/view', 'roles' => ['office']],
-                ['route' => 'zfcadmin/contact-manager/impersonate', 'roles' => ['office']],
+                ['route' => 'contact/edit', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/opt-in-update', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/change-password', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/signature', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/photo', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/search', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'zfcadmin/contact-manager', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'zfcadmin/contact-manager/list', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'zfcadmin/contact-manager/view', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route'     => 'zfcadmin/contact-manager/impersonate',
+                 'roles'     => [],
+                 'assertion' => ContactAssertion::class
+                ],
 
             ],
         ],
