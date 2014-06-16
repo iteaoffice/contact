@@ -9,12 +9,11 @@
  */
 namespace Contact\Repository;
 
+use Contact\Entity;
+use Contact\Entity\SelectionSql;
+use Contact\Options;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Contact\Entity;
-use Contact\Options;
-use Contact\Entity\SelectionSql;
-use Project\Repository\Project;
 
 /**
  * @category    Contact
@@ -159,7 +158,6 @@ class Contact extends EntityRepository
         }
 
         if ($options->getCommunityViaProjectParticipation()) {
-
             $projectRepository = $this->getEntityManager()->getRepository('Project\Entity\Project');
 
             /**

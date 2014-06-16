@@ -56,7 +56,6 @@ class ContactPhoto extends HelperAbstract
         $router = 'contact/photo';
 
         if (file_exists($photo->getCacheFileName())) {
-
             /**
              * The file exists, but is it not updated?
              */

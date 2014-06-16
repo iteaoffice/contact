@@ -8,13 +8,13 @@
 
 namespace Contact\Provider\Identity;
 
+use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
+use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
+use Contact\Service\ContactService;
 use Zend\Authentication\AuthenticationService;
+use Zend\Cache\StorageFactory;
 use Zend\Permissions\Acl\Role\RoleInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Cache\StorageFactory;
-use Contact\Service\ContactService;
-use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
-use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 
 /**
  * Simple identity provider to handle simply guest|user
@@ -62,7 +62,6 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      */
     public function getIdentityRoles()
     {
-
         if (!$identity = $this->authService->getIdentity()) {
             return array($this->defaultRole);
         }
@@ -72,7 +71,6 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
         }
 
         if ($identity instanceof RoleProviderInterface) {
-
             $success = false;
             $key     = $this->config['cache_key'] . '-role-list-identity-' . $identity->getId();
             $roles   = $this->cache->getItem($key, $success);

@@ -105,7 +105,6 @@ class Profile extends DoctrineObject
          * Reformat the phone, address and community for the Contact object
          */
         if ($object instanceof Contact) {
-
             /**
              * Reset the data array and store the values locally
              */

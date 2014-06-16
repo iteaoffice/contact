@@ -60,13 +60,12 @@ class ContactController extends ContactAbstractController
                  ->addHeaderLine("Pragma: public");
 
         if (!is_null($contact) && !is_null($contact->getPhoto())) {
-
             $file = stream_get_contents($contact->getPhoto()->first()->getPhoto());
 
             $response->getHeaders()
                      ->addHeaderLine(
                          'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
-                     )->addHeaderLine('Content-Length: ' . (string) strlen($file));
+                     )->addHeaderLine('Content-Length: ' . (string)strlen($file));
 
             $response->setContent($file);
 
@@ -121,8 +120,8 @@ class ContactController extends ContactAbstractController
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable  = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
 
         $this->getContactService()->updateOptInForContact(
             $optInId,
