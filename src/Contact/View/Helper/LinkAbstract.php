@@ -447,15 +447,4 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     {
         return $this->serviceLocator->get('translate')->__invoke($string);
     }
-
-    /**
-     * @param Country $country
-     * @param int     $width
-     *
-     * @return string
-     */
-    public function getCountryFlag(Country $country, $width)
-    {
-        return $this->serviceLocator->get('countryFlag')->__invoke($country, $width);
-    }
 }
