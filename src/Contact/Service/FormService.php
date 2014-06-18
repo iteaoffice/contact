@@ -10,14 +10,14 @@
  */
 namespace Contact\Service;
 
-use Zend\Form;
+use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class FormService implements ServiceLocatorAwareInterface
 {
     /**
-     * @var \Zend\Form\Form
+     * @var Form
      */
     protected $form;
     /**

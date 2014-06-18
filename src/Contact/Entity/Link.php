@@ -45,4 +45,52 @@ class Link
      * @var \Contact\Entity\Contact
      */
     private $contact2;
+
+    /**
+     * @return Contact
+     */
+    public function getContact1()
+    {
+        return $this->contact1;
+    }
+
+    /**
+     * @param Contact $contact1
+     */
+    public function setContact1($contact1)
+    {
+        $this->contact1 = $contact1;
+    }
+
+    /**
+     * @return Contact
+     */
+    public function getContact2()
+    {
+        return $this->contact2;
+    }
+
+    /**
+     * @param Contact $contact2
+     */
+    public function setContact2($contact2)
+    {
+        $this->contact2 = $contact2;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 }

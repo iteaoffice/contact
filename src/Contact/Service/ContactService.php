@@ -555,10 +555,6 @@ class ContactService extends ServiceAbstract
             throw new \InvalidArgumentException("Permit can only be determined of an existing entity, null given");
         }
 
-        /**
-         * @todo: Created a workaround for the proxied entities
-         */
-
         return $this->getAdminService()->contactHasPermit(
             $this->getContact(),
             $role,

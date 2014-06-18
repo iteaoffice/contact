@@ -143,7 +143,6 @@ class Contact extends EntityRepository
     public function findIsCommunityMember(Entity\Contact $contact, Options\CommunityOptionsInterface $options)
     {
         if ($options->getCommunityViaMembers()) {
-            //Todo Artemisia
             return false;
         }
         if ($options->getCommunityViaProjectParticipation()) {

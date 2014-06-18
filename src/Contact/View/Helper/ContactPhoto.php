@@ -30,7 +30,7 @@ class ContactPhoto extends HelperAbstract
      *
      * @return string
      */
-    public function __invoke(Contact $contact, $width = 100, $responsive = true)
+    public function __invoke(Contact $contact, $width = null, $responsive = true)
     {
         /**
          * @var $photo Photo
@@ -76,7 +76,7 @@ class ContactPhoto extends HelperAbstract
             $imageUrl,
             $this->getUrl($router, $params),
             $photo->getDateUpdated()->getTimestamp(),
-            $width,
+            !is_null($width) ?: $width,
             'contact_photo_' . $contact->getId(),
             implode(' ', $classes)
         );

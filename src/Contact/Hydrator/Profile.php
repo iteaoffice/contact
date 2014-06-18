@@ -70,11 +70,6 @@ class Profile extends DoctrineObject
             if (!is_null($object->getContactOrganisation())) {
                 $values['contact_organisation']['country'] =
                     $object->getContactOrganisation()->getOrganisation()->getCountry()->getId();
-            } else {
-                //@todo: find a way to access the service
-                //$generalService = new GeneralService();
-                //$generalService->setEntityManager($this->objectManager);
-                //$values['contact_organisation']['country'] = $generalService->findLocationByIPAddress();
             }
         }
 

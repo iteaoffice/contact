@@ -41,7 +41,6 @@ class ServiceInitializer implements InitializerInterface
         }
         /**
          * Have a central place to inject the service locator
-         * @todo: why is this needed for an invokable?
          */
         if ($instance instanceof ServiceLocatorAwareInterface) {
             $instance->setServiceLocator($serviceLocator);
