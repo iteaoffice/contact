@@ -647,7 +647,6 @@ class Contact extends EntityAbstract implements
         $this->loi                    = new Collections\ArrayCollection();
         $this->affiliationDoa         = new Collections\ArrayCollection();
         $this->permitContact          = new Collections\ArrayCollection();
-
         /**
          * Set these values for legacy reasons
          */
@@ -721,7 +720,6 @@ class Contact extends EntityAbstract implements
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -744,7 +742,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -753,7 +750,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -776,7 +772,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -785,7 +780,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -794,7 +788,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -803,7 +796,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -812,7 +804,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -821,7 +812,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -830,7 +820,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -839,7 +828,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -848,7 +836,6 @@ class Contact extends EntityAbstract implements
                     )
                 )
             );
-
             $this->inputFilter = $inputFilter;
         }
 

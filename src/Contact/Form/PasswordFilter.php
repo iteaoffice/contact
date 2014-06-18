@@ -18,7 +18,6 @@ class PasswordFilter extends InputFilter
      */
     public function __construct()
     {
-
         $this->add(
             array(
                 'name'       => 'password',
@@ -38,7 +37,6 @@ class PasswordFilter extends InputFilter
                 ),
             )
         );
-
         $this->add(
             array(
                 'name'       => 'passwordVerify',

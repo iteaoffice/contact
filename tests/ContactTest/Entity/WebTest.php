@@ -9,14 +9,10 @@
  */
 namespace ContactTest\Entity;
 
-use Zend\InputFilter\InputFilter;
-
-use Contact\Entity\Contact;
 use Contact\Entity\Web;
-
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
-
 use ContactTest\Bootstrap;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use Zend\InputFilter\InputFilter;
 
 class WebTest extends \PHPUnit_Framework_TestCase
 {
@@ -44,28 +40,22 @@ class WebTest extends \PHPUnit_Framework_TestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-
-        $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
-
-        $this->webData = array(
+        $contact              = $this->entityManager->find("Contact\Entity\Contact", 1);
+        $this->webData        = array(
             'contact' => $contact,
             'web'     => 'http://www.example.com'
         );
-
-        $this->web = new Web();
+        $this->web            = new Web();
     }
 
     public function testCanCreateEntity()
     {
         $this->assertInstanceOf("Contact\Entity\Web", $this->web);
         $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->web);
-
         $this->assertNull($this->web->getId(), 'The "Id" should be null');
-
         $id = 1;
         $this->web->setId($id);
         $this->assertEquals($id, $this->web->getId(), 'The "Id" should be the same as the setter');
-
         $this->assertTrue(is_array($this->web->getArrayCopy()));
         $this->assertTrue(is_array($this->web->populate()));
     }
@@ -91,15 +81,13 @@ class WebTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveEntityInDatabase()
     {
-        $hydrator = new DoctrineObject(
+        $hydrator  = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\Web'
         );
-
         $this->web = $hydrator->hydrate($this->webData, new Web());
         $this->entityManager->persist($this->web);
         $this->entityManager->flush();
-
         $this->assertInstanceOf('Contact\Entity\Web', $this->web);
         $this->assertNotNull($this->web->getId());
         $this->assertNotNull($this->web->getResourceId());

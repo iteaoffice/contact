@@ -29,12 +29,10 @@ class CommunityLink extends HelperAbstract
      */
     public function __invoke(Community $community)
     {
-        $uri = '<a href="%s" title="%s" class="%s">%s</a>';
-        $img = '<img src="%s">';
-
+        $uri     = '<a href="%s" title="%s" class="%s">%s</a>';
+        $img     = '<img src="%s">';
         $classes = [];
-
-        $link = preg_replace(
+        $link    = preg_replace(
             '/^([^\~]+)(\~(.*))?$/',
             '${1}' . $community->getCommunity() . '$3',
             $community->getType()->getLink()

@@ -9,15 +9,12 @@
  */
 namespace ContactTest\Entity;
 
-use Zend\Crypt\BlockCipher;
-
 use Contact\Entity\Contact;
 use ContactTest\Bootstrap;
-
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
-
-use General\Entity\Title;
 use General\Entity\Gender;
+use General\Entity\Title;
+use Zend\Crypt\BlockCipher;
 
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,11 +50,9 @@ class ContactTest extends \PHPUnit_Framework_TestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-
-        $this->gender = $this->entityManager->find("General\Entity\Gender", 1);
-        $this->title  = $this->entityManager->find("General\Entity\Title", 1);
-
-        $this->contactData = array(
+        $this->gender         = $this->entityManager->find("General\Entity\Gender", 1);
+        $this->title          = $this->entityManager->find("General\Entity\Title", 1);
+        $this->contactData    = array(
             'firstName'  => 'Jan',
             'middleName' => 'van der',
             'lastName'   => 'Vliet',
@@ -71,25 +66,19 @@ class ContactTest extends \PHPUnit_Framework_TestCase
             'gender'     => $this->gender,
             'title'      => $this->title,
         );
-
-        $this->contact = new Contact();
+        $this->contact        = new Contact();
     }
 
     public function testCanCreateEntity()
     {
-
         $this->assertInstanceOf("Contact\Entity\Contact", $this->contact);
         $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->contact);
-
         $this->assertNull($this->contact->getFirstName(), 'The "Firstname" should be null');
-
         $today = new \DateTime();
         $this->contact->setDateCreated($today);
         $this->contact->setLastUpdate($today);
-
         $id = 1;
         $this->contact->setId($id);
-
         $this->assertEquals(
             $today,
             $this->contact->getDateCreated(),
@@ -101,7 +90,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
             'The "LastUpdate" should be the same as the setter'
         );
         $this->assertEquals($id, $this->contact->getId(), 'The "Id" should be the same as the setter');
-
         $this->assertTrue(is_array($this->contact->getArrayCopy()));
         $this->assertTrue(is_array($this->contact->populate()));
     }
@@ -114,15 +102,12 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
     public function testCanHydrateEntity()
     {
-        $hydrator = new DoctrineObject(
+        $hydrator      = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\Contact'
         );
-
         $this->contact = $hydrator->hydrate($this->contactData, new Contact());
-
-        $dataArray = $hydrator->extract($this->contact);
-
+        $dataArray     = $hydrator->extract($this->contact);
         $this->assertSame($this->contactData['firstName'], $dataArray['firstName']);
         $this->assertSame($this->contactData['middleName'], $dataArray['middleName']);
         $this->assertSame($this->contactData['lastName'], $dataArray['lastName']);
@@ -140,14 +125,12 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveEntityInDatabase()
     {
-        $hydrator = new DoctrineObject(
+        $hydrator      = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\Contact'
         );
-
         $this->contact = $hydrator->hydrate($this->contactData, new Contact());
         $this->entityManager->persist($this->contact);
-
         $this->assertInstanceOf('Contact\Entity\Contact', $this->contact);
         $this->assertNotNull($this->contact->getId());
         $this->assertSame($this->contactData['firstName'], $this->contact->getFirstName());
@@ -164,7 +147,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->contactData['gender']->getId(), $this->contact->getGender()->getId());
         $this->assertSame($this->contactData['title']->getName(), $this->contact->getTitle()->getName());
         $this->assertSame($this->contactData['title']->getId(), $this->contact->getTitle()->getId());
-
         $this->assertNotNull($this->contact->getDisplayName());
     }
 
@@ -180,14 +162,11 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
     public function testDecryptHash()
     {
-        $contactId = 1;
-
+        $contactId   = 1;
         $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
         $blockCipher->setKey(Contact::CRYPT_KEY);
-        $hash = $blockCipher->encrypt($contactId);
-
+        $hash   = $blockCipher->encrypt($contactId);
         $result = $this->contact->decryptHash($hash);
-
         $this->assertEquals($result, $contactId);
     }
 }

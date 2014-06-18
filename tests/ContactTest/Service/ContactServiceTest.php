@@ -9,11 +9,10 @@
  */
 namespace ContactTest\Service;
 
-use Zend\Crypt\BlockCipher;
-
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 use ContactTest\Bootstrap;
+use Zend\Crypt\BlockCipher;
 
 class ContactServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,7 +36,6 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-
         $this->contactService = new ContactService();
         $this->contactService->setServiceLocator($this->serviceManager);
     }
@@ -46,7 +44,6 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
     {
         $contactEmail = 'test@example.com';
         $contact      = $this->contactService->findContactByEmail($contactEmail);
-
         $this->assertNotNull($contact);
         $this->assertEquals($contact->getEmail(), $contactEmail);
     }
@@ -56,8 +53,7 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
         $contactId   = 1;
         $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
         $blockCipher->setKey(Contact::CRYPT_KEY);
-        $hash = $blockCipher->encrypt($contactId);
-
+        $hash    = $blockCipher->encrypt($contactId);
         $contact = $this->contactService->findContactByHash($hash);
         $this->assertNotNull($contact);
         $this->assertEquals($contact->getId(), $contactId);
@@ -101,7 +97,6 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
     {
         $contact = $this->contactService->findEntityById('contact', 2);
         $this->assertTrue($this->contactService->removeEntity($contact));
-
         $contact = $this->contactService->findEntityById('contact', 2);
         $this->assertNull($contact);
     }

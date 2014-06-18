@@ -9,9 +9,9 @@
  */
 namespace Contact\Entity;
 
-use Zend\Form\Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Zend\Form\Annotation;
 
 /**
  * Entity for a DND

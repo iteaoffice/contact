@@ -27,12 +27,10 @@ class ContactManagerController extends ContactAbstractController
     {
         $projectQuery = $this->getContactService()->findAllContacts();
         $page         = $this->getEvent()->getRouteMatch()->getParam('page');
-
-        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($projectQuery)));
+        $paginator    = new Paginator(new PaginatorAdapter(new ORMPaginator($projectQuery)));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
-
         $searchForm = new Search();
 
         return new ViewModel(
@@ -59,19 +57,14 @@ class ContactManagerController extends ContactAbstractController
     public function impersonateAction()
     {
         $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
-
-        $form = $this->getServiceLocator()->get('contact_impersonate_form');
+        $form           = $this->getServiceLocator()->get('contact_impersonate_form');
         $form->setData($_POST);
-
         $deeplink = false;
         if ($this->getRequest()->isPost() && $form->isValid()) {
-
             $data = $form->getData();
-
             //Create a target
             $target = $this->getDeeplinkService()->findEntityById('target', $data['target']);
             $key    = (!empty($data['key']) ? $data['key'] : null);
-
             //Create a deeplink for the user which redirects to the profile-page
             $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contactService->getContact(), null, $key);
         }
@@ -94,9 +87,7 @@ class ContactManagerController extends ContactAbstractController
     {
         $entity = $this->getEvent()->getRouteMatch()->getParam('entity');
         $form   = $this->getFormService()->prepare($this->params('entity'), null, $_POST);
-
         $form->setAttribute('class', 'form-horizontal');
-
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->newEntity($form->getData());
             $this->redirect()->toRoute(
@@ -119,11 +110,9 @@ class ContactManagerController extends ContactAbstractController
             $this->getEvent()->getRouteMatch()->getParam('entity'),
             $this->getEvent()->getRouteMatch()->getParam('id')
         );
-
-        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
+        $form   = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
         $form->setAttribute('class', 'form-horizontal live-form');
         $form->setAttribute('id', 'contact-contact-' . $entity->getId());
-
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
             $this->redirect()->toRoute(
@@ -146,7 +135,6 @@ class ContactManagerController extends ContactAbstractController
             $this->getEvent()->getRouteMatch()->getParam('entity'),
             $this->getEvent()->getRouteMatch()->getParam('id')
         );
-
         $this->getContactService()->removeEntity($entity);
 
         return $this->redirect()->toRoute(

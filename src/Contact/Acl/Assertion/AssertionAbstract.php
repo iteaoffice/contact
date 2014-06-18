@@ -93,7 +93,6 @@ abstract class AssertionAbstract implements
      */
     public function getContactService()
     {
-
         if ($this->contactService->isEmpty() && $this->getServiceLocator()->get('zfcuser_auth_service')->hasIdentity()
         ) {
             $this->contactService->setContact(
@@ -130,7 +129,6 @@ abstract class AssertionAbstract implements
         if (!is_array($roles)) {
             $roles = array($roles);
         }
-
         foreach ($this->getAccessRoles() as $access) {
             if (in_array(strtolower($access), $roles)) {
                 return true;

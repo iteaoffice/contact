@@ -9,14 +9,14 @@
  */
 namespace Contact\Form;
 
+use Contact\Entity\Contact;
 use Contact\Entity\PhoneType;
+use Contact\Entity\Profile as ProfileEntity;
+use Contact\Hydrator\Profile as ProfileHydrator;
+use DoctrineORMModule\Options\EntityManager;
+use Zend\Form\Fieldset;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Form\Fieldset;
-use DoctrineORMModule\Options\EntityManager;
-use Contact\Entity\Contact;
-use Contact\Hydrator\Profile as ProfileHydrator;
-use Contact\Entity\Profile as ProfileEntity;
 
 /**
  *
@@ -36,15 +36,11 @@ class Profile extends Form
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
-
         $this->entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
-
-        $contactService = $serviceLocator->get('contact_contact_service');
-        $generalService = $serviceLocator->get('general_general_service');
-
-        $doctrineHydrator = new ProfileHydrator($this->entityManager);
+        $contactService      = $serviceLocator->get('contact_contact_service');
+        $generalService      = $serviceLocator->get('general_general_service');
+        $doctrineHydrator    = new ProfileHydrator($this->entityManager);
         $this->setHydrator($doctrineHydrator)->setObject($contact);
-
         /**
          * Add a hidden form element for the id to allow a check on the uniqueness of some elements
          */
@@ -54,7 +50,6 @@ class Profile extends Form
                 'name' => 'id',
             )
         );
-
         $this->add(
             array(
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
@@ -72,7 +67,6 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
@@ -90,7 +84,6 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -105,7 +98,6 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -119,7 +111,6 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -134,12 +125,10 @@ class Profile extends Form
                 )
             )
         );
-
         /**
          * Produce a list of all phone numbers
          */
         $communityFieldSet = new Fieldset('community');
-
         foreach ($generalService->findAll('communityType') as $communityType) {
             $fieldSet = new Fieldset($communityType->getId());
             $fieldSet->add(
@@ -155,17 +144,13 @@ class Profile extends Form
                     )
                 )
             );
-
             $communityFieldSet->add($fieldSet);
         }
-
         $this->add($communityFieldSet);
-
         /**
          * Produce a list of all phone numbers
          */
         $phoneFieldSet = new Fieldset('phone');
-
         foreach ($contactService->findAll('phoneType') as $phoneType) {
             if (in_array($phoneType->getId(), array(PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE))) {
                 $fieldSet = new Fieldset($phoneType->getId());
@@ -182,18 +167,14 @@ class Profile extends Form
                         )
                     )
                 );
-
                 $phoneFieldSet->add($fieldSet);
             }
         }
-
         $this->add($phoneFieldSet);
-
         /**
          * Add the form field for the address
          */
         $addressFieldSet = new Fieldset('address');
-
         $addressFieldSet->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -207,7 +188,6 @@ class Profile extends Form
                 )
             )
         );
-
         $addressFieldSet->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -221,7 +201,6 @@ class Profile extends Form
                 )
             )
         );
-
         $addressFieldSet->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -235,7 +214,6 @@ class Profile extends Form
                 )
             )
         );
-
         $addressFieldSet->add(
             array(
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
@@ -253,14 +231,11 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add($addressFieldSet);
-
         /**
          * Produce a list of all phone numbers
          */
         $contactOrganisationFieldSet = new Fieldset('contact_organisation');
-
         $contactOrganisationFieldSet->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -275,7 +250,6 @@ class Profile extends Form
                 )
             )
         );
-
         $contactOrganisationFieldSet->add(
             array(
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
@@ -293,9 +267,7 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add($contactOrganisationFieldSet);
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -309,7 +281,6 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -323,13 +294,11 @@ class Profile extends Form
                 )
             )
         );
-
         /**
          * Produce a list of all phone numbers
          */
         $profileFieldSet = new Fieldset('profile');
         $profileEntity   = new ProfileEntity();
-
         $profileFieldSet->add(
             array(
                 'type'       => 'Zend\Form\Element\Radio',
@@ -343,7 +312,6 @@ class Profile extends Form
                 )
             )
         );
-
         $profileFieldSet->add(
             array(
                 'type'       => 'Zend\Form\Element\Textarea',
@@ -357,9 +325,7 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add($profileFieldSet);
-
         $this->add(
             array(
                 'type'       => '\Zend\Form\Element\File',
@@ -373,14 +339,12 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type' => 'Zend\Form\Element\Csrf',
                 'name' => 'csrf',
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Submit',
@@ -391,7 +355,6 @@ class Profile extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Submit',

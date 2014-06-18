@@ -34,9 +34,7 @@ class Contact extends EntityRepository
         $qb->select('c');
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->distinct('c.id');
-
         $qb->orderBy('c.id', 'DESC');
-
         /**
          * Only add a limit when asked
          */
@@ -60,7 +58,6 @@ class Contact extends EntityRepository
         $queryBuilder->select('c');
         $queryBuilder->from("Contact\Entity\Contact", 'c');
         $queryBuilder->distinct('c.id');
-
         //Add the associates
         $associates = $this->_em->createQueryBuilder();
         $associates->select('associateContact.id');
@@ -68,7 +65,6 @@ class Contact extends EntityRepository
         $associates->join('associateAffiliation.associate', 'associateContact');
         $associates->join('associateAffiliation.project', 'associateProject');
         $associates->andWhere('associateProject.project = ?1');
-
         //Add the affiliates
         $affiliates = $this->_em->createQueryBuilder();
         $affiliates->select('affiliationContact.id');
@@ -76,7 +72,6 @@ class Contact extends EntityRepository
         $affiliates->join('affiliation.project', 'affiliationProject');
         $affiliates->join('affiliation.contact', 'affiliationContact');
         $affiliates->andWhere('affiliationProject.project = ?1');
-
         //Add the workpackage leaders
         $workpackage = $this->_em->createQueryBuilder();
         $workpackage->select('workpackageContact.id');
@@ -84,14 +79,12 @@ class Contact extends EntityRepository
         $workpackage->join('workpackage.project', 'workpackageProject');
         $workpackage->join('workpackage.contact', 'workpackageContact');
         $workpackage->andWhere('workpackageProject.project = ?1');
-
         //Add the project leaders
         $projectLeaders = $this->_em->createQueryBuilder();
         $projectLeaders->select('projectContact.id');
         $projectLeaders->from('Project\Entity\Project', 'project');
         $projectLeaders->join('project.contact', 'projectContact');
         $projectLeaders->andWhere('project.id = ?1');
-
         $queryBuilder->andWhere(
             $queryBuilder->expr()->orX(
                 $queryBuilder->expr()->in('c.id', $associates->getDQL()),
@@ -100,7 +93,6 @@ class Contact extends EntityRepository
                 $queryBuilder->expr()->in('c.id', $projectLeaders->getDQL())
             )
         );
-
         $queryBuilder->setParameter(1, $projectId);
 
         return $queryBuilder->getQuery()->getResult();
@@ -117,7 +109,6 @@ class Contact extends EntityRepository
         $queryBuilder->select('c');
         $queryBuilder->from('Contact\Entity\Contact', 'c');
         $queryBuilder->leftJoin('c.emailAddress', 'e');
-
         $queryBuilder->orWhere('c.email = ?1');
         $queryBuilder->orWhere('e.email = ?2');
         $queryBuilder->setParameter(1, $email);
@@ -135,7 +126,6 @@ class Contact extends EntityRepository
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
         $queryBuilder->from('Contact\Entity\Contact', 'c');
-
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('c.dateOfBirth'));
 
@@ -156,10 +146,8 @@ class Contact extends EntityRepository
             //Todo Artemisia
             return false;
         }
-
         if ($options->getCommunityViaProjectParticipation()) {
             $projectRepository = $this->getEntityManager()->getRepository('Project\Entity\Project');
-
             /**
              * Go over the associates first
              */
@@ -168,15 +156,12 @@ class Contact extends EntityRepository
             $queryBuilder->from('Contact\Entity\Contact', 'contact');
             $queryBuilder->join('contact.associate', 'a');
             $queryBuilder = $projectRepository->onlyActiveProjectOrRecentPO($queryBuilder);
-
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
-
             //If we find a associate, return true, else proceed
             if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
                 return true;
             }
-
             /**
              * Go over the affiliations
              */
@@ -187,15 +172,12 @@ class Contact extends EntityRepository
             $queryBuilder->join('co.organisation', 'organisation');
             $queryBuilder->join('organisation.affiliation', 'a');
             $queryBuilder = $projectRepository->onlyActiveProjectOrRecentPO($queryBuilder);
-
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
-
             //If we find a associate, return true, else proceed
             if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
                 return true;
             }
-
             /**
              * Go over the affiliations via the cluster
              */
@@ -208,10 +190,8 @@ class Contact extends EntityRepository
             $queryBuilder->join('organisation.cluster', 'cluster2', 'cluster1.cluster = cluster2.cluster');
             $queryBuilder->join('organisation.affiliation', 'a');
             $queryBuilder = $projectRepository->onlyActiveProjectOrRecentPO($queryBuilder);
-
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
-
             //If we find a associate, return true, else proceed
             if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
                 return true;
@@ -278,18 +258,13 @@ class Contact extends EntityRepository
      */
     public function searchContacts($searchItem, $maxResults = 12)
     {
-
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c');
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->distinct('c.id');
-
         $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR c.email LIKE :searchItem');
-
         $qb->setParameter('searchItem', "%" . $searchItem . "%");
-
         $qb->setMaxResults($maxResults);
-
         $qb->orderBy('c.id', 'DESC');
 
         return $qb->getQuery()->getResult();

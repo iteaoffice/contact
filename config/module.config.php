@@ -7,7 +7,6 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
  */
-
 namespace Contact;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
@@ -17,7 +16,7 @@ use Contact\View\Helper\CommunityLink;
 use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
 
-$config = [
+$config      = [
     'controllers'     => [
         'initializers' => [
             ControllerInitializer::class
@@ -87,7 +86,6 @@ $config = [
         ],
     ],
 ];
-
 $configFiles = [
     __DIR__ . '/module.config.routes.php',
     __DIR__ . '/module.config.navigation.php',
@@ -95,7 +93,6 @@ $configFiles = [
     __DIR__ . '/module.config.community.php',
     __DIR__ . '/module.config.contact.php',
 ];
-
 foreach ($configFiles as $configFile) {
     $config = ArrayUtils::merge($config, include $configFile);
 }

@@ -9,14 +9,11 @@
  */
 namespace ContactTest\Entity;
 
-use Zend\InputFilter\InputFilter;
-
-use Contact\Entity\Contact;
 use Contact\Entity\AddressType;
-
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
-
+use Contact\Entity\Contact;
 use ContactTest\Bootstrap;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use Zend\InputFilter\InputFilter;
 
 class AddressTypeTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,16 +43,13 @@ class AddressTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-
-        $this->contact = $this->entityManager->find("Contact\Entity\Contact", 1);
-
+        $this->serviceManager  = Bootstrap::getServiceManager();
+        $this->entityManager   = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->contact         = $this->entityManager->find("Contact\Entity\Contact", 1);
         $this->addressTypeData = array(
             'type' => 'address type'
         );
-
-        $this->addressType = new AddressType();
+        $this->addressType     = new AddressType();
     }
 
     public function testCanCreateEntity()
@@ -63,11 +57,9 @@ class AddressTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("Contact\Entity\AddressType", $this->addressType);
         $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->addressType);
         $this->assertNull($this->addressType->getId(), 'The "Id" should be null');
-
         $id = 1;
         $this->addressType->setId($id);
         $this->assertEquals($id, $this->addressType->getId(), 'The "Id" should be the same as the setter');
-
         $this->assertTrue(is_array($this->addressType->getArrayCopy()));
         $this->assertTrue(is_array($this->addressType->populate()));
     }
@@ -93,15 +85,13 @@ class AddressTypeTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveEntityInDatabase()
     {
-        $hydrator = new DoctrineObject(
+        $hydrator          = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\AddressType'
         );
-
         $this->addressType = $hydrator->hydrate($this->addressTypeData, new AddressType());
         $this->entityManager->persist($this->addressType);
         $this->entityManager->flush();
-
         $this->assertInstanceOf('Contact\Entity\AddressType', $this->addressType);
         $this->assertNotNull($this->addressType->getId());
         $this->assertEquals($this->addressType->getType(), $this->addressTypeData['type']);

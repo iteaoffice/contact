@@ -22,18 +22,15 @@ class ContactNavigationService extends NavigationServiceAbstract
      */
     public function update()
     {
-
         if (!is_null($this->getRouteMatch()) &&
             strtolower($this->getRouteMatch()->getParam('namespace')) === 'contact'
         ) {
             if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'community') !== false) {
                 //                $this->updateCommunityNavigation();
             }
-
             if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin') !== false) {
                 $this->updateAdminNavigation();
             }
-
             $this->updatePublicNavigation();
         }
     }
@@ -44,9 +41,7 @@ class ContactNavigationService extends NavigationServiceAbstract
     protected function updateAdminNavigation()
     {
         $adminNavigation = $this->getNavigation()->findOneBy('route', 'zfcadmin');
-
         $this->getContactService()->setContactId($this->getRouteMatch()->getParam('id'));
-
         switch ($this->getRouteMatch()->getMatchedRouteName()) {
             case 'zfcadmin/contact-manager/view':
                 $adminNavigation->addPage(
@@ -121,10 +116,8 @@ class ContactNavigationService extends NavigationServiceAbstract
     protected function updatePublicNavigation()
     {
         $publicNavigation = $this->getNavigation();
-
         switch ($this->getRouteMatch()->getMatchedRouteName()) {
             case 'contact/profile':
-
                 $publicNavigation->addPage(
                     array(
                         'label'  => $this->translate("txt-home"),
@@ -139,14 +132,10 @@ class ContactNavigationService extends NavigationServiceAbstract
                                 'router' => $this->getRouter(),
                             )
                         )
-
                     )
                 );
-
                 break;
-
             case 'contact/profile-edit':
-
                 $publicNavigation->addPage(
                     array(
                         'label'  => $this->translate("txt-home"),
@@ -172,9 +161,7 @@ class ContactNavigationService extends NavigationServiceAbstract
                     )
                 );
                 break;
-
             case 'contact/change-password':
-
                 $publicNavigation->addPage(
                     array(
                         'label'  => $this->translate("txt-home"),

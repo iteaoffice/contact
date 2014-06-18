@@ -9,9 +9,9 @@
  */
 namespace Contact\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * AddressTypeSort
@@ -21,10 +21,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AddressTypeSort extends EntityAbstract
 {
-    const ADDRESS_TYPE_MAIL = 1;
-    const ADDRESS_TYPE_VISIT = 2;
+    const ADDRESS_TYPE_MAIL      = 1;
+    const ADDRESS_TYPE_VISIT     = 2;
     const ADDRESS_TYPE_FINANCIAL = 3;
-    const ADDRESS_TYPE_HOME = 4;
+    const ADDRESS_TYPE_HOME      = 4;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id

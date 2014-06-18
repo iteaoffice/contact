@@ -7,7 +7,6 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
  */
-
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 
 return [
@@ -51,11 +50,11 @@ return [
                 ['route' => 'zfcadmin/contact-manager', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'zfcadmin/contact-manager/list', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'zfcadmin/contact-manager/view', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route'     => 'zfcadmin/contact-manager/impersonate',
-                 'roles'     => [],
-                 'assertion' => ContactAssertion::class
+                [
+                    'route'     => 'zfcadmin/contact-manager/impersonate',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class
                 ],
-
             ],
         ],
     ],

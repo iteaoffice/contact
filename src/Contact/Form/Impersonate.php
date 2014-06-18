@@ -31,7 +31,6 @@ class Impersonate extends Form
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
-
         $this->add(
             array(
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
@@ -53,10 +52,8 @@ class Impersonate extends Form
                     'class' => 'form-control',
                     'id'    => "target",
                 )
-
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -72,7 +69,6 @@ class Impersonate extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Submit',

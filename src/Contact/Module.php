@@ -16,7 +16,6 @@ use Zend\ModuleManager\Feature;
 use Zend\Mvc\MvcEvent;
 
 //Makes the module class more strict
-
 /**
  *
  */
@@ -79,7 +78,6 @@ class Module implements
     {
         $app = $e->getParam('application');
         $em  = $app->getEventManager();
-
         $em->attach(
             MvcEvent::EVENT_DISPATCH,
             function (MvcEvent $event) {

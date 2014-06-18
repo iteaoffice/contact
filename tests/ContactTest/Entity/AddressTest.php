@@ -9,14 +9,10 @@
  */
 namespace ContactTest\Entity;
 
-use Zend\InputFilter\InputFilter;
-
-use Contact\Entity\Contact;
 use Contact\Entity\Address;
-
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
-
 use ContactTest\Bootstrap;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use Zend\InputFilter\InputFilter;
 
 class AddressTest extends \PHPUnit_Framework_TestCase
 {
@@ -44,13 +40,10 @@ class AddressTest extends \PHPUnit_Framework_TestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-
-        $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
-        $country = $this->entityManager->find("General\Entity\Country", 1);
-
-        $type = new \Contact\Entity\AddressType();
+        $contact              = $this->entityManager->find("Contact\Entity\Contact", 1);
+        $country              = $this->entityManager->find("General\Entity\Country", 1);
+        $type                 = new \Contact\Entity\AddressType();
         $type->setType('This is the type');
-
         $this->addressData = array(
             'contact' => $contact,
             'country' => $country,
@@ -59,8 +52,7 @@ class AddressTest extends \PHPUnit_Framework_TestCase
             'zipcode' => '1234',
             'city'    => 'This is the City'
         );
-
-        $this->address = new Address();
+        $this->address     = new Address();
     }
 
     public function testCanCreateEntity()
@@ -68,12 +60,9 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("Contact\Entity\Address", $this->address);
         $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->address);
         $this->assertNull($this->address->getId(), 'The "Id" should be null');
-
         $id = 1;
         $this->address->setId($id);
-
         $this->assertEquals($id, $this->address->getId(), 'The "Id" should be the same as the setter');
-
         $this->assertTrue(is_array($this->address->getArrayCopy()));
         $this->assertTrue(is_array($this->address->populate()));
     }
@@ -99,15 +88,13 @@ class AddressTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveEntityInDatabase()
     {
-        $hydrator = new DoctrineObject(
+        $hydrator      = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\Address'
         );
-
         $this->address = $hydrator->hydrate($this->addressData, new Address());
         $this->entityManager->persist($this->address);
         $this->entityManager->flush();
-
         $this->assertInstanceOf('Contact\Entity\Address', $this->address);
         $this->assertNotNull($this->address->getId());
         $this->assertNotNull($this->address->getDateCreated());
@@ -117,7 +104,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->address->getZipcode(), $this->addressData['zipcode']);
         $this->assertEquals($this->address->getCity(), $this->addressData['city']);
         $this->assertEquals($this->address->getCountry()->getId(), $this->addressData['country']->getId());
-
         $this->assertNotNull($this->address->getResourceId());
     }
 }

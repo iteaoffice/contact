@@ -45,11 +45,9 @@ class ContactLink extends LinkAbstract
         $page = null,
         $alternativeShow = null
     ) {
-
         $this->setContact($contact);
         $this->setAction($action);
         $this->setShow($show);
-
         /**
          * If the alternativeShow is not null, use it an otherwise take the page
          */
@@ -58,7 +56,6 @@ class ContactLink extends LinkAbstract
         } else {
             $this->setAlternativeShow($page);
         }
-
         if (!$this->hasAccess(
             $this->getContact(),
             ContactAssertion::class,
@@ -67,7 +64,6 @@ class ContactLink extends LinkAbstract
         ) {
             return 'Access denied';
         }
-
         $this->setShowOptions(
             [
                 'email'     => $this->getContact()->getEmail(),
@@ -75,7 +71,6 @@ class ContactLink extends LinkAbstract
                 'name'      => $this->getContact()->getDisplayName(),
             ]
         );
-
         $this->addRouterParam('page', $page);
         $this->addRouterParam('id', $this->getContact()->getId());
 
@@ -84,7 +79,6 @@ class ContactLink extends LinkAbstract
 
     public function parseAction()
     {
-
         switch ($this->getAction()) {
             case 'new':
                 $this->setRouter('zfcadmin/contact-manager/new');
@@ -133,9 +127,7 @@ class ContactLink extends LinkAbstract
                 } else {
                     $this->setText($this->translate("txt-update-your-password"));
                 }
-
                 break;
-
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }

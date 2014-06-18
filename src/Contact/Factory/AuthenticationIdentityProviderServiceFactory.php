@@ -6,7 +6,6 @@
  * @link    https://github.com/bjyoungblood/BjyAuthorize for the canonical source repository
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
-
 namespace Contact\Factory;
 
 use Contact\Provider\Identity\AuthenticationIdentityProvider;
@@ -28,7 +27,6 @@ class AuthenticationIdentityProviderServiceFactory implements FactoryInterface
         $user                   = $serviceLocator->get('zfcuser_user_service');
         $simpleIdentityProvider = new AuthenticationIdentityProvider($user->getAuthService(), $serviceLocator);
         $config                 = $serviceLocator->get('BjyAuthorize\Config');
-
         $simpleIdentityProvider->setDefaultRole($config['default_role']);
         $simpleIdentityProvider->setAuthenticatedRole($config['authenticated_role']);
 

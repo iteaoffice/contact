@@ -154,6 +154,8 @@ class ContactService extends ServiceAbstract
 
     /**
      * Create the attention of a contact
+     *
+     * @return string
      */
     public function parseAttention()
     {
@@ -162,6 +164,8 @@ class ContactService extends ServiceAbstract
         } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
+
+        return '';
     }
 
     /**
@@ -345,24 +349,19 @@ class ContactService extends ServiceAbstract
         //Create the account
         $contact = new Contact();
         $contact->setEmail($emailAddress);
-
         //Fix the gender
         $contact->setGender($this->getGeneralService()->findEntityById('gender', Gender::GENDER_UNKNOWN));
         $contact->setTitle($this->getGeneralService()->findEntityById('title', Title::TITLE_UNKNOWN));
-
         /**
          * Include all the optIns
          */
         $contact->setOptIn($this->findAll('optIn'));
-
         $contact = $this->newEntity($contact);
-
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
         //Create a deeplink for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
-
-        $email = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
+        $email    = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
         $email->addTo($emailAddress);
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $this->getEmailService()->send($email);
@@ -383,20 +382,16 @@ class ContactService extends ServiceAbstract
     {
         //Create the account
         $contact = $this->findContactByEmail($emailAddress);
-
         if (is_null($contact)) {
             throw new \InvalidArgumentException(
                 sprintf("The contact with emailAddress %s cannot be found", $emailAddress)
             );
         }
-
         $contactService = $this->createServiceElement($contact);
-
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/change-password');
         //Create a deeplink for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
-
         /**
          * Send the email tot he user
          */
@@ -491,20 +486,16 @@ class ContactService extends ServiceAbstract
         if (is_null($this->getContact())) {
             throw new \InvalidArgumentException("The contact cannot be null");
         }
-
         if (!is_array($selections) && !$selections instanceof PersistentCollection) {
             $selections = array($selections);
         }
-
         foreach ($selections as $selection) {
             if (!$selection instanceof Selection) {
                 throw new \InvalidArgumentException("Selection should be instance of Selection");
             }
-
             if (is_null($selection->getId())) {
                 throw new \InvalidArgumentException("The given selection cannot be empty");
             }
-
             if ($this->findContactInSelection($selection)) {
                 return true;
             }
@@ -521,18 +512,15 @@ class ContactService extends ServiceAbstract
      */
     public function findContactInSelection(Selection $selection)
     {
-
         if (is_null($this->getContact())) {
             throw new \InvalidArgumentException("The contact cannot be null");
         }
-
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             return $this->getEntityManager()->getRepository(
                 $this->getFullEntityName('contact')
             )->isContactInSelectionSQL($this->getContact(), $selection->getSql());
         }
-
         /**
          * The selection contains contacts, do an extra query to find the contact
          */
@@ -545,7 +533,6 @@ class ContactService extends ServiceAbstract
                     'selection' => $selection
                 )
             );
-
             /**
              * Return true when we found a contact
              */
@@ -569,7 +556,7 @@ class ContactService extends ServiceAbstract
         }
 
         /**
-         * @todo: Created a workaround for the proxied entites
+         * @todo: Created a workaround for the proxied entities
          */
 
         return $this->getAdminService()->contactHasPermit(
@@ -620,11 +607,9 @@ class ContactService extends ServiceAbstract
     {
         $Bcrypt = new Bcrypt;
         $Bcrypt->setCost($this->getZfcUserOptions()->getPasswordCost());
-
         $pass = $Bcrypt->create(md5($password));
         $contact->setPassword(md5($password));
         $contact->setSaltedPassword($pass);
-
         $this->updateEntity($contact);
 
         return true;
@@ -667,33 +652,30 @@ class ContactService extends ServiceAbstract
      */
     public function updateContactOrganisation(Contact $contact, array $contactOrganisation)
     {
-
         /**
          * Don't do anything when the organisationName = empty
          */
         if (empty($contactOrganisation['organisation'])) {
             return;
         }
-
-        $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
-
+        $country                    = $this->getGeneralService()->findEntityById(
+            'country',
+            (int) $contactOrganisation['country']
+        );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
             $currentContactOrganisation = new ContactOrganisation();
             $currentContactOrganisation->setContact($contact);
         }
-
         /**
          * Look for the organisation based on the name (without branch) and country + email
          */
-        $organisation = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
+        $organisation      = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
             $contactOrganisation['organisation'],
             $country,
             $contact->getEmail()
         );
-
         $organisationFound = false;
-
         /**
          * We did not find an organisation, so we need to create it
          */
@@ -702,7 +684,6 @@ class ContactService extends ServiceAbstract
             $organisation->setOrganisation($contactOrganisation['organisation']);
             $organisation->setCountry($country);
             $organisation->setType($this->organisationService->findEntityById('Type', 0)); //Unknown
-
             /**
              * Add the domain in the saved domains for this new company
              * Use the ZF2 EmailAddress validator to strip the hostname out of the EmailAddress
@@ -714,7 +695,6 @@ class ContactService extends ServiceAbstract
             $organisationWeb->setWeb($validateEmail->hostname);
             $organisationWeb->setMain(Web::MAIN);
             $this->getOrganisationService()->newEntity($organisationWeb);
-
             $currentContactOrganisation->setOrganisation($organisation);
         } else {
             $foundOrganisation = null;
@@ -732,7 +712,6 @@ class ContactService extends ServiceAbstract
                     $currentContactOrganisation->setBranch(null);
                     break;
                 }
-
                 if (!$organisationFound ||
                     strlen($foundOrganisation->getOrganisation()) >
                     (strlen($contactOrganisation['organisation']) - strlen($currentContactOrganisation->getBranch()))
@@ -746,10 +725,8 @@ class ContactService extends ServiceAbstract
                     );
                 }
             }
-
             $currentContactOrganisation->setOrganisation($foundOrganisation);
         }
-
         $this->updateEntity($currentContactOrganisation);
     }
 
@@ -762,17 +739,14 @@ class ContactService extends ServiceAbstract
      */
     public function updateOptInForContact($optInId, $enable, Contact $contact)
     {
-        $optIn = $this->findEntityById('optIn', $optInId);
-
+        $optIn      = $this->findEntityById('optIn', $optInId);
         $collection = new ArrayCollection();
         $collection->add($optIn);
-
         if ($enable) {
             $contact->addOptIn($collection);
         } else {
             $contact->removeOptIn($collection);
         }
-
         $this->updateEntity($contact);
     }
 
@@ -797,49 +771,41 @@ class ContactService extends ServiceAbstract
     {
         $inCompleteness = [];
         $totalWeight    = 0;
-
         $totalWeight += 10;
         if (is_null($this->getContact()->getFirstName())) {
             $inCompleteness['firstName']['message'] = _("txt-first-name-is-missing");
             $inCompleteness['firstName']['weight']  = 10;
         }
-
         $totalWeight += 10;
         if (is_null($this->getContact()->getLastName())) {
             $inCompleteness['lastName']['message'] = _("txt-last-name-is-missing");
             $inCompleteness['lastName']['weight']  = 10;
         }
-
         $totalWeight += 10;
         if (sizeof($this->getContact()->getPhone()) === 0) {
             $inCompleteness['phone']['message'] = _("txt-no-telephone-number-known");
             $inCompleteness['phone']['weight']  = 10;
         }
-
         $totalWeight += 10;
         if (sizeof($this->getContact()->getAddress()) === 0) {
             $inCompleteness['address']['message'] = _("txt-no-address-known");
             $inCompleteness['address']['weight']  = 10;
         }
-
         $totalWeight += 10;
         if (sizeof($this->getContact()->getPhoto()) === 0) {
             $inCompleteness['photo']['message'] = _("txt-no-profile-photo-given");
             $inCompleteness['photo']['weight']  = 10;
         }
-
         $totalWeight += 10;
         if (is_null($this->getContact()->getSaltedPassword())) {
             $inCompleteness['password']['message'] = _("txt-no-password-given");
             $inCompleteness['password']['weight']  = 10;
         }
-
         $totalWeight += 20;
         if (is_null($this->getContact()->getContactOrganisation()) === 0) {
             $inCompleteness['organisation']['message'] = _("txt-no-organisation-known");
             $inCompleteness['organisation']['weight']  = 20;
         }
-
         /**
          * Determine the total weight
          */
@@ -874,24 +840,20 @@ class ContactService extends ServiceAbstract
         if (is_null($projectService->getProject())) {
             throw new \InvalidArgumentException(sprintf("No project selected"));
         }
-
         $contacts = [];
         /**
          * Add the project leader
          */
         $contacts[$projectService->getProject()->getContact()->getId()] = $projectService->getProject()->getContact();
-
         /**
          * Add the contacts form the affiliations and the associates
          */
         foreach ($projectService->getProject()->getAffiliation() as $affiliation) {
             $contacts[$affiliation->getContact()->getId()] = $affiliation->getContact();
-
             foreach ($affiliation->getAssociate() as $associate) {
                 $contacts[$associate->getId()] = $associate;
             }
         }
-
         /**
          * Add the workpackage leaders
          */

@@ -49,24 +49,19 @@ class ContactController extends ContactAbstractController
     public function photoAction()
     {
         $response = $this->getResponse();
-
-        $contact = $this->getContactService()->findContactByHash(
+        $contact  = $this->getContactService()->findContactByHash(
             $this->getEvent()->getRouteMatch()->getParam('contactHash')
         );
-
         $response->getHeaders()
                  ->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
                  ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
                  ->addHeaderLine("Pragma: public");
-
         if (!is_null($contact) && !is_null($contact->getPhoto())) {
             $file = stream_get_contents($contact->getPhoto()->first()->getPhoto());
-
             $response->getHeaders()
                      ->addHeaderLine(
                          'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
                      )->addHeaderLine('Content-Length: ' . (string) strlen($file));
-
             $response->setContent($file);
 
             return $response;
@@ -82,9 +77,8 @@ class ContactController extends ContactAbstractController
      */
     public function searchAction()
     {
-        $searchItem = $this->getRequest()->getQuery()->get('search_item');
-        $maxResults = $this->getRequest()->getQuery()->get('max_rows');
-
+        $searchItem          = $this->getRequest()->getQuery()->get('search_item');
+        $maxResults          = $this->getRequest()->getQuery()->get('max_rows');
         $projectSearchResult = $this->getContactService()->searchContacts($searchItem, $maxResults);
         /**
          * Include a paginator to be able to have later paginated search results in pages
@@ -93,7 +87,6 @@ class ContactController extends ContactAbstractController
         $paginator->setDefaultItemCountPerPage($maxResults);
         $paginator->setCurrentPageNumber(1);
         $paginator->setPageRange(1);
-
         $viewModel = new ViewModel(array('paginator' => $paginator, 'searchItem' => $searchItem));
         $viewModel->setTerminal(true);
         $viewModel->setTemplate('contact/contact-manager/list');
@@ -122,7 +115,6 @@ class ContactController extends ContactAbstractController
     {
         $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
         $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
-
         $this->getContactService()->updateOptInForContact(
             $optInId,
             $enable,
@@ -146,47 +138,35 @@ class ContactController extends ContactAbstractController
         $contactService = $this->getContactService()->setContactId(
             $this->zfcUserAuthentication()->getIdentity()->getId()
         );
-
-        $data = array_merge_recursive(
+        $data           = array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
         );
-
-        $form = new Profile($this->getServiceLocator(), $contactService->getContact());
+        $form           = new Profile($this->getServiceLocator(), $contactService->getContact());
         $form->bind($contactService->getContact());
-
         $form->setData($data);
-
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            $contact = $form->getData();
-
+            $contact  = $form->getData();
             $fileData = $this->params()->fromFiles();
-
             if (!empty($fileData['file']['name'])) {
                 $photo = $contactService->getContact()->getPhoto()->first();
                 if (!$photo) {
                     //Create a photo element
                     $photo = new Photo();
                 }
-
                 $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
                 $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
-
                 $imageSizeValidator = new ImageSize();
                 $imageSizeValidator->isValid($fileData['file']);
-
                 $photo->setWidth($imageSizeValidator->width);
                 $photo->setHeight($imageSizeValidator->height);
-
                 $photo->setContentType(
                     $this->getGeneralService()->findContentTypeByContentTypeName($fileData['file']['type'])
                 );
-
                 $collection = new ArrayCollection();
                 $collection->add($photo);
                 $contact->addPhoto($collection);
             }
-
             /**
              * Remove any unwanted photo's
              */
@@ -197,9 +177,7 @@ class ContactController extends ContactAbstractController
                     $contact->removePhoto($collection);
                 }
             };
-
             $contact = $this->getContactService()->updateEntity($contact);
-
             /**
              * The contact_organisation is different and not a drop-down.
              * we will extract the organisation name from the contact_organisation text-field
@@ -221,14 +199,10 @@ class ContactController extends ContactAbstractController
     {
         $form = $this->getServiceLocator()->get('contact_password_form');
         $form->setInputFilter($this->getServiceLocator()->get('contact_password_form_filter'));
-
         $form->setAttribute('class', 'form-horizontal');
-
         $form->setData($_POST);
-
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
-
             if ($this->getContactService()->updatePasswordForContact(
                 $formData['password'],
                 $this->zfcUserAuthentication()->getIdentity()

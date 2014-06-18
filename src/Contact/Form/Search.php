@@ -24,7 +24,6 @@ class Search extends Form
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-inline');
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -37,7 +36,6 @@ class Search extends Form
                 )
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Submit',

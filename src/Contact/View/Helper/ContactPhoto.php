@@ -32,29 +32,24 @@ class ContactPhoto extends HelperAbstract
      */
     public function __invoke(Contact $contact, $width = 100, $responsive = true)
     {
-
         /**
          * @var $photo Photo
          */
         $photo = $contact->getPhoto()->first();
-
         /**
          * Return an empty photo when there is no, or only a empty object
          */
         if (!$photo || is_null($photo->getId())) {
             return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg" class="img-responsive">';
         }
-
         $classes = [];
         if ($responsive) {
             $classes[] = 'img-responsive';
         }
-
         /**
          * Check if the file is cached and if so, pull it from the assets-folder
          */
         $router = 'contact/photo';
-
         if (file_exists($photo->getCacheFileName())) {
             /**
              * The file exists, but is it not updated?
@@ -70,17 +65,14 @@ class ContactPhoto extends HelperAbstract
                 is_resource($photo->getPhoto()) ? stream_get_contents($photo->getPhoto()) : $photo->getPhoto()
             );
         }
-
         $imageUrl = '<img src="%s?%s" width="%s" id="%s" class="%s">';
-
-        $params = [
+        $params   = [
             'contactHash' => $photo->getContact()->parseHash(),
             'hash'        => $photo->getHash(),
             'ext'         => $photo->getContentType()->getExtension(),
             'id'          => $photo->getContact()->getId()
         ];
-
-        $image = sprintf(
+        $image    = sprintf(
             $imageUrl,
             $this->getUrl($router, $params),
             $photo->getDateUpdated()->getTimestamp(),

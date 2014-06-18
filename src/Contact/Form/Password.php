@@ -9,8 +9,8 @@
  */
 namespace Contact\Form;
 
-use Zend\Form\Form;
 use Zend\Form\Element;
+use Zend\Form\Form;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -29,7 +29,6 @@ class Password extends Form
     public function __construct()
     {
         parent::__construct();
-
         //        $this->add(array(
         //            'name'       => 'currentPassword',
         //            'options'    => array(
@@ -40,7 +39,6 @@ class Password extends Form
         //                'type' => 'password'
         //            ),
         //        ));
-
         $this->add(
             array(
                 'name'       => 'password',
@@ -53,7 +51,6 @@ class Password extends Form
                 ),
             )
         );
-
         $this->add(
             array(
                 'name'       => 'passwordVerify',
@@ -65,7 +62,6 @@ class Password extends Form
                 ),
             )
         );
-
         $submitElement = new Element\Button('submit');
         $submitElement
             ->setLabel(_("txt-submit"))
@@ -74,14 +70,12 @@ class Password extends Form
                     'type' => 'submit',
                 )
             );
-
         $this->add(
             array(
                 'type' => 'Zend\Form\Element\Csrf',
                 'name' => 'csrf'
             )
         );
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Submit',

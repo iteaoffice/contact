@@ -9,13 +9,13 @@
  */
 namespace Contact\Form;
 
-use Zend\Form\Fieldset;
-use Zend\Form\Annotation\AnnotationBuilder;
+use Contact\Entity;
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use DoctrineORMModule\Form\Element\EntitySelect;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
-use Contact\Entity;
+use DoctrineORMModule\Form\Element\EntitySelect;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Fieldset;
 
 class ContactPhotoFieldset extends Fieldset
 {
@@ -26,13 +26,10 @@ class ContactPhotoFieldset extends Fieldset
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-
         $photo            = new Entity\Photo();
         $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Photo');
         $this->setHydrator($doctrineHydrator)->setObject($photo);
-
         $builder = new AnnotationBuilder();
-
         /**
          * Go over the different form elements and add them to the form
          */
@@ -47,13 +44,11 @@ class ContactPhotoFieldset extends Fieldset
                     )
                 );
             }
-
             //Add only when a type is provided
             if (array_key_exists('type', $element->getAttributes())) {
                 $this->add($element);
             }
         }
-
         $this->add(
             array(
                 'type'    => '\Zend\Form\Element\File',

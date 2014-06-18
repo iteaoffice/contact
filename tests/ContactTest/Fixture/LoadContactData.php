@@ -23,10 +23,8 @@ class LoadContactData extends AbstractFixture implements DependentFixtureInterfa
         $contact->setPassword(md5('password'));
         $contact->setMessenger('messenger');
         $contact->setDateOfBirth(new \DateTime());
-
         $contact->setGender($manager->find('General\Entity\Gender', 1));
         $contact->setTitle($manager->find('General\Entity\Title', 1));
-
         $manager->persist($contact);
         $manager->flush();
     }

@@ -9,11 +9,10 @@
  */
 namespace Contact\Form;
 
-use Zend\Form\Fieldset;
+use Contact\Entity;
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use DoctrineORMModule\Form\Element\EntitySelect;
-use Contact\Entity;
+use Zend\Form\Fieldset;
 
 class ContactOrganisationFieldset extends Fieldset
 {
@@ -24,11 +23,9 @@ class ContactOrganisationFieldset extends Fieldset
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-
         $contactOrganisation = new Entity\ContactOrganisation();
         $doctrineHydrator    = new DoctrineHydrator($entityManager, 'Contact\Entity\ContactOrganisation');
         $this->setHydrator($doctrineHydrator)->setObject($contactOrganisation);
-
         $this->add(
             array(
                 'type'       => 'Zend\Form\Element\Text',
@@ -36,10 +33,8 @@ class ContactOrganisationFieldset extends Fieldset
                 'attributes' => array(
                     'label' => _("txt-organisation")
                 )
-
             )
         );
-
         $this->add(
             array(
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
@@ -51,7 +46,6 @@ class ContactOrganisationFieldset extends Fieldset
                 'attributes' => array(
                     'label' => _("txt-country")
                 )
-
             )
         );
     }

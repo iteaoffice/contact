@@ -53,7 +53,6 @@ class AddressService extends ServiceAbstract
         $address = $this->getEntityManager()->getRepository(
             $this->getFullEntityName('address')
         )->findAddressByContactAndType($contact, $type);
-
         if (is_null($address)) {
             return null;
         }

@@ -9,14 +9,14 @@
  */
 namespace Contact\Form;
 
-use Zend\Form\Fieldset;
-use Zend\Form\Annotation\AnnotationBuilder;
+use Contact\Entity;
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use DoctrineORMModule\Form\Element\EntitySelect;
-use Zend\Form\Element\Radio;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
-use Contact\Entity;
+use DoctrineORMModule\Form\Element\EntitySelect;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Radio;
+use Zend\Form\Fieldset;
 
 class ContactAddressFieldset extends Fieldset
 {
@@ -27,13 +27,10 @@ class ContactAddressFieldset extends Fieldset
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-
         $address          = new Entity\Address();
         $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Address');
         $this->setHydrator($doctrineHydrator)->setObject($address);
-
         $builder = new AnnotationBuilder();
-
         /**
          * Go over the different form elements and add them to the form
          */
@@ -48,18 +45,15 @@ class ContactAddressFieldset extends Fieldset
                     )
                 );
             }
-
             if ($element instanceof Radio) {
                 $attributes        = $element->getAttributes();
                 $valueOptionsArray = 'get' . ucfirst($attributes['array']);
-
                 $element->setOptions(
                     array(
                         'value_options' => $object->$valueOptionsArray()
                     )
                 );
             }
-
             //Add only when a type is provided
             if (array_key_exists('type', $element->getAttributes())) {
                 $this->add($element);

@@ -11,9 +11,7 @@ $settings = [
      */
     'community_via_members'               => (DEBRANOVA_HOST === 'artemisia'),
     'community_via_project_participation' => true,
-
 ];
-
 /**
  * You do not need to edit below this line
  */

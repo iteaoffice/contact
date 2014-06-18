@@ -9,14 +9,10 @@
  */
 namespace ContactTest\Entity;
 
-use Zend\InputFilter\InputFilter;
-
-use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
-
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
-
 use ContactTest\Bootstrap;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use Zend\InputFilter\InputFilter;
 
 class OptInTest extends \PHPUnit_Framework_TestCase
 {
@@ -44,27 +40,21 @@ class OptInTest extends \PHPUnit_Framework_TestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-
-        $this->optInData = array(
+        $this->optInData      = array(
             'optIn'       => 'This is an option',
             'description' => 'This is a description'
         );
-
-        $this->optIn = new OptIn();
+        $this->optIn          = new OptIn();
     }
 
     public function testCanCreateEntity()
     {
         $this->assertInstanceOf("Contact\Entity\OptIn", $this->optIn);
         $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->optIn);
-
         $this->assertNull($this->optIn->getId(), 'The "Id" should be null');
-
         $id = 1;
         $this->optIn->setId($id);
-
         $this->assertEquals($id, $this->optIn->getId(), 'The "Id" should be the same as the setter');
-
         $this->assertTrue(is_array($this->optIn->getArrayCopy()));
         $this->assertTrue(is_array($this->optIn->populate()));
     }
@@ -90,16 +80,13 @@ class OptInTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveEntityInDatabase()
     {
-        $hydrator = new DoctrineObject(
+        $hydrator    = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\OptIn'
         );
-
         $this->optIn = $hydrator->hydrate($this->optInData, new OptIn());
-
         $this->entityManager->persist($this->optIn);
         $this->entityManager->flush();
-
         $this->assertInstanceOf('Contact\Entity\OptIn', $this->optIn);
         $this->assertNotNull($this->optIn->getId());
         $this->assertEquals($this->optIn->getOptIn(), $this->optInData['optIn']);
@@ -112,30 +99,24 @@ class OptInTest extends \PHPUnit_Framework_TestCase
         $optIn = new \Contact\Entity\OptIn();
         $optIn->setOptIn(2);
         $optIn->setDescription('This is the description');
-
         $contact->setOptIn(array($optIn));
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
-
         $this->assertEquals(1, sizeof($contact->getOptIn()));
     }
 
     public function testCanAddMultipleOptInToUser()
     {
         $contact = $this->entityManager->find("Contact\Entity\Contact", 1);
-
-        $optIn = new \Contact\Entity\OptIn();
+        $optIn   = new \Contact\Entity\OptIn();
         $optIn->setOptIn(3);
         $optIn->setDescription('This is the description');
-
         $optIn2 = new \Contact\Entity\OptIn();
         $optIn2->setOptIn(4);
         $optIn2->setDescription('This is the description');
-
         $contact->setOptIn(array($optIn, $optIn2));
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
-
         $this->assertEquals(2, sizeof($contact->getOptIn()));
     }
 }

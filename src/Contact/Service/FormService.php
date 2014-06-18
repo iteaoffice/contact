@@ -10,9 +10,9 @@
  */
 namespace Contact\Service;
 
+use Zend\Form;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Form;
 
 class FormService implements ServiceLocatorAwareInterface
 {
@@ -41,19 +41,14 @@ class FormService implements ServiceLocatorAwareInterface
         if (!is_null($className) && is_null($entity)) {
             $entity = $this->getContactService()->getEntity($className);
         }
-
         if (!is_object($entity)) {
             throw new \InvalidArgumentException("No entity created given");
         }
-
-        $formName = 'contact_' . $entity->get('underscore_entity_name') . '_form';
-        $form     = $this->getServiceLocator()->get($formName);
-
+        $formName   = 'contact_' . $entity->get('underscore_entity_name') . '_form';
+        $form       = $this->getServiceLocator()->get($formName);
         $filterName = 'contact_' . $entity->get('underscore_entity_name') . '_form_filter';
         $filter     = $this->getServiceLocator()->get($filterName);
-
         $form->setInputFilter($filter);
-
         if ($bind) {
             $form->bind($entity);
         }

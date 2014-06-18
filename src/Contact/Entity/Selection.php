@@ -9,13 +9,13 @@
  */
 namespace Contact\Entity;
 
+use Doctrine\Common\Collections;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Zend\Form\Annotation;
+use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\Form\Annotation;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Entity for the Selection
@@ -251,7 +251,6 @@ class Selection extends EntityAbstract
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -274,7 +273,6 @@ class Selection extends EntityAbstract
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -287,7 +285,6 @@ class Selection extends EntityAbstract
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -300,7 +297,6 @@ class Selection extends EntityAbstract
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -317,7 +313,6 @@ class Selection extends EntityAbstract
                     )
                 )
             );
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -334,7 +329,6 @@ class Selection extends EntityAbstract
                     )
                 )
             );
-
             $this->inputFilter = $inputFilter;
         }
 
@@ -356,7 +350,6 @@ class Selection extends EntityAbstract
             'note'        => $this->note,
             'personal'    => $this->personal,
             'private'     => $this->private,
-
         );
     }
 

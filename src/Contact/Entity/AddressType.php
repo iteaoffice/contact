@@ -9,12 +9,12 @@
  */
 namespace Contact\Entity;
 
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\Form\Annotation;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Form\Annotation;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * AddressType
@@ -24,10 +24,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AddressType extends EntityAbstract
 {
-    const ADDRESS_TYPE_MAIL = 1;
-    const ADDRESS_TYPE_VISIT = 2;
+    const ADDRESS_TYPE_MAIL      = 1;
+    const ADDRESS_TYPE_VISIT     = 2;
     const ADDRESS_TYPE_FINANCIAL = 3;
-    const ADDRESS_TYPE_HOME = 4;
+    const ADDRESS_TYPE_HOME      = 4;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
@@ -123,7 +123,6 @@ class AddressType extends EntityAbstract
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
-
             $inputFilter->add(
                 $factory->createInput(
                     array(
@@ -146,7 +145,6 @@ class AddressType extends EntityAbstract
                     )
                 )
             );
-
             $this->inputFilter = $inputFilter;
         }
 

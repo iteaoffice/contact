@@ -5,7 +5,6 @@
  * @link    https://github.com/bjyoungblood/BjyAuthorize for the canonical source repository
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
-
 namespace Contact\Provider\Identity;
 
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
@@ -65,16 +64,13 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
         if (!$identity = $this->authService->getIdentity()) {
             return array($this->defaultRole);
         }
-
         if ($identity instanceof RoleInterface) {
             return array($identity);
         }
-
         if ($identity instanceof RoleProviderInterface) {
             $success = false;
             $key     = $this->config['cache_key'] . '-role-list-identity-' . $identity->getId();
             $roles   = $this->cache->getItem($key, $success);
-
             if (!$success) {
                 //Get also the roles assigned via selections
                 $this->contactService->setContact($identity);
@@ -84,9 +80,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
                         $localRoles[] = strtolower($access->getAccess());
                     }
                 };
-
                 $roles = array_merge($localRoles, $identity->getRoles());
-
                 $this->cache->setItem($key, $roles);
             }
 

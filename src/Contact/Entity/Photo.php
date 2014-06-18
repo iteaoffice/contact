@@ -9,12 +9,12 @@
  */
 namespace Contact\Entity;
 
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
 use Zend\InputFilter\FileInput;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Domain
@@ -154,9 +154,7 @@ class Photo extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-
-            $fileUpload = new FileInput('file');
-
+            $fileUpload  = new FileInput('file');
             $fileUpload->setRequired(false);
             $fileUpload->getValidatorChain()->attachByName(
                 'File\Extension',
@@ -179,7 +177,6 @@ class Photo extends EntityAbstract
                     'max' => '4MB',
                 )
             );
-
             $fileUpload->getValidatorChain()->attachByName(
                 'File\ImageSize',
                 array(
@@ -187,9 +184,7 @@ class Photo extends EntityAbstract
                     'minHeight' => 100
                 )
             );
-
             $inputFilter->add($fileUpload);
-
             $this->inputFilter = $inputFilter;
         }
 

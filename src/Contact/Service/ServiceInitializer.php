@@ -36,7 +36,6 @@ class ServiceInitializer implements InitializerInterface
      */
     public function initialize($instance, ServiceLocatorInterface $serviceLocator)
     {
-
         if (!is_object($instance)) {
             return;
         }
@@ -47,13 +46,11 @@ class ServiceInitializer implements InitializerInterface
         if ($instance instanceof ServiceLocatorAwareInterface) {
             $instance->setServiceLocator($serviceLocator);
         }
-
         $arrayCheck = [
             EntityManagerAwareInterface::class  => 'doctrine.entitymanager.orm_default',
             AddressServiceAwareInterface::class => 'contact_address_service',
             ContactServiceAwareInterface::class => 'contact_contact_service',
         ];
-
         /**
          * Go over each interface to see if we should add an interface
          */
