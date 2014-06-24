@@ -37,6 +37,7 @@ class LoadContactData extends AbstractFixture implements DependentFixtureInterfa
     public function getDependencies()
     {
         return array(
+            'GeneralTest\Fixture\LoadCountryData',
             'GeneralTest\Fixture\LoadGenderData',
             'GeneralTest\Fixture\LoadTitleData'
         ); //

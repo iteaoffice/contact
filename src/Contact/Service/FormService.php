@@ -61,7 +61,7 @@ class FormService implements ServiceLocatorAwareInterface
      * @param null $entity
      * @param      $data
      *
-     * @return array|object
+     * @return Form
      */
     public function prepare($className, $entity = null, $data = [])
     {
@@ -87,7 +87,7 @@ class FormService implements ServiceLocatorAwareInterface
     public function getContactService()
     {
         if (null === $this->contactService) {
-            $this->contactService = $this->getServiceLocator()->get('contact_generic_service');
+            $this->contactService = $this->getServiceLocator()->get('contact_contact_service');
         }
 
         return $this->contactService;

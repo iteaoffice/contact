@@ -131,6 +131,7 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         );
         $this->contact = $hydrator->hydrate($this->contactData, new Contact());
         $this->entityManager->persist($this->contact);
+        $this->entityManager->flush();
         $this->assertInstanceOf('Contact\Entity\Contact', $this->contact);
         $this->assertNotNull($this->contact->getId());
         $this->assertSame($this->contactData['firstName'], $this->contact->getFirstName());
@@ -142,7 +143,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
             $this->contactData['email'],
             $this->contact->getUsername()
         ); //We use the email address as username
-        $this->assertSame($this->contactData['state'], $this->contact->getState());
         $this->assertSame($this->contactData['gender']->getName(), $this->contact->getGender()->getName());
         $this->assertSame($this->contactData['gender']->getId(), $this->contact->getGender()->getId());
         $this->assertSame($this->contactData['title']->getName(), $this->contact->getTitle()->getName());

@@ -7,6 +7,7 @@
  */
 namespace Contact\Provider\Identity;
 
+use Admin\Service\AdminService;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
 use Contact\Service\ContactService;
@@ -31,7 +32,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      */
     protected $contactService;
     /**
-     * @var ContactService;
+     * @var AdminService;
      */
     protected $adminService;
     /**
@@ -51,7 +52,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     {
         parent::__construct($authService);
         $this->contactService = $serviceLocator->get('contact_contact_service');
-        $this->adminService   = $serviceLocator->get('admin_admin_service');
+        $this->adminService   = $serviceLocator->get(AdminService::class);
         $this->cache          = $serviceLocator->get('contact_cache');
         $this->config         = $serviceLocator->get('contact_module_config');
     }
@@ -69,7 +70,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
         }
         if ($identity instanceof RoleProviderInterface) {
             $success = false;
-            $key     = $this->config['cache_key'] . '-role-list-identity-' . $identity->getId();
+            $key     = sprintf("%s-role-list-identity-%s", $this->config['cache_key'], $identity->getId());
             $roles   = $this->cache->getItem($key, $success);
             if (!$success) {
                 //Get also the roles assigned via selections

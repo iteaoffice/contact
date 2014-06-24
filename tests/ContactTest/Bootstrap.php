@@ -2,9 +2,12 @@
 
 namespace ContactTest;
 
+use ContactTest\Fixture\LoadContactData;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\Tools\SchemaValidator;
 use RuntimeException;
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
@@ -37,38 +40,32 @@ class Bootstrap
         $serviceManager = new ServiceManager(new ServiceManagerConfig());
         $serviceManager->setService('ApplicationConfig', $config);
         $serviceManager->get('ModuleManager')->loadModules();
-        static::$serviceManager = $serviceManager;
-        $entityManager          = $serviceManager->get('doctrine.entitymanager.orm_default');
-//        //Validate the schema;
-//        $validator = new SchemaValidator($entityManager);
-//        $errors    = $validator->validateMapping();
-//
-//        if (count($errors) > 0) {
-//            foreach ($errors AS $entity => $errors) {
-//                echo "Error in Entity: '" . $entity . "':\n";
-//                echo implode("\n", $errors);
-//                echo "\n";
-//            }
-//            die();
-//        }
-        //Create the schema
-        $tool      = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
-        $mdFactory = $entityManager->getMetadataFactory();
-        $mdFactory->getAllMetadata();
-        $tool->dropDatabase();
-        $tool->createSchema($mdFactory->getAllMetadata());
-        $loader = new Loader();
-//        $loader->addFixture(new \ProjectTest\Fixture\LoadVersionData());
-//        $loader->addFixture(new \ProgramTest\Fixture\LoadDomainData());
-        $loader->addFixture(new \GeneralTest\Fixture\LoadGenderData());
-        $loader->addFixture(new \GeneralTest\Fixture\LoadTitleData());
-        $loader->addFixture(new \ContactTest\Fixture\LoadContactData());
-//        $loader->addFixture(new \ProjectTest\Fixture\LoadProjectLogoData());
-//        $loader->addFixture(new \ProjectTest\Fixture\LoadDocumentTypeData());
-//
-        $purger   = new ORMPurger();
-        $executor = new ORMExecutor($entityManager, $purger);
-        $executor->execute($loader->getFixtures());
+        if (defined("TEST_SUITE") && constant("TEST_SUITE") == 'full') {
+            static::$serviceManager = $serviceManager;
+            $entityManager          = $serviceManager->get('doctrine.entitymanager.orm_default');
+            //Validate the schema;
+            $validator = new SchemaValidator($entityManager);
+            $errors    = $validator->validateMapping();
+            if (count($errors) > 0) {
+                foreach ($errors AS $entity => $errors) {
+                    echo "Error in Entity: '" . $entity . "':\n";
+                    echo implode("\n", $errors);
+                    echo "\n";
+                }
+                die();
+            }
+            //Create the schema
+            $tool      = new SchemaTool($entityManager);
+            $mdFactory = $entityManager->getMetadataFactory();
+            $mdFactory->getAllMetadata();
+            $tool->dropDatabase();
+            $tool->createSchema($mdFactory->getAllMetadata());
+            $loader = new Loader();
+            $loader->addFixture(new LoadContactData());
+            $purger   = new ORMPurger();
+            $executor = new ORMExecutor($entityManager, $purger);
+            $executor->execute($loader->getFixtures());
+        }
     }
 
     public static function getServiceManager()

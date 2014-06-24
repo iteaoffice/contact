@@ -187,13 +187,13 @@ class Contact extends EntityAbstract implements
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
      * @Annotation\Options({"target_class":"Admin\Entity\Access"})
      * @Annotation\Attributes({"label":"txt-access"})
-     * @var \Admin\Entity\Access[]
+     * @var \Admin\Entity\Access|Collections\ArrayCollection()
      */
     private $access;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Email", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\Email[]
+     * @var \Contact\Entity\Email|Collections\ArrayCollection()
      */
     private $emailAddress;
     /**
@@ -205,19 +205,19 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @@Annotation\ComposedObject("\Contact\Entity\Address")
-     * @var \Contact\Entity\Address[]
+     * @var \Contact\Entity\Address|Collections\ArrayCollection()
      */
     private $address;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\ComposedObject("\Contact\Entity\Phone")
-     * @var \Contact\Entity\Phone[]
+     * @var \Contact\Entity\Phone|Collections\ArrayCollection()
      */
     private $phone;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Web", cascade={"persist"}, mappedBy="contact")
      * Annotation\ComposedObject("\Contact\Entity\Web")
-     * @var \Contact\Entity\Web[]
+     * @var \Contact\Entity\Web|Collections\ArrayCollection()
      */
     private $web;
     /**
@@ -227,55 +227,61 @@ class Contact extends EntityAbstract implements
      *    inverseJoinColumns={@ORM\JoinColumn(name="optin_id", referencedColumnName="optin_id")}
      * )
      * @Annotation\Exclude()
-     * @var \Contact\Entity\OptIn[]
+     * @var \Contact\Entity\OptIn|Collections\ArrayCollection()
      */
     private $optIn;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Project[]
+     * @var \Project\Entity\Project|Collections\ArrayCollection()
      */
     private $project;
     /**
      * @ORM\ManyToMany(targetEntity="\Project\Entity\Description\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Description\Description[]
+     * @var \Project\Entity\Description\Description|Collections\ArrayCollection()
      */
     private $projectDescription;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Version\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Version\Version[]
+     * @var \Project\Entity\Version\Version|Collections\ArrayCollection()
      */
     private $projectVersion;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Document\Document[]
+     * @var \Project\Entity\Document\Document|Collections\ArrayCollection()
      */
     private $projectDocument;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Dnd", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Project[]
+     * @var \Program\Entity\Dnd|Collections\ArrayCollection()
      */
     private $dnd;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Project[]
+     * @var \Program\Entity\Nda|Collections\ArrayCollection()
      */
     private $nda;
     /**
+     * @ORM\OneToMany(targetEntity="\Program\Entity\RoadmapLog", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Program\Entity\RoadmapLog|Collections\ArrayCollection()
+     */
+    private $roadmapLog;
+    /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Program\Entity\Doa[]
+     * @var \Program\Entity\Doa|Collections\ArrayCollection()
      */
     private $programDoa;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\OpenId", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\OpenId[]
+     * @var \Contact\Entity\OpenId|Collections\ArrayCollection()
      */
     private $openId;
     /**
@@ -292,19 +298,19 @@ class Contact extends EntityAbstract implements
      *    inverseJoinColumns={@ORM\JoinColumn(name="domain_id", referencedColumnName="domain_id")}
      * )
      * @Annotation\Exclude()
-     * @var \Program\Entity\Domain[]
+     * @var \Program\Entity\Domain|Collections\ArrayCollection()
      */
     private $domain;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Idea[]
+     * @var \Project\Entity\Idea\Idea|Collections\ArrayCollection()
      */
     private $idea;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="favourite")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Idea[]
+     * @var \Project\Entity\Idea\Idea|Collections\ArrayCollection()
      */
     private $favouriteIdea;
     /**
@@ -314,73 +320,73 @@ class Contact extends EntityAbstract implements
      *    inverseJoinColumns={@ORM\JoinColumn(name="technology_id", referencedColumnName="technology_id")}
      * )
      * @Annotation\Exclude()
-     * @var \Program\Entity\Technology[]
+     * @var \Program\Entity\Technology|Collections\ArrayCollection()
      */
     private $technology;
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Organisation\Entity\Log[]
+     * @var \Organisation\Entity\Log|Collections\ArrayCollection()
      */
     private $organisationLog;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Affiliation[]
+     * @var \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
      */
     private $affiliation;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Log[]
+     * @var \Affiliation\Entity\Log|Collections\ArrayCollection()
      */
     private $affiliationLog;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Financial[]
+     * @var \Affiliation\Entity\Financial|Collections\ArrayCollection()
      */
     private $financial;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Description[]
+     * @var \Affiliation\Entity\Description|Collections\ArrayCollection()
      */
     private $affiliationDescription;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Version[]
+     * @var \Affiliation\Entity\Version|Collections\ArrayCollection()
      */
     private $affiliationVersion;
     /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Invoice", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Invoice\Entity\Invoice[]
+     * @var \Invoice\Entity\Invoice|Collections\ArrayCollection()
      */
     private $invoice;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Publication", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Publication\Entity\Publication[]
+     * @var \Publication\Entity\Publication|Collections\ArrayCollection()
      */
     private $publication;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Download", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Publication\Entity\Download[]
+     * @var \Publication\Entity\Download|Collections\ArrayCollection()
      */
     private $publicationDownload;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Photo", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\Photo[]
+     * @var \Contact\Entity\Photo|Collections\ArrayCollection()
      */
     private $photo;
     /**
      * @ORM\ManyToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="associate")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Affiliation[]
+     * @var \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
      */
     private $associate;
     /**
@@ -392,7 +398,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="Deeplink\Entity\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Deeplink\Entity\Contact[]
+     * @var \Deeplink\Entity\Contact|Collections\ArrayCollection()
      */
     private $deeplinkContact;
     /**
@@ -404,175 +410,175 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
-     * @var \Contact\Entity\Community[]
+     * @var \Contact\Entity\Community|Collections\ArrayCollection()
      */
     private $community;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Registration", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Registration[]
+     * @var \Event\Entity\Registration|Collections\ArrayCollection()
      */
     private $registration;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Badge\Badge", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Badge\Badge[]
+     * @var \Event\Entity\Badge\Badge|Collections\ArrayCollection()
      */
     private $badge;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Badge\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Badge\Contact[]
+     * @var \Event\Entity\Badge\Contact|Collections\ArrayCollection()
      */
     private $badgeContact;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Booth", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Booth\Booth[]
+     * @var \Event\Entity\Booth\Booth|Collections\ArrayCollection()
      */
     private $booth;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Booth\Financial[]
+     * @var \Event\Entity\Booth\Financial|Collections\ArrayCollection()
      */
     private $boothFinancial;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Note", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\Note[]
+     * @var \Contact\Entity\Note|Collections\ArrayCollection()
      */
     private $note;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Selection", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\Selection[]
+     * @var \Contact\Entity\Selection|Collections\ArrayCollection()
      */
     private $selection;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\SelectionContact[]
+     * @var \Contact\Entity\SelectionContact|Collections\ArrayCollection()
      */
     private $selectionContact;
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Mailing\Entity\Contact[]
+     * @var \Mailing\Entity\Contact|Collections\ArrayCollection()
      */
     private $mailingContact;
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Mailing\Entity\Mailing[]
+     * @var \Mailing\Entity\Mailing|Collections\ArrayCollection()
      */
     private $mailing;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Result\Result[]
+     * @var \Project\Entity\Result\Result|Collections\ArrayCollection()
      */
     private $result;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="resultContact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Result\Result[]
+     * @var \Project\Entity\Result\Result|Collections\ArrayCollection()
      */
     private $resultContact;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Workpackage", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Workpackage\Workpackage[]
+     * @var \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection()
      */
     private $workpackage;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Workpackage\Document[]
+     * @var \Project\Entity\Workpackage\Document|Collections\ArrayCollection()
      */
     private $workpackageDocument;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Message", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Message[]
+     * @var \Project\Entity\Idea\Message|Collections\ArrayCollection()
      */
     private $ideaMessage;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Evaluation\Evaluation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Evaluation\Evaluation[]
+     * @var \Project\Entity\Evaluation\Evaluation|Collections\ArrayCollection()
      */
     private $evaluation;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Calendar", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Calendar\Entity\Calendar[]
+     * @var \Calendar\Entity\Calendar|Collections\ArrayCollection()
      */
     private $calendar;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Calendar\Entity\Contact[]
+     * @var \Calendar\Entity\Contact|Collections\ArrayCollection()
      */
     private $calendarContact;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Calendar\Entity\Document[]
+     * @var \Calendar\Entity\Document|Collections\ArrayCollection()
      */
     private $calendarDocument;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\ScheduleContact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Calendar\Entity\ScheduleContact[]
+     * @var \Calendar\Entity\ScheduleContact|Collections\ArrayCollection()
      */
     private $scheduleContact;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Review\Review[]
+     * @var \Project\Entity\Review\Review|Collections\ArrayCollection()
      */
     private $projectReview;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\VersionReview", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Review\VersionReview[]
+     * @var \Project\Entity\Review\VersionReview|Collections\ArrayCollection()
      */
     private $projectVersionReview;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Report\Report", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Report\Report[]
+     * @var \Project\Entity\Report\Report|Collections\ArrayCollection()
      */
     private $projectReport;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Calendar\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Calendar\Review[]
+     * @var \Project\Entity\Calendar\Review|Collections\ArrayCollection()
      */
     private $projectCalendarReview;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Invite[]
+     * @var \Project\Entity\Invite|Collections\ArrayCollection()
      */
     private $invite;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Invite[]
+     * @var \Project\Entity\Invite|Collections\ArrayCollection()
      */
     private $inviteContact;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Loi[]
+     * @var \Affiliation\Entity\Loi|Collections\ArrayCollection()
      */
     private $loi;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Doa[]
+     * @var \Affiliation\Entity\Doa|Collections\ArrayCollection()
      */
     private $affiliationDoa;
     /**
@@ -593,6 +599,7 @@ class Contact extends EntityAbstract implements
         $this->projectDocument        = new Collections\ArrayCollection();
         $this->web                    = new Collections\ArrayCollection();
         $this->role                   = new Collections\ArrayCollection();
+        $this->roadmapLog             = new Collections\ArrayCollection();
         $this->address                = new Collections\ArrayCollection();
         $this->phone                  = new Collections\ArrayCollection();
         $this->emailAddress           = new Collections\ArrayCollection();
@@ -1429,7 +1436,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Address[] $address
+     * @param \Contact\Entity\Address|Collections\ArrayCollection() $address
      */
     public function setAddress($address)
     {
@@ -1437,7 +1444,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Address[]
+     * @return \Contact\Entity\Address|Collections\ArrayCollection()
      */
     public function getAddress()
     {
@@ -1461,7 +1468,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Phone[] $phone
+     * @param \Contact\Entity\Phone|Collections\ArrayCollection() $phone
      */
     public function setPhone($phone)
     {
@@ -1469,7 +1476,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Phone[]
+     * @return \Contact\Entity\Phone|Collections\ArrayCollection()
      */
     public function getPhone()
     {
@@ -1477,7 +1484,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Web[] $web
+     * @param \Contact\Entity\Web|Collections\ArrayCollection() $web
      */
     public function setWeb($web)
     {
@@ -1485,7 +1492,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Web[]
+     * @return \Contact\Entity\Web|Collections\ArrayCollection()
      */
     public function getWeb()
     {
@@ -1509,7 +1516,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Email[] $emailAddress
+     * @param \Contact\Entity\Email|Collections\ArrayCollection() $emailAddress
      */
     public function setEmailAddress($emailAddress)
     {
@@ -1517,7 +1524,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Email[]
+     * @return \Contact\Entity\Email|Collections\ArrayCollection()
      */
     public function getEmailAddress()
     {
@@ -1525,7 +1532,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\OptIn[] $optIn
+     * @param \Contact\Entity\OptIn|Collections\ArrayCollection() $optIn
      */
     public function setOptIn($optIn)
     {
@@ -1533,7 +1540,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\OptIn[]
+     * @return \Contact\Entity\OptIn|Collections\ArrayCollection()
      */
     public function getOptIn()
     {
@@ -1541,7 +1548,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Admin\Entity\Access[] $access
+     * @param \Admin\Entity\Access|Collections\ArrayCollection() $access
      */
     public function setAccess($access)
     {
@@ -1549,7 +1556,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Admin\Entity\Access[]
+     * @return \Admin\Entity\Access|Collections\ArrayCollection()
      */
     public function getAccess()
     {
@@ -1557,7 +1564,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Project[] $dnd
+     * @param \Project\Entity\Project|Collections\ArrayCollection() $dnd
      */
     public function setDnd($dnd)
     {
@@ -1565,7 +1572,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Project[]
+     * @return \Project\Entity\Project|Collections\ArrayCollection()
      */
     public function getDnd()
     {
@@ -1573,7 +1580,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Program\Entity\Nda[] $nda
+     * @param \Program\Entity\Nda|Collections\ArrayCollection() $nda
      */
     public function setNda($nda)
     {
@@ -1581,7 +1588,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Program\Entity\Nda[]
+     * @return \Program\Entity\Nda|Collections\ArrayCollection()
      */
     public function getNda()
     {
@@ -1589,7 +1596,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Program\Entity\Doa[] $programDoa
+     * @param \Program\Entity\Doa|Collections\ArrayCollection() $programDoa
      */
     public function setProgramDoa($programDoa)
     {
@@ -1597,7 +1604,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Program\Entity\Doa[]
+     * @return \Program\Entity\Doa|Collections\ArrayCollection()
      */
     public function getProgramDoa()
     {
@@ -1605,7 +1612,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Version\Version[] $projectVersion
+     * @param \Project\Entity\Version\Version|Collections\ArrayCollection() $projectVersion
      */
     public function setProjectVersion($projectVersion)
     {
@@ -1613,7 +1620,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Version\Version[]
+     * @return \Project\Entity\Version\Version|Collections\ArrayCollection()
      */
     public function getProjectVersion()
     {
@@ -1621,7 +1628,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Program\Entity\Domain[] $domain
+     * @param \Program\Entity\Domain|Collections\ArrayCollection() $domain
      */
     public function setDomain($domain)
     {
@@ -1629,7 +1636,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Program\Entity\Domain[]
+     * @return \Program\Entity\Domain|Collections\ArrayCollection()
      */
     public function getDomain()
     {
@@ -1637,7 +1644,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Log[] $affiliationLog
+     * @param \Affiliation\Entity\Log|Collections\ArrayCollection() $affiliationLog
      */
     public function setAffiliationLog($affiliationLog)
     {
@@ -1645,7 +1652,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Log[]
+     * @return \Affiliation\Entity\Log|Collections\ArrayCollection()
      */
     public function getAffiliationLog()
     {
@@ -1669,7 +1676,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Financial[] $financial
+     * @param \Affiliation\Entity\Financial|Collections\ArrayCollection() $financial
      */
     public function setFinancial($financial)
     {
@@ -1677,7 +1684,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Financial[]
+     * @return \Affiliation\Entity\Financial|Collections\ArrayCollection()
      */
     public function getFinancial()
     {
@@ -1685,7 +1692,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Organisation\Entity\Log[] $organisationLog
+     * @param \Organisation\Entity\Log|Collections\ArrayCollection() $organisationLog
      */
     public function setOrganisationLog($organisationLog)
     {
@@ -1693,7 +1700,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Organisation\Entity\Log[]
+     * @return \Organisation\Entity\Log|Collections\ArrayCollection()
      */
     public function getOrganisationLog()
     {
@@ -1701,7 +1708,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Program\Entity\Technology[] $technology
+     * @param \Program\Entity\Technology|Collections\ArrayCollection() $technology
      */
     public function setTechnology($technology)
     {
@@ -1709,7 +1716,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Program\Entity\Technology[]
+     * @return \Program\Entity\Technology|Collections\ArrayCollection()
      */
     public function getTechnology()
     {
@@ -1717,7 +1724,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\OpenId[] $openId
+     * @param \Contact\Entity\OpenId|Collections\ArrayCollection() $openId
      */
     public function setOpenId($openId)
     {
@@ -1725,7 +1732,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\OpenId[]
+     * @return \Contact\Entity\OpenId|Collections\ArrayCollection()
      */
     public function getOpenId()
     {
@@ -1733,7 +1740,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Affiliation[] $affiliation
+     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection() $affiliation
      */
     public function setAffiliation($affiliation)
     {
@@ -1741,7 +1748,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Affiliation[]
+     * @return \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
      */
     public function getAffiliation()
     {
@@ -1749,7 +1756,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Description[] $affiliationDescription
+     * @param \Affiliation\Entity\Description|Collections\ArrayCollection() $affiliationDescription
      */
     public function setAffiliationDescription($affiliationDescription)
     {
@@ -1757,7 +1764,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Description[]
+     * @return \Affiliation\Entity\Description|Collections\ArrayCollection()
      */
     public function getAffiliationDescription()
     {
@@ -1765,7 +1772,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Version[] $affiliationVersion
+     * @param \Affiliation\Entity\Version|Collections\ArrayCollection() $affiliationVersion
      */
     public function setAffiliationVersion($affiliationVersion)
     {
@@ -1773,7 +1780,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Version[]
+     * @return \Affiliation\Entity\Version|Collections\ArrayCollection()
      */
     public function getAffiliationVersion()
     {
@@ -1781,7 +1788,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Invoice\Entity\Invoice[] $invoice
+     * @param \Invoice\Entity\Invoice|Collections\ArrayCollection() $invoice
      */
     public function setInvoice($invoice)
     {
@@ -1789,7 +1796,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Invoice\Entity\Invoice[]
+     * @return \Invoice\Entity\Invoice|Collections\ArrayCollection()
      */
     public function getInvoice()
     {
@@ -1797,7 +1804,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Publication\Entity\Publication[] $publication
+     * @param \Publication\Entity\Publication|Collections\ArrayCollection() $publication
      */
     public function setPublication($publication)
     {
@@ -1805,7 +1812,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Publication\Entity\Publication[]
+     * @return \Publication\Entity\Publication|Collections\ArrayCollection()
      */
     public function getPublication()
     {
@@ -1813,7 +1820,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Publication\Entity\Download[] $publicationDownload
+     * @param \Publication\Entity\Download|Collections\ArrayCollection() $publicationDownload
      */
     public function setPublicationDownload($publicationDownload)
     {
@@ -1821,7 +1828,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Publication\Entity\Download[]
+     * @return \Publication\Entity\Download|Collections\ArrayCollection()
      */
     public function getPublicationDownload()
     {
@@ -1848,7 +1855,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Affiliation[] $associate
+     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection() $associate
      */
     public function setAssociate($associate)
     {
@@ -1856,7 +1863,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Affiliation[]
+     * @return \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
      */
     public function getAssociate()
     {
@@ -1880,7 +1887,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Admin\Entity\Role[] $role
+     * @param \Admin\Entity\Role|Collections\ArrayCollection() $role
      */
     public function setRole($role)
     {
@@ -1888,7 +1895,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Admin\Entity\Role[]
+     * @return \Admin\Entity\Role|Collections\ArrayCollection()
      */
     public function getRole()
     {
@@ -1896,7 +1903,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Deeplink\Entity\Contact[] $deeplinkContact
+     * @param \Deeplink\Entity\Contact|Collections\ArrayCollection() $deeplinkContact
      */
     public function setDeeplinkContact($deeplinkContact)
     {
@@ -1904,7 +1911,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Deeplink\Entity\Contact[]
+     * @return \Deeplink\Entity\Contact|Collections\ArrayCollection()
      */
     public function getDeeplinkContact()
     {
@@ -1928,7 +1935,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Community[] $community
+     * @param \Contact\Entity\Community|Collections\ArrayCollection() $community
      */
     public function setCommunity($community)
     {
@@ -1936,7 +1943,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Community[]
+     * @return \Contact\Entity\Community|Collections\ArrayCollection()
      */
     public function getCommunity()
     {
@@ -1944,7 +1951,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Event\Entity\Registration[] $registration
+     * @param \Event\Entity\Registration|Collections\ArrayCollection() $registration
      */
     public function setRegistration($registration)
     {
@@ -1952,7 +1959,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Event\Entity\Registration[]
+     * @return \Event\Entity\Registration|Collections\ArrayCollection()
      */
     public function getRegistration()
     {
@@ -1960,7 +1967,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Event\Entity\Badge\Badge[] $badge
+     * @param \Event\Entity\Badge\Badge|Collections\ArrayCollection() $badge
      */
     public function setBadge($badge)
     {
@@ -1968,7 +1975,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Event\Entity\Badge\Badge[]
+     * @return \Event\Entity\Badge\Badge|Collections\ArrayCollection()
      */
     public function getBadge()
     {
@@ -1976,7 +1983,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Event\Entity\Badge\Contact[] $badgeContact
+     * @param \Event\Entity\Badge\Contact|Collections\ArrayCollection() $badgeContact
      */
     public function setBadgeContact($badgeContact)
     {
@@ -1984,7 +1991,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Event\Entity\Badge\Contact[]
+     * @return \Event\Entity\Badge\Contact|Collections\ArrayCollection()
      */
     public function getBadgeContact()
     {
@@ -1992,7 +1999,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Event\Entity\Booth\Booth[] $booth
+     * @param \Event\Entity\Booth\Booth|Collections\ArrayCollection() $booth
      */
     public function setBooth($booth)
     {
@@ -2000,7 +2007,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Event\Entity\Booth\Booth[]
+     * @return \Event\Entity\Booth\Booth|Collections\ArrayCollection()
      */
     public function getBooth()
     {
@@ -2008,7 +2015,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Event\Entity\Booth\Financial[] $boothFinancial
+     * @param \Event\Entity\Booth\Financial|Collections\ArrayCollection() $boothFinancial
      */
     public function setBoothFinancial($boothFinancial)
     {
@@ -2016,7 +2023,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Event\Entity\Booth\Financial[]
+     * @return \Event\Entity\Booth\Financial|Collections\ArrayCollection()
      */
     public function getBoothFinancial()
     {
@@ -2024,7 +2031,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Note[] $note
+     * @param \Contact\Entity\Note|Collections\ArrayCollection() $note
      */
     public function setNote($note)
     {
@@ -2032,7 +2039,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Note[]
+     * @return \Contact\Entity\Note|Collections\ArrayCollection()
      */
     public function getNote()
     {
@@ -2040,7 +2047,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\SelectionContact[] $selectionContact
+     * @param \Contact\Entity\SelectionContact|Collections\ArrayCollection() $selectionContact
      */
     public function setSelectionContact($selectionContact)
     {
@@ -2048,7 +2055,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\SelectionContact[]
+     * @return \Contact\Entity\SelectionContact|Collections\ArrayCollection()
      */
     public function getSelectionContact()
     {
@@ -2056,7 +2063,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Selection[] $selection
+     * @param \Contact\Entity\Selection|Collections\ArrayCollection() $selection
      */
     public function setSelection($selection)
     {
@@ -2064,7 +2071,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Selection[]
+     * @return \Contact\Entity\Selection|Collections\ArrayCollection()
      */
     public function getSelection()
     {
@@ -2072,7 +2079,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Mailing\Entity\Contact[] $mailingContact
+     * @param \Mailing\Entity\Contact|Collections\ArrayCollection() $mailingContact
      */
     public function setMailingContact($mailingContact)
     {
@@ -2080,7 +2087,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Mailing\Entity\Contact[]
+     * @return \Mailing\Entity\Contact|Collections\ArrayCollection()
      */
     public function getMailingContact()
     {
@@ -2088,7 +2095,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Mailing\Entity\Mailing[] $mailing
+     * @param \Mailing\Entity\Mailing|Collections\ArrayCollection() $mailing
      */
     public function setMailing($mailing)
     {
@@ -2096,7 +2103,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Mailing\Entity\Mailing[]
+     * @return \Mailing\Entity\Mailing|Collections\ArrayCollection()
      */
     public function getMailing()
     {
@@ -2104,7 +2111,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Result\Result[] $result
+     * @param \Project\Entity\Result\Result|Collections\ArrayCollection() $result
      */
     public function setResult($result)
     {
@@ -2112,7 +2119,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Result\Result[]
+     * @return \Project\Entity\Result\Result|Collections\ArrayCollection()
      */
     public function getResult()
     {
@@ -2120,7 +2127,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Result\Result[] $resultContact
+     * @param \Project\Entity\Result\Result|Collections\ArrayCollection() $resultContact
      */
     public function setResultContact($resultContact)
     {
@@ -2128,7 +2135,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Result\Result[]
+     * @return \Project\Entity\Result\Result|Collections\ArrayCollection()
      */
     public function getResultContact()
     {
@@ -2136,7 +2143,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Workpackage\Workpackage[] $workpackage
+     * @param \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection() $workpackage
      */
     public function setWorkpackage($workpackage)
     {
@@ -2144,7 +2151,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Workpackage\Workpackage[]
+     * @return \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection()
      */
     public function getWorkpackage()
     {
@@ -2152,7 +2159,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Workpackage\Document[] $workpackageDocument
+     * @param \Project\Entity\Workpackage\Document|Collections\ArrayCollection() $workpackageDocument
      */
     public function setWorkpackageDocument($workpackageDocument)
     {
@@ -2160,7 +2167,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Workpackage\Document[]
+     * @return \Project\Entity\Workpackage\Document|Collections\ArrayCollection()
      */
     public function getWorkpackageDocument()
     {
@@ -2168,7 +2175,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Idea\Idea[] $idea
+     * @param \Project\Entity\Idea\Idea|Collections\ArrayCollection() $idea
      */
     public function setIdea($idea)
     {
@@ -2176,7 +2183,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Idea\Idea[]
+     * @return \Project\Entity\Idea\Idea|Collections\ArrayCollection()
      */
     public function getIdea()
     {
@@ -2184,7 +2191,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Idea\Idea[] $favouriteIdea
+     * @param \Project\Entity\Idea\Idea|Collections\ArrayCollection() $favouriteIdea
      */
     public function setFavouriteIdea($favouriteIdea)
     {
@@ -2192,7 +2199,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Idea\Idea[]
+     * @return \Project\Entity\Idea\Idea|Collections\ArrayCollection()
      */
     public function getFavouriteIdea()
     {
@@ -2200,7 +2207,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Idea\Message[] $ideaMessage
+     * @param \Project\Entity\Idea\Message|Collections\ArrayCollection() $ideaMessage
      */
     public function setIdeaMessage($ideaMessage)
     {
@@ -2208,7 +2215,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Idea\Message[]
+     * @return \Project\Entity\Idea\Message|Collections\ArrayCollection()
      */
     public function getIdeaMessage()
     {
@@ -2216,7 +2223,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Description\Description[] $projectDescription
+     * @param \Project\Entity\Description\Description|Collections\ArrayCollection() $projectDescription
      */
     public function setProjectDescription($projectDescription)
     {
@@ -2224,7 +2231,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Description\Description[]
+     * @return \Project\Entity\Description\Description|Collections\ArrayCollection()
      */
     public function getProjectDescription()
     {
@@ -2232,7 +2239,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Document\Document[] $projectDocument
+     * @param \Project\Entity\Document\Document|Collections\ArrayCollection() $projectDocument
      */
     public function setProjectDocument($projectDocument)
     {
@@ -2240,7 +2247,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Document\Document[]
+     * @return \Project\Entity\Document\Document|Collections\ArrayCollection()
      */
     public function getProjectDocument()
     {
@@ -2248,7 +2255,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Evaluation\Evaluation[] $evaluation
+     * @param \Project\Entity\Evaluation\Evaluation|Collections\ArrayCollection() $evaluation
      */
     public function setEvaluation($evaluation)
     {
@@ -2256,7 +2263,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Evaluation\Evaluation[]
+     * @return \Project\Entity\Evaluation\Evaluation|Collections\ArrayCollection()
      */
     public function getEvaluation()
     {
@@ -2264,7 +2271,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\Contact[] $calendarContact
+     * @param \Calendar\Entity\Contact|Collections\ArrayCollection() $calendarContact
      */
     public function setCalendarContact($calendarContact)
     {
@@ -2272,7 +2279,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Calendar\Entity\Contact[]
+     * @return \Calendar\Entity\Contact|Collections\ArrayCollection()
      */
     public function getCalendarContact()
     {
@@ -2280,7 +2287,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\Calendar[] $calendar
+     * @param \Calendar\Entity\Calendar|Collections\ArrayCollection() $calendar
      */
     public function setCalendar($calendar)
     {
@@ -2288,7 +2295,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Calendar\Entity\Calendar[]
+     * @return \Calendar\Entity\Calendar|Collections\ArrayCollection()
      */
     public function getCalendar()
     {
@@ -2296,7 +2303,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\ScheduleContact[] $scheduleContact
+     * @param \Calendar\Entity\ScheduleContact|Collections\ArrayCollection() $scheduleContact
      */
     public function setScheduleContact($scheduleContact)
     {
@@ -2304,7 +2311,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Calendar\Entity\ScheduleContact[]
+     * @return \Calendar\Entity\ScheduleContact|Collections\ArrayCollection()
      */
     public function getScheduleContact()
     {
@@ -2312,7 +2319,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\Document[] $calendarDocument
+     * @param \Calendar\Entity\Document|Collections\ArrayCollection() $calendarDocument
      */
     public function setCalendarDocument($calendarDocument)
     {
@@ -2320,7 +2327,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Calendar\Entity\Document[]
+     * @return \Calendar\Entity\Document|Collections\ArrayCollection()
      */
     public function getCalendarDocument()
     {
@@ -2328,7 +2335,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Report\Report[] $projectReport
+     * @param \Project\Entity\Report\Report|Collections\ArrayCollection() $projectReport
      */
     public function setProjectReport($projectReport)
     {
@@ -2336,7 +2343,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Report\Report[]
+     * @return \Project\Entity\Report\Report|Collections\ArrayCollection()
      */
     public function getProjectReport()
     {
@@ -2344,7 +2351,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Review\Review[] $projectReview
+     * @param \Project\Entity\Review\Review|Collections\ArrayCollection() $projectReview
      */
     public function setProjectReview($projectReview)
     {
@@ -2352,7 +2359,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Review\Review[]
+     * @return \Project\Entity\Review\Review|Collections\ArrayCollection()
      */
     public function getProjectReview()
     {
@@ -2360,7 +2367,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Review\VersionReview[] $projectVersionReview
+     * @param \Project\Entity\Review\VersionReview|Collections\ArrayCollection() $projectVersionReview
      */
     public function setProjectVersionReview($projectVersionReview)
     {
@@ -2368,7 +2375,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Review\VersionReview[]
+     * @return \Project\Entity\Review\VersionReview|Collections\ArrayCollection()
      */
     public function getProjectVersionReview()
     {
@@ -2376,7 +2383,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Invite[] $invite
+     * @param \Project\Entity\Invite|Collections\ArrayCollection() $invite
      */
     public function setInvite($invite)
     {
@@ -2384,7 +2391,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Invite[]
+     * @return \Project\Entity\Invite|Collections\ArrayCollection()
      */
     public function getInvite()
     {
@@ -2392,7 +2399,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Invite[] $inviteContact
+     * @param \Project\Entity\Invite|Collections\ArrayCollection() $inviteContact
      */
     public function setInviteContact($inviteContact)
     {
@@ -2400,7 +2407,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Invite[]
+     * @return \Project\Entity\Invite|Collections\ArrayCollection()
      */
     public function getInviteContact()
     {
@@ -2408,7 +2415,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Loi[] $loi
+     * @param \Affiliation\Entity\Loi|Collections\ArrayCollection() $loi
      */
     public function setLoi($loi)
     {
@@ -2416,7 +2423,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Loi[]
+     * @return \Affiliation\Entity\Loi|Collections\ArrayCollection()
      */
     public function getLoi()
     {
@@ -2424,7 +2431,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Calendar\Review[] $projectCalendarReview
+     * @param \Project\Entity\Calendar\Review|Collections\ArrayCollection() $projectCalendarReview
      */
     public function setProjectCalendarReview($projectCalendarReview)
     {
@@ -2432,7 +2439,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Project\Entity\Calendar\Review[]
+     * @return \Project\Entity\Calendar\Review|Collections\ArrayCollection()
      */
     public function getProjectCalendarReview()
     {
@@ -2440,7 +2447,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Affiliation\Entity\Doa[]
+     * @return \Affiliation\Entity\Doa|Collections\ArrayCollection()
      */
     public function getAffiliationDoa()
     {
@@ -2448,7 +2455,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Doa[] $affiliationDoa
+     * @param \Affiliation\Entity\Doa|Collections\ArrayCollection() $affiliationDoa
      */
     public function setAffiliationDoa($affiliationDoa)
     {

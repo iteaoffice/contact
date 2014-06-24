@@ -9,7 +9,6 @@
  */
 namespace Contact\Service;
 
-use Admin\Service\AdminService;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
@@ -561,14 +560,6 @@ class ContactService extends ServiceAbstract
             str_replace('doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_full_entity_name'))),
             $entity->getId()
         );
-    }
-
-    /**
-     * @return AdminService
-     */
-    public function getAdminService()
-    {
-        return $this->getServiceLocator()->get('admin_admin_service');
     }
 
     /**

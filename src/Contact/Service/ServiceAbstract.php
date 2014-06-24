@@ -9,6 +9,8 @@
  */
 namespace Contact\Service;
 
+use Admin\Service\AdminServiceAwareInterface;
+use Admin\Service\AdminService;
 use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
 use Deeplink\Service\DeeplinkService;
@@ -35,7 +37,8 @@ abstract class ServiceAbstract implements
     EmailServiceAwareInterface,
     GeneralServiceAwareInterface,
     OrganisationServiceAwareInterface,
-    ProjectServiceAwareInterface
+    ProjectServiceAwareInterface,
+    AdminServiceAwareInterface
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -69,6 +72,10 @@ abstract class ServiceAbstract implements
      * @var EmailService
      */
     protected $emailService;
+    /**
+     * @var AdminService
+     */
+    protected $adminService;
 
     /**
      * @param   $entity
@@ -324,6 +331,26 @@ abstract class ServiceAbstract implements
     public function setProjectService(ProjectService $projectService)
     {
         $this->projectService = $projectService;
+
+        return $this;
+    }
+
+    /**
+     * @return adminService
+     */
+    public function getadminService()
+    {
+        return $this->adminService;
+    }
+
+    /**
+     * @param adminService $adminService
+     *
+     * @return ServiceAbstract
+     */
+    public function setadminService(adminService $adminService)
+    {
+        $this->adminService = $adminService;
 
         return $this;
     }

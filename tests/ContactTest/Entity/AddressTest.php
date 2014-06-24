@@ -40,8 +40,8 @@ class AddressTest extends \PHPUnit_Framework_TestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-        $contact              = $this->entityManager->find("Contact\Entity\Contact", 1);
-        $country              = $this->entityManager->find("General\Entity\Country", 1);
+        $contact              = $this->entityManager->getReference("Contact\Entity\Contact", 1);
+        $country              = $this->entityManager->getReference("General\Entity\Country", 1);
         $type                 = new \Contact\Entity\AddressType();
         $type->setType('This is the type');
         $this->addressData = array(
@@ -97,8 +97,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->entityManager->flush();
         $this->assertInstanceOf('Contact\Entity\Address', $this->address);
         $this->assertNotNull($this->address->getId());
-        $this->assertNotNull($this->address->getDateCreated());
-        $this->assertNotNull($this->address->getLastUpdate());
         $this->assertEquals($this->address->getContact()->getId(), $this->addressData['contact']->getId());
         $this->assertEquals($this->address->getAddress(), $this->addressData['address']);
         $this->assertEquals($this->address->getZipcode(), $this->addressData['zipcode']);

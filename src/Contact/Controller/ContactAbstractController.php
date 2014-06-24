@@ -20,13 +20,14 @@ use General\Service\GeneralServiceAwareInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
+use BjyAuthorize\Controller\Plugin\IsAllowed;
 
 /**
  * @category    Contact
  * @package     Controller
  * @method      ZfcUserAuthentication zfcUserAuthentication()
  * @method      FlashMessenger flashMessenger()
- * @method      bool isAllowed($resource, $action)
+ * @method      IsAllowed isAllowed($resource, $action)
  */
 abstract class ContactAbstractController extends AbstractActionController implements
     FormServiceAwareInterface,

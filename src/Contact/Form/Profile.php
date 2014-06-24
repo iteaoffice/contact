@@ -14,6 +14,7 @@ use Contact\Entity\PhoneType;
 use Contact\Entity\Profile as ProfileEntity;
 use Contact\Hydrator\Profile as ProfileHydrator;
 use DoctrineORMModule\Options\EntityManager;
+use General\Service\GeneralService;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -23,10 +24,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class Profile extends Form
 {
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
 
     /**
      * Class constructor
@@ -36,10 +33,13 @@ class Profile extends Form
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
-        $this->entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
+        /**
+         * @var $entityManager EntityManager
+         */
+        $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $contactService      = $serviceLocator->get('contact_contact_service');
-        $generalService      = $serviceLocator->get('general_general_service');
-        $doctrineHydrator    = new ProfileHydrator($this->entityManager);
+        $generalService      = $serviceLocator->get(GeneralService::class);
+        $doctrineHydrator    = new ProfileHydrator($entityManager);
         $this->setHydrator($doctrineHydrator)->setObject($contact);
         /**
          * Add a hidden form element for the id to allow a check on the uniqueness of some elements
@@ -56,7 +56,7 @@ class Profile extends Form
                 'name'       => 'gender',
                 'options'    => array(
                     'label'          => _("txt-attention"),
-                    'object_manager' => $this->entityManager,
+                    'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Gender',
                     'find_method'    => array(
                         'name' => 'findAll',
@@ -73,7 +73,7 @@ class Profile extends Form
                 'name'       => 'title',
                 'options'    => array(
                     'label'          => _("txt-title"),
-                    'object_manager' => $this->entityManager,
+                    'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Title',
                     'find_method'    => array(
                         'name' => 'findAll',
@@ -220,7 +220,7 @@ class Profile extends Form
                 'name'       => 'country',
                 'options'    => array(
                     'label'          => _("txt-country"),
-                    'object_manager' => $this->entityManager,
+                    'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Country',
                     'find_method'    => array(
                         'name' => 'findAll',
@@ -256,7 +256,7 @@ class Profile extends Form
                 'name'       => 'country',
                 'options'    => array(
                     'label'          => _("txt-country"),
-                    'object_manager' => $this->entityManager,
+                    'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Country',
                     'find_method'    => array(
                         'name' => 'findAll',
