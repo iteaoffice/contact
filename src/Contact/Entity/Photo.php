@@ -11,6 +11,7 @@ namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use General\Entity\ContentType;
 use Zend\Form\Annotation;
 use Zend\InputFilter\FileInput;
 use Zend\InputFilter\InputFilter;
@@ -70,7 +71,7 @@ class Photo extends EntityAbstract
      * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade="persist", inversedBy="contactPhoto")
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
      * @Annotation\Exclude()
-     * @var \General\Entity\ContentType
+     * @var ContentType
      */
     private $contentType;
     /**
@@ -131,7 +132,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
@@ -234,7 +235,7 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * @param mixed $contentType
+     * @param ContentType $contentType
      */
     public function setContentType($contentType)
     {
@@ -242,7 +243,7 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * @return mixed
+     * @return ContentType
      */
     public function getContentType()
     {

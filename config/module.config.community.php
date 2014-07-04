@@ -5,6 +5,9 @@
  * If you have a ./config/autoload/ directory set up for your project, you can
  * drop this config file in it and change the values as you wish.
  */
+if (!defined("DEBRANOVA_HOST")) {
+    define('DEBRANOVA_HOST', 'test');
+}
 $settings = [
     /**
      * Indicate here if a project has versions

@@ -28,7 +28,7 @@ return [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [
-                    'route'    => '/assets/' . DEBRANOVA_HOST,
+                    'route'    => '/assets/' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test'),
                     'defaults' => [
                         'controller' => 'contact-index',
                     ],

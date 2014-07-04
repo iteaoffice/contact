@@ -15,7 +15,7 @@ $settings = [
             'serializer',
         ]
     ],
-    'cache_key'     => 'contact-cache-' . DEBRANOVA_HOST
+    'cache_key'     => 'contact-cache-' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test')
 ];
 /**
  * You do not need to edit below this line

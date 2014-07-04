@@ -106,7 +106,7 @@ class NavigationServiceAbstract
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @return string
      */

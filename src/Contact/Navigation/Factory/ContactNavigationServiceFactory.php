@@ -26,7 +26,7 @@ class ContactNavigationServiceFactory implements FactoryInterface
     /**
      * @param ServiceLocatorInterface $serviceLocator
      *
-     * @return array|mixed
+     * @return ContactNavigationService
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {

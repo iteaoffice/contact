@@ -86,12 +86,6 @@ class Contact extends EntityAbstract implements
      * @var string
      */
     private $lastName;
-    //    /**
-    //     * @ORM\Column(type="smallint",nullable=false)
-    //     * @Annotation\Exclude()
-    //     * @var int
-    //     */
-    //    private $state;
     /**
      * @ORM\Column(name="email",type="string",length=60,nullable=false, unique=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -236,6 +230,12 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Project|Collections\ArrayCollection()
      */
     private $project;
+    /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Rationale", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Rationale|Collections\ArrayCollection()
+     */
+    private $rationale;
     /**
      * @ORM\ManyToMany(targetEntity="\Project\Entity\Description\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -613,6 +613,7 @@ class Contact extends EntityAbstract implements
         $this->domain                 = new Collections\ArrayCollection();
         $this->technology             = new Collections\ArrayCollection();
         $this->openId                 = new Collections\ArrayCollection();
+        $this->rationale              = new Collections\ArrayCollection();
         $this->organisationLog        = new Collections\ArrayCollection();
         $this->affiliationLog         = new Collections\ArrayCollection();
         $this->affiliationDescription = new Collections\ArrayCollection();
@@ -693,7 +694,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -2476,5 +2477,37 @@ class Contact extends EntityAbstract implements
     public function setPermitContact($permitContact)
     {
         $this->permitContact = $permitContact;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Rationale
+     */
+    public function getRationale()
+    {
+        return $this->rationale;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Rationale $rationale
+     */
+    public function setRationale($rationale)
+    {
+        $this->rationale = $rationale;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Program\Entity\RoadmapLog
+     */
+    public function getRoadmapLog()
+    {
+        return $this->roadmapLog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Program\Entity\RoadmapLog $roadmapLog
+     */
+    public function setRoadmapLog($roadmapLog)
+    {
+        $this->roadmapLog = $roadmapLog;
     }
 }

@@ -160,7 +160,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -553,6 +553,12 @@ class ContactService extends ServiceAbstract
         if (is_null($entity)) {
             throw new \InvalidArgumentException("Permit can only be determined of an existing entity, null given");
         }
+        /**
+         * An empty contact can never have access via the permit-editor
+         */
+        if ($this->isEmpty()) {
+            return false;
+        }
 
         return $this->getAdminService()->contactHasPermit(
             $this->getContact(),
@@ -647,7 +653,7 @@ class ContactService extends ServiceAbstract
         }
         $country                    = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {

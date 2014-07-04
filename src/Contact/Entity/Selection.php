@@ -135,13 +135,13 @@ class Selection extends EntityAbstract
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\SelectionContact[]
+     * @var \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
      */
     private $selectionContact;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionMailinglist", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\SelectionMailingList[]
+     * @var \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection
      */
     private $mailingList;
     /**
@@ -153,19 +153,19 @@ class Selection extends EntityAbstract
     /**
      * @ORM\ManyToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
-     * @var \Mailing\Entity\Mailing[]
+     * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Exempt", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Exempt[]
+     * @var \Event\Entity\Exempt[]|Collections\ArrayCollection
      */
     private $exempt;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude();
-     * @var \Admin\Entity\Access[]
+     * @var \Admin\Entity\Access[]|Collections\ArrayCollection
      */
     private $access;
 
@@ -503,7 +503,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\SelectionContact[] $selectionContact
+     * @param \Contact\Entity\SelectionContact[]|Collections\ArrayCollection $selectionContact
      */
     public function setSelectionContact($selectionContact)
     {
@@ -511,7 +511,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\SelectionContact[]
+     * @return \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
      */
     public function getSelectionContact()
     {
@@ -519,7 +519,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\SelectionMailingList[] $mailingList
+     * @param \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection $mailingList
      */
     public function setMailingList($mailingList)
     {
@@ -527,7 +527,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\SelectionMailingList[]
+     * @return \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection
      */
     public function getMailingList()
     {
@@ -551,7 +551,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Mailing\Entity\Mailing[] $mailing
+     * @param \Mailing\Entity\Mailing[]|Collections\ArrayCollection $mailing
      */
     public function setMailing($mailing)
     {
@@ -559,7 +559,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \Mailing\Entity\Mailing[]
+     * @return \Mailing\Entity\Mailing[]|Collections\ArrayCollection
      */
     public function getMailing()
     {
@@ -567,7 +567,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Event\Entity\Exempt[] $exempt
+     * @param \Event\Entity\Exempt[]|Collections\ArrayCollection $exempt
      */
     public function setExempt($exempt)
     {
@@ -575,7 +575,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \Event\Entity\Exempt[]
+     * @return \Event\Entity\Exempt[]|Collections\ArrayCollection
      */
     public function getExempt()
     {
@@ -583,7 +583,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Admin\Entity\Access[] $access
+     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
      */
     public function setAccess($access)
     {
@@ -591,7 +591,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \Admin\Entity\Access[]
+     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
      */
     public function getAccess()
     {
