@@ -174,13 +174,23 @@ class ContactService extends ServiceAbstract
      */
     public function parseOrganisation()
     {
-        if (is_null($this->getContact()->getContactOrganisation())) {
+        if (!$this->hasOrganisation()) {
             return null;
         }
 
         return $this->findOrganisationService()->parseOrganisationWithBranch(
             $this->getContact()->getContactOrganisation()->getBranch()
         );
+    }
+
+    /**
+     * Boolean value to check if  contact has a contactOrganisation (and is thus linked to an organisation
+     *
+     * @return bool
+     */
+    public function hasOrganisation()
+    {
+        return !is_null($this->getContact()->getContactOrganisation());
     }
 
     /**
@@ -191,7 +201,7 @@ class ContactService extends ServiceAbstract
         /**
          * Return null when the contactOrganisation is not defined
          */
-        if (is_null($this->getContact()->getContactOrganisation())) {
+        if (!$this->hasOrganisation()) {
             return null;
         }
 
@@ -207,7 +217,7 @@ class ContactService extends ServiceAbstract
      */
     public function parseCountry()
     {
-        if (is_null($this->getContact()->getContactOrganisation())) {
+        if (!$this->hasOrganisation()) {
             return null;
         }
 

@@ -36,15 +36,19 @@ class ContactPhoto extends HelperAbstract
          * @var $photo Photo
          */
         $photo = $contact->getPhoto()->first();
+        $classes = [];
+        if ($responsive) {
+            $classes[] = 'img-responsive';
+        }
         /**
          * Return an empty photo when there is no, or only a empty object
          */
         if (!$photo || is_null($photo->getId())) {
-            return '<img width="' . $width . '" src="assets/itea/style/image/anonymous.jpg" class="img-responsive">';
-        }
-        $classes = [];
-        if ($responsive) {
-            $classes[] = 'img-responsive';
+            return sprintf(
+                '<img width="%s" src="assets/itea/style/image/anonymous.jpg" class="%s">',
+                $width,
+                implode(' ', $classes)
+            );
         }
         /**
          * Check if the file is cached and if so, pull it from the assets-folder

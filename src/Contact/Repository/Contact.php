@@ -64,21 +64,21 @@ class Contact extends EntityRepository
         $associates->from('Affiliation\Entity\Affiliation', 'associateAffiliation');
         $associates->join('associateAffiliation.associate', 'associateContact');
         $associates->join('associateAffiliation.project', 'associateProject');
-        $associates->andWhere('associateProject.project = ?1');
+        $associates->andWhere('associateProject.id = ?1');
         //Add the affiliates
         $affiliates = $this->_em->createQueryBuilder();
         $affiliates->select('affiliationContact.id');
         $affiliates->from('Affiliation\Entity\Affiliation', 'affiliation');
         $affiliates->join('affiliation.project', 'affiliationProject');
         $affiliates->join('affiliation.contact', 'affiliationContact');
-        $affiliates->andWhere('affiliationProject.project = ?1');
+        $affiliates->andWhere('affiliationProject.id = ?1');
         //Add the workpackage leaders
         $workpackage = $this->_em->createQueryBuilder();
         $workpackage->select('workpackageContact.id');
         $workpackage->from('Project\Entity\Workpackage\Workpackage', 'workpackage');
         $workpackage->join('workpackage.project', 'workpackageProject');
         $workpackage->join('workpackage.contact', 'workpackageContact');
-        $workpackage->andWhere('workpackageProject.project = ?1');
+        $workpackage->andWhere('workpackageProject.id = ?1');
         //Add the project leaders
         $projectLeaders = $this->_em->createQueryBuilder();
         $projectLeaders->select('projectContact.id');
