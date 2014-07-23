@@ -12,6 +12,7 @@ namespace Contact\Service;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
+use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Selection;
 use Contact\Options\CommunityOptionsInterface;
@@ -93,7 +94,7 @@ class ContactService extends ServiceAbstract
      */
     public function findContactByHash($hash)
     {
-        $contact   = new Contact();
+        $contact = new Contact();
         $contactId = $contact->decryptHash($hash);
 
         return $this->findEntityById('contact', $contactId);
@@ -107,8 +108,8 @@ class ContactService extends ServiceAbstract
     public function findContactsWithDateOfBirth()
     {
         return $this->getEntityManager()
-                    ->getRepository($this->getFullEntityName('contact'))
-                    ->findContactsWithDateOfBirth();
+            ->getRepository($this->getFullEntityName('contact'))
+            ->findContactsWithDateOfBirth();
     }
 
     /**
@@ -148,7 +149,7 @@ class ContactService extends ServiceAbstract
      */
     public function parseLastName()
     {
-        return trim(implode(' ', array($this->getContact()->getMiddleName(), $this->getContact()->getLastName())));
+        return trim(implode(' ', [$this->getContact()->getMiddleName(), $this->getContact()->getLastName()]));
     }
 
     /**
@@ -301,7 +302,7 @@ class ContactService extends ServiceAbstract
     /**
      * Find the direct phone number of a contact
      *
-     * @return null|object
+     * @return Phone
      * @throws \RunTimeException
      */
     public function getDirectPhone()
@@ -311,17 +312,17 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->getEntityManager()->getRepository($this->getFullEntityName('phone'))->findOneBy(
-            array(
+            [
                 'contact' => $this->contact,
                 'type'    => PhoneType::PHONE_TYPE_DIRECT
-            )
+            ]
         );
     }
 
     /**
      * Find the mobile phone number of a contact
      *
-     * @return null|object
+     * @return Phone
      * @throws \RunTimeException
      */
     public function getMobilePhone()
@@ -331,10 +332,10 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->getEntityManager()->getRepository($this->getFullEntityName('phone'))->findOneBy(
-            array(
+            [
                 'contact' => $this->contact,
                 'type'    => PhoneType::PHONE_TYPE_MOBILE
-            )
+            ]
         );
     }
 
@@ -370,7 +371,7 @@ class ContactService extends ServiceAbstract
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
         //Create a deeplink for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
-        $email    = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
+        $email = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
         $email->addTo($emailAddress);
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $this->getEmailService()->send($email);
@@ -390,7 +391,7 @@ class ContactService extends ServiceAbstract
     public function lostPassword($emailAddress)
     {
         //Create the account
-        $contact = $this->findContactByEmail($emailAddress);
+        $contact = $this->findContactByEmail($emailAddress, true);
         if (is_null($contact)) {
             throw new \InvalidArgumentException(
                 sprintf("The contact with emailAddress %s cannot be found", $emailAddress)
@@ -415,14 +416,15 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param $email
+     * @param bool $onlyMain
      *
      * @return null|Contact
      */
-    public function findContactByEmail($email)
+    public function findContactByEmail($email, $onlyMain = false)
     {
         return $this->getEntityManager()
-                    ->getRepository($this->getFullEntityName('contact'))
-                    ->findContactByEmail($email);
+            ->getRepository($this->getFullEntityName('contact'))
+            ->findContactByEmail($email, $onlyMain);
     }
 
     /**
@@ -496,7 +498,7 @@ class ContactService extends ServiceAbstract
             throw new \InvalidArgumentException("The contact cannot be null");
         }
         if (!is_array($selections) && !$selections instanceof PersistentCollection) {
-            $selections = array($selections);
+            $selections = [$selections];
         }
         foreach ($selections as $selection) {
             if (!$selection instanceof Selection) {
@@ -537,10 +539,10 @@ class ContactService extends ServiceAbstract
             $contact = $this->getEntityManager()->getRepository(
                 $this->getFullEntityName('SelectionContact')
             )->findOneBy(
-                array(
+                [
                     'contact'   => $this->getContact(),
                     'selection' => $selection
-                )
+                ]
             );
             /**
              * Return true when we found a contact
@@ -661,7 +663,7 @@ class ContactService extends ServiceAbstract
         if (empty($contactOrganisation['organisation'])) {
             return;
         }
-        $country                    = $this->getGeneralService()->findEntityById(
+        $country = $this->getGeneralService()->findEntityById(
             'country',
             (int) $contactOrganisation['country']
         );
@@ -673,7 +675,7 @@ class ContactService extends ServiceAbstract
         /**
          * Look for the organisation based on the name (without branch) and country + email
          */
-        $organisation      = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
+        $organisation = $this->getOrganisationService()->findOrganisationByNameCountryAndEmailAddress(
             $contactOrganisation['organisation'],
             $country,
             $contact->getEmail()
@@ -742,7 +744,7 @@ class ContactService extends ServiceAbstract
      */
     public function updateOptInForContact($optInId, $enable, Contact $contact)
     {
-        $optIn      = $this->findEntityById('optIn', $optInId);
+        $optIn = $this->findEntityById('optIn', $optInId);
         $collection = new ArrayCollection();
         $collection->add($optIn);
         if ($enable) {
@@ -764,7 +766,7 @@ class ContactService extends ServiceAbstract
     public function searchContacts($searchItem, $maxResults)
     {
         return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-                    ->searchContacts($searchItem, $maxResults);
+            ->searchContacts($searchItem, $maxResults);
     }
 
     /**
@@ -773,41 +775,41 @@ class ContactService extends ServiceAbstract
     public function getProfileInCompleteness()
     {
         $inCompleteness = [];
-        $totalWeight    = 0;
+        $totalWeight = 0;
         $totalWeight += 10;
         if (is_null($this->getContact()->getFirstName())) {
             $inCompleteness['firstName']['message'] = _("txt-first-name-is-missing");
-            $inCompleteness['firstName']['weight']  = 10;
+            $inCompleteness['firstName']['weight'] = 10;
         }
         $totalWeight += 10;
         if (is_null($this->getContact()->getLastName())) {
             $inCompleteness['lastName']['message'] = _("txt-last-name-is-missing");
-            $inCompleteness['lastName']['weight']  = 10;
+            $inCompleteness['lastName']['weight'] = 10;
         }
         $totalWeight += 10;
         if (sizeof($this->getContact()->getPhone()) === 0) {
             $inCompleteness['phone']['message'] = _("txt-no-telephone-number-known");
-            $inCompleteness['phone']['weight']  = 10;
+            $inCompleteness['phone']['weight'] = 10;
         }
         $totalWeight += 10;
         if (sizeof($this->getContact()->getAddress()) === 0) {
             $inCompleteness['address']['message'] = _("txt-no-address-known");
-            $inCompleteness['address']['weight']  = 10;
+            $inCompleteness['address']['weight'] = 10;
         }
         $totalWeight += 10;
         if (sizeof($this->getContact()->getPhoto()) === 0) {
             $inCompleteness['photo']['message'] = _("txt-no-profile-photo-given");
-            $inCompleteness['photo']['weight']  = 10;
+            $inCompleteness['photo']['weight'] = 10;
         }
         $totalWeight += 10;
         if (is_null($this->getContact()->getSaltedPassword())) {
             $inCompleteness['password']['message'] = _("txt-no-password-given");
-            $inCompleteness['password']['weight']  = 10;
+            $inCompleteness['password']['weight'] = 10;
         }
         $totalWeight += 20;
         if (is_null($this->getContact()->getContactOrganisation()) === 0) {
             $inCompleteness['organisation']['message'] = _("txt-no-organisation-known");
-            $inCompleteness['organisation']['weight']  = 20;
+            $inCompleteness['organisation']['weight'] = 20;
         }
         /**
          * Determine the total weight
@@ -821,10 +823,10 @@ class ContactService extends ServiceAbstract
             $incompletenessWeight += $itemPerType['weight'];
         }
 
-        return array(
+        return [
             'items'                => $inCompleteness,
             'incompletenessWeight' => $incompletenessWeight,
-        );
+        ];
     }
 
     /**

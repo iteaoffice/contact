@@ -45,9 +45,9 @@ class ContactPhoto extends HelperAbstract
          */
         if (!$photo || is_null($photo->getId())) {
             return sprintf(
-                '<img width="%s" src="assets/itea/style/image/anonymous.jpg" class="%s">',
-                $width,
-                implode(' ', $classes)
+                '<img src="assets/' . DEBRANOVA_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
+                implode(' ', $classes),
+                is_null($width) ?: 'width="' . $width . '"'
             );
         }
         /**
@@ -69,20 +69,20 @@ class ContactPhoto extends HelperAbstract
                 is_resource($photo->getPhoto()) ? stream_get_contents($photo->getPhoto()) : $photo->getPhoto()
             );
         }
-        $imageUrl = '<img src="%s?%s" width="%s" id="%s" class="%s">';
-        $params   = [
+        $imageUrl = '<img src="%s?%s" id="%s" class="%s" %s>';
+        $params = [
             'contactHash' => $photo->getContact()->parseHash(),
             'hash'        => $photo->getHash(),
             'ext'         => $photo->getContentType()->getExtension(),
             'id'          => $photo->getContact()->getId()
         ];
-        $image    = sprintf(
+        $image = sprintf(
             $imageUrl,
             $this->getUrl($router, $params),
             $photo->getDateUpdated()->getTimestamp(),
-            !is_null($width) ?: $width,
             'contact_photo_' . $contact->getId(),
-            implode(' ', $classes)
+            implode(' ', $classes),
+            is_null($width) ?: 'width="' . $width . '"'
         );
 
         return $image;

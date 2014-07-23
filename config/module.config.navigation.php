@@ -11,17 +11,25 @@ return array(
     'navigation' => array(
         'admin' => array(
             // And finally, here is where we define our page hierarchy
-            'contact' => array(
+            'contact' => [
                 'label'    => _("txt-contact-admin"),
-                'route'    => 'zfcadmin',
+                'route'    => 'zfcadmin/contact-manager',
                 'resource' => 'zfcadmin',
-                'pages'    => array(
-                    'contacts' => array(
-                        'label' => "txt-contacts",
+                'pages'    => [
+                    'contacts' => [
+                        'label' => _("txt-contacts"),
                         'route' => 'zfcadmin/contact-manager',
-                    ),
-                ),
-            ),
+                    ],
+                    'permit'   => [
+                        'label' => _("txt-permissions"),
+                        'route' => 'zfcadmin/permit-manager/entity/list',
+                    ],
+                    'access'   => [
+                        'label' => _("txt-access"),
+                        'route' => 'zfcadmin/access-manager/list',
+                    ],
+                ],
+            ],
         ),
     ),
 );

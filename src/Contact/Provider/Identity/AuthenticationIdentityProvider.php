@@ -52,9 +52,9 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     {
         parent::__construct($authService);
         $this->contactService = $serviceLocator->get('contact_contact_service');
-        $this->adminService   = $serviceLocator->get(AdminService::class);
-        $this->cache          = $serviceLocator->get('contact_cache');
-        $this->config         = $serviceLocator->get('contact_module_config');
+        $this->adminService = $serviceLocator->get(AdminService::class);
+        $this->cache = $serviceLocator->get('contact_cache');
+        $this->config = $serviceLocator->get('contact_module_config');
     }
 
     /**
@@ -63,15 +63,15 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     public function getIdentityRoles()
     {
         if (!$identity = $this->authService->getIdentity()) {
-            return array($this->defaultRole);
+            return [$this->defaultRole];
         }
         if ($identity instanceof RoleInterface) {
-            return array($identity);
+            return [$identity];
         }
         if ($identity instanceof RoleProviderInterface) {
             $success = false;
-            $key     = sprintf("%s-role-list-identity-%s", $this->config['cache_key'], $identity->getId());
-            $roles   = $this->cache->getItem($key, $success);
+            $key = sprintf("%s-role-list-identity-%s", $this->config['cache_key'], $identity->getId());
+            $roles = $this->cache->getItem($key, $success);
             if (!$success) {
                 //Get also the roles assigned via selections
                 $this->contactService->setContact($identity);
@@ -88,6 +88,6 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
             return $roles;
         }
 
-        return array($this->authenticatedRole);
+        return [$this->authenticatedRole];
     }
 }
