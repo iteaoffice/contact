@@ -29,10 +29,10 @@ class ContactLink extends LinkAbstract
 
     /**
      * @param Contact $contact
-     * @param string  $action
-     * @param string  $show
-     * @param null    $page
-     * @param null    $alternativeShow
+     * @param string $action
+     * @param string $show
+     * @param null $page
+     * @param null $alternativeShow
      *
      * @return string
      * @throws \RuntimeException
@@ -48,6 +48,7 @@ class ContactLink extends LinkAbstract
         $this->setContact($contact);
         $this->setAction($action);
         $this->setShow($show);
+        $this->setPage($page);
         /**
          * If the alternativeShow is not null, use it an otherwise take the page
          */
@@ -72,6 +73,7 @@ class ContactLink extends LinkAbstract
             ]
         );
         $this->addRouterParam('page', $page);
+
         $this->addRouterParam('id', $this->getContact()->getId());
 
         return $this->createLink();
@@ -87,6 +89,15 @@ class ContactLink extends LinkAbstract
             case 'list':
                 $this->setRouter('zfcadmin/contact-manager/list');
                 $this->setText($this->translate("txt-list-contacts"));
+
+
+                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery(
+                ) as $key => $param) {
+                    $this->addQueryParam($key, $param);
+                }
+                $this->addQueryParam('page', $this->getPage());
+
+
                 break;
             case 'edit-admin':
                 $this->setRouter('zfcadmin/contact-manager/edit');
@@ -109,6 +120,12 @@ class ContactLink extends LinkAbstract
                 $this->setRouter('zfcadmin/contact-manager/impersonate');
                 $this->setText(
                     sprintf($this->translate("txt-impersonate-contact-%s"), $this->getContact()->getDisplayName())
+                );
+                break;
+            case 'permit':
+                $this->setRouter('zfcadmin/contact-manager/permit');
+                $this->setText(
+                    sprintf($this->translate("txt-permit-of-contact-%s"), $this->getContact()->getDisplayName())
                 );
                 break;
             case 'edit-profile':
@@ -152,4 +169,6 @@ class ContactLink extends LinkAbstract
     {
         $this->contact = $contact;
     }
+
+
 }

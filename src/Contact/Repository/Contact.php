@@ -140,7 +140,7 @@ class Contact extends EntityRepository
     /**
      *  Returns true of false depending if a contact is a community member
      *
-     * @param Entity\Contact                    $contact
+     * @param Entity\Contact $contact
      * @param Options\CommunityOptionsInterface $options
      *
      * @return boolean|null
@@ -234,7 +234,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query
      *
      * @param Entity\Contact $contact
-     * @param SelectionSql   $sql
+     * @param SelectionSql $sql
      *
      * @return bool
      */
@@ -256,7 +256,7 @@ class Contact extends EntityRepository
      * This is basic search for contacts (based on the name, and email
      *
      * @param string $searchItem
-     * @param int    $maxResults
+     * @param int $maxResults
      *
      * @return Entity\Contact[]
      */
@@ -268,9 +268,8 @@ class Contact extends EntityRepository
         $qb->distinct('c.id');
         $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR c.email LIKE :searchItem');
         $qb->setParameter('searchItem', "%" . $searchItem . "%");
-        $qb->setMaxResults($maxResults);
-        $qb->orderBy('c.id', 'DESC');
+        $qb->orderBy('c.lastName', 'ASC');
 
-        return $qb->getQuery()->getResult();
+        return $qb;
     }
 }

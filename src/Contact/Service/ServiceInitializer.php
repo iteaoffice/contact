@@ -46,7 +46,7 @@ class ServiceInitializer implements InitializerInterface
             $instance->setServiceLocator($serviceLocator);
         }
         $arrayCheck = [
-            EntityManagerAwareInterface::class  => 'doctrine.entitymanager.orm_default',
+            SelectionServiceAwareInterface::class  => SelectionService::class,
             AddressServiceAwareInterface::class => 'contact_address_service',
             ContactServiceAwareInterface::class => 'contact_contact_service',
         ];

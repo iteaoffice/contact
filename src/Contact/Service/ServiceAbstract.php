@@ -9,10 +9,11 @@
  */
 namespace Contact\Service;
 
-use Admin\Service\AdminServiceAwareInterface;
 use Admin\Service\AdminService;
+use Admin\Service\AdminServiceAwareInterface;
 use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
+use Contact\Entity\Selection;
 use Deeplink\Service\DeeplinkService;
 use Deeplink\Service\DeeplinkServiceAwareInterface;
 use Event\Service\MeetingService;
@@ -56,6 +57,10 @@ abstract class ServiceAbstract implements
      * @var ProjectService
      */
     protected $projectService;
+    /**
+     * @var SelectionService
+     */
+    protected $selectionService;
     /**
      * @var MeetingService
      */
@@ -155,7 +160,7 @@ abstract class ServiceAbstract implements
      * @param string $entity
      * @param        $id
      *
-     * @return null|Contact
+     * @return null|Contact|Selection
      */
     public function findEntityById($entity, $id)
     {
@@ -338,7 +343,7 @@ abstract class ServiceAbstract implements
     /**
      * @return adminService
      */
-    public function getadminService()
+    public function getAdminService()
     {
         return $this->adminService;
     }
@@ -348,10 +353,38 @@ abstract class ServiceAbstract implements
      *
      * @return ServiceAbstract
      */
-    public function setadminService(adminService $adminService)
+    public function setAdminService(adminService $adminService)
     {
         $this->adminService = $adminService;
 
         return $this;
+    }
+
+    /**
+     * @return selectionService
+     */
+    public function getSelectionService()
+    {
+        return $this->selectionService;
+    }
+
+    /**
+     * @param selectionService $selectionService
+     *
+     * @return ServiceAbstract
+     */
+    public function setSelectionService(selectionService $selectionService)
+    {
+        $this->selectionService = $selectionService;
+
+        return $this;
+    }
+
+    /**
+     * @return ContactService
+     */
+    public function getContactService()
+    {
+        return $this->getServiceLocator()->get('contact_contact_service');
     }
 }

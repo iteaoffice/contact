@@ -25,19 +25,27 @@ class ContactManagerController extends ContactAbstractController
      */
     public function listAction()
     {
-        $projectQuery = $this->getContactService()->findAllContacts();
-        $page         = $this->getEvent()->getRouteMatch()->getParam('page');
-        $paginator    = new Paginator(new PaginatorAdapter(new ORMPaginator($projectQuery)));
-        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
-        $paginator->setCurrentPageNumber($page);
-        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
+        $paginator = null;
         $searchForm = new Search();
 
+        $search = $this->getRequest()->getQuery()->get('search');
+        $page = $this->getRequest()->getQuery()->get('page');
+
+        $searchForm->setData($_GET);
+
+        if ($this->getRequest()->isGet() && $searchForm->isValid() && !empty($search)) {
+            $contactSearchQuery = $this->getContactService()->searchContacts($search);
+            $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactSearchQuery)));
+            $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
+            $paginator->setCurrentPageNumber($page);
+            $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
+        }
+
         return new ViewModel(
-            array(
+            [
                 'paginator' => $paginator,
                 'form'      => $searchForm
-            )
+            ]
         );
     }
 
@@ -47,8 +55,27 @@ class ContactManagerController extends ContactAbstractController
     public function viewAction()
     {
         $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+        $selections = $this->getSelectionService()->findSelectionsByContact($contactService->getContact());
 
-        return new ViewModel(array('contactService' => $contactService));
+        return new ViewModel(
+            [
+                'contactService' => $contactService,
+                'selections'     => $selections
+            ]
+        );
+    }
+
+    public function permitAction()
+    {
+        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+
+        var_dump($this->getAdminService()->findPermitContactByContact($contactService->getContact()));
+
+        return new ViewModel(
+            [
+                'contactService' => $contactService,
+            ]
+        );
     }
 
     /**
@@ -57,24 +84,24 @@ class ContactManagerController extends ContactAbstractController
     public function impersonateAction()
     {
         $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
-        $form           = $this->getServiceLocator()->get('contact_impersonate_form');
+        $form = $this->getServiceLocator()->get('contact_impersonate_form');
         $form->setData($_POST);
         $deeplink = false;
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $data = $form->getData();
             //Create a target
             $target = $this->getDeeplinkService()->findEntityById('target', $data['target']);
-            $key    = (!empty($data['key']) ? $data['key'] : null);
+            $key = (!empty($data['key']) ? $data['key'] : null);
             //Create a deeplink for the user which redirects to the profile-page
             $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contactService->getContact(), null, $key);
         }
 
         return new ViewModel(
-            array(
+            [
                 'deeplink'       => $deeplink,
                 'contactService' => $contactService,
                 'form'           => $form
-            )
+            ]
         );
     }
 
@@ -86,17 +113,17 @@ class ContactManagerController extends ContactAbstractController
     public function newAction()
     {
         $entity = $this->getEvent()->getRouteMatch()->getParam('entity');
-        $form   = $this->getFormService()->prepare($this->params('entity'), null, $_POST);
+        $form = $this->getFormService()->prepare($this->params('entity'), null, $_POST);
         $form->setAttribute('class', 'form-horizontal');
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->newEntity($form->getData());
             $this->redirect()->toRoute(
                 'zfcadmin/contact-manager/' . strtolower($this->params('entity')),
-                array('id' => $result->getId())
+                ['id' => $result->getId()]
             );
         }
 
-        return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
+        return new ViewModel(['form' => $form, 'entity' => $entity, 'fullVersion' => true]);
     }
 
     /**
@@ -110,18 +137,18 @@ class ContactManagerController extends ContactAbstractController
             $this->getEvent()->getRouteMatch()->getParam('entity'),
             $this->getEvent()->getRouteMatch()->getParam('id')
         );
-        $form   = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
+        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
         $form->setAttribute('class', 'form-horizontal live-form');
         $form->setAttribute('id', 'contact-contact-' . $entity->getId());
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
             $this->redirect()->toRoute(
                 'zfcadmin/contact/' . strtolower($entity->get('dashed_entity_name')),
-                array('id' => $result->getId())
+                ['id' => $result->getId()]
             );
         }
 
-        return new ViewModel(array('form' => $form, 'entity' => $entity, 'fullVersion' => true));
+        return new ViewModel(['form' => $form, 'entity' => $entity, 'fullVersion' => true]);
     }
 
     /**

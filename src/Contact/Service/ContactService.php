@@ -9,6 +9,7 @@
  */
 namespace Contact\Service;
 
+use Affiliation\Entity\Affiliation;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
@@ -86,21 +87,6 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * Find a contact based on a hash
-     *
-     * @param $hash
-     *
-     * @return null|Contact
-     */
-    public function findContactByHash($hash)
-    {
-        $contact = new Contact();
-        $contactId = $contact->decryptHash($hash);
-
-        return $this->findEntityById('contact', $contactId);
-    }
-
-    /**
      * Find all contacts which are active and have a date of birth
      *
      * @return Contact[]
@@ -161,7 +147,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -603,7 +589,7 @@ class ContactService extends ServiceAbstract
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed
      *
-     * @param string  $password
+     * @param string $password
      * @param Contact $contact
      *
      * @return bool
@@ -651,7 +637,7 @@ class ContactService extends ServiceAbstract
      * $contactOrganisation['country'] > CountryId
      *
      * @param Contact $contact
-     * @param array   $contactOrganisation
+     * @param array $contactOrganisation
      *
      * @return void
      */
@@ -665,7 +651,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -736,8 +722,8 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param int     $optInId
-     * @param bool    $enable
+     * @param int $optInId
+     * @param bool $enable
      * @param Contact $contact
      *
      * @return void
@@ -759,14 +745,13 @@ class ContactService extends ServiceAbstract
      * Search for contacts based on a search-item
      *
      * @param $searchItem
-     * @param $maxResults
      *
-     * @return Contact[]
+     * @return QueryBuilder;
      */
-    public function searchContacts($searchItem, $maxResults)
+    public function searchContacts($searchItem)
     {
         return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-            ->searchContacts($searchItem, $maxResults);
+            ->searchContacts($searchItem);
     }
 
     /**
@@ -868,4 +853,65 @@ class ContactService extends ServiceAbstract
 
         return $contacts;
     }
+
+    /**
+     * @param Affiliation $affiliation
+     * @return array
+     */
+    public function findContactsInAffiliation(Affiliation $affiliation)
+    {
+        $contacts = new ArrayCollection();
+        $contactRole = [];
+
+        /**
+         * Add the technical contact
+         */
+        $contacts->add($affiliation->getContact());
+        $contactRole[$affiliation->getContact()->getId()][] = 'Technical Contact';
+
+        /**
+         * Add the financial contact
+         */
+        if (!is_null($affiliation->getFinancial())) {
+            $contacts->add($affiliation->getFinancial()->getContact());
+            $contactRole[$affiliation->getFinancial()->getContact()->getId()][] = 'Financial Contact';
+        }
+
+        /**
+         * Add the associates
+         */
+        foreach ($affiliation->getAssociate() as $associate) {
+            /**
+             * Add the associates
+             */
+            if (!$contacts->contains($associate)) {
+                $contacts->add($associate);
+            }
+            $contactRole[$associate->getId()][] = 'Associate';
+        }
+
+
+        /**
+         * Add the workpackage leaders
+         */
+        foreach ($affiliation->getProject()->getWorkpackage() as $workpackage) {
+            /**
+             * Add the associates
+             */
+            if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId(
+                ) === $affiliation->getOrganisation()->getId()
+            ) {
+                if (!$contacts->contains($workpackage->getContact())) {
+                    $contacts->add($workpackage->getContact());
+                }
+                $contactRole[$workpackage->getContact()->getId()][] = 'Workpackage leader';
+            }
+        }
+
+        $contactRole = array_map('array_unique', $contactRole);
+
+
+        return ['contacts' => $contacts, 'contactRole' => $contactRole];
+    }
+
 }

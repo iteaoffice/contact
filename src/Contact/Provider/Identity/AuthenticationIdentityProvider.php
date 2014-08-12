@@ -45,13 +45,12 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     protected $config;
 
     /**
-     * @param AuthenticationService   $authService
+     * @param AuthenticationService $authService
      * @param ServiceLocatorInterface $serviceLocator
      */
     public function __construct(AuthenticationService $authService, ServiceLocatorInterface $serviceLocator)
     {
         parent::__construct($authService);
-        $this->contactService = $serviceLocator->get('contact_contact_service');
         $this->adminService = $serviceLocator->get(AdminService::class);
         $this->cache = $serviceLocator->get('contact_cache');
         $this->config = $serviceLocator->get('contact_module_config');
@@ -74,15 +73,8 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
             $roles = $this->cache->getItem($key, $success);
             if (!$success) {
                 //Get also the roles assigned via selections
-                $this->contactService->setContact($identity);
-                $localRoles = [];
-                foreach ($this->adminService->findAll('access') as $access) {
-                    if ($this->contactService->inSelection($access->getSelection())) {
-                        $localRoles[] = strtolower($access->getAccess());
-                    }
-                };
-                $roles = array_merge($localRoles, $identity->getRoles());
-                $this->cache->setItem($key, $roles);
+                $accessRoles = $this->adminService->findAccessRolesByContact($identity);
+                $this->cache->setItem($key, array_map('strtolower', $accessRoles->toArray()));
             }
 
             return $roles;

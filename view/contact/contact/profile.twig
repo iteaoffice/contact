@@ -155,7 +155,7 @@
             {% for meeting in contactService.findUpcomingMeetings %}
 
                 {# Try to see if we can find a registration of the event #}
-                {% set registrationService = registrationSerivce.findRegistrationByMeetingAndContact(meeting,contactService.contact ) %}
+                {% set registrationService = registrationService.findRegistrationByMeetingAndContact(meeting,contactService.contact ) %}
 
                 <tr {% if registrationService.isCancelled() %}class="warning"{% elseif (registrationService) %}class="success"}{% endif %} >
                 <td>{{ meetingLink(meeting,'view', 'name') }}</td>

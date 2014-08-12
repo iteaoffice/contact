@@ -11,12 +11,13 @@ namespace Contact;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Controller\ControllerInitializer;
+use Contact\Service\SelectionService;
 use Contact\Service\ServiceInitializer;
 use Contact\View\Helper\CommunityLink;
 use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
 
-$config      = [
+$config = [
     'controllers'     => [
         'initializers' => [
             ControllerInitializer::class
@@ -53,6 +54,7 @@ $config      = [
         ],
         'invokables'   => [
             ContactAssertion::class        => ContactAssertion::class,
+            SelectionService::class        => SelectionService::class,
             'contact_contact_service'      => 'Contact\Service\ContactService',
             'contact_address_service'      => 'Contact\Service\AddressService',
             'contact_form_service'         => 'Contact\Service\FormService',

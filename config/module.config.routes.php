@@ -38,10 +38,10 @@ return [
                     'contact-photo' => [
                         'type'    => 'Segment',
                         'options' => [
-                            'route'    => "/contact-photo/[:hash].[:ext]",
+                            'route'    => "/contact-photo/[:id]-[:hash].[:ext]",
                             'defaults' => [
                                 'controller' => 'contact-index',
-                                'action'     => 'display',
+                                'action'     => 'photo',
                             ],
                         ],
                     ],
@@ -153,11 +153,15 @@ return [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
-                                    'route'    => '/list[/:page].html',
+                                    'route'    => '/list.html',
                                     'defaults' => [
                                         'action' => 'list',
                                     ],
                                 ],
+                                'query'    => [
+                                    'search' => null,
+                                    'page'   => null,
+                                ]
                             ],
                             'view'        => [
                                 'type'     => 'Segment',
@@ -176,6 +180,26 @@ return [
                                     'route'    => '/impersonate/[:id].html',
                                     'defaults' => [
                                         'action' => 'impersonate',
+                                    ],
+                                ],
+                            ],
+                            'edit'        => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                            'permit'      => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/permissions/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'permit',
                                     ],
                                 ],
                             ],

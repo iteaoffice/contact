@@ -62,6 +62,10 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      */
     protected $routerParams = [];
     /**
+     * @var array List of parameters needed to construct the URL from the router
+     */
+    protected $queryParams = [];
+    /**
      * @var array content of the link (will be imploded during creation of the link)
      */
     protected $linkContent = [];
@@ -73,6 +77,10 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      * @var array
      */
     protected $showOptions = [];
+    /**
+     * @var int
+     */
+    protected $page;
 
     /**
      * This function produces the link in the end
@@ -88,9 +96,9 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
         /**
          * @var $serverUrl ServerUrl
          */
-        $serverUrl         = $this->serviceLocator->get('serverUrl');
+        $serverUrl = $this->serviceLocator->get('serverUrl');
         $this->linkContent = [];
-        $this->classes     = [];
+
         $this->parseAction();
         $this->parseShow();
         if ('social' === $this->getShow()) {
@@ -100,7 +108,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
         return sprintf(
             $uri,
-            $serverUrl() . $url($this->router, $this->routerParams),
+            $serverUrl() . $url($this->router, $this->routerParams, ['query' => $this->queryParams]),
             $this->text,
             implode(' ', $this->classes),
             implode('', $this->linkContent)
@@ -207,7 +215,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     public function addLinkContent($linkContent)
     {
         if (!is_array($linkContent)) {
-            $linkContent = array($linkContent);
+            $linkContent = [$linkContent];
         }
         foreach ($linkContent as $content) {
             $this->linkContent[] = $content;
@@ -224,7 +232,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     public function addClasses($classes)
     {
         if (!is_array($classes)) {
-            $classes = array($classes);
+            $classes = [$classes];
         }
         foreach ($classes as $class) {
             $this->classes[] = $class;
@@ -283,8 +291,8 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param EntityAbstract $entity
-     * @param string         $assertion
-     * @param string         $action
+     * @param string $assertion
+     * @param string $action
      *
      * @return bool
      */
@@ -346,7 +354,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param null|EntityAbstract $resource
-     * @param string              $privilege
+     * @param string $privilege
      *
      * @return bool
      */
@@ -365,7 +373,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      *
      * @param string $key
      * @param        $value
-     * @param bool   $allowNull
+     * @param bool $allowNull
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
@@ -374,6 +382,23 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
         }
         if (!is_null($value)) {
             $this->routerParams[$key] = $value;
+        }
+    }
+
+    /**
+     * Add a parameter to the list of parameters for the query
+     *
+     * @param string $key
+     * @param        $value
+     * @param bool $allowNull
+     */
+    public function addQueryParam($key, $value, $allowNull = true)
+    {
+        if (!$allowNull && is_null($value)) {
+            throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
+        }
+        if (!is_null($value)) {
+            $this->queryParams[$key] = $value;
         }
     }
 
@@ -416,6 +441,8 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
         return $this->routeMatch;
     }
 
+
+
     /**
      * @param RouteMatch $routeMatch
      */
@@ -433,4 +460,26 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     {
         return $this->serviceLocator->get('translate')->__invoke($string);
     }
+
+    /**
+     * @return int
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * @param int $page
+     *
+     * @return LinkAbstract
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+
+        return true;
+    }
+
+
 }
