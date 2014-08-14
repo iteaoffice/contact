@@ -77,8 +77,6 @@ abstract class ImageAbstract extends AbstractHelper implements ServiceLocatorAwa
          */
         $config = $this->serviceLocator->getServiceLocator()->get('config');
 
-        $this->classes = [];
-
         $cdn = null;
         if (isset($config['cdn']) && $config['cdn']['enable']) {
             $cdn = $config['cdn']['address'];
