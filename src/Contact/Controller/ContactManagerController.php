@@ -117,7 +117,7 @@ class ContactManagerController extends ContactAbstractController
         $form->setAttribute('class', 'form-horizontal');
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->newEntity($form->getData());
-            $this->redirect()->toRoute(
+            return $this->redirect()->toRoute(
                 'zfcadmin/contact-manager/' . strtolower($this->params('entity')),
                 ['id' => $result->getId()]
             );
@@ -142,7 +142,7 @@ class ContactManagerController extends ContactAbstractController
         $form->setAttribute('id', 'contact-contact-' . $entity->getId());
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
-            $this->redirect()->toRoute(
+            return $this->redirect()->toRoute(
                 'zfcadmin/contact/' . strtolower($entity->get('dashed_entity_name')),
                 ['id' => $result->getId()]
             );

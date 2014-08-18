@@ -183,7 +183,7 @@ class ContactController extends ContactAbstractController
             $this->flashMessenger()->setNamespace('success')->addMessage(
                 _("txt-profile-has-successfully-been-updated")
             );
-            $this->redirect()->toRoute('contact/profile');
+            return $this->redirect()->toRoute('contact/profile');
         }
 
         return new ViewModel(['form' => $form, 'contactService' => $contactService, 'fullVersion' => true]);
@@ -209,7 +209,7 @@ class ContactController extends ContactAbstractController
                 $this->flashMessenger()->setNamespace('success')->addMessage(
                     _("txt-password-successfully-been-updated")
                 );
-                $this->redirect()->toRoute('contact/profile');
+                return $this->redirect()->toRoute('contact/profile');
             }
         }
 
