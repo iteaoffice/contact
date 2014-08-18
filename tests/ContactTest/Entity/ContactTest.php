@@ -149,5 +149,4 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($this->contact->getDisplayName());
     }
 
-
 }
