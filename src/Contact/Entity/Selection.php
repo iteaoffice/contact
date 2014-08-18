@@ -211,7 +211,7 @@ class Selection extends EntityAbstract
      */
     public function __toString()
     {
-        return (string)$this->selection;
+        return (string) $this->selection;
     }
 
     /**

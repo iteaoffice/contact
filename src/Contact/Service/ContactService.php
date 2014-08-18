@@ -147,7 +147,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -401,7 +401,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param $email
+     * @param      $email
      * @param bool $onlyMain
      *
      * @return null|Contact
@@ -589,7 +589,7 @@ class ContactService extends ServiceAbstract
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed
      *
-     * @param string $password
+     * @param string  $password
      * @param Contact $contact
      *
      * @return bool
@@ -637,7 +637,7 @@ class ContactService extends ServiceAbstract
      * $contactOrganisation['country'] > CountryId
      *
      * @param Contact $contact
-     * @param array $contactOrganisation
+     * @param array   $contactOrganisation
      *
      * @return void
      */
@@ -651,7 +651,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int)$contactOrganisation['country']
+            (int) $contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -722,8 +722,8 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param int $optInId
-     * @param bool $enable
+     * @param int     $optInId
+     * @param bool    $enable
      * @param Contact $contact
      *
      * @return void
@@ -855,7 +855,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param Affiliation $affiliation
+     * @param  Affiliation $affiliation
      * @return array
      */
     public function findContactsInAffiliation(Affiliation $affiliation)
@@ -898,8 +898,8 @@ class ContactService extends ServiceAbstract
             /**
              * Add the associates
              */
-            if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId(
-                ) === $affiliation->getOrganisation()->getId()
+            if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()
+                    ->getId() === $affiliation->getOrganisation()->getId()
             ) {
                 if (!$contacts->contains($workpackage->getContact())) {
                     $contacts->add($workpackage->getContact());
@@ -910,8 +910,6 @@ class ContactService extends ServiceAbstract
 
         $contactRole = array_map('array_unique', $contactRole);
 
-
         return ['contacts' => $contacts, 'contactRole' => $contactRole];
     }
-
 }

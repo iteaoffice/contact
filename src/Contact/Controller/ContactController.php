@@ -80,19 +80,17 @@ class ContactController extends ContactAbstractController
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public")
             ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+            ->addHeaderLine('Content-Length: ' . (string) strlen($file));
         $response->setContent($file);
 
         return $response;
 
     }
 
-
     /**
      * @return ViewModel
      */
-    public
-    function profileAction()
+    public function profileAction()
     {
         $contactService = $this->getContactService()->setContact(
             $this->zfcUserAuthentication()->getIdentity()
@@ -106,11 +104,10 @@ class ContactController extends ContactAbstractController
      *
      * @return \Zend\View\Model\JsonModel
      */
-    public
-    function optInUpdateAction()
+    public function optInUpdateAction()
     {
-        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
         $this->getContactService()->updateOptInForContact(
             $optInId,
             $enable,
@@ -129,8 +126,7 @@ class ContactController extends ContactAbstractController
      * Edit the profile of the person
      * @return ViewModel
      */
-    public
-    function profileEditAction()
+    public function profileEditAction()
     {
         $contactService = $this->getContactService()->setContactId(
             $this->zfcUserAuthentication()->getIdentity()->getId()
@@ -183,6 +179,7 @@ class ContactController extends ContactAbstractController
             $this->flashMessenger()->setNamespace('success')->addMessage(
                 _("txt-profile-has-successfully-been-updated")
             );
+
             return $this->redirect()->toRoute('contact/profile');
         }
 
@@ -192,8 +189,7 @@ class ContactController extends ContactAbstractController
     /**
      * Function to save the password of the user
      */
-    public
-    function changePasswordAction()
+    public function changePasswordAction()
     {
         $form = $this->getServiceLocator()->get('contact_password_form');
         $form->setInputFilter($this->getServiceLocator()->get('contact_password_form_filter'));
@@ -209,6 +205,7 @@ class ContactController extends ContactAbstractController
                 $this->flashMessenger()->setNamespace('success')->addMessage(
                     _("txt-password-successfully-been-updated")
                 );
+
                 return $this->redirect()->toRoute('contact/profile');
             }
         }

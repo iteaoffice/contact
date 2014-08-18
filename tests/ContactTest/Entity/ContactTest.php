@@ -14,7 +14,6 @@ use ContactTest\Bootstrap;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use General\Entity\Gender;
 use General\Entity\Title;
-use Zend\Crypt\BlockCipher;
 
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,10 +48,10 @@ class ContactTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-        $this->gender         = $this->entityManager->find("General\Entity\Gender", 1);
-        $this->title          = $this->entityManager->find("General\Entity\Title", 1);
-        $this->contactData    = array(
+        $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->gender = $this->entityManager->find("General\Entity\Gender", 1);
+        $this->title = $this->entityManager->find("General\Entity\Title", 1);
+        $this->contactData = [
             'firstName'  => 'Jan',
             'middleName' => 'van der',
             'lastName'   => 'Vliet',
@@ -65,8 +64,8 @@ class ContactTest extends \PHPUnit_Framework_TestCase
             'messenger'  => 'Lorem Ipsum',
             'gender'     => $this->gender,
             'title'      => $this->title,
-        );
-        $this->contact        = new Contact();
+        ];
+        $this->contact = new Contact();
     }
 
     public function testCanCreateEntity()
@@ -102,12 +101,12 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
     public function testCanHydrateEntity()
     {
-        $hydrator      = new DoctrineObject(
+        $hydrator = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\Contact'
         );
         $this->contact = $hydrator->hydrate($this->contactData, new Contact());
-        $dataArray     = $hydrator->extract($this->contact);
+        $dataArray = $hydrator->extract($this->contact);
         $this->assertSame($this->contactData['firstName'], $dataArray['firstName']);
         $this->assertSame($this->contactData['middleName'], $dataArray['middleName']);
         $this->assertSame($this->contactData['lastName'], $dataArray['lastName']);
@@ -125,7 +124,7 @@ class ContactTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveEntityInDatabase()
     {
-        $hydrator      = new DoctrineObject(
+        $hydrator = new DoctrineObject(
             $this->entityManager,
             'Contact\Entity\Contact'
         );
@@ -150,23 +149,5 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($this->contact->getDisplayName());
     }
 
-    public function testParseHash()
-    {
-        $contactId = 1;
-        $this->contact->setId($contactId);
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
-        $blockCipher->setKey(Contact::CRYPT_KEY);
-        $result = $blockCipher->decrypt($this->contact->parseHash());
-        $this->assertEquals($result, $contactId);
-    }
 
-    public function testDecryptHash()
-    {
-        $contactId   = 1;
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
-        $blockCipher->setKey(Contact::CRYPT_KEY);
-        $hash   = $blockCipher->encrypt($contactId);
-        $result = $this->contact->decryptHash($hash);
-        $this->assertEquals($result, $contactId);
-    }
 }

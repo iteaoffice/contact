@@ -9,10 +9,8 @@
  */
 namespace ContactTest\Service;
 
-use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 use ContactTest\Bootstrap;
-use Zend\Crypt\BlockCipher;
 
 class ContactServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,7 +33,7 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
         $this->contactService = new ContactService();
         $this->contactService->setServiceLocator($this->serviceManager);
     }
@@ -43,20 +41,9 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
     public function testCanFindContactByEmail()
     {
         $contactEmail = 'test@example.com';
-        $contact      = $this->contactService->findContactByEmail($contactEmail);
+        $contact = $this->contactService->findContactByEmail($contactEmail);
         $this->assertNotNull($contact);
         $this->assertEquals($contact->getEmail(), $contactEmail);
-    }
-
-    public function testCanFindContactByHash()
-    {
-        $contactId   = 1;
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
-        $blockCipher->setKey(Contact::CRYPT_KEY);
-        $hash    = $blockCipher->encrypt($contactId);
-        $contact = $this->contactService->findContactByHash($hash);
-        $this->assertNotNull($contact);
-        $this->assertEquals($contact->getId(), $contactId);
     }
 
     public function testCanFindAllContacts()
@@ -103,8 +90,8 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
 
     public function getEntity()
     {
-        $entity         = 'contact';
-        $fullEntity     = $this->contactService->getEntity($entity);
+        $entity = 'contact';
+        $fullEntity = $this->contactService->getEntity($entity);
         $fullEntityName = $this->contactService->getFullEntityName($entity);
         $this->assertInstanceOf($fullEntityName, $fullEntity);
     }

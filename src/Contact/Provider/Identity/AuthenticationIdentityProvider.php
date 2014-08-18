@@ -45,7 +45,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     protected $config;
 
     /**
-     * @param AuthenticationService $authService
+     * @param AuthenticationService   $authService
      * @param ServiceLocatorInterface $serviceLocator
      */
     public function __construct(AuthenticationService $authService, ServiceLocatorInterface $serviceLocator)

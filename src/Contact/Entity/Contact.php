@@ -696,7 +696,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**
@@ -888,7 +888,6 @@ class Contact extends EntityAbstract implements
     {
         return $this->getArrayCopy();
     }
-
 
     /**
      * Returns the string identifier of the Role.
@@ -2501,6 +2500,4 @@ class Contact extends EntityAbstract implements
     {
         $this->session = $session;
     }
-
-
 }

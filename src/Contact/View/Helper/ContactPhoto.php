@@ -55,7 +55,6 @@ class ContactPhoto extends ImageAbstract
             );
         }
 
-
         $this->setRouter('assets/contact-photo');
 
         $this->addRouterParam('hash', $photo->getHash());
@@ -63,7 +62,6 @@ class ContactPhoto extends ImageAbstract
         $this->addRouterParam('id', $photo->getId());
 
         $this->setHeight($height);
-
 
         return $this->createImageUrl();
     }

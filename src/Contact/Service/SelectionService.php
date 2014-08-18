@@ -12,7 +12,6 @@ namespace Contact\Service;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 
-
 /**
  * SelectionService
  *

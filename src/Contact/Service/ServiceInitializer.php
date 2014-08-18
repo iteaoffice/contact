@@ -11,7 +11,6 @@
  */
 namespace Contact\Service;
 
-use Application\Service\EntityManagerAwareInterface;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;

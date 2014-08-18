@@ -136,7 +136,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string)$this->phone;
+        return (string) $this->phone;
     }
 
     /**

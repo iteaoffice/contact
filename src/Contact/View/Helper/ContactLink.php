@@ -29,10 +29,10 @@ class ContactLink extends LinkAbstract
 
     /**
      * @param Contact $contact
-     * @param string $action
-     * @param string $show
-     * @param null $page
-     * @param null $alternativeShow
+     * @param string  $action
+     * @param string  $show
+     * @param null    $page
+     * @param null    $alternativeShow
      *
      * @return string
      * @throws \RuntimeException
@@ -90,13 +90,11 @@ class ContactLink extends LinkAbstract
                 $this->setRouter('zfcadmin/contact-manager/list');
                 $this->setText($this->translate("txt-list-contacts"));
 
-
                 foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery(
                 ) as $key => $param) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
-
 
                 break;
             case 'edit-admin':
@@ -169,6 +167,4 @@ class ContactLink extends LinkAbstract
     {
         $this->contact = $contact;
     }
-
-
 }
