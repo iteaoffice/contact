@@ -74,7 +74,9 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
             if (!$success) {
                 //Get also the roles assigned via selections
                 $accessRoles = $this->adminService->findAccessRolesByContact($identity);
-                $this->cache->setItem($key, array_map('strtolower', $accessRoles->toArray()));
+                //Assign the result to a local var $roles so it can be returned and store it in the cache
+                $roles = array_map('strtolower', $accessRoles->toArray());
+                $this->cache->setItem($key, $roles);
             }
 
             return $roles;
