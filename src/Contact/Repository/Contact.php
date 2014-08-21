@@ -14,6 +14,7 @@ use Contact\Entity\SelectionSql;
 use Contact\Options;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Organisation\Entity\Organisation;
 
 /**
  * @category    Contact
@@ -244,8 +245,11 @@ class Contact extends EntityRepository
         $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
         $resultSetMap->addFieldResult('c', 'contact_id', 'id');
         $query = $this->getEntityManager()->createNativeQuery(
-            "SELECT contact_id FROM contact
-                                WHERE contact_id IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
+            "SELECT
+             contact_id
+             FROM contact
+             WHERE contact_id
+             IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
             $resultSetMap
         );
 
@@ -271,5 +275,32 @@ class Contact extends EntityRepository
         $qb->orderBy('c.lastName', 'ASC');
 
         return $qb;
+    }
+
+    /**
+     * @param Organisation $organisation
+     * @return Contact[]
+     */
+    public function findContactsInOrganisation(Organisation $organisation)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('c');
+        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->addOrderBy('c.lastName', 'ASC');
+
+
+        //Select the contacts based on their organisations
+        $subSelect = $this->_em->createQueryBuilder();
+        $subSelect->select('contact');
+        $subSelect->from('Contact\Entity\ContactOrganisation', 'co');
+        $subSelect->join('co.organisation', 'o');
+        $subSelect->join('co.contact', 'contact');
+        $subSelect->where('o.id = ?1');
+        $qb->setParameter(1, $organisation->getId());
+
+        $qb->andWhere($qb->expr()->isNull('c.dateEnd'));
+        $qb->andWhere($qb->expr()->in('c', $subSelect->getDQL()));
+
+        return $qb->getQuery()->getResult();
     }
 }

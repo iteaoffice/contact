@@ -147,7 +147,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -651,7 +651,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -911,5 +911,17 @@ class ContactService extends ServiceAbstract
         $contactRole = array_map('array_unique', $contactRole);
 
         return ['contacts' => $contacts, 'contactRole' => $contactRole];
+    }
+
+    /**
+     * @param Organisation $organisation
+     *
+     * @return Contact[]
+     */
+    public function findContactsInOrganisation(Organisation $organisation)
+    {
+        return $this->getEntityManager()->getRepository(
+            $this->getFullEntityName('contact')
+        )->findContactsInOrganisation($organisation);
     }
 }
