@@ -9,6 +9,7 @@
  */
 namespace Contact\Repository;
 
+use Calendar\Entity\Calendar;
 use Contact\Entity;
 use Contact\Entity\SelectionSql;
 use Contact\Options;
@@ -55,6 +56,17 @@ class Contact extends EntityRepository
      */
     public function findContactByProjectId($projectId)
     {
+        $queryBuilder = $this->findContactByProjectIdQueryBuilder();
+        $queryBuilder->setParameter(1, $projectId);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findContactByProjectIdQueryBuilder()
+    {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
         $queryBuilder->from("Contact\Entity\Contact", 'c');
@@ -94,9 +106,9 @@ class Contact extends EntityRepository
                 $queryBuilder->expr()->in('c.id', $projectLeaders->getDQL())
             )
         );
-        $queryBuilder->setParameter(1, $projectId);
 
-        return $queryBuilder->getQuery()->getResult();
+
+        return $queryBuilder;
     }
 
     /**
@@ -302,5 +314,36 @@ class Contact extends EntityRepository
         $qb->andWhere($qb->expr()->in('c', $subSelect->getDQL()));
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param Calendar $calendar
+     * @return Entity\Contact[]
+     */
+    public function findPossibleContactByCalendar(Calendar $calendar)
+    {
+        /**
+         * Use the contactQueryBuilder and exclude the ones which are already present based on the roles
+         */
+        $findContactByProjectIdQueryBuilder = $this->findContactByProjectIdQueryBuilder();
+
+        //Find the reviewers
+        $findReviewContactByProjectQueryBuilder = $this->getEntityManager()->getRepository(
+            'Project\Entity\Review\Review'
+        )->findReviewContactByProjectQueryBuilder();
+
+        //Remove all the contacts which are already in the project as associate or otherwise affected
+        $findContactByProjectIdQueryBuilder->andWhere(
+            $findContactByProjectIdQueryBuilder->expr()->notIn(
+                'c',
+                $findReviewContactByProjectQueryBuilder->getDQL()
+            )
+        );
+
+        $findContactByProjectIdQueryBuilder->setParameter(1, $calendar->getProjectCalendar()->getProject()->getId());
+        $findContactByProjectIdQueryBuilder->setParameter('project', $calendar->getProjectCalendar()->getProject());
+        $findContactByProjectIdQueryBuilder->addOrderBy('c.lastName', 'ASC');
+
+        return $findContactByProjectIdQueryBuilder->getQuery()->getResult();
     }
 }

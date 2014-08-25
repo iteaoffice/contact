@@ -10,6 +10,7 @@
 namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
+use Calendar\Entity\Calendar;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
@@ -355,7 +356,7 @@ class ContactService extends ServiceAbstract
         $contact = $this->newEntity($contact);
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
-        //Create a deeplink for the user which redirects to the profile-page
+        //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
         $email = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
         $email->addTo($emailAddress);
@@ -689,6 +690,8 @@ class ContactService extends ServiceAbstract
             $currentContactOrganisation->setOrganisation($organisation);
         } else {
             $foundOrganisation = null;
+
+
             /**
              * Go over the found organisation to match the branching
              */
@@ -703,17 +706,25 @@ class ContactService extends ServiceAbstract
                     $currentContactOrganisation->setBranch(null);
                     break;
                 }
-                if (!$organisationFound ||
-                    strlen($foundOrganisation->getOrganisation()) >
-                    (strlen($contactOrganisation['organisation']) - strlen($currentContactOrganisation->getBranch()))
-                ) {
+                if (!$organisationFound) {
+                    //Create only a branch when the name is found and the given names do not match in length
+                    if (strlen($foundOrganisation->getOrganisation()) < (strlen(
+                                $contactOrganisation['organisation']
+                            ) - strlen($currentContactOrganisation->getBranch()))
+                    ) {
+                        $currentContactOrganisation->setBranch(
+                            str_replace(
+                                $contactOrganisation['organisation'],
+                                '~',
+                                $foundOrganisation->getOrganisation()
+                            )
+                        );
+                    }
                     /**
                      * We have found a match of the organisation in the string and
                      */
                     $organisationFound = true;
-                    $currentContactOrganisation->setBranch(
-                        str_replace($foundOrganisation->getOrganisation(), '~', $contactOrganisation['organisation'])
-                    );
+
                 }
             }
             $currentContactOrganisation->setOrganisation($foundOrganisation);
@@ -911,6 +922,22 @@ class ContactService extends ServiceAbstract
         $contactRole = array_map('array_unique', $contactRole);
 
         return ['contacts' => $contacts, 'contactRole' => $contactRole];
+    }
+
+    /**
+     * @param Calendar $calendar
+     * @return Contact[]
+     * @throws \Exception
+     */
+    public function findPossibleContactByCalendar(Calendar $calendar)
+    {
+        if (is_null($calendar->getProjectCalendar())) {
+            throw new \Exception("A projectCalendar is required to find the contacts");
+        }
+
+        return $this->getEntityManager()
+            ->getRepository($this->getFullEntityName('Contact'))
+            ->findPossibleContactByCalendar($calendar);
     }
 
     /**

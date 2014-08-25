@@ -49,6 +49,7 @@ class ContactLink extends LinkAbstract
         $this->setAction($action);
         $this->setShow($show);
         $this->setPage($page);
+
         /**
          * If the alternativeShow is not null, use it an otherwise take the page
          */
@@ -63,7 +64,7 @@ class ContactLink extends LinkAbstract
             $this->getAction()
         )
         ) {
-            return 'Access denied';
+            return '';
         }
         $this->setShowOptions(
             [

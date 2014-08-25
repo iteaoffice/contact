@@ -61,24 +61,29 @@
     {% set organisationService = contactService.findOrganisationService() %}
 
     <h2>{{ translate("txt-organisation") }}</h2>
-    <dl class="dl-horizontal">
-        <dt>{{ translate("txt-organisation") }}</dt>
-        <dd>{{ organisationService.parseOrganisationWithBranch(contactService.contact.contactOrganisation.branch) }}</dd>
-        <dt>{{ translate("txt-organisation-type") }}</dt>
-        <dd>{{ organisationService.organisation.type.description }}</dd>
-        <dt>{{ translate("txt-country") }}</dt>
-        <dd>{{ organisationService.organisation.country }}</dd>
-        {% if contactService.contact.department %}
-            <dt>{{ translate("txt-department") }}</dt>
-            <dd>{{ contactService.contact.department }}</dd>
-        {% endif %}
-        {% if contactService.contact.position %}
-            <dt>{{ translate("txt-position") }}</dt>
-            <dd>{{ contactService.contact.position }}</dd>
-        {% endif %}
-        <dt>{{ translate("txt-general-description") }}</dt>
-        <dd>{{ organisationService.organisation.description|raw }}</dd>
-    </dl>
+    {% if organisationService %}
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-organisation") }}</dt>
+            <dd>{{ organisationService.parseOrganisationWithBranch(contactService.contact.contactOrganisation.branch) }}</dd>
+            <dt>{{ translate("txt-organisation-type") }}</dt>
+            <dd>{{ organisationService.organisation.type.description }}</dd>
+            <dt>{{ translate("txt-country") }}</dt>
+            <dd>{{ organisationService.organisation.country }}</dd>
+            {% if contactService.contact.department %}
+                <dt>{{ translate("txt-department") }}</dt>
+                <dd>{{ contactService.contact.department }}</dd>
+            {% endif %}
+            {% if contactService.contact.position %}
+                <dt>{{ translate("txt-position") }}</dt>
+                <dd>{{ contactService.contact.position }}</dd>
+            {% endif %}
+            <dt>{{ translate("txt-general-description") }}</dt>
+            <dd>{{ organisationService.organisation.description|raw }}</dd>
+        </dl>
+    {% else %}
+        {{ ztbalert().info(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
+    {% endif %}
+    {{ contactLink(contactService.contact,'edit-profile', 'button') }}
 </div>
 
 <div class="tab-pane fade in" id="event">
