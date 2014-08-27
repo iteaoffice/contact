@@ -37,6 +37,10 @@ class Contact extends EntityAbstract implements
     UserInterface
 {
     /**
+     * Key needed for the encryption and decryption of the Keys
+     */
+    const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
+    /**
      * Constant for messenger;
      */
     const MESSENGER_ACTIVE = 1;
@@ -661,6 +665,17 @@ class Contact extends EntityAbstract implements
          * Set these values for legacy reasons
          */
         $this->messenger = self::MESSENGER_ACTIVE;
+    }
+
+    /**
+     * Although an alternative does not have a clear hash, we can create one based on the id;
+     * Don't use the elements from underlying objects since this gives confusion
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return hash('sha1', $this->id . self::HASH_KEY);
     }
 
     /**

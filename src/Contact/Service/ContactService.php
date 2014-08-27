@@ -80,6 +80,27 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * This function returns the contact by the hash. The hash has as format contactId-CHECKSUM which needs to be checked
+     *
+     * @param $hash
+     *
+     * @return null|Contact
+     */
+    public function findContactByHash($hash)
+    {
+        list($contactId, $hash) = explode('-', $hash);
+
+        $contact = $this->setContactId($contactId)->getContact();
+
+        if ($contact->getHash() !== $hash) {
+            return null;
+        }
+
+        return $contact;
+
+    }
+
+    /**
      * @return \Doctrine\ORM\Query
      */
     public function findAllContacts()

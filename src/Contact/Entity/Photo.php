@@ -136,7 +136,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
@@ -208,6 +208,7 @@ class Photo extends EntityAbstract
             DIRECTORY_SEPARATOR . DEBRANOVA_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
 
         return $cacheDir . DIRECTORY_SEPARATOR
+        . $this->getId() . '-'
         . $this->getHash() . '.'
         . $this->getContentType()->getExtension();
     }

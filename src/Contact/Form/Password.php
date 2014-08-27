@@ -40,51 +40,46 @@ class Password extends Form
         //            ),
         //        ));
         $this->add(
-            array(
+            [
                 'name'       => 'password',
-                'options'    => array(
+                'options'    => [
                     'label'      => _("txt-new-password"),
                     'help-block' => _("txt-new-password-form-help")
-                ),
-                'attributes' => array(
+                ],
+                'attributes' => [
                     'type' => 'password'
-                ),
-            )
+                ],
+            ]
         );
         $this->add(
-            array(
+            [
                 'name'       => 'passwordVerify',
-                'options'    => array(
+                'options'    => [
                     'label' => _("txt-new-password-verify"),
-                ),
-                'attributes' => array(
+                ],
+                'attributes' => [
                     'type' => 'password'
-                ),
-            )
+                ],
+            ]
         );
         $submitElement = new Element\Button('submit');
         $submitElement
             ->setLabel(_("txt-submit"))
             ->setAttributes(
-                array(
+                [
                     'type' => 'submit',
-                )
+                ]
             );
+
         $this->add(
-            array(
-                'type' => 'Zend\Form\Element\Csrf',
-                'name' => 'csrf'
-            )
-        );
-        $this->add(
-            array(
+            [
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'submit',
-                'attributes' => array(
+                'attributes' => [
                     'class' => "btn btn-primary",
                     'value' => _("txt-submit")
-                )
-            )
+                ]
+            ]
         );
     }
 }
