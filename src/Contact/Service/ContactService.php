@@ -729,9 +729,9 @@ class ContactService extends ServiceAbstract
                 }
                 if (!$organisationFound) {
                     //Create only a branch when the name is found and the given names do not match in length
-                    if (strlen($foundOrganisation->getOrganisation()) < (strlen(
-                                $contactOrganisation['organisation']
-                            ) - strlen($currentContactOrganisation->getBranch()))
+                    if (strlen($foundOrganisation->getOrganisation()) <
+                        (strlen($contactOrganisation['organisation']) -
+                            strlen($currentContactOrganisation->getBranch()))
                     ) {
                         $currentContactOrganisation->setBranch(
                             str_replace(
