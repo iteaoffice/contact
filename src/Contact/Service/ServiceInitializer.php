@@ -11,7 +11,6 @@
  */
 namespace Contact\Service;
 
-use Application\Service\EntityManagerAwareInterface;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -46,7 +45,7 @@ class ServiceInitializer implements InitializerInterface
             $instance->setServiceLocator($serviceLocator);
         }
         $arrayCheck = [
-            EntityManagerAwareInterface::class  => 'doctrine.entitymanager.orm_default',
+            SelectionServiceAwareInterface::class  => SelectionService::class,
             AddressServiceAwareInterface::class => 'contact_address_service',
             ContactServiceAwareInterface::class => 'contact_contact_service',
         ];

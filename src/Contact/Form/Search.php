@@ -22,29 +22,28 @@ class Search extends Form
     public function __construct()
     {
         parent::__construct();
-        $this->setAttribute('method', 'post');
-        $this->setAttribute('class', 'form-inline');
+        $this->setAttribute('method', 'get');
+        $this->setAttribute('class', 'form-horizontal');
         $this->add(
-            array(
+            [
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'search',
-                'attributes' => array(
+                'attributes' => [
                     'label'       => 'search',
-                    'class'       => 'form-control',
                     'id'          => "search",
                     'placeholder' => _("txt-contact-search-as-you-type")
-                )
-            )
+                ]
+            ]
         );
         $this->add(
-            array(
+            [
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'submit',
-                'attributes' => array(
+                'attributes' => [
                     'class' => "btn btn-primary",
                     'value' => _("txt-submit")
-                )
-            )
+                ]
+            ]
         );
     }
 }

@@ -11,12 +11,15 @@ namespace Contact;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Controller\ControllerInitializer;
+use Contact\Service\SelectionService;
 use Contact\Service\ServiceInitializer;
 use Contact\View\Helper\CommunityLink;
+use Contact\View\Helper\CreateContactFromArray;
+use Contact\View\Helper\CreatePhotoFromArray;
 use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
 
-$config      = [
+$config = [
     'controllers'     => [
         'initializers' => [
             ControllerInitializer::class
@@ -34,10 +37,12 @@ $config      = [
             ViewHelperInitializer::class
         ],
         'invokables'   => [
-            'communityLink'       => CommunityLink::class,
-            'contactServiceProxy' => 'Contact\View\Helper\ContactServiceProxy',
-            'contactLink'         => 'Contact\View\Helper\ContactLink',
-            'contactPhoto'        => 'Contact\View\Helper\ContactPhoto',
+            'communityLink'          => CommunityLink::class,
+            'createContactFromArray' => CreateContactFromArray::class,
+            'createPhotoFromArray'   => CreatePhotoFromArray::class,
+            'contactServiceProxy'    => 'Contact\View\Helper\ContactServiceProxy',
+            'contactLink'            => 'Contact\View\Helper\ContactLink',
+            'contactPhoto'           => 'Contact\View\Helper\ContactPhoto',
         ]
     ],
     'service_manager' => [
@@ -53,6 +58,7 @@ $config      = [
         ],
         'invokables'   => [
             ContactAssertion::class        => ContactAssertion::class,
+            SelectionService::class        => SelectionService::class,
             'contact_contact_service'      => 'Contact\Service\ContactService',
             'contact_address_service'      => 'Contact\Service\AddressService',
             'contact_form_service'         => 'Contact\Service\FormService',

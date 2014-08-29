@@ -13,8 +13,6 @@ use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Paginator\Paginator;
 use Zend\Validator\File\ImageSize;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -38,7 +36,7 @@ class ContactController extends ContactAbstractController
             $this->zfcUserAuthentication()->getIdentity()
         );
 
-        return new ViewModel(array('contactService' => $contactService));
+        return new ViewModel(['contactService' => $contactService]);
     }
 
     /**
@@ -48,50 +46,45 @@ class ContactController extends ContactAbstractController
      */
     public function photoAction()
     {
-        $response = $this->getResponse();
-        $contact  = $this->getContactService()->findContactByHash(
-            $this->getEvent()->getRouteMatch()->getParam('contactHash')
-        );
-        $response->getHeaders()
-                 ->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
-                 ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
-                 ->addHeaderLine("Pragma: public");
-        if (!is_null($contact) && !is_null($contact->getPhoto())) {
-            $file = stream_get_contents($contact->getPhoto()->first()->getPhoto());
-            $response->getHeaders()
-                     ->addHeaderLine(
-                         'Content-Type: ' . $contact->getPhoto()->first()->getContentType()->getContentType()
-                     )->addHeaderLine('Content-Length: ' . (string) strlen($file));
-            $response->setContent($file);
-
-            return $response;
-        } else {
-            $response->getHeaders()
-                     ->addHeaderLine('Content-Type: image/jpg');
-            $response->setStatusCode(404);
-        }
-    }
-
-    /**
-     * @return ViewModel
-     */
-    public function searchAction()
-    {
-        $searchItem          = $this->getRequest()->getQuery()->get('search_item');
-        $maxResults          = $this->getRequest()->getQuery()->get('max_rows');
-        $projectSearchResult = $this->getContactService()->searchContacts($searchItem, $maxResults);
         /**
-         * Include a paginator to be able to have later paginated search results in pages
+         * @var $photo Photo
          */
-        $paginator = new Paginator(new ArrayAdapter($projectSearchResult));
-        $paginator->setDefaultItemCountPerPage($maxResults);
-        $paginator->setCurrentPageNumber(1);
-        $paginator->setPageRange(1);
-        $viewModel = new ViewModel(array('paginator' => $paginator, 'searchItem' => $searchItem));
-        $viewModel->setTerminal(true);
-        $viewModel->setTemplate('contact/contact-manager/list');
+        $photo = $this->getContactService()->findEntityById(
+            'photo',
+            $this->getEvent()->getRouteMatch()->getParam('id')
+        );
 
-        return $viewModel;
+        /**
+         * Do a check if the given has is correct to avoid guessing the image
+         */
+        if (is_null($photo) || $this->getEvent()->getRouteMatch()->getParam('hash') !== $photo->getHash()) {
+            return $this->notFoundAction();
+        }
+
+        $file = stream_get_contents($photo->getPhoto());
+
+        /**
+         * Check if the file is cached and if not, create it
+         */
+        if (!file_exists($photo->getCacheFileName())) {
+            /**
+             * The file exists, but is it not updated?
+             */
+            file_put_contents($photo->getCacheFileName(), $file);
+
+        }
+
+        $response = $this->getResponse();
+        $response->getHeaders()
+            ->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
+            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
+            ->addHeaderLine("Pragma: public")
+            ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
+            ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+        $response->setContent($file);
+
+        return $response;
+
     }
 
     /**
@@ -103,7 +96,7 @@ class ContactController extends ContactAbstractController
             $this->zfcUserAuthentication()->getIdentity()
         );
 
-        return new ViewModel(array('contactService' => $contactService));
+        return new ViewModel(['contactService' => $contactService]);
     }
 
     /**
@@ -114,7 +107,7 @@ class ContactController extends ContactAbstractController
     public function optInUpdateAction()
     {
         $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable  = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $enable = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
         $this->getContactService()->updateOptInForContact(
             $optInId,
             $enable,
@@ -122,10 +115,10 @@ class ContactController extends ContactAbstractController
         );
 
         return new JsonModel(
-            array(
+            [
                 'result' => 'success',
                 'enable' => ($enable ? 1 : 0)
-            )
+            ]
         );
     }
 
@@ -138,15 +131,15 @@ class ContactController extends ContactAbstractController
         $contactService = $this->getContactService()->setContactId(
             $this->zfcUserAuthentication()->getIdentity()->getId()
         );
-        $data           = array_merge_recursive(
+        $data = array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
         );
-        $form           = new Profile($this->getServiceLocator(), $contactService->getContact());
+        $form = new Profile($this->getServiceLocator(), $contactService->getContact());
         $form->bind($contactService->getContact());
         $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            $contact  = $form->getData();
+            $contact = $form->getData();
             $fileData = $this->params()->fromFiles();
             if (!empty($fileData['file']['name'])) {
                 $photo = $contactService->getContact()->getPhoto()->first();
@@ -186,10 +179,11 @@ class ContactController extends ContactAbstractController
             $this->flashMessenger()->setNamespace('success')->addMessage(
                 _("txt-profile-has-successfully-been-updated")
             );
-            $this->redirect()->toRoute('contact/profile');
+
+            return $this->redirect()->toRoute('contact/profile');
         }
 
-        return new ViewModel(array('form' => $form, 'contactService' => $contactService, 'fullVersion' => true));
+        return new ViewModel(['form' => $form, 'contactService' => $contactService, 'fullVersion' => true]);
     }
 
     /**
@@ -211,10 +205,11 @@ class ContactController extends ContactAbstractController
                 $this->flashMessenger()->setNamespace('success')->addMessage(
                     _("txt-password-successfully-been-updated")
                 );
-                $this->redirect()->toRoute('contact/profile');
+
+                return $this->redirect()->toRoute('contact/profile');
             }
         }
 
-        return new ViewModel(array('form' => $form));
+        return new ViewModel(['form' => $form]);
     }
 }

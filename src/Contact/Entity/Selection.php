@@ -21,7 +21,7 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity for the Selection
  *
  * @ORM\Table(name="selection")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_selection")
  *
@@ -51,19 +51,19 @@ class Selection extends EntityAbstract
      *
      * @var array
      */
-    protected $personalTemplates = array(
+    protected $personalTemplates = [
         self::NOT_PERSONAL => 'txt-not-personal',
         self::PERSONAL     => 'txt-personal',
-    );
+    ];
     /**
      * Textual versions of the hideForOthers
      *
      * @var array
      */
-    protected $privateTemplates = array(
+    protected $privateTemplates = [
         self::NOT_PRIVATE => 'txt-not-private',
         self::IS_PRIVATE  => 'txt-private',
-    );
+    ];
     /**
      * @ORM\Column(name="selection_id", length=10, type="integer", nullable=false)
      * @ORM\Id
@@ -175,10 +175,10 @@ class Selection extends EntityAbstract
     public function __construct()
     {
         $this->selectionContact = new Collections\ArrayCollection();
-        $this->mailingList      = new Collections\ArrayCollection();
-        $this->mailing          = new Collections\ArrayCollection();
-        $this->exempt           = new Collections\ArrayCollection();
-        $this->access           = new Collections\ArrayCollection();
+        $this->mailingList = new Collections\ArrayCollection();
+        $this->mailing = new Collections\ArrayCollection();
+        $this->exempt = new Collections\ArrayCollection();
+        $this->access = new Collections\ArrayCollection();
     }
 
     /**
@@ -250,83 +250,83 @@ class Selection extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'selection',
                         'required'   => true,
-                        'filters'    => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                        'validators' => [
+                            [
                                 'name'    => 'StringLength',
-                                'options' => array(
+                                'options' => [
                                     'encoding' => 'UTF-8',
                                     'min'      => 1,
                                     'max'      => 80,
-                                ),
-                            ),
-                        ),
-                    )
+                                ],
+                            ],
+                        ],
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'note',
                         'required' => true,
-                        'filters'  => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                    )
+                        'filters'  => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'tag',
                         'required' => true,
-                        'filters'  => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                    )
+                        'filters'  => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'personal',
                         'required'   => true,
-                        'validators' => array(
-                            array(
+                        'validators' => [
+                            [
                                 'name'    => 'InArray',
-                                'options' => array(
+                                'options' => [
                                     'haystack' => array_keys($this->getPersonalTemplates())
-                                )
-                            )
-                        )
-                    )
+                                ]
+                            ]
+                        ]
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'private',
                         'required'   => true,
-                        'validators' => array(
-                            array(
+                        'validators' => [
+                            [
                                 'name'    => 'InArray',
-                                'options' => array(
+                                'options' => [
                                     'haystack' => array_keys($this->getPrivateTemplates())
-                                )
-                            )
-                        )
-                    )
+                                ]
+                            ]
+                        ]
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -342,7 +342,7 @@ class Selection extends EntityAbstract
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'selection'   => $this->selection,
             'tag'         => $this->tag,
             'dateCreated' => $this->dateCreated,
@@ -350,7 +350,7 @@ class Selection extends EntityAbstract
             'note'        => $this->note,
             'personal'    => $this->personal,
             'private'     => $this->private,
-        );
+        ];
     }
 
     public function populate()

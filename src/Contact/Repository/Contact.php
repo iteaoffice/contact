@@ -9,13 +9,15 @@
  */
 namespace Contact\Repository;
 
+use Calendar\Entity\Calendar;
 use Contact\Entity;
 use Contact\Entity\SelectionSql;
 use Contact\Entity\Selection;
 use Contact\Options;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
-use ZendGData\YouTube\Extension\FirstName;
+use Organisation\Entity\Organisation;
+
 
 /**
  * @category    Contact
@@ -56,6 +58,17 @@ class Contact extends EntityRepository
      */
     public function findContactByProjectId($projectId)
     {
+        $queryBuilder = $this->findContactByProjectIdQueryBuilder();
+        $queryBuilder->setParameter(1, $projectId);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findContactByProjectIdQueryBuilder()
+    {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
         $queryBuilder->from("Contact\Entity\Contact", 'c');
@@ -95,9 +108,9 @@ class Contact extends EntityRepository
                 $queryBuilder->expr()->in('c.id', $projectLeaders->getDQL())
             )
         );
-        $queryBuilder->setParameter(1, $projectId);
 
-        return $queryBuilder->getQuery()->getResult();
+
+        return $queryBuilder;
     }
 
     /**
@@ -268,8 +281,11 @@ class Contact extends EntityRepository
         $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
         $resultSetMap->addFieldResult('c', 'contact_id', 'id');
         $query = $this->getEntityManager()->createNativeQuery(
-            "SELECT contact_id FROM contact
-                                WHERE contact_id IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
+            "SELECT
+             contact_id
+             FROM contact
+             WHERE contact_id
+             IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
             $resultSetMap
         );
 
@@ -292,9 +308,66 @@ class Contact extends EntityRepository
         $qb->distinct('c.id');
         $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR c.email LIKE :searchItem');
         $qb->setParameter('searchItem', "%" . $searchItem . "%");
-        $qb->setMaxResults($maxResults);
-        $qb->orderBy('c.id', 'DESC');
+        $qb->orderBy('c.lastName', 'ASC');
+
+        return $qb;
+    }
+
+    /**
+     * @param Organisation $organisation
+     * @return Contact[]
+     */
+    public function findContactsInOrganisation(Organisation $organisation)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('c');
+        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->addOrderBy('c.lastName', 'ASC');
+
+
+        //Select the contacts based on their organisations
+        $subSelect = $this->_em->createQueryBuilder();
+        $subSelect->select('contact');
+        $subSelect->from('Contact\Entity\ContactOrganisation', 'co');
+        $subSelect->join('co.organisation', 'o');
+        $subSelect->join('co.contact', 'contact');
+        $subSelect->where('o.id = ?1');
+        $qb->setParameter(1, $organisation->getId());
+
+        $qb->andWhere($qb->expr()->isNull('c.dateEnd'));
+        $qb->andWhere($qb->expr()->in('c', $subSelect->getDQL()));
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param Calendar $calendar
+     * @return Entity\Contact[]
+     */
+    public function findPossibleContactByCalendar(Calendar $calendar)
+    {
+        /**
+         * Use the contactQueryBuilder and exclude the ones which are already present based on the roles
+         */
+        $findContactByProjectIdQueryBuilder = $this->findContactByProjectIdQueryBuilder();
+
+        //Find the reviewers
+        $findReviewContactByProjectQueryBuilder = $this->getEntityManager()->getRepository(
+            'Project\Entity\Review\Review'
+        )->findReviewContactByProjectQueryBuilder();
+
+        //Remove all the contacts which are already in the project as associate or otherwise affected
+        $findContactByProjectIdQueryBuilder->andWhere(
+            $findContactByProjectIdQueryBuilder->expr()->notIn(
+                'c',
+                $findReviewContactByProjectQueryBuilder->getDQL()
+            )
+        );
+
+        $findContactByProjectIdQueryBuilder->setParameter(1, $calendar->getProjectCalendar()->getProject()->getId());
+        $findContactByProjectIdQueryBuilder->setParameter('project', $calendar->getProjectCalendar()->getProject());
+        $findContactByProjectIdQueryBuilder->addOrderBy('c.lastName', 'ASC');
+
+        return $findContactByProjectIdQueryBuilder->getQuery()->getResult();
     }
 }

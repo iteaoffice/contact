@@ -9,10 +9,15 @@
  */
 namespace Contact\Controller;
 
+use Admin\Service\AdminService;
+use Admin\Service\AdminServiceAwareInterface;
+use BjyAuthorize\Controller\Plugin\IsAllowed;
 use Contact\Service\ContactService;
 use Contact\Service\ContactServiceAwareInterface;
 use Contact\Service\FormService;
 use Contact\Service\FormServiceAwareInterface;
+use Contact\Service\SelectionService;
+use Contact\Service\SelectionServiceAwareInterface;
 use Deeplink\Service\DeeplinkService;
 use Deeplink\Service\DeeplinkServiceAwareInterface;
 use General\Service\GeneralService;
@@ -20,7 +25,6 @@ use General\Service\GeneralServiceAwareInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
-use BjyAuthorize\Controller\Plugin\IsAllowed;
 
 /**
  * @category    Contact
@@ -30,11 +34,17 @@ use BjyAuthorize\Controller\Plugin\IsAllowed;
  * @method      IsAllowed isAllowed($resource, $action)
  */
 abstract class ContactAbstractController extends AbstractActionController implements
+    SelectionServiceAwareInterface,
+    AdminServiceAwareInterface,
     FormServiceAwareInterface,
     ContactServiceAwareInterface,
     DeeplinkServiceAwareInterface,
     GeneralServiceAwareInterface
 {
+    /**
+     * @var AdminService
+     */
+    protected $adminService;
     /**
      * @var ContactService
      */
@@ -47,6 +57,10 @@ abstract class ContactAbstractController extends AbstractActionController implem
      * @var DeeplinkService
      */
     protected $deeplinkService;
+    /**
+     * @var SelectionService
+     */
+    protected $selectionService;
     /**
      * @var FormService
      */
@@ -132,6 +146,46 @@ abstract class ContactAbstractController extends AbstractActionController implem
     public function setFormService($formService)
     {
         $this->formService = $formService;
+
+        return $this;
+    }
+
+    /**
+     * @return SelectionService
+     */
+    public function getSelectionService()
+    {
+        return $this->selectionService;
+    }
+
+    /**
+     * @param SelectionService $selectionService
+     *
+     * @return $this
+     */
+    public function setSelectionService(SelectionService $selectionService)
+    {
+        $this->selectionService = $selectionService;
+
+        return $this;
+    }
+
+    /**
+     * @return AdminService
+     */
+    public function getAdminService()
+    {
+        return $this->adminService;
+    }
+
+    /**
+     * @param AdminService $adminService
+     *
+     * @return $this
+     */
+    public function setAdminService(AdminService $adminService)
+    {
+        $this->adminService = $adminService;
 
         return $this;
     }

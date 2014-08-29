@@ -9,6 +9,8 @@
  */
 namespace Contact\Service;
 
+use Affiliation\Entity\Affiliation;
+use Calendar\Entity\Calendar;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
@@ -78,15 +80,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @return \Doctrine\ORM\Query
-     */
-    public function findAllContacts()
-    {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContacts();
-    }
-
-    /**
-     * Find a contact based on a hash
+     * This function returns the contact by the hash. The hash has as format contactId-CHECKSUM which needs to be checked
      *
      * @param $hash
      *
@@ -94,10 +88,24 @@ class ContactService extends ServiceAbstract
      */
     public function findContactByHash($hash)
     {
-        $contact = new Contact();
-        $contactId = $contact->decryptHash($hash);
+        list($contactId, $hash) = explode('-', $hash);
 
-        return $this->findEntityById('contact', $contactId);
+        $contact = $this->setContactId($contactId)->getContact();
+
+        if ($contact->getHash() !== $hash) {
+            return null;
+        }
+
+        return $contact;
+
+    }
+
+    /**
+     * @return \Doctrine\ORM\Query
+     */
+    public function findAllContacts()
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContacts();
     }
 
     /**
@@ -161,7 +169,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -369,7 +377,7 @@ class ContactService extends ServiceAbstract
         $contact = $this->newEntity($contact);
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
-        //Create a deeplink for the user which redirects to the profile-page
+        //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
         $email = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
         $email->addTo($emailAddress);
@@ -415,7 +423,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param $email
+     * @param      $email
      * @param bool $onlyMain
      *
      * @return null|Contact
@@ -670,7 +678,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -708,6 +716,8 @@ class ContactService extends ServiceAbstract
             $currentContactOrganisation->setOrganisation($organisation);
         } else {
             $foundOrganisation = null;
+
+
             /**
              * Go over the found organisation to match the branching
              */
@@ -722,17 +732,25 @@ class ContactService extends ServiceAbstract
                     $currentContactOrganisation->setBranch(null);
                     break;
                 }
-                if (!$organisationFound ||
-                    strlen($foundOrganisation->getOrganisation()) >
-                    (strlen($contactOrganisation['organisation']) - strlen($currentContactOrganisation->getBranch()))
-                ) {
+                if (!$organisationFound) {
+                    //Create only a branch when the name is found and the given names do not match in length
+                    if (strlen($foundOrganisation->getOrganisation()) <
+                        (strlen($contactOrganisation['organisation']) -
+                            strlen($currentContactOrganisation->getBranch()))
+                    ) {
+                        $currentContactOrganisation->setBranch(
+                            str_replace(
+                                $contactOrganisation['organisation'],
+                                '~',
+                                $foundOrganisation->getOrganisation()
+                            )
+                        );
+                    }
                     /**
                      * We have found a match of the organisation in the string and
                      */
                     $organisationFound = true;
-                    $currentContactOrganisation->setBranch(
-                        str_replace($foundOrganisation->getOrganisation(), '~', $contactOrganisation['organisation'])
-                    );
+
                 }
             }
             $currentContactOrganisation->setOrganisation($foundOrganisation);
@@ -764,14 +782,13 @@ class ContactService extends ServiceAbstract
      * Search for contacts based on a search-item
      *
      * @param $searchItem
-     * @param $maxResults
      *
-     * @return Contact[]
+     * @return QueryBuilder;
      */
-    public function searchContacts($searchItem, $maxResults)
+    public function searchContacts($searchItem)
     {
         return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-            ->searchContacts($searchItem, $maxResults);
+            ->searchContacts($searchItem);
     }
 
     /**
@@ -872,5 +889,92 @@ class ContactService extends ServiceAbstract
         }
 
         return $contacts;
+    }
+
+    /**
+     * @param  Affiliation $affiliation
+     * @return array
+     */
+    public function findContactsInAffiliation(Affiliation $affiliation)
+    {
+        $contacts = new ArrayCollection();
+        $contactRole = [];
+
+        /**
+         * Add the technical contact
+         */
+        $contacts->add($affiliation->getContact());
+        $contactRole[$affiliation->getContact()->getId()][] = 'Technical Contact';
+
+        /**
+         * Add the financial contact
+         */
+        if (!is_null($affiliation->getFinancial())) {
+            $contacts->add($affiliation->getFinancial()->getContact());
+            $contactRole[$affiliation->getFinancial()->getContact()->getId()][] = 'Financial Contact';
+        }
+
+        /**
+         * Add the associates
+         */
+        foreach ($affiliation->getAssociate() as $associate) {
+            /**
+             * Add the associates
+             */
+            if (!$contacts->contains($associate)) {
+                $contacts->add($associate);
+            }
+            $contactRole[$associate->getId()][] = 'Associate';
+        }
+
+
+        /**
+         * Add the workpackage leaders
+         */
+        foreach ($affiliation->getProject()->getWorkpackage() as $workpackage) {
+            /**
+             * Add the associates
+             */
+            if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()
+                    ->getId() === $affiliation->getOrganisation()->getId()
+            ) {
+                if (!$contacts->contains($workpackage->getContact())) {
+                    $contacts->add($workpackage->getContact());
+                }
+                $contactRole[$workpackage->getContact()->getId()][] = 'Workpackage leader';
+            }
+        }
+
+        $contactRole = array_map('array_unique', $contactRole);
+
+        return ['contacts' => $contacts, 'contactRole' => $contactRole];
+    }
+
+    /**
+     * @param Calendar $calendar
+     * @return Contact[]
+     * @throws \Exception
+     */
+    public function findPossibleContactByCalendar(Calendar $calendar)
+    {
+        if (is_null($calendar->getProjectCalendar())) {
+            throw new \Exception("A projectCalendar is required to find the contacts");
+        }
+
+        return $this->getEntityManager()
+            ->getRepository($this->getFullEntityName('Contact'))
+            ->findPossibleContactByCalendar($calendar);
+    }
+
+    /**
+     * @param Organisation $organisation
+     *
+     * @return Contact[]
+     */
+    public function findContactsInOrganisation(Organisation $organisation)
+    {
+        return $this->getEntityManager()->getRepository(
+            $this->getFullEntityName('contact')
+        )->findContactsInOrganisation($organisation);
     }
 }

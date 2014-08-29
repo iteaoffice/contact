@@ -13,6 +13,8 @@ namespace Contact\Controller;
 
 use Contact\Service\ContactServiceAwareInterface;
 use Contact\Service\FormServiceAwareInterface;
+use Contact\Service\SelectionService;
+use Contact\Service\SelectionServiceAwareInterface;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -41,8 +43,9 @@ class ControllerInitializer implements InitializerInterface
             return;
         }
         $arrayCheck = [
-            FormServiceAwareInterface::class    => 'contact_form_service',
-            ContactServiceAwareInterface::class => 'contact_contact_service',
+            SelectionServiceAwareInterface::class => SelectionService::class,
+            FormServiceAwareInterface::class      => 'contact_form_service',
+            ContactServiceAwareInterface::class   => 'contact_contact_service',
         ];
         /**
          * @var $sm ServiceLocatorInterface

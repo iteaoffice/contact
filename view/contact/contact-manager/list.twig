@@ -2,29 +2,22 @@
 
     <h1 id="title">{{ translate("txt-contact-list") }}</h1>
 
-    <div class="row">
-        <div class="col-md-6">
-            <p class="lead">{{ translate("txt-contact-list-explanation") }}</p>
-        </div>
+    {% do form.prepare() %}
 
-        <div class="col-md-6">
-            <div class="pull-right">
-                <form class="form-inline" role="form" id="contactSearch">
-                    <div class="form-group">
-                        <label class="sr-only" for="search-box">{{ translate("txt-search") }}</label>
-                        <input type="search" class="form-control col-md-12" id="search" name="q"
-                               value="{{ searchItem }}"
-                               placeholder="{{ translate("txt-search-item") }}">
-                    </div>
-                    <input type="submit" value="{{ translate("txt-search") }}" class="btn btn-primary">
-                </form>
-            </div>
-        </div>
+    {{ form().openTag(form)|raw }}
 
+    {{ ztbformelement(form.get('search')) }}
+
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            {{ ztbformelement(form.get('submit')) }}
+
+        </div>
     </div>
 
+    {{ form().closeTag()|raw }}
 
-    {% if   paginator.pageRange > 0 %}
+    {% if paginator.pageRange > 0 %}
         <table class="table table-hover table-striped">
             <thead>
             <tr>
@@ -52,30 +45,9 @@
             {% endfor %}
             </tbody>
         </table>
+        {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
     {% else %}
         {{ ztbalert().info(translate("txt-no-contacts-found"))|raw }}
     {% endif %}
 
-    {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
 </div>
-
-<script type="text/javascript">
-    $("#contactSearch").on('submit', function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: 'contact/search',
-                    data: {
-                        max_rows: 12,
-                        search_item: $("#search").val()
-                    },
-                    success: function (data) {
-                        $("#contact-list").html(data);
-                        $("#throbber").remove();
-                    },
-                    error: function (event, ui) {
-                        alert("Search Failed");
-                    }
-                });
-            }
-    );
-</script>

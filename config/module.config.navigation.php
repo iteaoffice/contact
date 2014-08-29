@@ -7,9 +7,9 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
-return array(
-    'navigation' => array(
-        'admin' => array(
+return [
+    'navigation' => [
+        'admin' => [
             // And finally, here is where we define our page hierarchy
             'contact' => [
                 'label'    => _("txt-contact-admin"),
@@ -30,6 +30,6 @@ return array(
                     ],
                 ],
             ],
-        ),
-    ),
-);
+        ],
+    ],
+];

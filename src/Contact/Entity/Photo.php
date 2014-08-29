@@ -32,6 +32,10 @@ use Zend\InputFilter\InputFilterInterface;
 class Photo extends EntityAbstract
 {
     /**
+     * Key needed for the encryption and decryption of the Keys
+     */
+    const HASH_KEY = 'afc26c5daef5373cf4acb7ee107d423f';
+    /**
      * @ORM\Column(name="photo_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -91,7 +95,7 @@ class Photo extends EntityAbstract
      */
     public function getHash()
     {
-        return sha1($this->id . '-' . $this->dateUpdated->format('dmYhis'));
+        return hash('sha512', $this->id . self::HASH_KEY);
     }
 
     /**
@@ -132,7 +136,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
@@ -155,35 +159,35 @@ class Photo extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $fileUpload  = new FileInput('file');
+            $fileUpload = new FileInput('file');
             $fileUpload->setRequired(false);
             $fileUpload->getValidatorChain()->attachByName(
                 'File\Extension',
-                array(
-                    'extension' => array('jpg', 'jpeg', 'png'),
-                )
+                [
+                    'extension' => ['jpg', 'jpeg', 'png'],
+                ]
             );
             $fileUpload->getValidatorChain()->attachByName(
                 'File\MimeType',
-                array(
+                [
                     'image/jpeg',
                     'image/jpg',
                     'image/png'
-                )
+                ]
             );
             $fileUpload->getValidatorChain()->attachByName(
                 'File\Size',
-                array(
+                [
                     'min' => '20kB',
                     'max' => '4MB',
-                )
+                ]
             );
             $fileUpload->getValidatorChain()->attachByName(
                 'File\ImageSize',
-                array(
+                [
                     'minWidth'  => 100,
                     'minHeight' => 100
-                )
+                ]
             );
             $inputFilter->add($fileUpload);
             $this->inputFilter = $inputFilter;
@@ -204,6 +208,7 @@ class Photo extends EntityAbstract
             DIRECTORY_SEPARATOR . DEBRANOVA_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
 
         return $cacheDir . DIRECTORY_SEPARATOR
+        . $this->getId() . '-'
         . $this->getHash() . '.'
         . $this->getContentType()->getExtension();
     }

@@ -1,6 +1,7 @@
 <?php
 namespace ContactTest\Fixture;
 
+use Contact\Entity\ContactOrganisation;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -27,6 +28,12 @@ class LoadContactData extends AbstractFixture implements DependentFixtureInterfa
         $contact->setTitle($manager->find('General\Entity\Title', 1));
         $manager->persist($contact);
         $manager->flush();
+
+        $contactOrganisation = new ContactOrganisation();
+        $contactOrganisation->setContact($contact);
+        $contactOrganisation->setOrganisation($manager->find("Organisation\Entity\Organisation", 1));
+        $manager->persist($contactOrganisation);
+        $manager->flush();
     }
 
     /**
@@ -36,10 +43,11 @@ class LoadContactData extends AbstractFixture implements DependentFixtureInterfa
      */
     public function getDependencies()
     {
-        return array(
+        return [
             'GeneralTest\Fixture\LoadCountryData',
             'GeneralTest\Fixture\LoadGenderData',
-            'GeneralTest\Fixture\LoadTitleData'
-        ); //
+            'GeneralTest\Fixture\LoadTitleData',
+            'OrganisationTest\Fixture\LoadOrganisationData'
+        ]; //
     }
 }

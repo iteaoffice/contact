@@ -13,7 +13,6 @@ use BjyAuthorize\Provider\Role\ProviderInterface;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Crypt\BlockCipher;
 use Zend\Form\Annotation;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
@@ -40,7 +39,7 @@ class Contact extends EntityAbstract implements
     /**
      * Key needed for the encryption and decryption of the Keys
      */
-    const CRYPT_KEY = 'afc26c5daef5373cf4acb7ee107d423f';
+    const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
     /**
      * Constant for messenger;
      */
@@ -54,9 +53,9 @@ class Contact extends EntityAbstract implements
      *
      * @var array
      */
-    protected $messengerTemplates = array(
+    protected $messengerTemplates = [
         self::MESSENGER_ACTIVE => self::MESSENGER_ACTIVE_VALUE,
-    );
+    ];
     /**
      * @ORM\Column(name="contact_id", type="integer", length=10, nullable=false)
      * @ORM\Id
@@ -587,78 +586,96 @@ class Contact extends EntityAbstract implements
      * @var \Admin\Entity\Permit\Contact
      */
     private $permitContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Admin\Entity\Session
+     */
+    private $session;
 
     /**
      * Class constructor
      */
     public function __construct()
     {
-        $this->project                = new Collections\ArrayCollection();
-        $this->projectVersion         = new Collections\ArrayCollection();
-        $this->projectDescription     = new Collections\ArrayCollection();
-        $this->projectDocument        = new Collections\ArrayCollection();
-        $this->web                    = new Collections\ArrayCollection();
-        $this->role                   = new Collections\ArrayCollection();
-        $this->roadmapLog             = new Collections\ArrayCollection();
-        $this->address                = new Collections\ArrayCollection();
-        $this->phone                  = new Collections\ArrayCollection();
-        $this->emailAddress           = new Collections\ArrayCollection();
-        $this->access                 = new Collections\ArrayCollection();
-        $this->optIn                  = new Collections\ArrayCollection();
-        $this->domain                 = new Collections\ArrayCollection();
-        $this->technology             = new Collections\ArrayCollection();
-        $this->dnd                    = new Collections\ArrayCollection();
-        $this->nda                    = new Collections\ArrayCollection();
-        $this->programDoa             = new Collections\ArrayCollection();
-        $this->domain                 = new Collections\ArrayCollection();
-        $this->technology             = new Collections\ArrayCollection();
-        $this->openId                 = new Collections\ArrayCollection();
-        $this->rationale              = new Collections\ArrayCollection();
-        $this->organisationLog        = new Collections\ArrayCollection();
-        $this->affiliationLog         = new Collections\ArrayCollection();
+        $this->project = new Collections\ArrayCollection();
+        $this->projectVersion = new Collections\ArrayCollection();
+        $this->projectDescription = new Collections\ArrayCollection();
+        $this->projectDocument = new Collections\ArrayCollection();
+        $this->web = new Collections\ArrayCollection();
+        $this->role = new Collections\ArrayCollection();
+        $this->roadmapLog = new Collections\ArrayCollection();
+        $this->address = new Collections\ArrayCollection();
+        $this->phone = new Collections\ArrayCollection();
+        $this->emailAddress = new Collections\ArrayCollection();
+        $this->access = new Collections\ArrayCollection();
+        $this->optIn = new Collections\ArrayCollection();
+        $this->domain = new Collections\ArrayCollection();
+        $this->technology = new Collections\ArrayCollection();
+        $this->dnd = new Collections\ArrayCollection();
+        $this->nda = new Collections\ArrayCollection();
+        $this->programDoa = new Collections\ArrayCollection();
+        $this->domain = new Collections\ArrayCollection();
+        $this->technology = new Collections\ArrayCollection();
+        $this->openId = new Collections\ArrayCollection();
+        $this->rationale = new Collections\ArrayCollection();
+        $this->organisationLog = new Collections\ArrayCollection();
+        $this->affiliationLog = new Collections\ArrayCollection();
         $this->affiliationDescription = new Collections\ArrayCollection();
-        $this->affiliation            = new Collections\ArrayCollection();
-        $this->financial              = new Collections\ArrayCollection();
-        $this->invoice                = new Collections\ArrayCollection();
-        $this->publication            = new Collections\ArrayCollection();
-        $this->publicationDownload    = new Collections\ArrayCollection();
-        $this->photo                  = new Collections\ArrayCollection();
-        $this->associate              = new Collections\ArrayCollection();
-        $this->deeplinkContact        = new Collections\ArrayCollection();
-        $this->community              = new Collections\ArrayCollection();
-        $this->registration           = new Collections\ArrayCollection();
-        $this->badge                  = new Collections\ArrayCollection();
-        $this->badgeContact           = new Collections\ArrayCollection();
-        $this->boothFinancial         = new Collections\ArrayCollection();
-        $this->selection              = new Collections\ArrayCollection();
-        $this->selectionContact       = new Collections\ArrayCollection();
-        $this->mailingContact         = new Collections\ArrayCollection();
-        $this->mailing                = new Collections\ArrayCollection();
-        $this->resultContact          = new Collections\ArrayCollection();
-        $this->result                 = new Collections\ArrayCollection();
-        $this->workpackage            = new Collections\ArrayCollection();
-        $this->workpackageDocument    = new Collections\ArrayCollection();
-        $this->idea                   = new Collections\ArrayCollection();
-        $this->favouriteIdea          = new Collections\ArrayCollection();
-        $this->ideaMessage            = new Collections\ArrayCollection();
-        $this->evaluation             = new Collections\ArrayCollection();
-        $this->calendarContact        = new Collections\ArrayCollection();
-        $this->calendarDocument       = new Collections\ArrayCollection();
-        $this->calendar               = new Collections\ArrayCollection();
-        $this->scheduleContact        = new Collections\ArrayCollection();
-        $this->projectReview          = new Collections\ArrayCollection();
-        $this->projectVersionReview   = new Collections\ArrayCollection();
-        $this->projectReport          = new Collections\ArrayCollection();
-        $this->projectCalendarReview  = new Collections\ArrayCollection();
-        $this->invite                 = new Collections\ArrayCollection();
-        $this->inviteContact          = new Collections\ArrayCollection();
-        $this->loi                    = new Collections\ArrayCollection();
-        $this->affiliationDoa         = new Collections\ArrayCollection();
-        $this->permitContact          = new Collections\ArrayCollection();
+        $this->affiliation = new Collections\ArrayCollection();
+        $this->financial = new Collections\ArrayCollection();
+        $this->invoice = new Collections\ArrayCollection();
+        $this->publication = new Collections\ArrayCollection();
+        $this->publicationDownload = new Collections\ArrayCollection();
+        $this->photo = new Collections\ArrayCollection();
+        $this->associate = new Collections\ArrayCollection();
+        $this->deeplinkContact = new Collections\ArrayCollection();
+        $this->community = new Collections\ArrayCollection();
+        $this->registration = new Collections\ArrayCollection();
+        $this->badge = new Collections\ArrayCollection();
+        $this->badgeContact = new Collections\ArrayCollection();
+        $this->boothFinancial = new Collections\ArrayCollection();
+        $this->selection = new Collections\ArrayCollection();
+        $this->selectionContact = new Collections\ArrayCollection();
+        $this->mailingContact = new Collections\ArrayCollection();
+        $this->mailing = new Collections\ArrayCollection();
+        $this->resultContact = new Collections\ArrayCollection();
+        $this->result = new Collections\ArrayCollection();
+        $this->workpackage = new Collections\ArrayCollection();
+        $this->workpackageDocument = new Collections\ArrayCollection();
+        $this->idea = new Collections\ArrayCollection();
+        $this->favouriteIdea = new Collections\ArrayCollection();
+        $this->ideaMessage = new Collections\ArrayCollection();
+        $this->evaluation = new Collections\ArrayCollection();
+        $this->calendarContact = new Collections\ArrayCollection();
+        $this->calendarDocument = new Collections\ArrayCollection();
+        $this->calendar = new Collections\ArrayCollection();
+        $this->scheduleContact = new Collections\ArrayCollection();
+        $this->projectReview = new Collections\ArrayCollection();
+        $this->projectVersionReview = new Collections\ArrayCollection();
+        $this->projectReport = new Collections\ArrayCollection();
+        $this->projectCalendarReview = new Collections\ArrayCollection();
+        $this->invite = new Collections\ArrayCollection();
+        $this->inviteContact = new Collections\ArrayCollection();
+        $this->loi = new Collections\ArrayCollection();
+        $this->affiliationDoa = new Collections\ArrayCollection();
+        $this->permitContact = new Collections\ArrayCollection();
+        $this->session = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
         $this->messenger = self::MESSENGER_ACTIVE;
+    }
+
+    /**
+     * Although an alternative does not have a clear hash, we can create one based on the id;
+     * Don't use the elements from underlying objects since this gives confusion
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return hash('sha1', $this->id . self::HASH_KEY);
     }
 
     /**
@@ -727,121 +744,121 @@ class Contact extends EntityAbstract implements
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'firstName',
                         'required'   => true,
-                        'filters'    => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                        'validators' => [
+                            [
                                 'name'    => 'StringLength',
-                                'options' => array(
+                                'options' => [
                                     'encoding' => 'UTF-8',
                                     'min'      => 1,
                                     'max'      => 100,
-                                ),
-                            ),
-                        ),
-                    )
+                                ],
+                            ],
+                        ],
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'middleName',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'lastName',
                         'required'   => true,
-                        'filters'    => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                        'validators' => [
+                            [
                                 'name'    => 'StringLength',
-                                'options' => array(
+                                'options' => [
                                     'encoding' => 'UTF-8',
                                     'min'      => 1,
                                     'max'      => 100,
-                                ),
-                            ),
-                        ),
-                    )
+                                ],
+                            ],
+                        ],
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'phone',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'address',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'community',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'emailAddress',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'dateOfBirth',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'dateEnd',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'messenger',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'access',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -857,7 +874,7 @@ class Contact extends EntityAbstract implements
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'project'        => $this->project,
             'projectVersion' => $this->projectVersion,
             'address'        => $this->address,
@@ -879,40 +896,12 @@ class Contact extends EntityAbstract implements
             'note'           => $this->note,
             'idea'           => $this->idea,
             'photo'          => $this->photo,
-        );
+        ];
     }
 
     public function populate()
     {
         return $this->getArrayCopy();
-    }
-
-    /**
-     * Create a hash for a user
-     *
-     * @return string
-     */
-    public function parseHash()
-    {
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
-        $blockCipher->setKey(self::CRYPT_KEY);
-
-        return $blockCipher->encrypt($this->id);
-    }
-
-    /**
-     * Decrypt a given hash
-     *
-     * @param $hash
-     *
-     * @return bool|string
-     */
-    public function decryptHash($hash)
-    {
-        $blockCipher = BlockCipher::factory('mcrypt', array('algo' => 'aes'));
-        $blockCipher->setKey(self::CRYPT_KEY);
-
-        return $blockCipher->decrypt($hash);
     }
 
     /**
@@ -1405,7 +1394,7 @@ class Contact extends EntityAbstract implements
      */
     public function getDisplayName()
     {
-        $name = trim(implode(' ', array($this->firstName, $this->middleName, $this->lastName)));
+        $name = trim(implode(' ', [$this->firstName, $this->middleName, $this->lastName]));
 
         return !empty($name) ? $name : $this->email;
     }
@@ -2509,5 +2498,21 @@ class Contact extends EntityAbstract implements
     public function setRoadmapLog($roadmapLog)
     {
         $this->roadmapLog = $roadmapLog;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Admin\Entity\Session
+     */
+    public function getSession()
+    {
+        return $this->session;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Admin\Entity\Session $session
+     */
+    public function setSession($session)
+    {
+        $this->session = $session;
     }
 }

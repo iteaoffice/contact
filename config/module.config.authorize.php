@@ -47,8 +47,11 @@ return [
                 ['route' => 'contact/signature', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/photo', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/search', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'assets/contact-photo', 'roles' => []],
                 ['route' => 'zfcadmin/contact-manager', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'zfcadmin/contact-manager/list', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'zfcadmin/contact-manager/edit', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'zfcadmin/contact-manager/permit', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'zfcadmin/contact-manager/view', 'roles' => [], 'assertion' => ContactAssertion::class],
                 [
                     'route'     => 'zfcadmin/contact-manager/impersonate',

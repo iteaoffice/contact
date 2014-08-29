@@ -1,21 +1,43 @@
 <h1>{{ contactService.parseFullname() }}</h1>
 
-{{ contactPhoto(contactService.contact) }}
+<div class="row">
 
-{% if contactService.contact.contactOrganisation %}
-    <h3>{{ translate("txt-organisation") }}</h3>
-    {{ organisationLink(
-    contactService.findOrganisationService,'view', 'name',contactService.contact.contactOrganisation.branch
-    ) }}
-    {{ translate("txt-in") }} {{ contactService.contact.contactOrganisation.organisation.country }}
-{% endif %}
+    <div class="col-md-9">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#general" data-toggle="tab">{{ translate("txt-general") }}</a></li>
+            <li><a href="#address" data-toggle="tab">{{ translate("txt-address") }}</a></li>
+            <li><a href="#selection" data-toggle="tab">{{ translate("txt-selection") }}</a></li>
+            <li><a href="#project" data-toggle="tab">{{ translate("txt-project") }}</a></li>
+            <li><a href="#event" data-toggle="tab">{{ translate("txt-event") }}</a></li>
 
-<h3>{{ translate("txt-project-involvement") }}</h3>
+        </ul>
 
-<ul>
-    {% for projectService in contactService.findProjects() %}
-        <li>{{ projectLink(projectService,'view', 'name') }} {{ projectService.project.country }}</li>
-    {% endfor %}
-</ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="general">
+                {% include 'contact/contact-manager/partial/general' %}
+            </div>
+            <div class="tab-pane" id="address">
+                {% include 'contact/contact-manager/partial/address' %}
+            </div>
+            <div class="tab-pane" id="selection">
+                {% include 'contact/contact-manager/partial/selection' %}
+            </div>
+            <div class="tab-pane" id="project">
+                {% include 'contact/contact-manager/partial/project' %}
+            </div>
+            <div class="tab-pane" id="event">
+                {% include 'contact/contact-manager/partial/event' %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
 
-{{ contactLink(contactService.contact,'impersonate','button') }}
+        {{ contactPhoto(contactService.contact) }}
+
+        {{ contactLink(contactService.contact,'edit-admin','button') }}
+        {{ contactLink(contactService.contact,'permit','button') }}
+        {{ contactLink(contactService.contact,'impersonate','button') }}
+    </div>
+</div>
