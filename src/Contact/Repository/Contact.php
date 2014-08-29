@@ -11,9 +11,11 @@ namespace Contact\Repository;
 
 use Contact\Entity;
 use Contact\Entity\SelectionSql;
+use Contact\Entity\Selection;
 use Contact\Options;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
+use ZendGData\YouTube\Extension\FirstName;
 
 /**
  * @category    Contact
@@ -223,11 +225,33 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('c', 'lastname', 'lastName');
         $query = $this->getEntityManager()->createNativeQuery(
             "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (" .
-            $sql->getQuery() . ")",
+            $sql->getQuery() . ") AND date_end IS NULL",
             $resultSetMap
         );
 
         return $query->getResult();
+    }
+
+
+    /**
+     * Return Contact entities based on a selection SQL using a native SQL query
+     *
+     * @param Selection $selection
+     *
+     * @return Entity\Contact[]
+     */
+    public function findContactsBySelectionContact(Selection $selection)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('c');
+        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->join('c.selectionContact', 'sc');
+        $qb->distinct('c.id');
+        $qb->andWhere($qb->expr()->isNull('c.dateEnd'));
+        $qb->andWhere('sc.selection = ?1');
+        $qb->setParameter(1, $selection->getId());
+        $qb->orderBy('c.lastName');
+        return $qb->getQuery()->getResult();
     }
 
     /**

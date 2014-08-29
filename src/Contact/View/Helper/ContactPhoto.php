@@ -25,18 +25,23 @@ class ContactPhoto extends HelperAbstract
 {
     /**
      * @param Contact $contact
-     * @param int     $width
-     * @param bool    $responsive
+     * @param int $width
+     * @param bool $responsive
      *
      * @return string
      */
-    public function __invoke(Contact $contact, $width = null, $responsive = true)
+    public function __invoke(Contact $contact, $width = null, $responsive = true, $classes = null)
     {
         /**
          * @var $photo Photo
          */
         $photo = $contact->getPhoto()->first();
-        $classes = [];
+
+        if (null !== $classes && !is_array($classes)) {
+            $classes = [$classes];
+        } elseif (null === $classes) {
+            $classes = [];
+        }
         if ($responsive) {
             $classes[] = 'img-responsive';
         }
@@ -72,9 +77,9 @@ class ContactPhoto extends HelperAbstract
         $imageUrl = '<img src="%s?%s" id="%s" class="%s" %s>';
         $params = [
             'contactHash' => $photo->getContact()->parseHash(),
-            'hash'        => $photo->getHash(),
-            'ext'         => $photo->getContentType()->getExtension(),
-            'id'          => $photo->getContact()->getId()
+            'hash' => $photo->getHash(),
+            'ext' => $photo->getContentType()->getExtension(),
+            'id' => $photo->getContact()->getId()
         ];
         $image = sprintf(
             $imageUrl,

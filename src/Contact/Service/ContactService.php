@@ -588,15 +588,20 @@ class ContactService extends ServiceAbstract
     public function findContactsInSelection(Selection $selection)
     {
         /**
-         * A selection can have 2 methods, either SQL or a contacts. We need to query both
-         */
+        * A selection can have 2 methods, either SQL or a contacts. We need to query both
+        */
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             return $this->getEntityManager()->getRepository(
                 $this->getFullEntityName('Contact')
             )->findContactsBySelectionSQL($selection->getSql());
+        } else {
+
+            return $this->getEntityManager()->getRepository(
+                $this->getFullEntityName('Contact')
+                )->findContactsBySelectionContact($selection);
         }
-        //@todo, return the other
+
     }
 
     /**
