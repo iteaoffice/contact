@@ -254,9 +254,9 @@ class Contact extends EntityAbstract implements
      */
     private $projectDocument;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\Dnd", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Dnd", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Program\Entity\Dnd|Collections\ArrayCollection()
+     * @var \Contact\Entity\Dnd|Collections\ArrayCollection()
      */
     private $dnd;
     /**
@@ -479,12 +479,6 @@ class Contact extends EntityAbstract implements
      */
     private $result;
     /**
-     * @ORM\ManyToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="resultContact")
-     * @Annotation\Exclude()
-     * @var \Project\Entity\Result\Result|Collections\ArrayCollection()
-     */
-    private $resultContact;
-    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Workpackage", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection()
@@ -592,6 +586,18 @@ class Contact extends EntityAbstract implements
      * @var \Admin\Entity\Session
      */
     private $session;
+    /**
+     * @ORM\OneToOne(targetEntity="Member\Entity\Member", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Member\Entity\Member
+     */
+    private $member;
+    /**
+     * @ORM\OneToOne(targetEntity="Member\Entity\Presidium", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Member\Entity\Presidium
+     */
+    private $presidium;
 
     /**
      * Class constructor
@@ -639,7 +645,6 @@ class Contact extends EntityAbstract implements
         $this->selectionContact = new Collections\ArrayCollection();
         $this->mailingContact = new Collections\ArrayCollection();
         $this->mailing = new Collections\ArrayCollection();
-        $this->resultContact = new Collections\ArrayCollection();
         $this->result = new Collections\ArrayCollection();
         $this->workpackage = new Collections\ArrayCollection();
         $this->workpackageDocument = new Collections\ArrayCollection();
@@ -711,7 +716,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -1207,6 +1212,7 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param int $id
+     * @return void|UserInterface
      */
     public function setId($id)
     {
@@ -1287,10 +1293,14 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param string $password
+     *
+     * @return Contact
      */
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
     }
 
     /**
@@ -1351,6 +1361,7 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param int $state
+     * @return null|UserInterface
      */
     public function setState($state)
     {
@@ -2117,22 +2128,6 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Result\Result|Collections\ArrayCollection() $resultContact
-     */
-    public function setResultContact($resultContact)
-    {
-        $this->resultContact = $resultContact;
-    }
-
-    /**
-     * @return \Project\Entity\Result\Result|Collections\ArrayCollection()
-     */
-    public function getResultContact()
-    {
-        return $this->resultContact;
-    }
-
-    /**
      * @param \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection() $workpackage
      */
     public function setWorkpackage($workpackage)
@@ -2514,5 +2509,37 @@ class Contact extends EntityAbstract implements
     public function setSession($session)
     {
         $this->session = $session;
+    }
+
+    /**
+     * @return \Member\Entity\Member
+     */
+    public function getMember()
+    {
+        return $this->member;
+    }
+
+    /**
+     * @param \Member\Entity\Member $member
+     */
+    public function setMember($member)
+    {
+        $this->member = $member;
+    }
+
+    /**
+     * @return \Member\Entity\Presidium
+     */
+    public function getPresidium()
+    {
+        return $this->presidium;
+    }
+
+    /**
+     * @param \Member\Entity\Presidium $presidium
+     */
+    public function setPresidium($presidium)
+    {
+        $this->presidium = $presidium;
     }
 }

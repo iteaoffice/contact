@@ -232,9 +232,7 @@ class Profile extends Form
             ]
         );
         $this->add($addressFieldSet);
-        /**
-         * Produce a list of all phone numbers
-         */
+
         $contactOrganisationFieldSet = new Fieldset('contact_organisation');
         $contactOrganisationFieldSet->add(
             [

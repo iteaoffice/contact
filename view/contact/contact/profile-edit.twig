@@ -47,11 +47,12 @@
 
 <fieldset>
     <legend>{{ translate("txt-organisation") }}</legend>
-    {{ ztbformelement(form.get('department')) }}
-    {{ ztbformelement(form.get('position')) }}
 
     {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
     {{ ztbformelement(form.get('contact_organisation').get('country')) }}
+
+    {{ ztbformelement(form.get('department')) }}
+    {{ ztbformelement(form.get('position')) }}
 </fieldset>
 
 <fieldset>
@@ -71,7 +72,6 @@
 </div>
 
 {{ ztbformelement(form.get('file')) }}
-
 
 
 <div class="form-group">
