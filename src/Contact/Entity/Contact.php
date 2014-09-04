@@ -716,7 +716,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**
@@ -1211,7 +1211,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param int $id
+     * @param  int                $id
      * @return void|UserInterface
      */
     public function setId($id)
@@ -1360,7 +1360,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param int $state
+     * @param  int                $state
      * @return null|UserInterface
      */
     public function setState($state)
