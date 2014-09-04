@@ -606,7 +606,7 @@ class ContactService extends ServiceAbstract
         } else {
             return $this->getEntityManager()->getRepository(
                 $this->getFullEntityName('Contact')
-                )->findContactsBySelectionContact($selection);
+            )->findContactsBySelectionContact($selection);
         }
 
     }
