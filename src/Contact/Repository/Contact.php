@@ -18,7 +18,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Organisation\Entity\Organisation;
 
-
 /**
  * @category    Contact
  * @package     Repository
@@ -108,7 +107,6 @@ class Contact extends EntityRepository
                 $queryBuilder->expr()->in('c.id', $projectLeaders->getDQL())
             )
         );
-
 
         return $queryBuilder;
     }
@@ -245,7 +243,6 @@ class Contact extends EntityRepository
         return $query->getResult();
     }
 
-
     /**
      * Return Contact entities based on a selection SQL using a native SQL query
      *
@@ -264,6 +261,7 @@ class Contact extends EntityRepository
         $qb->andWhere('sc.selection = ?1');
         $qb->setParameter(1, $selection->getId());
         $qb->orderBy('c.lastName');
+
         return $qb->getQuery()->getResult();
     }
 
@@ -314,7 +312,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param Organisation $organisation
+     * @param  Organisation $organisation
      * @return Contact[]
      */
     public function findContactsInOrganisation(Organisation $organisation)
@@ -323,7 +321,6 @@ class Contact extends EntityRepository
         $qb->select('c');
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->addOrderBy('c.lastName', 'ASC');
-
 
         //Select the contacts based on their organisations
         $subSelect = $this->_em->createQueryBuilder();
@@ -341,7 +338,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param Calendar $calendar
+     * @param  Calendar         $calendar
      * @return Entity\Contact[]
      */
     public function findPossibleContactByCalendar(Calendar $calendar)

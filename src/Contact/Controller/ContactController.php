@@ -84,7 +84,6 @@ class ContactController extends ContactAbstractController
         $response->setContent($file);
 
         return $response;
-
     }
 
     /**

@@ -673,7 +673,7 @@ class Contact extends EntityAbstract implements
      *
      * @return string
      */
-    public function getHash()
+    public function parseHash()
     {
         return hash('sha1', $this->id . self::HASH_KEY);
     }

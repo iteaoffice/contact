@@ -169,7 +169,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -604,7 +604,6 @@ class ContactService extends ServiceAbstract
                 $this->getFullEntityName('Contact')
             )->findContactsBySelectionSQL($selection->getSql());
         } else {
-
             return $this->getEntityManager()->getRepository(
                 $this->getFullEntityName('Contact')
                 )->findContactsBySelectionContact($selection);
@@ -623,7 +622,7 @@ class ContactService extends ServiceAbstract
      */
     public function updatePasswordForContact($password, Contact $contact)
     {
-        $Bcrypt = new Bcrypt;
+        $Bcrypt = new Bcrypt();
         $Bcrypt->setCost($this->getZfcUserOptions()->getPasswordCost());
         $pass = $Bcrypt->create(md5($password));
         $contact->setPassword(md5($password));
@@ -678,7 +677,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int)$contactOrganisation['country']
+            (int) $contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -716,7 +715,6 @@ class ContactService extends ServiceAbstract
             $currentContactOrganisation->setOrganisation($organisation);
         } else {
             $foundOrganisation = null;
-
 
             /**
              * Go over the found organisation to match the branching
@@ -927,7 +925,6 @@ class ContactService extends ServiceAbstract
             $contactRole[$associate->getId()][] = 'Associate';
         }
 
-
         /**
          * Add the workpackage leaders
          */
@@ -951,7 +948,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param Calendar $calendar
+     * @param  Calendar   $calendar
      * @return Contact[]
      * @throws \Exception
      */
