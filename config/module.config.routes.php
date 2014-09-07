@@ -125,6 +125,43 @@ return [
                     ],
                 ],
             ],
+            'community'        => [
+                'child_routes' => [
+                    'contact' => [
+                        'type'          => 'Segment',
+                        'priority'      => 1000,
+                        'options'       => [
+                            'route'    => '/contact',
+                            'defaults' => [
+                                'namespace'  => 'contact',
+                                'controller' => 'contact-index',
+                                'action'     => 'index',
+                            ],
+                        ],
+                        'may_terminate' => false,
+                        'child_routes'  => [
+                            'profile-edit' => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/edit/profile.html',
+                                    'defaults' => [
+                                        'action' => 'profile-edit',
+                                    ],
+                                ],
+                            ],
+                            'profile'      => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/profile.html',
+                                    'defaults' => [
+                                        'action' => 'profile',
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ]
+                ]
+            ],
             'zfcadmin'         => [
                 'type'          => 'Literal',
                 'priority'      => 1000,

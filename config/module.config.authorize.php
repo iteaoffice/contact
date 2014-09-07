@@ -40,8 +40,10 @@ return [
              */
             'BjyAuthorize\Guard\Route' => [
                 ['route' => 'contact/edit', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'community/contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'community/contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/opt-in-update', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/change-password', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/signature', 'roles' => [], 'assertion' => ContactAssertion::class],
