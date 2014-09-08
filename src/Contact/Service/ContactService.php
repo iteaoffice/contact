@@ -92,7 +92,7 @@ class ContactService extends ServiceAbstract
 
         $contact = $this->setContactId($contactId)->getContact();
 
-        if ($contact->getHash() !== $hash) {
+        if ($contact->parseHash() !== $hash) {
             return null;
         }
 

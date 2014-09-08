@@ -25,9 +25,9 @@ class ContactPhoto extends ImageAbstract
 {
     /**
      * @param Contact $contact
-     * @param int     $width
+     * @param null    $height
      * @param bool    $responsive
-     *
+     * @param null    $classes
      * @return string
      */
     public function __invoke(Contact $contact, $height = null, $responsive = true, $classes = null)

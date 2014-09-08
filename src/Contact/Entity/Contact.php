@@ -1848,7 +1848,7 @@ class Contact extends EntityAbstract implements
      * Find the photo. We need to apply a trick here since the photo has a 1:n relation in the entities to avoid
      * the eager loading of the BLOB but we know that we only have 1 photo
      *
-     * @return \Contact\Entity\Photo
+     * @return \Contact\Entity\Photo|Collections\ArrayCollection()
      */
     public function getPhoto()
     {
