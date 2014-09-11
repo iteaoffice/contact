@@ -69,7 +69,7 @@ class ContactManagerController extends ContactAbstractController
     {
         $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
 
-        var_dump($this->getAdminService()->findPermitContactByContact($contactService->getContact()));
+        $this->getAdminService()->findPermitContactByContact($contactService->getContact());
 
         return new ViewModel(
             [

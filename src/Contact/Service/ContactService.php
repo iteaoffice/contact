@@ -169,7 +169,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -596,8 +596,8 @@ class ContactService extends ServiceAbstract
     public function findContactsInSelection(Selection $selection)
     {
         /**
-        * A selection can have 2 methods, either SQL or a contacts. We need to query both
-        */
+         * A selection can have 2 methods, either SQL or a contacts. We need to query both
+         */
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             return $this->getEntityManager()->getRepository(
@@ -677,7 +677,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -932,8 +932,11 @@ class ContactService extends ServiceAbstract
             /**
              * Add the associates
              */
-            if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()
-                    ->getId() === $affiliation->getOrganisation()->getId()
+            if (is_null($workpackage->getContact()->getContactOrganisation())) {
+                continue;
+            }
+            if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId() ===
+                $affiliation->getOrganisation()->getId()
             ) {
                 if (!$contacts->contains($workpackage->getContact())) {
                     $contacts->add($workpackage->getContact());
@@ -948,7 +951,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param  Calendar   $calendar
+     * @param  Calendar $calendar
      * @return Contact[]
      * @throws \Exception
      */
