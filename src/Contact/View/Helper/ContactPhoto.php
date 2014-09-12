@@ -24,10 +24,10 @@ use Contact\Entity\Photo;
 class ContactPhoto extends ImageAbstract
 {
     /**
-     * @param Contact $contact
-     * @param null    $height
-     * @param bool    $responsive
-     * @param null    $classes
+     * @param  Contact $contact
+     * @param  null    $height
+     * @param  bool    $responsive
+     * @param  null    $classes
      * @return string
      */
     public function __invoke(Contact $contact, $height = null, $responsive = true, $classes = null)
