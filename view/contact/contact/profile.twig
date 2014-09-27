@@ -13,210 +13,101 @@
 </ul>
 
 <div id="tabContent" class="tab-content">
-<div class="tab-pane fade in active" id="profile">
-    <h2>{{ translate("txt-personal-profile") }}</h2>
-    <dl class="dl-horizontal">
-        <dt>{{ translate("txt-name") }}</dt>
-        <dd>{{ contactService.parseFullName() }} ({{ contactService.contact.id }})</dd>
-        <dt>{{ translate("txt-email") }}</dt>
-        <dd>{{ contactService.contact.email }}</dd>
-        <dt>{{ translate("txt-direct-phone") }}</dt>
-        <dd>{{ contactService.getDirectPhone() }}</dd>
-        <dt>{{ translate("txt-mobile-phone") }}</dt>
-        <dd>{{ contactService.getMobilePhone() }}</dd>
-        {% if  contactService.getMailAddress() %}
-            <dt>{{ translate("txt-postal-address") }}</dt>
-            <dd>{{ contactService.getMailAddress().address.address }}</dd>
-            <dd>{{ contactService.getMailAddress().address.zipCode }} {{ contactService.getMailAddress().address.city }}</dd>
-            <dd>{{ contactService.getMailAddress().address.country|upper }}</dd>
-        {% endif %}
-        <dt>{{ translate("txt-profile-visibility") }}</dt>
-        {% if contactService.contact.profile.visible is not null %}
-            <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
-        {% else %}
-            <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
-        {% endif %}
-        <dt>{{ translate("txt-expertise") }}</dt>
-        <dd>{{ contactService.contact.profile.description }}</dd>
-        <dt>{{ translate("txt-community") }}</dt>
-        {% for community in contactService.contact.community %}
-            {% if loop.first %}<dd>{% endif %}{{ communityLink(community) }}{% if loop.last %}</dd>{% endif %}
-        {% else %}
-            <dd>{{ translate("txt-no-community-known") }}</dd>
-        {% endfor %}
-        <dt>{{ translate("txt-open-id") }}</dt>
-        {% for openId in contactService.contact.openId %}
-            <dd>{{ translate("txt-open-id") }} - {{ openId }}</dd>
-        {% else %}
-            <dd>{{ translate("txt-no-open-in-known") }}</dd>
-        {% endfor %}
-    </dl>
-
-    {{ contactLink(contactService.contact,'edit-profile', 'button') }}
-    {{ contactLink(contactService.contact,'change-password', 'button') }}
-</div>
-
-
-<div class="tab-pane fade in" id="organisation">
-    {% set organisationService = contactService.findOrganisationService() %}
-
-    <h2>{{ translate("txt-organisation") }}</h2>
-    {% if organisationService %}
+    <div class="tab-pane fade in active" id="profile">
+        <h2>{{ translate("txt-personal-profile") }}</h2>
         <dl class="dl-horizontal">
-            <dt>{{ translate("txt-organisation") }}</dt>
-            <dd>{{ organisationService.parseOrganisationWithBranch(contactService.contact.contactOrganisation.branch) }}</dd>
-            <dt>{{ translate("txt-organisation-type") }}</dt>
-            <dd>{{ organisationService.organisation.type.description }}</dd>
-            <dt>{{ translate("txt-country") }}</dt>
-            <dd>{{ organisationService.organisation.country }}</dd>
-            {% if contactService.contact.department %}
-                <dt>{{ translate("txt-department") }}</dt>
-                <dd>{{ contactService.contact.department }}</dd>
+            <dt>{{ translate("txt-name") }}</dt>
+            <dd>{{ contactService.parseFullName() }} ({{ contactService.contact.id }})</dd>
+            <dt>{{ translate("txt-email") }}</dt>
+            <dd>{{ contactService.contact.email }}</dd>
+            <dt>{{ translate("txt-direct-phone") }}</dt>
+            <dd>{{ contactService.getDirectPhone() }}</dd>
+            <dt>{{ translate("txt-mobile-phone") }}</dt>
+            <dd>{{ contactService.getMobilePhone() }}</dd>
+            {% if  contactService.getMailAddress() %}
+                <dt>{{ translate("txt-postal-address") }}</dt>
+                <dd>{{ contactService.getMailAddress().address.address }}</dd>
+                <dd>{{ contactService.getMailAddress().address.zipCode }} {{ contactService.getMailAddress().address.city }}</dd>
+                <dd>{{ contactService.getMailAddress().address.country|upper }}</dd>
             {% endif %}
-            {% if contactService.contact.position %}
-                <dt>{{ translate("txt-position") }}</dt>
-                <dd>{{ contactService.contact.position }}</dd>
+            <dt>{{ translate("txt-profile-visibility") }}</dt>
+            {% if contactService.contact.profile.visible is not null %}
+                <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
             {% endif %}
-            <dt>{{ translate("txt-general-description") }}</dt>
-            <dd>{{ organisationService.organisation.description|raw }}</dd>
+            <dt>{{ translate("txt-expertise") }}</dt>
+            <dd>{{ contactService.contact.profile.description }}</dd>
+            <dt>{{ translate("txt-community") }}</dt>
+            {% for community in contactService.contact.community %}
+                {% if loop.first %}<dd>{% endif %}{{ communityLink(community) }}{% if loop.last %}</dd>{% endif %}
+            {% else %}
+                <dd>{{ translate("txt-no-community-known") }}</dd>
+            {% endfor %}
+            <dt>{{ translate("txt-open-id") }}</dt>
+            {% for openId in contactService.contact.openId %}
+                <dd>{{ translate("txt-open-id") }} - {{ openId }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-open-in-known") }}</dd>
+            {% endfor %}
         </dl>
-    {% else %}
-        {{ ztbalert().info(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
-    {% endif %}
-    {{ contactLink(contactService.contact,'edit-profile', 'button') }}
-</div>
 
-<div class="tab-pane fade in" id="event">
-    <h2>{{ translate("txt-events") }}</h2>
-
-    <h3 class="home">{{ translate("txt-my-event-registrations") }}</h3>
-
-    {% if contactService.contact.registration|length > 0 %}
-        <table class="table table-hover table-condensed">
-            <thead>
-            <tr>
-                <th class="col-md-3">{{ translate("txt-meeting-name") }}</th>
-                <th class="col-md-3">{{ translate("txt-registration") }}</th>
-                <th class="col-md-2">{{ translate("txt-date") }}</th>
-                <th class="col-md-2">{{ translate("txt-location") }}</th>
-                <th class="col-md-2">{{ translate("txt-nda") }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for registration in contactService.contact.registration %}
-
-                <tr {% if registration.dateEnd %}class="danger"{% endif %}>
-                    <td>
-                        {{ meetingLink(registration.meeting,'view', 'name') }}
-                    </td>
-                    <td>
-                        {{ registrationLink(registration,'view', 'text') }}
-                        {% if registration.dateEnd %}({{ translate("txt-cancelled") }}){% endif %}
-                    </td>
-                    <td>{{ registration.meeting.dateFrom|from_to_date(registration.meeting.dateUntil, false) }}</td>
-                    <td>{{ registration.meeting.location }}</td>
-                    <td>
-                        {% for call in registration.meeting.call %}
-                            {% set callService = callServiceProxy(call) %}
-                            {% set nda = callService.findNdaByCallAndContact(call, contactService.contact) %}
-                            {% if nda %}
-                                {% if nda.dateApproved %}
-                                    {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}
-                                {% elseif nda.dateSigned %}
-                                    {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
-                                {% else %}
-                                    {{ translate("txt-nda-submitted-but-not-approved-yet") }}
-                                {% endif %}
-                            {% else %}
-                                {{ ndaLink(null, 'upload', 'text', call) }}
-                            {% endif %}
-                        {% else %}
-                            {{ translate("txt-not-applicable") }}
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-    {% else %}
-        {{ ztbalert().info(translate("txt-no-event-registrations-found"))|raw }}
-    {% endif %}
-
-    <h3 class="home">{{ translate("txt-upcoming-events") }}</h3>
-
-    {% if contactService.findUpcomingMeetings|length > 0 %}
-        <table class="table table-hover table-condensed">
-            <thead>
-            <tr>
-                <th class="col-md-3">{{ translate("txt-meeting-name") }}</th>
-                <th class="col-md-3">{{ translate("txt-register") }}</th>
-                <th class="col-md-2">{{ translate("txt-date") }}</th>
-                <th class="col-md-2">{{ translate("txt-location") }}</th>
-                <th class="col-md-2">{{ translate("txt-nda") }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for meeting in contactService.findUpcomingMeetings %}
-
-                {# Try to see if we can find a registration of the event #}
-                {% set registrationService = registrationService.findRegistrationByMeetingAndContact(meeting,contactService.contact ) %}
-
-                <tr {% if registrationService.isCancelled() %}class="warning"{% elseif (registrationService) %}class="success"}{% endif %} >
-                <td>{{ meetingLink(meeting,'view', 'name') }}</td>
-                <td>{% if registrationService %}
-                        {# The user is registered #}
-                        {{ registrationLink(registrationService.registration,'view', 'text') }}
-                    {% else %}
-                        {# The user will register now #}
-                        {{ registrationLink(null,'register', 'text',meeting) }}
-                    {% endif %}
-                </td>
-                <td>{{ meeting.dateFrom|from_to_date(meeting.dateUntil, false) }}</td>
-                <td>{{ meeting.location }}</td>
-                <td>
-                    {% for call in meeting.call %}
-                        {% set callService = callServiceProxy(call) %}
-                        {% set nda = callService.findNdaByCallAndContact(call, contactService.contact) %}
-                        {% if nda %}
-                            {% if nda.dateApproved %}
-                                {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}
-                            {% else %}
-                                {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
-                            {% endif %}
-                        {% else %}
-                            {{ ndaLink(null, 'upload', 'text', call) }}
-                        {% endif %}
-                    {% else %}
-                        {{ translate("txt-not-applicable") }}
-                    {% endfor %}
-                </td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-    {% else %}
-        {{ ztbalert().info(translate("txt-no-upcoming-events-found"))|raw }}
-    {% endif %}
-</div>
+        {{ contactLink(contactService.contact,'edit-profile', 'button') }}
+        {{ contactLink(contactService.contact,'change-password', 'button') }}
+    </div>
 
 
-<div class="tab-pane fade in" id="updates">
-    <h2>{{ translate("txt-updates") }}</h2>
+    <div class="tab-pane fade in" id="organisation">
+        {% set organisationService = contactService.findOrganisationService() %}
 
-    <p>{{ translate("txt-updates-explanation") }}</p>
-
-    <dl class="dl-horizontal">
-        {% for optIn in contactService.findAll('optIn') %}
-            <dt>{{ optIn }}</dt>
-            <dd>{% if optIn in contactService.contact.optIn.toArray() %}
-                    <span class="update-opt-in disable" rel="{{ optIn.id }}">{{ translate("txt-yes") }}</span>
-                {% else %}
-                    <span class="update-opt-in enable" rel="{{ optIn.id }}">{{ translate("txt-no") }}</span>
+        <h2>{{ translate("txt-organisation") }}</h2>
+        {% if organisationService %}
+            <dl class="dl-horizontal">
+                <dt>{{ translate("txt-organisation") }}</dt>
+                <dd>{{ organisationService.parseOrganisationWithBranch(contactService.contact.contactOrganisation.branch) }}</dd>
+                <dt>{{ translate("txt-organisation-type") }}</dt>
+                <dd>{{ organisationService.organisation.type.description }}</dd>
+                <dt>{{ translate("txt-country") }}</dt>
+                <dd>{{ organisationService.organisation.country }}</dd>
+                {% if contactService.contact.department %}
+                    <dt>{{ translate("txt-department") }}</dt>
+                    <dd>{{ contactService.contact.department }}</dd>
                 {% endif %}
-            </dd>
-        {% endfor %}
-    </dl>
-</div>
+                {% if contactService.contact.position %}
+                    <dt>{{ translate("txt-position") }}</dt>
+                    <dd>{{ contactService.contact.position }}</dd>
+                {% endif %}
+                <dt>{{ translate("txt-general-description") }}</dt>
+                <dd>{{ organisationService.organisation.description|raw }}</dd>
+            </dl>
+        {% else %}
+            {{ ztbalert().info(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
+        {% endif %}
+        {{ contactLink(contactService.contact,'edit-profile', 'button') }}
+    </div>
+
+    <div class="tab-pane fade in" id="event">
+        <h2>{{ translate("txt-events") }}</h2>
+
+        {% include 'event/partial/list/meeting-list' %}
+    </div>
+
+
+    <div class="tab-pane fade in" id="updates">
+        <h2>{{ translate("txt-updates") }}</h2>
+
+        <p>{{ translate("txt-updates-explanation") }}</p>
+
+        <dl class="dl-horizontal">
+            {% for optIn in contactService.findAll('optIn') %}
+                <dt>{{ optIn }}</dt>
+                <dd>{% if optIn in contactService.contact.optIn.toArray() %}
+                        <span class="update-opt-in disable" rel="{{ optIn.id }}">{{ translate("txt-yes") }}</span>
+                    {% else %}
+                        <span class="update-opt-in enable" rel="{{ optIn.id }}">{{ translate("txt-no") }}</span>
+                    {% endif %}
+                </dd>
+            {% endfor %}
+        </dl>
+    </div>
 </div>

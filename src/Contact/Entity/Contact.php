@@ -171,7 +171,7 @@ class Contact extends EntityAbstract implements
      */
     private $messenger;
     /**
-     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"},inversedBy="contact")
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, inversedBy="contact")
      * @ORM\JoinTable(name="contact_access",
      *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
      *    inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
@@ -431,11 +431,23 @@ class Contact extends EntityAbstract implements
      */
     private $badgeContact;
     /**
-     * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Booth", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Booth\Booth|Collections\ArrayCollection()
+     * @var \Event\Entity\Booth\Contact[]|Collections\ArrayCollection()
      */
-    private $booth;
+    private $boothContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Booth", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Booth[]|Collections\ArrayCollection()
+     */
+    private $projectBooth;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\Booth", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Organisation\Entity\Booth[]|Collections\ArrayCollection()
+     */
+    private $organisationBooth;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -598,6 +610,24 @@ class Contact extends EntityAbstract implements
      * @var \Member\Entity\Presidium
      */
     private $presidium;
+    /**
+     * @ORM\ManyToMany(targetEntity="Event\Entity\Exhibition\Voter", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude();
+     * @var \Event\Entity\Exhibition\Voter[]|Collections\ArrayCollection
+     */
+    private $voter;
+    /**
+     * @ORM\OneToMany(targetEntity="Event\Entity\Exhibition\Tour", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Event\Entity\Exhibition\Tour|Collections\ArrayCollection()
+     */
+    private $tour;
+    /**
+     * @ORM\ManyToMany(targetEntity="Event\Entity\Exhibition\Tour", cascade={"persist"}, mappedBy="tourContact")
+     * @Annotation\Exclude();
+     * @var \Event\Entity\Exhibition\Tour[]|Collections\ArrayCollection
+     */
+    private $tourContact;
 
     /**
      * Class constructor
@@ -666,6 +696,11 @@ class Contact extends EntityAbstract implements
         $this->affiliationDoa = new Collections\ArrayCollection();
         $this->permitContact = new Collections\ArrayCollection();
         $this->session = new Collections\ArrayCollection();
+        $this->voter = new Collections\ArrayCollection();
+        $this->tour = new Collections\ArrayCollection();
+        $this->projectBooth = new Collections\ArrayCollection();
+        $this->organisationBooth = new Collections\ArrayCollection();
+        $this->tourContact = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -716,7 +751,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -1211,7 +1246,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int                $id
+     * @param  int $id
      * @return void|UserInterface
      */
     public function setId($id)
@@ -1360,7 +1395,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int                $state
+     * @param  int $state
      * @return null|UserInterface
      */
     public function setState($state)
@@ -2000,19 +2035,19 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Event\Entity\Booth\Booth|Collections\ArrayCollection() $booth
+     * @param \Event\Entity\Booth\Contact|Collections\ArrayCollection() $boothContact
      */
-    public function setBooth($booth)
+    public function setBoothContact($boothContact)
     {
-        $this->booth = $booth;
+        $this->boothContact = $boothContact;
     }
 
     /**
-     * @return \Event\Entity\Booth\Booth|Collections\ArrayCollection()
+     * @return \Event\Entity\Booth\Contact|Collections\ArrayCollection()
      */
-    public function getBooth()
+    public function getBoothContact()
     {
-        return $this->booth;
+        return $this->boothContact;
     }
 
     /**
@@ -2541,5 +2576,85 @@ class Contact extends EntityAbstract implements
     public function setPresidium($presidium)
     {
         $this->presidium = $presidium;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[]
+     */
+    public function getVoter()
+    {
+        return $this->voter;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
+     */
+    public function setVoter($voter)
+    {
+        $this->voter = $voter;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour
+     */
+    public function getTour()
+    {
+        return $this->tour;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
+     */
+    public function setTour($tour)
+    {
+        $this->tour = $tour;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[]
+     */
+    public function getTourContact()
+    {
+        return $this->tourContact;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
+     */
+    public function setTourContact($tourContact)
+    {
+        $this->tourContact = $tourContact;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Organisation\Entity\Booth[]
+     */
+    public function getOrganisationBooth()
+    {
+        return $this->organisationBooth;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
+     */
+    public function setOrganisationBooth($organisationBooth)
+    {
+        $this->organisationBooth = $organisationBooth;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Booth[]
+     */
+    public function getProjectBooth()
+    {
+        return $this->projectBooth;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Booth[] $projectBooth
+     */
+    public function setProjectBooth($projectBooth)
+    {
+        $this->projectBooth = $projectBooth;
     }
 }
