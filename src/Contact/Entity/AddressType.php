@@ -24,10 +24,11 @@ use Zend\InputFilter\InputFilterInterface;
  */
 class AddressType extends EntityAbstract
 {
-    const ADDRESS_TYPE_MAIL      = 1;
-    const ADDRESS_TYPE_VISIT     = 2;
+    const ADDRESS_TYPE_MAIL = 1;
+    const ADDRESS_TYPE_VISIT = 2;
     const ADDRESS_TYPE_FINANCIAL = 3;
-    const ADDRESS_TYPE_HOME      = 4;
+    const ADDRESS_TYPE_HOME = 4;
+    const ADDRESS_TYPE_BOOTH_FINANCIAL = 5;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
@@ -122,27 +123,27 @@ class AddressType extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'type',
                         'required'   => true,
-                        'filters'    => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                        'validators' => [
+                            [
                                 'name'    => 'StringLength',
-                                'options' => array(
+                                'options' => [
                                     'encoding' => 'UTF-8',
                                     'min'      => 1,
                                     'max'      => 100,
-                                ),
-                            ),
-                        ),
-                    )
+                                ],
+                            ],
+                        ],
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -158,9 +159,9 @@ class AddressType extends EntityAbstract
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'type' => $this->type,
-        );
+        ];
     }
 
     public function populate()

@@ -16,15 +16,19 @@ return [
                 'route'    => 'zfcadmin/contact-manager',
                 'resource' => 'zfcadmin',
                 'pages'    => [
-                    'contacts' => [
+                    'contacts'   => [
                         'label' => _("txt-contacts"),
-                        'route' => 'zfcadmin/contact-manager',
+                        'route' => 'zfcadmin/contact-manager/list',
                     ],
-                    'permit'   => [
+                    'selections' => [
+                        'label' => _("txt-selections"),
+                        'route' => 'zfcadmin/selection-manager/list',
+                    ],
+                    'permit'     => [
                         'label' => _("txt-permissions"),
                         'route' => 'zfcadmin/permit-manager/entity/list',
                     ],
-                    'access'   => [
+                    'access'     => [
                         'label' => _("txt-access"),
                         'route' => 'zfcadmin/access-manager/list',
                     ],

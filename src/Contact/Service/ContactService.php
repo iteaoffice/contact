@@ -121,6 +121,18 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Find all contacts which are active and have a CV
+     *
+     * @return Contact[]
+     */
+    public function findContactsWithCV()
+    {
+        return $this->getEntityManager()
+            ->getRepository($this->getFullEntityName('contact'))
+            ->findContactsWithCV();
+    }
+
+    /**
      * Find a list of upcoming meetings were a user has not registered yet
      *
      * @return \Event\Entity\Meeting\Meeting[]
@@ -169,7 +181,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -241,14 +253,7 @@ class ContactService extends ServiceAbstract
      */
     public function getMailAddress()
     {
-        if (is_null($this->getContact())) {
-            throw new \RunTimeException(sprintf("A contact should be set"));
-        }
-
-        return $this->getAddressService()->findAddressByContactAndType(
-            $this->getContact(),
-            AddressType::ADDRESS_TYPE_MAIL
-        );
+        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_MAIL);
     }
 
     /**
@@ -279,14 +284,7 @@ class ContactService extends ServiceAbstract
      */
     public function getVisitAddress()
     {
-        if (is_null($this->getContact())) {
-            throw new \RunTimeException(sprintf("A contact should be set"));
-        }
-
-        return $this->getAddressService()->findAddressByContactAndType(
-            $this->getContact(),
-            AddressType::ADDRESS_TYPE_VISIT
-        );
+        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_VISIT);
     }
 
     /**
@@ -297,13 +295,45 @@ class ContactService extends ServiceAbstract
      */
     public function getFinancialAddress()
     {
+        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_FINANCIAL);
+    }
+
+    /**
+     * Find the financial address of a contact
+     *
+     * @throws \RunTimeException
+     * @return AddressService
+     */
+    public function getBoothFinancialAddress()
+    {
+        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+    }
+
+    /**
+     * @param $typeId
+     * @return AddressService|null
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function getAddressByTypeId($typeId)
+    {
         if (is_null($this->getContact())) {
             throw new \RunTimeException(sprintf("A contact should be set"));
         }
 
+        /**
+         * @var $addressType AddressType
+         */
+        $addressType = $this->getEntityManager()->find($this->getFullEntityName('AddressType'), $typeId);
+
+        if (is_null($this->getContact())) {
+            throw new \RunTimeException(sprintf("A invalid AddressType (%s) requested", $addressType));
+        }
+
         return $this->getAddressService()->findAddressByContactAndType(
             $this->getContact(),
-            AddressType::ADDRESS_TYPE_FINANCIAL
+            $addressType
         );
     }
 
@@ -677,7 +707,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -951,7 +981,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param  Calendar   $calendar
+     * @param  Calendar $calendar
      * @return Contact[]
      * @throws \Exception
      */

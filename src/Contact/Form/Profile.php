@@ -305,9 +305,6 @@ class Profile extends Form
                     'label'         => _("txt-visibility"),
                     'value_options' => $profileEntity->getVisibleTemplates()
                 ],
-                'attributes' => [
-                    'class' => 'form-control',
-                ]
             ]
         );
         $profileFieldSet->add(

@@ -1,0 +1,44 @@
+<div id="selection-list">
+
+    <h1 id="title">{{ translate("txt-selection-list") }}</h1>
+
+    {% do form.prepare() %}
+
+    {{ form().openTag(form)|raw }}
+
+    {{ ztbformelement(form.get('search')) }}
+
+    <div class="input-group">
+        {{ formelement(form.get('search')) }}
+        <span class="input-group-btn">{{ formelement(form.get('submit')) }}</span>
+    </div>
+
+    {{ form().closeTag()|raw }}
+
+    {% if paginator.pageRange > 0 %}
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th class="col-md-2">{{ translate("txt-name") }}</th>
+                <th class="col-md-2">{{ translate("txt-email") }}</th>
+            </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+            <tbody>
+            {% for selection in paginator.getCurrentItems() %}
+                <tr>
+                    <td>{{ selectionLink(selection,'view', 'name') }}</td>
+                    <td></td>
+
+                    <td></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
+    {% else %}
+        {{ ztbalert().info(translate("txt-no-selections-found"))|raw }}
+    {% endif %}
+
+</div>

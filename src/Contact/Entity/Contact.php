@@ -171,7 +171,7 @@ class Contact extends EntityAbstract implements
      */
     private $messenger;
     /**
-     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, inversedBy="contact")
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, inversedBy="contact", fetch="EXTRA_LAZY")
      * @ORM\JoinTable(name="contact_access",
      *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
      *    inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
@@ -1446,6 +1446,18 @@ class Contact extends EntityAbstract implements
     }
 
     /**
+     * Get displayName, or the email address
+     *
+     * @return string
+     */
+    public function getFormName()
+    {
+        $name = sprintf("%s, %s", trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
+
+        return !empty($name) ? $name : $this->email;
+    }
+
+    /**
      * @param string $displayName
      *
      * @return boolean
@@ -2035,7 +2047,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Event\Entity\Booth\Contact|Collections\ArrayCollection() $boothContact
+     * @param \Event\Entity\Booth\Contact[]|Collections\ArrayCollection() $boothContact
      */
     public function setBoothContact($boothContact)
     {
@@ -2043,7 +2055,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Event\Entity\Booth\Contact|Collections\ArrayCollection()
+     * @return \Event\Entity\Booth\Contact[]|Collections\ArrayCollection()
      */
     public function getBoothContact()
     {
