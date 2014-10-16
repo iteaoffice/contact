@@ -277,6 +277,16 @@ return [
                                     'page'   => null,
                                 ]
                             ],
+                            'new'  => [
+                                'type'     => 'Literal',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new.html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
                             'view' => [
                                 'type'     => 'Segment',
                                 'priority' => 1000,

@@ -19,6 +19,23 @@ use Doctrine\ORM\EntityRepository;
 class Selection extends EntityRepository
 {
     /**
+     * @param $searchItem
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function searchSelections($searchItem)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('s');
+        $qb->from("Contact\Entity\Selection", 's');
+        $qb->distinct('s.id');
+        $qb->andWhere('s.selection LIKE :searchItem');
+        $qb->setParameter('searchItem', "%" . $searchItem . "%");
+        $qb->orderBy('s.id', 'DESC');
+
+        return $qb;
+    }
+
+    /**
      * @param Entity\Contact $contact
      *
      * @return null|Entity\Selection

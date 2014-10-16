@@ -83,6 +83,7 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 ['route' => 'zfcadmin/selection-manager/list', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/new', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
                 ['route' => 'zfcadmin/selection-manager/edit', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
                 ['route' => 'zfcadmin/selection-manager/view', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
             ],

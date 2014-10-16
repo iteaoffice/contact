@@ -28,18 +28,21 @@ class SelectionManagerController extends ContactAbstractController
         $paginator = null;
         $searchForm = new Search();
 
-        $search = $this->getRequest()->getQuery()->get('search');
+        $search = $this->getRequest()->getQuery()->get('q');
         $page = $this->getRequest()->getQuery()->get('page');
 
         $searchForm->setData($_GET);
 
         if ($this->getRequest()->isGet() && $searchForm->isValid() && !empty($search)) {
-            $selectionSearchQuery = $this->getSelectionService()->searchSelections($search);
-            $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($selectionSearchQuery)));
-            $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
-            $paginator->setCurrentPageNumber($page);
-            $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
+            $selectionQuery = $this->getSelectionService()->searchSelection($search);
+        } else {
+            $selectionQuery = $this->getSelectionService()->searchSelection();
         }
+
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($selectionQuery)));
+        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
 
         return new ViewModel(
             [
@@ -61,6 +64,9 @@ class SelectionManagerController extends ContactAbstractController
         return new ViewModel(
             [
                 'selectionService' => $selectionService,
+                'contacts'         => $this->getContactService()->findContactsInSelection(
+                    $selectionService->getSelection()
+                ),
             ]
         );
     }

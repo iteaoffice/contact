@@ -11,6 +11,7 @@ namespace Contact\Service;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * SelectionService
@@ -38,6 +39,30 @@ class SelectionService extends ServiceAbstract
         $this->setSelection($this->findEntityById('selection', $id));
 
         return $this;
+    }
+
+    public function isSql()
+    {
+        return !is_null($this->selection->getSql());
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountOfContacts()
+    {
+        return sizeof($this->getContactService()->findContactsInSelection($this->selection));
+    }
+
+    /**
+     * @param null $query
+     *
+     * @return QueryBuilder
+     */
+    public function searchSelection($query = null)
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))
+            ->searchSelections($query);
     }
 
     /**

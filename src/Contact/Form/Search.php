@@ -27,11 +27,12 @@ class Search extends Form
         $this->add(
             [
                 'type'       => 'Zend\Form\Element\Text',
-                'name'       => 'search',
+                'name'       => 'q',
                 'attributes' => [
                     'label'       => 'search',
+                    'class'       => 'form-control',
                     'id'          => "search",
-                    'placeholder' => _("txt-contact-search-as-you-type")
+                    'placeholder' => _("txt-site-search")
                 ]
             ]
         );
