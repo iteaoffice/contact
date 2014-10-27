@@ -19,10 +19,12 @@ use Contact\Entity\PhoneType;
 use Contact\Entity\Selection;
 use Contact\Options\CommunityOptionsInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\PersistentCollection;
 use General\Entity\Country;
 use General\Entity\Gender;
 use General\Entity\Title;
+use Mailing\Entity\Mailing;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
@@ -181,7 +183,7 @@ class ContactService extends ServiceAbstract
     {
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -447,7 +449,6 @@ class ContactService extends ServiceAbstract
         $email->addTo($emailAddress, $contactService->parseFullName());
         $email->setFullname($contactService->parseFullName());
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
-
         $this->getEmailService()->send($email);
 
         return $contact;
@@ -639,7 +640,6 @@ class ContactService extends ServiceAbstract
                 $this->getFullEntityName('Contact')
             )->findContactsBySelectionContact($selection);
         }
-
     }
 
     /**
@@ -708,7 +708,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -982,7 +982,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param  Calendar   $calendar
+     * @param  Calendar $calendar
      * @return Contact[]
      * @throws \Exception
      */

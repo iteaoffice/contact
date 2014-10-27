@@ -38,7 +38,7 @@
 
         {% if selectionService.isSql() %}
             <h2>{{ translate("txt-sql-query") }}</h2>
-            <code>{{ selectionService.selection.sql.query }}</code>
+            <pre>{{ selectionService.selection.sql.query }}</pre>
         {% endif %}
     </div>
     <div class="tab-pane" id="contacts">
