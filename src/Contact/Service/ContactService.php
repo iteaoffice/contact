@@ -417,6 +417,7 @@ class ContactService extends ServiceAbstract
         $email->addTo($emailAddress, $contactService->parseFullName());
         $email->setFullname($contactService->parseFullName());
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
+
         $this->getEmailService()->send($email);
 
         return $contact;
