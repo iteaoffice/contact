@@ -43,7 +43,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      * @Annotation\Type("\Zend\Form\Element\File")
      * @Annotation\Options({"label":"txt-cv-file"})
      * @Annotation\Exclude()
-     * @var string
+     * @var resource
      */
     private $cv;
     /**
@@ -187,7 +187,7 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param string $cv
+     * @param resource $cv
      */
     public function setCv($cv)
     {
@@ -195,7 +195,7 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return string
+     * @return resource
      */
     public function getCv()
     {

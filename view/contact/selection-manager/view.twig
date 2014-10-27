@@ -1,0 +1,87 @@
+<h1>{{ selectionService.selection }}</h1>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#general" data-toggle="tab">{{ translate("txt-general") }}</a></li>
+    <li><a href="#contacts" data-toggle="tab">{{ translate("txt-contacts") }}</a></li>
+    <li><a href="#mailings" data-toggle="tab">{{ translate("txt-mailings") }}</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div class="tab-pane active" id="general">
+        <h2>{{ translate("txt-general") }}</h2>
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-name") }}</dt>
+            <dd>{{ selectionService.selection.selection }}</dd>
+            <dt>{{ translate("txt-description") }}</dt>
+            <dd>{{ selectionService.selection.description|default(translate("txt-not-provided")) }}</dd>
+            <dt>{{ translate("txt-group-tag") }}</dt>
+            <dd>{{ selectionService.selection.tag|default(translate("txt-not-provided")) }}</dd>
+            <dt>{{ translate("txt-date-created") }}</dt>
+            <dd>{{ selectionService.selection.dateCreated|string_date }}</dd>
+            {% if selectionService.selection.dateDeleted %}
+                <dt>{{ translate("txt-date-deleted") }}</dt>
+                <dd><i class="fa fa-trash"></i> {{ selectionService.selection.dateDeleted|string_date }}</dd>
+            {% endif %}
+            <dt>{{ translate("txt-owner") }}</dt>
+            <dd>{{ selectionService.selection.contact.displayName }}</dd>
+            <dt>{{ translate("txt-amount-of-contacts") }}</dt>
+            <dd>{{ selectionService.getAmountOfContacts() }}</dd>
+            {% if selectionService.selection.mailingList|length > 0 %}
+                <dt>{{ translate("txt-mailing-lists") }}</dt>
+                {% for mailingList in selectionService.selection.mailingList %}
+                    <dd>{{ mailingList.alias }}</dd>
+                {% endfor %}
+            {% endif %}
+        </dl>
+
+        {% if selectionService.isSql() %}
+            <h2>{{ translate("txt-sql-query") }}</h2>
+            <code>{{ selectionService.selection.sql.query }}</code>
+        {% endif %}
+    </div>
+    <div class="tab-pane" id="contacts">
+        <h2>{{ translate("txt-contacts") }}</h2>
+        <table class="table table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>{{ translate("txt-contact") }}</th>
+                <th>{{ translate("txt-email") }}</th>
+                <th>{{ translate("txt-organisation") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for contact in contacts %}
+                <tr>
+                    <td>{{ contact.displayName }}</td>
+                    <td>{{ contact.email }}</td>
+                    <td>{{ contact.contactOrganisation.organisation }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="mailings">
+        <h2>{{ translate("txt-mailings") }}</h2>
+        <table class="table table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>{{ translate("txt-mailing") }}</th>
+                <th>{{ translate("txt-date") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for mailing in  selectionService.selection.mailing %}
+                <tr>
+                    <td>{{ mailing.mailing }}</td>
+                    <td>{% if mailing.dateCreated %}{{ mailing.dateCreated|string_date }}{% endif %}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{ selectionLink( selectionService.selection,'edit','button') }}
+{{ selectionLink( null ,'list','button') }}

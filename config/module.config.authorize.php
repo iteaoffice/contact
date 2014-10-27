@@ -7,6 +7,7 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
  */
+use Admin\Entity\Access;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 
 return [
@@ -43,6 +44,7 @@ return [
                 ['route' => 'community/contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'contact/get-address-by-type', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'community/contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/opt-in-update', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/change-password', 'roles' => [], 'assertion' => ContactAssertion::class],
@@ -50,16 +52,40 @@ return [
                 ['route' => 'contact/photo', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/search', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'assets/contact-photo', 'roles' => []],
-                ['route' => 'zfcadmin/contact-manager', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'zfcadmin/contact-manager/list', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'zfcadmin/contact-manager/edit', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'zfcadmin/contact-manager/permit', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'zfcadmin/contact-manager/view', 'roles' => [], 'assertion' => ContactAssertion::class],
                 [
-                    'route'     => 'zfcadmin/contact-manager/impersonate',
-                    'roles'     => [],
+                    'route'     => 'zfcadmin/contact-manager',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
+                [
+                    'route'     => 'zfcadmin/contact-manager/list',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/contact-manager/edit',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/contact-manager/permit',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/contact-manager/view',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/contact-manager/impersonate',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                ['route' => 'zfcadmin/selection-manager/list', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/new', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/edit', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/view', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
             ],
         ],
     ],

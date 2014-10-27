@@ -11,8 +11,8 @@ namespace Contact\Repository;
 
 use Calendar\Entity\Calendar;
 use Contact\Entity;
-use Contact\Entity\SelectionSql;
 use Contact\Entity\Selection;
+use Contact\Entity\SelectionSql;
 use Contact\Options;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -146,6 +146,20 @@ class Contact extends EntityRepository
         $queryBuilder->from('Contact\Entity\Contact', 'c');
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('c.dateOfBirth'));
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return Contact[]
+     */
+    public function findContactsWithCV()
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
+        $queryBuilder->innerJoin('c.cv', 'cv');
 
         return $queryBuilder->getQuery()->getResult();
     }
@@ -338,7 +352,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param  Calendar         $calendar
+     * @param  Calendar $calendar
      * @return Entity\Contact[]
      */
     public function findPossibleContactByCalendar(Calendar $calendar)

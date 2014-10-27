@@ -19,12 +19,12 @@ use Doctrine\ORM\EntityRepository;
 class Address extends EntityRepository
 {
     /**
-     * @param Entity\Contact $contact
-     * @param                $type
+     * @param Entity\Contact     $contact
+     * @param Entity\AddressType $type
      *
      * @return null|Entity\Address
      */
-    public function findAddressByContactAndType(Entity\Contact $contact, $type)
+    public function findAddressByContactAndType(Entity\Contact $contact, Entity\AddressType $type)
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('a');

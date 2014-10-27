@@ -60,7 +60,7 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes'  => [
-                    'search'          => [
+                    'search'              => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/search',
@@ -69,7 +69,7 @@ return [
                             ],
                         ],
                     ],
-                    'signature'       => [
+                    'signature'           => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/signature.html',
@@ -78,7 +78,7 @@ return [
                             ],
                         ],
                     ],
-                    'photo'           => [
+                    'photo'               => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/photo/[:contactHash].[:ext]',
@@ -87,7 +87,7 @@ return [
                             ],
                         ],
                     ],
-                    'profile'         => [
+                    'profile'             => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/profile.html',
@@ -96,7 +96,7 @@ return [
                             ],
                         ],
                     ],
-                    'profile-edit'    => [
+                    'profile-edit'        => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/edit/profile.html',
@@ -105,7 +105,7 @@ return [
                             ],
                         ],
                     ],
-                    'opt-in-update'   => [
+                    'opt-in-update'       => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/update/opt-in.html',
@@ -114,12 +114,21 @@ return [
                             ],
                         ],
                     ],
-                    'change-password' => [
+                    'change-password'     => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/edit/password.html',
                             'defaults' => [
                                 'action' => 'change-password',
+                            ],
+                        ],
+                    ],
+                    'get-address-by-type' => [
+                        'type'    => 'Segment',
+                        'options' => [
+                            'route'    => '/get-address.html',
+                            'defaults' => [
+                                'action' => 'get-address-by-type',
                             ],
                         ],
                     ],
@@ -174,7 +183,7 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes'  => [
-                    'contact-manager' => [
+                    'contact-manager'   => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/contact',
@@ -237,6 +246,64 @@ return [
                                     'route'    => '/permissions/[:id].html',
                                     'defaults' => [
                                         'action' => 'permit',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'selection-manager' => [
+                        'type'          => 'Segment',
+                        'options'       => [
+                            'route'    => '/selection',
+                            'defaults' => [
+                                'controller' => 'contact-selection',
+                                'action'     => 'list',
+                                'page'       => 1,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'list' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/list.html',
+                                    'defaults' => [
+                                        'action' => 'list',
+                                    ],
+                                ],
+                                'query'    => [
+                                    'search' => null,
+                                    'page'   => null,
+                                ]
+                            ],
+                            'new'  => [
+                                'type'     => 'Literal',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new.html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'view' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/view/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'view',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
                                     ],
                                 ],
                             ],

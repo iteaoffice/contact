@@ -1,0 +1,43 @@
+<h1 id="title">{{ translate("txt-selection-list") }}</h1>
+
+{% do form.prepare() %}
+
+    {{ form().openTag(form)|raw }}
+
+<div class="input-group">
+    {{ formelement(form.get('q')) }}
+    <span class="input-group-btn">{{ formelement(form.get('submit')) }}</span>
+</div>
+
+{{ form().closeTag()|raw }}
+
+    {% if paginator.pageRange > 0 %}
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>{{ translate("txt-name") }}</th>
+                <th>{{ translate("txt-owner") }}</th>
+                <th>{{ translate("txt-contacts") }}</th>
+                <th>{{ translate("txt-date") }}</th>
+            </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+            <tbody>
+            {% for selection in paginator.getCurrentItems() %}
+                <tr>
+                    <td>{{ selectionLink(selection,'view', 'name') }}</td>
+                    <td>{{ selection.contact.displayName }}</td>
+                    <td>{% if selection.sql %}-/-{% else %}{{ selection.selectionContact.count }}{% endif %}</td>
+
+                    <td>{{ selection.dateCreated|string_date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
+    {% else %}
+        {{ ztbalert().info(translate("txt-no-selections-found"))|raw }}
+    {% endif %}
+
+{{ selectionLink(null,'new', 'button') }}

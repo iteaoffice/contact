@@ -10,6 +10,7 @@
 namespace Contact\Service;
 
 use Contact\Entity\Address;
+use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 
 /**
@@ -43,16 +44,17 @@ class AddressService extends ServiceAbstract
     /**
      * Returns the address of a contact, where the addressTypeSort table is used to find alternative addresses
      *
-     * @param Contact $contact
-     * @param         $type
+     * @param Contact     $contact
+     * @param AddressType $type
      *
      * @return AddressService|null;
      */
-    public function findAddressByContactAndType(Contact $contact, $type)
+    public function findAddressByContactAndType(Contact $contact, AddressType $type)
     {
         $address = $this->getEntityManager()->getRepository(
             $this->getFullEntityName('address')
         )->findAddressByContactAndType($contact, $type);
+
         if (is_null($address)) {
             return null;
         }

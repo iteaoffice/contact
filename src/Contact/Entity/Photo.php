@@ -136,7 +136,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
@@ -220,7 +220,9 @@ class Photo extends EntityAbstract
      */
     public function removeCachedImageFile()
     {
-        unlink($this->getCacheFileName());
+        if (file_exists($this->getCacheFileName())) {
+            unlink($this->getCacheFileName());
+        }
     }
 
     /**

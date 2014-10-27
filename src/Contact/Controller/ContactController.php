@@ -9,6 +9,7 @@
  */
 namespace Contact\Controller;
 
+use Contact\Entity\AddressType;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -80,7 +81,7 @@ class ContactController extends ContactAbstractController
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public")
             ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -105,8 +106,8 @@ class ContactController extends ContactAbstractController
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
         $this->getContactService()->updateOptInForContact(
             $optInId,
             $enable,
@@ -210,5 +211,46 @@ class ContactController extends ContactAbstractController
         }
 
         return new ViewModel(['form' => $form]);
+    }
+
+    /**
+     * @return array|JsonModel
+     */
+    public function getAddressByTypeAction()
+    {
+        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
+        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
+
+        $this->getContactService()->setContactId($contactId);
+
+        if ($this->getContactService()->isEmpty()) {
+            return $this->notFoundAction();
+        }
+
+        switch ($typeId) {
+            case AddressType::ADDRESS_TYPE_FINANCIAL:
+                $address = $this->getContactService()->getFinancialAddress();
+                break;
+            case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
+                $address = $this->getContactService()->getBoothFinancialAddress();
+                break;
+            default:
+                return $this->notFoundAction();
+        }
+
+        if (is_null($address)) {
+            return new JsonModel();
+        }
+
+
+        return new JsonModel(
+            [
+                'address' => $address->getAddress()->getAddress(),
+                'zipCode' => $address->getAddress()->getZipCode(),
+                'city'    => $address->getAddress()->getCity(),
+                'country' => $address->getAddress()->getCountry()->getId()
+            ]
+        );
+
     }
 }
