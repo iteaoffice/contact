@@ -414,6 +414,7 @@ class Contact extends EntityAbstract implements
     private $community;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Registration", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OrderBy({"id" = "DESC"})
      * @Annotation\Exclude()
      * @var \Event\Entity\Registration|Collections\ArrayCollection()
      */
