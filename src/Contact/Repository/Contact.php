@@ -175,6 +175,22 @@ class Contact extends EntityRepository
     public function findIsCommunityMember(Entity\Contact $contact, Options\CommunityOptionsInterface $options)
     {
         if ($options->getCommunityViaMembers()) {
+            $memberRepository =  $this->getEntityManager()->getRepository('Member\Entity\Member');
+            $queryBuilder = $this->_em->createQueryBuilder();
+            $queryBuilder->select('contact.id');
+            $queryBuilder->from('Contact\Entity\Contact', 'contact');
+            $queryBuilder->join('contact.contactOrganisation', 'co');
+            $queryBuilder->join('co.organisation', 'organisation');
+            $queryBuilder->join('organisation.cluster', 'cluster1', 'cluster1.organisation = organisation');
+            $queryBuilder->join('organisation.cluster', 'cluster2', 'cluster1.cluster = cluster2.cluster');
+            $queryBuilder->join('organisation.member', 'm');
+            $queryBuilder = $memberRepository->onlyActiveMember($queryBuilder);
+            $queryBuilder->andWhere('contact = :contact');
+            $queryBuilder->setParameter('contact', $contact);
+            //If we find a member, return true, else proceed
+            if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+                return true;
+            }
             return false;
         }
         if ($options->getCommunityViaProjectParticipation()) {
