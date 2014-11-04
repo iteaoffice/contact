@@ -880,6 +880,16 @@ class ContactService extends ServiceAbstract
         ];
     }
 
+
+    /**
+     * @param Contact $contact
+     * @return boolean
+     */
+    public function findIsCommunityMember(Contact $contact){
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
+            ->findIsCommunityMember($contact, $this->getCommunityOptions());
+    }
+
     /**
      * Produce a list of contacts which are active in a project
      *
