@@ -81,7 +81,7 @@ class ContactController extends ContactAbstractController
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public")
             ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -96,7 +96,12 @@ class ContactController extends ContactAbstractController
             $this->zfcUserAuthentication()->getIdentity()
         );
 
-        return new ViewModel(['contactService' => $contactService]);
+        return new ViewModel(
+            [
+                'contactService' => $contactService,
+                'hasNda'         => $this->getServiceLocator()->get('program_module_options')->getHasNda()
+            ]
+        );
     }
 
     /**
@@ -106,8 +111,8 @@ class ContactController extends ContactAbstractController
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int)$this->getEvent()->getRequest()->getPost()->get('optInId');
+        $enable = (int)$this->getEvent()->getRequest()->getPost()->get('enable') === 1;
         $this->getContactService()->updateOptInForContact(
             $optInId,
             $enable,
@@ -218,8 +223,8 @@ class ContactController extends ContactAbstractController
      */
     public function getAddressByTypeAction()
     {
-        $contactId = (int) $this->getEvent()->getRequest()->getQuery()->get('id');
-        $typeId = (int) $this->getEvent()->getRequest()->getQuery()->get('typeId');
+        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
+        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
 
         $this->getContactService()->setContactId($contactId);
 
@@ -241,6 +246,7 @@ class ContactController extends ContactAbstractController
         if (is_null($address)) {
             return new JsonModel();
         }
+
 
         return new JsonModel(
             [

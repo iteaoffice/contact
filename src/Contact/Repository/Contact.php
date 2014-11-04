@@ -368,7 +368,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param  Calendar         $calendar
+     * @param  Calendar $calendar
      * @return Entity\Contact[]
      */
     public function findPossibleContactByCalendar(Calendar $calendar)
