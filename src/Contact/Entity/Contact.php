@@ -629,6 +629,30 @@ class Contact extends EntityAbstract implements
      * @var \Event\Entity\Exhibition\Tour[]|Collections\ArrayCollection
      */
     private $tourContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="receiver")
+     * @Annotation\Exclude();
+     * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     */
+    private $doaReminderReceiver;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="sender")
+     * @Annotation\Exclude();
+     * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     */
+    private $doaReminderSender;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="receiver")
+     * @Annotation\Exclude();
+     * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     */
+    private $loiReminderReceiver;
+    /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="sender")
+     * @Annotation\Exclude();
+     * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     */
+    private $loiReminderSender;
 
     /**
      * Class constructor
@@ -702,6 +726,10 @@ class Contact extends EntityAbstract implements
         $this->projectBooth = new Collections\ArrayCollection();
         $this->organisationBooth = new Collections\ArrayCollection();
         $this->tourContact = new Collections\ArrayCollection();
+        $this->doaReminderReceiver = new Collections\ArrayCollection();
+        $this->doaReminderSender = new Collections\ArrayCollection();
+        $this->loiReminderReceiver = new Collections\ArrayCollection();
+        $this->loiReminderSender = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -2670,4 +2698,70 @@ class Contact extends EntityAbstract implements
     {
         $this->projectBooth = $projectBooth;
     }
+
+    /**
+     * @return \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     */
+    public function getDoaReminderReceiver()
+    {
+        return $this->doaReminderReceiver;
+    }
+
+    /**
+     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
+     */
+    public function setDoaReminderReceiver($doaReminderReceiver)
+    {
+        $this->doaReminderReceiver = $doaReminderReceiver;
+    }
+
+    /**
+     * @return \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     */
+    public function getDoaReminderSender()
+    {
+        return $this->doaReminderSender;
+    }
+
+    /**
+     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderSender
+     */
+    public function setDoaReminderSender($doaReminderSender)
+    {
+        $this->doaReminderSender = $doaReminderSender;
+    }
+
+    /**
+     * @return \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     */
+    public function getLoiReminderReceiver()
+    {
+        return $this->loiReminderReceiver;
+    }
+
+    /**
+     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
+     */
+    public function setLoiReminderReceiver($loiReminderReceiver)
+    {
+        $this->loiReminderReceiver = $loiReminderReceiver;
+    }
+
+    /**
+     * @return \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     */
+    public function getLoiReminderSender()
+    {
+        return $this->loiReminderSender;
+    }
+
+    /**
+     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderSender
+     */
+    public function setLoiReminderSender($loiReminderSender)
+    {
+        $this->loiReminderSender = $loiReminderSender;
+    }
+
+
 }

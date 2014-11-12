@@ -13,6 +13,7 @@ use Contact\Form\Search;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Zend\Paginator\Paginator;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -169,5 +170,41 @@ class ContactManagerController extends ContactAbstractController
         return $this->redirect()->toRoute(
             'zfcadmin/contact-manager/' . $entity->get('dashed_entity_name') . 's'
         );
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function searchAction()
+    {
+        $search = $this->getRequest()->getPost()->get('search');
+
+        $results = [];
+        foreach ($this->getContactService()->searchContacts($search) as $result) {
+
+            $text = trim(
+                sprintf(
+                    "%s %s",
+                    $result['firstName'],
+                    trim(sprintf("%s %s", $result['middleName'], $result['lastName']))
+                )
+            );
+
+            /**
+             * Do a fall-back to the email when the name is empty
+             */
+            if (strlen($text) === 0) {
+                $text = $result['email'];
+            }
+
+            $results[] = [
+                'value' => $result['id'],
+                'text'  => $text
+            ];
+        }
+
+
+        return new JsonModel($results);
+
     }
 }
