@@ -181,7 +181,6 @@ class ContactManagerController extends ContactAbstractController
 
         $results = [];
         foreach ($this->getContactService()->searchContacts($search) as $result) {
-
             $text = trim(
                 sprintf(
                     "%s %s",
@@ -202,9 +201,6 @@ class ContactManagerController extends ContactAbstractController
                 'text'  => $text
             ];
         }
-
-
         return new JsonModel($results);
-
     }
 }

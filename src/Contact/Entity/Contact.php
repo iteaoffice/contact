@@ -2762,6 +2762,4 @@ class Contact extends EntityAbstract implements
     {
         $this->loiReminderSender = $loiReminderSender;
     }
-
-
 }

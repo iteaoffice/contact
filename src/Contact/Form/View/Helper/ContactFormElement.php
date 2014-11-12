@@ -281,10 +281,10 @@ class ContactFormElement extends ZendFormElement
         }
 
         if ($label && !$element->getOption('skipLabel')) {
-
             $controlLabel .= $labelHelper->openTag(
                 [
-                    'class' => 'col-lg-3 ' . ($element->getOption(
+                    'class' => 'col-lg-3 ' . (
+                        $element->getOption(
                             'wrapCheckboxInLabel'
                         ) ? 'checkbox' : 'control-label'),
                 ] + ($element->hasAttribute('id') ? ['for' => $id] : [])
@@ -331,15 +331,14 @@ class ContactFormElement extends ZendFormElement
             );
         }
 
-        $html = $controlLabel . sprintf(
+        $html = $controlLabel .
+            sprintf(
                 $controlWrapper,
                 $id,
                 $controls,
                 $descriptionHelper->render($element),
                 $elementErrorHelper->render($element)
             );
-
-
         $addtClass = ($element->getMessages()) ? ' has-error' : '';
 
         return sprintf($groupWrapper, $addtClass, $id, $html);
