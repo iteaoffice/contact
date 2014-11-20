@@ -54,7 +54,10 @@
 
         {{ contactLink(contactService.contact,'edit-profile', 'button') }}
         {{ contactLink(contactService.contact,'change-password', 'button') }}
-        {{ ndaLink(null,'upload', 'button') }}
+
+        {% if hasNda  %}
+            {{ ndaLink(null,'upload', 'button') }}
+        {% endif %}
     </div>
 
 
