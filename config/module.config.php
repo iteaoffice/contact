@@ -38,6 +38,7 @@ $config = [
     'view_helpers'    => [
         'initializers' => [ViewHelperInitializer::class],
         'invokables'   => [
+            'contactformelement'     => 'Contact\Form\View\Helper\ContactFormElement',
             'communityLink'          => CommunityLink::class,
             'createContactFromArray' => CreateContactFromArray::class,
             'createPhotoFromArray'   => CreatePhotoFromArray::class,

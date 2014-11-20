@@ -60,15 +60,6 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes'  => [
-                    'search'              => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/search',
-                            'defaults' => [
-                                'action' => 'search',
-                            ],
-                        ],
-                    ],
                     'signature'           => [
                         'type'    => 'Segment',
                         'options' => [
@@ -246,6 +237,15 @@ return [
                                     'route'    => '/permissions/[:id].html',
                                     'defaults' => [
                                         'action' => 'permit',
+                                    ],
+                                ],
+                            ],
+                            'search'      => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/search.html',
+                                    'defaults' => [
+                                        'action' => 'search',
                                     ],
                                 ],
                             ],

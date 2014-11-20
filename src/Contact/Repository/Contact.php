@@ -177,7 +177,7 @@ class Contact extends EntityRepository
 
 
         if ($options->getCommunityViaMembers()) {
-            $memberRepository =  $this->getEntityManager()->getRepository('Member\Entity\Member');
+            $memberRepository = $this->getEntityManager()->getRepository('Member\Entity\Member');
             $queryBuilder = $this->_em->createQueryBuilder();
             $queryBuilder->select('contact.id');
             $queryBuilder->from('Contact\Entity\Contact', 'contact');
@@ -332,15 +332,17 @@ class Contact extends EntityRepository
      */
     public function searchContacts($searchItem, $maxResults = 12)
     {
+
         $qb = $this->_em->createQueryBuilder();
-        $qb->select('c');
+        $qb->select(['c.id', 'c.firstName', 'c.middleName', 'c.lastName', 'c.email']);
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->distinct('c.id');
         $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR c.email LIKE :searchItem');
         $qb->setParameter('searchItem', "%" . $searchItem . "%");
         $qb->orderBy('c.lastName', 'ASC');
 
-        return $qb;
+        $qb->setMaxResults($maxResults);
+        return $qb->getQuery()->getArrayResult();
     }
 
     /**

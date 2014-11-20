@@ -22,6 +22,7 @@ return array(
   'Contact\Form\Impersonate'                                     => __DIR__ . '/src/Contact/Form/Impersonate.php',
   'Contact\Form\Contact'                                         => __DIR__ . '/src/Contact/Form/Contact.php',
   'Contact\Form\Password'                                        => __DIR__ . '/src/Contact/Form/Password.php',
+  'Contact\Form\View\Helper\ContactFormElement'                  => __DIR__ . '/src/Contact/Form/View/Helper/ContactFormElement.php',
   'Contact\Form\CreateObject'                                    => __DIR__ . '/src/Contact/Form/CreateObject.php',
   'Contact\Form\ContactOrganisationFieldset'                     => __DIR__ . '/src/Contact/Form/ContactOrganisationFieldset.php',
   'Contact\Form\ContactAddressFieldset'                          => __DIR__ . '/src/Contact/Form/ContactAddressFieldset.php',

@@ -19,12 +19,11 @@ use Contact\Entity\PhoneType;
 use Contact\Entity\Selection;
 use Contact\Options\CommunityOptionsInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\QueryBuilder;
 use General\Entity\Country;
 use General\Entity\Gender;
 use General\Entity\Title;
-use Mailing\Entity\Mailing;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
@@ -61,6 +60,10 @@ class ContactService extends ServiceAbstract
      * @var Contact
      */
     protected $contact;
+    /**
+     * @var array
+     */
+    protected $contacts;
 
     /** @param int $id
      *
@@ -100,6 +103,19 @@ class ContactService extends ServiceAbstract
 
         return $contact;
 
+    }
+
+    /**
+     * @return array
+     */
+    public function toFormValueOptions()
+    {
+        $contacts = [];
+        foreach ($this->contacts as $contact) {
+            $contacts[$contact->getId()] = $contact->getFormName();
+        }
+        asort($contacts);
+        return $contacts;
     }
 
     /**
@@ -885,7 +901,8 @@ class ContactService extends ServiceAbstract
      * @param Contact $contact
      * @return boolean
      */
-    public function findIsCommunityMember(Contact $contact){
+    public function findIsCommunityMember(Contact $contact)
+    {
         return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
             ->findIsCommunityMember($contact, $this->getCommunityOptions());
     }
@@ -987,6 +1004,9 @@ class ContactService extends ServiceAbstract
         }
 
         $contactRole = array_map('array_unique', $contactRole);
+
+        //Store the values local for the use of the toArray function
+        $this->contacts = $contacts;
 
         return ['contacts' => $contacts, 'contactRole' => $contactRole];
     }
