@@ -155,25 +155,7 @@ class ContactManagerController extends ContactAbstractController
     }
 
     /**
-     * (soft-delete) an entity
-     *
-     * @return \Zend\Http\Response
-     */
-    public function deleteAction()
-    {
-        $entity = $this->getContactService()->findEntityById(
-            $this->getEvent()->getRouteMatch()->getParam('entity'),
-            $this->getEvent()->getRouteMatch()->getParam('id')
-        );
-        $this->getContactService()->removeEntity($entity);
-
-        return $this->redirect()->toRoute(
-            'zfcadmin/contact-manager/' . $entity->get('dashed_entity_name') . 's'
-        );
-    }
-
-    /**
-     * @return ViewModel
+     * @return JsonModel
      */
     public function searchAction()
     {

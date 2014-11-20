@@ -458,7 +458,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Note", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\Note|Collections\ArrayCollection()
+     * @var \Contact\Entity\Note[]|Collections\ArrayCollection()
      */
     private $note;
     /**
@@ -2108,7 +2108,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Note|Collections\ArrayCollection() $note
+     * @param \Contact\Entity\Note[]|Collections\ArrayCollection() $note
      */
     public function setNote($note)
     {
@@ -2116,7 +2116,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Note|Collections\ArrayCollection()
+     * @return \Contact\Entity\Note[]|Collections\ArrayCollection()
      */
     public function getNote()
     {

@@ -20,6 +20,7 @@ use Contact\View\Helper\CreatePhotoFromArray;
 use Contact\View\Helper\SelectionLink;
 use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
+use Contact\Form\View\Helper\ContactFormElement;
 
 $config = [
     'controllers'     => [
@@ -38,7 +39,7 @@ $config = [
     'view_helpers'    => [
         'initializers' => [ViewHelperInitializer::class],
         'invokables'   => [
-            'contactformelement'     => 'Contact\Form\View\Helper\ContactFormElement',
+            'contactformelement'     => ContactFormElement::class,
             'communityLink'          => CommunityLink::class,
             'createContactFromArray' => CreateContactFromArray::class,
             'createPhotoFromArray'   => CreatePhotoFromArray::class,

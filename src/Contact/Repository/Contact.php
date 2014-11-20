@@ -174,9 +174,10 @@ class Contact extends EntityRepository
      */
     public function findIsCommunityMember(Entity\Contact $contact, Options\CommunityOptionsInterface $options)
     {
-
-
         if ($options->getCommunityViaMembers()) {
+            /**
+             * @var $memberRepository \Member\Repository\Member
+             */
             $memberRepository = $this->getEntityManager()->getRepository('Member\Entity\Member');
             $queryBuilder = $this->_em->createQueryBuilder();
             $queryBuilder->select('contact.id');
@@ -332,13 +333,25 @@ class Contact extends EntityRepository
      */
     public function searchContacts($searchItem, $maxResults = 12)
     {
-
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['c.id', 'c.firstName', 'c.middleName', 'c.lastName', 'c.email']);
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->distinct('c.id');
-        $qb->andWhere('c.firstName LIKE :searchItem OR c.lastName LIKE :searchItem OR c.email LIKE :searchItem');
-        $qb->setParameter('searchItem', "%" . $searchItem . "%");
+
+        $qb->where(
+            $qb->expr()->orX(
+                $qb->expr()->like(
+                    $qb->expr()->concat(
+                        'c.firstName',
+                        $qb->expr()->concat($qb->expr()->literal(' '), 'c.middleName'),
+                        $qb->expr()->concat($qb->expr()->literal(' '), 'c.lastName')
+                    ),
+                    $qb->expr()->literal("%" . $searchItem . "%")
+                ),
+                $qb->expr()->like('c.email', $qb->expr()->literal("%" . $searchItem . "%"))
+            )
+        );
+
         $qb->orderBy('c.lastName', 'ASC');
 
         $qb->setMaxResults($maxResults);
