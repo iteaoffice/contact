@@ -25,7 +25,7 @@ use ZfcUser\Entity\UserInterface;
  *
  * @ORM\Table(name="contact")
  * @ORM\Entity(repositoryClass="Contact\Repository\Contact")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectasdfsadfProperty")
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_contact")
  *
  * @category    Contact
@@ -1469,7 +1469,23 @@ class Contact extends EntityAbstract implements
      */
     public function getDisplayName()
     {
-        $name = trim(implode(' ', [$this->firstName, $this->middleName, $this->lastName]));
+        $name = sprintf("%s %s", $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
+
+        return !empty($name) ? $name : $this->email;
+    }
+
+    /**
+     * Get displayName, or the emailaddress
+     *
+     * @return string
+     */
+    public function getShortName()
+    {
+        $name = sprintf(
+            "%s. %s",
+            substr($this->firstName, 0, 1),
+            trim(implode(' ', [$this->middleName, $this->lastName]))
+        );
 
         return !empty($name) ? $name : $this->email;
     }
