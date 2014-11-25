@@ -1,0 +1,71 @@
+<h1>{{ translate("txt-import-contacts") }}</h1>
+
+{% do form.prepare() %}
+
+{{ form().openTag(form)|raw }}
+
+ {{ ztbformelement(form.get('file')) }}
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {% if handleImport.hasErrors() %}
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    {% for error in handleImport.getErrors() %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if handleImport.hasWarnings() %}
+            <div class="alert alert-warning" role="alert">
+                <ul>
+                    {% for warning in handleImport.getWarnings() %}
+                        <li>{{ warning }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {{ ztbformelement(form.get('upload')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}
+
+{{ handleImport.getContacts()|length }}
+
+{% if  handleImport.getContacts()|length > 0 %}
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th class="col-md-2">{{ translate("txt-name") }}</th>
+            <th class="col-md-2">{{ translate("txt-email") }}</th>
+            <th>{{ translate("txt-organisation") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for contact in handleImport.getContacts() %}
+            <tr>
+                <td>{{ contactLink(contact,'view-admin', 'name') }}</td>
+                <td>{{ contactLink(contact,'view-admin', 'email') }}</td>
+                <td>
+                    {% if contact.contactOrganisation %}
+                        {% set organisationService = organisationServiceProxy(contact.contactOrganisation.organisation) %}
+                        {{ organisationLink(organisationService, 'view', 'name') }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+

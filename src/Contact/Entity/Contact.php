@@ -653,6 +653,18 @@ class Contact extends EntityAbstract implements
      * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
      */
     private $loiReminderSender;
+    /**
+     * @ORM\OneToMany(targetEntity="News\Entity\Blog", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \News\Entity\Blog|Collections\ArrayCollection()
+     */
+    private $blog;
+    /**
+     * @ORM\OneToMany(targetEntity="News\Entity\Message", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \News\Entity\Message|Collections\ArrayCollection()
+     */
+    private $blogMessage;
 
     /**
      * Class constructor
@@ -706,6 +718,8 @@ class Contact extends EntityAbstract implements
         $this->idea = new Collections\ArrayCollection();
         $this->favouriteIdea = new Collections\ArrayCollection();
         $this->ideaMessage = new Collections\ArrayCollection();
+        $this->blog = new Collections\ArrayCollection();
+        $this->blogMessage = new Collections\ArrayCollection();
         $this->evaluation = new Collections\ArrayCollection();
         $this->calendarContact = new Collections\ArrayCollection();
         $this->calendarDocument = new Collections\ArrayCollection();
@@ -2777,5 +2791,37 @@ class Contact extends EntityAbstract implements
     public function setLoiReminderSender($loiReminderSender)
     {
         $this->loiReminderSender = $loiReminderSender;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\News\Entity\Blog
+     */
+    public function getBlog()
+    {
+        return $this->blog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\News\Entity\Blog $blog
+     */
+    public function setBlog($blog)
+    {
+        $this->blog = $blog;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\News\Entity\Message
+     */
+    public function getBlogMessage()
+    {
+        return $this->blogMessage;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\News\Entity\Message $blogMessage
+     */
+    public function setBlogMessage($blogMessage)
+    {
+        $this->blogMessage = $blogMessage;
     }
 }

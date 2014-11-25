@@ -83,6 +83,16 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
+                    'route'     => 'zfcadmin/contact-manager/statistics',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/contact-manager/import',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
                     'route'     => 'zfcadmin/contact-manager/search',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class

@@ -11,8 +11,10 @@ namespace Contact;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Controller\ControllerInitializer;
+use Contact\Form\View\Helper\ContactFormElement;
 use Contact\Service\SelectionService;
 use Contact\Service\ServiceInitializer;
+use Contact\Service\StatisticsService;
 use Contact\View\Helper\CommunityLink;
 use Contact\View\Helper\ContactLink;
 use Contact\View\Helper\CreateContactFromArray;
@@ -20,7 +22,6 @@ use Contact\View\Helper\CreatePhotoFromArray;
 use Contact\View\Helper\SelectionLink;
 use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
-use Contact\Form\View\Helper\ContactFormElement;
 
 $config = [
     'controllers'     => [
@@ -60,6 +61,7 @@ $config = [
         'invokables'   => [
             ContactAssertion::class        => ContactAssertion::class,
             SelectionService::class        => SelectionService::class,
+            StatisticsService::class       => StatisticsService::class,
             'contact_contact_service'      => 'Contact\Service\ContactService',
             'contact_address_service'      => 'Contact\Service\AddressService',
             'contact_form_service'         => 'Contact\Service\FormService',

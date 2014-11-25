@@ -678,6 +678,7 @@ class ContactService extends ServiceAbstract
         }
     }
 
+
     /**
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed

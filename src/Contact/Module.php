@@ -11,6 +11,7 @@
  */
 namespace Contact;
 
+use Contact\Controller\Plugin\HandleImport;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature;
 use Zend\Mvc\MvcEvent;
@@ -27,16 +28,16 @@ class Module implements
 {
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
+        return [
+            'Zend\Loader\ClassMapAutoloader' => [
                 __DIR__ . '/../../autoload_classmap.php',
-            ),
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+            ],
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/../../src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -68,6 +69,19 @@ class Module implements
     }
 
     /**
+     * Move this to here to have config cache working
+     * @return array
+     */
+    public function getControllerPluginConfig()
+    {
+        return [
+            'invokables' => [
+                'handleImport' => HandleImport::class
+            ]
+        ];
+    }
+
+    /**
      * Listen to the bootstrap event
      *
      * @param EventInterface $e
@@ -77,7 +91,7 @@ class Module implements
     public function onBootstrap(EventInterface $e)
     {
         $app = $e->getParam('application');
-        $em  = $app->getEventManager();
+        $em = $app->getEventManager();
         $em->attach(
             MvcEvent::EVENT_DISPATCH,
             function (MvcEvent $event) {
