@@ -25,7 +25,7 @@ use ZfcUser\Entity\UserInterface;
  *
  * @ORM\Table(name="contact")
  * @ORM\Entity(repositoryClass="Contact\Repository\Contact")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectasdfsadfProperty")
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_contact")
  *
  * @category    Contact
@@ -458,7 +458,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Note", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Contact\Entity\Note|Collections\ArrayCollection()
+     * @var \Contact\Entity\Note[]|Collections\ArrayCollection()
      */
     private $note;
     /**
@@ -653,6 +653,18 @@ class Contact extends EntityAbstract implements
      * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
      */
     private $loiReminderSender;
+    /**
+     * @ORM\OneToMany(targetEntity="News\Entity\Blog", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \News\Entity\Blog|Collections\ArrayCollection()
+     */
+    private $blog;
+    /**
+     * @ORM\OneToMany(targetEntity="News\Entity\Message", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \News\Entity\Message|Collections\ArrayCollection()
+     */
+    private $blogMessage;
 
     /**
      * Class constructor
@@ -706,6 +718,8 @@ class Contact extends EntityAbstract implements
         $this->idea = new Collections\ArrayCollection();
         $this->favouriteIdea = new Collections\ArrayCollection();
         $this->ideaMessage = new Collections\ArrayCollection();
+        $this->blog = new Collections\ArrayCollection();
+        $this->blogMessage = new Collections\ArrayCollection();
         $this->evaluation = new Collections\ArrayCollection();
         $this->calendarContact = new Collections\ArrayCollection();
         $this->calendarDocument = new Collections\ArrayCollection();
@@ -1469,7 +1483,23 @@ class Contact extends EntityAbstract implements
      */
     public function getDisplayName()
     {
-        $name = trim(implode(' ', [$this->firstName, $this->middleName, $this->lastName]));
+        $name = sprintf("%s %s", $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
+
+        return !empty($name) ? $name : $this->email;
+    }
+
+    /**
+     * Get displayName, or the emailaddress
+     *
+     * @return string
+     */
+    public function getShortName()
+    {
+        $name = sprintf(
+            "%s. %s",
+            substr($this->firstName, 0, 1),
+            trim(implode(' ', [$this->middleName, $this->lastName]))
+        );
 
         return !empty($name) ? $name : $this->email;
     }
@@ -2108,7 +2138,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Note|Collections\ArrayCollection() $note
+     * @param \Contact\Entity\Note[]|Collections\ArrayCollection() $note
      */
     public function setNote($note)
     {
@@ -2116,7 +2146,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Contact\Entity\Note|Collections\ArrayCollection()
+     * @return \Contact\Entity\Note[]|Collections\ArrayCollection()
      */
     public function getNote()
     {
@@ -2761,5 +2791,37 @@ class Contact extends EntityAbstract implements
     public function setLoiReminderSender($loiReminderSender)
     {
         $this->loiReminderSender = $loiReminderSender;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\News\Entity\Blog
+     */
+    public function getBlog()
+    {
+        return $this->blog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\News\Entity\Blog $blog
+     */
+    public function setBlog($blog)
+    {
+        $this->blog = $blog;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\News\Entity\Message
+     */
+    public function getBlogMessage()
+    {
+        return $this->blogMessage;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\News\Entity\Message $blogMessage
+     */
+    public function setBlogMessage($blogMessage)
+    {
+        $this->blogMessage = $blogMessage;
     }
 }

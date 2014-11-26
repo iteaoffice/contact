@@ -1,0 +1,63 @@
+<h1>{{ translate("txt-statistics") }}</h1>
+
+{% do form.prepare() %}
+
+{{ form().openTag(form)|raw }}
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        <label for="exampleInputEmail1">Selections</label>
+
+        {% for i in 0..2 %}
+            <div class="input-group">
+                {% set filter = form.get('selection' ~ i) %}
+
+                <span class="input-group-addon">        {{ formelement(filter.get('in')) }}      </span>
+                {{ formelement(filter.get('selection')) }}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('cancel')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}
+
+{{ contacts|length }}
+
+{% if contacts|length > 0 %}
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th class="col-md-2">{{ translate("txt-name") }}</th>
+            <th class="col-md-2">{{ translate("txt-email") }}</th>
+            <th>{{ translate("txt-organisation") }}</th>
+            <th>{{ translate("txt-projects") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for contact in contacts %}
+            <tr>
+                <td>{{ contactLink(contact,'view-admin', 'name') }}</td>
+                <td>{{ contactLink(contact,'view-admin', 'email') }}</td>
+                <td>
+                    {% if contact.contactOrganisation %}
+                        {% set organisationService = organisationServiceProxy(contact.contactOrganisation.organisation) %}
+                        {{ organisationLink(organisationService, 'view', 'name') }}
+                    {% endif %}
+                </td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+

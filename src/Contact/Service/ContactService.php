@@ -14,6 +14,7 @@ use Calendar\Entity\Calendar;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
+use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Selection;
@@ -427,7 +428,8 @@ class ContactService extends ServiceAbstract
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
         //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
-        $email = $this->getEmailService()->setTemplate("/auth/register:mail")->create();
+        $email = $this->getEmailService()->create();
+        $this->getEmailService()->setTemplate("/auth/register:mail");
         $email->addTo($emailAddress);
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $this->getEmailService()->send($email);
@@ -461,7 +463,8 @@ class ContactService extends ServiceAbstract
         /**
          * Send the email tot he user
          */
-        $email = $this->getEmailService()->setTemplate("/auth/forgotpassword:mail")->create();
+        $email = $this->getEmailService()->create();
+        $this->getEmailService()->setTemplate("/auth/forgotpassword:mail");
         $email->addTo($emailAddress, $contactService->parseFullName());
         $email->setFullname($contactService->parseFullName());
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
@@ -504,6 +507,23 @@ class ContactService extends ServiceAbstract
     public function parseFullName()
     {
         return $this->getContact()->getDisplayName();
+    }
+
+    /**
+     * Find the relevant items out of the notes tree
+     *
+     * @return string
+     */
+    public function parseSignature()
+    {
+        /**
+         * Go over the notes and find the signature of the contact
+         */
+        foreach ($this->contact->getNote() as $note) {
+            if ($note->getSource() === Note::SOURCE_SIGNATURE) {
+                return $note->getNote();
+            }
+        }
     }
 
     /**
@@ -657,6 +677,7 @@ class ContactService extends ServiceAbstract
             )->findContactsBySelectionContact($selection);
         }
     }
+
 
     /**
      * Update the password for a contact. Check with the current password when given

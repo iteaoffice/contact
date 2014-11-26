@@ -249,6 +249,24 @@ return [
                                     ],
                                 ],
                             ],
+                            'statistics'  => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/statistics.html',
+                                    'defaults' => [
+                                        'action' => 'statistics',
+                                    ],
+                                ],
+                            ],
+                            'import'      => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/import.html',
+                                    'defaults' => [
+                                        'action' => 'import',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'selection-manager' => [

@@ -25,6 +25,8 @@ use Zend\Form\Annotation;
  */
 class Note
 {
+    const SOURCE_SIGNATURE = 'signature';
+
     /**
      * @ORM\Column(name="note_id", type="integer", nullable=false)
      * @ORM\Id
