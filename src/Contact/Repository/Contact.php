@@ -177,6 +177,7 @@ class Contact extends EntityRepository
 
 
         if ($options->getCommunityViaMembers()) {
+
             $memberRepository = $this->getEntityManager()->getRepository('Member\Entity\Member');
             $queryBuilder = $this->_em->createQueryBuilder();
             $queryBuilder->select('contact.id');
@@ -193,6 +194,21 @@ class Contact extends EntityRepository
             if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
                 return true;
             }
+
+            $queryBuilder = $this->_em->createQueryBuilder();
+            $queryBuilder->select('contact.id');
+            $queryBuilder->from('Contact\Entity\Contact', 'contact');
+            $queryBuilder->join('contact.contactOrganisation', 'co');
+            $queryBuilder->leftJoin('co.organisation', 'organisation');
+            $queryBuilder->join('organisation.member', 'm');
+            $queryBuilder = $memberRepository->onlyActiveMember($queryBuilder);
+            $queryBuilder->andWhere('contact = :contact');
+            $queryBuilder->setParameter('contact', $contact);
+
+            if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+                return true;
+            }
+
             return false;
         }
         if ($options->getCommunityViaProjectParticipation()) {
