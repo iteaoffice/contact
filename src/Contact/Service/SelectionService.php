@@ -74,7 +74,6 @@ class SelectionService extends ServiceAbstract
      */
     public function findSelectionsByContact(Contact $contact)
     {
-
         $selections = $this->getEntityManager()->getRepository(
             $this->getFullEntityName('selection')
         )->findFixedSelectionsByContact(

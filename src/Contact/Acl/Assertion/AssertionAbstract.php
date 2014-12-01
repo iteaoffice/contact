@@ -12,6 +12,7 @@
  */
 namespace Contact\Acl\Assertion;
 
+use Admin\Service\AdminService;
 use Contact\Service\ContactService;
 use Contact\Service\ContactServiceAwareInterface;
 use Zend\Mvc\Router\RouteMatch;
@@ -118,6 +119,14 @@ abstract class AssertionAbstract implements
     }
 
     /**
+     * @return AdminService
+     */
+    public function getAdminService()
+    {
+        return $this->getServiceLocator()->get(AdminService::class);
+    }
+
+    /**
      * Returns true when a role or roles have access
      *
      * @param $roles
@@ -144,7 +153,9 @@ abstract class AssertionAbstract implements
     public function getAccessRoles()
     {
         if (empty($this->accessRoles) && !$this->getContactService()->isEmpty()) {
-            $this->accessRoles = $this->getContactService()->getContact()->getRoles();
+            $this->accessRoles = $this->getAdminService()->findAccessRolesByContactAsArray(
+                $this->getContactService()->getContact()
+            );
         }
 
         return $this->accessRoles;

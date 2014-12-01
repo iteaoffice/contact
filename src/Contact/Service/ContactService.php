@@ -591,6 +591,7 @@ class ContactService extends ServiceAbstract
         return false;
     }
 
+
     /**
      * @param Selection $selection
      *

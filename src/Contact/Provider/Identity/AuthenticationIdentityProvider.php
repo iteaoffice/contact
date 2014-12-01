@@ -52,8 +52,6 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     {
         parent::__construct($authService);
         $this->adminService = $serviceLocator->get(AdminService::class);
-        $this->cache = $serviceLocator->get('contact_cache');
-        $this->config = $serviceLocator->get('contact_module_config');
     }
 
     /**
@@ -68,18 +66,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
             return [$identity];
         }
         if ($identity instanceof RoleProviderInterface) {
-            $success = false;
-            $key = sprintf("%s-role-list-identity-%s", $this->config['cache_key'], $identity->getId());
-            $roles = $this->cache->getItem($key, $success);
-            if (!$success) {
-                //Get also the roles assigned via selections
-                $accessRoles = $this->adminService->findAccessRolesByContact($identity);
-                //Assign the result to a local var $roles so it can be returned and store it in the cache
-                $roles = array_map('strtolower', $accessRoles->toArray());
-                $this->cache->setItem($key, $roles);
-            }
-
-            return $roles;
+            return $this->adminService->findAccessRolesByContactAsArray($identity);
         }
 
         return [$this->authenticatedRole];
