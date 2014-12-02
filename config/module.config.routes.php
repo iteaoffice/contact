@@ -327,6 +327,60 @@ return [
                             ],
                         ],
                     ],
+                    'facebook-manager'  => [
+                        'type'          => 'Segment',
+                        'options'       => [
+                            'route'    => '/facebook',
+                            'defaults' => [
+                                'controller' => 'contact-facebook',
+                                'action'     => 'list',
+                                'page'       => 1,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'list' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/list.html',
+                                    'defaults' => [
+                                        'action' => 'list',
+                                    ],
+                                ]
+                            ],
+                            'new'  => [
+                                'type'     => 'Literal',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new.html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'view' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/view/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'view',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ]

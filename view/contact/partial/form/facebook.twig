@@ -1,0 +1,25 @@
+{% do form.prepare() %}
+{% do form.setAttribute('class','form-horizontal') %}
+
+{{ form().openTag(form)|raw }}
+
+
+{% set facebook = form.get('facebook') %}
+{{ ztbformelement(facebook.get('setter')) }}
+{{ ztbformelement(facebook.get('public')) }}
+{{ ztbformelement(facebook.get('fromClause')) }}
+{{ ztbformelement(facebook.get('whereClause')) }}
+{{ ztbformelement(facebook.get('orderbyClause')) }}
+{{ ztbformelement(facebook.get('contactKey')) }}
+{{ ztbformelement(facebook.get('title')) }}
+{{ ztbformelement(facebook.get('subtitle')) }}
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('cancel')) }}
+        {{ ztbformelement(form.get('delete')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}

@@ -24,6 +24,10 @@ return [
                         'label' => _("txt-selections"),
                         'route' => 'zfcadmin/selection-manager/list',
                     ],
+                    'facebook'   => [
+                        'label' => _("txt-facebook"),
+                        'route' => 'zfcadmin/facebook-manager/list',
+                    ],
                     'permit'     => [
                         'label' => _("txt-permissions"),
                         'route' => 'zfcadmin/permit-manager/entity/list',

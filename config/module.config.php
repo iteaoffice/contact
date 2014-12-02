@@ -19,6 +19,7 @@ use Contact\View\Helper\CommunityLink;
 use Contact\View\Helper\ContactLink;
 use Contact\View\Helper\CreateContactFromArray;
 use Contact\View\Helper\CreatePhotoFromArray;
+use Contact\View\Helper\FacebookLink;
 use Contact\View\Helper\SelectionLink;
 use Contact\View\Helper\ViewHelperInitializer;
 use Zend\Stdlib\ArrayUtils;
@@ -31,6 +32,7 @@ $config = [
         'invokables'   => [
             'contact-index'     => 'Contact\Controller\ContactController',
             'contact-selection' => 'Contact\Controller\SelectionManagerController',
+            'contact-facebook'  => 'Contact\Controller\FacebookManagerController',
             'contact-manager'   => 'Contact\Controller\ContactManagerController',
         ],
     ],
@@ -47,6 +49,7 @@ $config = [
             'contactServiceProxy'    => 'Contact\View\Helper\ContactServiceProxy',
             'contactLink'            => ContactLink::class,
             'selectionLink'          => SelectionLink::class,
+            'facebookLink'           => FacebookLink::class,
             'contactPhoto'           => 'Contact\View\Helper\ContactPhoto',
         ]
     ],
@@ -66,6 +69,7 @@ $config = [
             'contact_address_service'      => 'Contact\Service\AddressService',
             'contact_form_service'         => 'Contact\Service\FormService',
             'contact_contact_form_filter'  => 'Contact\Form\FilterContact',
+            'contact_facebook_form_filter' => 'Contact\Form\FilterCreateObject.php',
             'contact_password_form'        => 'Contact\Form\Password',
             'contact_password_form_filter' => 'Contact\Form\PasswordFilter',
         ]

@@ -14,6 +14,7 @@ use Calendar\Entity\Calendar;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
+use Contact\Entity\Facebook;
 use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
@@ -677,6 +678,17 @@ class ContactService extends ServiceAbstract
                 $this->getFullEntityName('Contact')
             )->findContactsBySelectionContact($selection);
         }
+    }
+
+    /**
+     * @param Facebook $facebook
+     * @return Contact[]
+     */
+    public function findContactsInFacebook(Facebook $facebook)
+    {
+        return $this->getEntityManager()->getRepository(
+            $this->getFullEntityName('Contact')
+        )->findContactsInFacebook($facebook);
     }
 
 

@@ -4,6 +4,10 @@ return array(
     'contact/selection-manager/list'            => __DIR__ . '//view/contact/selection-manager/list.twig',
     'contact/selection-manager/view'            => __DIR__ . '//view/contact/selection-manager/view.twig',
     'contact/pdf/address-box'                   => __DIR__ . '//view/contact/pdf/address-box.twig',
+    'contact/facebook-manager/edit'             => __DIR__ . '//view/contact/facebook-manager/edit.twig',
+    'contact/facebook-manager/list'             => __DIR__ . '//view/contact/facebook-manager/list.twig',
+    'contact/facebook-manager/view'             => __DIR__ . '//view/contact/facebook-manager/view.twig',
+    'contact/facebook-manager/new'              => __DIR__ . '//view/contact/facebook-manager/new.twig',
     'contact/contact/change-password'           => __DIR__ . '//view/contact/contact/change-password.twig',
     'contact/contact/profile'                   => __DIR__ . '//view/contact/contact/profile.twig',
     'contact/contact/profile-edit'              => __DIR__ . '//view/contact/contact/profile-edit.twig',
@@ -23,6 +27,7 @@ return array(
     'contact/contact-manager/partial/event'     => __DIR__ . '//view/contact/contact-manager/partial/event.twig',
     'contact/contact-manager/partial/address'   => __DIR__ . '//view/contact/contact-manager/partial/address.twig',
     'contact/partial/pagination-control'        => __DIR__ . '//view/contact/partial/pagination-control.twig',
+    'contact/partial/form/facebook'             => __DIR__ . '//view/contact/partial/form/facebook.twig',
     'contact/partial/entity/contact'            => __DIR__ . '//view/contact/partial/entity/contact.twig',
     'contact/partial/signature'                 => __DIR__ . '//view/contact/partial/signature.twig',
 );

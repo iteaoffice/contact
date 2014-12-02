@@ -1,0 +1,49 @@
+<h1>{{ facebook }}</h1>
+
+<dl class="dl-horizontal">
+    <dt>{{ translate("txt-name") }}</dt>
+    <dd>{{ facebook.facebook }}</dd>
+    <dt>{{ translate("txt-public") }}</dt>
+    <dd>{{ translate(facebook.getPublic(true)) }}</dd>
+    <dt>{{ translate("txt-from-clause") }}</dt>
+    <dd>{{ facebook.fromClause }}</dd>
+    <dt>{{ translate("txt-where-clause") }}</dt>
+    <dd>{{ facebook.whereClause }}</dd>
+    <dt>{{ translate("txt-orderby-clause") }}</dt>
+    <dd>{{ facebook.orderbyClause }}</dd>
+    <dt>{{ translate("txt-contact-key") }}</dt>
+    <dd>{{ facebook.contactKey }}</dd>
+    <dt>{{ translate("txt-title") }}</dt>
+    <dd>{{ facebook.title }}</dd>
+    <dt>{{ translate("txt-sub-title") }}</dt>
+    <dd>{{ facebook.subTitle }}</dd>
+</dl>
+
+<h3>{{ translate("txt-contacts-in-facebook") }}</h3>
+
+{% if contacts|length > 0 %}
+    <table class="table table-hover table-condensed table-striped">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-display-name") }}</th>
+            <th>{{ translate("txt-title") }}</th>
+            <th>{{ translate("txt-sub-title") }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for contact in contacts %}
+
+            <tr>
+                <td>{{ contact.displayName }}</td>
+                <td>{{ contact.title }}</td>
+                <td>{{ contact.subTitle }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+
+{{ facebookLink(facebook,'edit','button') }}
+{{ facebookLink(null,'list','button') }}
