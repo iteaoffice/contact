@@ -1,4 +1,4 @@
-<h1>{{ facebook }}</h1>
+<h1>{{ translate("txt-facebook-%s")|format(facebook) }}</h1>
 
 <dl class="dl-horizontal">
     <dt>{{ translate("txt-name") }}</dt>
@@ -14,9 +14,15 @@
     <dt>{{ translate("txt-contact-key") }}</dt>
     <dd>{{ facebook.contactKey }}</dd>
     <dt>{{ translate("txt-title") }}</dt>
-    <dd>{{ facebook.title }}</dd>
+    <dd>{{ translate(facebook.getTitle(true)) }}</dd>
     <dt>{{ translate("txt-sub-title") }}</dt>
-    <dd>{{ facebook.subTitle }}</dd>
+    <dd>{{ translate(facebook.getSubTitle(true)) }}</dd>
+    <dt>{{ translate("txt-access") }}</dt>
+    {% for access in facebook.access %}
+        <dd>{{ accessLink(access,'view') }}</dd>
+    {% else %}
+        <dd>{{ translate("txt-no-access-defined-article-is-public") }}</dd>
+    {% endfor %}
 </dl>
 
 <h3>{{ translate("txt-contacts-in-facebook") }}</h3>
@@ -32,9 +38,8 @@
         </thead>
         <tbody>
         {% for contact in contacts %}
-
             <tr>
-                <td>{{ contact.displayName }}</td>
+                <td>{{ contact.contact.displayName }}</td>
                 <td>{{ contact.title }}</td>
                 <td>{{ contact.subTitle }}</td>
             </tr>

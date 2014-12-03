@@ -11,8 +11,8 @@ use Contact\Entity;
 use Contact\Form;
 use Contact\Options;
 
-return array(
-    'factories' => array(
+return [
+    'factories' => [
         'contact_community_options' => function ($sm) {
             $config = $sm->get('Config');
 
@@ -21,11 +21,11 @@ return array(
         'contact_contact_form'      => function ($sm) {
             return new Form\Contact($sm, new Entity\Contact());
         },
-        'contact_facebook_form'      => function ($sm) {
-            return new Form\Contact($sm, new Entity\Facebook());
+        'contact_facebook_form'     => function ($sm) {
+            return new Form\CreateObject($sm, new Entity\Facebook());
         },
         'contact_impersonate_form'  => function ($sm) {
             return new Form\Impersonate($sm);
         },
-    ),
-);
+    ],
+];

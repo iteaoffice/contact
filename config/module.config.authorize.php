@@ -9,6 +9,7 @@
  */
 use Admin\Entity\Access;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
+use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 
 return [
     'bjyauthorize' => [
@@ -42,6 +43,7 @@ return [
             'BjyAuthorize\Guard\Route' => [
                 ['route' => 'contact/edit', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'community/contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
+                ['route' => 'community/contact/facebook', 'roles' => [], 'assertion' => FacebookAssertion::class],
                 ['route' => 'contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
                 ['route' => 'contact/get-address-by-type', 'roles' => [], 'assertion' => ContactAssertion::class],

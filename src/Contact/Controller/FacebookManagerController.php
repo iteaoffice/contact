@@ -39,8 +39,6 @@ class FacebookManagerController extends ContactAbstractController
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
 
-//        var_dump( $this->getContactService()->findContactsInFacebook($facebook));
-
         return new ViewModel(
             [
                 'facebook' => $facebook,

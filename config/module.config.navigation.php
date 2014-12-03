@@ -9,7 +9,15 @@
  */
 return [
     'navigation' => [
-        'admin' => [
+        'community' => [
+            // And finally, here is where we define our page hierarchy
+            'contact' => [
+                'order' => 60,
+                'label' => _("txt-contacts"),
+                'route' => 'community/contact',
+            ],
+        ],
+        'admin'     => [
             // And finally, here is where we define our page hierarchy
             'contact' => [
                 'label'    => _("txt-contact-admin"),

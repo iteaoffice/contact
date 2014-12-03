@@ -138,8 +138,17 @@ return [
                                 'action'     => 'index',
                             ],
                         ],
-                        'may_terminate' => false,
+                        'may_terminate' => true,
                         'child_routes'  => [
+                            'facebook'     => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/facebook/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'facebook',
+                                    ],
+                                ],
+                            ],
                             'profile-edit' => [
                                 'type'    => 'Segment',
                                 'options' => [

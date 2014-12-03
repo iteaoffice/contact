@@ -10,6 +10,7 @@
 namespace Contact;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
+use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 use Contact\Controller\ControllerInitializer;
 use Contact\Form\View\Helper\ContactFormElement;
 use Contact\Service\SelectionService;
@@ -63,13 +64,14 @@ $config = [
         ],
         'invokables'   => [
             ContactAssertion::class        => ContactAssertion::class,
+            FacebookAssertion::class       => FacebookAssertion::class,
             SelectionService::class        => SelectionService::class,
             StatisticsService::class       => StatisticsService::class,
             'contact_contact_service'      => 'Contact\Service\ContactService',
             'contact_address_service'      => 'Contact\Service\AddressService',
             'contact_form_service'         => 'Contact\Service\FormService',
             'contact_contact_form_filter'  => 'Contact\Form\FilterContact',
-            'contact_facebook_form_filter' => 'Contact\Form\FilterCreateObject.php',
+            'contact_facebook_form_filter' => 'Contact\Form\FilterCreateObject',
             'contact_password_form'        => 'Contact\Form\Password',
             'contact_password_form_filter' => 'Contact\Form\PasswordFilter',
         ]

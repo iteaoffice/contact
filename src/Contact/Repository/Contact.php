@@ -167,7 +167,7 @@ class Contact extends EntityRepository
     /**
      *  Returns true of false depending if a contact is a community member
      *
-     * @param Entity\Contact $contact
+     * @param Entity\Contact                    $contact
      * @param Options\CommunityOptionsInterface $options
      *
      * @return boolean|null
@@ -307,6 +307,7 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('c', 'firstname', 'firstName');
         $resultSetMap->addFieldResult('c', 'middlename', 'middleName');
         $resultSetMap->addFieldResult('c', 'lastname', 'lastName');
+        $resultSetMap->addFieldResult('c', 'position', 'position');
 
         $queryInString = sprintf(
             "SELECT %s FROM %s WHERE %s",
@@ -315,14 +316,17 @@ class Contact extends EntityRepository
             $facebook->getWhereClause()
         );
 
+        $orderBy = null;
         if (null !== $facebook->getOrderbyClause()) {
-            $queryInString .= sprintf(" ORDER BY %s", $facebook->getOrderbyClause());
+            $orderBy = sprintf(" ORDER BY %s", $facebook->getOrderbyClause());
         }
+
 
         $query = $this->getEntityManager()->createNativeQuery(
             sprintf(
-                "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (%s) AND date_end IS NULL",
-                $queryInString
+                "SELECT contact_id, email, firstname, middlename, lastname, position FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ",
+                $queryInString,
+                $orderBy
             ),
             $resultSetMap
         );

@@ -30,6 +30,22 @@ use Zend\InputFilter\InputFilterInterface;
  */
 class Facebook extends EntityAbstract
 {
+    const DISPLAY_NONE = 1;
+    const DISPLAY_ORGANISATION = 2;
+    const DISPLAY_COUNTRY = 3;
+    const DISPLAY_POSITION = 4;
+
+    /**
+     * Textual versions of the hideForOthers
+     *
+     * @var array
+     */
+    protected $displayTemplates = [
+        self::DISPLAY_NONE         => 'txt-empty',
+        self::DISPLAY_ORGANISATION => 'txt-organisation',
+        self::DISPLAY_COUNTRY      => 'txt-country',
+        self::DISPLAY_POSITION     => 'txt-position',
+    ];
     /**
      * Constant for public = 0 (not public)
      */
@@ -117,32 +133,42 @@ class Facebook extends EntityAbstract
     private $contactKey;
     /**
      * @ORM\Column(name="com_extra", type="string", length=255, nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Attributes({
-     * "required":"true",
-     * "class":"form-control",
-     * "placeholder":"txt-title"})
+     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Attributes({"array":"displayTemplates"})
+     * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-title","help-block": "txt-title-explanation"})
      * @var string
      */
     private $title;
     /**
      * @ORM\Column(name="com_sub", type="string", length=255, nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Attributes({
-     * "required":"true",
-     * "class":"form-control",
-     * "placeholder":"txt-title"})
+     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Attributes({"array":"displayTemplates"})
+     * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-sub-title","help-block": "txt-sub-title-explanation"})
      * @var string
      */
     private $subtitle;
+    /**
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", inversedBy="article")
+     * @ORM\OrderBy=({"name"="ASC"})
+     * @ORM\JoinTable(name="facebook_access",
+     *            joinColumns={@ORM\JoinColumn(name="facebook_id", referencedColumnName="facebook_id")},
+     *            inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
+     * )
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Options({"target_class":"Admin\Entity\Access"})
+     * @Annotation\Attributes({"label":"txt-access","multiple":"true"})
+     * @var \Admin\Entity\Access[]|Collections\ArrayCollection
+     */
+    private $access;
 
     /**
      * Class constructor
      */
     public function __construct()
     {
+        $this->access = new Collections\ArrayCollection();
     }
 
     /**
@@ -184,6 +210,38 @@ class Facebook extends EntityAbstract
     public function getPublicTemplates()
     {
         return $this->publicTemplates;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDisplayTemplates()
+    {
+        return $this->displayTemplates;
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $collection
+     */
+    public function addAccess(Collections\Collection $collection)
+    {
+        foreach ($collection as $access) {
+            $this->access->add($access);
+        }
+    }
+
+    /**
+     * New function needed to make the hydrator happy
+     *
+     * @param Collections\Collection $collection
+     */
+    public function removeAccess(Collections\Collection $collection)
+    {
+        foreach ($collection as $access) {
+            $this->access->removeElement($access);
+        }
     }
 
     /**
@@ -360,10 +418,14 @@ class Facebook extends EntityAbstract
     }
 
     /**
+     * @param bool $textual
      * @return string
      */
-    public function getTitle()
+    public function getTitle($textual = false)
     {
+        if ($textual) {
+            return $this->displayTemplates[$this->title];
+        }
         return $this->title;
     }
 
@@ -376,10 +438,14 @@ class Facebook extends EntityAbstract
     }
 
     /**
+     * @param bool $textual
      * @return string
      */
-    public function getSubtitle()
+    public function getSubtitle($textual = false)
     {
+        if ($textual) {
+            return $this->displayTemplates[$this->subtitle];
+        }
         return $this->subtitle;
     }
 
@@ -391,5 +457,19 @@ class Facebook extends EntityAbstract
         $this->subtitle = $subtitle;
     }
 
+    /**
+     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
+     */
+    public function getAccess()
+    {
+        return $this->access;
+    }
 
+    /**
+     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
+     */
+    public function setAccess($access)
+    {
+        $this->access = $access;
+    }
 }

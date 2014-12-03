@@ -10,6 +10,7 @@
 namespace Contact\Controller;
 
 use Contact\Entity\AddressType;
+use Contact\Entity\Facebook;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -256,6 +257,23 @@ class ContactController extends ContactAbstractController
                 'country' => $address->getAddress()->getCountry()->getId()
             ]
         );
+    }
 
+    /**
+     * @return ViewModel
+     */
+    public function facebookAction()
+    {
+        /**
+         * @var $facebook Facebook
+         */
+        $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
+
+        return new ViewModel(
+            [
+                'facebook' => $facebook,
+                'contacts' => $this->getContactService()->findContactsInFacebook($facebook)
+            ]
+        );
     }
 }

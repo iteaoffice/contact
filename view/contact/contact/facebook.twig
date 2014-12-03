@@ -1,0 +1,31 @@
+<h1>{{ facebook }}</h1>
+
+{% if  contacts|length > 0 %}
+    <div class="row">
+    {% for contact in contacts %}
+        <div class="col-sm-2">
+            <div class="thumbnail information-box">
+                <div class="information-box-header clearfix">
+                    <h5>{{ contact.contact.displayName }}</h5>
+                </div>
+                <div class="information-box-image">
+                    {{ contactPhoto(contact.contact, null, true) }}
+                </div>
+                <div class="caption caption-relative">
+
+
+                    {{ contact.title }}<br>{{ contact.subTitle }}
+                </div>
+            </div>
+        </div>
+        {% if loop.index is divisibleby(6) %}
+            </div>
+            <div class="row">
+        {% endif %}
+
+    {% endfor %}
+    </div>
+{% endif %}
+
+
+{{ facebookLink(facebook,'edit','button') }}

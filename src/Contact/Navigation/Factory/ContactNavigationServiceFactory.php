@@ -40,6 +40,10 @@ class ContactNavigationServiceFactory implements FactoryInterface
         $application = $serviceLocator->get('application');
         $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());
         $contactNavigationService->setRouter($application->getMvcEvent()->getRouter());
+
+        if ($serviceLocator->get('zfcuser_auth_service')->hasIdentity()) {
+            $contactNavigationService->setContact($serviceLocator->get('zfcuser_auth_service')->getIdentity());
+        }
         /**
          * @var $navigation Navigation
          */

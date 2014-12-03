@@ -9,7 +9,7 @@
  */
 namespace Contact\Form;
 
-use Content\Entity\EntityAbstract;
+use Contact\Entity\EntityAbstract;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceManager;
 
@@ -29,8 +29,8 @@ class CreateObject extends Form
     public function __construct(ServiceManager $serviceManager, EntityAbstract $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-        $this->serviceManager   = $serviceManager;
-        $entityManager          = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->serviceManager = $serviceManager;
+        $entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
         $objectSpecificFieldset = '\Content\Form\\' . ucfirst($object->get('entity_name')) . 'Fieldset';
         /**
          * Load a specific fieldSet when present
@@ -45,14 +45,34 @@ class CreateObject extends Form
         $this->setAttribute('method', 'post');
 
         $this->add(
-            array(
+            [
+                'type'       => 'Zend\Form\Element\Submit',
+                'name'       => 'cancel',
+                'attributes' => [
+                    'class' => "btn btn-warning",
+                    'value' => _("txt-cancel")
+                ]
+            ]
+        );
+        $this->add(
+            [
+                'type'       => 'Zend\Form\Element\Submit',
+                'name'       => 'delete',
+                'attributes' => [
+                    'class' => "btn btn-danger",
+                    'value' => _("txt-delete")
+                ]
+            ]
+        );
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'submit',
-                'attributes' => array(
+                'attributes' => [
                     'class' => "btn btn-primary",
                     'value' => _("txt-submit")
-                )
-            )
+                ]
+            ]
         );
     }
 }

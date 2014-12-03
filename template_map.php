@@ -12,6 +12,7 @@ return array(
     'contact/contact/profile'                   => __DIR__ . '//view/contact/contact/profile.twig',
     'contact/contact/profile-edit'              => __DIR__ . '//view/contact/contact/profile-edit.twig',
     'contact/contact/signature'                 => __DIR__ . '//view/contact/contact/signature.twig',
+    'contact/contact/facebook'                  => __DIR__ . '//view/contact/contact/facebook.twig',
     'contact/contact-manager/statistics'        => __DIR__ . '//view/contact/contact-manager/statistics.twig',
     'contact/contact-manager/impersonate'       => __DIR__ . '//view/contact/contact-manager/impersonate.twig',
     'contact/contact-manager/edit'              => __DIR__ . '//view/contact/contact-manager/edit.twig',

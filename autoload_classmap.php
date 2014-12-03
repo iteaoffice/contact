@@ -97,4 +97,5 @@ return array(
   'Contact\Options\ModuleOptions'                                => __DIR__ . '/src/Contact/Options/ModuleOptions.php',
   'Contact\Acl\Assertion\Contact'                                => __DIR__ . '/src/Contact/Acl/Assertion/Contact.php',
   'Contact\Acl\Assertion\AssertionAbstract'                      => __DIR__ . '/src/Contact/Acl/Assertion/AssertionAbstract.php',
+  'Contact\Acl\Assertion\Facebook'                               => __DIR__ . '/src/Contact/Acl/Assertion/Facebook.php',
 );

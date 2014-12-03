@@ -681,14 +681,72 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Get a list of facebooks by contact (based on the access role)
+     *
+     * @param Contact $contact
+     *
+     * @return Facebook[]
+     */
+    public function findFacebookByContact(Contact $contact)
+    {
+        return $this->getEntityManager()->getRepository(
+            $this->getFullEntityName('facebook')
+        )->findFacebookByContact($contact);
+    }
+
+    /**
      * @param Facebook $facebook
      * @return Contact[]
      */
     public function findContactsInFacebook(Facebook $facebook)
     {
-        return $this->getEntityManager()->getRepository(
+        /**
+         * This function has a special feature to fill the array with contacts.
+         * We can for instance try to find the country, organisation or position
+         *
+         * A dedicated array will therefore be created
+         */
+        $contacts = [];
+        foreach ($this->getEntityManager()->getRepository(
             $this->getFullEntityName('Contact')
-        )->findContactsInFacebook($facebook);
+        )->findContactsInFacebook($facebook) as $contact) {
+            $singleContact = [];
+
+            $singleContact['contact'] = $contact;
+            $singleContact['title'] = $this->facebookTitleParser($facebook->getTitle(), $contact);
+            $singleContact['subTitle'] = $this->facebookTitleParser($facebook->getSubtitle(), $contact);
+            $contacts[] = $singleContact;
+        }
+
+
+        return $contacts;
+    }
+
+    /**
+     * Special function which translates the output of the facebook to a known value
+     *
+     * @param         $titleGetter
+     * @param Contact $contact
+     * @return string
+     */
+    private function facebookTitleParser($titleGetter, Contact $contact)
+    {
+        if (strlen($titleGetter) === 0) {
+            return '';
+        }
+
+        //Format the $getter
+        switch (intval($titleGetter)) {
+            case Facebook::DISPLAY_ORGANISATION:
+                return (string)$contact->getContactOrganisation()->getOrganisation();
+            case Facebook::DISPLAY_COUNTRY:
+                return (string)$contact->getContactOrganisation()->getOrganisation()->getCountry();
+            case Facebook::DISPLAY_POSITION:
+                return $contact->getPosition();
+            default:
+            case Facebook::DISPLAY_NONE:
+                return '';
+        }
     }
 
 
