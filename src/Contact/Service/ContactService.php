@@ -104,7 +104,6 @@ class ContactService extends ServiceAbstract
         }
 
         return $contact;
-
     }
 
     /**
@@ -854,7 +853,6 @@ class ContactService extends ServiceAbstract
             $currentContactOrganisation->setOrganisation($organisation);
         } else {
             $foundOrganisation = null;
-
             /**
              * Go over the found organisation to match the branching
              */
@@ -887,7 +885,6 @@ class ContactService extends ServiceAbstract
                      * We have found a match of the organisation in the string and
                      */
                     $organisationFound = true;
-
                 }
             }
             $currentContactOrganisation->setOrganisation($foundOrganisation);

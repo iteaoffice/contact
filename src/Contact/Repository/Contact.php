@@ -183,14 +183,15 @@ class Contact extends EntityRepository
             $queryBuilder->select('contact.id');
             $queryBuilder->from('Contact\Entity\Contact', 'contact');
             $queryBuilder->join('contact.contactOrganisation', 'co');
-            $queryBuilder->leftJoin('co.organisation', 'organisation');
-            $queryBuilder->leftJoin('organisation.cluster', 'cluster1', 'cluster1.organisation = organisation');
-            $queryBuilder->leftjoin('organisation.cluster', 'cluster2', 'cluster1.cluster = cluster2.cluster');
-            $queryBuilder->join('organisation.member', 'm');
+            $queryBuilder->join('co.organisation', 'organisation');
+            $queryBuilder->join('organisation.clusterMember', 'cluster');
+            $queryBuilder->join('cluster.organisation', 'organisation2');
+            $queryBuilder->join('organisation2.member', 'm');
             $queryBuilder = $memberRepository->onlyActiveMember($queryBuilder);
-            $queryBuilder->andWhere('contact = :contact');
+            $queryBuilder->andWhere('co.contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
-            //If we find a member, return true, else proceed
+
+            //check update
             if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
                 return true;
             }
@@ -199,17 +200,22 @@ class Contact extends EntityRepository
             $queryBuilder->select('contact.id');
             $queryBuilder->from('Contact\Entity\Contact', 'contact');
             $queryBuilder->join('contact.contactOrganisation', 'co');
-            $queryBuilder->leftJoin('co.organisation', 'organisation');
+            $queryBuilder->join('co.organisation', 'organisation');
             $queryBuilder->join('organisation.member', 'm');
             $queryBuilder = $memberRepository->onlyActiveMember($queryBuilder);
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
-
+            //check update
             if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+
                 return true;
             }
 
+
+
             return false;
+
+
         }
         if ($options->getCommunityViaProjectParticipation()) {
             $projectRepository = $this->getEntityManager()->getRepository('Project\Entity\Project');
