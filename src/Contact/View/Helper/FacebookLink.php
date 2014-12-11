@@ -10,6 +10,7 @@
  */
 namespace Contact\View\Helper;
 
+use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 use Contact\Entity\Facebook;
 
 /**
@@ -49,6 +50,15 @@ class FacebookLink extends LinkAbstract
         $this->setShow($show);
         $this->setPage($page);
 
+        if (!$this->hasAccess(
+            $this->getFacebook(),
+            FacebookAssertion::class,
+            $this->getAction()
+        )
+        ) {
+            return '';
+        }
+
         /**
          * If the alternativeShow is not null, use it an otherwise take the page
          */
@@ -68,6 +78,9 @@ class FacebookLink extends LinkAbstract
         return $this->createLink();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function parseAction()
     {
         switch ($this->getAction()) {
@@ -90,6 +103,12 @@ class FacebookLink extends LinkAbstract
                 $this->setRouter('zfcadmin/facebook-manager/edit');
                 $this->setText(
                     sprintf($this->translate("txt-edit-facebook-%s"), $this->getFacebook()->getFacebook())
+                );
+                break;
+            case 'send-message':
+                $this->setRouter('community/contact/facebook/send-message');
+                $this->setText(
+                    sprintf($this->translate("txt-send-message-to-%s"), $this->getFacebook()->getFacebook())
                 );
                 break;
             case 'view':

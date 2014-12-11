@@ -70,10 +70,9 @@ class ContactNavigationService extends NavigationServiceAbstract
         foreach ($this->getContactService()->findFacebookByContact(
             $this->getContact()
         ) as $facebook) {
-
             $page = [
                 'label'  => $facebook->getFacebook(),
-                'route'  => 'community/contact/facebook',
+                'route'  => 'community/contact/facebook/facebook',
                 'active' => strtolower($this->getRouteMatch()->getParam('namespace')) === 'contact' &&
                     intval($this->getRouteMatch()->getParam('category')) === $facebook->getId(),
                 'router' => $this->getRouter(),

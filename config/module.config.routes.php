@@ -141,11 +141,36 @@ return [
                         'may_terminate' => true,
                         'child_routes'  => [
                             'facebook'     => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/facebook/[:id].html',
+                                'type'         => 'Segment',
+                                'options'      => [
+                                    'route'    => '/facebook',
                                     'defaults' => [
-                                        'action' => 'facebook',
+                                        'action'     => 'facebook',
+                                        'controller' => 'contact-facebook',
+                                    ],
+                                ],
+                                'child_routes' => [
+                                    'facebook'     => [
+                                        'type'     => 'Segment',
+                                        'priority' => 1000,
+                                        'options'  => [
+                                            'route'    => '/[:id].html',
+                                            'defaults' => [
+                                                'namespace' => 'contact',
+                                                'action'    => 'facebook',
+                                            ],
+                                        ],
+                                    ],
+                                    'send-message' => [
+                                        'type'     => 'Segment',
+                                        'priority' => 1000,
+                                        'options'  => [
+                                            'route'    => '/send-message/[:id].html',
+                                            'defaults' => [
+                                                'namespace' => 'contact',
+                                                'action'    => 'send-message',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],
@@ -341,7 +366,7 @@ return [
                         'options'       => [
                             'route'    => '/facebook',
                             'defaults' => [
-                                'controller' => 'contact-facebook',
+                                'controller' => 'contact-facebook-manager',
                                 'action'     => 'list',
                                 'page'       => 1,
                             ],

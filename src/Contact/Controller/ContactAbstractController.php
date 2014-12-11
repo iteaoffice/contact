@@ -20,6 +20,7 @@ use Contact\Service\SelectionService;
 use Contact\Service\SelectionServiceAwareInterface;
 use Deeplink\Service\DeeplinkService;
 use Deeplink\Service\DeeplinkServiceAwareInterface;
+use General\Service\EmailService;
 use General\Service\GeneralService;
 use General\Service\GeneralServiceAwareInterface;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -53,6 +54,10 @@ abstract class ContactAbstractController extends AbstractActionController implem
      * @var GeneralService
      */
     protected $generalService;
+    /**
+     * @var EmailService
+     */
+    protected $emailService;
     /**
      * @var DeeplinkService
      */
@@ -186,6 +191,26 @@ abstract class ContactAbstractController extends AbstractActionController implem
     public function setAdminService(AdminService $adminService)
     {
         $this->adminService = $adminService;
+
+        return $this;
+    }
+
+    /**
+     * @return EmailService
+     */
+    public function getEmailService()
+    {
+        return $this->emailService;
+    }
+
+    /**
+     * @param EmailService $emailService
+     *
+     * @return $this
+     */
+    public function setEmailService(EmailService $emailService)
+    {
+        $this->emailService = $emailService;
 
         return $this;
     }

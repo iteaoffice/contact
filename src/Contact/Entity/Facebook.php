@@ -16,6 +16,7 @@ use Zend\Form\Annotation;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Entity for the Facebook
@@ -28,7 +29,7 @@ use Zend\InputFilter\InputFilterInterface;
  * @category    Contact
  * @package     Entity
  */
-class Facebook extends EntityAbstract
+class Facebook extends EntityAbstract implements ResourceInterface
 {
     const DISPLAY_NONE = 1;
     const DISPLAY_ORGANISATION = 2;
@@ -150,7 +151,7 @@ class Facebook extends EntityAbstract
      */
     private $subtitle;
     /**
-     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", inversedBy="article")
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", inversedBy="article", inversedBy="facebook")
      * @ORM\OrderBy=({"name"="ASC"})
      * @ORM\JoinTable(name="facebook_access",
      *            joinColumns={@ORM\JoinColumn(name="facebook_id", referencedColumnName="facebook_id")},
@@ -203,6 +204,17 @@ class Facebook extends EntityAbstract
     {
         return (string)$this->facebook;
     }
+
+    /**
+     * Returns the string identifier of the Resource
+     *
+     * @return string
+     */
+    public function getResourceId()
+    {
+        return sprintf("%s:%s", __CLASS__, $this->id);
+    }
+
 
     /**
      * @return array

@@ -1,3 +1,5 @@
+{% do headTitle().append(translate("txt-contacts")) %}
+{% do headTitle().append(facebook.facebook) %}
 <h1>{{ facebook }}</h1>
 
 {% if  contacts|length > 0 %}
@@ -28,4 +30,5 @@
 {% endif %}
 
 
+{{ facebookLink(facebook,'send-message','button') }}
 {{ facebookLink(facebook,'edit','button') }}

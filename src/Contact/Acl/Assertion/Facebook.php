@@ -10,6 +10,7 @@
 namespace Contact\Acl\Assertion;
 
 use Admin\Entity\Access;
+use Contact\Entity\Facebook as FacebookEntity;
 use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\Permissions\Acl\Role\RoleInterface;
@@ -25,12 +26,12 @@ class Facebook extends AssertionAbstract
      *
      * @param Acl               $acl
      * @param RoleInterface     $role
-     * @param ResourceInterface $resource
+     * @param ResourceInterface $facebook
      * @param string            $privilege
      *
      * @return bool
      */
-    public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $resource = null, $privilege = null)
+    public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $facebook = null, $privilege = null)
     {
         /**
          * A meeting can be shown when we have a contact
@@ -39,6 +40,32 @@ class Facebook extends AssertionAbstract
             return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }
 
-        return $this->hasContact();
+        $id = $this->getRouteMatch()->getParam('id');
+        /**
+         * When the privilege is_null (not given by the isAllowed helper), we cannot grab it from the
+         * routeMatch, but we assume that we are viewing an idea
+         */
+        if (is_null($privilege)) {
+            $privilege = $this->getRouteMatch()->getParam('privilege', 'view');
+        }
+        if (!$facebook instanceof FacebookEntity && !is_null($id)) {
+            /**
+             * @var $facebook FacebookEntity
+             */
+            $facebook = $this->getContactService()->findEntityById('facebook', $id);
+        }
+
+        switch ($privilege) {
+            case 'view':
+                if ($facebook->getPublic() === FacebookEntity::IS_PUBLIC) {
+                    return true;
+                }
+
+                return $this->rolesHaveAccess($facebook->getAccess()->toArray());
+            case 'send-message':
+                return $this->getContactService()->findContactInFacebook($facebook);
+            default:
+                return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
+        }
     }
 }

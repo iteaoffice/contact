@@ -41,19 +41,79 @@ return [
              * access to all routes unless they are specified here.
              */
             'BjyAuthorize\Guard\Route' => [
-                ['route' => 'contact/edit', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'community/contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'community/contact/facebook', 'roles' => [], 'assertion' => FacebookAssertion::class],
-                ['route' => 'contact/profile', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'contact/get-address-by-type', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'community/contact/profile-edit', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'contact/opt-in-update', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'contact/change-password', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'contact/signature', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'contact/photo', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'contact/search', 'roles' => [], 'assertion' => ContactAssertion::class],
-                ['route' => 'assets/contact-photo', 'roles' => []],
+                [
+                    'route'     => 'contact/edit',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/profile',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route' => 'community/contact',
+                    'roles' => [strtolower(Access::ACCESS_USER)]
+                ],
+                [
+                    'route'     => 'community/contact/facebook/facebook',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => FacebookAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/facebook/send-message',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => FacebookAssertion::class
+                ],
+                [
+                    'route'     => 'contact/profile',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'contact/profile-edit',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'contact/get-address-by-type',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/profile-edit',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'contact/opt-in-update',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'contact/change-password',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'contact/signature',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'contact/photo',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'contact/search',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route' => 'assets/contact-photo',
+                    'roles' => []
+                ],
                 [
                     'route'     => 'zfcadmin/contact-manager',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],

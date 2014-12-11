@@ -31,10 +31,11 @@ $config = [
             ControllerInitializer::class
         ],
         'invokables'   => [
-            'contact-index'     => 'Contact\Controller\ContactController',
-            'contact-selection' => 'Contact\Controller\SelectionManagerController',
-            'contact-facebook'  => 'Contact\Controller\FacebookManagerController',
-            'contact-manager'   => 'Contact\Controller\ContactManagerController',
+            'contact-index'            => 'Contact\Controller\ContactController',
+            'contact-selection'        => 'Contact\Controller\SelectionManagerController',
+            'contact-facebook-manager' => 'Contact\Controller\FacebookManagerController',
+            'contact-facebook'         => 'Contact\Controller\FacebookController',
+            'contact-manager'          => 'Contact\Controller\ContactManagerController',
         ],
     ],
     'view_manager'    => [

@@ -199,6 +199,13 @@ class ContactService extends ServiceAbstract
      */
     public function parseAttention()
     {
+        /**
+         * Return nothing when the contact object is created and does not have all the relevant information
+         */
+        if (is_null($this->getContact()->getTitle()) || $this->getContact()->getGender()) {
+            return '';
+        }
+
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
         } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
@@ -629,6 +636,21 @@ class ContactService extends ServiceAbstract
                 return true;
             }
         }
+    }
+
+    /**
+     * @param Facebook $facebook
+     * @return bool
+     */
+    public function findContactInFacebook(Facebook $facebook)
+    {
+        if (is_null($this->getContact())) {
+            throw new \InvalidArgumentException("The contact cannot be null");
+        }
+        return $this->getEntityManager()->getRepository(
+            $this->getFullEntityName('facebook')
+        )->isContactInFacebook($this->getContact(), $facebook);
+
     }
 
     /**

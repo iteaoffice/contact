@@ -46,6 +46,7 @@ class Selection extends EntityRepository
         $queryBuilder->select('s');
         $queryBuilder->from('Contact\Entity\Selection', 's');
 
+
         $subSelect = $this->_em->createQueryBuilder();
         $subSelect->select('selection.id');
         $subSelect->from('Contact\Entity\Selection', 'selection');

@@ -131,7 +131,11 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     {
         switch ($this->getShow()) {
             case 'icon':
+            case 'button':
                 switch ($this->getAction()) {
+                    case 'send-message':
+                        $this->addLinkContent('<i class="fa fa-envelope"></i>');
+                        break;
                     case 'edit':
                         $this->addLinkContent('<i class="fa fa-pencil-square-o"></i>');
                         break;
@@ -139,10 +143,12 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                         $this->addLinkContent('<i class="fa fa-link"></i>');
                         break;
                 }
-                break;
-            case 'button':
-                $this->addClasses("btn btn-primary");
-                $this->addLinkContent('<span class="glyphicon glyphicon-info"></span> ' . $this->getText());
+
+                if ($this->getShow() === 'button') {
+                    $this->addLinkContent(' ' . $this->getText());
+                    $this->addClasses("btn btn-primary");
+                }
+
                 break;
             case 'text':
                 $this->addLinkContent($this->getText());
