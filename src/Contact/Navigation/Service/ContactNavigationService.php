@@ -86,7 +86,6 @@ class ContactNavigationService extends NavigationServiceAbstract
 
     }
 
-
     /**
      *
      */

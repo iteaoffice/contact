@@ -56,7 +56,7 @@ class ContactFormElement extends ZendFormElement
     /**
      * Set Label Helper
      *
-     * @param  \Zend\Form\View\Helper\FormLabel $labelHelper
+     * @param \Zend\Form\View\Helper\FormLabel $labelHelper
      *
      * @return self
      */
@@ -85,7 +85,7 @@ class ContactFormElement extends ZendFormElement
     /**
      * Set EscapeHtml Helper
      *
-     * @param  \Zend\View\Helper\EscapeHtml $escapeHelper
+     * @param \Zend\View\Helper\EscapeHtml $escapeHelper
      *
      * @return self
      */
@@ -114,7 +114,7 @@ class ContactFormElement extends ZendFormElement
     /**
      * Set Element Helper
      *
-     * @param  \Zend\Form\View\Helper\FormElement $elementHelper
+     * @param \Zend\Form\View\Helper\FormElement $elementHelper
      *
      * @return self
      */
@@ -143,7 +143,7 @@ class ContactFormElement extends ZendFormElement
     /**
      * Set Element Error Helper
      *
-     * @param  \Zend\Form\View\Helper\FormElementErrors $errorHelper
+     * @param \Zend\Form\View\Helper\FormElementErrors $errorHelper
      *
      * @return self
      */
@@ -202,13 +202,13 @@ class ContactFormElement extends ZendFormElement
     /**
      * Set Group Wrapper
      *
-     * @param  string $groupWrapper
+     * @param string $groupWrapper
      *
      * @return self
      */
     public function setGroupWrapper($groupWrapper)
     {
-        $this->groupWrapper = (string)$groupWrapper;
+        $this->groupWrapper = (string) $groupWrapper;
 
         return $this;
     }
@@ -226,13 +226,13 @@ class ContactFormElement extends ZendFormElement
     /**
      * Set Control Wrapper
      *
-     * @param  string $controlWrapper ;
+     * @param string $controlWrapper ;
      *
      * @return self
      */
     public function setControlWrapper($controlWrapper)
     {
-        $this->controlWrapper = (string)$controlWrapper;
+        $this->controlWrapper = (string) $controlWrapper;
 
         return $this;
     }
@@ -250,9 +250,9 @@ class ContactFormElement extends ZendFormElement
     /**
      * Render
      *
-     * @param  Select|ElementInterface $element
-     * @param  string                  $groupWrapper
-     * @param  string                  $controlWrapper
+     * @param Select|ElementInterface $element
+     * @param string                  $groupWrapper
+     * @param string                  $controlWrapper
      *
      * @return string
      */
@@ -347,9 +347,9 @@ class ContactFormElement extends ZendFormElement
     /**
      * Magical Invoke
      *
-     * @param  \Zend\Form\ElementInterface $element
-     * @param  string                      $groupWrapper
-     * @param  string                      $controlWrapper
+     * @param \Zend\Form\ElementInterface $element
+     * @param string                      $groupWrapper
+     * @param string                      $controlWrapper
      *
      * @return string|self
      */
@@ -404,7 +404,6 @@ class ContactFormElement extends ZendFormElement
     $('.selectpicker').selectpicker().ajaxSelectPicker(options);",
                 'text/javascript'
             );
-
 
         if ($element) {
             return $this->render($element, $groupWrapper, $controlWrapper);

@@ -71,7 +71,6 @@ class SelectionManagerController extends ContactAbstractController
         );
     }
 
-
     /**
      * Create a new entity
      *

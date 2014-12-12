@@ -11,7 +11,6 @@ namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
@@ -202,7 +201,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      */
     public function __toString()
     {
-        return (string)$this->facebook;
+        return (string) $this->facebook;
     }
 
     /**
@@ -214,7 +213,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
     {
         return sprintf("%s:%s", __CLASS__, $this->id);
     }
-
 
     /**
      * @return array
@@ -346,7 +344,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param bool $textual
+     * @param  bool $textual
      * @return int
      */
     public function getPublic($textual = false)
@@ -354,6 +352,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
         if ($textual) {
             return $this->publicTemplates[$this->public];
         }
+
         return $this->public;
     }
 
@@ -430,7 +429,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param bool $textual
+     * @param  bool   $textual
      * @return string
      */
     public function getTitle($textual = false)
@@ -438,6 +437,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
         if ($textual) {
             return $this->displayTemplates[$this->title];
         }
+
         return $this->title;
     }
 
@@ -450,7 +450,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param bool $textual
+     * @param  bool   $textual
      * @return string
      */
     public function getSubtitle($textual = false)
@@ -458,6 +458,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
         if ($textual) {
             return $this->displayTemplates[$this->subtitle];
         }
+
         return $this->subtitle;
     }
 

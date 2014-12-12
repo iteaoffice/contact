@@ -235,6 +235,7 @@ class ContactManagerController extends ContactAbstractController
                 'text'  => $text
             ];
         }
+
         return new JsonModel($results);
     }
 }

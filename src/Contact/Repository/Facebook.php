@@ -43,8 +43,8 @@ class Facebook extends EntityRepository
     }
 
     /**
-     * @param Entity\Contact  $contact
-     * @param Entity\Facebook $facebook
+     * @param  Entity\Contact  $contact
+     * @param  Entity\Facebook $facebook
      * @return bool
      */
     public function isContactInFacebook(Entity\Contact $contact, Entity\Facebook $facebook)
@@ -55,7 +55,6 @@ class Facebook extends EntityRepository
          * Don't map the contact_id because that will overwrite the existing contact object leaving an emtpy one
          */
         $resultSetMap->addFieldResult('c', 'email', 'email');
-
 
         $queryInString = sprintf(
             "SELECT %s FROM %s WHERE %s",
@@ -72,8 +71,8 @@ class Facebook extends EntityRepository
             ),
             $resultSetMap
         );
+
         return sizeof($query->getResult()) > 0;
     }
-
 
 }

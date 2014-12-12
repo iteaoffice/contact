@@ -47,7 +47,6 @@ class FacebookManagerController extends ContactAbstractController
         );
     }
 
-
     /**
      * Create a new facebook
      *
@@ -104,7 +103,6 @@ class FacebookManagerController extends ContactAbstractController
             if (!isset($data['cancel'])) {
                 $facebook = $this->getContactService()->updateEntity($facebook);
             }
-
 
             return $this->redirect()->toRoute(
                 'zfcadmin/facebook-manager/view',

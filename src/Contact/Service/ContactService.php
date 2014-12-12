@@ -116,6 +116,7 @@ class ContactService extends ServiceAbstract
             $contacts[$contact->getId()] = $contact->getFormName();
         }
         asort($contacts);
+
         return $contacts;
     }
 
@@ -207,7 +208,7 @@ class ContactService extends ServiceAbstract
 
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -598,7 +599,6 @@ class ContactService extends ServiceAbstract
         return false;
     }
 
-
     /**
      * @param Selection $selection
      *
@@ -638,7 +638,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param Facebook $facebook
+     * @param  Facebook $facebook
      * @return bool
      */
     public function findContactInFacebook(Facebook $facebook)
@@ -646,6 +646,7 @@ class ContactService extends ServiceAbstract
         if (is_null($this->getContact())) {
             throw new \InvalidArgumentException("The contact cannot be null");
         }
+
         return $this->getEntityManager()->getRepository(
             $this->getFullEntityName('facebook')
         )->isContactInFacebook($this->getContact(), $facebook);
@@ -716,7 +717,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param Facebook $facebook
+     * @param  Facebook  $facebook
      * @return Contact[]
      */
     public function findContactsInFacebook(Facebook $facebook)
@@ -739,15 +740,14 @@ class ContactService extends ServiceAbstract
             $contacts[] = $singleContact;
         }
 
-
         return $contacts;
     }
 
     /**
      * Special function which translates the output of the facebook to a known value
      *
-     * @param         $titleGetter
-     * @param Contact $contact
+     * @param          $titleGetter
+     * @param  Contact $contact
      * @return string
      */
     private function facebookTitleParser($titleGetter, Contact $contact)
@@ -759,9 +759,9 @@ class ContactService extends ServiceAbstract
         //Format the $getter
         switch (intval($titleGetter)) {
             case Facebook::DISPLAY_ORGANISATION:
-                return (string)$contact->getContactOrganisation()->getOrganisation();
+                return (string) $contact->getContactOrganisation()->getOrganisation();
             case Facebook::DISPLAY_COUNTRY:
-                return (string)$contact->getContactOrganisation()->getOrganisation()->getCountry();
+                return (string) $contact->getContactOrganisation()->getOrganisation()->getCountry();
             case Facebook::DISPLAY_POSITION:
                 return $contact->getPosition();
             default:
@@ -769,7 +769,6 @@ class ContactService extends ServiceAbstract
                 return '';
         }
     }
-
 
     /**
      * Update the password for a contact. Check with the current password when given
@@ -837,7 +836,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int)$contactOrganisation['country']
+            (int) $contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -1009,7 +1008,7 @@ class ContactService extends ServiceAbstract
 
 
     /**
-     * @param Contact $contact
+     * @param  Contact $contact
      * @return boolean
      */
     public function findIsCommunityMember(Contact $contact)
@@ -1123,7 +1122,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param  Calendar $calendar
+     * @param  Calendar   $calendar
      * @return Contact[]
      * @throws \Exception
      */

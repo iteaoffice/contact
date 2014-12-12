@@ -207,14 +207,10 @@ class Contact extends EntityRepository
             $queryBuilder->setParameter('contact', $contact);
             //check update
             if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
-
                 return true;
             }
 
-
-
             return false;
-
 
         }
         if ($options->getCommunityViaProjectParticipation()) {
@@ -327,7 +323,6 @@ class Contact extends EntityRepository
             $orderBy = sprintf(" ORDER BY %s", $facebook->getOrderbyClause());
         }
 
-
         $query = $this->getEntityManager()->createNativeQuery(
             sprintf(
                 "SELECT contact_id, email, firstname, middlename, lastname, position FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ",
@@ -339,7 +334,6 @@ class Contact extends EntityRepository
 
         return $query->getResult();
     }
-
 
     /**
      * Return Contact entities based on a selection SQL using a native SQL query
@@ -420,6 +414,7 @@ class Contact extends EntityRepository
         $qb->orderBy('c.lastName', 'ASC');
 
         $qb->setMaxResults($maxResults);
+
         return $qb->getQuery()->getArrayResult();
     }
 
@@ -450,7 +445,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param  Calendar $calendar
+     * @param  Calendar         $calendar
      * @return Entity\Contact[]
      */
     public function findPossibleContactByCalendar(Calendar $calendar)
