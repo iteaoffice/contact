@@ -85,7 +85,6 @@ class FacebookManagerController extends ContactAbstractController
         $form = $this->getFormService()->prepare($facebook->get('entity_name'), $facebook, $_POST);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
-
             if (isset($data['delete'])) {
                 /**
                  * @var $facebook Facebook

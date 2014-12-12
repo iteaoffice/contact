@@ -177,7 +177,6 @@ class ContactManagerController extends ContactAbstractController
 
         $contacts = [];
         if ($this->getRequest()->isGet() && $form->isValid()) {
-
             $statisticsService->setFilter($form->getData());
 //            $contacts = $statisticsService->getContacts();
 

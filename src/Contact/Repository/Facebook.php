@@ -74,5 +74,4 @@ class Facebook extends EntityRepository
 
         return sizeof($query->getResult()) > 0;
     }
-
 }

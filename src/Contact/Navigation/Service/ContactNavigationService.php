@@ -32,7 +32,6 @@ class ContactNavigationService extends NavigationServiceAbstract
         if (!is_null($this->getRouteMatch()) &&
             strtolower($this->getRouteMatch()->getParam('namespace')) === 'contact'
         ) {
-
             if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin') !== false) {
                 $this->updateAdminNavigation();
             }
