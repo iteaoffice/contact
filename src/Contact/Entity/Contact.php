@@ -665,6 +665,18 @@ class Contact extends EntityAbstract implements
      * @var \News\Entity\Message|Collections\ArrayCollection()
      */
     private $blogMessage;
+    /**
+     * @ORM\OneToMany(targetEntity="Member\Entity\Election\Candidate", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Member\Entity\Election\Candidate[]|Collections\ArrayCollection()
+     */
+    private $candidate;
+    /**
+     * @ORM\OneToMany(targetEntity="Member\Entity\Election\Electorate", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Member\Entity\Election\Electorate[]|Collections\ArrayCollection()
+     */
+    private $electorate;
 
     /**
      * Class constructor
@@ -744,6 +756,8 @@ class Contact extends EntityAbstract implements
         $this->doaReminderSender = new Collections\ArrayCollection();
         $this->loiReminderReceiver = new Collections\ArrayCollection();
         $this->loiReminderSender = new Collections\ArrayCollection();
+        $this->candidate = new Collections\ArrayCollection();
+        $this->electorate = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -2823,5 +2837,37 @@ class Contact extends EntityAbstract implements
     public function setBlogMessage($blogMessage)
     {
         $this->blogMessage = $blogMessage;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Member\Entity\Election\Candidate[]
+     */
+    public function getCandidate()
+    {
+        return $this->candidate;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Member\Entity\Election\Candidate[] $candidate
+     */
+    public function setCandidate($candidate)
+    {
+        $this->candidate = $candidate;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Member\Entity\Election\Electorate[]
+     */
+    public function getElectorate()
+    {
+        return $this->electorate;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Member\Entity\Election\Electorate[] $electorate
+     */
+    public function setElectorate($electorate)
+    {
+        $this->electorate = $electorate;
     }
 }
