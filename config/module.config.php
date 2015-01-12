@@ -17,6 +17,7 @@ use Contact\Service\SelectionService;
 use Contact\Service\ServiceInitializer;
 use Contact\Service\StatisticsService;
 use Contact\View\Helper\CommunityLink;
+use Contact\View\Helper\ContactHandler;
 use Contact\View\Helper\ContactLink;
 use Contact\View\Helper\CreateContactFromArray;
 use Contact\View\Helper\CreatePhotoFromArray;
@@ -48,6 +49,7 @@ $config = [
             'communityLink'          => CommunityLink::class,
             'createContactFromArray' => CreateContactFromArray::class,
             'createPhotoFromArray'   => CreatePhotoFromArray::class,
+            'contactHandler'         => ContactHandler::class,
             'contactServiceProxy'    => 'Contact\View\Helper\ContactServiceProxy',
             'contactLink'            => ContactLink::class,
             'selectionLink'          => SelectionLink::class,

@@ -6,11 +6,11 @@
     <div class="row">
     {% for contact in contacts %}
         <div class="col-sm-2">
-            <div class="thumbnail information-box">
-                <div class="information-box-header clearfix">
+            <div class="thumbnail contact-box">
+                <div class="information-box-header">
                     <h5>{{ contact.contact.displayName }}</h5>
                 </div>
-                <div class="information-box-image">
+                <div class="contact-box-image">
                     {{ contactPhoto(contact.contact, null, true) }}
                 </div>
                 <div class="caption caption-relative">

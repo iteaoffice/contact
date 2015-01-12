@@ -82,7 +82,7 @@ class ContactController extends ContactAbstractController implements EmailServic
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public")
             ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -100,6 +100,7 @@ class ContactController extends ContactAbstractController implements EmailServic
         return new ViewModel(
             [
                 'contactService' => $contactService,
+                'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
                 'hasNda'         => $this->getServiceLocator()->get('program_module_options')->getHasNda()
             ]
         );
@@ -112,18 +113,38 @@ class ContactController extends ContactAbstractController implements EmailServic
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->getEvent()->getRequest()->getPost()->get('optInId');
-        $enable = (int) $this->getEvent()->getRequest()->getPost()->get('enable') === 1;
+        $optInId = (int)$this->params()->fromQuery('optInId');
+
+        /**
+         * We do not specify the enable, so we give the result
+         */
+        if (is_null($enable = $this->params()->fromQuery('enable'))) {
+            return new JsonModel(
+                [
+                    'enable' => $this->getContactService()->hasOptInEnabledByContact(
+                        $optInId,
+                        $this->zfcUserAuthentication()->getIdentity()
+                    ),
+                    'id'     => $optInId
+                ]
+            );
+        }
+
+
+        //Make a boolean value of $enable
+        $enable = ($enable === 'true');
+
         $this->getContactService()->updateOptInForContact(
             $optInId,
             $enable,
             $this->zfcUserAuthentication()->getIdentity()
         );
 
+
         return new JsonModel(
             [
-                'result' => 'success',
-                'enable' => ($enable ? 1 : 0)
+                'enable' => $enable,
+                'id'     => $optInId
             ]
         );
     }
@@ -224,8 +245,8 @@ class ContactController extends ContactAbstractController implements EmailServic
      */
     public function getAddressByTypeAction()
     {
-        $contactId = (int) $this->getEvent()->getRequest()->getQuery()->get('id');
-        $typeId = (int) $this->getEvent()->getRequest()->getQuery()->get('typeId');
+        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
+        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
 
         $this->getContactService()->setContactId($contactId);
 

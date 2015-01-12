@@ -17,7 +17,7 @@
         <tbody>
         {% for facebook in facebook %}
             <tr>
-                <td>{{ facebookLink(facebook,'view', 'name') }} {{ facebookLink(facebook,'edit', 'icon') }}</td>
+                <td>{{ facebookLink(facebook,'view-admin', 'name') }} {{ facebookLink(facebook,'edit', 'icon') }}</td>
                 <td>{{ translate(facebook.getPublic(true)) }}</td>
                 <td><samp>{{ facebook.fromClause }}</samp></td>
                 <td><samp>{{ facebook.whereClause }}</samp></td>

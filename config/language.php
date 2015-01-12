@@ -29,3 +29,5 @@ _("txt-contact-key");
 _("txt-contact-key-explanation");
 _("txt-title");
 _("txt-title-explanation");
+_("txt-can-send-message");
+_("txt-cannot-send-message");

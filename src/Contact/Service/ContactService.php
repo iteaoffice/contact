@@ -16,6 +16,7 @@ use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Entity\Facebook;
 use Contact\Entity\Note;
+use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Selection;
@@ -208,7 +209,7 @@ class ContactService extends ServiceAbstract
 
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -430,7 +431,7 @@ class ContactService extends ServiceAbstract
         /**
          * Include all the optIns
          */
-        $contact->setOptIn($this->findAll('optIn'));
+        $contact->setOptIn([$this->findEntityById('optIn', 4)]);
         $contact = $this->newEntity($contact);
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
@@ -717,7 +718,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param  Facebook  $facebook
+     * @param  Facebook $facebook
      * @return Contact[]
      */
     public function findContactsInFacebook(Facebook $facebook)
@@ -759,9 +760,17 @@ class ContactService extends ServiceAbstract
         //Format the $getter
         switch (intval($titleGetter)) {
             case Facebook::DISPLAY_ORGANISATION:
-                return (string) $contact->getContactOrganisation()->getOrganisation();
+                if (is_null($contact->getContactOrganisation())) {
+                    return 'Unknown';
+                }
+
+                return (string)$contact->getContactOrganisation()->getOrganisation();
             case Facebook::DISPLAY_COUNTRY:
-                return (string) $contact->getContactOrganisation()->getOrganisation()->getCountry();
+                if (is_null($contact->getContactOrganisation())) {
+                    return 'Unknown';
+                }
+
+                return (string)$contact->getContactOrganisation()->getOrganisation()->getCountry();
             case Facebook::DISPLAY_POSITION:
                 return $contact->getPosition();
             default:
@@ -779,8 +788,11 @@ class ContactService extends ServiceAbstract
      *
      * @return bool
      */
-    public function updatePasswordForContact($password, Contact $contact)
-    {
+    public
+    function updatePasswordForContact(
+        $password,
+        Contact $contact
+    ) {
         $Bcrypt = new Bcrypt();
         $Bcrypt->setCost($this->getZfcUserOptions()->getPasswordCost());
         $pass = $Bcrypt->create(md5($password));
@@ -796,7 +808,8 @@ class ContactService extends ServiceAbstract
      *
      * @return UserServiceOptionsInterface
      */
-    public function getZfcUserOptions()
+    public
+    function getZfcUserOptions()
     {
         if (!$this->zfcUserOptions instanceof UserServiceOptionsInterface) {
             $this->setZfcUserOptions($this->getServiceLocator()->get('zfcuser_module_options'));
@@ -808,8 +821,10 @@ class ContactService extends ServiceAbstract
     /**
      * @param UserServiceOptionsInterface $zfcUserOptions
      */
-    public function setZfcUserOptions($zfcUserOptions)
-    {
+    public
+    function setZfcUserOptions(
+        $zfcUserOptions
+    ) {
         $this->zfcUserOptions = $zfcUserOptions;
     }
 
@@ -826,8 +841,11 @@ class ContactService extends ServiceAbstract
      *
      * @return void
      */
-    public function updateContactOrganisation(Contact $contact, array $contactOrganisation)
-    {
+    public
+    function updateContactOrganisation(
+        Contact $contact,
+        array $contactOrganisation
+    ) {
         /**
          * Don't do anything when the organisationName = empty
          */
@@ -836,7 +854,7 @@ class ContactService extends ServiceAbstract
         }
         $country = $this->getGeneralService()->findEntityById(
             'country',
-            (int) $contactOrganisation['country']
+            (int)$contactOrganisation['country']
         );
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
@@ -920,8 +938,12 @@ class ContactService extends ServiceAbstract
      *
      * @return void
      */
-    public function updateOptInForContact($optInId, $enable, Contact $contact)
-    {
+    public
+    function updateOptInForContact(
+        $optInId,
+        $enable,
+        Contact $contact
+    ) {
         $optIn = $this->findEntityById('optIn', $optInId);
         $collection = new ArrayCollection();
         $collection->add($optIn);
@@ -932,6 +954,27 @@ class ContactService extends ServiceAbstract
         }
         $this->updateEntity($contact);
     }
+
+    /**
+     * @param int     $optInId
+     * @param Contact $contact
+     *
+     * @return OptIn
+     */
+    public function hasOptInEnabledByContact($optInId, Contact $contact)
+    {
+        /**
+         * The OptIn is a n:m entity, so we just check if the contact has the optIn
+         */
+        foreach ($contact->getOptIn() as $optIn) {
+            if ($optIn->getId() === $optInId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * Search for contacts based on a search-item
@@ -949,7 +992,8 @@ class ContactService extends ServiceAbstract
     /**
      * Create an array with the incomplete items in the profile and the relative weight
      */
-    public function getProfileInCompleteness()
+    public
+    function getProfileInCompleteness()
     {
         $inCompleteness = [];
         $totalWeight = 0;
@@ -1122,12 +1166,14 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param  Calendar   $calendar
+     * @param  Calendar $calendar
      * @return Contact[]
      * @throws \Exception
      */
-    public function findPossibleContactByCalendar(Calendar $calendar)
-    {
+    public
+    function findPossibleContactByCalendar(
+        Calendar $calendar
+    ) {
         if (is_null($calendar->getProjectCalendar())) {
             throw new \Exception("A projectCalendar is required to find the contacts");
         }
@@ -1142,8 +1188,10 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function findContactsInOrganisation(Organisation $organisation)
-    {
+    public
+    function findContactsInOrganisation(
+        Organisation $organisation
+    ) {
         return $this->getEntityManager()->getRepository(
             $this->getFullEntityName('contact')
         )->findContactsInOrganisation($organisation);

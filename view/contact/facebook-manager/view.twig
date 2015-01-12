@@ -5,6 +5,8 @@
     <dd>{{ facebook.facebook }}</dd>
     <dt>{{ translate("txt-public") }}</dt>
     <dd>{{ translate(facebook.getPublic(true)) }}</dd>
+    <dt>{{ translate("txt-can-send-message") }}</dt>
+    <dd>{{ translate(facebook.getCanSendMessage(true)) }}</dd>
     <dt>{{ translate("txt-from-clause") }}</dt>
     <dd>{{ facebook.fromClause }}</dd>
     <dt>{{ translate("txt-where-clause") }}</dt>
@@ -17,6 +19,7 @@
     <dd>{{ translate(facebook.getTitle(true)) }}</dd>
     <dt>{{ translate("txt-sub-title") }}</dt>
     <dd>{{ translate(facebook.getSubTitle(true)) }}</dd>
+
     <dt>{{ translate("txt-access") }}</dt>
     {% for access in facebook.access %}
         <dd>{{ accessLink(access,'view') }}</dd>

@@ -63,7 +63,8 @@ class Facebook extends AssertionAbstract
 
                 return $this->rolesHaveAccess($facebook->getAccess()->toArray());
             case 'send-message':
-                return $this->getContactService()->findContactInFacebook($facebook);
+                return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE &&
+                $this->getContactService()->findContactInFacebook($facebook);
             default:
                 return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
         }

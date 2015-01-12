@@ -111,7 +111,7 @@ class FacebookLink extends LinkAbstract
                     sprintf($this->translate("txt-send-message-to-%s"), $this->getFacebook()->getFacebook())
                 );
                 break;
-            case 'view':
+            case 'view-admin':
                 $this->setRouter('zfcadmin/facebook-manager/view');
                 $this->setText(
                     sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook())

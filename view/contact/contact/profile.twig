@@ -55,7 +55,7 @@
         {{ contactLink(contactService.contact,'edit-profile', 'button') }}
         {{ contactLink(contactService.contact,'change-password', 'button') }}
 
-        {% if hasNda  %}
+        {% if hasNda %}
             {{ ndaLink(null,'upload', 'button') }}
         {% endif %}
     </div>
@@ -102,16 +102,11 @@
 
         <p>{{ translate("txt-updates-explanation") }}</p>
 
-        <dl class="dl-horizontal">
-            {% for optIn in contactService.findAll('optIn') %}
-                <dt>{{ optIn }}</dt>
-                <dd>{% if optIn in contactService.contact.optIn.toArray() %}
-                        <span class="update-opt-in disable" rel="{{ optIn.id }}">{{ translate("txt-yes") }}</span>
-                    {% else %}
-                        <span class="update-opt-in enable" rel="{{ optIn.id }}">{{ translate("txt-no") }}</span>
-                    {% endif %}
-                </dd>
-            {% endfor %}
-        </dl>
+
+        {% for optIn in contactService.findAll('optIn') %}
+            {% include 'contact/partial/optin-button' with {'optIn': optIn} %}
+            <br>
+        {% endfor %}
+
     </div>
 </div>

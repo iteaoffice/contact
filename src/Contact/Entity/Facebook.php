@@ -49,6 +49,25 @@ class Facebook extends EntityAbstract implements ResourceInterface
     /**
      * Constant for public = 0 (not public)
      */
+    const CAN_NOT_SEND_MESSAGE = 0;
+    /**
+     * Constant for public = 1 (hidden)
+     */
+    const CAN_SEND_MESSAGE = 1;
+
+    /**
+     * Textual versions of the hideForOthers
+     *
+     * @var array
+     */
+    protected $canSendMessageTemplates = [
+        self::CAN_NOT_SEND_MESSAGE => 'txt-cannot-send-message',
+        self::CAN_SEND_MESSAGE     => 'txt-can-send-message',
+    ];
+
+    /**
+     * Constant for public = 0 (not public)
+     */
     const NOT_PUBLIC = 0;
     /**
      * Constant for public = 1 (hidden)
@@ -87,6 +106,15 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @var int
      */
     public $public;
+    /**
+     * @ORM\Column(name="can_send_message", type="smallint", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Attributes({"array":"canSendMessageTemplates"})
+     * @Annotation\Attributes({"label":"txt-can-send-message", "required":"true"})
+     * @Annotation\Required(true)
+     * @var int
+     */
+    public $canSendMessage;
     /**
      * @ORM\Column(name="from_clause", type="string", length=255, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -201,7 +229,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      */
     public function __toString()
     {
-        return (string) $this->facebook;
+        return (string)$this->facebook;
     }
 
     /**
@@ -220,6 +248,14 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function getPublicTemplates()
     {
         return $this->publicTemplates;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCanSendMessageTemplates()
+    {
+        return $this->canSendMessageTemplates;
     }
 
     /**
@@ -429,7 +465,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool   $textual
+     * @param  bool $textual
      * @return string
      */
     public function getTitle($textual = false)
@@ -450,7 +486,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool   $textual
+     * @param  bool $textual
      * @return string
      */
     public function getSubtitle($textual = false)
@@ -460,6 +496,19 @@ class Facebook extends EntityAbstract implements ResourceInterface
         }
 
         return $this->subtitle;
+    }
+
+    /**
+     * @param  bool $textual
+     * @return string
+     */
+    public function getCanSendMessage($textual = false)
+    {
+        if ($textual) {
+            return $this->canSendMessageTemplates[$this->canSendMessage];
+        }
+
+        return $this->canSendMessage;
     }
 
     /**

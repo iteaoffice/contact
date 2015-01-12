@@ -29,6 +29,7 @@ return array(
     'contact/contact-manager/partial/address'   => __DIR__ . '//view/contact/contact-manager/partial/address.twig',
     'contact/facebook/send-message'             => __DIR__ . '//view/contact/facebook/send-message.twig',
     'contact/facebook/facebook'                 => __DIR__ . '//view/contact/facebook/facebook.twig',
+    'contact/partial/optin-button'              => __DIR__ . '//view/contact/partial/optin-button.twig',
     'contact/partial/pagination-control'        => __DIR__ . '//view/contact/partial/pagination-control.twig',
     'contact/partial/form/facebook'             => __DIR__ . '//view/contact/partial/form/facebook.twig',
     'contact/partial/entity/contact'            => __DIR__ . '//view/contact/partial/entity/contact.twig',
