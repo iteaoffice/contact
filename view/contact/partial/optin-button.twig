@@ -1,5 +1,5 @@
 {% if hasIdentity %}
-    <div ng-controller="OptinController as optin">
+    <div ng-app="community" ng-controller="OptinController as optin">
         <button type="button"
                 ng-init="getOptIn({{ optIn.id }})"
                 ng-mouseenter="hover = true"
