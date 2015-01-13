@@ -102,11 +102,12 @@
 
         <p>{{ translate("txt-updates-explanation") }}</p>
 
-
-        {% for optIn in contactService.findAll('optIn') %}
-            {% include 'contact/partial/optin-button' with {'optIn': optIn} %}
-            <br>
-        {% endfor %}
+        <div ng-app="community">
+            {% for optIn in contactService.findAll('optIn') %}
+                {% include 'contact/partial/optin-button' with {'optIn': optIn} %}
+                <br>
+            {% endfor %}
+        </div>
 
     </div>
 </div>
