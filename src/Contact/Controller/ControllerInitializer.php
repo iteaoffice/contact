@@ -33,11 +33,11 @@ class ControllerInitializer implements InitializerInterface
 {
     /**
      * @param                                           $instance
-     * @param ServiceLocatorInterface|ControllerManager $serviceLocator
+     * @param ServiceLocatorInterface|ControllerManager $controllerManager
      *
-     * @return ContactAbstractController
+     * @return void
      */
-    public function initialize($instance, ServiceLocatorInterface $serviceLocator)
+    public function initialize($instance, ServiceLocatorInterface $controllerManager)
     {
         if (!is_object($instance)) {
             return;
@@ -48,9 +48,10 @@ class ControllerInitializer implements InitializerInterface
             ContactServiceAwareInterface::class   => 'contact_contact_service',
         ];
         /**
-         * @var $sm ServiceLocatorInterface
+         * @var $controllerManager ControllerManager
          */
-        $sm = $serviceLocator->getServiceLocator();
+        $sm = $controllerManager->getServiceLocator();
+
         foreach ($arrayCheck as $interface => $serviceName) {
             if (isset(class_implements($instance)[$interface])) {
                 $this->setInterface($instance, $interface, $sm->get($serviceName));
