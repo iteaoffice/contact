@@ -118,7 +118,7 @@ class Profile extends DoctrineObject
                     $phone->getType()->getId(),
                     array(
                         PhoneType::PHONE_TYPE_MOBILE,
-                        PhoneType::PHONE_TYPE_DIRECT
+                        PhoneType::PHONE_TYPE_DIRECT,
                     )
                 )
                 ) {

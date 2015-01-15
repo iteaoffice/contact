@@ -44,7 +44,6 @@ class ContactNavigationService extends NavigationServiceAbstract
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'community') !== false) {
             $this->updateCommunityNavigation();
         }
-
     }
 
     /**
@@ -76,13 +75,12 @@ class ContactNavigationService extends NavigationServiceAbstract
                     intval($this->getRouteMatch()->getParam('category')) === $facebook->getId(),
                 'router' => $this->getRouter(),
                 'params' => [
-                    'id' => $facebook->getId()
+                    'id' => $facebook->getId(),
                 ],
             ];
 
             $communityNavigation->addPage($page);
         }
-
     }
 
     /**
@@ -124,10 +122,10 @@ class ContactNavigationService extends NavigationServiceAbstract
                                 'active' => true,
                                 'router' => $this->getRouter(),
                                 'params' => [
-                                    'call-id' => $this->routeMatch->getParam('call-id')
-                                ]
-                            ]
-                        ]
+                                    'call-id' => $this->routeMatch->getParam('call-id'),
+                                ],
+                            ],
+                        ],
                     ]
                 );
                 break;
@@ -150,10 +148,10 @@ class ContactNavigationService extends NavigationServiceAbstract
                                 'active' => true,
                                 'router' => $this->getRouter(),
                                 'params' => [
-                                    'call-id' => $this->routeMatch->getParam('call-id')
-                                ]
-                            ]
-                        ]
+                                    'call-id' => $this->routeMatch->getParam('call-id'),
+                                ],
+                            ],
+                        ],
                     ]
                 );
                 break;
@@ -180,8 +178,8 @@ class ContactNavigationService extends NavigationServiceAbstract
                                 'route'  => 'contact/profile',
                                 'active' => true,
                                 'router' => $this->getRouter(),
-                            ]
-                        ]
+                            ],
+                        ],
                     ]
                 );
                 break;
@@ -203,11 +201,11 @@ class ContactNavigationService extends NavigationServiceAbstract
                                         'label'  => $this->translate("txt-profile-edit"),
                                         'route'  => $this->getRouteMatch()->getMatchedRouteName(),
                                         'router' => $this->getRouter(),
-                                        'active' => true
-                                    ]
-                                ]
-                            ]
-                        ]
+                                        'active' => true,
+                                    ],
+                                ],
+                            ],
+                        ],
                     ]
                 );
                 break;
@@ -229,11 +227,11 @@ class ContactNavigationService extends NavigationServiceAbstract
                                         'label'  => $this->translate("txt-change-password"),
                                         'route'  => $this->getRouteMatch()->getMatchedRouteName(),
                                         'router' => $this->getRouter(),
-                                        'active' => true
-                                    ]
-                                ]
-                            ]
-                        ]
+                                        'active' => true,
+                                    ],
+                                ],
+                            ],
+                        ],
                     ]
                 );
                 break;

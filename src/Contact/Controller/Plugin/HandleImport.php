@@ -72,7 +72,6 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
         }
 
         var_dump($this->contacts);
-
     }
 
     /**

@@ -40,7 +40,7 @@ class ContactPhoneFieldset extends Fieldset
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
                 $element->setOptions(
                     array(
-                        'object_manager' => $entityManager
+                        'object_manager' => $entityManager,
                     )
                 );
             }

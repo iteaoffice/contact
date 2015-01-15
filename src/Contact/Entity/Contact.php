@@ -772,7 +772,7 @@ class Contact extends EntityAbstract implements
      */
     public function parseHash()
     {
-        return hash('sha1', $this->id . self::HASH_KEY);
+        return hash('sha1', $this->id.self::HASH_KEY);
     }
 
     /**
@@ -808,7 +808,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**
@@ -818,7 +818,7 @@ class Contact extends EntityAbstract implements
      */
     public function getResourceId()
     {
-        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
+        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
     }
 
     /**
@@ -1303,7 +1303,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int $id
+     * @param  int                $id
      * @return void|UserInterface
      */
     public function setId($id)
@@ -1452,12 +1452,12 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int $state
+     * @param  int                $state
      * @return null|UserInterface
      */
     public function setState($state)
     {
-        return null;
+        return;
     }
 
     /**
@@ -1465,7 +1465,7 @@ class Contact extends EntityAbstract implements
      */
     public function getState()
     {
-        return null;
+        return;
     }
 
     /**

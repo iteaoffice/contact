@@ -31,7 +31,7 @@ class CreateObject extends Form
         parent::__construct($object->get('underscore_entity_name'));
         $this->serviceManager = $serviceManager;
         $entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-        $objectSpecificFieldset = '\Content\Form\\' . ucfirst($object->get('entity_name')) . 'Fieldset';
+        $objectSpecificFieldset = '\Content\Form\\'.ucfirst($object->get('entity_name')).'Fieldset';
         /**
          * Load a specific fieldSet when present
          */
@@ -50,8 +50,8 @@ class CreateObject extends Form
                 'name'       => 'cancel',
                 'attributes' => [
                     'class' => "btn btn-warning",
-                    'value' => _("txt-cancel")
-                ]
+                    'value' => _("txt-cancel"),
+                ],
             ]
         );
         $this->add(
@@ -60,8 +60,8 @@ class CreateObject extends Form
                 'name'       => 'delete',
                 'attributes' => [
                     'class' => "btn btn-danger",
-                    'value' => _("txt-delete")
-                ]
+                    'value' => _("txt-delete"),
+                ],
             ]
         );
         $this->add(
@@ -70,8 +70,8 @@ class CreateObject extends Form
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-submit")
-                ]
+                    'value' => _("txt-submit"),
+                ],
             ]
         );
     }

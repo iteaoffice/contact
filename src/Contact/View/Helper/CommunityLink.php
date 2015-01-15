@@ -34,7 +34,7 @@ class CommunityLink extends HelperAbstract
         $classes = [];
         $link    = preg_replace(
             '/^([^\~]+)(\~(.*))?$/',
-            '${1}' . $community->getCommunity() . '$3',
+            '${1}'.$community->getCommunity().'$3',
             $community->getType()->getLink()
         );
 

@@ -95,7 +95,7 @@ class Photo extends EntityAbstract
      */
     public function getHash()
     {
-        return hash('sha512', $this->id . self::HASH_KEY);
+        return hash('sha512', $this->id.self::HASH_KEY);
     }
 
     /**
@@ -204,13 +204,13 @@ class Photo extends EntityAbstract
      */
     public function getCacheFileName()
     {
-        $cacheDir = __DIR__ . '/../../../../../../public' . DIRECTORY_SEPARATOR . 'assets' .
-            DIRECTORY_SEPARATOR . DEBRANOVA_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
+        $cacheDir = __DIR__.'/../../../../../../public'.DIRECTORY_SEPARATOR.'assets'.
+            DIRECTORY_SEPARATOR.DEBRANOVA_HOST.DIRECTORY_SEPARATOR.'contact-photo';
 
-        return $cacheDir . DIRECTORY_SEPARATOR
-        . $this->getId() . '-'
-        . $this->getHash() . '.'
-        . $this->getContentType()->getExtension();
+        return $cacheDir.DIRECTORY_SEPARATOR
+        .$this->getId().'-'
+        .$this->getHash().'.'
+        .$this->getContentType()->getExtension();
     }
 
     /**

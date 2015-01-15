@@ -32,8 +32,8 @@ class Search extends Form
                     'label'       => 'search',
                     'class'       => 'form-control',
                     'id'          => "search",
-                    'placeholder' => _("txt-site-search")
-                ]
+                    'placeholder' => _("txt-site-search"),
+                ],
             ]
         );
         $this->add(
@@ -42,8 +42,8 @@ class Search extends Form
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-submit")
-                ]
+                    'value' => _("txt-submit"),
+                ],
             ]
         );
     }

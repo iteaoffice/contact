@@ -22,7 +22,7 @@ class Statistics extends Form
 
     protected $inOptions = [
         self::IN     => 'in',
-        self::NOT_IN => 'not-in'
+        self::NOT_IN => 'not-in',
     ];
 
     /**
@@ -35,17 +35,17 @@ class Statistics extends Form
         $this->setAttribute('class', 'form-horizontal');
 
         for ($i = 0; $i <= 2; $i++) {
-            $filter = new Fieldset('selection' . $i);
+            $filter = new Fieldset('selection'.$i);
             $filter->add(
                 [
                     'type'       => 'Zend\Form\Element\Select',
                     'name'       => 'in',
                     'options'    => [
-                        'value_options' => $this->inOptions
+                        'value_options' => $this->inOptions,
                     ],
                     'attributes' => [
                         'label' => 'search',
-                    ]
+                    ],
                 ]
             );
             $filter->add(
@@ -56,8 +56,8 @@ class Statistics extends Form
                         'label'       => 'search',
                         'class'       => 'form-control',
                         'id'          => "search",
-                        'placeholder' => _("txt-site-search")
-                    ]
+                        'placeholder' => _("txt-site-search"),
+                    ],
                 ]
             );
             $this->add($filter);
@@ -69,8 +69,8 @@ class Statistics extends Form
                 'name'       => 'cancel',
                 'attributes' => [
                     'class' => "btn btn-danger",
-                    'value' => _("txt-cancel")
-                ]
+                    'value' => _("txt-cancel"),
+                ],
             ]
         );
         $this->add(
@@ -79,8 +79,8 @@ class Statistics extends Form
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-submit")
-                ]
+                    'value' => _("txt-submit"),
+                ],
             ]
         );
     }

@@ -24,7 +24,7 @@ class FacebookManagerController extends ContactAbstractController
     {
         return new ViewModel(
             [
-                'facebook' => $this->getContactService()->findAll('facebook')
+                'facebook' => $this->getContactService()->findAll('facebook'),
             ]
         );
     }
@@ -42,7 +42,7 @@ class FacebookManagerController extends ContactAbstractController
         return new ViewModel(
             [
                 'facebook' => $facebook,
-                'contacts' => $this->getContactService()->findContactsInFacebook($facebook)
+                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
             ]
         );
     }

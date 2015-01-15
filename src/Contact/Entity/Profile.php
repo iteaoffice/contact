@@ -236,10 +236,10 @@ class Profile extends EntityAbstract
                             array(
                                 'name'    => 'InArray',
                                 'options' => array(
-                                    'haystack' => array_keys($this->getHideForOthersTemplates())
-                                )
-                            )
-                        )
+                                    'haystack' => array_keys($this->getHideForOthersTemplates()),
+                                ),
+                            ),
+                        ),
                     )
                 )
             );
@@ -252,10 +252,10 @@ class Profile extends EntityAbstract
                             array(
                                 'name'    => 'InArray',
                                 'options' => array(
-                                    'haystack' => array_keys($this->getHidePhotoTemplates())
-                                )
-                            )
-                        )
+                                    'haystack' => array_keys($this->getHidePhotoTemplates()),
+                                ),
+                            ),
+                        ),
                     )
                 )
             );
@@ -268,10 +268,10 @@ class Profile extends EntityAbstract
                             array(
                                 'name'    => 'InArray',
                                 'options' => array(
-                                    'haystack' => array_keys($this->getVisibleTemplates())
-                                )
-                            )
-                        )
+                                    'haystack' => array_keys($this->getVisibleTemplates()),
+                                ),
+                            ),
+                        ),
                     )
                 )
             );

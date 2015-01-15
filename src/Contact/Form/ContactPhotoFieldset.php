@@ -40,7 +40,7 @@ class ContactPhotoFieldset extends Fieldset
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
                 $element->setOptions(
                     array(
-                        'object_manager' => $entityManager
+                        'object_manager' => $entityManager,
                     )
                 );
             }
@@ -55,8 +55,8 @@ class ContactPhotoFieldset extends Fieldset
                 'name'    => 'file',
                 'options' => array(
                     "label"      => "txt-photo-file",
-                    "help-block" => _("txt-photo-requirements")
-                )
+                    "help-block" => _("txt-photo-requirements"),
+                ),
             )
         );
     }

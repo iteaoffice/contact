@@ -40,7 +40,7 @@ class ContactFieldset extends Fieldset
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
                 $element->setOptions(
                     array(
-                        'object_manager' => $entityManager
+                        'object_manager' => $entityManager,
                     )
                 );
             }
@@ -61,8 +61,8 @@ class ContactFieldset extends Fieldset
                     'should_create_template' => true,
                     'template_placeholder'   => '__placeholder__',
                     'allow_add'              => true,
-                    'target_element'         => $contactPhone
-                )
+                    'target_element'         => $contactPhone,
+                ),
             )
         );
         $contactProfileFieldset = new \Contact\Form\ContactProfileFieldset($entityManager, new Entity\Profile());
@@ -79,8 +79,8 @@ class ContactFieldset extends Fieldset
                     'should_create_template' => true,
                     'template_placeholder'   => '__placeholder__',
                     'allow_add'              => false,
-                    'target_element'         => $contactPhoto
-                )
+                    'target_element'         => $contactPhoto,
+                ),
             )
         );
         $contactAddress = new ContactAddressFieldset($entityManager, new Entity\Address());
@@ -95,8 +95,8 @@ class ContactFieldset extends Fieldset
                     'should_create_template' => true,
                     'template_placeholder'   => '__placeholder__',
                     'allow_add'              => true,
-                    'target_element'         => $contactAddress
-                )
+                    'target_element'         => $contactAddress,
+                ),
             )
         );
         $contactCommunity = new ContactCommunityFieldset($entityManager, new Entity\Community());
@@ -111,8 +111,8 @@ class ContactFieldset extends Fieldset
                     'should_create_template' => true,
                     'template_placeholder'   => '__placeholder__',
                     'allow_add'              => true,
-                    'target_element'         => $contactCommunity
-                )
+                    'target_element'         => $contactCommunity,
+                ),
             )
         );
         $contactOrganisationFieldset = new \Contact\Form\ContactOrganisationFieldset(

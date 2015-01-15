@@ -47,7 +47,7 @@ class SelectionManagerController extends ContactAbstractController
         return new ViewModel(
             [
                 'paginator' => $paginator,
-                'form'      => $searchForm
+                'form'      => $searchForm,
             ]
         );
     }
@@ -85,7 +85,7 @@ class SelectionManagerController extends ContactAbstractController
             $result = $this->getSelectionService()->newEntity($form->getData());
 
             return $this->redirect()->toRoute(
-                'zfcadmin/selection-manager/' . strtolower($this->params('entity')),
+                'zfcadmin/selection-manager/'.strtolower($this->params('entity')),
                 ['id' => $result->getId()]
             );
         }
@@ -106,12 +106,12 @@ class SelectionManagerController extends ContactAbstractController
         );
         $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
         $form->setAttribute('class', 'form-horizontal live-form');
-        $form->setAttribute('id', 'selection-selection-' . $entity->getId());
+        $form->setAttribute('id', 'selection-selection-'.$entity->getId());
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getSelectionService()->updateEntity($form->getData());
 
             return $this->redirect()->toRoute(
-                'zfcadmin/selection/' . strtolower($entity->get('dashed_entity_name')),
+                'zfcadmin/selection/'.strtolower($entity->get('dashed_entity_name')),
                 ['id' => $result->getId()]
             );
         }
@@ -133,7 +133,7 @@ class SelectionManagerController extends ContactAbstractController
         $this->getSelectionService()->removeEntity($entity);
 
         return $this->redirect()->toRoute(
-            'zfcadmin/selection-manager/' . $entity->get('dashed_entity_name') . 's'
+            'zfcadmin/selection-manager/'.$entity->get('dashed_entity_name').'s'
         );
     }
 }

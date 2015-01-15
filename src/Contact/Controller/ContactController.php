@@ -73,16 +73,15 @@ class ContactController extends ContactAbstractController implements EmailServic
              * The file exists, but is it not updated?
              */
             file_put_contents($photo->getCacheFileName(), $file);
-
         }
 
         $response = $this->getResponse();
         $response->getHeaders()
-            ->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
+            ->addHeaderLine('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public")
-            ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+            ->addHeaderLine('Content-Type: '.$photo->getContentType()->getContentType())
+            ->addHeaderLine('Content-Length: '.(string) strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -101,7 +100,7 @@ class ContactController extends ContactAbstractController implements EmailServic
             [
                 'contactService' => $contactService,
                 'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
-                'hasNda'         => $this->getServiceLocator()->get('program_module_options')->getHasNda()
+                'hasNda'         => $this->getServiceLocator()->get('program_module_options')->getHasNda(),
             ]
         );
     }
@@ -113,7 +112,7 @@ class ContactController extends ContactAbstractController implements EmailServic
      */
     public function optInUpdateAction()
     {
-        $optInId = (int)$this->params()->fromQuery('optInId');
+        $optInId = (int) $this->params()->fromQuery('optInId');
 
         /**
          * We do not specify the enable, so we give the result
@@ -125,11 +124,10 @@ class ContactController extends ContactAbstractController implements EmailServic
                         $optInId,
                         $this->zfcUserAuthentication()->getIdentity()
                     ),
-                    'id'     => $optInId
+                    'id'     => $optInId,
                 ]
             );
         }
-
 
         //Make a boolean value of $enable
         $enable = ($enable === 'true');
@@ -140,11 +138,10 @@ class ContactController extends ContactAbstractController implements EmailServic
             $this->zfcUserAuthentication()->getIdentity()
         );
 
-
         return new JsonModel(
             [
                 'enable' => $enable,
-                'id'     => $optInId
+                'id'     => $optInId,
             ]
         );
     }
@@ -245,8 +242,8 @@ class ContactController extends ContactAbstractController implements EmailServic
      */
     public function getAddressByTypeAction()
     {
-        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
-        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
+        $contactId = (int) $this->getEvent()->getRequest()->getQuery()->get('id');
+        $typeId = (int) $this->getEvent()->getRequest()->getQuery()->get('typeId');
 
         $this->getContactService()->setContactId($contactId);
 
@@ -274,7 +271,7 @@ class ContactController extends ContactAbstractController implements EmailServic
                 'address' => $address->getAddress()->getAddress(),
                 'zipCode' => $address->getAddress()->getZipCode(),
                 'city'    => $address->getAddress()->getCity(),
-                'country' => $address->getAddress()->getCountry()->getId()
+                'country' => $address->getAddress()->getCountry()->getId(),
             ]
         );
     }

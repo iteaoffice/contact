@@ -103,7 +103,7 @@ class Email extends EntityAbstract implements ResourceInterface
      */
     public function getResourceId()
     {
-        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
+        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
     }
 
     /**
@@ -132,7 +132,7 @@ class Email extends EntityAbstract implements ResourceInterface
                     array(
                         'name'      => 'email',
                         'required'  => true,
-                        'validator' => new EmailAddress()
+                        'validator' => new EmailAddress(),
                     )
                 )
             );

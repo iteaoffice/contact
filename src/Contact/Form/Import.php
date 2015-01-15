@@ -43,8 +43,8 @@ class Import extends Form implements InputFilterProviderInterface
                 'name'    => 'file',
                 'options' => [
                     "label"      => "txt-file",
-                    "help-block" => _("txt-file-requirements")
-                ]
+                    "help-block" => _("txt-file-requirements"),
+                ],
             ]
         );
         $this->add(
@@ -53,8 +53,8 @@ class Import extends Form implements InputFilterProviderInterface
                 'name'       => 'upload',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-upload")
-                ]
+                    'value' => _("txt-upload"),
+                ],
             ]
         );
     }
@@ -82,7 +82,7 @@ class Import extends Form implements InputFilterProviderInterface
                             'text/plain',
                         ]
                     ),
-                ]
+                ],
             ]
         ];
     }

@@ -229,7 +229,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      */
     public function __toString()
     {
-        return (string)$this->facebook;
+        return (string) $this->facebook;
     }
 
     /**
@@ -465,7 +465,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool $textual
+     * @param  bool   $textual
      * @return string
      */
     public function getTitle($textual = false)
@@ -486,7 +486,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool $textual
+     * @param  bool   $textual
      * @return string
      */
     public function getSubtitle($textual = false)
@@ -499,7 +499,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool $textual
+     * @param  bool   $textual
      * @return string
      */
     public function getCanSendMessage($textual = false)

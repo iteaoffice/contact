@@ -211,7 +211,6 @@ class Contact extends EntityRepository
             }
 
             return false;
-
         }
         if ($options->getCommunityViaProjectParticipation()) {
             $projectRepository = $this->getEntityManager()->getRepository('Project\Entity\Project');
@@ -285,8 +284,8 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('c', 'middlename', 'middleName');
         $resultSetMap->addFieldResult('c', 'lastname', 'lastName');
         $query = $this->getEntityManager()->createNativeQuery(
-            "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (" .
-            $sql->getQuery() . ") AND date_end IS NULL",
+            "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (".
+            $sql->getQuery().") AND date_end IS NULL",
             $resultSetMap
         );
 
@@ -375,7 +374,7 @@ class Contact extends EntityRepository
              contact_id
              FROM contact
              WHERE contact_id
-             IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
+             IN (".$sql->getQuery().") AND contact_id = ".$contact->getId(),
             $resultSetMap
         );
 
@@ -405,9 +404,9 @@ class Contact extends EntityRepository
                         $qb->expr()->concat($qb->expr()->literal(' '), 'c.middleName'),
                         $qb->expr()->concat($qb->expr()->literal(' '), 'c.lastName')
                     ),
-                    $qb->expr()->literal("%" . $searchItem . "%")
+                    $qb->expr()->literal("%".$searchItem."%")
                 ),
-                $qb->expr()->like('c.email', $qb->expr()->literal("%" . $searchItem . "%"))
+                $qb->expr()->like('c.email', $qb->expr()->literal("%".$searchItem."%"))
             )
         );
 

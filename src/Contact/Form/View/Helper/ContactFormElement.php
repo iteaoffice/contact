@@ -283,7 +283,7 @@ class ContactFormElement extends ZendFormElement
         if ($label && !$element->getOption('skipLabel')) {
             $controlLabel .= $labelHelper->openTag(
                 [
-                    'class' => 'col-lg-3 ' . (
+                    'class' => 'col-lg-3 '.(
                         $element->getOption(
                             'wrapCheckboxInLabel'
                         ) ? 'checkbox' : 'control-label'),
@@ -297,7 +297,7 @@ class ContactFormElement extends ZendFormElement
                 );
             }
             if ($element->getOption('wrapCheckboxInLabel')) {
-                $controlLabel .= $elementHelper->render($element) . ' ';
+                $controlLabel .= $elementHelper->render($element).' ';
             }
             if ($element->getOption('skipLabelEscape')) {
                 $controlLabel .= $label;
@@ -331,7 +331,7 @@ class ContactFormElement extends ZendFormElement
             );
         }
 
-        $html = $controlLabel .
+        $html = $controlLabel.
             sprintf(
                 $controlWrapper,
                 $id,
@@ -372,7 +372,7 @@ class ContactFormElement extends ZendFormElement
             ->appendScript(
                 "var options = {
         ajax: {
-            url: '" . $this->view->url('zfcadmin/contact-manager/search') . "',
+            url: '".$this->view->url('zfcadmin/contact-manager/search')."',
             type: 'POST',
             dataType: 'json',
             data: {

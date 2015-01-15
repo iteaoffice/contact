@@ -29,7 +29,7 @@ class Selection extends EntityRepository
         $qb->from("Contact\Entity\Selection", 's');
         $qb->distinct('s.id');
         $qb->andWhere('s.selection LIKE :searchItem');
-        $qb->setParameter('searchItem', "%" . $searchItem . "%");
+        $qb->setParameter('searchItem', "%".$searchItem."%");
         $qb->orderBy('s.id', 'DESC');
 
         return $qb;

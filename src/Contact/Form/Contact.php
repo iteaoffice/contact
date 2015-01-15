@@ -43,8 +43,8 @@ class Contact extends Form
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-submit")
-                ]
+                    'value' => _("txt-submit"),
+                ],
             ]
         );
     }

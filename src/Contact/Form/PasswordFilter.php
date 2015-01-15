@@ -24,8 +24,8 @@ class PasswordFilter extends InputFilter
                 'required'   => true,
                 'filters'    => array(
                     array(
-                        'name' => 'StringTrim'
-                    )
+                        'name' => 'StringTrim',
+                    ),
                 ),
                 'validators' => array(
                     array(
@@ -43,8 +43,8 @@ class PasswordFilter extends InputFilter
                 'required'   => true,
                 'filters'    => array(
                     array(
-                        'name' => 'StringTrim'
-                    )
+                        'name' => 'StringTrim',
+                    ),
                 ),
                 'validators' => array(
                     array(

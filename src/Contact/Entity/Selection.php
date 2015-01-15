@@ -306,10 +306,10 @@ class Selection extends EntityAbstract
                             [
                                 'name'    => 'InArray',
                                 'options' => [
-                                    'haystack' => array_keys($this->getPersonalTemplates())
-                                ]
-                            ]
-                        ]
+                                    'haystack' => array_keys($this->getPersonalTemplates()),
+                                ],
+                            ],
+                        ],
                     ]
                 )
             );
@@ -322,10 +322,10 @@ class Selection extends EntityAbstract
                             [
                                 'name'    => 'InArray',
                                 'options' => [
-                                    'haystack' => array_keys($this->getPrivateTemplates())
-                                ]
-                            ]
-                        ]
+                                    'haystack' => array_keys($this->getPrivateTemplates()),
+                                ],
+                            ],
+                        ],
                     ]
                 )
             );

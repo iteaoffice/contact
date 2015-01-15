@@ -121,7 +121,7 @@ class Address extends EntityAbstract
      */
     public function getResourceId()
     {
-        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
+        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
     }
 
     /**
@@ -243,7 +243,7 @@ class Address extends EntityAbstract
         return array(
             'contact' => $this->contact,
             'country' => $this->country,
-            'type'    => $this->type
+            'type'    => $this->type,
         );
     }
 

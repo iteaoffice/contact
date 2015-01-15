@@ -19,7 +19,6 @@ use Zend\Http\Request;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Tag\Cloud;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\HelperPluginManager;
 use ZfcTwig\View\TwigRenderer;
@@ -121,7 +120,6 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
         return $this;
     }
 
-
     /**
      * @return Contact
      */
@@ -185,7 +183,6 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
         );
     }
 
-
     /**
      * @param ContactService $contactService
      *
@@ -208,7 +205,6 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
     {
         return $this->getServiceLocator()->get('ZfcTwigRenderer');
     }
-
 
     /**
      * @return array

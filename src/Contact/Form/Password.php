@@ -44,10 +44,10 @@ class Password extends Form
                 'name'       => 'password',
                 'options'    => [
                     'label'      => _("txt-new-password"),
-                    'help-block' => _("txt-new-password-form-help")
+                    'help-block' => _("txt-new-password-form-help"),
                 ],
                 'attributes' => [
-                    'type' => 'password'
+                    'type' => 'password',
                 ],
             ]
         );
@@ -58,7 +58,7 @@ class Password extends Form
                     'label' => _("txt-new-password-verify"),
                 ],
                 'attributes' => [
-                    'type' => 'password'
+                    'type' => 'password',
                 ],
             ]
         );
@@ -77,8 +77,8 @@ class Password extends Form
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-submit")
-                ]
+                    'value' => _("txt-submit"),
+                ],
             ]
         );
     }

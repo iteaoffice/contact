@@ -32,12 +32,12 @@ class SendMessage extends Form implements InputFilterProviderInterface
                 'name'       => 'message',
                 'options'    => [
                     'label'      => _("txt-message"),
-                    'help-block' => _("txt-send-message-to-facebook")
+                    'help-block' => _("txt-send-message-to-facebook"),
                 ],
                 'attributes' => [
                     'rows'  => 20,
                     'class' => 'form-control',
-                ]
+                ],
             ]
         );
 
@@ -47,8 +47,8 @@ class SendMessage extends Form implements InputFilterProviderInterface
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-send")
-                ]
+                    'value' => _("txt-send"),
+                ],
             ]
         );
         $this->add(
@@ -57,8 +57,8 @@ class SendMessage extends Form implements InputFilterProviderInterface
                 'name'       => 'cancel',
                 'attributes' => [
                     'class' => "btn btn-warning",
-                    'value' => _("txt-cancel")
-                ]
+                    'value' => _("txt-cancel"),
+                ],
             ]
         );
     }

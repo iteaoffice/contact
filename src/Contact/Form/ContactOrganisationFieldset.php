@@ -31,8 +31,8 @@ class ContactOrganisationFieldset extends Fieldset
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'organisation',
                 'attributes' => array(
-                    'label' => _("txt-organisation")
-                )
+                    'label' => _("txt-organisation"),
+                ),
             )
         );
         $this->add(
@@ -41,11 +41,11 @@ class ContactOrganisationFieldset extends Fieldset
                 'name'       => 'country',
                 'options'    => array(
                     'target_class'   => 'General\Entity\Country',
-                    'object_manager' => $entityManager
+                    'object_manager' => $entityManager,
                 ),
                 'attributes' => array(
-                    'label' => _("txt-country")
-                )
+                    'label' => _("txt-country"),
+                ),
             )
         );
     }

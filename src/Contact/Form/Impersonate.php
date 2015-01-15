@@ -51,7 +51,7 @@ class Impersonate extends Form
                     'label' => ucfirst(_("txt-target")),
                     'class' => 'form-control',
                     'id'    => "target",
-                )
+                ),
             )
         );
         $this->add(
@@ -65,8 +65,8 @@ class Impersonate extends Form
                     'label'       => ucfirst(_("txt-key")),
                     'class'       => 'form-control',
                     'id'          => "key",
-                    'placeholder' => _("txt-key")
-                )
+                    'placeholder' => _("txt-key"),
+                ),
             )
         );
         $this->add(
@@ -75,8 +75,8 @@ class Impersonate extends Form
                 'name'       => 'submit',
                 'attributes' => array(
                     'class' => "btn btn-primary",
-                    'value' => _("txt-submit")
-                )
+                    'value' => _("txt-submit"),
+                ),
             )
         );
     }

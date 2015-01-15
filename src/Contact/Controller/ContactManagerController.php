@@ -52,7 +52,7 @@ class ContactManagerController extends ContactAbstractController
         return new ViewModel(
             [
                 'paginator' => $paginator,
-                'form'      => $searchForm
+                'form'      => $searchForm,
             ]
         );
     }
@@ -68,7 +68,7 @@ class ContactManagerController extends ContactAbstractController
         return new ViewModel(
             [
                 'contactService' => $contactService,
-                'selections'     => $selections
+                'selections'     => $selections,
             ]
         );
     }
@@ -108,7 +108,7 @@ class ContactManagerController extends ContactAbstractController
             [
                 'deeplink'       => $deeplink,
                 'contactService' => $contactService,
-                'form'           => $form
+                'form'           => $form,
             ]
         );
     }
@@ -127,7 +127,7 @@ class ContactManagerController extends ContactAbstractController
             $result = $this->getContactService()->newEntity($form->getData());
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact-manager/' . strtolower($this->params('entity')),
+                'zfcadmin/contact-manager/'.strtolower($this->params('entity')),
                 ['id' => $result->getId()]
             );
         }
@@ -148,12 +148,12 @@ class ContactManagerController extends ContactAbstractController
         );
         $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
         $form->setAttribute('class', 'form-horizontal live-form');
-        $form->setAttribute('id', 'contact-contact-' . $entity->getId());
+        $form->setAttribute('id', 'contact-contact-'.$entity->getId());
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact/' . strtolower($entity->get('dashed_entity_name')),
+                'zfcadmin/contact/'.strtolower($entity->get('dashed_entity_name')),
                 ['id' => $result->getId()]
             );
         }
@@ -179,7 +179,6 @@ class ContactManagerController extends ContactAbstractController
         if ($this->getRequest()->isGet() && $form->isValid()) {
             $statisticsService->setFilter($form->getData());
 //            $contacts = $statisticsService->getContacts();
-
         }
 
         return new ViewModel(['form' => $form, 'contacts' => $contacts]);
@@ -231,7 +230,7 @@ class ContactManagerController extends ContactAbstractController
 
             $results[] = [
                 'value' => $result['id'],
-                'text'  => $text
+                'text'  => $text,
             ];
         }
 

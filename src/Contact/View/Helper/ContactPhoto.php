@@ -53,9 +53,9 @@ class ContactPhoto extends ImageAbstract
          */
         if (!$photo || is_null($photo->getId())) {
             return sprintf(
-                '<img src="assets/' . DEBRANOVA_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
+                '<img src="assets/'.DEBRANOVA_HOST.'/style/image/anonymous.jpg" class="%s" %s>',
                 !($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
-                is_null($height) ?: 'height="' . $height . '"'
+                is_null($height) ?: 'height="'.$height.'"'
             );
         }
 

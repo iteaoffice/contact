@@ -24,7 +24,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class Profile extends Form
 {
-
     /**
      * Class constructor
      */
@@ -60,11 +59,11 @@ class Profile extends Form
                     'target_class'   => 'General\Entity\Gender',
                     'find_method'    => [
                         'name' => 'findAll',
-                    ]
+                    ],
                 ],
                 'attributes' => [
                     'required' => true,
-                ]
+                ],
             ]
         );
         $this->add(
@@ -77,11 +76,11 @@ class Profile extends Form
                     'target_class'   => 'General\Entity\Title',
                     'find_method'    => [
                         'name' => 'findAll',
-                    ]
+                    ],
                 ],
                 'attributes' => [
                     'required' => true,
-                ]
+                ],
             ]
         );
         $this->add(
@@ -95,7 +94,7 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'required'    => true,
                     'placeholder' => _("txt-give-your-first-name"),
-                ]
+                ],
             ]
         );
         $this->add(
@@ -108,7 +107,7 @@ class Profile extends Form
                 'attributes' => [
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-middle-name"),
-                ]
+                ],
             ]
         );
         $this->add(
@@ -122,7 +121,7 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'required'    => true,
                     'placeholder' => _("txt-give-your-last-name"),
-                ]
+                ],
             ]
         );
         /**
@@ -136,12 +135,12 @@ class Profile extends Form
                     'type'       => 'Zend\Form\Element\Text',
                     'name'       => 'community',
                     'options'    => [
-                        'label' => sprintf(_(" %s Profile"), $communityType->getType())
+                        'label' => sprintf(_(" %s Profile"), $communityType->getType()),
                     ],
                     'attributes' => [
                         'class'       => 'form-control',
-                        'placeholder' => _(sprintf(_("Give %s profile"), $communityType->getType()))
-                    ]
+                        'placeholder' => _(sprintf(_("Give %s profile"), $communityType->getType())),
+                    ],
                 ]
             );
             $communityFieldSet->add($fieldSet);
@@ -159,12 +158,12 @@ class Profile extends Form
                         'type'       => 'Zend\Form\Element\Text',
                         'name'       => 'phone',
                         'options'    => [
-                            'label' => sprintf(_("%s Phone number"), $phoneType->getType())
+                            'label' => sprintf(_("%s Phone number"), $phoneType->getType()),
                         ],
                         'attributes' => [
                             'class'       => 'form-control',
-                            'placeholder' => sprintf(_("Give %s phone number"), $phoneType->getType())
-                        ]
+                            'placeholder' => sprintf(_("Give %s phone number"), $phoneType->getType()),
+                        ],
                     ]
                 );
                 $phoneFieldSet->add($fieldSet);
@@ -180,12 +179,12 @@ class Profile extends Form
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'address',
                 'options'    => [
-                    'label' => _("txt-address")
+                    'label' => _("txt-address"),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-address")
-                ]
+                    'placeholder' => _("txt-address"),
+                ],
             ]
         );
         $addressFieldSet->add(
@@ -193,12 +192,12 @@ class Profile extends Form
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'zipCode',
                 'options'    => [
-                    'label' => _("txt-zip-code")
+                    'label' => _("txt-zip-code"),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-zip-code")
-                ]
+                    'placeholder' => _("txt-zip-code"),
+                ],
             ]
         );
         $addressFieldSet->add(
@@ -206,12 +205,12 @@ class Profile extends Form
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'city',
                 'options'    => [
-                    'label' => _("txt-city")
+                    'label' => _("txt-city"),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-city")
-                ]
+                    'placeholder' => _("txt-city"),
+                ],
             ]
         );
         $addressFieldSet->add(
@@ -224,11 +223,11 @@ class Profile extends Form
                     'target_class'   => 'General\Entity\Country',
                     'find_method'    => [
                         'name' => 'findAll',
-                    ]
+                    ],
                 ],
                 'attributes' => [
                     'required' => true,
-                ]
+                ],
             ]
         );
         $this->add($addressFieldSet);
@@ -244,8 +243,8 @@ class Profile extends Form
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-organisation")
-                ]
+                    'placeholder' => _("txt-give-your-organisation"),
+                ],
             ]
         );
         $contactOrganisationFieldSet->add(
@@ -258,11 +257,11 @@ class Profile extends Form
                     'target_class'   => 'General\Entity\Country',
                     'find_method'    => [
                         'name' => 'findAll',
-                    ]
+                    ],
                 ],
                 'attributes' => [
                     'required' => true,
-                ]
+                ],
             ]
         );
         $this->add($contactOrganisationFieldSet);
@@ -276,7 +275,7 @@ class Profile extends Form
                 'attributes' => [
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-department"),
-                ]
+                ],
             ]
         );
         $this->add(
@@ -289,7 +288,7 @@ class Profile extends Form
                 'attributes' => [
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-position"),
-                ]
+                ],
             ]
         );
         /**
@@ -303,7 +302,7 @@ class Profile extends Form
                 'name'       => 'visible',
                 'options'    => [
                     'label'         => _("txt-visibility"),
-                    'value_options' => $profileEntity->getVisibleTemplates()
+                    'value_options' => $profileEntity->getVisibleTemplates(),
                 ],
             ]
         );
@@ -317,7 +316,7 @@ class Profile extends Form
                 'attributes' => [
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-expertise"),
-                ]
+                ],
             ]
         );
         $this->add($profileFieldSet);
@@ -330,8 +329,8 @@ class Profile extends Form
                 ],
                 'options'    => [
                     "label"      => "txt-photo-file",
-                    "help-block" => _("txt-photo-requirements")
-                ]
+                    "help-block" => _("txt-photo-requirements"),
+                ],
             ]
         );
 
@@ -341,8 +340,8 @@ class Profile extends Form
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
-                    'value' => _("txt-update")
-                ]
+                    'value' => _("txt-update"),
+                ],
             ]
         );
         $this->add(
@@ -351,8 +350,8 @@ class Profile extends Form
                 'name'       => 'cancel',
                 'attributes' => [
                     'class' => "btn btn-warning",
-                    'value' => _("txt-cancel")
-                ]
+                    'value' => _("txt-cancel"),
+                ],
             ]
         );
     }

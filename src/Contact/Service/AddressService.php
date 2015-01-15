@@ -56,7 +56,7 @@ class AddressService extends ServiceAbstract
         )->findAddressByContactAndType($contact, $type);
 
         if (is_null($address)) {
-            return null;
+            return;
         }
 
         return $this->createServiceElement($address);
