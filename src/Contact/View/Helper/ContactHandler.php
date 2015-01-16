@@ -177,8 +177,9 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
         return $this->getRenderer()->render(
             'contact/partial/optin-button',
             [
-                'optIn'       => $optIn,
-                'hasIdentity' => $this->getServiceLocator()->get('zfcuser_auth_service')->hasIdentity()
+                'includeAngularApp' => true,
+                'optIn'             => $optIn,
+                'hasIdentity'       => $this->getServiceLocator()->get('zfcuser_auth_service')->hasIdentity()
             ]
         );
     }

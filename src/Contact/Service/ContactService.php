@@ -431,7 +431,9 @@ class ContactService extends ServiceAbstract
         /**
          * Include all the optIns
          */
-        $contact->setOptIn([$this->findEntityById('optIn', 4)]);
+        $contact->setOptIn(
+            $this->getEntityManager()->getRepository('optIn')->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
+        );
         $contact = $this->newEntity($contact);
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');

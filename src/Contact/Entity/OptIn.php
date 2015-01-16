@@ -25,6 +25,11 @@ use Zend\InputFilter\InputFilterInterface;
 class OptIn extends EntityAbstract
 {
     /**
+     * Feature to decide which opt-ins to enable on registration
+     */
+    const AUTO_SUBSCRIBE = 1;
+    const NO_AUTO_SUBSCRIBE = 2;
+    /**
      * @ORM\Column(name="optin_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -39,6 +44,11 @@ class OptIn extends EntityAbstract
      * @var string
      */
     private $optIn;
+    /**
+     * @ORM\Column(name="auto_subscribe", type="integer", nullable=false)
+     * @var integer
+     */
+    private $autoSubscribe;
     /**
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -67,6 +77,7 @@ class OptIn extends EntityAbstract
     {
         $this->contact = new Collections\ArrayCollection();
         $this->mailing = new Collections\ArrayCollection();
+        $this->autoSubscribe = self::AUTO_SUBSCRIBE;
     }
 
     /**
@@ -122,21 +133,29 @@ class OptIn extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'optIn',
                         'required' => true,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'description',
                         'required' => true,
-                    )
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'autoSubscribe',
+                        'required' => true,
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -152,9 +171,9 @@ class OptIn extends EntityAbstract
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'contact' => $this->contact,
-        );
+        ];
     }
 
     /**
@@ -252,5 +271,37 @@ class OptIn extends EntityAbstract
     public function getOptIn()
     {
         return $this->optIn;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAutoSubscribe()
+    {
+        return $this->autoSubscribe;
+    }
+
+    /**
+     * @param int $autoSubscribe
+     */
+    public function setAutoSubscribe($autoSubscribe)
+    {
+        $this->autoSubscribe = $autoSubscribe;
+    }
+
+    /**
+     * @return \Mailing\Entity\Mailing[]
+     */
+    public function getMailing()
+    {
+        return $this->mailing;
+    }
+
+    /**
+     * @param \Mailing\Entity\Mailing[] $mailing
+     */
+    public function setMailing($mailing)
+    {
+        $this->mailing = $mailing;
     }
 }
