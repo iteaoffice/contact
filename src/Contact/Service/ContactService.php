@@ -432,7 +432,7 @@ class ContactService extends ServiceAbstract
          * Include all the optIns
          */
         $contact->setOptIn(
-            $this->getEntityManager()->getRepository('optIn')->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
+            $this->getEntityManager()->getRepository('Contact\Entity\OptIn')->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
         );
         $contact = $this->newEntity($contact);
         //Create a target
