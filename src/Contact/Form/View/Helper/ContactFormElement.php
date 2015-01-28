@@ -2,7 +2,6 @@
 /**
  * ZfcTwitterBootstrap
  */
-
 namespace Contact\Form\View\Helper;
 
 use Zend\Form\Element\Select;

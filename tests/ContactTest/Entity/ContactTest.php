@@ -11,9 +11,11 @@ namespace ContactTest\Entity;
 
 use Contact\Entity\Contact;
 use ContactTest\Bootstrap;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use General\Entity\Gender;
 use General\Entity\Title;
+use GeneralTest\Entity\GenderTest;
+use GeneralTest\Entity\TitleTest;
+use Zend\Math\Rand;
 
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,104 +51,82 @@ class ContactTest extends \PHPUnit_Framework_TestCase
     {
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
-        $this->gender = $this->entityManager->find("General\Entity\Gender", 1);
-        $this->title = $this->entityManager->find("General\Entity\Title", 1);
-        $this->contactData = [
-            'firstName'  => 'Jan',
-            'middleName' => 'van der',
-            'lastName'   => 'Vliet',
-            'email'      => 'info@example.com',
-            'state'      => 1,
-            'password'   => md5(microtime()),
-            'department' => 'department',
-            'position'   => 'position',
-            'dateEnd'    => new \DateTime(),
-            'messenger'  => 'Lorem Ipsum',
-            'gender'     => $this->gender,
-            'title'      => $this->title,
-        ];
-        $this->contact = new Contact();
+
+
     }
+
+    public function provider()
+    {
+        $genderTest = new GenderTest();
+        $titleTest = new TitleTest();
+
+        $contact = new Contact();
+        $contact->setFirstName('Jan');
+        $contact->setMiddleName('van der');
+        $contact->setLastName('Vliet');
+        $contact->setEmail('info+' . Rand::getString(4) . '@example.com');
+        $contact->setGender($genderTest->provider()[0][0]);
+        $contact->setTitle($titleTest->provider()[0][0]);
+
+        return [
+            [$contact]
+        ];
+    }
+
 
     public function testCanCreateEntity()
     {
-        $this->assertInstanceOf("Contact\Entity\Contact", $this->contact);
-        $this->assertInstanceOf("Contact\Entity\EntityInterface", $this->contact);
-        $this->assertNull($this->contact->getFirstName(), 'The "Firstname" should be null');
+        $contact = new Contact();
+        $this->assertInstanceOf("Contact\Entity\Contact", $contact);
+        $this->assertInstanceOf("Contact\Entity\EntityInterface", $contact);
+        $this->assertNull($contact->getFirstName(), 'The "Firstname" should be null');
         $today = new \DateTime();
-        $this->contact->setDateCreated($today);
-        $this->contact->setLastUpdate($today);
+        $contact->setDateCreated($today);
+        $contact->setLastUpdate($today);
         $id = 1;
-        $this->contact->setId($id);
+        $contact->setId($id);
         $this->assertEquals(
             $today,
-            $this->contact->getDateCreated(),
+            $contact->getDateCreated(),
             'The "DateCreated" should be the same as the setter'
         );
         $this->assertEquals(
             $today,
-            $this->contact->getLastUpdate(),
+            $contact->getLastUpdate(),
             'The "LastUpdate" should be the same as the setter'
         );
-        $this->assertEquals($id, $this->contact->getId(), 'The "Id" should be the same as the setter');
-        $this->assertTrue(is_array($this->contact->getArrayCopy()));
-        $this->assertTrue(is_array($this->contact->populate()));
+        $this->assertEquals($id, $contact->getId(), 'The "Id" should be the same as the setter');
+        $this->assertTrue(is_array($contact->getArrayCopy()));
+        $this->assertTrue(is_array($contact->populate()));
     }
 
     public function testMagicGettersAndSetters()
     {
-        $this->contact->username = 'test';
-        $this->assertEquals('test', $this->contact->username);
+        $contact = new Contact();
+        $contact->username = 'test';
+        $this->assertEquals('test', $contact->username);
     }
 
-    public function testCanHydrateEntity()
-    {
-        $hydrator = new DoctrineObject(
-            $this->entityManager,
-            'Contact\Entity\Contact'
-        );
-        $this->contact = $hydrator->hydrate($this->contactData, new Contact());
-        $dataArray = $hydrator->extract($this->contact);
-        $this->assertSame($this->contactData['firstName'], $dataArray['firstName']);
-        $this->assertSame($this->contactData['middleName'], $dataArray['middleName']);
-        $this->assertSame($this->contactData['lastName'], $dataArray['lastName']);
-        $this->assertSame($this->contactData['state'], 1);
-        $this->assertSame($this->contactData['gender']->getName(), $this->gender->getName());
-        $this->assertSame($this->contactData['gender']->getId(), $this->gender->getId());
-        $this->assertSame($this->contactData['title']->getName(), $this->title->getName());
-        $this->assertSame($this->contactData['title']->getId(), $this->title->getId());
-    }
 
     public function testHasInputFilter()
     {
-        $this->assertInstanceOf('Zend\InputFilter\InputFilter', $this->contact->getInputFilter());
+        $contact = new Contact();
+        $this->assertInstanceOf('Zend\InputFilter\InputFilter', $contact->getInputFilter());
     }
 
-    public function testCanSaveEntityInDatabase()
+    /**
+     * @param Contact $contact
+     *
+     * @dataProvider provider
+     */
+    public function testCanSaveEntityInDatabase(Contact $contact)
     {
-        $hydrator = new DoctrineObject(
-            $this->entityManager,
-            'Contact\Entity\Contact'
-        );
-        $this->contact = $hydrator->hydrate($this->contactData, new Contact());
-        $this->entityManager->persist($this->contact);
+        $this->entityManager->persist($contact);
         $this->entityManager->flush();
-        $this->assertInstanceOf('Contact\Entity\Contact', $this->contact);
-        $this->assertNotNull($this->contact->getId());
-        $this->assertSame($this->contactData['firstName'], $this->contact->getFirstName());
-        $this->assertSame($this->contactData['middleName'], $this->contact->getMiddleName());
-        $this->assertSame($this->contactData['lastName'], $this->contact->getLastName());
-        $this->assertSame($this->contactData['department'], $this->contact->getDepartment());
-        $this->assertSame($this->contactData['position'], $this->contact->getPosition());
-        $this->assertSame(
-            $this->contactData['email'],
-            $this->contact->getUsername()
-        ); //We use the email address as username
-        $this->assertSame($this->contactData['gender']->getName(), $this->contact->getGender()->getName());
-        $this->assertSame($this->contactData['gender']->getId(), $this->contact->getGender()->getId());
-        $this->assertSame($this->contactData['title']->getName(), $this->contact->getTitle()->getName());
-        $this->assertSame($this->contactData['title']->getId(), $this->contact->getTitle()->getId());
-        $this->assertNotNull($this->contact->getDisplayName());
+        $this->assertInstanceOf('Contact\Entity\Contact', $contact);
+        $this->assertNotNull($contact->getId());
+
+        $this->assertNotNull($contact->getDisplayName());
     }
 
 }

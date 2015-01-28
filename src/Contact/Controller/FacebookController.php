@@ -75,6 +75,7 @@ class FacebookController extends ContactAbstractController implements EmailServi
              * Send the email tot he office
              */
             $email = $this->getEmailService()->create();
+            $email->setPersonal(false); //Sent 1 email to everyone
             $email->setFromContact($this->zfcUserAuthentication()->getIdentity());
             /**
              * Inject the contacts in the email
