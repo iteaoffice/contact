@@ -5,6 +5,7 @@ return array(
     'Contact\Factory\AuthenticationIdentityProviderServiceFactory' => __DIR__ . '/src/Contact/Factory/AuthenticationIdentityProviderServiceFactory.php',
     'Contact\Factory\CacheFactory'                                 => __DIR__ . '/src/Contact/Factory/CacheFactory.php',
     'Contact\Factory\ConfigServiceFactory'                         => __DIR__ . '/src/Contact/Factory/ConfigServiceFactory.php',
+    'Contact\View\Helper\ContactHandler'                           => __DIR__ . '/src/Contact/View/Helper/ContactHandler.php',
     'Contact\View\Helper\ContactPhoto'                             => __DIR__ . '/src/Contact/View/Helper/ContactPhoto.php',
     'Contact\View\Helper\SelectionLink'                            => __DIR__ . '/src/Contact/View/Helper/SelectionLink.php',
     'Contact\View\Helper\HelperAbstract'                           => __DIR__ . '/src/Contact/View/Helper/HelperAbstract.php',

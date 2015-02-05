@@ -74,7 +74,7 @@ class SendMessage extends Form implements InputFilterProviderInterface
         return [
             'message' => [
                 'required' => true,
-            ]
+            ],
         ];
     }
 }

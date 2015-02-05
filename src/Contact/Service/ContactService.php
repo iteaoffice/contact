@@ -432,7 +432,9 @@ class ContactService extends ServiceAbstract
          * Include all the optIns
          */
         $contact->setOptIn(
-            $this->getEntityManager()->getRepository('Contact\Entity\OptIn')->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
+            $this->getEntityManager()->getRepository('Contact\Entity\OptIn')->findBy(
+                ['autoSubscribe' => OptIn::AUTO_SUBSCRIBE]
+            )
         );
         $contact = $this->newEntity($contact);
         //Create a target
@@ -1100,20 +1102,20 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsInAffiliation(Affiliation $affiliation)
     {
-        $contacts = new ArrayCollection();
+        $contacts = [];
         $contactRole = [];
 
         /**
          * Add the technical contact
          */
-        $contacts->add($affiliation->getContact());
+        $contacts[$affiliation->getContact()->getId()] = $affiliation->getContact();
         $contactRole[$affiliation->getContact()->getId()][] = 'Technical Contact';
 
         /**
          * Add the financial contact
          */
         if (!is_null($affiliation->getFinancial())) {
-            $contacts->add($affiliation->getFinancial()->getContact());
+            $contacts[$affiliation->getFinancial()->getContact()->getId()] = $affiliation->getFinancial()->getContact();
             $contactRole[$affiliation->getFinancial()->getContact()->getId()][] = 'Financial Contact';
         }
 
@@ -1124,9 +1126,7 @@ class ContactService extends ServiceAbstract
             /**
              * Add the associates
              */
-            if (!$contacts->contains($associate)) {
-                $contacts->add($associate);
-            }
+            $contacts[$associate->getId()] = $associate;
             $contactRole[$associate->getId()][] = 'Associate';
         }
 
@@ -1143,9 +1143,7 @@ class ContactService extends ServiceAbstract
             if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId() ===
                 $affiliation->getOrganisation()->getId()
             ) {
-                if (!$contacts->contains($workpackage->getContact())) {
-                    $contacts->add($workpackage->getContact());
-                }
+                $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();
                 $contactRole[$workpackage->getContact()->getId()][] = 'Workpackage leader';
             }
         }

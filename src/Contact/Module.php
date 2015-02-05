@@ -77,7 +77,7 @@ class Module implements
         return [
             'invokables' => [
                 'handleImport' => HandleImport::class,
-            ]
+            ],
         ];
     }
 

@@ -83,7 +83,7 @@ class Import extends Form implements InputFilterProviderInterface
                         ]
                     ),
                 ],
-            ]
+            ],
         ];
     }
 }
