@@ -1,4 +1,8 @@
-<h1>{{ translate("txt-facebook-%s")|format(facebook) }}</h1>
+<h1>{{ translate("txt-facebook-%s")|format(facebook) }}
+    {{ facebookLink(facebook,'edit','button') }}
+    {{ facebookLink(null,'list','button') }}
+    {{ facebookLink(facebook,'view-community','button') }}
+</h1>
 
 <dl class="dl-horizontal">
     <dt>{{ translate("txt-name") }}</dt>
@@ -7,18 +11,23 @@
     <dd>{{ translate(facebook.getPublic(true)) }}</dd>
     <dt>{{ translate("txt-can-send-message") }}</dt>
     <dd>{{ translate(facebook.getCanSendMessage(true)) }}</dd>
+    <dt>{{ translate("txt-show-email") }}</dt>
+    <dd>{{ translate(facebook.getShowEmail(true)) }}</dd>
+    <dt>{{ translate("txt-show-phone") }}</dt>
+    <dd>{{ translate(facebook.getShowPhone(true)) }}</dd>
     <dt>{{ translate("txt-from-clause") }}</dt>
-    <dd>{{ facebook.fromClause }}</dd>
+    <dd><code>{{ facebook.fromClause }}</code></dd>
     <dt>{{ translate("txt-where-clause") }}</dt>
-    <dd>{{ facebook.whereClause }}</dd>
+    <dd><code>{{ facebook.whereClause }}</code></dd>
     <dt>{{ translate("txt-orderby-clause") }}</dt>
-    <dd>{{ facebook.orderbyClause }}</dd>
+    <dd><code>{{ facebook.orderbyClause }}</code></dd>
     <dt>{{ translate("txt-contact-key") }}</dt>
-    <dd>{{ facebook.contactKey }}</dd>
+    <dd><code>{{ facebook.contactKey }}</code></dd>
     <dt>{{ translate("txt-title") }}</dt>
     <dd>{{ translate(facebook.getTitle(true)) }}</dd>
     <dt>{{ translate("txt-sub-title") }}</dt>
     <dd>{{ translate(facebook.getSubTitle(true)) }}</dd>
+
 
     <dt>{{ translate("txt-access") }}</dt>
     {% for access in facebook.access %}
@@ -35,8 +44,10 @@
         <thead>
         <tr>
             <th>{{ translate("txt-display-name") }}</th>
-            <th>{{ translate("txt-title") }}</th>
-            <th>{{ translate("txt-sub-title") }}</th>
+            <th>{{ translate(facebook.getTitle(true)) }}</th>
+            <th>{{ translate(facebook.getSubTitle(true)) }}</th>
+            <th>{{ translate("txt-phone") }}</th>
+            <th>{{ translate("txt-email") }}</th>
         </tr>
         </thead>
         <tbody>
@@ -45,6 +56,8 @@
                 <td>{{ contact.contact.displayName }}</td>
                 <td>{{ contact.title }}</td>
                 <td>{{ contact.subTitle }}</td>
+                <td>{{ contact.phone }}</td>
+                <td>{{ contact.email }}</td>
             </tr>
 
         {% endfor %}
@@ -52,6 +65,3 @@
     </table>
 {% endif %}
 
-
-{{ facebookLink(facebook,'edit','button') }}
-{{ facebookLink(null,'list','button') }}

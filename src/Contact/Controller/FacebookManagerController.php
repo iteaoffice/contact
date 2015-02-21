@@ -78,6 +78,9 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function editAction()
     {
+        /**
+         * @var $facebook Facebook
+         */
         $facebook = $this->getContactService()->findEntityById(
             'facebook',
             $this->params('id')

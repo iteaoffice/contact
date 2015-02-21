@@ -72,7 +72,7 @@ class ContactNavigationService extends NavigationServiceAbstract
                 'label'  => $facebook->getFacebook(),
                 'route'  => 'community/contact/facebook/facebook',
                 'active' => strtolower($this->getRouteMatch()->getParam('namespace')) === 'contact' &&
-                    intval($this->getRouteMatch()->getParam('category')) === $facebook->getId(),
+                    intval($this->getRouteMatch()->getParam('id')) === $facebook->getId(),
                 'router' => $this->getRouter(),
                 'params' => [
                     'id' => $facebook->getId(),

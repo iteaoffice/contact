@@ -31,3 +31,17 @@ _("txt-title");
 _("txt-title-explanation");
 _("txt-can-send-message");
 _("txt-cannot-send-message");
+_("txt-empty");
+
+_('txt-show-email-to-members');
+_('txt-show-email-to-all');
+_('txt-show-phone');
+_('txt-hide-phone');
+_('txt-show-phone-to-members');
+_('txt-show-phone-to-all');
+_('txt-hide-email');
+_("txt-show-email");
+_("txt-show-email-title");
+_("txt-show-email-explanation");
+_("txt-show-phone-title");
+_("txt-show-phone-explanation");

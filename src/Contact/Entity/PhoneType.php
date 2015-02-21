@@ -31,8 +31,8 @@ class PhoneType extends EntityAbstract
 {
     const PHONE_TYPE_DIRECT = 1;
     const PHONE_TYPE_MOBILE = 2;
-    const PHONE_TYPE_HOME   = 3;
-    const PHONE_TYPE_FAX    = 4;
+    const PHONE_TYPE_HOME = 3;
+    const PHONE_TYPE_FAX = 4;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
@@ -51,6 +51,21 @@ class PhoneType extends EntityAbstract
      * @var \Contact\Entity\Phone[]
      */
     private $phone;
+
+    /**
+     * Static array for phone types to enable validation based on types
+     *
+     * @return array
+     */
+    public static function getPhoneTypes()
+    {
+        return [
+            self::PHONE_TYPE_DIRECT,
+            self::PHONE_TYPE_MOBILE,
+            self::PHONE_TYPE_FAX,
+            self::PHONE_TYPE_HOME,
+        ];
+    }
 
     /**
      * Class constructor
@@ -105,27 +120,27 @@ class PhoneType extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'type',
                         'required'   => true,
-                        'filters'    => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                        'validators' => [
+                            [
                                 'name'    => 'StringLength',
-                                'options' => array(
+                                'options' => [
                                     'encoding' => 'UTF-8',
                                     'min'      => 1,
                                     'max'      => 100,
-                                ),
-                            ),
-                        ),
-                    )
+                                ],
+                            ],
+                        ],
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -141,9 +156,9 @@ class PhoneType extends EntityAbstract
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'type' => $this->type,
-        );
+        ];
     }
 
     public function populate()

@@ -179,7 +179,7 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
             [
                 'includeAngularApp' => true,
                 'optIn'             => $optIn,
-                'hasIdentity'       => $this->getServiceLocator()->get('zfcuser_auth_service')->hasIdentity()
+                'hasIdentity'       => $this->getServiceLocator()->get('zfcuser_auth_service')->hasIdentity(),
             ]
         );
     }

@@ -105,6 +105,12 @@ class FacebookLink extends LinkAbstract
                     sprintf($this->translate("txt-edit-facebook-%s"), $this->getFacebook()->getFacebook())
                 );
                 break;
+            case 'view-community':
+                $this->setRouter('community/contact/facebook/facebook');
+                $this->setText(
+                    sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook())
+                );
+                break;
             case 'send-message':
                 $this->setRouter('community/contact/facebook/send-message');
                 $this->setText(

@@ -172,7 +172,7 @@ class Photo extends EntityAbstract
                 [
                     'image/jpeg',
                     'image/jpg',
-                    'image/png'
+                    'image/png',
                 ]
             );
             $fileUpload->getValidatorChain()->attachByName(
@@ -186,7 +186,7 @@ class Photo extends EntityAbstract
                 'File\ImageSize',
                 [
                     'minWidth'  => 100,
-                    'minHeight' => 100
+                    'minHeight' => 100,
                 ]
             );
             $inputFilter->add($fileUpload);

@@ -377,30 +377,40 @@ class ContactService extends ServiceAbstract
             throw new \RunTimeException(sprintf("A contact should be set"));
         }
 
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('phone'))->findOneBy(
-            [
-                'contact' => $this->contact,
-                'type'    => PhoneType::PHONE_TYPE_DIRECT,
-            ]
-        );
+        return $this->getPhoneByContactAndType($this->getContact(), PhoneType::PHONE_TYPE_DIRECT);
     }
 
     /**
      * Find the mobile phone number of a contact
      *
      * @return Phone
-     * @throws \RunTimeException
+     * @throws \InvalidArgumentException
      */
     public function getMobilePhone()
     {
         if (is_null($this->getContact())) {
-            throw new \RunTimeException(sprintf("A contact should be set"));
+            throw new \InvalidArgumentException(sprintf("A contact should be set"));
+        }
+
+        return $this->getPhoneByContactAndType($this->getContact(), PhoneType::PHONE_TYPE_MOBILE);
+    }
+
+    /**
+     * @param Contact $contact
+     * @param int     $type
+     *
+     * @return null|Phone
+     */
+    private function getPhoneByContactAndType(Contact $contact, $type)
+    {
+        if (!in_array($type, PhoneType::getPhoneTypes())) {
+            throw new \InvalidArgumentException(sprintf("A invalid phone type chosen"));
         }
 
         return $this->getEntityManager()->getRepository($this->getFullEntityName('phone'))->findOneBy(
             [
-                'contact' => $this->contact,
-                'type'    => PhoneType::PHONE_TYPE_MOBILE,
+                'contact' => $contact,
+                'type'    => $type,
             ]
         );
     }
@@ -741,6 +751,8 @@ class ContactService extends ServiceAbstract
             $singleContact['contact'] = $contact;
             $singleContact['title'] = $this->facebookTitleParser($facebook->getTitle(), $contact);
             $singleContact['subTitle'] = $this->facebookTitleParser($facebook->getSubtitle(), $contact);
+            $singleContact['email'] = $contact->getEmail();
+            $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
             $contacts[] = $singleContact;
         }
 
@@ -774,10 +786,17 @@ class ContactService extends ServiceAbstract
                 }
 
                 return (string) $contact->getContactOrganisation()->getOrganisation()->getCountry();
+            case Facebook::DISPLAY_PROJECTS:
+                $projects = [];
+                foreach ($contact->getProject() as $project) {
+                    $projects[] = $project->getProject();
+                }
+
+                return implode(', ', $projects);
             case Facebook::DISPLAY_POSITION:
                 return $contact->getPosition();
-            default:
             case Facebook::DISPLAY_NONE:
+            default:
                 return '';
         }
     }
@@ -1135,12 +1154,10 @@ class ContactService extends ServiceAbstract
          */
         foreach ($affiliation->getProject()->getWorkpackage() as $workpackage) {
             /**
-             * Add the associates
+             * Add the work package leaders
              */
-            if (is_null($workpackage->getContact()->getContactOrganisation())) {
-                continue;
-            }
-            if ($workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId() ===
+            if (!is_null($workpackage->getContact()->getContactOrganisation()) &&
+                $workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId() ===
                 $affiliation->getOrganisation()->getId()
             ) {
                 $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();

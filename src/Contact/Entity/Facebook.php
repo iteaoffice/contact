@@ -34,9 +34,10 @@ class Facebook extends EntityAbstract implements ResourceInterface
     const DISPLAY_ORGANISATION = 2;
     const DISPLAY_COUNTRY = 3;
     const DISPLAY_POSITION = 4;
+    const DISPLAY_PROJECTS = 5;
 
     /**
-     * Textual versions of the hideForOthers
+     * Textual versions of the display
      *
      * @var array
      */
@@ -45,7 +46,39 @@ class Facebook extends EntityAbstract implements ResourceInterface
         self::DISPLAY_ORGANISATION => 'txt-organisation',
         self::DISPLAY_COUNTRY      => 'txt-country',
         self::DISPLAY_POSITION     => 'txt-position',
+        self::DISPLAY_PROJECTS     => 'txt-projects',
     ];
+
+    const SHOW_EMAIL_NO = 1;
+    const SHOW_EMAIL_MEMBER = 2;
+    const SHOW_EMAIL_ALL = 3;
+
+    /**
+     * Textual versions of the display
+     *
+     * @var array
+     */
+    protected $showEmailTemplates = [
+        self::SHOW_EMAIL_NO     => 'txt-hide-email',
+        self::SHOW_EMAIL_MEMBER => 'txt-show-email-to-members',
+        self::SHOW_EMAIL_ALL    => 'txt-show-email-to-all',
+    ];
+
+    const SHOW_PHONE_NO = 1;
+    const SHOW_PHONE_MEMBER = 2;
+    const SHOW_PHONE_ALL = 3;
+
+    /**
+     * Textual versions of the display
+     *
+     * @var array
+     */
+    protected $showPhoneTemplates = [
+        self::SHOW_PHONE_NO     => 'txt-hide-phone',
+        self::SHOW_PHONE_MEMBER => 'txt-show-phone-to-members',
+        self::SHOW_PHONE_ALL    => 'txt-show-phone-to-all',
+    ];
+
     /**
      * Constant for public = 0 (not public)
      */
@@ -89,14 +122,14 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @var integer
      */
-    public $id;
+    private $id;
     /**
      * @ORM\Column(name="facebook", type="string", length=80, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-facebook"})
      * @var string
      */
-    public $facebook;
+    private $facebook;
     /**
      * @ORM\Column(name="public", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
@@ -105,7 +138,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Required(true)
      * @var int
      */
-    public $public;
+    private $public;
     /**
      * @ORM\Column(name="can_send_message", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
@@ -114,7 +147,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Required(true)
      * @var int
      */
-    public $canSendMessage;
+    private $canSendMessage;
     /**
      * @ORM\Column(name="from_clause", type="string", length=255, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
@@ -169,14 +202,32 @@ class Facebook extends EntityAbstract implements ResourceInterface
      */
     private $title;
     /**
-     * @ORM\Column(name="com_sub", type="string", length=255, nullable=false)
+     * @ORM\Column(name="com_sub", type="smallint", length=255, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-sub-title","help-block": "txt-sub-title-explanation"})
-     * @var string
+     * @var int
      */
     private $subtitle;
+    /**
+     * @ORM\Column(name="show_email", type="smallint", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Attributes({"array":"showEmailTemplates"})
+     * @Annotation\Required(true)
+     * @Annotation\Options({"label":"txt-show-email-title","help-block": "txt-show-email-explanation"})
+     * @var string
+     */
+    private $showEmail;
+    /**
+     * @ORM\Column(name="show_phone", type="smallint", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Attributes({"array":"showPhoneTemplates"})
+     * @Annotation\Required(true)
+     * @Annotation\Options({"label":"txt-show-phone-title","help-block": "txt-show-title-explanation"})
+     * @var string
+     */
+    private $showPhone;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", inversedBy="article", inversedBy="facebook")
      * @ORM\OrderBy=({"name"="ASC"})
@@ -267,6 +318,22 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @return array
+     */
+    public function getShowEmailTemplates()
+    {
+        return $this->showEmailTemplates;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShowPhoneTemplates()
+    {
+        return $this->showPhoneTemplates;
+    }
+
+    /**
      * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $collection
@@ -337,6 +404,14 @@ class Facebook extends EntityAbstract implements ResourceInterface
                 $factory->createInput(
                     [
                         'name'     => 'public',
+                        'required' => true,
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'canSendMessage',
                         'required' => true,
                     ]
                 )
@@ -499,6 +574,14 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @param int $canSendMessage
+     */
+    public function setCanSendMessage($canSendMessage)
+    {
+        $this->canSendMessage = $canSendMessage;
+    }
+
+    /**
      * @param  bool   $textual
      * @return string
      */
@@ -533,5 +616,47 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function setAccess($access)
     {
         $this->access = $access;
+    }
+
+    /**
+     * @param  bool       $textual
+     * @return string|int
+     */
+    public function getShowEmail($textual = false)
+    {
+        if ($textual) {
+            return $this->showEmailTemplates[$this->showEmail];
+        }
+
+        return $this->showEmail;
+    }
+
+    /**
+     * @param string $showEmail
+     */
+    public function setShowEmail($showEmail)
+    {
+        $this->showEmail = $showEmail;
+    }
+
+    /**
+     * @param  bool       $textual
+     * @return string|int
+     */
+    public function getShowPhone($textual = false)
+    {
+        if ($textual) {
+            return $this->showPhoneTemplates[$this->showPhone];
+        }
+
+        return $this->showPhone;
+    }
+
+    /**
+     * @param string $showPhone
+     */
+    public function setShowPhone($showPhone)
+    {
+        $this->showPhone = $showPhone;
     }
 }

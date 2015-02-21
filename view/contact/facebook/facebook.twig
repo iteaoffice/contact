@@ -5,7 +5,7 @@
 {% if  contacts|length > 0 %}
     <div class="row">
     {% for contact in contacts %}
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <div class="thumbnail contact-box">
                 <div class="information-box-header">
                     <h5>{{ contact.contact.displayName }}</h5>
@@ -14,13 +14,31 @@
                     {{ contactPhoto(contact.contact, null, true) }}
                 </div>
                 <div class="caption caption-relative">
+                    {% if contact.title|length > 0 %}{{ contact.title }}<br>{% endif %}
+                    {% if contact.subTitle|length > 0 %}{{ contact.subTitle }}<br>{% endif %}
 
+                    {% if facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_ALL") or
+                    (
+                    facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_MEMBER") and
+                    contactInFacebook
+                    ) %}
+                        <i class="fa fa-envelope-o"></i>&nbsp;<a
+                            href="mailto:{{ contact.email }}">{{ contact.email }}</a><br>
+                    {% endif %}
+                    {% if
+                    contact.phone|length > 0 and
+                    (facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") or
+                    (
+                    facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and
+                    contactInFacebook
+                    )) %}
+                        <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                    {% endif %}
 
-                    {{ contact.title }}<br>{{ contact.subTitle }}
                 </div>
             </div>
         </div>
-        {% if loop.index is divisibleby(6) %}
+        {% if loop.index is divisibleby(4) %}
             </div>
             <div class="row">
         {% endif %}

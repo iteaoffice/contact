@@ -37,8 +37,9 @@ class FacebookController extends ContactAbstractController implements EmailServi
 
         return new ViewModel(
             [
-                'facebook' => $facebook,
-                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
+                'facebook'          => $facebook,
+                'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
+                'contactInFacebook' => $this->getContactService()->findContactInFacebook($facebook),
             ]
         );
     }
