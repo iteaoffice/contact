@@ -91,6 +91,13 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
+                    'route' => 'contact/has-session',
+                    'roles' => [
+                        strtolower(Access::ACCESS_PUBLIC),
+                        strtolower(Access::ACCESS_USER)
+                    ]
+                ],
+                [
                     'route'     => 'contact/change-password',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
@@ -159,14 +166,22 @@ return [
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
-                ['route' => 'zfcadmin/selection-manager/list', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/new', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/edit', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/view', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/list', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/new', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/edit', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/view', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/list',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/new',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/edit',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/selection-manager/view',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/facebook-manager/list',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/facebook-manager/new',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/facebook-manager/edit',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                ['route' => 'zfcadmin/facebook-manager/view',
+                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
             ],
         ],
     ],

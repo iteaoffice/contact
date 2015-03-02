@@ -27,7 +27,8 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  * @method      FlashMessenger flashMessenger()
  * @method      bool isAllowed($resource, $action)
  */
-class ContactController extends ContactAbstractController implements EmailServiceAwareInterface
+class ContactController extends ContactAbstractController
+    implements EmailServiceAwareInterface
 {
     /**
      * @return ViewModel
@@ -59,7 +60,10 @@ class ContactController extends ContactAbstractController implements EmailServic
         /**
          * Do a check if the given has is correct to avoid guessing the image
          */
-        if (is_null($photo) || $this->getEvent()->getRouteMatch()->getParam('hash') !== $photo->getHash()) {
+        if (is_null($photo)
+            || $this->getEvent()->getRouteMatch()->getParam('hash')
+            !== $photo->getHash()
+        ) {
             return $this->notFoundAction();
         }
 
@@ -77,11 +81,15 @@ class ContactController extends ContactAbstractController implements EmailServic
 
         $response = $this->getResponse();
         $response->getHeaders()
-            ->addHeaderLine('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
+            ->addHeaderLine(
+                'Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000)
+            )
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public")
-            ->addHeaderLine('Content-Type: '.$photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: '.(string) strlen($file));
+            ->addHeaderLine(
+                'Content-Type: ' . $photo->getContentType()->getContentType()
+            )
+            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -99,8 +107,11 @@ class ContactController extends ContactAbstractController implements EmailServic
         return new ViewModel(
             [
                 'contactService' => $contactService,
-                'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
-                'hasNda'         => $this->getServiceLocator()->get('program_module_options')->getHasNda(),
+                'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(
+                ),
+                'hasNda'         => $this->getServiceLocator()->get(
+                    'program_module_options'
+                )->getHasNda(),
             ]
         );
     }
@@ -112,7 +123,7 @@ class ContactController extends ContactAbstractController implements EmailServic
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->params()->fromQuery('optInId');
+        $optInId = (int)$this->params()->fromQuery('optInId');
 
         /**
          * We do not specify the enable, so we give the result
@@ -120,10 +131,11 @@ class ContactController extends ContactAbstractController implements EmailServic
         if (is_null($enable = $this->params()->fromQuery('enable'))) {
             return new JsonModel(
                 [
-                    'enable' => $this->getContactService()->hasOptInEnabledByContact(
-                        $optInId,
-                        $this->zfcUserAuthentication()->getIdentity()
-                    ),
+                    'enable' => $this->getContactService()
+                        ->hasOptInEnabledByContact(
+                            $optInId,
+                            $this->zfcUserAuthentication()->getIdentity()
+                        ),
                     'id'     => $optInId,
                 ]
             );
@@ -147,7 +159,21 @@ class ContactController extends ContactAbstractController implements EmailServic
     }
 
     /**
+     * Dedicated function which checks if the user has an active session
+     */
+    public function hasSessionAction()
+    {
+        $viewModel = new ViewModel(
+            ['hasSession' => $this->zfcUserAuthentication()->getIdentity()]
+        );
+        $viewModel->setTerminal(true);
+        return $viewModel;
+    }
+
+
+    /**
      * Edit the profile of the person
+     *
      * @return ViewModel
      */
     public function profileEditAction()
@@ -159,7 +185,9 @@ class ContactController extends ContactAbstractController implements EmailServic
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
         );
-        $form = new Profile($this->getServiceLocator(), $contactService->getContact());
+        $form = new Profile(
+            $this->getServiceLocator(), $contactService->getContact()
+        );
         $form->bind($contactService->getContact());
         $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
@@ -171,14 +199,21 @@ class ContactController extends ContactAbstractController implements EmailServic
                     //Create a photo element
                     $photo = new Photo();
                 }
-                $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
-                $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
+                $photo->setPhoto(
+                    file_get_contents($fileData['file']['tmp_name'])
+                );
+                $photo->setThumb(
+                    file_get_contents($fileData['file']['tmp_name'])
+                );
                 $imageSizeValidator = new ImageSize();
                 $imageSizeValidator->isValid($fileData['file']);
                 $photo->setWidth($imageSizeValidator->width);
                 $photo->setHeight($imageSizeValidator->height);
                 $photo->setContentType(
-                    $this->getGeneralService()->findContentTypeByContentTypeName($fileData['file']['type'])
+                    $this->getGeneralService()
+                        ->findContentTypeByContentTypeName(
+                            $fileData['file']['type']
+                        )
                 );
                 $collection = new ArrayCollection();
                 $collection->add($photo);
@@ -199,7 +234,9 @@ class ContactController extends ContactAbstractController implements EmailServic
              * The contact_organisation is different and not a drop-down.
              * we will extract the organisation name from the contact_organisation text-field
              */
-            $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
+            $this->getContactService()->updateContactOrganisation(
+                $contact, $data['contact_organisation']
+            );
             $this->flashMessenger()->setNamespace('success')->addMessage(
                 _("txt-profile-has-successfully-been-updated")
             );
@@ -207,7 +244,10 @@ class ContactController extends ContactAbstractController implements EmailServic
             return $this->redirect()->toRoute('contact/profile');
         }
 
-        return new ViewModel(['form' => $form, 'contactService' => $contactService, 'fullVersion' => true]);
+        return new ViewModel(
+            ['form'        => $form, 'contactService' => $contactService,
+             'fullVersion' => true]
+        );
     }
 
     /**
@@ -216,7 +256,9 @@ class ContactController extends ContactAbstractController implements EmailServic
     public function changePasswordAction()
     {
         $form = $this->getServiceLocator()->get('contact_password_form');
-        $form->setInputFilter($this->getServiceLocator()->get('contact_password_form_filter'));
+        $form->setInputFilter(
+            $this->getServiceLocator()->get('contact_password_form_filter')
+        );
         $form->setAttribute('class', 'form-horizontal');
         $form->setData($_POST);
         if ($this->getRequest()->isPost() && $form->isValid()) {
@@ -242,8 +284,12 @@ class ContactController extends ContactAbstractController implements EmailServic
      */
     public function getAddressByTypeAction()
     {
-        $contactId = (int) $this->getEvent()->getRequest()->getQuery()->get('id');
-        $typeId = (int) $this->getEvent()->getRequest()->getQuery()->get('typeId');
+        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get(
+            'id'
+        );
+        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get(
+            'typeId'
+        );
 
         $this->getContactService()->setContactId($contactId);
 
@@ -256,7 +302,8 @@ class ContactController extends ContactAbstractController implements EmailServic
                 $address = $this->getContactService()->getFinancialAddress();
                 break;
             case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
-                $address = $this->getContactService()->getBoothFinancialAddress();
+                $address = $this->getContactService()->getBoothFinancialAddress(
+                );
                 break;
             default:
                 return $this->notFoundAction();
