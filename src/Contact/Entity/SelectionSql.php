@@ -1,19 +1,20 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
 
 /**
- * SelectionSql
+ * SelectionSql.
  *
  * @ORM\Table(name="selection_sql")
  * @ORM\Entity
@@ -21,7 +22,6 @@ use Zend\Form\Annotation;
  * @Annotation\Name("contact_organisation")
  *
  * @category    Contact
- * @package     Entity
  */
 class SelectionSql
 {
@@ -29,6 +29,7 @@ class SelectionSql
      * @ORM\Column(name="sql_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -37,6 +38,7 @@ class SelectionSql
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="selection_id", referencedColumnName="selection_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Selection
      */
     private $selection;
@@ -44,6 +46,7 @@ class SelectionSql
      * @ORM\Column(name="sql_query", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-query"})
+     *
      * @var string
      */
     private $query;

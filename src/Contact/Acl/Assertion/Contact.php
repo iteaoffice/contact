@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Acl\Assertion;
 
 use Admin\Entity\Access;
@@ -17,7 +18,7 @@ use Zend\Permissions\Acl\Role\RoleInterface;
 class Contact extends AssertionAbstract
 {
     /**
-     * Returns true if and only if the assertion conditions are met
+     * Returns true if and only if the assertion conditions are met.
      *
      * This method is passed the ACL, Role, Resource, and privilege to which the authorization query applies. If the
      * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
@@ -32,7 +33,7 @@ class Contact extends AssertionAbstract
      */
     public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $resource = null, $privilege = null)
     {
-        /**
+        /*
          * A meeting can be shown when we have a contact
          */
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {

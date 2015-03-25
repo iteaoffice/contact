@@ -31,6 +31,7 @@ _("txt-title");
 _("txt-title-explanation");
 _("txt-can-send-message");
 _("txt-cannot-send-message");
+_("txt-can-send-message-explanation");
 _("txt-empty");
 
 _('txt-show-email-to-members');
@@ -44,4 +45,7 @@ _("txt-show-email");
 _("txt-show-email-title");
 _("txt-show-email-explanation");
 _("txt-show-phone-title");
+_("txt-show-phone-explanation");
+_("txt-show-mobile-phone-to-members");
+_("txt-show-title-explanation");
 _("txt-show-phone-explanation");

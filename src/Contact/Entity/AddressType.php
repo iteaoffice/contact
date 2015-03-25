@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -17,7 +18,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * AddressType
+ * AddressType.
  *
  * @ORM\Table(name="address_type")
  * @ORM\Entity
@@ -33,35 +34,40 @@ class AddressType extends EntityAbstract
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
     /**
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     *
      * @var string
      */
     private $type;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="type")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\Address[]
      */
     private $address;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\AddressTypeSort", cascade={"persist"}, mappedBy="mainType")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\AddressTypeSort[]
      */
     private $sort;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\AddressTypeSort", cascade={"persist"}, mappedBy="subType")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\AddressTypeSort[]
      */
     private $subSort;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
@@ -69,7 +75,7 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -81,12 +87,10 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -94,7 +98,7 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * toString returns the name
+     * toString returns the name.
      *
      * @return string
      */
@@ -104,11 +108,10 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -153,7 +156,7 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
 
 /**
- * SelectionContact
+ * SelectionContact.
  *
  * @ORM\Table(name="selection_contact")
  * @ORM\Entity
@@ -22,7 +23,6 @@ use Zend\Form\Annotation;
  * @Annotation\Name("contact_organisation")
  *
  * @category    Contact
- * @package     Entity
  */
 class SelectionContact
 {
@@ -39,6 +39,7 @@ class SelectionContact
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -47,6 +48,7 @@ class SelectionContact
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="selection_id", referencedColumnName="selection_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Selection
      */
     private $selection;
@@ -54,6 +56,7 @@ class SelectionContact
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
+     *
      * @var \DateTime
      */
     private $dateCreated;

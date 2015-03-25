@@ -1,10 +1,12 @@
 <?php
 /**
- * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize)
+ * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize).
  *
  * @link    https://github.com/bjyoungblood/BjyAuthorize for the canonical source repository
+ *
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
+
 namespace Contact\Provider\Identity;
 
 use Admin\Service\AdminService;
@@ -17,14 +19,14 @@ use Zend\Permissions\Acl\Role\RoleInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Simple identity provider to handle simply guest|user
+ * Simple identity provider to handle simply guest|user.
  *
  * @author Ingo Walz <ingo.walz@googlemail.com>
  */
 class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityProvider
 {
     /**
-     * ServiceLocatorInterface
+     * ServiceLocatorInterface.
      */
     protected $serviceLocator;
     /**

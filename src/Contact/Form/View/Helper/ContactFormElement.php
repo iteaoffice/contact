@@ -1,7 +1,8 @@
 <?php
 /**
- * ZfcTwitterBootstrap
+ * ZfcTwitterBootstrap.
  */
+
 namespace Contact\Form\View\Helper;
 
 use Zend\Form\Element\Select;
@@ -13,7 +14,7 @@ use Zend\View\Helper\EscapeHtml;
 use ZfcTwitterBootstrap\Form\View\Helper\FormDescription;
 
 /**
- * Form Element
+ * Form Element.
  */
 class ContactFormElement extends ZendFormElement
 {
@@ -53,7 +54,7 @@ class ContactFormElement extends ZendFormElement
     protected $controlWrapper = '<div class="col-lg-9" id="controls-%s">%s%s%s</div>';
 
     /**
-     * Set Label Helper
+     * Set Label Helper.
      *
      * @param \Zend\Form\View\Helper\FormLabel $labelHelper
      *
@@ -68,7 +69,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Get Label Helper
+     * Get Label Helper.
      *
      * @return \Zend\Form\View\Helper\FormLabel
      */
@@ -82,7 +83,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Set EscapeHtml Helper
+     * Set EscapeHtml Helper.
      *
      * @param \Zend\View\Helper\EscapeHtml $escapeHelper
      *
@@ -97,7 +98,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Get EscapeHtml Helper
+     * Get EscapeHtml Helper.
      *
      * @return \Zend\View\Helper\EscapeHtml
      */
@@ -111,7 +112,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Set Element Helper
+     * Set Element Helper.
      *
      * @param \Zend\Form\View\Helper\FormElement $elementHelper
      *
@@ -126,7 +127,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Get Element Helper
+     * Get Element Helper.
      *
      * @return \Zend\Form\View\Helper\FormElement
      */
@@ -140,7 +141,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Set Element Error Helper
+     * Set Element Error Helper.
      *
      * @param \Zend\Form\View\Helper\FormElementErrors $errorHelper
      *
@@ -156,7 +157,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Get Element Error Helper
+     * Get Element Error Helper.
      *
      * @return \Zend\Form\View\Helper\FormElementErrors
      */
@@ -170,7 +171,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Set Description Helper
+     * Set Description Helper.
      *
      * @param FormDescription
      *
@@ -185,7 +186,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Get Description Helper
+     * Get Description Helper.
      *
      * @return FormDescription
      */
@@ -199,7 +200,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Set Group Wrapper
+     * Set Group Wrapper.
      *
      * @param string $groupWrapper
      *
@@ -213,7 +214,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Get Group Wrapper
+     * Get Group Wrapper.
      *
      * @return string
      */
@@ -223,7 +224,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Set Control Wrapper
+     * Set Control Wrapper.
      *
      * @param string $controlWrapper ;
      *
@@ -237,7 +238,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Get Control Wrapper
+     * Get Control Wrapper.
      *
      * @return string
      */
@@ -247,7 +248,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Render
+     * Render.
      *
      * @param Select|ElementInterface $element
      * @param string                  $groupWrapper
@@ -264,7 +265,7 @@ class ContactFormElement extends ZendFormElement
         $descriptionHelper = $this->getDescriptionHelper();
         $groupWrapper = $groupWrapper ?: $this->groupWrapper;
         $controlWrapper = $controlWrapper ?: $this->controlWrapper;
-        /**
+        /*
          * Disable by default the inArrayValidator
          */
         $element->setDisableInArrayValidator(true);
@@ -344,7 +345,7 @@ class ContactFormElement extends ZendFormElement
     }
 
     /**
-     * Magical Invoke
+     * Magical Invoke.
      *
      * @param \Zend\Form\ElementInterface $element
      * @param string                      $groupWrapper

@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Profile
+ * Profile.
  *
  * @ORM\Table(name="contact_profile")
  * @ORM\Entity
@@ -24,40 +25,39 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_profile")
  *
  * @category    Contact
- * @package     Entity
  */
 class Profile extends EntityAbstract
 {
     /**
-     * Constant for hideForOthers = 0 (not hidden)
+     * Constant for hideForOthers = 0 (not hidden).
      */
     const NOT_HIDE_FOR_OTHERS = 0;
     /**
-     * Constant for hideForOthers = 1 (hidden)
+     * Constant for hideForOthers = 1 (hidden).
      */
     const HIDE_FOR_OTHERS = 1;
     /**
-     * Constant for hidePhoto = 0 (not hidden)
+     * Constant for hidePhoto = 0 (not hidden).
      */
     const NOT_HIDE_PHOTO = 0;
     /**
-     * Constant for hidePhoto = 1 (hidden)
+     * Constant for hidePhoto = 1 (hidden).
      */
     const HIDE_PHOTO = 1;
     /**
-     * Constant for visible = 0 (hidden)
+     * Constant for visible = 0 (hidden).
      */
     const VISIBLE_HIDDEN = 0;
     /**
-     * Constant for visible = 1 (community)
+     * Constant for visible = 1 (community).
      */
     const VISIBLE_COMMUNITY = 1;
     /**
-     * Constant for visible = 1 (public)
+     * Constant for visible = 1 (public).
      */
     const VISIBLE_PUBLIC = 2;
     /**
-     * Textual versions of the hideForOthers
+     * Textual versions of the hideForOthers.
      *
      * @var array
      */
@@ -66,7 +66,7 @@ class Profile extends EntityAbstract
         self::HIDE_FOR_OTHERS     => 'txt-hide-for-others',
     );
     /**
-     * Textual versions of the hideForOthers
+     * Textual versions of the hideForOthers.
      *
      * @var array
      */
@@ -75,7 +75,7 @@ class Profile extends EntityAbstract
         self::HIDE_PHOTO     => 'txt-hide-photo',
     );
     /**
-     * Textual versions of the visibility
+     * Textual versions of the visibility.
      *
      * @var array
      */
@@ -89,6 +89,7 @@ class Profile extends EntityAbstract
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $id;
@@ -98,6 +99,7 @@ class Profile extends EntityAbstract
      * @Annotation\Attributes({"array":"hideForOthersTemplates"})
      * @Annotation\Attributes({"label":"txt-hide-for-others", "required":"true"})
      * @Annotation\Required(true)
+     *
      * @var integer
      */
     private $hideForOthers;
@@ -107,6 +109,7 @@ class Profile extends EntityAbstract
      * @Annotation\Attributes({"array":"hidePhotoTemplates"})
      * @Annotation\Attributes({"label":"txt-hide-photo", "required":"true"})
      * @Annotation\Required(true)
+     *
      * @var integer
      */
     private $hidePhoto;
@@ -114,6 +117,7 @@ class Profile extends EntityAbstract
      * @ORM\Column(name="description", type="text", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-expertise"})
+     *
      * @var string
      */
     private $description;
@@ -123,6 +127,7 @@ class Profile extends EntityAbstract
      * @Annotation\Attributes({"array":"visibleTemplates"})
      * @Annotation\Attributes({"label":"txt-visibility", "required":"true"})
      * @Annotation\Required(true)
+     *
      * @var integer
      */
     private $visible;
@@ -132,12 +137,13 @@ class Profile extends EntityAbstract
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @Annotation\Type("\Zend\Form\Element\Hidden")
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -149,7 +155,7 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * Default value when a new profile is created
+     * Default value when a new profile is created.
      */
     public function __construct()
     {
@@ -158,12 +164,10 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -195,11 +199,10 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -282,7 +285,7 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

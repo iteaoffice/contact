@@ -1,13 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @contact    Contact
- * @package    View
- * @subpackage Helper
+ *
  * @author     Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright  Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
@@ -24,8 +24,7 @@ use Zend\View\HelperPluginManager;
 use ZfcTwig\View\TwigRenderer;
 
 /**
- * Class ContactHandler
- * @package Contact\View\Helper
+ * Class ContactHandler.
  */
 class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterface
 {
@@ -49,7 +48,7 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
      */
     public function __invoke(Content $content)
     {
-        /**
+        /*
          * Extract the contentParams and save them in the class
          */
         $this->extractContentParam($content);
@@ -72,7 +71,7 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
     public function extractContentParam(Content $content)
     {
         foreach ($content->getContentParam() as $param) {
-            /**
+            /*
              * When the parameterId is 0 (so we want to get the article from the URL
              */
             switch ($param->getParameter()->getParam()) {
@@ -224,7 +223,7 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
     }
 
     /**
-     * Proxy to the original request object to handle form
+     * Proxy to the original request object to handle form.
      *
      * @return Request
      */

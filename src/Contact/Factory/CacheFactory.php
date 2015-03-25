@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Service
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Factory;
 
 use Zend\Cache\Storage\StorageInterface;
@@ -15,14 +16,14 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Factory for building the cache storage
+ * Factory for building the cache storage.
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  */
 class CacheFactory implements FactoryInterface
 {
     /**
-     * Create a cache
+     * Create a cache.
      *
      * @param ServiceLocatorInterface $serviceLocator
      *

@@ -1,19 +1,20 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
 
 /**
- * Domain
+ * Domain.
  *
  * @ORM\Table(name="contact_note")
  * @ORM\Entity
@@ -21,7 +22,6 @@ use Zend\Form\Annotation;
  * @Annotation\Name("contact_note")
  *
  * @category    Contact
- * @package     Entity
  */
 class Note
 {
@@ -31,21 +31,25 @@ class Note
      * @ORM\Column(name="note_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
     /**
      * @ORM\Column(name="note", type="string", length=255, nullable=true)
+     *
      * @var string
      */
     private $note;
     /**
      * @ORM\Column(name="source", type="string", length=32, nullable=true)
+     *
      * @var string
      */
     private $source;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
+     *
      * @var \DateTime
      */
     private $dateCreated;
@@ -54,6 +58,7 @@ class Note
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;

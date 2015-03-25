@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +19,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
- * Entity for a CV
+ * Entity for a CV.
  *
  * @ORM\Table(name="contact_cv")
  * @ORM\Entity
@@ -26,7 +27,6 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  * @Annotation\Name("contact_cv")
  *
  * @category    Contact
- * @package     Entity
  */
 class Cv extends EntityAbstract implements ResourceInterface
 {
@@ -35,6 +35,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $id;
@@ -43,6 +44,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      * @Annotation\Type("\Zend\Form\Element\File")
      * @Annotation\Options({"label":"txt-cv-file"})
      * @Annotation\Exclude()
+     *
      * @var resource
      */
     private $cv;
@@ -50,6 +52,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
+     *
      * @var \DateTime
      */
     private $dateCreated;
@@ -57,6 +60,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="date_updated", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
+     *
      * @var \DateTime
      */
     private $dateUpdated;
@@ -66,12 +70,13 @@ class Cv extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -83,12 +88,10 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -96,7 +99,7 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Returns the string identifier of the Resource
+     * Returns the string identifier of the Resource.
      *
      * @return string
      */
@@ -114,11 +117,10 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -149,7 +151,7 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */
@@ -161,7 +163,7 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Function needed for the population of forms
+     * Function needed for the population of forms.
      *
      * @return array
      */

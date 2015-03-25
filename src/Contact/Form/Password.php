@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Form
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Form;
 
 use Zend\Form\Element;
@@ -24,21 +25,13 @@ class Password extends Form
     protected $serviceManager;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
         parent::__construct();
-        //        $this->add(array(
-        //            'name'       => 'currentPassword',
-        //            'options'    => array(
-        //                'label'      => _("txt-current-password"),
-        //                'help-block' => _("txt-current-password-form-help")
-        //            ),
-        //            'attributes' => array(
-        //                'type' => 'password'
-        //            ),
-        //        ));
+        $this->setAttribute('action', '');
+
         $this->add(
             [
                 'name'       => 'password',

@@ -1,24 +1,22 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     View
- * @subpackage  Helper
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 use Contact\Entity\Facebook;
 
 /**
- * Create a link to an facebook
+ * Create a link to an facebook.
  *
  * @category    Facebook
- * @package     View
- * @subpackage  Helper
  */
 class FacebookLink extends LinkAbstract
 {
@@ -35,6 +33,7 @@ class FacebookLink extends LinkAbstract
      * @param null     $alternativeShow
      *
      * @return string
+     *
      * @throws \RuntimeException
      * @throws \Exception
      */
@@ -59,7 +58,7 @@ class FacebookLink extends LinkAbstract
             return '';
         }
 
-        /**
+        /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
         if (!is_null($alternativeShow)) {

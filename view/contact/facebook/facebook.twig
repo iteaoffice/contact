@@ -14,8 +14,8 @@
                     {{ contactPhoto(contact.contact, null, true) }}
                 </div>
                 <div class="caption caption-relative">
-                    {% if contact.title|length > 0 %}{{ contact.title }}<br>{% endif %}
-                    {% if contact.subTitle|length > 0 %}{{ contact.subTitle }}<br>{% endif %}
+                    {% if contact.title|length > 0 %}{{ contact.title|raw }}<br>{% endif %}
+                    {% if contact.subTitle|length > 0 %}{{ contact.subTitle|raw }}<br>{% endif %}
 
                     {% if facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_ALL") or
                     (
@@ -29,7 +29,7 @@
                     contact.phone|length > 0 and
                     (facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") or
                     (
-                    facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and
+                    facebook.getShowPhone() in [constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER"),constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")]  and
                     contactInFacebook
                     )) %}
                         <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
@@ -39,9 +39,9 @@
             </div>
         </div>
         {% if loop.index is divisibleby(4) %}
-    </div>
-    <div class="row">
-{% endif %}
+            </div>
+            <div class="row">
+        {% endif %}
 
     {% endfor %}
     </div>

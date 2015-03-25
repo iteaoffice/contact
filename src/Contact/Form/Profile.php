@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Project
- * @package     Form
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Form;
 
 use Contact\Entity\Contact;
@@ -25,22 +26,24 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class Profile extends Form
 {
     /**
-     * Class constructor
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param Contact                 $contact
      */
     public function __construct(ServiceLocatorInterface $serviceLocator, Contact $contact)
     {
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
-        /**
-         * @var $entityManager EntityManager
+        $this->setAttribute('action', '');
+        /*
+         * @var EntityManager
          */
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $contactService = $serviceLocator->get('contact_contact_service');
         $generalService = $serviceLocator->get(GeneralService::class);
         $doctrineHydrator = new ProfileHydrator($entityManager);
         $this->setHydrator($doctrineHydrator)->setObject($contact);
-        /**
+        /*
          * Add a hidden form element for the id to allow a check on the uniqueness of some elements
          */
         $this->add(
@@ -124,7 +127,7 @@ class Profile extends Form
                 ],
             ]
         );
-        /**
+        /*
          * Produce a list of all phone numbers
          */
         $communityFieldSet = new Fieldset('community');
@@ -146,7 +149,7 @@ class Profile extends Form
             $communityFieldSet->add($fieldSet);
         }
         $this->add($communityFieldSet);
-        /**
+        /*
          * Produce a list of all phone numbers
          */
         $phoneFieldSet = new Fieldset('phone');
@@ -170,7 +173,7 @@ class Profile extends Form
             }
         }
         $this->add($phoneFieldSet);
-        /**
+        /*
          * Add the form field for the address
          */
         $addressFieldSet = new Fieldset('address');
@@ -291,16 +294,16 @@ class Profile extends Form
                 ],
             ]
         );
-        /**
+        /*
          * Produce a list of all phone numbers
          */
         $profileFieldSet = new Fieldset('profile');
         $profileEntity = new ProfileEntity();
         $profileFieldSet->add(
             [
-                'type'       => 'Zend\Form\Element\Radio',
-                'name'       => 'visible',
-                'options'    => [
+                'type'    => 'Zend\Form\Element\Radio',
+                'name'    => 'visible',
+                'options' => [
                     'label'         => _("txt-visibility"),
                     'value_options' => $profileEntity->getVisibleTemplates(),
                 ],

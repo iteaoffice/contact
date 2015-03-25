@@ -1,11 +1,13 @@
 <?php
 
 /**
- * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize)
+ * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize).
  *
  * @link    https://github.com/bjyoungblood/BjyAuthorize for the canonical source repository
+ *
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
+
 namespace Contact\Factory;
 
 use Contact\Provider\Identity\AuthenticationIdentityProvider;
@@ -13,7 +15,7 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Simple authentication provider factory
+ * Simple authentication provider factory.
  *
  * @author Ingo Walz <ingo.walz@googlemail.com>
  */

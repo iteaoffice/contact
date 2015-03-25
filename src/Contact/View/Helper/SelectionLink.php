@@ -1,23 +1,21 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     View
- * @subpackage  Helper
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\View\Helper;
 
 use Contact\Entity\Selection;
 
 /**
- * Create a link to an selection
+ * Create a link to an selection.
  *
  * @category    Selection
- * @package     View
- * @subpackage  Helper
  */
 class SelectionLink extends LinkAbstract
 {
@@ -34,6 +32,7 @@ class SelectionLink extends LinkAbstract
      * @param null      $alternativeShow
      *
      * @return string
+     *
      * @throws \RuntimeException
      * @throws \Exception
      */
@@ -49,7 +48,7 @@ class SelectionLink extends LinkAbstract
         $this->setShow($show);
         $this->setPage($page);
 
-        /**
+        /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
         if (!is_null($alternativeShow)) {

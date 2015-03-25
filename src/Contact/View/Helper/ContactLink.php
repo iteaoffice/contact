@@ -1,24 +1,22 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     View
- * @subpackage  Helper
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Entity\Contact;
 
 /**
- * Create a link to an contact
+ * Create a link to an contact.
  *
  * @category    Contact
- * @package     View
- * @subpackage  Helper
  */
 class ContactLink extends LinkAbstract
 {
@@ -35,6 +33,7 @@ class ContactLink extends LinkAbstract
      * @param null    $alternativeShow
      *
      * @return string
+     *
      * @throws \RuntimeException
      * @throws \Exception
      */
@@ -50,7 +49,7 @@ class ContactLink extends LinkAbstract
         $this->setShow($show);
         $this->setPage($page);
 
-        /**
+        /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
         if (!is_null($alternativeShow)) {
@@ -58,21 +57,15 @@ class ContactLink extends LinkAbstract
         } else {
             $this->setAlternativeShow($page);
         }
-        if (!$this->hasAccess(
-            $this->getContact(),
-            ContactAssertion::class,
-            $this->getAction()
-        )
+        if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())
         ) {
             return '';
         }
-        $this->setShowOptions(
-            [
-                'email'     => $this->getContact()->getEmail(),
-                'paginator' => $this->getAlternativeShow(),
-                'name'      => $this->getContact()->getDisplayName(),
-            ]
-        );
+        $this->setShowOptions([
+            'email'     => $this->getContact()->getEmail(),
+            'paginator' => $this->getAlternativeShow(),
+            'name'      => $this->getContact()->getDisplayName(),
+        ]);
         $this->addRouterParam('page', $page);
 
         $this->addRouterParam('id', $this->getContact()->getId());
@@ -91,8 +84,9 @@ class ContactLink extends LinkAbstract
                 $this->setRouter('zfcadmin/contact-manager/list');
                 $this->setText($this->translate("txt-list-contacts"));
 
-                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery(
-                ) as $key => $param) {
+                foreach (
+                    $this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key => $param
+                ) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
@@ -104,12 +98,13 @@ class ContactLink extends LinkAbstract
                 break;
             case 'profile':
                 $this->setRouter('contact/profile');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-view-profile-of-contact-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $this->setText(sprintf($this->translate("txt-view-profile-of-contact-%s"),
+                    $this->getContact()->getDisplayName()));
+                break;
+            case 'signature':
+                $this->setRouter('contact/signature');
+                $this->setText(sprintf($this->translate("txt-view-signature-of-contact-%s"),
+                    $this->getContact()->getDisplayName()));
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-manager/view');
@@ -117,15 +112,13 @@ class ContactLink extends LinkAbstract
                 break;
             case 'impersonate':
                 $this->setRouter('zfcadmin/contact-manager/impersonate');
-                $this->setText(
-                    sprintf($this->translate("txt-impersonate-contact-%s"), $this->getContact()->getDisplayName())
-                );
+                $this->setText(sprintf($this->translate("txt-impersonate-contact-%s"),
+                    $this->getContact()->getDisplayName()));
                 break;
             case 'permit':
                 $this->setRouter('zfcadmin/contact-manager/permit');
-                $this->setText(
-                    sprintf($this->translate("txt-permit-of-contact-%s"), $this->getContact()->getDisplayName())
-                );
+                $this->setText(sprintf($this->translate("txt-permit-of-contact-%s"),
+                    $this->getContact()->getDisplayName()));
                 break;
             case 'edit-profile':
                 $this->setRouter('contact/profile-edit');
@@ -133,7 +126,7 @@ class ContactLink extends LinkAbstract
                 break;
             case 'change-password':
                 $this->setRouter('contact/change-password');
-                /**
+                /*
                  * Users can have access without a password (via the deeplink)
                  * We will therefore have the option to set a password
                  */

@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +15,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * AddressTypeSort
+ * AddressTypeSort.
  *
  * @ORM\Table(name="address_type_sort")
  * @ORM\Entity
@@ -29,6 +30,7 @@ class AddressTypeSort extends EntityAbstract
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -37,6 +39,7 @@ class AddressTypeSort extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="main_type_id", referencedColumnName="type_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\AddressType
      */
     private $mainType;
@@ -45,24 +48,26 @@ class AddressTypeSort extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="sub_type_id", referencedColumnName="type_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\AddressType
      */
     private $subType;
     /**
      * @ORM\Column(name="sort", type="integer", nullable=true)
+     *
      * @var string
      */
     private $sort;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -74,12 +79,10 @@ class AddressTypeSort extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -87,11 +90,10 @@ class AddressTypeSort extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -108,7 +110,7 @@ class AddressTypeSort extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

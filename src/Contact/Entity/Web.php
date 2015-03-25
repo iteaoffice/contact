@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +18,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
- * Entity for a web-address of a contact
+ * Entity for a web-address of a contact.
  *
  * @ORM\Table(name="contact_web")
  * @ORM\Entity
@@ -25,7 +26,6 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  * @Annotation\Name("contact_web")
  *
  * @category    Contact
- * @package     Entity
  */
 class Web extends EntityAbstract implements ResourceInterface
 {
@@ -34,6 +34,7 @@ class Web extends EntityAbstract implements ResourceInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $id;
@@ -41,6 +42,7 @@ class Web extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="web", type="string", length=60, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-web-address"})
+     *
      * @var string
      */
     private $web;
@@ -50,12 +52,13 @@ class Web extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -67,12 +70,10 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -80,7 +81,7 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Returns the string identifier of the Resource
+     * Returns the string identifier of the Resource.
      *
      * @return string
      */
@@ -90,11 +91,10 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -125,7 +125,7 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */
@@ -137,7 +137,7 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Function needed for the population of forms
+     * Function needed for the population of forms.
      *
      * @return array
      */

@@ -54,8 +54,8 @@
         {% for contact in contacts %}
             <tr>
                 <td>{{ contact.contact.displayName }}</td>
-                <td>{{ contact.title }}</td>
-                <td>{{ contact.subTitle }}</td>
+                <td>{{ contact.title|raw }}</td>
+                <td>{{ contact.subTitle|raw }}</td>
                 <td>{{ contact.phone }}</td>
                 <td>{{ contact.email }}</td>
             </tr>

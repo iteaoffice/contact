@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller;
 
 use Contact\Entity\AddressType;
@@ -22,13 +23,12 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
  * @category    Contact
- * @package     Controller
+ *
  * @method      ZfcUserAuthentication zfcUserAuthentication()
  * @method      FlashMessenger flashMessenger()
  * @method      bool isAllowed($resource, $action)
  */
-class ContactController extends ContactAbstractController
-    implements EmailServiceAwareInterface
+class ContactController extends ContactAbstractController implements EmailServiceAwareInterface
 {
     /**
      * @return ViewModel
@@ -43,21 +43,21 @@ class ContactController extends ContactAbstractController
     }
 
     /**
-     * Show the details of 1 project
+     * Show the details of 1 project.
      *
      * @return \Zend\Stdlib\ResponseInterface|null
      */
     public function photoAction()
     {
-        /**
-         * @var $photo Photo
+        /*
+         * @var Photo
          */
         $photo = $this->getContactService()->findEntityById(
             'photo',
             $this->getEvent()->getRouteMatch()->getParam('id')
         );
 
-        /**
+        /*
          * Do a check if the given has is correct to avoid guessing the image
          */
         if (is_null($photo)
@@ -69,11 +69,11 @@ class ContactController extends ContactAbstractController
 
         $file = stream_get_contents($photo->getPhoto());
 
-        /**
+        /*
          * Check if the file is cached and if not, create it
          */
         if (!file_exists($photo->getCacheFileName())) {
-            /**
+            /*
              * The file exists, but is it not updated?
              */
             file_put_contents($photo->getCacheFileName(), $file);
@@ -82,14 +82,14 @@ class ContactController extends ContactAbstractController
         $response = $this->getResponse();
         $response->getHeaders()
             ->addHeaderLine(
-                'Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000)
+                'Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 36000)
             )
             ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
             ->addHeaderLine("Pragma: public")
             ->addHeaderLine(
-                'Content-Type: ' . $photo->getContentType()->getContentType()
+                'Content-Type: '.$photo->getContentType()->getContentType()
             )
-            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+            ->addHeaderLine('Content-Length: '.(string) strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -107,8 +107,7 @@ class ContactController extends ContactAbstractController
         return new ViewModel(
             [
                 'contactService' => $contactService,
-                'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(
-                ),
+                'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
                 'hasNda'         => $this->getServiceLocator()->get(
                     'program_module_options'
                 )->getHasNda(),
@@ -117,15 +116,15 @@ class ContactController extends ContactAbstractController
     }
 
     /**
-     * Ajax controller to update the OptIn
+     * Ajax controller to update the OptIn.
      *
      * @return \Zend\View\Model\JsonModel
      */
     public function optInUpdateAction()
     {
-        $optInId = (int)$this->params()->fromQuery('optInId');
+        $optInId = (int) $this->params()->fromQuery('optInId');
 
-        /**
+        /*
          * We do not specify the enable, so we give the result
          */
         if (is_null($enable = $this->params()->fromQuery('enable'))) {
@@ -159,7 +158,7 @@ class ContactController extends ContactAbstractController
     }
 
     /**
-     * Dedicated function which checks if the user has an active session
+     * Dedicated function which checks if the user has an active session.
      */
     public function hasSessionAction()
     {
@@ -167,12 +166,12 @@ class ContactController extends ContactAbstractController
             ['hasSession' => $this->zfcUserAuthentication()->getIdentity()]
         );
         $viewModel->setTerminal(true);
+
         return $viewModel;
     }
 
-
     /**
-     * Edit the profile of the person
+     * Edit the profile of the person.
      *
      * @return ViewModel
      */
@@ -186,7 +185,8 @@ class ContactController extends ContactAbstractController
             $this->getRequest()->getFiles()->toArray()
         );
         $form = new Profile(
-            $this->getServiceLocator(), $contactService->getContact()
+            $this->getServiceLocator(),
+            $contactService->getContact()
         );
         $form->bind($contactService->getContact());
         $form->setData($data);
@@ -219,7 +219,7 @@ class ContactController extends ContactAbstractController
                 $collection->add($photo);
                 $contact->addPhoto($collection);
             }
-            /**
+            /*
              * Remove any unwanted photo's
              */
             foreach ($contact->getPhoto() as $photo) {
@@ -230,12 +230,13 @@ class ContactController extends ContactAbstractController
                 }
             };
             $contact = $this->getContactService()->updateEntity($contact);
-            /**
+            /*
              * The contact_organisation is different and not a drop-down.
              * we will extract the organisation name from the contact_organisation text-field
              */
             $this->getContactService()->updateContactOrganisation(
-                $contact, $data['contact_organisation']
+                $contact,
+                $data['contact_organisation']
             );
             $this->flashMessenger()->setNamespace('success')->addMessage(
                 _("txt-profile-has-successfully-been-updated")
@@ -245,13 +246,16 @@ class ContactController extends ContactAbstractController
         }
 
         return new ViewModel(
-            ['form'        => $form, 'contactService' => $contactService,
-             'fullVersion' => true]
+            [
+                'form'           => $form,
+                'contactService' => $contactService,
+                'fullVersion'    => true,
+            ]
         );
     }
 
     /**
-     * Function to save the password of the user
+     * Function to save the password of the user.
      */
     public function changePasswordAction()
     {
@@ -284,10 +288,10 @@ class ContactController extends ContactAbstractController
      */
     public function getAddressByTypeAction()
     {
-        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get(
+        $contactId = (int) $this->getEvent()->getRequest()->getQuery()->get(
             'id'
         );
-        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get(
+        $typeId = (int) $this->getEvent()->getRequest()->getQuery()->get(
             'typeId'
         );
 
@@ -302,8 +306,7 @@ class ContactController extends ContactAbstractController
                 $address = $this->getContactService()->getFinancialAddress();
                 break;
             case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
-                $address = $this->getContactService()->getBoothFinancialAddress(
-                );
+                $address = $this->getContactService()->getBoothFinancialAddress();
                 break;
             default:
                 return $this->notFoundAction();

@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Selection
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller;
 
 use Contact\Form\Search;
@@ -72,7 +73,7 @@ class SelectionManagerController extends ContactAbstractController
     }
 
     /**
-     * Create a new entity
+     * Create a new entity.
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -94,7 +95,7 @@ class SelectionManagerController extends ContactAbstractController
     }
 
     /**
-     * Edit an entity by finding it and call the corresponding form
+     * Edit an entity by finding it and call the corresponding form.
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -120,7 +121,7 @@ class SelectionManagerController extends ContactAbstractController
     }
 
     /**
-     * (soft-delete) an entity
+     * (soft-delete) an entity.
      *
      * @return \Zend\Http\Response
      */

@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Form
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Form;
 
 use Zend\Form\Form;
@@ -14,7 +15,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceManager;
 
 /**
- *
+ * Class Impersonate.
  */
 class Impersonate extends Form
 {
@@ -24,60 +25,61 @@ class Impersonate extends Form
     protected $serviceLocator;
 
     /**
-     * Class constructor
+     * @param ServiceManager $sm
      */
     public function __construct(ServiceManager $sm)
     {
         parent::__construct();
         $this->setAttribute('method', 'post');
+        $this->setAttribute('action', '');
         $this->setAttribute('class', 'form-horizontal');
         $this->add(
-            array(
+            [
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
                 'name'       => 'target',
-                'options'    => array(
+                'options'    => [
                     'target_class'   => 'Deeplink\Entity\Target',
                     'object_manager' => $sm->get('doctrine.entitymanager.orm_default'),
-                    'find_method'    => array(
+                    'find_method'    => [
                         'name'   => 'findTargetsWithRoute',
-                        'params' => array(
+                        'params' => [
                             'criteria' => [],
                             'orderBy'  => [],
-                        ),
-                    ),
+                        ],
+                    ],
                     'help-block'     => _("txt-deeplink-target-form-element-explanation"),
-                ),
-                'attributes' => array(
+                ],
+                'attributes' => [
                     'label' => ucfirst(_("txt-target")),
                     'class' => 'form-control',
                     'id'    => "target",
-                ),
-            )
+                ],
+            ]
         );
         $this->add(
-            array(
+            [
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'key',
-                'options'    => array(
+                'options'    => [
                     'help-block' => _("txt-deeplink-key-form-element-explanation"),
-                ),
-                'attributes' => array(
+                ],
+                'attributes' => [
                     'label'       => ucfirst(_("txt-key")),
                     'class'       => 'form-control',
                     'id'          => "key",
                     'placeholder' => _("txt-key"),
-                ),
-            )
+                ],
+            ]
         );
         $this->add(
-            array(
+            [
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'submit',
-                'attributes' => array(
+                'attributes' => [
                     'class' => "btn btn-primary",
                     'value' => _("txt-submit"),
-                ),
-            )
+                ],
+            ]
         );
     }
 }

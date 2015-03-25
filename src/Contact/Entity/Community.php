@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * ContactCommunity
+ * ContactCommunity.
  *
  * @ORM\Table(name="contact_community")
  * @ORM\Entity
@@ -24,7 +25,6 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_community")
  *
  * @category    Contact
- * @package     Entity
  */
 class Community extends EntityAbstract
 {
@@ -32,6 +32,7 @@ class Community extends EntityAbstract
      * @ORM\Column(name="community_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -39,6 +40,7 @@ class Community extends EntityAbstract
      * @ORM\Column(name="community", type="string", length=40, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-community"})
+     *
      * @var string
      */
     private $community;
@@ -48,6 +50,7 @@ class Community extends EntityAbstract
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @Annotation\Type("\Zend\Form\Element\Hidden")
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -59,12 +62,13 @@ class Community extends EntityAbstract
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\CommunityType"})
      * @Annotation\Attributes({"label":"txt-community-type", "required":"true","class":"span3"})
+     *
      * @var \General\Entity\CommunityType
      */
     private $type;
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -76,12 +80,10 @@ class Community extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -89,10 +91,8 @@ class Community extends EntityAbstract
     }
 
     /** Set input filter
-     *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -135,7 +135,7 @@ class Community extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

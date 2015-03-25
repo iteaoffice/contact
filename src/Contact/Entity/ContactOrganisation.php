@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Organisation
+ * Organisation.
  *
  * @ORM\Table(name="contact_organisation")
  * @ORM\Entity
@@ -24,7 +25,6 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_organisation")
  *
  * @category    Contact
- * @package     Entity
  */
 class ContactOrganisation extends EntityAbstract
 {
@@ -38,6 +38,7 @@ class ContactOrganisation extends EntityAbstract
     private $id;
     /**
      * @ORM\Column(name="branch", type="string", length=40, nullable=true)
+     *
      * @var string
      */
     private $branch;
@@ -46,6 +47,7 @@ class ContactOrganisation extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -55,12 +57,13 @@ class ContactOrganisation extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id")
      * })
+     *
      * @var \Organisation\Entity\Organisation
      */
     private $organisation;
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -72,12 +75,10 @@ class ContactOrganisation extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -85,10 +86,8 @@ class ContactOrganisation extends EntityAbstract
     }
 
     /** Set input filter
-     *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -123,7 +122,7 @@ class ContactOrganisation extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

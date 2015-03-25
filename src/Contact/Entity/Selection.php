@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -18,7 +19,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Entity for the Selection
+ * Entity for the Selection.
  *
  * @ORM\Table(name="selection")
  * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
@@ -26,28 +27,27 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_selection")
  *
  * @category    Contact
- * @package     Entity
  */
 class Selection extends EntityAbstract
 {
     /**
-     * Constant for notPersonal = 0 (not personal)
+     * Constant for notPersonal = 0 (not personal).
      */
     const NOT_PERSONAL = 0;
     /**
-     * Constant for notPersonal = 1 (personal)
+     * Constant for notPersonal = 1 (personal).
      */
     const PERSONAL = 1;
     /**
-     * Constant for private = 0 (not private)
+     * Constant for private = 0 (not private).
      */
     const NOT_PRIVATE = 0;
     /**
-     * Constant for private = 1 (hidden)
+     * Constant for private = 1 (hidden).
      */
     const IS_PRIVATE = 1;
     /**
-     * Textual versions of the hideForOthers
+     * Textual versions of the hideForOthers.
      *
      * @var array
      */
@@ -56,7 +56,7 @@ class Selection extends EntityAbstract
         self::PERSONAL     => 'txt-personal',
     ];
     /**
-     * Textual versions of the hideForOthers
+     * Textual versions of the hideForOthers.
      *
      * @var array
      */
@@ -68,6 +68,7 @@ class Selection extends EntityAbstract
      * @ORM\Column(name="selection_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -75,6 +76,7 @@ class Selection extends EntityAbstract
      * @ORM\Column(name="selection", type="string", length=80, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-selection"})
+     *
      * @var string
      */
     private $selection;
@@ -82,6 +84,7 @@ class Selection extends EntityAbstract
      * @ORM\Column(name="tag", type="string", length=20, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-tag"})
+     *
      * @var string
      */
     private $tag;
@@ -89,12 +92,14 @@ class Selection extends EntityAbstract
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
+     *
      * @var \DateTime
      */
     private $dateCreated;
     /**
      * @ORM\Column(name="date_deleted", type="datetime", nullable=false)
      * @Annotation\Exclude()
+     *
      * @var \DateTime
      */
     private $dateDeleted;
@@ -102,6 +107,7 @@ class Selection extends EntityAbstract
      * @ORM\Column(name="note", type="string", length=40, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-note"})
+     *
      * @var string
      */
     private $note;
@@ -111,6 +117,7 @@ class Selection extends EntityAbstract
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      * @Annotation\Exclude()
+     *
      * @var Contact
      */
     private $contact;
@@ -120,6 +127,7 @@ class Selection extends EntityAbstract
      * @Annotation\Attributes({"array":"personalTemplates"})
      * @Annotation\Attributes({"label":"txt-personal", "required":"true"})
      * @Annotation\Required(true)
+     *
      * @var int
      */
     private $personal;
@@ -129,48 +137,55 @@ class Selection extends EntityAbstract
      * @Annotation\Attributes({"array":"privateTemplates"})
      * @Annotation\Attributes({"label":"txt-private", "required":"true"})
      * @Annotation\Required(true)
+     *
      * @var int
      */
     private $private;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
      */
     private $selectionContact;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionMailinglist", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection
      */
     private $mailingList;
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\SelectionSql", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\SelectionSql
      */
     private $sql;
     /**
      * @ORM\ManyToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
+     *
      * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Exempt", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
+     *
      * @var \Event\Entity\Exempt[]|Collections\ArrayCollection
      */
     private $exempt;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude();
+     *
      * @var \Admin\Entity\Access[]|Collections\ArrayCollection
      */
     private $access;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
@@ -182,7 +197,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -194,12 +209,10 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -231,11 +244,10 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -336,7 +348,7 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

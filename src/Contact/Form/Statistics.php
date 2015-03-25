@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Form
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Form;
 
 use Zend\Form\Fieldset;
@@ -26,7 +27,7 @@ class Statistics extends Form
     ];
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {

@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Facebook
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
@@ -34,8 +35,8 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function viewAction()
     {
-        /**
-         * @var $facebook Facebook
+        /*
+         * @var Facebook
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
 
@@ -48,7 +49,7 @@ class FacebookManagerController extends ContactAbstractController
     }
 
     /**
-     * Create a new facebook
+     * Create a new facebook.
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -57,8 +58,8 @@ class FacebookManagerController extends ContactAbstractController
         $form = $this->getFormService()->prepare('facebook', null, $_POST);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            /**
-             * @var $facebook Facebook
+            /*
+             * @var Facebook
              */
             $facebook = $this->getContactService()->newEntity($form->getData());
 
@@ -72,14 +73,14 @@ class FacebookManagerController extends ContactAbstractController
     }
 
     /**
-     * Edit an facebook by finding it and call the corresponding form
+     * Edit an facebook by finding it and call the corresponding form.
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function editAction()
     {
-        /**
-         * @var $facebook Facebook
+        /*
+         * @var Facebook
          */
         $facebook = $this->getContactService()->findEntityById(
             'facebook',
@@ -89,8 +90,8 @@ class FacebookManagerController extends ContactAbstractController
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             if (isset($data['delete'])) {
-                /**
-                 * @var $facebook Facebook
+                /*
+                 * @var Facebook
                  */
                 $facebook = $form->getData();
 

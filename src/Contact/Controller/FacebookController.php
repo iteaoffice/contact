@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
@@ -18,7 +19,7 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
  * @category    Contact
- * @package     Controller
+ *
  * @method      ZfcUserAuthentication zfcUserAuthentication()
  * @method      FlashMessenger flashMessenger()
  * @method      bool isAllowed($resource, $action)
@@ -30,8 +31,8 @@ class FacebookController extends ContactAbstractController implements EmailServi
      */
     public function facebookAction()
     {
-        /**
-         * @var $facebook Facebook
+        /*
+         * @var Facebook
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
 
@@ -45,14 +46,14 @@ class FacebookController extends ContactAbstractController implements EmailServi
     }
 
     /**
-     * Special action which produces an HTML version of the review calendar
+     * Special action which produces an HTML version of the review calendar.
      *
      * @return ViewModel
      */
     public function sendMessageAction()
     {
-        /**
-         * @var $facebook Facebook
+        /*
+         * @var Facebook
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
 
@@ -72,13 +73,13 @@ class FacebookController extends ContactAbstractController implements EmailServi
                     ['id' => $facebook->getId()]
                 );
             }
-            /**
+            /*
              * Send the email tot he office
              */
             $email = $this->getEmailService()->create();
             $email->setPersonal(false); //Sent 1 email to everyone
             $email->setFromContact($this->zfcUserAuthentication()->getIdentity());
-            /**
+            /*
              * Inject the contacts in the email
              */
             foreach ($this->getContactService()->findContactsInFacebook($facebook) as $contact) {
@@ -87,7 +88,7 @@ class FacebookController extends ContactAbstractController implements EmailServi
 
             $email->setSubject(
                 sprintf(
-                    '[[site]-%s] Message received from %s',
+                    '[%s-%s] Message received from %s',
                     $facebook->getFacebook(),
                     $this->zfcUserAuthentication()->getIdentity()->getDisplayName()
                 )

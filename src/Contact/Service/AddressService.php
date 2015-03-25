@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Service
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Service;
 
 use Contact\Entity\Address;
@@ -14,14 +15,13 @@ use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 
 /**
- * AddressService
+ * AddressService.
  *
  * this is a generic wrapper service for all the other services
  *
  * First parameter of all methods (lowercase, underscore_separated)
  * will be used to fetch the correct model service, one exception is the 'linkModel'
  * method.
- *
  */
 class AddressService extends ServiceAbstract
 {
@@ -31,7 +31,6 @@ class AddressService extends ServiceAbstract
     protected $address;
 
     /** @param int $id
-     *
      * @return AddressService;
      */
     public function setAddressId($id)
@@ -42,7 +41,7 @@ class AddressService extends ServiceAbstract
     }
 
     /**
-     * Returns the address of a contact, where the addressTypeSort table is used to find alternative addresses
+     * Returns the address of a contact, where the addressTypeSort table is used to find alternative addresses.
      *
      * @param Contact     $contact
      * @param AddressType $type

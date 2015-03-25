@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller;
 
 use Admin\Service\AdminService;
@@ -23,13 +24,14 @@ use Deeplink\Service\DeeplinkServiceAwareInterface;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use General\Service\GeneralServiceAwareInterface;
+use Zend\I18n\View\Helper\Translate;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
  * @category    Contact
- * @package     Controller
+ *
  * @method      ZfcUserAuthentication zfcUserAuthentication()
  * @method      FlashMessenger flashMessenger()
  * @method      IsAllowed isAllowed($resource, $action)
@@ -72,7 +74,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
     protected $formService;
 
     /**
-     * Gateway to the Contact Service
+     * Gateway to the Contact Service.
      *
      * @return ContactService
      */
@@ -114,7 +116,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
     }
 
     /**
-     * Gateway to the Deeplink Service
+     * Gateway to the Deeplink Service.
      *
      * @return DeeplinkService
      */
@@ -213,5 +215,22 @@ abstract class ContactAbstractController extends AbstractActionController implem
         $this->emailService = $emailService;
 
         return $this;
+    }
+
+    /**
+     * Proxy for the flash messenger helper to have the string translated earlier.
+     *
+     * @param $string
+     *
+     * @return string
+     */
+    protected function translate($string)
+    {
+        /*
+         * @var Translate
+         */
+        $translate = $this->getServiceLocator()->get('ViewHelperManager')->get('translate');
+
+        return $translate($string);
     }
 }

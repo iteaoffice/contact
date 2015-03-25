@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * OpenId
+ * OpenId.
  *
  * @ORM\Table(name="contact_openid")
  * @ORM\Entity
@@ -24,7 +25,6 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_openid")
  *
  * @category    Contact
- * @package     Entity
  */
 class OpenId extends EntityAbstract
 {
@@ -32,6 +32,7 @@ class OpenId extends EntityAbstract
      * @ORM\Column(name="openid_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -39,6 +40,7 @@ class OpenId extends EntityAbstract
      * @ORM\Column(name="identity", type="string", length=255, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-web-address"})
+     *
      * @var string
      */
     private $identity;
@@ -47,12 +49,13 @@ class OpenId extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -64,12 +67,10 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -77,7 +78,7 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * Parse the OptIn system
+     * Parse the OptIn system.
      *
      * @return string
      */
@@ -87,11 +88,10 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -122,7 +122,7 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */
@@ -135,7 +135,7 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * Function needed for the population of forms
+     * Function needed for the population of forms.
      *
      * @return array
      */

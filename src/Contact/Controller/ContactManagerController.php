@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller;
 
 use Contact\Controller\Plugin\HandleImport;
@@ -21,8 +22,7 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
- * Class ContactManagerController
- * @package Contact\Controller
+ * Class ContactManagerController.
  *
  * @method HandleImport handleImport()
  */
@@ -114,7 +114,7 @@ class ContactManagerController extends ContactAbstractController
     }
 
     /**
-     * Create a new entity
+     * Create a new entity.
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -136,7 +136,7 @@ class ContactManagerController extends ContactAbstractController
     }
 
     /**
-     * Edit an entity by finding it and call the corresponding form
+     * Edit an entity by finding it and call the corresponding form.
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -167,8 +167,8 @@ class ContactManagerController extends ContactAbstractController
     public function statisticsAction()
     {
         $filter = $this->getRequest()->getQuery()->get('filter', []);
-        /**
-         * @var $statisticsService StatisticsService
+        /*
+         * @var StatisticsService
          */
         $statisticsService = $this->getServiceLocator()->get(StatisticsService::class);
 
@@ -221,7 +221,7 @@ class ContactManagerController extends ContactAbstractController
                 )
             );
 
-            /**
+            /*
              * Do a fall-back to the email when the name is empty
              */
             if (strlen($text) === 0) {

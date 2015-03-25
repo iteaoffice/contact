@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Phone
+ * Phone.
  *
  * @ORM\Table(name="contact_phone")
  * @ORM\Entity
@@ -24,7 +25,6 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_phone")
  *
  * @category    Contact
- * @package     Entity
  */
 class Phone extends EntityAbstract
 {
@@ -33,6 +33,7 @@ class Phone extends EntityAbstract
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
+     *
      * @var integer
      */
     private $id;
@@ -40,6 +41,7 @@ class Phone extends EntityAbstract
      * @ORM\Column(name="phone", type="string", length=40, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-phone-number"})
+     *
      * @var string
      */
     private $phone;
@@ -48,6 +50,7 @@ class Phone extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -59,19 +62,20 @@ class Phone extends EntityAbstract
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\PhoneType"})
      * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
+     *
      * @var \Contact\Entity\PhoneType
      */
     private $type;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -83,12 +87,10 @@ class Phone extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -104,11 +106,10 @@ class Phone extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -169,7 +170,7 @@ class Phone extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

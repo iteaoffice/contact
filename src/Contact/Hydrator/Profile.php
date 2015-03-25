@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Hydrator
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Hydrator;
 
 use Contact\Entity\Address;
@@ -20,8 +21,7 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use Organisation\Service\OrganisationService;
 
 /**
- * Class Profile
- * @package Contact\Hydrator
+ * Class Profile.
  */
 class Profile extends DoctrineObject
 {
@@ -56,7 +56,7 @@ class Profile extends DoctrineObject
         ) : null;
         $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription(
         ) : null;
-        /**
+        /*
          * Set the contact organisation
          */
         $contactService = new ContactService();
@@ -87,11 +87,11 @@ class Profile extends DoctrineObject
     public function hydrate(array $data, $object)
     {
         $this->prepare($object);
-        /**
+        /*
          * Reformat the phone, address and community for the Contact object
          */
         if ($object instanceof Contact) {
-            /**
+            /*
              * Reset the data array and store the values locally
              */
             $phoneData           = $data['phone'];
@@ -126,7 +126,7 @@ class Profile extends DoctrineObject
                 }
             }
             $currentAddress = $contact->getAddress()->getSnapshot();
-            /**
+            /*
              * Reformat the address
              */
             $contact->getAddress()->clear();
@@ -151,7 +151,7 @@ class Profile extends DoctrineObject
                     $contact->getAddress()->add($address);
                 }
             }
-            /**
+            /*
              * Reformat the community
              */
             $contact->getCommunity()->clear();

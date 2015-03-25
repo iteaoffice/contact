@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Service
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Service;
 
 use Contact\Entity\Contact;
@@ -14,14 +15,13 @@ use Contact\Entity\Selection;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * SelectionService
+ * SelectionService.
  *
  * this is a generic wrapper service for all the other services
  *
  * First parameter of all methods (lowercase, underscore_separated)
  * will be used to fetch the correct model service, one exception is the 'linkModel'
  * method.
- *
  */
 class SelectionService extends ServiceAbstract
 {
@@ -31,7 +31,6 @@ class SelectionService extends ServiceAbstract
     protected $selection;
 
     /** @param int $id
-     *
      * @return SelectionService;
      */
     public function setSelectionId($id)
@@ -66,7 +65,7 @@ class SelectionService extends ServiceAbstract
     }
 
     /**
-     * Selections can be fixed (via the selection_contact) or dynamic (via de SQL)
+     * Selections can be fixed (via the selection_contact) or dynamic (via de SQL).
      *
      * @param Contact $contact
      *
@@ -80,19 +79,19 @@ class SelectionService extends ServiceAbstract
             $contact
         );
 
-        /**
+        /*
          * Find now the dynamic selections
          */
         foreach ($this->findAll('selection') as $selection) {
-            /**
-             * @var $selection Selection;
+            /*
+             * @var Selection;
              */
             if (!is_null($selection->getSql()) && $this->getContactService()->inSelection($selection)) {
                 $selections[] = $selection;
             }
         }
 
-        /**
+        /*
          * Fill the array with keys to enable sorting
          */
         $result = array_combine($selections, $selections);

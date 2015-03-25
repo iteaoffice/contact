@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -17,7 +18,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Phone
+ * Phone.
  *
  * @ORM\Table(name="phone_type")
  * @ORM\Entity
@@ -25,7 +26,6 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("phone_type")
  *
  * @category    Contact
- * @package     Entity
  */
 class PhoneType extends EntityAbstract
 {
@@ -37,23 +37,26 @@ class PhoneType extends EntityAbstract
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
     /**
      * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     *
      * @var string
      */
     private $type;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="type")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\Phone[]
      */
     private $phone;
 
     /**
-     * Static array for phone types to enable validation based on types
+     * Static array for phone types to enable validation based on types.
      *
      * @return array
      */
@@ -68,7 +71,7 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
@@ -76,7 +79,7 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -88,12 +91,10 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -101,11 +102,10 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -150,7 +150,7 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */

@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Project
- * @package     Options
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Options;
 
 use Zend\Stdlib\AbstractOptions;
@@ -15,17 +16,17 @@ class ModuleOptions extends AbstractOptions implements
     CommunityOptionsInterface
 {
     /**
-     * Turn off strict options mode
+     * Turn off strict options mode.
      */
     protected $__strictMode__ = false;
     /**
-     * Trigger to see if the community consists of members
+     * Trigger to see if the community consists of members.
      *
      * @var bool
      */
     protected $communityViaMembers = false;
     /**
-     * Bool to see if a project is an EU project
+     * Bool to see if a project is an EU project.
      *
      * @var bool
      */
