@@ -839,12 +839,11 @@ class ContactService extends ServiceAbstract
                     $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
                     break;
                 case Facebook::SHOW_MOBILE_PHONE_MEMBER:
+                    $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
+
                     //We first try to find the cell phone, if not we do a fall-back to the direct phone
-                    $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
-                    if ($singleContact['phone'] === '') {
-                        $singleContact['phone'] = $this->getPhoneByContactAndType(
-                            $contact,
-                            PhoneType::PHONE_TYPE_DIRECT);
+                    if ($this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE) === '') {
+                        $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
                     }
                     break;
             }
