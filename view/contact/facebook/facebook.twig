@@ -27,9 +27,9 @@
                     {% endif %}
                     {% if
                     contact.phone|length > 0 and
-                    (facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") or
+                    (facebook.getShowPhone() [constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER"),constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")] or
                     (
-                    facebook.getShowPhone() in [constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER"),constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")]  and
+                    facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and
                     contactInFacebook
                     )) %}
                         <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
