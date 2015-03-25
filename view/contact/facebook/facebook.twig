@@ -27,7 +27,7 @@
                     {% endif %}
                     {% if
                     contact.phone|length > 0 and
-                    (facebook.getShowPhone() [constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER"),constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")] or
+                    (facebook.getShowPhone() in [constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER"),constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")] or
                     (
                     facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and
                     contactInFacebook
