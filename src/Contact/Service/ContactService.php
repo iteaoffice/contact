@@ -425,15 +425,24 @@ class ContactService extends ServiceAbstract
     /**
      * Create an account and send an email address.
      *
-     * @param $emailAddress
+     * @param string $emailAddress
+     * @param string $firstName
+     * @param string $middleName
+     * @param string $lastName
      *
      * @return Contact
      */
-    public function register($emailAddress)
+    public function register($emailAddress, $firstName, $middleName, $lastName)
     {
         //Create the account
         $contact = new Contact();
         $contact->setEmail($emailAddress);
+        $contact->setFirstName($firstName);
+        if (strlen($middleName) > 0)
+
+            $contact->setMiddleName($middleName);
+
+        $contact->setLastName($lastName);
         //Fix the gender
         $contact->setGender($this->getGeneralService()->findEntityById('gender', Gender::GENDER_UNKNOWN));
         $contact->setTitle($this->getGeneralService()->findEntityById('title', Title::TITLE_UNKNOWN));
@@ -441,7 +450,11 @@ class ContactService extends ServiceAbstract
          * Include all the optIns
          */
         $contact->setOptIn($this->getEntityManager()->getRepository('Contact\Entity\OptIn')
-            ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE]));
+            ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
+        );
+        /**
+         * @var $contact Contact
+         */
         $contact = $this->newEntity($contact);
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
@@ -449,6 +462,7 @@ class ContactService extends ServiceAbstract
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
         $email = $this->getEmailService()->create();
         $this->getEmailService()->setTemplate("/auth/register:mail");
+        $email->setDisplayName($contact->getDisplayName());
         $email->addTo($emailAddress);
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $this->getEmailService()->send($email);
@@ -831,22 +845,8 @@ class ContactService extends ServiceAbstract
             $singleContact['title'] = $this->facebookTitleParser($facebook->getTitle(), $contact);
             $singleContact['subTitle'] = $this->facebookTitleParser($facebook->getSubtitle(), $contact);
             $singleContact['email'] = $contact->getEmail();
-            $singleContact['phone'] = null;
-
-            switch ($facebook->getShowPhone()) {
-                case Facebook::SHOW_PHONE_ALL:
-                case Facebook::SHOW_PHONE_MEMBER:
-                    $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
-                    break;
-                case Facebook::SHOW_MOBILE_PHONE_MEMBER:
-                    $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
-
-                    //We first try to find the cell phone, if not we do a fall-back to the direct phone
-                    if ($this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE) !== '') {
-                        $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
-                    }
-                    break;
-            }
+            $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
+            $singleContact['mobile'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
 
             $contacts[] = $singleContact;
         }

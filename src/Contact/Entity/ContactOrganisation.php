@@ -45,17 +45,17 @@ class ContactOrganisation extends EntityAbstract
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\Contact",  cascade={"persist"}, inversedBy="contactOrganisation")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      *
      * @var \Contact\Entity\Contact
      */
     private $contact;
     /**
-     * @ORM\OneToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"},
+     * @ORM\ManyToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"},
      * fetch="EAGER")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id")
+     * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id", nullable=false)
      * })
      *
      * @var \Organisation\Entity\Organisation

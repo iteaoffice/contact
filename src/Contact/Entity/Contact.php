@@ -774,6 +774,48 @@ class Contact extends EntityAbstract implements
      * @var \Member\Entity\Election\Electorate[]|Collections\ArrayCollection()
      */
     private $electorate;
+    /**
+     * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal\Entry", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Invoice\Entity\Journal\Entry[]|Collections\ArrayCollection()
+     */
+    private $journalEntry;
+    /**
+     * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Invoice\Entity\Journal[]|Collections\ArrayCollection()
+     */
+    private $journal;
+    /**
+     * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal", cascade={"persist"}, mappedBy="organisationContact")
+     * @Annotation\Exclude()
+     *
+     * @var \Invoice\Entity\Journal[]|Collections\ArrayCollection()
+     */
+    private $organisationJournal;
+    /**
+     * @ORM\OneToMany(targetEntity="Invoice\Entity\Log", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Invoice\Entity\Log[]|Collections\ArrayCollection()
+     */
+    private $invoiceLog;
+    /**
+     * @ORM\OneToMany(targetEntity="Invoice\Entity\Reminder", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Invoice\Entity\Reminder[]|Collections\ArrayCollection()
+     */
+    private $reminder;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Achievement", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Achievement[]|Collections\ArrayCollection()
+     */
+    private $achievement;
 
     /**
      * Class constructor.
@@ -785,7 +827,6 @@ class Contact extends EntityAbstract implements
         $this->projectDescription = new Collections\ArrayCollection();
         $this->projectDocument = new Collections\ArrayCollection();
         $this->web = new Collections\ArrayCollection();
-        $this->role = new Collections\ArrayCollection();
         $this->roadmapLog = new Collections\ArrayCollection();
         $this->address = new Collections\ArrayCollection();
         $this->phone = new Collections\ArrayCollection();
@@ -855,6 +896,12 @@ class Contact extends EntityAbstract implements
         $this->loiReminderSender = new Collections\ArrayCollection();
         $this->candidate = new Collections\ArrayCollection();
         $this->electorate = new Collections\ArrayCollection();
+        $this->journalEntry = new Collections\ArrayCollection();
+        $this->journal = new Collections\ArrayCollection();
+        $this->organisationJournal = new Collections\ArrayCollection();
+        $this->invoiceLog = new Collections\ArrayCollection();
+        $this->reminder = new Collections\ArrayCollection();
+        $this->achievement = new Collections\ArrayCollection();
         /*
          * Set these values for legacy reasons
          */
@@ -869,7 +916,7 @@ class Contact extends EntityAbstract implements
      */
     public function parseHash()
     {
-        return hash('sha1', $this->id.self::HASH_KEY);
+        return hash('sha1', $this->id . self::HASH_KEY);
     }
 
     /**
@@ -903,7 +950,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -913,13 +960,14 @@ class Contact extends EntityAbstract implements
      */
     public function getResourceId()
     {
-        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
 
     /**
      * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
+     * @return void
      *
      * @throws \Exception
      */
@@ -1079,7 +1127,6 @@ class Contact extends EntityAbstract implements
             'technology'     => $this->technology,
             'cv'             => $this->cv,
             'email'          => $this->email,
-            'role'           => $this->role,
             'dnd'            => $this->dnd,
             'nda'            => $this->nda,
             'programDoa'     => $this->programDoa,
@@ -1113,30 +1160,6 @@ class Contact extends EntityAbstract implements
         return $accessRoles;
     }
 
-    /**
-     * New function needed to make the hydrator happy.
-     *
-     * @param Collections\Collection $roles
-     */
-    public function addRoles(Collections\Collection $roles)
-    {
-        foreach ($roles as $role) {
-            $role->contact = $this;
-            $this->role->add($role);
-        }
-    }
-
-    /**
-     * New function needed to make the hydrator happy.
-     *
-     * @param Collections\Collection $roles
-     */
-    public function removeRoles(Collections\Collection $roles)
-    {
-        foreach ($roles as $role) {
-            $this->role->removeElement($role);
-        }
-    }
 
     /**
      * New function needed to make the hydrator happy.
@@ -1637,94 +1660,6 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Doctrine\Common\Collections\ArrayCollection $project
-     */
-    public function setProject($project)
-    {
-        $this->project = $project;
-    }
-
-    /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getProject()
-    {
-        return $this->project;
-    }
-
-    /**
-     * @param \Contact\Entity\Address|Collections\ArrayCollection() $address
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-    }
-
-    /**
-     * @return \Contact\Entity\Address|Collections\ArrayCollection()
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * @param \Contact\Entity\CV $cv
-     */
-    public function setCv($cv)
-    {
-        $this->cv = $cv;
-    }
-
-    /**
-     * @return \Contact\Entity\CV
-     */
-    public function getCv()
-    {
-        return $this->cv;
-    }
-
-    /**
-     * @param \Contact\Entity\Phone|Collections\ArrayCollection() $phone
-     */
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-
-    /**
-     * @return \Contact\Entity\Phone|Collections\ArrayCollection()
-     */
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    /**
-     * @param \Contact\Entity\Web|Collections\ArrayCollection() $web
-     */
-    public function setWeb($web)
-    {
-        $this->web = $web;
-    }
-
-    /**
-     * @return \Contact\Entity\Web|Collections\ArrayCollection()
-     */
-    public function getWeb()
-    {
-        return $this->web;
-    }
-
-    /**
-     * @param string $department
-     */
-    public function setDepartment($department)
-    {
-        $this->department = $department;
-    }
-
-    /**
      * @return string
      */
     public function getDepartment()
@@ -1733,47 +1668,18 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\Email|Collections\ArrayCollection() $emailAddress
+     * @param string $department
+     * @return Contact
      */
-    public function setEmailAddress($emailAddress)
+    public function setDepartment($department)
     {
-        $this->emailAddress = $emailAddress;
+        $this->department = $department;
+
+        return $this;
     }
 
     /**
-     * @return \Contact\Entity\Email|Collections\ArrayCollection()
-     */
-    public function getEmailAddress()
-    {
-        return $this->emailAddress;
-    }
-
-    /**
-     * @param \Contact\Entity\OptIn|Collections\ArrayCollection() $optIn
-     */
-    public function setOptIn($optIn)
-    {
-        $this->optIn = $optIn;
-    }
-
-    /**
-     * @return \Contact\Entity\OptIn|Collections\ArrayCollection()
-     */
-    public function getOptIn()
-    {
-        return $this->optIn;
-    }
-
-    /**
-     * @param \Admin\Entity\Access|Collections\ArrayCollection() $access
-     */
-    public function setAccess($access)
-    {
-        $this->access = $access;
-    }
-
-    /**
-     * @return \Admin\Entity\Access|Collections\ArrayCollection()
+     * @return \Admin\Entity\Access|Collections\ArrayCollection
      */
     public function getAccess()
     {
@@ -1781,902 +1687,147 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Project\Entity\Project|Collections\ArrayCollection() $dnd
+     * @param \Admin\Entity\Access|Collections\ArrayCollection $access
+     * @return Contact
      */
-    public function setDnd($dnd)
+    public function setAccess($access)
     {
-        $this->dnd = $dnd;
-    }
-
-    /**
-     * @return \Project\Entity\Project|Collections\ArrayCollection()
-     */
-    public function getDnd()
-    {
-        return $this->dnd;
-    }
-
-    /**
-     * @param \Program\Entity\Nda|Collections\ArrayCollection() $nda
-     */
-    public function setNda($nda)
-    {
-        $this->nda = $nda;
-    }
-
-    /**
-     * @return \Program\Entity\Nda|Collections\ArrayCollection()
-     */
-    public function getNda()
-    {
-        return $this->nda;
-    }
-
-    /**
-     * @param \Program\Entity\Doa|Collections\ArrayCollection() $programDoa
-     */
-    public function setProgramDoa($programDoa)
-    {
-        $this->programDoa = $programDoa;
-    }
-
-    /**
-     * @return \Program\Entity\Doa|Collections\ArrayCollection()
-     */
-    public function getProgramDoa()
-    {
-        return $this->programDoa;
-    }
-
-    /**
-     * @param \Project\Entity\Version\Version|Collections\ArrayCollection() $projectVersion
-     */
-    public function setProjectVersion($projectVersion)
-    {
-        $this->projectVersion = $projectVersion;
-    }
-
-    /**
-     * @return \Project\Entity\Version\Version|Collections\ArrayCollection()
-     */
-    public function getProjectVersion()
-    {
-        return $this->projectVersion;
-    }
-
-    /**
-     * @param \Program\Entity\Domain|Collections\ArrayCollection() $domain
-     */
-    public function setDomain($domain)
-    {
-        $this->domain = $domain;
-    }
-
-    /**
-     * @return \Program\Entity\Domain|Collections\ArrayCollection()
-     */
-    public function getDomain()
-    {
-        return $this->domain;
-    }
-
-    /**
-     * @param \Affiliation\Entity\Log|Collections\ArrayCollection() $affiliationLog
-     */
-    public function setAffiliationLog($affiliationLog)
-    {
-        $this->affiliationLog = $affiliationLog;
-    }
-
-    /**
-     * @return \Affiliation\Entity\Log|Collections\ArrayCollection()
-     */
-    public function getAffiliationLog()
-    {
-        return $this->affiliationLog;
-    }
-
-    /**
-     * @param \Contact\Entity\ContactOrganisation $contactOrganisation
-     */
-    public function setContactOrganisation($contactOrganisation)
-    {
-        $this->contactOrganisation = $contactOrganisation;
-    }
-
-    /**
-     * @return \Contact\Entity\ContactOrganisation
-     */
-    public function getContactOrganisation()
-    {
-        return $this->contactOrganisation;
-    }
-
-    /**
-     * @param \Affiliation\Entity\Financial|Collections\ArrayCollection() $financial
-     */
-    public function setFinancial($financial)
-    {
-        $this->financial = $financial;
-    }
-
-    /**
-     * @return \Affiliation\Entity\Financial|Collections\ArrayCollection()
-     */
-    public function getFinancial()
-    {
-        return $this->financial;
-    }
-
-    /**
-     * @param \Organisation\Entity\Log|Collections\ArrayCollection() $organisationLog
-     */
-    public function setOrganisationLog($organisationLog)
-    {
-        $this->organisationLog = $organisationLog;
-    }
-
-    /**
-     * @return \Organisation\Entity\Log|Collections\ArrayCollection()
-     */
-    public function getOrganisationLog()
-    {
-        return $this->organisationLog;
-    }
-
-    /**
-     * @param \Program\Entity\Technology|Collections\ArrayCollection() $technology
-     */
-    public function setTechnology($technology)
-    {
-        $this->technology = $technology;
-    }
-
-    /**
-     * @return \Program\Entity\Technology|Collections\ArrayCollection()
-     */
-    public function getTechnology()
-    {
-        return $this->technology;
-    }
-
-    /**
-     * @param \Contact\Entity\OpenId|Collections\ArrayCollection() $openId
-     */
-    public function setOpenId($openId)
-    {
-        $this->openId = $openId;
-    }
-
-    /**
-     * @return \Contact\Entity\OpenId|Collections\ArrayCollection()
-     */
-    public function getOpenId()
-    {
-        return $this->openId;
-    }
-
-    /**
-     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection() $affiliation
-     */
-    public function setAffiliation($affiliation)
-    {
-        $this->affiliation = $affiliation;
-    }
-
-    /**
-     * @return \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
-     */
-    public function getAffiliation()
-    {
-        return $this->affiliation;
-    }
-
-    /**
-     * @param \Affiliation\Entity\Description|Collections\ArrayCollection() $affiliationDescription
-     */
-    public function setAffiliationDescription($affiliationDescription)
-    {
-        $this->affiliationDescription = $affiliationDescription;
-    }
-
-    /**
-     * @return \Affiliation\Entity\Description|Collections\ArrayCollection()
-     */
-    public function getAffiliationDescription()
-    {
-        return $this->affiliationDescription;
-    }
-
-    /**
-     * @param \Affiliation\Entity\Version|Collections\ArrayCollection() $affiliationVersion
-     */
-    public function setAffiliationVersion($affiliationVersion)
-    {
-        $this->affiliationVersion = $affiliationVersion;
-    }
-
-    /**
-     * @return \Affiliation\Entity\Version|Collections\ArrayCollection()
-     */
-    public function getAffiliationVersion()
-    {
-        return $this->affiliationVersion;
-    }
-
-    /**
-     * @param \Invoice\Entity\Invoice|Collections\ArrayCollection() $invoice
-     */
-    public function setInvoice($invoice)
-    {
-        $this->invoice = $invoice;
-    }
-
-    /**
-     * @return \Invoice\Entity\Invoice|Collections\ArrayCollection()
-     */
-    public function getInvoice()
-    {
-        return $this->invoice;
-    }
-
-    /**
-     * @param \Publication\Entity\Publication|Collections\ArrayCollection() $publication
-     */
-    public function setPublication($publication)
-    {
-        $this->publication = $publication;
-    }
-
-    /**
-     * @return \Publication\Entity\Publication|Collections\ArrayCollection()
-     */
-    public function getPublication()
-    {
-        return $this->publication;
-    }
-
-    /**
-     * @param \Publication\Entity\Download|Collections\ArrayCollection() $publicationDownload
-     */
-    public function setPublicationDownload($publicationDownload)
-    {
-        $this->publicationDownload = $publicationDownload;
-    }
-
-    /**
-     * @return \Publication\Entity\Download|Collections\ArrayCollection()
-     */
-    public function getPublicationDownload()
-    {
-        return $this->publicationDownload;
-    }
-
-    /**
-     * @param \Contact\Entity\Photo $photo
-     */
-    public function setPhoto($photo)
-    {
-        $this->photo = $photo;
-    }
-
-    /**
-     * Find the photo. We need to apply a trick here since the photo has a 1:n relation in the entities to avoid
-     * the eager loading of the BLOB but we know that we only have 1 photo.
-     *
-     * @return \Contact\Entity\Photo|Collections\ArrayCollection()
-     */
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    /**
-     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection() $associate
-     */
-    public function setAssociate($associate)
-    {
-        $this->associate = $associate;
-    }
-
-    /**
-     * @return \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
-     */
-    public function getAssociate()
-    {
-        return $this->associate;
-    }
-
-    /**
-     * @param \Program\Entity\Funder $funder
-     */
-    public function setFunder($funder)
-    {
-        $this->funder = $funder;
-    }
-
-    /**
-     * @return \Program\Entity\Funder
-     */
-    public function getFunder()
-    {
-        return $this->funder;
-    }
-
-    /**
-     * @param \Admin\Entity\Role|Collections\ArrayCollection() $role
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
-    }
-
-    /**
-     * @return \Admin\Entity\Role|Collections\ArrayCollection()
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    /**
-     * @param \Deeplink\Entity\Contact|Collections\ArrayCollection() $deeplinkContact
-     */
-    public function setDeeplinkContact($deeplinkContact)
-    {
-        $this->deeplinkContact = $deeplinkContact;
-    }
-
-    /**
-     * @return \Deeplink\Entity\Contact|Collections\ArrayCollection()
-     */
-    public function getDeeplinkContact()
-    {
-        return $this->deeplinkContact;
-    }
-
-    /**
-     * @param \Contact\Entity\Profile $profile
-     */
-    public function setProfile($profile)
-    {
-        $this->profile = $profile;
-    }
-
-    /**
-     * @return \Contact\Entity\Profile
-     */
-    public function getProfile()
-    {
-        return $this->profile;
-    }
-
-    /**
-     * @param \Contact\Entity\Community|Collections\ArrayCollection() $community
-     */
-    public function setCommunity($community)
-    {
-        $this->community = $community;
-    }
-
-    /**
-     * @return \Contact\Entity\Community|Collections\ArrayCollection()
-     */
-    public function getCommunity()
-    {
-        return $this->community;
-    }
-
-    /**
-     * @param \Event\Entity\Registration|Collections\ArrayCollection() $registration
-     */
-    public function setRegistration($registration)
-    {
-        $this->registration = $registration;
-    }
-
-    /**
-     * @return \Event\Entity\Registration|Collections\ArrayCollection()
-     */
-    public function getRegistration()
-    {
-        return $this->registration;
-    }
-
-    /**
-     * @param \Event\Entity\Badge\Badge|Collections\ArrayCollection() $badge
-     */
-    public function setBadge($badge)
-    {
-        $this->badge = $badge;
-    }
-
-    /**
-     * @return \Event\Entity\Badge\Badge|Collections\ArrayCollection()
-     */
-    public function getBadge()
-    {
-        return $this->badge;
-    }
-
-    /**
-     * @param \Event\Entity\Badge\Contact|Collections\ArrayCollection() $badgeContact
-     */
-    public function setBadgeContact($badgeContact)
-    {
-        $this->badgeContact = $badgeContact;
-    }
-
-    /**
-     * @return \Event\Entity\Badge\Contact|Collections\ArrayCollection()
-     */
-    public function getBadgeContact()
-    {
-        return $this->badgeContact;
-    }
-
-    /**
-     * @param \Event\Entity\Booth\Contact[]|Collections\ArrayCollection() $boothContact
-     */
-    public function setBoothContact($boothContact)
-    {
-        $this->boothContact = $boothContact;
-    }
-
-    /**
-     * @return \Event\Entity\Booth\Contact[]|Collections\ArrayCollection()
-     */
-    public function getBoothContact()
-    {
-        return $this->boothContact;
-    }
-
-    /**
-     * @param \Event\Entity\Booth\Financial|Collections\ArrayCollection() $boothFinancial
-     */
-    public function setBoothFinancial($boothFinancial)
-    {
-        $this->boothFinancial = $boothFinancial;
-    }
-
-    /**
-     * @return \Event\Entity\Booth\Financial|Collections\ArrayCollection()
-     */
-    public function getBoothFinancial()
-    {
-        return $this->boothFinancial;
-    }
-
-    /**
-     * @param \Contact\Entity\Note[]|Collections\ArrayCollection() $note
-     */
-    public function setNote($note)
-    {
-        $this->note = $note;
-    }
-
-    /**
-     * @return \Contact\Entity\Note[]|Collections\ArrayCollection()
-     */
-    public function getNote()
-    {
-        return $this->note;
-    }
-
-    /**
-     * @param \Contact\Entity\SelectionContact|Collections\ArrayCollection() $selectionContact
-     */
-    public function setSelectionContact($selectionContact)
-    {
-        $this->selectionContact = $selectionContact;
-    }
-
-    /**
-     * @return \Contact\Entity\SelectionContact|Collections\ArrayCollection()
-     */
-    public function getSelectionContact()
-    {
-        return $this->selectionContact;
-    }
-
-    /**
-     * @param \Contact\Entity\Selection|Collections\ArrayCollection() $selection
-     */
-    public function setSelection($selection)
-    {
-        $this->selection = $selection;
-    }
-
-    /**
-     * @return \Contact\Entity\Selection|Collections\ArrayCollection()
-     */
-    public function getSelection()
-    {
-        return $this->selection;
-    }
-
-    /**
-     * @param \Mailing\Entity\Contact|Collections\ArrayCollection() $mailingContact
-     */
-    public function setMailingContact($mailingContact)
-    {
-        $this->mailingContact = $mailingContact;
-    }
-
-    /**
-     * @return \Mailing\Entity\Contact|Collections\ArrayCollection()
-     */
-    public function getMailingContact()
-    {
-        return $this->mailingContact;
-    }
-
-    /**
-     * @param \Mailing\Entity\Mailing|Collections\ArrayCollection() $mailing
-     */
-    public function setMailing($mailing)
-    {
-        $this->mailing = $mailing;
-    }
-
-    /**
-     * @return \Mailing\Entity\Mailing|Collections\ArrayCollection()
-     */
-    public function getMailing()
-    {
-        return $this->mailing;
-    }
-
-    /**
-     * @param \Project\Entity\Result\Result|Collections\ArrayCollection() $result
-     */
-    public function setResult($result)
-    {
-        $this->result = $result;
-    }
-
-    /**
-     * @return \Project\Entity\Result\Result|Collections\ArrayCollection()
-     */
-    public function getResult()
-    {
-        return $this->result;
-    }
-
-    /**
-     * @param \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection() $workpackage
-     */
-    public function setWorkpackage($workpackage)
-    {
-        $this->workpackage = $workpackage;
-    }
-
-    /**
-     * @return \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection()
-     */
-    public function getWorkpackage()
-    {
-        return $this->workpackage;
-    }
-
-    /**
-     * @param \Project\Entity\Workpackage\Document|Collections\ArrayCollection() $workpackageDocument
-     */
-    public function setWorkpackageDocument($workpackageDocument)
-    {
-        $this->workpackageDocument = $workpackageDocument;
-    }
-
-    /**
-     * @return \Project\Entity\Workpackage\Document|Collections\ArrayCollection()
-     */
-    public function getWorkpackageDocument()
-    {
-        return $this->workpackageDocument;
-    }
-
-    /**
-     * @param \Project\Entity\Idea\Idea|Collections\ArrayCollection() $idea
-     */
-    public function setIdea($idea)
-    {
-        $this->idea = $idea;
-    }
-
-    /**
-     * @return \Project\Entity\Idea\Idea|Collections\ArrayCollection()
-     */
-    public function getIdea()
-    {
-        return $this->idea;
-    }
-
-    /**
-     * @param \Project\Entity\Idea\Idea|Collections\ArrayCollection() $favouriteIdea
-     */
-    public function setFavouriteIdea($favouriteIdea)
-    {
-        $this->favouriteIdea = $favouriteIdea;
-    }
-
-    /**
-     * @return \Project\Entity\Idea\Idea|Collections\ArrayCollection()
-     */
-    public function getFavouriteIdea()
-    {
-        return $this->favouriteIdea;
-    }
-
-    /**
-     * @param \Project\Entity\Idea\Message|Collections\ArrayCollection() $ideaMessage
-     */
-    public function setIdeaMessage($ideaMessage)
-    {
-        $this->ideaMessage = $ideaMessage;
-    }
-
-    /**
-     * @return \Project\Entity\Idea\Message|Collections\ArrayCollection()
-     */
-    public function getIdeaMessage()
-    {
-        return $this->ideaMessage;
-    }
-
-    /**
-     * @param \Project\Entity\Description\Description|Collections\ArrayCollection() $projectDescription
-     */
-    public function setProjectDescription($projectDescription)
-    {
-        $this->projectDescription = $projectDescription;
-    }
-
-    /**
-     * @return \Project\Entity\Description\Description|Collections\ArrayCollection()
-     */
-    public function getProjectDescription()
-    {
-        return $this->projectDescription;
-    }
-
-    /**
-     * @param \Project\Entity\Document\Document|Collections\ArrayCollection() $projectDocument
-     */
-    public function setProjectDocument($projectDocument)
-    {
-        $this->projectDocument = $projectDocument;
-    }
-
-    /**
-     * @return \Project\Entity\Document\Document|Collections\ArrayCollection()
-     */
-    public function getProjectDocument()
-    {
-        return $this->projectDocument;
-    }
-
-    /**
-     * @param \Project\Entity\Evaluation\Evaluation|Collections\ArrayCollection() $evaluation
-     */
-    public function setEvaluation($evaluation)
-    {
-        $this->evaluation = $evaluation;
-    }
-
-    /**
-     * @return \Project\Entity\Evaluation\Evaluation|Collections\ArrayCollection()
-     */
-    public function getEvaluation()
-    {
-        return $this->evaluation;
-    }
-
-    /**
-     * @param \Calendar\Entity\Contact|Collections\ArrayCollection() $calendarContact
-     */
-    public function setCalendarContact($calendarContact)
-    {
-        $this->calendarContact = $calendarContact;
-    }
-
-    /**
-     * @return \Calendar\Entity\Contact|Collections\ArrayCollection()
-     */
-    public function getCalendarContact()
-    {
-        return $this->calendarContact;
-    }
-
-    /**
-     * @param \Calendar\Entity\Calendar|Collections\ArrayCollection() $calendar
-     */
-    public function setCalendar($calendar)
-    {
-        $this->calendar = $calendar;
-    }
-
-    /**
-     * @return \Calendar\Entity\Calendar|Collections\ArrayCollection()
-     */
-    public function getCalendar()
-    {
-        return $this->calendar;
-    }
+        $this->access = $access;
 
-    /**
-     * @param \Calendar\Entity\ScheduleContact|Collections\ArrayCollection() $scheduleContact
-     */
-    public function setScheduleContact($scheduleContact)
-    {
-        $this->scheduleContact = $scheduleContact;
+        return $this;
     }
 
     /**
-     * @return \Calendar\Entity\ScheduleContact|Collections\ArrayCollection()
+     * @return Email|Collections\ArrayCollection
      */
-    public function getScheduleContact()
+    public function getEmailAddress()
     {
-        return $this->scheduleContact;
+        return $this->emailAddress;
     }
 
     /**
-     * @param \Calendar\Entity\Document|Collections\ArrayCollection() $calendarDocument
+     * @param Email|Collections\ArrayCollection $emailAddress
+     * @return Contact
      */
-    public function setCalendarDocument($calendarDocument)
+    public function setEmailAddress($emailAddress)
     {
-        $this->calendarDocument = $calendarDocument;
-    }
+        $this->emailAddress = $emailAddress;
 
-    /**
-     * @return \Calendar\Entity\Document|Collections\ArrayCollection()
-     */
-    public function getCalendarDocument()
-    {
-        return $this->calendarDocument;
+        return $this;
     }
 
     /**
-     * @param \Project\Entity\Report\Report|Collections\ArrayCollection() $projectReport
+     * @return CV
      */
-    public function setProjectReport($projectReport)
+    public function getCv()
     {
-        $this->projectReport = $projectReport;
+        return $this->cv;
     }
 
     /**
-     * @return \Project\Entity\Report\Report|Collections\ArrayCollection()
+     * @param CV $cv
+     * @return Contact
      */
-    public function getProjectReport()
+    public function setCv($cv)
     {
-        return $this->projectReport;
-    }
+        $this->cv = $cv;
 
-    /**
-     * @param \Project\Entity\Review\Review|Collections\ArrayCollection() $projectReview
-     */
-    public function setProjectReview($projectReview)
-    {
-        $this->projectReview = $projectReview;
+        return $this;
     }
 
     /**
-     * @return \Project\Entity\Review\Review|Collections\ArrayCollection()
+     * @return Address|Collections\ArrayCollection
      */
-    public function getProjectReview()
+    public function getAddress()
     {
-        return $this->projectReview;
+        return $this->address;
     }
 
     /**
-     * @param \Project\Entity\Review\VersionReview|Collections\ArrayCollection() $projectVersionReview
+     * @param Address|Collections\ArrayCollection $address
+     * @return Contact
      */
-    public function setProjectVersionReview($projectVersionReview)
+    public function setAddress($address)
     {
-        $this->projectVersionReview = $projectVersionReview;
-    }
+        $this->address = $address;
 
-    /**
-     * @return \Project\Entity\Review\VersionReview|Collections\ArrayCollection()
-     */
-    public function getProjectVersionReview()
-    {
-        return $this->projectVersionReview;
+        return $this;
     }
 
     /**
-     * @param \Project\Entity\Invite|Collections\ArrayCollection() $invite
+     * @return Phone|Collections\ArrayCollection
      */
-    public function setInvite($invite)
+    public function getPhone()
     {
-        $this->invite = $invite;
+        return $this->phone;
     }
 
     /**
-     * @return \Project\Entity\Invite|Collections\ArrayCollection()
+     * @param Phone|Collections\ArrayCollection $phone
+     * @return Contact
      */
-    public function getInvite()
+    public function setPhone($phone)
     {
-        return $this->invite;
-    }
+        $this->phone = $phone;
 
-    /**
-     * @param \Project\Entity\Invite|Collections\ArrayCollection() $inviteContact
-     */
-    public function setInviteContact($inviteContact)
-    {
-        $this->inviteContact = $inviteContact;
+        return $this;
     }
 
     /**
-     * @return \Project\Entity\Invite|Collections\ArrayCollection()
+     * @return Web|Collections\ArrayCollection
      */
-    public function getInviteContact()
+    public function getWeb()
     {
-        return $this->inviteContact;
+        return $this->web;
     }
 
     /**
-     * @param \Affiliation\Entity\Loi|Collections\ArrayCollection() $loi
+     * @param Web|Collections\ArrayCollection $web
+     * @return Contact
      */
-    public function setLoi($loi)
+    public function setWeb($web)
     {
-        $this->loi = $loi;
-    }
+        $this->web = $web;
 
-    /**
-     * @return \Affiliation\Entity\Loi|Collections\ArrayCollection()
-     */
-    public function getLoi()
-    {
-        return $this->loi;
+        return $this;
     }
 
     /**
-     * @param \Project\Entity\Calendar\Review|Collections\ArrayCollection() $projectCalendarReview
+     * @return OptIn|Collections\ArrayCollection
      */
-    public function setProjectCalendarReview($projectCalendarReview)
+    public function getOptIn()
     {
-        $this->projectCalendarReview = $projectCalendarReview;
+        return $this->optIn;
     }
 
     /**
-     * @return \Project\Entity\Calendar\Review|Collections\ArrayCollection()
+     * @param OptIn|Collections\ArrayCollection $optIn
+     * @return Contact
      */
-    public function getProjectCalendarReview()
+    public function setOptIn($optIn)
     {
-        return $this->projectCalendarReview;
-    }
+        $this->optIn = $optIn;
 
-    /**
-     * @return \Affiliation\Entity\Doa|Collections\ArrayCollection()
-     */
-    public function getAffiliationDoa()
-    {
-        return $this->affiliationDoa;
+        return $this;
     }
 
     /**
-     * @param \Affiliation\Entity\Doa|Collections\ArrayCollection() $affiliationDoa
+     * @return Collections\ArrayCollection|\Project\Entity\Project
      */
-    public function setAffiliationDoa($affiliationDoa)
+    public function getProject()
     {
-        $this->affiliationDoa = $affiliationDoa;
+        return $this->project;
     }
 
     /**
-     * @return \Admin\Entity\Permit\Contact
+     * @param Collections\ArrayCollection|\Project\Entity\Project $project
+     * @return Contact
      */
-    public function getPermitContact()
+    public function setProject($project)
     {
-        return $this->permitContact;
-    }
+        $this->project = $project;
 
-    /**
-     * @param \Admin\Entity\Permit\Contact $permitContact
-     */
-    public function setPermitContact($permitContact)
-    {
-        $this->permitContact = $permitContact;
+        return $this;
     }
 
     /**
@@ -2689,10 +1840,108 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param Collections\ArrayCollection|\Project\Entity\Rationale $rationale
+     * @return Contact
      */
     public function setRationale($rationale)
     {
         $this->rationale = $rationale;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Description\Description
+     */
+    public function getProjectDescription()
+    {
+        return $this->projectDescription;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Description\Description $projectDescription
+     * @return Contact
+     */
+    public function setProjectDescription($projectDescription)
+    {
+        $this->projectDescription = $projectDescription;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Version\Version
+     */
+    public function getProjectVersion()
+    {
+        return $this->projectVersion;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Version\Version $projectVersion
+     * @return Contact
+     */
+    public function setProjectVersion($projectVersion)
+    {
+        $this->projectVersion = $projectVersion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Document\Document
+     */
+    public function getProjectDocument()
+    {
+        return $this->projectDocument;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Document\Document $projectDocument
+     * @return Contact
+     */
+    public function setProjectDocument($projectDocument)
+    {
+        $this->projectDocument = $projectDocument;
+
+        return $this;
+    }
+
+    /**
+     * @return Dnd|Collections\ArrayCollection
+     */
+    public function getDnd()
+    {
+        return $this->dnd;
+    }
+
+    /**
+     * @param Dnd|Collections\ArrayCollection $dnd
+     * @return Contact
+     */
+    public function setDnd($dnd)
+    {
+        $this->dnd = $dnd;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Program\Entity\Nda
+     */
+    public function getNda()
+    {
+        return $this->nda;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Program\Entity\Nda $nda
+     * @return Contact
+     */
+    public function setNda($nda)
+    {
+        $this->nda = $nda;
+
+        return $this;
     }
 
     /**
@@ -2705,122 +1954,507 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param Collections\ArrayCollection|\Program\Entity\RoadmapLog $roadmapLog
+     * @return Contact
      */
     public function setRoadmapLog($roadmapLog)
     {
         $this->roadmapLog = $roadmapLog;
+
+        return $this;
     }
 
     /**
-     * @return Collections\ArrayCollection|\Admin\Entity\Session
+     * @return Collections\ArrayCollection|\Program\Entity\Doa
      */
-    public function getSession()
+    public function getProgramDoa()
     {
-        return $this->session;
+        return $this->programDoa;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Admin\Entity\Session $session
+     * @param Collections\ArrayCollection|\Program\Entity\Doa $programDoa
+     * @return Contact
      */
-    public function setSession($session)
+    public function setProgramDoa($programDoa)
     {
-        $this->session = $session;
+        $this->programDoa = $programDoa;
+
+        return $this;
     }
 
     /**
-     * @return \Member\Entity\Member
+     * @return OpenId|Collections\ArrayCollection
      */
-    public function getMember()
+    public function getOpenId()
     {
-        return $this->member;
+        return $this->openId;
     }
 
     /**
-     * @param \Member\Entity\Member $member
+     * @param OpenId|Collections\ArrayCollection $openId
+     * @return Contact
      */
-    public function setMember($member)
+    public function setOpenId($openId)
     {
-        $this->member = $member;
+        $this->openId = $openId;
+
+        return $this;
     }
 
     /**
-     * @return \Member\Entity\Presidium
+     * @return ContactOrganisation
      */
-    public function getPresidium()
+    public function getContactOrganisation()
     {
-        return $this->presidium;
+        return $this->contactOrganisation;
     }
 
     /**
-     * @param \Member\Entity\Presidium $presidium
+     * @param ContactOrganisation $contactOrganisation
+     * @return Contact
      */
-    public function setPresidium($presidium)
+    public function setContactOrganisation($contactOrganisation)
     {
-        $this->presidium = $presidium;
+        $this->contactOrganisation = $contactOrganisation;
+
+        return $this;
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[]
+     * @return Collections\ArrayCollection|\Program\Entity\Domain
      */
-    public function getVoter()
+    public function getDomain()
     {
-        return $this->voter;
+        return $this->domain;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
+     * @param Collections\ArrayCollection|\Program\Entity\Domain $domain
+     * @return Contact
      */
-    public function setVoter($voter)
+    public function setDomain($domain)
     {
-        $this->voter = $voter;
+        $this->domain = $domain;
+
+        return $this;
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour
+     * @return Collections\ArrayCollection|\Project\Entity\Idea\Idea
      */
-    public function getTour()
+    public function getIdea()
     {
-        return $this->tour;
+        return $this->idea;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $idea
+     * @return Contact
      */
-    public function setTour($tour)
+    public function setIdea($idea)
     {
-        $this->tour = $tour;
+        $this->idea = $idea;
+
+        return $this;
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[]
+     * @return Collections\ArrayCollection|\Project\Entity\Idea\Idea
      */
-    public function getTourContact()
+    public function getFavouriteIdea()
     {
-        return $this->tourContact;
+        return $this->favouriteIdea;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $favouriteIdea
+     * @return Contact
      */
-    public function setTourContact($tourContact)
+    public function setFavouriteIdea($favouriteIdea)
     {
-        $this->tourContact = $tourContact;
+        $this->favouriteIdea = $favouriteIdea;
+
+        return $this;
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\Booth[]
+     * @return Collections\ArrayCollection|\Program\Entity\Technology
      */
-    public function getOrganisationBooth()
+    public function getTechnology()
     {
-        return $this->organisationBooth;
+        return $this->technology;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
+     * @param Collections\ArrayCollection|\Program\Entity\Technology $technology
+     * @return Contact
      */
-    public function setOrganisationBooth($organisationBooth)
+    public function setTechnology($technology)
     {
-        $this->organisationBooth = $organisationBooth;
+        $this->technology = $technology;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Organisation\Entity\Log
+     */
+    public function getOrganisationLog()
+    {
+        return $this->organisationLog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Organisation\Entity\Log $organisationLog
+     * @return Contact
+     */
+    public function setOrganisationLog($organisationLog)
+    {
+        $this->organisationLog = $organisationLog;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Affiliation|Collections\ArrayCollection
+     */
+    public function getAffiliation()
+    {
+        return $this->affiliation;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection $affiliation
+     * @return Contact
+     */
+    public function setAffiliation($affiliation)
+    {
+        $this->affiliation = $affiliation;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Log|Collections\ArrayCollection
+     */
+    public function getAffiliationLog()
+    {
+        return $this->affiliationLog;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Log|Collections\ArrayCollection $affiliationLog
+     * @return Contact
+     */
+    public function setAffiliationLog($affiliationLog)
+    {
+        $this->affiliationLog = $affiliationLog;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Financial|Collections\ArrayCollection
+     */
+    public function getFinancial()
+    {
+        return $this->financial;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Financial|Collections\ArrayCollection $financial
+     * @return Contact
+     */
+    public function setFinancial($financial)
+    {
+        $this->financial = $financial;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Description|Collections\ArrayCollection
+     */
+    public function getAffiliationDescription()
+    {
+        return $this->affiliationDescription;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Description|Collections\ArrayCollection $affiliationDescription
+     * @return Contact
+     */
+    public function setAffiliationDescription($affiliationDescription)
+    {
+        $this->affiliationDescription = $affiliationDescription;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Version|Collections\ArrayCollection
+     */
+    public function getAffiliationVersion()
+    {
+        return $this->affiliationVersion;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Version|Collections\ArrayCollection $affiliationVersion
+     * @return Contact
+     */
+    public function setAffiliationVersion($affiliationVersion)
+    {
+        $this->affiliationVersion = $affiliationVersion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Invoice\Entity\Invoice
+     */
+    public function getInvoice()
+    {
+        return $this->invoice;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Invoice\Entity\Invoice $invoice
+     * @return Contact
+     */
+    public function setInvoice($invoice)
+    {
+        $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Publication\Entity\Publication
+     */
+    public function getPublication()
+    {
+        return $this->publication;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Publication\Entity\Publication $publication
+     * @return Contact
+     */
+    public function setPublication($publication)
+    {
+        $this->publication = $publication;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Publication\Entity\Download
+     */
+    public function getPublicationDownload()
+    {
+        return $this->publicationDownload;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Publication\Entity\Download $publicationDownload
+     * @return Contact
+     */
+    public function setPublicationDownload($publicationDownload)
+    {
+        $this->publicationDownload = $publicationDownload;
+
+        return $this;
+    }
+
+    /**
+     * @return Photo|Collections\ArrayCollection
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param Photo|Collections\ArrayCollection $photo
+     * @return Contact
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Affiliation|Collections\ArrayCollection
+     */
+    public function getAssociate()
+    {
+        return $this->associate;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection $associate
+     * @return Contact
+     */
+    public function setAssociate($associate)
+    {
+        $this->associate = $associate;
+
+        return $this;
+    }
+
+    /**
+     * @return \Program\Entity\Funder
+     */
+    public function getFunder()
+    {
+        return $this->funder;
+    }
+
+    /**
+     * @param \Program\Entity\Funder $funder
+     * @return Contact
+     */
+    public function setFunder($funder)
+    {
+        $this->funder = $funder;
+
+        return $this;
+    }
+
+    /**
+     * @return \Deeplink\Entity\Contact|Collections\ArrayCollection
+     */
+    public function getDeeplinkContact()
+    {
+        return $this->deeplinkContact;
+    }
+
+    /**
+     * @param \Deeplink\Entity\Contact|Collections\ArrayCollection $deeplinkContact
+     * @return Contact
+     */
+    public function setDeeplinkContact($deeplinkContact)
+    {
+        $this->deeplinkContact = $deeplinkContact;
+
+        return $this;
+    }
+
+    /**
+     * @return Profile
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param Profile $profile
+     * @return Contact
+     */
+    public function setProfile($profile)
+    {
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * @return Community|Collections\ArrayCollection
+     */
+    public function getCommunity()
+    {
+        return $this->community;
+    }
+
+    /**
+     * @param Community|Collections\ArrayCollection $community
+     * @return Contact
+     */
+    public function setCommunity($community)
+    {
+        $this->community = $community;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Registration
+     */
+    public function getRegistration()
+    {
+        return $this->registration;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Registration $registration
+     * @return Contact
+     */
+    public function setRegistration($registration)
+    {
+        $this->registration = $registration;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Badge\Badge
+     */
+    public function getBadge()
+    {
+        return $this->badge;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Badge\Badge $badge
+     * @return Contact
+     */
+    public function setBadge($badge)
+    {
+        $this->badge = $badge;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Badge\Contact
+     */
+    public function getBadgeContact()
+    {
+        return $this->badgeContact;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Badge\Contact $badgeContact
+     * @return Contact
+     */
+    public function setBadgeContact($badgeContact)
+    {
+        $this->badgeContact = $badgeContact;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Booth\Contact[]
+     */
+    public function getBoothContact()
+    {
+        return $this->boothContact;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Booth\Contact[] $boothContact
+     * @return Contact
+     */
+    public function setBoothContact($boothContact)
+    {
+        $this->boothContact = $boothContact;
+
+        return $this;
     }
 
     /**
@@ -2833,10 +2467,602 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param Collections\ArrayCollection|\Project\Entity\Booth[] $projectBooth
+     * @return Contact
      */
     public function setProjectBooth($projectBooth)
     {
         $this->projectBooth = $projectBooth;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Organisation\Entity\Booth[]
+     */
+    public function getOrganisationBooth()
+    {
+        return $this->organisationBooth;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
+     * @return Contact
+     */
+    public function setOrganisationBooth($organisationBooth)
+    {
+        $this->organisationBooth = $organisationBooth;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Booth\Financial
+     */
+    public function getBoothFinancial()
+    {
+        return $this->boothFinancial;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Booth\Financial $boothFinancial
+     * @return Contact
+     */
+    public function setBoothFinancial($boothFinancial)
+    {
+        $this->boothFinancial = $boothFinancial;
+
+        return $this;
+    }
+
+    /**
+     * @return Note[]|Collections\ArrayCollection
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param Note[]|Collections\ArrayCollection $note
+     * @return Contact
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return Selection|Collections\ArrayCollection
+     */
+    public function getSelection()
+    {
+        return $this->selection;
+    }
+
+    /**
+     * @param Selection|Collections\ArrayCollection $selection
+     * @return Contact
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
+
+        return $this;
+    }
+
+    /**
+     * @return SelectionContact|Collections\ArrayCollection
+     */
+    public function getSelectionContact()
+    {
+        return $this->selectionContact;
+    }
+
+    /**
+     * @param SelectionContact|Collections\ArrayCollection $selectionContact
+     * @return Contact
+     */
+    public function setSelectionContact($selectionContact)
+    {
+        $this->selectionContact = $selectionContact;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Mailing\Entity\Contact
+     */
+    public function getMailingContact()
+    {
+        return $this->mailingContact;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Mailing\Entity\Contact $mailingContact
+     * @return Contact
+     */
+    public function setMailingContact($mailingContact)
+    {
+        $this->mailingContact = $mailingContact;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Mailing\Entity\Mailing
+     */
+    public function getMailing()
+    {
+        return $this->mailing;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Mailing\Entity\Mailing $mailing
+     * @return Contact
+     */
+    public function setMailing($mailing)
+    {
+        $this->mailing = $mailing;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Result\Result
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Result\Result $result
+     * @return Contact
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage
+     */
+    public function getWorkpackage()
+    {
+        return $this->workpackage;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage $workpackage
+     * @return Contact
+     */
+    public function setWorkpackage($workpackage)
+    {
+        $this->workpackage = $workpackage;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Workpackage\Document
+     */
+    public function getWorkpackageDocument()
+    {
+        return $this->workpackageDocument;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Document $workpackageDocument
+     * @return Contact
+     */
+    public function setWorkpackageDocument($workpackageDocument)
+    {
+        $this->workpackageDocument = $workpackageDocument;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Idea\Message
+     */
+    public function getIdeaMessage()
+    {
+        return $this->ideaMessage;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Message $ideaMessage
+     * @return Contact
+     */
+    public function setIdeaMessage($ideaMessage)
+    {
+        $this->ideaMessage = $ideaMessage;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation
+     */
+    public function getEvaluation()
+    {
+        return $this->evaluation;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation $evaluation
+     * @return Contact
+     */
+    public function setEvaluation($evaluation)
+    {
+        $this->evaluation = $evaluation;
+
+        return $this;
+    }
+
+    /**
+     * @return \Calendar\Entity\Calendar|Collections\ArrayCollection
+     */
+    public function getCalendar()
+    {
+        return $this->calendar;
+    }
+
+    /**
+     * @param \Calendar\Entity\Calendar|Collections\ArrayCollection $calendar
+     * @return Contact
+     */
+    public function setCalendar($calendar)
+    {
+        $this->calendar = $calendar;
+
+        return $this;
+    }
+
+    /**
+     * @return \Calendar\Entity\Contact|Collections\ArrayCollection
+     */
+    public function getCalendarContact()
+    {
+        return $this->calendarContact;
+    }
+
+    /**
+     * @param \Calendar\Entity\Contact|Collections\ArrayCollection $calendarContact
+     * @return Contact
+     */
+    public function setCalendarContact($calendarContact)
+    {
+        $this->calendarContact = $calendarContact;
+
+        return $this;
+    }
+
+    /**
+     * @return \Calendar\Entity\Document|Collections\ArrayCollection
+     */
+    public function getCalendarDocument()
+    {
+        return $this->calendarDocument;
+    }
+
+    /**
+     * @param \Calendar\Entity\Document|Collections\ArrayCollection $calendarDocument
+     * @return Contact
+     */
+    public function setCalendarDocument($calendarDocument)
+    {
+        $this->calendarDocument = $calendarDocument;
+
+        return $this;
+    }
+
+    /**
+     * @return \Calendar\Entity\ScheduleContact|Collections\ArrayCollection
+     */
+    public function getScheduleContact()
+    {
+        return $this->scheduleContact;
+    }
+
+    /**
+     * @param \Calendar\Entity\ScheduleContact|Collections\ArrayCollection $scheduleContact
+     * @return Contact
+     */
+    public function setScheduleContact($scheduleContact)
+    {
+        $this->scheduleContact = $scheduleContact;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Review\Review
+     */
+    public function getProjectReview()
+    {
+        return $this->projectReview;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Review\Review $projectReview
+     * @return Contact
+     */
+    public function setProjectReview($projectReview)
+    {
+        $this->projectReview = $projectReview;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Review\VersionReview
+     */
+    public function getProjectVersionReview()
+    {
+        return $this->projectVersionReview;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Review\VersionReview $projectVersionReview
+     * @return Contact
+     */
+    public function setProjectVersionReview($projectVersionReview)
+    {
+        $this->projectVersionReview = $projectVersionReview;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Report\Report
+     */
+    public function getProjectReport()
+    {
+        return $this->projectReport;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Report\Report $projectReport
+     * @return Contact
+     */
+    public function setProjectReport($projectReport)
+    {
+        $this->projectReport = $projectReport;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Calendar\Review
+     */
+    public function getProjectCalendarReview()
+    {
+        return $this->projectCalendarReview;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Calendar\Review $projectCalendarReview
+     * @return Contact
+     */
+    public function setProjectCalendarReview($projectCalendarReview)
+    {
+        $this->projectCalendarReview = $projectCalendarReview;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Invite
+     */
+    public function getInvite()
+    {
+        return $this->invite;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Invite $invite
+     * @return Contact
+     */
+    public function setInvite($invite)
+    {
+        $this->invite = $invite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Invite
+     */
+    public function getInviteContact()
+    {
+        return $this->inviteContact;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Invite $inviteContact
+     * @return Contact
+     */
+    public function setInviteContact($inviteContact)
+    {
+        $this->inviteContact = $inviteContact;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Loi|Collections\ArrayCollection
+     */
+    public function getLoi()
+    {
+        return $this->loi;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Loi|Collections\ArrayCollection $loi
+     * @return Contact
+     */
+    public function setLoi($loi)
+    {
+        $this->loi = $loi;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Doa|Collections\ArrayCollection
+     */
+    public function getAffiliationDoa()
+    {
+        return $this->affiliationDoa;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Doa|Collections\ArrayCollection $affiliationDoa
+     * @return Contact
+     */
+    public function setAffiliationDoa($affiliationDoa)
+    {
+        $this->affiliationDoa = $affiliationDoa;
+
+        return $this;
+    }
+
+    /**
+     * @return \Admin\Entity\Permit\Contact
+     */
+    public function getPermitContact()
+    {
+        return $this->permitContact;
+    }
+
+    /**
+     * @param \Admin\Entity\Permit\Contact $permitContact
+     * @return Contact
+     */
+    public function setPermitContact($permitContact)
+    {
+        $this->permitContact = $permitContact;
+
+        return $this;
+    }
+
+    /**
+     * @return \Admin\Entity\Session
+     */
+    public function getSession()
+    {
+        return $this->session;
+    }
+
+    /**
+     * @param \Admin\Entity\Session $session
+     * @return Contact
+     */
+    public function setSession($session)
+    {
+        $this->session = $session;
+
+        return $this;
+    }
+
+    /**
+     * @return \Member\Entity\Member
+     */
+    public function getMember()
+    {
+        return $this->member;
+    }
+
+    /**
+     * @param \Member\Entity\Member $member
+     * @return Contact
+     */
+    public function setMember($member)
+    {
+        $this->member = $member;
+
+        return $this;
+    }
+
+    /**
+     * @return \Member\Entity\Presidium
+     */
+    public function getPresidium()
+    {
+        return $this->presidium;
+    }
+
+    /**
+     * @param \Member\Entity\Presidium $presidium
+     * @return Contact
+     */
+    public function setPresidium($presidium)
+    {
+        $this->presidium = $presidium;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[]
+     */
+    public function getVoter()
+    {
+        return $this->voter;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
+     * @return Contact
+     */
+    public function setVoter($voter)
+    {
+        $this->voter = $voter;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour
+     */
+    public function getTour()
+    {
+        return $this->tour;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
+     * @return Contact
+     */
+    public function setTour($tour)
+    {
+        $this->tour = $tour;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[]
+     */
+    public function getTourContact()
+    {
+        return $this->tourContact;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
+     * @return Contact
+     */
+    public function setTourContact($tourContact)
+    {
+        $this->tourContact = $tourContact;
+
+        return $this;
     }
 
     /**
@@ -2849,10 +3075,13 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
+     * @return Contact
      */
     public function setDoaReminderReceiver($doaReminderReceiver)
     {
         $this->doaReminderReceiver = $doaReminderReceiver;
+
+        return $this;
     }
 
     /**
@@ -2865,10 +3094,13 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderSender
+     * @return Contact
      */
     public function setDoaReminderSender($doaReminderSender)
     {
         $this->doaReminderSender = $doaReminderSender;
+
+        return $this;
     }
 
     /**
@@ -2881,10 +3113,13 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
+     * @return Contact
      */
     public function setLoiReminderReceiver($loiReminderReceiver)
     {
         $this->loiReminderReceiver = $loiReminderReceiver;
+
+        return $this;
     }
 
     /**
@@ -2897,10 +3132,13 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderSender
+     * @return Contact
      */
     public function setLoiReminderSender($loiReminderSender)
     {
         $this->loiReminderSender = $loiReminderSender;
+
+        return $this;
     }
 
     /**
@@ -2913,10 +3151,13 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param Collections\ArrayCollection|\News\Entity\Blog $blog
+     * @return Contact
      */
     public function setBlog($blog)
     {
         $this->blog = $blog;
+
+        return $this;
     }
 
     /**
@@ -2929,10 +3170,13 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param Collections\ArrayCollection|\News\Entity\Message $blogMessage
+     * @return Contact
      */
     public function setBlogMessage($blogMessage)
     {
         $this->blogMessage = $blogMessage;
+
+        return $this;
     }
 
     /**
@@ -2945,10 +3189,13 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param Collections\ArrayCollection|\Member\Entity\Election\Candidate[] $candidate
+     * @return Contact
      */
     public function setCandidate($candidate)
     {
         $this->candidate = $candidate;
+
+        return $this;
     }
 
     /**
@@ -2961,9 +3208,126 @@ class Contact extends EntityAbstract implements
 
     /**
      * @param Collections\ArrayCollection|\Member\Entity\Election\Electorate[] $electorate
+     * @return Contact
      */
     public function setElectorate($electorate)
     {
         $this->electorate = $electorate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[]
+     */
+    public function getJournalEntry()
+    {
+        return $this->journalEntry;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[] $journalEntry
+     * @return Contact
+     */
+    public function setJournalEntry($journalEntry)
+    {
+        $this->journalEntry = $journalEntry;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Invoice\Entity\Journal[]
+     */
+    public function getJournal()
+    {
+        return $this->journal;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $journal
+     * @return Contact
+     */
+    public function setJournal($journal)
+    {
+        $this->journal = $journal;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Invoice\Entity\Journal[]
+     */
+    public function getOrganisationJournal()
+    {
+        return $this->organisationJournal;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $organisationJournal
+     * @return Contact
+     */
+    public function setOrganisationJournal($organisationJournal)
+    {
+        $this->organisationJournal = $organisationJournal;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Invoice\Entity\Log[]
+     */
+    public function getInvoiceLog()
+    {
+        return $this->invoiceLog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Invoice\Entity\Log[] $invoiceLog
+     * @return Contact
+     */
+    public function setInvoiceLog($invoiceLog)
+    {
+        $this->invoiceLog = $invoiceLog;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Invoice\Entity\Reminder[]
+     */
+    public function getReminder()
+    {
+        return $this->reminder;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Invoice\Entity\Reminder[] $reminder
+     * @return Contact
+     */
+    public function setReminder($reminder)
+    {
+        $this->reminder = $reminder;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Achievement[]
+     */
+    public function getAchievement()
+    {
+        return $this->achievement;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Achievement[] $achievement
+     * @return Contact
+     */
+    public function setAchievement($achievement)
+    {
+        $this->achievement = $achievement;
+
+        return $this;
     }
 }

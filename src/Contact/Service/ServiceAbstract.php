@@ -147,10 +147,10 @@ abstract class ServiceAbstract implements
          */
         if (strpos($entity, '-') !== false) {
             $entity = explode('-', $entity);
-            $entity = $entity[0].ucfirst($entity[1]);
+            $entity = $entity[0] . ucfirst($entity[1]);
         }
 
-        return ucfirst(implode('', array_slice(explode('\\', __NAMESPACE__), 0, 1))).'\\'.'Entity'.'\\'.ucfirst(
+        return ucfirst(implode('', array_slice(explode('\\', __NAMESPACE__), 0, 1))) . '\\' . 'Entity' . '\\' . ucfirst(
             $entity
         );
     }
@@ -169,22 +169,19 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\EntityAbstract $entity
+     * @param EntityAbstract $entity
      *
-     * @return \Contact\Entity\EntityAbstract
+     * @return EntityAbstract
      */
     public function newEntity(EntityAbstract $entity)
     {
-        $this->getEntityManager()->persist($entity);
-        $this->getEntityManager()->flush();
-
-        return $entity;
+        return $this->updateEntity($entity);
     }
 
     /**
-     * @param \Contact\Entity\EntityAbstract $entity
+     * @param EntityAbstract $entity
      *
-     * @return \Contact\Entity\EntityAbstract
+     * @return EntityAbstract
      */
     public function updateEntity(EntityAbstract $entity)
     {
@@ -195,7 +192,7 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\EntityAbstract $entity
+     * @param EntityAbstract $entity
      *
      * @return bool
      */

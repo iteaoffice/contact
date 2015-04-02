@@ -14,8 +14,13 @@ use Contact\Entity\Contact;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Profile as ProfileEntity;
 use Contact\Hydrator\Profile as ProfileHydrator;
-use DoctrineORMModule\Options\EntityManager;
+use Doctrine\ORM\EntityManager;
+use DoctrineORMModule\Form\Element\EntityRadio;
+use DoctrineORMModule\Form\Element\EntitySelect;
+use General\Entity\Country;
 use General\Service\GeneralService;
+use Organisation\Entity\Organisation;
+use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -27,7 +32,7 @@ class Profile extends Form
 {
     /**
      * @param ServiceLocatorInterface $serviceLocator
-     * @param Contact                 $contact
+     * @param Contact $contact
      */
     public function __construct(ServiceLocatorInterface $serviceLocator, Contact $contact)
     {
@@ -35,8 +40,8 @@ class Profile extends Form
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         $this->setAttribute('action', '');
-        /*
-         * @var EntityManager
+        /**
+         * @var $entityManager EntityManager
          */
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $contactService = $serviceLocator->get('contact_contact_service');
@@ -54,7 +59,7 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
+                'type'       => EntitySelect::class,
                 'name'       => 'gender',
                 'options'    => [
                     'label'          => _("txt-attention"),
@@ -71,7 +76,7 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
+                'type'       => EntitySelect::class,
                 'name'       => 'title',
                 'options'    => [
                     'label'          => _("txt-title"),
@@ -88,7 +93,7 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'firstName',
                 'options'    => [
                     'label' => _("txt-first-name"),
@@ -102,7 +107,7 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'middleName',
                 'options'    => [
                     'label' => _("txt-middle-name"),
@@ -115,7 +120,7 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'lastName',
                 'options'    => [
                     'label' => _("txt-last-name"),
@@ -127,29 +132,7 @@ class Profile extends Form
                 ],
             ]
         );
-        /*
-         * Produce a list of all phone numbers
-         */
-        $communityFieldSet = new Fieldset('community');
-        foreach ($generalService->findAll('communityType') as $communityType) {
-            $fieldSet = new Fieldset($communityType->getId());
-            $fieldSet->add(
-                [
-                    'type'       => 'Zend\Form\Element\Text',
-                    'name'       => 'community',
-                    'options'    => [
-                        'label' => sprintf(_(" %s Profile"), $communityType->getType()),
-                    ],
-                    'attributes' => [
-                        'class'       => 'form-control',
-                        'placeholder' => _(sprintf(_("Give %s profile"), $communityType->getType())),
-                    ],
-                ]
-            );
-            $communityFieldSet->add($fieldSet);
-        }
-        $this->add($communityFieldSet);
-        /*
+        /**
          * Produce a list of all phone numbers
          */
         $phoneFieldSet = new Fieldset('phone');
@@ -158,7 +141,7 @@ class Profile extends Form
                 $fieldSet = new Fieldset($phoneType->getId());
                 $fieldSet->add(
                     [
-                        'type'       => 'Zend\Form\Element\Text',
+                        'type'       => Text::class,
                         'name'       => 'phone',
                         'options'    => [
                             'label' => sprintf(_("%s Phone number"), $phoneType->getType()),
@@ -179,7 +162,7 @@ class Profile extends Form
         $addressFieldSet = new Fieldset('address');
         $addressFieldSet->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'address',
                 'options'    => [
                     'label' => _("txt-address"),
@@ -192,7 +175,7 @@ class Profile extends Form
         );
         $addressFieldSet->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'zipCode',
                 'options'    => [
                     'label' => _("txt-zip-code"),
@@ -205,7 +188,7 @@ class Profile extends Form
         );
         $addressFieldSet->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'city',
                 'options'    => [
                     'label' => _("txt-city"),
@@ -218,14 +201,18 @@ class Profile extends Form
         );
         $addressFieldSet->add(
             [
-                'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
+                'type'       => EntitySelect::class,
                 'name'       => 'country',
                 'options'    => [
                     'label'          => _("txt-country"),
                     'object_manager' => $entityManager,
-                    'target_class'   => 'General\Entity\Country',
+                    'target_class'   => Country::class,
                     'find_method'    => [
-                        'name' => 'findAll',
+                        'name'   => 'findBy',
+                        'params' => [
+                            'criteria' => [],
+                            'orderBy'  => ['country' => 'ASC']
+                        ]
                     ],
                 ],
                 'attributes' => [
@@ -236,9 +223,39 @@ class Profile extends Form
         $this->add($addressFieldSet);
 
         $contactOrganisationFieldSet = new Fieldset('contact_organisation');
+
         $contactOrganisationFieldSet->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => EntityRadio::class,
+                'name'       => 'organisation_id',
+                'options'    => [
+                    'label'           => _("txt-organisation"),
+                    'object_manager'  => $entityManager,
+                    'target_class'    => Organisation::class,
+                    'find_method'     => [
+                        'name'   => 'findOrganisationByEmailAddress',
+                        'params' => [
+                            'criteria'     => [],
+                            'emailAddress' => 'info+2@thalesgroup.com',
+                            'orderBy'      => ['organisation' => 'ASC']
+                        ],
+                    ],
+                    'label_generator' => function (Organisation $organisation) {
+                        return sprintf("%s (%s)", $organisation->getOrganisation(),
+                            $organisation->getCountry()->getCountry());
+                    },
+                ],
+                'attributes' => [
+                    'required' => true,
+                    'id'       => 'organisation',
+                ],
+            ]
+        );
+
+
+        $contactOrganisationFieldSet->add(
+            [
+                'type'       => Text::class,
                 'name'       => 'organisation',
                 'options'    => [
                     'label'      => _("txt-organisation"),
@@ -252,14 +269,18 @@ class Profile extends Form
         );
         $contactOrganisationFieldSet->add(
             [
-                'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
+                'type'       => EntitySelect::class,
                 'name'       => 'country',
                 'options'    => [
                     'label'          => _("txt-country"),
                     'object_manager' => $entityManager,
-                    'target_class'   => 'General\Entity\Country',
+                    'target_class'   => Country::class,
                     'find_method'    => [
-                        'name' => 'findAll',
+                        'name'   => 'findBy',
+                        'params' => [
+                            'criteria' => [],
+                            'orderBy'  => ['country' => 'ASC']
+                        ]
                     ],
                 ],
                 'attributes' => [
@@ -270,7 +291,7 @@ class Profile extends Form
         $this->add($contactOrganisationFieldSet);
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'department',
                 'options'    => [
                     'label' => _("txt-department"),
@@ -283,7 +304,7 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'position',
                 'options'    => [
                     'label' => _("txt-position"),

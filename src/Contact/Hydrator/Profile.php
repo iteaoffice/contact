@@ -43,7 +43,7 @@ class Profile extends DoctrineObject
             if ($address->getType()->getId() === AddressType::ADDRESS_TYPE_MAIL) {
                 $values['address']['address'] = $address->getAddress();
                 $values['address']['zipCode'] = $address->getZipCode();
-                $values['address']['city']    = $address->getCity();
+                $values['address']['city'] = $address->getCity();
                 $values['address']['country'] = $address->getCountry();
             }
         }
@@ -52,10 +52,8 @@ class Profile extends DoctrineObject
             $values['community'][$community->getType()->getId()]['community'] = $community->getCommunity();
         }
         unset($values['profile']);
-        $values['profile']['visible']     = !is_null($object->getProfile()) ? $object->getProfile()->getVisible(
-        ) : null;
-        $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription(
-        ) : null;
+        $values['profile']['visible'] = !is_null($object->getProfile()) ? $object->getProfile()->getVisible() : null;
+        $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription() : null;
         /*
          * Set the contact organisation
          */
@@ -79,7 +77,7 @@ class Profile extends DoctrineObject
     /**
      * Hydrate $object with the provided $data.
      *
-     * @param array   $data
+     * @param array $data
      * @param Contact $object
      *
      * @return object
@@ -87,20 +85,27 @@ class Profile extends DoctrineObject
     public function hydrate(array $data, $object)
     {
         $this->prepare($object);
-        /*
+        /**
          * Reformat the phone, address and community for the Contact object
+         *
          */
         if ($object instanceof Contact) {
             /*
              * Reset the data array and store the values locally
              */
-            $phoneData           = $data['phone'];
-            $data['phone']       = [];
-            $addressInfo         = $data['address'];
-            $data['address']     = [];
-            $communityData       = $data['community'];
-            $data['community']   = [];
-            $contact             = $this->hydrateByValue($data, $object);
+            $phoneData = $data['phone'];
+            $data['phone'] = [];
+            $addressInfo = $data['address'];
+            $data['address'] = [];
+            $communityData = $data['community'];
+            $data['community'] = [];
+            /**
+             * @var $contact Contact
+             */
+            $contact = $this->hydrateByValue($data, $object);
+            /**
+             * @var $currentPhoneNumbers Phone[]
+             */
             $currentPhoneNumbers = $contact->getPhone()->getSnapshot();
             //Reset the array
             $contact->getPhone()->clear();
@@ -116,10 +121,10 @@ class Profile extends DoctrineObject
             foreach ($currentPhoneNumbers as $phone) {
                 if (!in_array(
                     $phone->getType()->getId(),
-                    array(
+                    [
                         PhoneType::PHONE_TYPE_MOBILE,
                         PhoneType::PHONE_TYPE_DIRECT,
-                    )
+                    ]
                 )
                 ) {
                     $contact->getPhone()->add($phone);
@@ -147,7 +152,7 @@ class Profile extends DoctrineObject
                 }
             }
             foreach ($currentAddress as $address) {
-                if (!in_array($address->getType()->getId(), array(AddressType::ADDRESS_TYPE_MAIL))) {
+                if (!in_array($address->getType()->getId(), [AddressType::ADDRESS_TYPE_MAIL])) {
                     $contact->getAddress()->add($address);
                 }
             }

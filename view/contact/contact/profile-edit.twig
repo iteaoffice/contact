@@ -21,11 +21,6 @@
 </div>
 
 
-{% for fieldset in form.get('community').getFieldsets() %}
-    {{ ztbformelement(fieldset.get('community')) }}
-{% endfor %}
-
-
 <fieldset>
     <legend>{{ translate("txt-phone-information") }}</legend>
     {% for fieldset in form.get('phone').getFieldsets() %}
@@ -48,8 +43,25 @@
 <fieldset>
     <legend>{{ translate("txt-organisation") }}</legend>
 
-    {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
-    {{ ztbformelement(form.get('contact_organisation').get('country')) }}
+    <div class="organisation">
+        {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
+    </div>
+
+    <div class="form-group branch">
+        <label class="col-sm-3 control-label">{{ translate("txt-branch-form-label") }}</label>
+
+        <div class="col-sm-9">
+            <select class="form-control" id="branch"></select>
+
+            <p class="help-block">{{ translate("txt-form-branch-explanation") }}</p>
+        </div>
+    </div>
+
+
+    <div class="organisation_country">
+        {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
+        {{ ztbformelement(form.get('contact_organisation').get('country')) }}
+    </div>
 
     {{ ztbformelement(form.get('department')) }}
     {{ ztbformelement(form.get('position')) }}
@@ -82,3 +94,79 @@
 </div>
 
 {{ form().closeTag()|raw }}
+
+
+<script type="text/javascript">
+
+
+    (function ($) {
+        $.fn.updateFormInformation = function () {
+
+            if ($('input[name="contact_organisation[organisation_id]"]:checked').val() == '0') {
+                $('.branch').hide();
+                $('.organisation_country').show();
+            } else if ($('input[name="contact_organisation[organisation_id]"]:checked').val()) {
+                $.ajax({
+                    url: '{{ serverUrl() }}{{ url('organisation/json/get-branches') }}',
+                    type: 'post',
+                    data: {
+                        'organisationId': $('input[name="contact_organisation[organisation_id]"]:checked').val()
+                    },
+                    success: function (response) {
+
+                        $('.branch').show();
+                        /**
+                         * Store the branchValue because the options are rebuilt everytime
+                         */
+                        var branchValue = ($("#branch").val());
+                        $('#branch').find('option').remove();
+
+
+                        $('.organisation_country').hide();
+                        $(response).each(function () {
+                            var option = $('<option />');
+                            option.attr('value', this.value).text(this.label);
+
+                            if (branchValue == this.value) {
+                                option.attr('selected', 'selected');
+                            }
+
+                            $('#branch').append(option);
+                        });
+
+                    },
+                    error: function (xhr) {
+
+                    }
+                });
+            }
+
+        };
+    })(jQuery);
+
+
+    $(document).on('change', 'form', function (e) {
+
+        e.defaultPrevented;
+
+        $(document).updateFormInformation();
+
+    });
+
+    $(document).ready(function () {
+
+        var hasOrganisation = $(':radio[name="contact_organisation[organisation_id]"]').length !== 0;
+
+        if (!hasOrganisation) {
+            $(".organisation").remove();
+            $('.organisation_country').show();
+            $('.branch').hide();
+        } else {
+            var emptyElement = '<div class="radio"><label><input type="radio" value="0" required="required" name="contact_organisation[organisation_id]">-- None of the organisations above</label></div>'
+
+            $('#control-group-organisation').find(".col-lg-9").append(emptyElement);
+        }
+
+        $(document).updateFormInformation();
+    });
+</script>
