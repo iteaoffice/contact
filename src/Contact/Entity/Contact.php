@@ -1,13 +1,12 @@
 <?php
 /**
- * Debranova copyright message placeholder.
+ * Debranova copyright message placeholder
  *
  * @category    Contact
- *
+ * @package     Entity
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
-
 namespace Contact\Entity;
 
 use BjyAuthorize\Provider\Role\ProviderInterface;
@@ -22,7 +21,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 use ZfcUser\Entity\UserInterface;
 
 /**
- * Entity for the Contact.
+ * Entity for the Contact
  *
  * @ORM\Table(name="contact")
  * @ORM\Entity(repositoryClass="Contact\Repository\Contact")
@@ -30,6 +29,7 @@ use ZfcUser\Entity\UserInterface;
  * @Annotation\Name("contact_contact")
  *
  * @category    Contact
+ * @package     Entity
  */
 class Contact extends EntityAbstract implements
     ResourceInterface,
@@ -37,19 +37,19 @@ class Contact extends EntityAbstract implements
     UserInterface
 {
     /**
-     * Key needed for the encryption and decryption of the Keys.
+     * Key needed for the encryption and decryption of the Keys
      */
     const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
     /**
-     * Constant for messenger;.
+     * Constant for messenger;
      */
     const MESSENGER_ACTIVE = 1;
     /**
-     * Value for messenger.
+     * Value for messenger
      */
     const MESSENGER_ACTIVE_VALUE = "txt-messenger-active";
     /**
-     * Templates for the constant status.
+     * Templates for the constant status
      *
      * @var array
      */
@@ -61,7 +61,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
-     *
      * @var int
      */
     private $id;
@@ -69,7 +68,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="firstname", type="string", length=40, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-first-name"})
-     *
      * @var string
      */
     private $firstName;
@@ -77,7 +75,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="middlename", type="string", length=20, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-middle-name"})
-     *
      * @var string
      */
     private $middleName;
@@ -85,7 +82,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="lastname", type="string", length=40, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-last-name"})
-     *
      * @var string
      */
     private $lastName;
@@ -93,21 +89,18 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="email",type="string",length=60,nullable=false, unique=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-email"})
-     *
      * @var string
      */
     private $email;
     /**
      * @ORM\Column(name="password", type="string", length=40, nullable=true)
      * @Annotation\Exclude()
-     *
      * @var string
      */
     private $password;
     /**
      * @ORM\Column(name="salted_password", type="string", length=100, nullable=true)
      * @Annotation\Exclude()
-     *
      * @var string
      */
     private $saltedPassword;
@@ -117,7 +110,6 @@ class Contact extends EntityAbstract implements
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Gender"})
      * @Annotation\Attributes({"label":"txt-attention", "required":"true","class":"span3"})
-     *
      * @var \General\Entity\Gender
      */
     private $gender;
@@ -127,7 +119,6 @@ class Contact extends EntityAbstract implements
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Title"})
      * @Annotation\Attributes({"label":"txt-title", "required":"true","class":"span3"})
-     *
      * @var \General\Entity\Title
      */
     private $title;
@@ -135,7 +126,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="position", type="string", length=60, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-position"})
-     *
      * @var string
      */
     private $position;
@@ -143,7 +133,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="department", type="string", length=80, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-department"})
-     *
      * @var string
      */
     private $department;
@@ -151,7 +140,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="date_birth", type="date", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Date")
      * @Annotation\Options({"label":"txt-date"})
-     *
      * @var \DateTime
      */
     private $dateOfBirth;
@@ -159,7 +147,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
-     *
      * @var \datetime
      */
     private $dateCreated;
@@ -167,7 +154,6 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
-     *
      * @var \datetime
      */
     private $lastUpdate;
@@ -175,14 +161,12 @@ class Contact extends EntityAbstract implements
      * @ORM\Column(name="date_end", type="datetime", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Date")
      * @Annotation\Options({"label":"txt-date-end"})
-     *
      * @var \datetime
      */
     private $dateEnd;
     /**
      * @ORM\Column(name="messenger", type="smallint", nullable=false)
      * @Annotation\Exclude()
-     *
      * @var int
      */
     private $messenger;
@@ -196,42 +180,36 @@ class Contact extends EntityAbstract implements
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
      * @Annotation\Options({"target_class":"Admin\Entity\Access"})
      * @Annotation\Attributes({"label":"txt-access"})
-     *
      * @var \Admin\Entity\Access|Collections\ArrayCollection()
      */
     private $access;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Email", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\Email|Collections\ArrayCollection()
      */
     private $emailAddress;
     /**
      * @ORM\OneToOne(targetEntity="\Contact\Entity\Cv", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\CV
      */
     private $cv;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @@Annotation\ComposedObject("\Contact\Entity\Address")
-     *
      * @var \Contact\Entity\Address|Collections\ArrayCollection()
      */
     private $address;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\ComposedObject("\Contact\Entity\Phone")
-     *
      * @var \Contact\Entity\Phone|Collections\ArrayCollection()
      */
     private $phone;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Web", cascade={"persist"}, mappedBy="contact")
      * Annotation\ComposedObject("\Contact\Entity\Web")
-     *
      * @var \Contact\Entity\Web|Collections\ArrayCollection()
      */
     private $web;
@@ -242,77 +220,66 @@ class Contact extends EntityAbstract implements
      *    inverseJoinColumns={@ORM\JoinColumn(name="optin_id", referencedColumnName="optin_id")}
      * )
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\OptIn|Collections\ArrayCollection()
      */
     private $optIn;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Project|Collections\ArrayCollection()
      */
     private $project;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Rationale", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Rationale|Collections\ArrayCollection()
      */
     private $rationale;
     /**
      * @ORM\ManyToMany(targetEntity="\Project\Entity\Description\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Description\Description|Collections\ArrayCollection()
      */
     private $projectDescription;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Version\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Version\Version|Collections\ArrayCollection()
      */
     private $projectVersion;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Document\Document|Collections\ArrayCollection()
      */
     private $projectDocument;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Dnd", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\Dnd|Collections\ArrayCollection()
      */
     private $dnd;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Program\Entity\Nda|Collections\ArrayCollection()
      */
     private $nda;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\RoadmapLog", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Program\Entity\RoadmapLog|Collections\ArrayCollection()
      */
     private $roadmapLog;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Program\Entity\Doa|Collections\ArrayCollection()
      */
     private $programDoa;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\OpenId", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\OpenId|Collections\ArrayCollection()
      */
     private $openId;
@@ -320,7 +287,6 @@ class Contact extends EntityAbstract implements
      * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact",
      * fetch="EAGER")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\ContactOrganisation
      */
     private $contactOrganisation;
@@ -331,21 +297,18 @@ class Contact extends EntityAbstract implements
      *    inverseJoinColumns={@ORM\JoinColumn(name="domain_id", referencedColumnName="domain_id")}
      * )
      * @Annotation\Exclude()
-     *
      * @var \Program\Entity\Domain|Collections\ArrayCollection()
      */
     private $domain;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Idea\Idea|Collections\ArrayCollection()
      */
     private $idea;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="favourite")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Idea\Idea|Collections\ArrayCollection()
      */
     private $favouriteIdea;
@@ -356,112 +319,96 @@ class Contact extends EntityAbstract implements
      *    inverseJoinColumns={@ORM\JoinColumn(name="technology_id", referencedColumnName="technology_id")}
      * )
      * @Annotation\Exclude()
-     *
      * @var \Program\Entity\Technology|Collections\ArrayCollection()
      */
     private $technology;
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Organisation\Entity\Log|Collections\ArrayCollection()
      */
     private $organisationLog;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
      */
     private $affiliation;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Log|Collections\ArrayCollection()
      */
     private $affiliationLog;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Financial|Collections\ArrayCollection()
      */
     private $financial;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Description|Collections\ArrayCollection()
      */
     private $affiliationDescription;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Version|Collections\ArrayCollection()
      */
     private $affiliationVersion;
     /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Invoice", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Invoice\Entity\Invoice|Collections\ArrayCollection()
      */
     private $invoice;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Publication", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Publication\Entity\Publication|Collections\ArrayCollection()
      */
     private $publication;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Download", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Publication\Entity\Download|Collections\ArrayCollection()
      */
     private $publicationDownload;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Photo", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\Photo|Collections\ArrayCollection()
      */
     private $photo;
     /**
      * @ORM\ManyToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="associate")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
      */
     private $associate;
     /**
      * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Program\Entity\Funder
      */
     private $funder;
     /**
      * @ORM\OneToMany(targetEntity="Deeplink\Entity\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Deeplink\Entity\Contact|Collections\ArrayCollection()
      */
     private $deeplinkContact;
     /**
      * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist"}, mappedBy="contact",  orphanRemoval=true)
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\Profile
      */
     private $profile;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\Community|Collections\ArrayCollection()
      */
     private $community;
@@ -469,308 +416,264 @@ class Contact extends EntityAbstract implements
      * @ORM\OneToMany(targetEntity="Event\Entity\Registration", cascade={"persist"}, mappedBy="contact")
      * @ORM\OrderBy({"id" = "DESC"})
      * @Annotation\Exclude()
-     *
      * @var \Event\Entity\Registration|Collections\ArrayCollection()
      */
     private $registration;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Badge\Badge", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Event\Entity\Badge\Badge|Collections\ArrayCollection()
      */
     private $badge;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Badge\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Event\Entity\Badge\Contact|Collections\ArrayCollection()
      */
     private $badgeContact;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Event\Entity\Booth\Contact[]|Collections\ArrayCollection()
      */
     private $boothContact;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Booth", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Booth[]|Collections\ArrayCollection()
      */
     private $projectBooth;
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\Booth", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Organisation\Entity\Booth[]|Collections\ArrayCollection()
      */
     private $organisationBooth;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Booth\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Event\Entity\Booth\Financial|Collections\ArrayCollection()
      */
     private $boothFinancial;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Note", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\Note[]|Collections\ArrayCollection()
      */
     private $note;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Selection", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\Selection|Collections\ArrayCollection()
      */
     private $selection;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Contact\Entity\SelectionContact|Collections\ArrayCollection()
      */
     private $selectionContact;
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Mailing\Entity\Contact|Collections\ArrayCollection()
      */
     private $mailingContact;
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Mailing\Entity\Mailing|Collections\ArrayCollection()
      */
     private $mailing;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Result\Result|Collections\ArrayCollection()
      */
     private $result;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Workpackage", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Workpackage\Workpackage|Collections\ArrayCollection()
      */
     private $workpackage;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Workpackage\Document|Collections\ArrayCollection()
      */
     private $workpackageDocument;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Message", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Idea\Message|Collections\ArrayCollection()
      */
     private $ideaMessage;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Evaluation\Evaluation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Evaluation\Evaluation|Collections\ArrayCollection()
      */
     private $evaluation;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Calendar", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Calendar\Entity\Calendar|Collections\ArrayCollection()
      */
     private $calendar;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Calendar\Entity\Contact|Collections\ArrayCollection()
      */
     private $calendarContact;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Calendar\Entity\Document|Collections\ArrayCollection()
      */
     private $calendarDocument;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\ScheduleContact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Calendar\Entity\ScheduleContact|Collections\ArrayCollection()
      */
     private $scheduleContact;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Review\Review|Collections\ArrayCollection()
      */
     private $projectReview;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\VersionReview", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Review\VersionReview|Collections\ArrayCollection()
      */
     private $projectVersionReview;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Report\Report", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Report\Report|Collections\ArrayCollection()
      */
     private $projectReport;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Calendar\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Calendar\Review|Collections\ArrayCollection()
      */
     private $projectCalendarReview;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Invite|Collections\ArrayCollection()
      */
     private $invite;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
-     *
      * @var \Project\Entity\Invite|Collections\ArrayCollection()
      */
     private $inviteContact;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Loi|Collections\ArrayCollection()
      */
     private $loi;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Affiliation\Entity\Doa|Collections\ArrayCollection()
      */
     private $affiliationDoa;
     /**
      * @ORM\OneToMany(targetEntity="Admin\Entity\Permit\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Admin\Entity\Permit\Contact
      */
     private $permitContact;
     /**
      * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Admin\Entity\Session
      */
     private $session;
     /**
      * @ORM\OneToOne(targetEntity="Member\Entity\Member", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
-     *
      * @var \Member\Entity\Member
      */
     private $member;
     /**
      * @ORM\OneToOne(targetEntity="Member\Entity\Presidium", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Member\Entity\Presidium
      */
     private $presidium;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Exhibition\Voter", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude();
-     *
      * @var \Event\Entity\Exhibition\Voter[]|Collections\ArrayCollection
      */
     private $voter;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Exhibition\Tour", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Event\Entity\Exhibition\Tour|Collections\ArrayCollection()
      */
     private $tour;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Exhibition\Tour", cascade={"persist"}, mappedBy="tourContact")
      * @Annotation\Exclude();
-     *
      * @var \Event\Entity\Exhibition\Tour[]|Collections\ArrayCollection
      */
     private $tourContact;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="receiver")
      * @Annotation\Exclude();
-     *
      * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
      */
     private $doaReminderReceiver;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="sender")
      * @Annotation\Exclude();
-     *
      * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
      */
     private $doaReminderSender;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="receiver")
      * @Annotation\Exclude();
-     *
      * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
      */
     private $loiReminderReceiver;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="sender")
      * @Annotation\Exclude();
-     *
      * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
      */
     private $loiReminderSender;
     /**
      * @ORM\OneToMany(targetEntity="News\Entity\Blog", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \News\Entity\Blog|Collections\ArrayCollection()
      */
     private $blog;
     /**
      * @ORM\OneToMany(targetEntity="News\Entity\Message", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \News\Entity\Message|Collections\ArrayCollection()
      */
     private $blogMessage;
     /**
      * @ORM\OneToMany(targetEntity="Member\Entity\Election\Candidate", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Member\Entity\Election\Candidate[]|Collections\ArrayCollection()
      */
     private $candidate;
     /**
      * @ORM\OneToMany(targetEntity="Member\Entity\Election\Electorate", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var \Member\Entity\Election\Electorate[]|Collections\ArrayCollection()
      */
     private $electorate;
@@ -816,9 +719,21 @@ class Contact extends EntityAbstract implements
      * @var \Project\Entity\Achievement[]|Collections\ArrayCollection()
      */
     private $achievement;
+    /**
+     * @ORM\OneToMany(targetEntity="Ambassador\Entity\Document\Comment", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Ambassador\Entity\Document\Comment[]|Collections\ArrayCollection()
+     */
+    private $comment;
+    /**
+     * @ORM\OneToMany(targetEntity="\Ambassador\Entity\Ambassador", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Ambassador\Entity\Ambassador[]|Collections\ArrayCollection()
+     */
+    private $ambassador;
 
     /**
-     * Class constructor.
+     * Class constructor
      */
     public function __construct()
     {
@@ -902,7 +817,9 @@ class Contact extends EntityAbstract implements
         $this->invoiceLog = new Collections\ArrayCollection();
         $this->reminder = new Collections\ArrayCollection();
         $this->achievement = new Collections\ArrayCollection();
-        /*
+        $this->comment = new Collections\ArrayCollection();
+        $this->ambassador = new Collections\ArrayCollection();
+        /**
          * Set these values for legacy reasons
          */
         $this->messenger = self::MESSENGER_ACTIVE;
@@ -910,7 +827,7 @@ class Contact extends EntityAbstract implements
 
     /**
      * Although an alternative does not have a clear hash, we can create one based on the id;
-     * Don't use the elements from underlying objects since this gives confusion.
+     * Don't use the elements from underlying objects since this gives confusion
      *
      * @return string
      */
@@ -920,7 +837,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Magic Getter.
+     * Magic Getter
      *
      * @param $property
      *
@@ -932,10 +849,12 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Magic Setter.
+     * Magic Setter
      *
      * @param $property
      * @param $value
+     *
+     * @return void
      */
     public function __set($property, $value)
     {
@@ -944,7 +863,7 @@ class Contact extends EntityAbstract implements
 
     /**
      * toString returns the id (for form population)
-     * Revert to the contactService to have the full parsed name.
+     * Revert to the contactService to have the full parsed name
      *
      * @return string
      */
@@ -954,7 +873,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Returns the string identifier of the Resource.
+     * Returns the string identifier of the Resource
      *
      * @return string
      */
@@ -964,11 +883,12 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Set input filter.
+     * Set input filter
      *
      * @param InputFilterInterface $inputFilter
      * @return void
      *
+     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -1107,7 +1027,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Needed for the hydration of form elements.
+     * Needed for the hydration of form elements
      *
      * @return array
      */
@@ -1144,7 +1064,7 @@ class Contact extends EntityAbstract implements
 
     /**
      * Returns the string identifier of the Role.
-     * We return the access here since that entity keeps the access roles.
+     * We return the access here since that entity keeps the access roles
      *
      * We return only the name of the roles as this is sufficient
      *
@@ -1160,16 +1080,15 @@ class Contact extends EntityAbstract implements
         return $accessRoles;
     }
 
-
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $optInCollection
      */
     public function addOptIn(Collections\Collection $optInCollection)
     {
         foreach ($optInCollection as $optIn) {
-            /*
+            /**
              * No extra reference
              * $optIn->contact = $this;
              * here as we use the collections here in a different way
@@ -1179,7 +1098,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $optInCollection
      */
@@ -1191,7 +1110,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $accessCollection
      */
@@ -1204,7 +1123,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $accessCollection
      */
@@ -1216,7 +1135,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $addressCollection
      */
@@ -1229,7 +1148,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $addressCollection
      */
@@ -1241,7 +1160,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $phoneCollection
      */
@@ -1254,7 +1173,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $phoneCollection
      */
@@ -1266,7 +1185,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $photoCollection
      */
@@ -1279,7 +1198,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $photoCollection
      */
@@ -1291,7 +1210,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $communityCollection
      */
@@ -1304,7 +1223,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * New function needed to make the hydrator happy.
+     * New function needed to make the hydrator happy
      *
      * @param Collections\Collection $communityCollection
      */
@@ -1420,8 +1339,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param int $id
-     *
+     * @param  int $id
      * @return void|UserInterface
      */
     public function setId($id)
@@ -1570,8 +1488,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param int $state
-     *
+     * @param  int $state
      * @return null|UserInterface
      */
     public function setState($state)
@@ -1610,7 +1527,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Get displayName, or the emailaddress.
+     * Get displayName, or the emailaddress
      *
      * @return string
      */
@@ -1622,7 +1539,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Get displayName, or the emailaddress.
+     * Get displayName, or the emailaddress
      *
      * @return string
      */
@@ -1638,7 +1555,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * Get displayName, or the email address.
+     * Get displayName, or the email address
      *
      * @return string
      */
@@ -1679,7 +1596,26 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return \Admin\Entity\Access|Collections\ArrayCollection
+     * @param \Doctrine\Common\Collections\ArrayCollection $ambassador
+     * @return $this
+     */
+    public function setAmbassador($ambassador)
+    {
+        $this->ambassador = $ambassador;
+
+        return $this;
+    }
+
+    /**
+     * @return \Ambassador\Entity\Ambassador[]\Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAmbassador()
+    {
+        return $this->ambassador;
+    }
+
+    /**
+     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
      */
     public function getAccess()
     {
@@ -1687,7 +1623,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Admin\Entity\Access|Collections\ArrayCollection $access
+     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
      * @return Contact
      */
     public function setAccess($access)
@@ -2268,7 +2204,14 @@ class Contact extends EntityAbstract implements
     }
 
     /**
+     * <<<<<<< HEAD
      * @return Photo|Collections\ArrayCollection
+    =======
+     * Find the photo. We need to apply a trick here since the photo has a 1:n relation in the entities to avoid
+     * the eager loading of the BLOB but we know that we only have 1 photo
+     *
+     * @return \Contact\Entity\Photo|Collections\ArrayCollection()
+    >>>>>>> 4e42fd94feff37f0fab400ee572dbbbcb1923fa3
      */
     public function getPhoto()
     {
@@ -3330,4 +3273,24 @@ class Contact extends EntityAbstract implements
 
         return $this;
     }
+
+    /**
+     * @return \Ambassador\Entity\Document\Comment[]|Collections\ArrayCollection
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param  \Ambassador\Entity\Document\Comment[]|Collections\ArrayCollection
+     * @return $this
+     */
+    public function setComment(Collections\ArrayCollection $comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
 }
