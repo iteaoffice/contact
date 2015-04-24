@@ -166,9 +166,35 @@ class Contact extends EntityRepository
     }
 
     /**
+     * @param bool $onlyPublic
+     * @return Contact[]
+     */
+    public function findContactsWithActiveProfile($onlyPublic)
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->innerJoin('c.profile', 'p');
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
+        $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('p.description'));
+        //Exclude the empty descriptions
+        $queryBuilder->andWhere('p.description <> ?2');
+        $queryBuilder->setParameter(2, '');
+
+        if ($onlyPublic) {
+            $queryBuilder->andWhere('p.visible <> ?1');
+            $queryBuilder->setParameter(1, Entity\Profile::VISIBLE_HIDDEN);
+        }
+
+        $queryBuilder->setMaxResults(20);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
      *  Returns true of false depending if a contact is a community member.
      *
-     * @param Entity\Contact                    $contact
+     * @param Entity\Contact $contact
      * @param Options\CommunityOptionsInterface $options
      *
      * @return boolean|null
@@ -285,8 +311,8 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('c', 'middlename', 'middleName');
         $resultSetMap->addFieldResult('c', 'lastname', 'lastName');
         $query = $this->getEntityManager()->createNativeQuery(
-            "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (".
-            $sql->getQuery().") AND date_end IS NULL",
+            "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (" .
+            $sql->getQuery() . ") AND date_end IS NULL",
             $resultSetMap
         );
 
@@ -361,7 +387,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Entity\Contact $contact
-     * @param SelectionSql   $sql
+     * @param SelectionSql $sql
      *
      * @return bool
      */
@@ -375,7 +401,7 @@ class Contact extends EntityRepository
              contact_id
              FROM contact
              WHERE contact_id
-             IN (".$sql->getQuery().") AND contact_id = ".$contact->getId(),
+             IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
             $resultSetMap
         );
 
@@ -386,7 +412,7 @@ class Contact extends EntityRepository
      * This is basic search for contacts (based on the name, and email.
      *
      * @param string $searchItem
-     * @param int    $maxResults
+     * @param int $maxResults
      *
      * @return Entity\Contact[]
      */
@@ -405,9 +431,9 @@ class Contact extends EntityRepository
                         $qb->expr()->concat($qb->expr()->literal(' '), 'c.middleName'),
                         $qb->expr()->concat($qb->expr()->literal(' '), 'c.lastName')
                     ),
-                    $qb->expr()->literal("%".$searchItem."%")
+                    $qb->expr()->literal("%" . $searchItem . "%")
                 ),
-                $qb->expr()->like('c.email', $qb->expr()->literal("%".$searchItem."%"))
+                $qb->expr()->like('c.email', $qb->expr()->literal("%" . $searchItem . "%"))
             )
         );
 

@@ -51,7 +51,7 @@
         <label class="col-sm-3 control-label">{{ translate("txt-branch-form-label") }}</label>
 
         <div class="col-sm-9">
-            <select class="form-control" id="branch"></select>
+            <select class="form-control" name="contact_organisation[branch]" id="branch"></select>
 
             <p class="help-block">{{ translate("txt-form-branch-explanation") }}</p>
         </div>
@@ -95,7 +95,6 @@
 
 {{ form().closeTag()|raw }}
 
-
 <script type="text/javascript">
 
 
@@ -116,9 +115,15 @@
 
                         $('.branch').show();
                         /**
-                         * Store the branchValue because the options are rebuilt everytime
+                         * Store the branchValue because the options are rebuilt every time
+                         * Use the branch val on form change, and take the current branch in any other case
                          */
-                        var branchValue = ($("#branch").val());
+                        if ($("#branch").val() != null) {
+                            var branchValue = $("#branch").val()
+                        } else {
+                            var branchValue = '{{ contactService.contact.contactOrganisation.branch|raw }}';
+                        }
+
                         $('#branch').find('option').remove();
 
 

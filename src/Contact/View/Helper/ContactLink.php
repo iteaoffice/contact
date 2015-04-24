@@ -27,10 +27,10 @@ class ContactLink extends LinkAbstract
 
     /**
      * @param Contact $contact
-     * @param string  $action
-     * @param string  $show
-     * @param null    $page
-     * @param null    $alternativeShow
+     * @param string $action
+     * @param string $show
+     * @param null $hash
+     * @param null $alternativeShow
      *
      * @return string
      *
@@ -41,21 +41,21 @@ class ContactLink extends LinkAbstract
         Contact $contact = null,
         $action = 'view',
         $show = 'name',
-        $page = null,
+        $hash = null,
         $alternativeShow = null
     ) {
         $this->setContact($contact);
         $this->setAction($action);
         $this->setShow($show);
-        $this->setPage($page);
+        $this->setHash($hash);
 
         /*
-         * If the alternativeShow is not null, use it an otherwise take the page
+         * If the alternativeShow is not null, use it an otherwise take the hash
          */
         if (!is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
-            $this->setAlternativeShow($page);
+            $this->setAlternativeShow($hash);
         }
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())
         ) {
@@ -66,8 +66,7 @@ class ContactLink extends LinkAbstract
             'paginator' => $this->getAlternativeShow(),
             'name'      => $this->getContact()->getDisplayName(),
         ]);
-        $this->addRouterParam('page', $page);
-
+        $this->addRouterParam('hash', $hash);
         $this->addRouterParam('id', $this->getContact()->getId());
 
         return $this->createLink();
@@ -83,26 +82,18 @@ class ContactLink extends LinkAbstract
             case 'list':
                 $this->setRouter('zfcadmin/contact-manager/list');
                 $this->setText($this->translate("txt-list-contacts"));
-
-                foreach (
-                    $this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key => $param
-                ) {
-                    $this->addQueryParam($key, $param);
-                }
-                $this->addQueryParam('page', $this->getPage());
-
                 break;
             case 'edit-admin':
                 $this->setRouter('zfcadmin/contact-manager/edit');
                 $this->setText(sprintf($this->translate("txt-edit-contact-%s"), $this->getContact()->getDisplayName()));
                 break;
             case 'profile':
-                $this->setRouter('contact/profile');
+                $this->setRouter('community/contact/profile/view');
                 $this->setText(sprintf($this->translate("txt-view-profile-of-contact-%s"),
                     $this->getContact()->getDisplayName()));
                 break;
             case 'signature':
-                $this->setRouter('contact/signature');
+                $this->setRouter('community/contact/signature');
                 $this->setText(sprintf($this->translate("txt-view-signature-of-contact-%s"),
                     $this->getContact()->getDisplayName()));
                 break;
@@ -121,7 +112,7 @@ class ContactLink extends LinkAbstract
                     $this->getContact()->getDisplayName()));
                 break;
             case 'edit-profile':
-                $this->setRouter('contact/profile-edit');
+                $this->setRouter('community/contact/profile/edit');
                 $this->setText($this->translate("txt-edit-your-profile"));
                 break;
             case 'change-password':

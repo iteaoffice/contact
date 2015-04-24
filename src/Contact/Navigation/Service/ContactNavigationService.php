@@ -142,32 +142,32 @@ class ContactNavigationService extends NavigationServiceAbstract
     {
         $publicNavigation = $this->getNavigation();
         switch ($this->getRouteMatch()->getMatchedRouteName()) {
-            case 'contact/profile':
+            case 'community/contact/profile/view':
                 $publicNavigation->addPage([
-                    'label'  => $this->translate("txt-home"),
-                    'route'  => 'home',
+                    'label'  => $this->translate("txt-community"),
+                    'route'  => 'community',
                     'active' => true,
                     'router' => $this->getRouter(),
                     'pages'  => [
                         [
                             'label'  => $this->translate("txt-account-information"),
-                            'route'  => 'contact/profile',
+                            'route'  => 'community/contact/profile/view',
                             'active' => true,
                             'router' => $this->getRouter(),
                         ],
                     ],
                 ]);
                 break;
-            case 'contact/profile-edit':
+            case 'community/contact/profile/edit':
                 $publicNavigation->addPage([
-                    'label'  => $this->translate("txt-home"),
-                    'route'  => 'home',
+                    'label'  => $this->translate("txt-community"),
+                    'route'  => 'community',
                     'active' => true,
                     'router' => $this->getRouter(),
                     'pages'  => [
                         [
                             'label'  => $this->translate("txt-account-information"),
-                            'route'  => 'contact/profile',
+                            'route'  => 'community/contact/profile/view',
                             'active' => true,
                             'router' => $this->getRouter(),
                             'pages'  => [
@@ -182,6 +182,31 @@ class ContactNavigationService extends NavigationServiceAbstract
                     ],
                 ]);
                 break;
+            case 'community/contact/signature':
+                $publicNavigation->addPage([
+                    'label'  => $this->translate("txt-community"),
+                    'route'  => 'community',
+                    'active' => false,
+                    'router' => $this->getRouter(),
+                    'pages'  => [
+                        [
+                            'label'  => $this->translate("txt-account-information"),
+                            'route'  => 'community/contact/profile/view',
+                            'active' => true,
+                            'router' => $this->getRouter(),
+                            'pages'  => [
+                                [
+                                    'label'  => $this->translate("txt-signature"),
+                                    'route'  => $this->getRouteMatch()->getMatchedRouteName(),
+                                    'router' => $this->getRouter(),
+                                    'active' => true,
+                                ],
+                            ],
+                        ],
+                    ],
+                ]);
+                break;
+
             case 'contact/change-password':
                 $publicNavigation->addPage([
                     'label'  => $this->translate("txt-home"),

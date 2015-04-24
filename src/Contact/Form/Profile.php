@@ -229,18 +229,20 @@ class Profile extends Form
                 'type'       => EntityRadio::class,
                 'name'       => 'organisation_id',
                 'options'    => [
-                    'label'           => _("txt-organisation"),
-                    'object_manager'  => $entityManager,
-                    'target_class'    => Organisation::class,
-                    'find_method'     => [
+                    'label'                     => _("txt-organisation"),
+                    'disable_inarray_validator' => true,
+                    'object_manager'            => $entityManager,
+                    'target_class'              => Organisation::class,
+                    'find_method'               => [
                         'name'   => 'findOrganisationByEmailAddress',
                         'params' => [
                             'criteria'     => [],
-                            'emailAddress' => 'info+2@thalesgroup.com',
+//                            'emailAddress' => 'johan.van.der.heide@iteaasdfsadfsd3.org',
+                            'emailAddress' => $contact->getEmail(),
                             'orderBy'      => ['organisation' => 'ASC']
                         ],
                     ],
-                    'label_generator' => function (Organisation $organisation) {
+                    'label_generator'           => function (Organisation $organisation) {
                         return sprintf("%s (%s)", $organisation->getOrganisation(),
                             $organisation->getCountry()->getCountry());
                     },

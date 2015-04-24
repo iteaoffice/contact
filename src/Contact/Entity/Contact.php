@@ -329,6 +329,12 @@ class Contact extends EntityAbstract implements
      */
     private $organisationLog;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Partner", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Idea\Partner|Collections\ArrayCollection()
+     */
+    private $ideaPartner;
+    /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Affiliation\Entity\Affiliation|Collections\ArrayCollection()
@@ -572,31 +578,43 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Invite|Collections\ArrayCollection()
+     * @var \Project\Entity\Invite[]|Collections\ArrayCollection()
      */
     private $inviteContact;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Invite", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Idea\Invite[]|Collections\ArrayCollection()
+     */
+    private $ideaInvite;
+    /**
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Invite", cascade={"persist"}, mappedBy="inviteContact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Idea\Invite[]|Collections\ArrayCollection()
+     */
+    private $ideaInviteContact;
+    /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Loi|Collections\ArrayCollection()
+     * @var \Affiliation\Entity\Loi[]|Collections\ArrayCollection()
      */
     private $loi;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Doa|Collections\ArrayCollection()
+     * @var \Affiliation\Entity\Doa[]|Collections\ArrayCollection()
      */
     private $affiliationDoa;
     /**
      * @ORM\OneToMany(targetEntity="Admin\Entity\Permit\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Admin\Entity\Permit\Contact
+     * @var \Admin\Entity\Permit\Contact[]
      */
     private $permitContact;
     /**
      * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Admin\Entity\Session
+     * @var \Admin\Entity\Session[]
      */
     private $session;
     /**
@@ -783,6 +801,7 @@ class Contact extends EntityAbstract implements
         $this->idea = new Collections\ArrayCollection();
         $this->favouriteIdea = new Collections\ArrayCollection();
         $this->ideaMessage = new Collections\ArrayCollection();
+        $this->ideaPartner = new Collections\ArrayCollection();
         $this->blog = new Collections\ArrayCollection();
         $this->blogMessage = new Collections\ArrayCollection();
         $this->evaluation = new Collections\ArrayCollection();
@@ -879,7 +898,7 @@ class Contact extends EntityAbstract implements
      */
     public function getResourceId()
     {
-        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
+        return sprintf("%s:%s", $this->get("underscore_full_entity_name"), $this->getId());
     }
 
     /**
@@ -1535,7 +1554,7 @@ class Contact extends EntityAbstract implements
     {
         $name = sprintf("%s %s", $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return !empty($name) ? $name : $this->email;
+        return !empty(trim($name)) ? $name : $this->email;
     }
 
     /**
@@ -1564,6 +1583,17 @@ class Contact extends EntityAbstract implements
         $name = sprintf("%s, %s", trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
         return !empty($name) ? $name : $this->email;
+    }
+
+    /**
+     * Although an alternative does not have a clear hash, we can create one based on the id;
+     * Don't use the elements from underlying objects since this gives confusion.
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return hash('sha512', $this->id . self::HASH_KEY);
     }
 
     /**
@@ -2800,7 +2830,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Invite
+     * @return Collections\ArrayCollection|\Project\Entity\Invite[]
      */
     public function getInvite()
     {
@@ -2808,7 +2838,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Invite $invite
+     * @param Collections\ArrayCollection|\Project\Entity\Invite[] $invite
      * @return Contact
      */
     public function setInvite($invite)
@@ -2819,7 +2849,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Invite
+     * @return Collections\ArrayCollection|\Project\Entity\Invite[]
      */
     public function getInviteContact()
     {
@@ -2827,12 +2857,50 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Invite $inviteContact
+     * @param Collections\ArrayCollection|\Project\Entity\Invite[] $inviteContact
      * @return Contact
      */
     public function setInviteContact($inviteContact)
     {
         $this->inviteContact = $inviteContact;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Idea\Invite[]
+     */
+    public function getIdeaInvite()
+    {
+        return $this->ideaInvite;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInvite
+     * @return Contact
+     */
+    public function setIdeaInvite($ideaInvite)
+    {
+        $this->ideaInvite = $ideaInvite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Idea\Invite[]
+     */
+    public function getIdeaInviteContact()
+    {
+        return $this->ideaInviteContact;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInviteContact
+     * @return Contact
+     */
+    public function setIdeaInviteContact($ideaInviteContact)
+    {
+        $this->ideaInviteContact = $ideaInviteContact;
 
         return $this;
     }
@@ -3283,8 +3351,8 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  \Ambassador\Entity\Document\Comment[]|Collections\ArrayCollection
-     * @return $this
+     * @param  Collections\ArrayCollection $comment
+     * @return Contact
      */
     public function setComment(Collections\ArrayCollection $comment)
     {
@@ -3292,5 +3360,25 @@ class Contact extends EntityAbstract implements
 
         return $this;
     }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Idea\Partner
+     */
+    public function getIdeaPartner()
+    {
+        return $this->ideaPartner;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Partner $ideaPartner
+     * @return Contact
+     */
+    public function setIdeaPartner($ideaPartner)
+    {
+        $this->ideaPartner = $ideaPartner;
+
+        return $this;
+    }
+
 
 }

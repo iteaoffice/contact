@@ -42,20 +42,6 @@ return [
              */
             'BjyAuthorize\Guard\Route' => [
                 [
-                    'route'     => 'contact/edit',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
-                    'route'     => 'community/contact/profile',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
-                    'route' => 'community/contact',
-                    'roles' => [strtolower(Access::ACCESS_USER)]
-                ],
-                [
                     'route'     => 'community/contact/facebook/facebook',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => FacebookAssertion::class
@@ -66,22 +52,32 @@ return [
                     'assertion' => FacebookAssertion::class
                 ],
                 [
-                    'route'     => 'contact/profile',
+                    'route'     => 'community/contact/profile/edit',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/profile-edit',
+                    'route'     => 'community/contact/profile/view',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/profile/contact',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/signature',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/search',
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class
                 ],
                 [
                     'route'     => 'contact/get-address-by-type',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
-                    'route'     => 'community/contact/profile-edit',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -103,17 +99,7 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/signature',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
                     'route'     => 'contact/photo',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
-                    'route'     => 'contact/search',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -166,22 +152,38 @@ return [
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
-                ['route' => 'zfcadmin/selection-manager/list',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/new',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/edit',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/view',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/list',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/new',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/edit',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/view',
-                 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                [
+                    'route' => 'zfcadmin/selection-manager/list',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/new',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/edit',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/view',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/list',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/new',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/edit',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/view',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
             ],
         ],
     ],

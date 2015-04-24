@@ -1,0 +1,29 @@
+{% do headTitle().append(translate("txt-profile")) %}
+{% do headTitle().append(contactService.parseFullname()) %}
+
+<h1 class="home">{{ translate("%s")|format(contactService.parseFullname()) }}</h1>
+
+<div class="row">
+
+
+    <div class="col-md-10">
+
+        <h2>{{ translate("txt-personal-profile") }}</h2>
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-name") }}</dt>
+            <dd>{{ contactService.parseFullName() }}
+            <dt>{{ translate("txt-organisation") }}</dt>
+            <dd>{{ contactService.parseOrganisation() }}</dd>
+            <dt>{{ translate("txt-country") }}</dt>
+            <dd>{{ contactService.parseCountry() }}</dd>
+            <dt>{{ translate("txt-expertise") }}</dt>
+            <dd>{{ contactService.contact.profile.description|raw }}</dd>
+        </dl>
+    </div>
+
+    <div class="col-md-2">
+        {{ contactPhoto(contactService.contact) }}
+    </div>
+</div>
+
+{{ ideaInviteLink(null, 'invite','button', null, contactService.contact) }}

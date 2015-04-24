@@ -6,12 +6,16 @@
 <h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
 
 <ul id="tab" class="nav nav-tabs">
-    <li><a href="{{ url('contact/profile') }}#profile">{{ translate("txt-profile")|capitalize }}</a></li>
-    <li><a href="{{ url('contact/profile') }}#organisation">{{ translate("txt-organisation")|capitalize }}</a></li>
-    <li><a href="{{ url('contact/profile') }}#event">{{ translate("txt-events")|capitalize }}</a></li>
-    <li><a href="{{ url('contact/profile') }}#updates">{{ translate("txt-updates")|capitalize }}</a></li>
+    <li><a href="{{ url('community/contact/profile/view') }}#profile">{{ translate("txt-profile")|capitalize }}</a></li>
+    <li>
+        <a href="{{ url('community/contact/profile/view') }}#organisation">{{ translate("txt-organisation")|capitalize }}</a>
+    </li>
+    <li><a href="{{ url('community/contact/profile/view') }}#event">{{ translate("txt-events")|capitalize }}</a></li>
+    <li><a href="{{ url('community/contact/profile/view') }}#updates">{{ translate("txt-updates")|capitalize }}</a></li>
     {% if isAllowed('zfcadmin', 'index') %}
-        <li class="active"><a href="{{ url('contact/signature') }}">{{ translate("txt-signature")|capitalize }}</a></li>
+        <li class="active"><a
+                    href="{{ url('community/contact/signature') }}">{{ translate("txt-signature")|capitalize }}</a>
+        </li>
     {% endif %}
 </ul>
 
@@ -25,11 +29,9 @@
             Copy the HTML content of the signature below and save this at the following location (Windows 8.1)
             <code>C:\Users\%username%\AppData\Roaming\Microsoft\Signatures\itea.htm</code>
 
-            In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and replies
+            In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and
+            replies
         </p>
-
-        <h2>{{ translate("txt-preview") }}</h2>
-        {% include 'contact/partial/signature' %}
 
 
         <h2>{{ translate("txt-source") }}</h2>
@@ -47,5 +49,5 @@
                 font-family: Courier, monospace;
             }
         </style>
-    </>
+    </div>
 </div>

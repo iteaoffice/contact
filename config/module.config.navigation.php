@@ -16,6 +16,15 @@ return [
                 'label' => _("txt-contacts"),
                 'route' => 'community/contact',
             ],
+            'project' => [
+                'pages' => [
+                    'partner-search' => [
+                        'order' => 60,
+                        'label' => _("txt-partner-search"),
+                        'route' => 'community/contact/search'
+                    ]
+                ],
+            ],
         ],
         'admin'     => [
             // And finally, here is where we define our page hierarchy

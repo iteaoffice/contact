@@ -99,6 +99,7 @@ class Profile extends EntityAbstract
      * @Annotation\Attributes({"array":"hideForOthersTemplates"})
      * @Annotation\Attributes({"label":"txt-hide-for-others", "required":"true"})
      * @Annotation\Required(true)
+     * @deprecated
      *
      * @var integer
      */
@@ -235,14 +236,6 @@ class Profile extends EntityAbstract
                     array(
                         'name'       => 'hideForOthers',
                         'required'   => false,
-                        'validators' => array(
-                            array(
-                                'name'    => 'InArray',
-                                'options' => array(
-                                    'haystack' => array_keys($this->getHideForOthersTemplates()),
-                                ),
-                            ),
-                        ),
                     )
                 )
             );
@@ -251,14 +244,6 @@ class Profile extends EntityAbstract
                     array(
                         'name'       => 'hidePhoto',
                         'required'   => false,
-                        'validators' => array(
-                            array(
-                                'name'    => 'InArray',
-                                'options' => array(
-                                    'haystack' => array_keys($this->getHidePhotoTemplates()),
-                                ),
-                            ),
-                        ),
                     )
                 )
             );
@@ -267,14 +252,6 @@ class Profile extends EntityAbstract
                     array(
                         'name'       => 'visible',
                         'required'   => true,
-                        'validators' => array(
-                            array(
-                                'name'    => 'InArray',
-                                'options' => array(
-                                    'haystack' => array_keys($this->getVisibleTemplates()),
-                                ),
-                            ),
-                        ),
                     )
                 )
             );

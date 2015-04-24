@@ -164,6 +164,16 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * Find all contacts which are active and have a CV.
+     * @param bool $onlyPublic
+     * @return Contact[]
+     */
+    public function findContactsWithActiveProfile($onlyPublic = true)
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContactsWithActiveProfile($onlyPublic);
+    }
+
+    /**
      * Find a list of upcoming meetings were a user has not registered yet.
      *
      * @return \Event\Entity\Meeting\Meeting[]
@@ -240,7 +250,7 @@ class ContactService extends ServiceAbstract
          * Return null when the contactOrganisation is not defined
          */
         if (!$this->hasOrganisation()) {
-            return;
+            return null;
         }
 
         return $this->getOrganisationService()->setOrganisationId($this->getContact()->getContactOrganisation()
@@ -255,7 +265,7 @@ class ContactService extends ServiceAbstract
     public function parseCountry()
     {
         if (!$this->hasOrganisation()) {
-            return;
+            return null;
         }
 
         return $this->getContact()->getContactOrganisation()->getOrganisation()->getCountry();
@@ -438,9 +448,9 @@ class ContactService extends ServiceAbstract
         $contact = new Contact();
         $contact->setEmail($emailAddress);
         $contact->setFirstName($firstName);
-        if (strlen($middleName) > 0)
-
+        if (strlen($middleName) > 0) {
             $contact->setMiddleName($middleName);
+        }
 
         $contact->setLastName($lastName);
         //Fix the gender
@@ -958,6 +968,8 @@ class ContactService extends ServiceAbstract
      * As input we use the corresponding contact entity and the array containing the
      * contactOrganisation information.
      *
+     * $contactOrganisation['organisation_id'] > id of the chosen organisation
+     * $contactOrganisation['branch'] > value of the branch (if an organisation_id is chosen)
      * $contactOrganisation['organisation'] > Name of the organisation
      * $contactOrganisation['country'] > CountryId
      *
@@ -968,82 +980,117 @@ class ContactService extends ServiceAbstract
         Contact $contact,
         array $contactOrganisation
     ) {
-        /*
-         * Don't do anything when the organisationName = empty
+        /**
+         * Find the current contactOrganisation, or create a new one if this empty (in case of a new contact)
          */
-        if (empty($contactOrganisation['organisation'])) {
-            return;
-        }
-        $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
         $currentContactOrganisation = $contact->getContactOrganisation();
         if (is_null($currentContactOrganisation)) {
             $currentContactOrganisation = new ContactOrganisation();
             $currentContactOrganisation->setContact($contact);
         }
-        /*
-         * Look for the organisation based on the name (without branch) and country + email
+
+
+        /**
+         * The trigger for this update is the presence of a $contactOrganisation['organisation_id'].
+         * If this value != 0, a choice has been made from the dropdown and we will then take the branch as default
          */
-        $organisation = $this->getOrganisationService()
-            ->findOrganisationByNameCountryAndEmailAddress(
-                $contactOrganisation['organisation'],
-                $country,
-                $contact->getEmail());
-        $organisationFound = false;
-        /*
-         * We did not find an organisation, so we need to create it
-         */
-        if (sizeof($organisation) === 0) {
-            $organisation = new Organisation();
-            $organisation->setOrganisation($contactOrganisation['organisation']);
-            $organisation->setCountry($country);
-            $organisation->setType($this->organisationService->findEntityById('Type', 0)); //Unknown
-            /*
-             * Add the domain in the saved domains for this new company
-             * Use the ZF2 EmailAddress validator to strip the hostname out of the EmailAddress
-             */
-            $validateEmail = new EmailAddress();
-            $validateEmail->isValid($contact->getEmail());
-            $organisationWeb = new Web();
-            $organisationWeb->setOrganisation($organisation);
-            $organisationWeb->setWeb($validateEmail->hostname);
-            $organisationWeb->setMain(Web::MAIN);
-            $this->getOrganisationService()->newEntity($organisationWeb);
+        if (isset($contactOrganisation['organisation_id']) && $contactOrganisation['organisation_id'] != '0') {
+            $organisation = $this->getOrganisationService()->findEntityById('organisation',
+                (int)$contactOrganisation['organisation_id']);
             $currentContactOrganisation->setOrganisation($organisation);
-        } else {
-            $foundOrganisation = null;
-            /*
-             * Go over the found organisation to match the branching
-             */
-            foreach ($organisation as $foundOrganisation) {
-                /*
-                 * Stop when we have found an exact match and reset the branch if set
-                 */
-                if ($foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
-                    && $country->getId() === $foundOrganisation->getCountry()->getId()
-                ) {
-                    $currentContactOrganisation->setOrganisation($foundOrganisation);
-                    $currentContactOrganisation->setBranch(null);
-                    break;
-                }
-                if (!$organisationFound) {
-                    //Create only a branch when the name is found and the given names do not match in length
-                    if (strlen($foundOrganisation->getOrganisation()) < (strlen($contactOrganisation['organisation'])
-                            - strlen($currentContactOrganisation->getBranch()))
-                    ) {
-                        $currentContactOrganisation->setBranch(
-                            str_replace($contactOrganisation['organisation'],
-                                '~',
-                                $foundOrganisation->getOrganisation()
-                            )
-                        );
-                    }
-                    /*
-                     * We have found a match of the organisation in the string and
-                     */
-                    $organisationFound = true;
-                }
+            //Take te branch form the form element ($contactOrganisation['branch'])
+            if (!empty($contactOrganisation['branch'])) {
+                $currentContactOrganisation->setBranch($contactOrganisation['branch']);
+            } else {
+                $currentContactOrganisation->setBranch(null);
             }
-            $currentContactOrganisation->setOrganisation($foundOrganisation);
+
+        } else {
+            /**
+             * No organisation is chosen (the option 'none of the above' was taken, so create the organisation
+             */
+
+            /**
+             * Don't do anything when the organisationName = empty
+             */
+            if (empty($contactOrganisation['organisation'])) {
+                return;
+            }
+            $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+
+            /*
+             * Look for the organisation based on the name (without branch) and country + email
+             */
+            $organisation = $this->getOrganisationService()
+                ->findOrganisationByNameCountryAndEmailAddress(
+                    $contactOrganisation['organisation'],
+                    $country,
+                    $contact->getEmail());
+            $organisationFound = false;
+            /*
+             * We did not find an organisation, so we need to create it
+             */
+            if (sizeof($organisation) === 0) {
+                $organisation = new Organisation();
+                $organisation->setOrganisation($contactOrganisation['organisation']);
+                $organisation->setCountry($country);
+                $organisation->setType($this->organisationService->findEntityById('Type', 0)); //Unknown
+                /*
+                 * Add the domain in the saved domains for this new company
+                 * Use the ZF2 EmailAddress validator to strip the hostname out of the EmailAddress
+                 */
+                $validateEmail = new EmailAddress();
+                $validateEmail->isValid($contact->getEmail());
+                $organisationWeb = new Web();
+                $organisationWeb->setOrganisation($organisation);
+                $organisationWeb->setWeb($validateEmail->hostname);
+                $organisationWeb->setMain(Web::MAIN);
+
+                //Skip hostnames like yahoo, gmail and hotmail, outlook
+                if (!in_array($organisation->getWeb(), ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com'])) {
+                    $this->getOrganisationService()->newEntity($organisationWeb);
+                }
+
+                $currentContactOrganisation->setOrganisation($organisation);
+            } else {
+                $foundOrganisation = null;
+                /*
+                 * Go over the found organisation to match the branching
+                 */
+                foreach ($organisation as $foundOrganisation) {
+                    /*
+                     * Stop when we have found an exact match and reset the branch if set
+                     */
+                    if ($foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
+                        && $country->getId() === $foundOrganisation->getCountry()->getId()
+                    ) {
+                        $currentContactOrganisation->setOrganisation($foundOrganisation);
+                        $currentContactOrganisation->setBranch(null);
+                        break;
+                    }
+                    if (!$organisationFound) {
+                        //Create only a branch when the name is found and the given names do not match in length
+                        if (strlen($foundOrganisation->getOrganisation()) < (strlen($contactOrganisation['organisation'])
+                                - strlen($currentContactOrganisation->getBranch()))
+                        ) {
+                            $currentContactOrganisation->setBranch(
+                                str_replace($contactOrganisation['organisation'],
+                                    '~',
+                                    $foundOrganisation->getOrganisation()
+                                )
+                            );
+                        } else {
+                            //Reset the branch otherwise
+                            $currentContactOrganisation->setBranch(null);
+                        }
+                        /*
+                         * We have found a match of the organisation in the string and
+                         */
+                        $organisationFound = true;
+                    }
+                }
+                $currentContactOrganisation->setOrganisation($foundOrganisation);
+            }
         }
         $this->updateEntity($currentContactOrganisation);
     }

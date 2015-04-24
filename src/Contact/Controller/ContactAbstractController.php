@@ -24,7 +24,7 @@ use Deeplink\Service\DeeplinkServiceAwareInterface;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use General\Service\GeneralServiceAwareInterface;
-use Zend\I18n\View\Helper\Translate;
+use Search\Service\SearchService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
@@ -60,6 +60,10 @@ abstract class ContactAbstractController extends AbstractActionController implem
      * @var EmailService
      */
     protected $emailService;
+    /**
+     * @var SearchService
+     */
+    protected $searchService;
     /**
      * @var DeeplinkService
      */
@@ -213,6 +217,25 @@ abstract class ContactAbstractController extends AbstractActionController implem
     public function setEmailService(EmailService $emailService)
     {
         $this->emailService = $emailService;
+
+        return $this;
+    }
+
+    /**
+     * @return SearchService
+     */
+    public function getSearchService()
+    {
+        return $this->searchService;
+    }
+
+    /**
+     * @param SearchService $searchService
+     * @return ContactAbstractController
+     */
+    public function setSearchService(SearchService $searchService)
+    {
+        $this->searchService = $searchService;
 
         return $this;
     }

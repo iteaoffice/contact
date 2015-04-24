@@ -102,17 +102,17 @@ class ContactOrganisation extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'branch',
                         'required' => false,
-                        'filters'  => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                    )
+                        'filters'  => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -128,11 +128,11 @@ class ContactOrganisation extends EntityAbstract
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'community' => $this->community,
             'contact'   => $this->contact,
             'type'      => $this->type,
-        );
+        ];
     }
 
     public function populate()

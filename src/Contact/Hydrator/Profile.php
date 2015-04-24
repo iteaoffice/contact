@@ -12,7 +12,6 @@ namespace Contact\Hydrator;
 
 use Contact\Entity\Address;
 use Contact\Entity\AddressType;
-use Contact\Entity\Community;
 use Contact\Entity\Contact;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
@@ -47,21 +46,20 @@ class Profile extends DoctrineObject
                 $values['address']['country'] = $address->getCountry();
             }
         }
-        unset($values['community']);
-        foreach ($object->getCommunity() as $community) {
-            $values['community'][$community->getType()->getId()]['community'] = $community->getCommunity();
-        }
+
         unset($values['profile']);
         $values['profile']['visible'] = !is_null($object->getProfile()) ? $object->getProfile()->getVisible() : null;
         $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription() : null;
         /*
-         * Set the contact organisation
+         * Set the contact organisation, this will be taken from the contact_organisation item and can be userd
+         * to pre-fill the values
          */
         $contactService = new ContactService();
         $contactService->setContact($object);
         if (!is_null($object->getContactOrganisation())) {
             $organisationService = new OrganisationService();
             $organisationService->setOrganisation($object->getContactOrganisation()->getOrganisation());
+            $values['contact_organisation']['organisation_id'] = $organisationService->getOrganisation()->getId();
             $values['contact_organisation']['organisation'] = $organisationService->parseOrganisationWithBranch(
                 $contactService->getContact()->getContactOrganisation()->getBranch()
             );
@@ -97,8 +95,7 @@ class Profile extends DoctrineObject
             $data['phone'] = [];
             $addressInfo = $data['address'];
             $data['address'] = [];
-            $communityData = $data['community'];
-            $data['community'] = [];
+
             /**
              * @var $contact Contact
              */
@@ -156,21 +153,7 @@ class Profile extends DoctrineObject
                     $contact->getAddress()->add($address);
                 }
             }
-            /*
-             * Reformat the community
-             */
-            $contact->getCommunity()->clear();
-            foreach ($communityData as $communityTypeId => $communityInfo) {
-                if (!empty($communityInfo['community'])) {
-                    $community = new Community();
-                    $community->setType(
-                        $this->objectManager->getReference('General\Entity\CommunityType', $communityTypeId)
-                    );
-                    $community->setCommunity($communityInfo['community']);
-                    $community->setContact($contact);
-                    $contact->getCommunity()->add($community);
-                }
-            }
+
             $contact->getProfile()->setContact($contact);
 
             return $contact;
