@@ -744,9 +744,15 @@ class Contact extends EntityAbstract implements
      */
     private $comment;
     /**
-     * @ORM\OneToMany(targetEntity="\Ambassador\Entity\Ambassador", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Ambassador\Entity\Announcement", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Ambassador\Entity\Ambassador[]|Collections\ArrayCollection()
+     * @var \Ambassador\Entity\Announcement[]|Collections\ArrayCollection()
+     */
+    private $announcement;
+    /**
+     * @ORM\OneToOne(targetEntity="\Ambassador\Entity\Ambassador", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Ambassador\Entity\Ambassador
      */
     private $ambassador;
 
