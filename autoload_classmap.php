@@ -74,6 +74,7 @@ return array(
     'Contact\Controller\ContactManagerController'                  => __DIR__ . '/src/Contact/Controller/ContactManagerController.php',
     'Contact\Controller\SelectionManagerController'                => __DIR__ . '/src/Contact/Controller/SelectionManagerController.php',
     'Contact\Controller\FacebookController'                        => __DIR__ . '/src/Contact/Controller/FacebookController.php',
+    'Contact\Controller\ProfileController'                         => __DIR__ . '/src/Contact/Controller/ProfileController.php',
     'Contact\Controller\ContactAbstractController'                 => __DIR__ . '/src/Contact/Controller/ContactAbstractController.php',
     'Contact\Version\Version'                                      => __DIR__ . '/src/Contact/Version/Version.php',
     'Contact\Form\Import'                                          => __DIR__ . '/src/Contact/Form/Import.php',
