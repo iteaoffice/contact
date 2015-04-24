@@ -844,6 +844,7 @@ class Contact extends EntityAbstract implements
         $this->achievement = new Collections\ArrayCollection();
         $this->comment = new Collections\ArrayCollection();
         $this->ambassador = new Collections\ArrayCollection();
+        $this->announcement = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -3386,5 +3387,22 @@ class Contact extends EntityAbstract implements
         return $this;
     }
 
+    /**
+     * @return \Ambassador\Entity\Announcement[]|Collections\ArrayCollection
+     */
+    public function getAnnouncement()
+    {
+        return $this->announcement;
+    }
 
+    /**
+     * @param \Ambassador\Entity\Announcement[]|Collections\ArrayCollection $announcement
+     * @return Contact
+     */
+    public function setAnnouncement($announcement)
+    {
+        $this->announcement = $announcement;
+
+        return $this;
+    }
 }
