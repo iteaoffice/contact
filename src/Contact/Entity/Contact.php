@@ -624,6 +624,12 @@ class Contact extends EntityAbstract implements
      */
     private $member;
     /**
+     * @ORM\OneToOne(targetEntity="Member\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @Annotation\Exclude()
+     * @var \Member\Entity\Applicant
+     */
+    private $applicant;
+    /**
      * @ORM\OneToOne(targetEntity="Member\Entity\Presidium", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Member\Entity\Presidium
@@ -3007,6 +3013,26 @@ class Contact extends EntityAbstract implements
         return $this;
     }
 
+
+
+    /**
+     * @return \Member\Entity\Applicant
+     */
+    public function getApplicant()
+    {
+        return $this->applicant;
+    }
+
+    /**
+     * @param \Member\Entity\Applicant $applicant
+     * @return Contact
+     */
+    public function setApplicant($applicant)
+    {
+        $this->applicant = $applicant;
+
+        return $this;
+    }
     /**
      * @return \Member\Entity\Presidium
      */
