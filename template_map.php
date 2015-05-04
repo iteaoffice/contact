@@ -35,6 +35,7 @@ return array(
     'contact/partial/signature/itea'            => __DIR__ . '//view/contact/partial/signature/itea.twig',
     'contact/partial/signature/artemisia'       => __DIR__ . '//view/contact/partial/signature/artemisia.twig',
     'contact/partial/optin-button'              => __DIR__ . '//view/contact/partial/optin-button.twig',
+    'contact/partial/signature_itea'            => __DIR__ . '//view/contact/partial/signature_itea.twig',
     'contact/partial/pagination-control'        => __DIR__ . '//view/contact/partial/pagination-control.twig',
     'contact/facebook/facebook'                 => __DIR__ . '//view/contact/facebook/facebook.twig',
     'contact/facebook/send-message'             => __DIR__ . '//view/contact/facebook/send-message.twig',
