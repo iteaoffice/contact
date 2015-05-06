@@ -92,7 +92,7 @@ class ContactController extends ContactAbstractController implements
             ->addHeaderLine(
                 'Content-Type: ' . $photo->getContentType()->getContentType()
             )
-            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+            ->addHeaderLine('Content-Length: ' . (string) strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -105,7 +105,7 @@ class ContactController extends ContactAbstractController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int)$this->params()->fromQuery('optInId');
+        $optInId = (int) $this->params()->fromQuery('optInId');
 
         /*
          * We do not specify the enable, so we give the result
@@ -153,7 +153,6 @@ class ContactController extends ContactAbstractController implements
         return $viewModel;
     }
 
-
     /**
      * Function to save the password of the user.
      */
@@ -188,10 +187,10 @@ class ContactController extends ContactAbstractController implements
      */
     public function getAddressByTypeAction()
     {
-        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get(
+        $contactId = (int) $this->getEvent()->getRequest()->getQuery()->get(
             'id'
         );
-        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get(
+        $typeId = (int) $this->getEvent()->getRequest()->getQuery()->get(
             'typeId'
         );
 

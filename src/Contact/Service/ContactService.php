@@ -165,7 +165,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * Find all contacts which are active and have a CV.
-     * @param bool $onlyPublic
+     * @param  bool      $onlyPublic
      * @return Contact[]
      */
     public function findContactsWithActiveProfile($onlyPublic = true)
@@ -209,7 +209,7 @@ class ContactService extends ServiceAbstract
 
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -384,7 +384,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param Contact $contact
-     * @param int $type
+     * @param int     $type
      *
      * @return null|Phone
      */
@@ -885,13 +885,13 @@ class ContactService extends ServiceAbstract
                     return 'Unknown';
                 }
 
-                return (string)$contact->getContactOrganisation()->getOrganisation();
+                return (string) $contact->getContactOrganisation()->getOrganisation();
             case Facebook::DISPLAY_COUNTRY:
                 if (is_null($contact->getContactOrganisation())) {
                     return 'Unknown';
                 }
 
-                return (string)$contact->getContactOrganisation()->getOrganisation()->getCountry();
+                return (string) $contact->getContactOrganisation()->getOrganisation()->getCountry();
             case Facebook::DISPLAY_PROJECTS:
 
                 $projects = [];
@@ -921,7 +921,7 @@ class ContactService extends ServiceAbstract
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed.
      *
-     * @param string $password
+     * @param string  $password
      * @param Contact $contact
      *
      * @return bool
@@ -974,7 +974,7 @@ class ContactService extends ServiceAbstract
      * $contactOrganisation['country'] > CountryId
      *
      * @param Contact $contact
-     * @param array $contactOrganisation
+     * @param array   $contactOrganisation
      */
     public function updateContactOrganisation(
         Contact $contact,
@@ -989,14 +989,13 @@ class ContactService extends ServiceAbstract
             $currentContactOrganisation->setContact($contact);
         }
 
-
         /**
          * The trigger for this update is the presence of a $contactOrganisation['organisation_id'].
          * If this value != 0, a choice has been made from the dropdown and we will then take the branch as default
          */
         if (isset($contactOrganisation['organisation_id']) && $contactOrganisation['organisation_id'] != '0') {
             $organisation = $this->getOrganisationService()->findEntityById('organisation',
-                (int)$contactOrganisation['organisation_id']);
+                (int) $contactOrganisation['organisation_id']);
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
             if (!empty($contactOrganisation['branch'])) {
@@ -1016,7 +1015,7 @@ class ContactService extends ServiceAbstract
             if (empty($contactOrganisation['organisation'])) {
                 return;
             }
-            $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+            $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
 
             /*
              * Look for the organisation based on the name (without branch) and country + email
@@ -1096,8 +1095,8 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param int $optInId
-     * @param bool $enable
+     * @param int     $optInId
+     * @param bool    $enable
      * @param Contact $contact
      */
     public function updateOptInForContact(
@@ -1117,7 +1116,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param int $optInId
+     * @param int     $optInId
      * @param Contact $contact
      *
      * @return OptIn

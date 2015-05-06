@@ -27,10 +27,10 @@ class ContactLink extends LinkAbstract
 
     /**
      * @param Contact $contact
-     * @param string $action
-     * @param string $show
-     * @param null $hash
-     * @param null $alternativeShow
+     * @param string  $action
+     * @param string  $show
+     * @param null    $hash
+     * @param null    $alternativeShow
      *
      * @return string
      *
