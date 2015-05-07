@@ -72,8 +72,10 @@
                     <dt>{{ translate("txt-position") }}</dt>
                     <dd>{{ contactService.contact.position }}</dd>
                 {% endif %}
-                <dt>{{ translate("txt-general-description") }}</dt>
-                <dd>{{ organisationService.organisation.description|raw }}</dd>
+                {% if organisationService.organisation.description|length > 0 %}
+                    <dt>{{ translate("txt-general-description") }}</dt>
+                    <dd>{{ organisationService.organisation.description|raw }}</dd>
+                {% endif %}
             </dl>
         {% else %}
             {{ ztbalert().info(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}

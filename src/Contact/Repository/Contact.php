@@ -186,7 +186,7 @@ class Contact extends EntityRepository
             $queryBuilder->setParameter(1, Entity\Profile::VISIBLE_HIDDEN);
         }
 
-        $queryBuilder->setMaxResults(20);
+        //        $queryBuilder->setMaxResults(20);
 
         return $queryBuilder->getQuery()->getResult();
     }

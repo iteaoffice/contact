@@ -14,6 +14,7 @@ use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
 use General\Service\EmailServiceAwareInterface;
+use Organisation\Service\OrganisationServiceAwareInterface;
 use Search\Service\SearchServiceAwareInterface;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use Zend\Validator\File\ImageSize;
@@ -29,7 +30,8 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  */
 class ProfileController extends ContactAbstractController implements
     EmailServiceAwareInterface,
-    SearchServiceAwareInterface
+    SearchServiceAwareInterface,
+    OrganisationServiceAwareInterface
 {
 
 
@@ -81,6 +83,12 @@ class ProfileController extends ContactAbstractController implements
         $contactService = $this->getContactService()->setContactId(
             $this->zfcUserAuthentication()->getIdentity()->getId()
         );
+
+        $branches = [];
+        if ($contactService->hasOrganisation()) {
+            $branches = $this->getOrganisationService()->findBranchesByOrganisation($contactService->getContact()->getContactOrganisation()->getOrganisation());
+        }
+
         $data = array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
@@ -155,12 +163,13 @@ class ProfileController extends ContactAbstractController implements
                 _("txt-profile-has-successfully-been-updated")
             );
 
-            return $this->redirect()->toRoute('contact/profile');
+            return $this->redirect()->toRoute('community/contact/profile/view');
         }
 
         return new ViewModel(
             [
                 'form'           => $form,
+                'branches'       => $branches,
                 'contactService' => $contactService,
                 'fullVersion'    => true,
             ]

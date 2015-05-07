@@ -92,6 +92,11 @@ class ContactLink extends LinkAbstract
                 $this->setText(sprintf($this->translate("txt-view-profile-of-contact-%s"),
                     $this->getContact()->getDisplayName()));
                 break;
+            case 'profile-contact':
+                $this->setRouter('community/contact/profile/contact');
+                $this->setText(sprintf($this->translate("txt-view-profile-of-contact-%s"),
+                    $this->getContact()->getDisplayName()));
+                break;
             case 'signature':
                 $this->setRouter('community/contact/signature');
                 $this->setText(sprintf($this->translate("txt-view-signature-of-contact-%s"),

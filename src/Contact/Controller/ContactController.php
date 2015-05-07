@@ -258,10 +258,15 @@ class ContactController extends ContactAbstractController implements
             $form->setData($this->getRequest()->getQuery()->toArray());
         }
 
+
+
+        $page = $this->getRequest()->getQuery()->get('page', 1);
         $paginator = new Paginator(new SolariumPaginator($client, $this->getSearchService()->getQuery()));
-        $paginator->setCurrentPageNumber($this->getRequest()->getQuery()->get('page', 1));
-        $paginator->setItemCountPerPage(16);
-        $paginator->setPageRange($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage());
+        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 16);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
+
+
 
         //Create the search-result as url-field (without the page)
         $params = $this->getRequest()->getQuery()->toArray();

@@ -14,6 +14,8 @@
             <dd>{{ contactService.parseFullName() }}
             <dt>{{ translate("txt-organisation") }}</dt>
             <dd>{{ contactService.parseOrganisation() }}</dd>
+            <dt>{{ translate("txt-organisation-type") }}</dt>
+            <dd>{{ contactService.findOrganisationService.organisation.type }}</dd>
             <dt>{{ translate("txt-country") }}</dt>
             <dd>{{ contactService.parseCountry() }}</dd>
             <dt>{{ translate("txt-expertise") }}</dt>

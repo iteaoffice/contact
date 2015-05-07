@@ -24,6 +24,7 @@ use Deeplink\Service\DeeplinkServiceAwareInterface;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use General\Service\GeneralServiceAwareInterface;
+use Organisation\Service\OrganisationService;
 use Search\Service\SearchService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
@@ -52,6 +53,10 @@ abstract class ContactAbstractController extends AbstractActionController implem
      * @var ContactService
      */
     protected $contactService;
+    /**
+     * @var OrganisationService
+     */
+    protected $organisationService;
     /**
      * @var GeneralService
      */
@@ -256,4 +261,25 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
         return $translate($string);
     }
+
+    /**
+     * @return OrganisationService
+     */
+    public function getOrganisationService()
+    {
+        return $this->organisationService;
+    }
+
+    /**
+     * @param OrganisationService $organisationService
+     * @return ContactAbstractController
+     */
+    public function setOrganisationService(OrganisationService $organisationService)
+    {
+        $this->organisationService = $organisationService;
+
+        return $this;
+    }
+
+
 }

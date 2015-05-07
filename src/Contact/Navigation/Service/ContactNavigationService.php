@@ -40,14 +40,47 @@ class ContactNavigationService extends NavigationServiceAbstract
          * Add a route for the facebook
          */
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'community') !== false) {
+            $this->includeFacebooksInNavigation();
             $this->updateCommunityNavigation();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function updateCommunityNavigation()
+    {
+        switch ($this->getRouteMatch()->getMatchedRouteName()) {
+            case 'community/contact/profile/contact':
+                /**
+                 * We are on a profile-page. Squeeze the profile page in the path
+                 */
+                $communityNavigation = $this->getNavigation()->findOneBy('route', 'community/contact/search');
+
+                //Find the contact
+                $contact = $this->getContactService()->findEntityById('contact',
+                    $this->getRouteMatch()->getParam('id'));
+
+                $communityNavigation->addPage(
+                    [
+                        'label'  => sprintf($this->translate("txt-profile-of-%s"), $contact->getDisplayName()),
+                        'route'  => 'community/contact/profile/contact',
+                        'active' => true,
+                        'router' => $this->getRouter(),
+                        'params' => [
+                            'id'   => $contact->getId(),
+                            'hash' => $contact->parseHash()
+                        ]
+                    ]
+                );
+                break;
         }
     }
 
     /**
      * Update the navigation for a publication.
      */
-    public function updateCommunityNavigation()
+    public function includeFacebooksInNavigation()
     {
         $communityNavigation = $this->getNavigation()->findOneBy('route', 'community/contact');
 

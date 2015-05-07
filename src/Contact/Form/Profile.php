@@ -230,25 +230,32 @@ class Profile extends Form
                 'name'       => 'organisation_id',
                 'options'    => [
                     'label'                     => _("txt-organisation"),
+                    'label_options'             => [
+                        'disable_html_escape' => true
+                    ],
+                    'escape'                    => false,
                     'disable_inarray_validator' => true,
                     'object_manager'            => $entityManager,
                     'target_class'              => Organisation::class,
                     'find_method'               => [
-                        'name'   => 'findOrganisationByEmailAddress',
+                        'name'   => 'findOrganisationForProfileEditByContact',
                         'params' => [
-                            'criteria'     => [],
-//                            'emailAddress' => 'johan.van.der.heide@iteaasdfsadfsd3.org',
-                            'emailAddress' => $contact->getEmail(),
-                            'orderBy'      => ['organisation' => 'ASC']
+                            'criteria' => [],
+                            'contact'  => $contact
                         ],
                     ],
                     'label_generator'           => function (Organisation $organisation) {
-                        return sprintf("%s (%s)", $organisation->getOrganisation(),
-                            $organisation->getCountry()->getCountry());
+                        if (!is_null($organisation->getCountry())) {
+                            return sprintf("%s (%s)", $organisation->getOrganisation(),
+                                $organisation->getCountry()->getCountry());
+                        } else {
+                            return sprintf("%s", $organisation->getOrganisation());
+                        }
+
                     },
                 ],
                 'attributes' => [
-                    'required' => true,
+                    'required' => !is_null($contact->getContactOrganisation()), //Only required when a contact has an organisation
                     'id'       => 'organisation',
                 ],
             ]

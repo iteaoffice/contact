@@ -588,6 +588,12 @@ class Contact extends EntityAbstract implements
      */
     private $ideaInvite;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\MessageBoard", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Idea\MessageBoard[]|Collections\ArrayCollection()
+     */
+    private $ideaMessageBoard;
+    /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Idea\Invite[]|Collections\ArrayCollection()
@@ -808,6 +814,7 @@ class Contact extends EntityAbstract implements
         $this->favouriteIdea = new Collections\ArrayCollection();
         $this->ideaMessage = new Collections\ArrayCollection();
         $this->ideaPartner = new Collections\ArrayCollection();
+        $this->ideaMessageBoard = new Collections\ArrayCollection();
         $this->blog = new Collections\ArrayCollection();
         $this->blogMessage = new Collections\ArrayCollection();
         $this->evaluation = new Collections\ArrayCollection();
@@ -3402,6 +3409,25 @@ class Contact extends EntityAbstract implements
     public function setAnnouncement($announcement)
     {
         $this->announcement = $announcement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[]
+     */
+    public function getIdeaMessageBoard()
+    {
+        return $this->ideaMessageBoard;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[] $ideaMessageBoard
+     * @return Contact
+     */
+    public function setIdeaMessageBoard($ideaMessageBoard)
+    {
+        $this->ideaMessageBoard = $ideaMessageBoard;
 
         return $this;
     }
