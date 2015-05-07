@@ -16,7 +16,7 @@ return [
                 'label' => _("txt-contacts"),
                 'route' => 'community/contact',
             ],
-            'project' => [
+            'idea'    => [
                 'pages' => [
                     'partner-search' => [
                         'order' => 60,
