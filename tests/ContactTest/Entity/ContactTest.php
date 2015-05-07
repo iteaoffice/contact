@@ -52,7 +52,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $this->serviceManager = Bootstrap::getServiceManager();
         $this->entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
 
-
     }
 
     public function provider()
@@ -72,7 +71,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
             [$contact]
         ];
     }
-
 
     public function testCanCreateEntity()
     {
@@ -106,7 +104,6 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $contact->username = 'test';
         $this->assertEquals('test', $contact->username);
     }
-
 
     public function testHasInputFilter()
     {

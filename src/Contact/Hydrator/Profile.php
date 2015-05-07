@@ -75,7 +75,7 @@ class Profile extends DoctrineObject
     /**
      * Hydrate $object with the provided $data.
      *
-     * @param array $data
+     * @param array   $data
      * @param Contact $object
      *
      * @return object

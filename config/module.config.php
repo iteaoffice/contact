@@ -11,7 +11,6 @@ namespace Contact;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
-use Contact\Controller;
 use Contact\Form\View\Helper\ContactFormElement;
 use Contact\Service\SelectionService;
 use Contact\Service\ServiceInitializer;

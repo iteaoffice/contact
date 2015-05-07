@@ -630,6 +630,12 @@ class Contact extends EntityAbstract implements
      */
     private $member;
     /**
+     * @ORM\OneToOne(targetEntity="Member\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @Annotation\Exclude()
+     * @var \Member\Entity\Applicant
+     */
+    private $applicant;
+    /**
      * @ORM\OneToOne(targetEntity="Member\Entity\Presidium", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Member\Entity\Presidium
@@ -902,7 +908,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**
@@ -918,7 +924,7 @@ class Contact extends EntityAbstract implements
     /**
      * Set input filter
      *
-     * @param InputFilterInterface $inputFilter
+     * @param  InputFilterInterface $inputFilter
      * @return void
      *
      * @return void
@@ -1372,7 +1378,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int $id
+     * @param  int                $id
      * @return void|UserInterface
      */
     public function setId($id)
@@ -1521,7 +1527,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int $state
+     * @param  int                $state
      * @return null|UserInterface
      */
     public function setState($state)
@@ -1629,7 +1635,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param string $department
+     * @param  string  $department
      * @return Contact
      */
     public function setDepartment($department)
@@ -1640,7 +1646,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Doctrine\Common\Collections\ArrayCollection $ambassador
+     * @param  \Doctrine\Common\Collections\ArrayCollection $ambassador
      * @return $this
      */
     public function setAmbassador($ambassador)
@@ -1667,7 +1673,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
+     * @param  \Admin\Entity\Access[]|Collections\ArrayCollection $access
      * @return Contact
      */
     public function setAccess($access)
@@ -1686,7 +1692,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Email|Collections\ArrayCollection $emailAddress
+     * @param  Email|Collections\ArrayCollection $emailAddress
      * @return Contact
      */
     public function setEmailAddress($emailAddress)
@@ -1705,7 +1711,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param CV $cv
+     * @param  CV      $cv
      * @return Contact
      */
     public function setCv($cv)
@@ -1724,7 +1730,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Address|Collections\ArrayCollection $address
+     * @param  Address|Collections\ArrayCollection $address
      * @return Contact
      */
     public function setAddress($address)
@@ -1743,7 +1749,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Phone|Collections\ArrayCollection $phone
+     * @param  Phone|Collections\ArrayCollection $phone
      * @return Contact
      */
     public function setPhone($phone)
@@ -1762,7 +1768,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Web|Collections\ArrayCollection $web
+     * @param  Web|Collections\ArrayCollection $web
      * @return Contact
      */
     public function setWeb($web)
@@ -1781,7 +1787,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param OptIn|Collections\ArrayCollection $optIn
+     * @param  OptIn|Collections\ArrayCollection $optIn
      * @return Contact
      */
     public function setOptIn($optIn)
@@ -1800,7 +1806,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Project $project
+     * @param  Collections\ArrayCollection|\Project\Entity\Project $project
      * @return Contact
      */
     public function setProject($project)
@@ -1819,7 +1825,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Rationale $rationale
+     * @param  Collections\ArrayCollection|\Project\Entity\Rationale $rationale
      * @return Contact
      */
     public function setRationale($rationale)
@@ -1838,7 +1844,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Description\Description $projectDescription
+     * @param  Collections\ArrayCollection|\Project\Entity\Description\Description $projectDescription
      * @return Contact
      */
     public function setProjectDescription($projectDescription)
@@ -1857,7 +1863,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Version\Version $projectVersion
+     * @param  Collections\ArrayCollection|\Project\Entity\Version\Version $projectVersion
      * @return Contact
      */
     public function setProjectVersion($projectVersion)
@@ -1876,7 +1882,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Document\Document $projectDocument
+     * @param  Collections\ArrayCollection|\Project\Entity\Document\Document $projectDocument
      * @return Contact
      */
     public function setProjectDocument($projectDocument)
@@ -1895,7 +1901,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Dnd|Collections\ArrayCollection $dnd
+     * @param  Dnd|Collections\ArrayCollection $dnd
      * @return Contact
      */
     public function setDnd($dnd)
@@ -1914,7 +1920,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Program\Entity\Nda $nda
+     * @param  Collections\ArrayCollection|\Program\Entity\Nda $nda
      * @return Contact
      */
     public function setNda($nda)
@@ -1933,7 +1939,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Program\Entity\RoadmapLog $roadmapLog
+     * @param  Collections\ArrayCollection|\Program\Entity\RoadmapLog $roadmapLog
      * @return Contact
      */
     public function setRoadmapLog($roadmapLog)
@@ -1952,7 +1958,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Program\Entity\Doa $programDoa
+     * @param  Collections\ArrayCollection|\Program\Entity\Doa $programDoa
      * @return Contact
      */
     public function setProgramDoa($programDoa)
@@ -1971,7 +1977,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param OpenId|Collections\ArrayCollection $openId
+     * @param  OpenId|Collections\ArrayCollection $openId
      * @return Contact
      */
     public function setOpenId($openId)
@@ -1990,7 +1996,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param ContactOrganisation $contactOrganisation
+     * @param  ContactOrganisation $contactOrganisation
      * @return Contact
      */
     public function setContactOrganisation($contactOrganisation)
@@ -2009,7 +2015,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Program\Entity\Domain $domain
+     * @param  Collections\ArrayCollection|\Program\Entity\Domain $domain
      * @return Contact
      */
     public function setDomain($domain)
@@ -2028,7 +2034,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $idea
+     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Idea $idea
      * @return Contact
      */
     public function setIdea($idea)
@@ -2047,7 +2053,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $favouriteIdea
+     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Idea $favouriteIdea
      * @return Contact
      */
     public function setFavouriteIdea($favouriteIdea)
@@ -2066,7 +2072,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Program\Entity\Technology $technology
+     * @param  Collections\ArrayCollection|\Program\Entity\Technology $technology
      * @return Contact
      */
     public function setTechnology($technology)
@@ -2085,7 +2091,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Log $organisationLog
+     * @param  Collections\ArrayCollection|\Organisation\Entity\Log $organisationLog
      * @return Contact
      */
     public function setOrganisationLog($organisationLog)
@@ -2104,7 +2110,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection $affiliation
+     * @param  \Affiliation\Entity\Affiliation|Collections\ArrayCollection $affiliation
      * @return Contact
      */
     public function setAffiliation($affiliation)
@@ -2123,7 +2129,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Log|Collections\ArrayCollection $affiliationLog
+     * @param  \Affiliation\Entity\Log|Collections\ArrayCollection $affiliationLog
      * @return Contact
      */
     public function setAffiliationLog($affiliationLog)
@@ -2142,7 +2148,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Financial|Collections\ArrayCollection $financial
+     * @param  \Affiliation\Entity\Financial|Collections\ArrayCollection $financial
      * @return Contact
      */
     public function setFinancial($financial)
@@ -2161,7 +2167,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Description|Collections\ArrayCollection $affiliationDescription
+     * @param  \Affiliation\Entity\Description|Collections\ArrayCollection $affiliationDescription
      * @return Contact
      */
     public function setAffiliationDescription($affiliationDescription)
@@ -2180,7 +2186,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Version|Collections\ArrayCollection $affiliationVersion
+     * @param  \Affiliation\Entity\Version|Collections\ArrayCollection $affiliationVersion
      * @return Contact
      */
     public function setAffiliationVersion($affiliationVersion)
@@ -2199,7 +2205,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Invoice $invoice
+     * @param  Collections\ArrayCollection|\Invoice\Entity\Invoice $invoice
      * @return Contact
      */
     public function setInvoice($invoice)
@@ -2218,7 +2224,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Publication\Entity\Publication $publication
+     * @param  Collections\ArrayCollection|\Publication\Entity\Publication $publication
      * @return Contact
      */
     public function setPublication($publication)
@@ -2237,7 +2243,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Publication\Entity\Download $publicationDownload
+     * @param  Collections\ArrayCollection|\Publication\Entity\Download $publicationDownload
      * @return Contact
      */
     public function setPublicationDownload($publicationDownload)
@@ -2263,7 +2269,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Photo|Collections\ArrayCollection $photo
+     * @param  Photo|Collections\ArrayCollection $photo
      * @return Contact
      */
     public function setPhoto($photo)
@@ -2282,7 +2288,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Affiliation|Collections\ArrayCollection $associate
+     * @param  \Affiliation\Entity\Affiliation|Collections\ArrayCollection $associate
      * @return Contact
      */
     public function setAssociate($associate)
@@ -2301,7 +2307,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Program\Entity\Funder $funder
+     * @param  \Program\Entity\Funder $funder
      * @return Contact
      */
     public function setFunder($funder)
@@ -2320,7 +2326,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Deeplink\Entity\Contact|Collections\ArrayCollection $deeplinkContact
+     * @param  \Deeplink\Entity\Contact|Collections\ArrayCollection $deeplinkContact
      * @return Contact
      */
     public function setDeeplinkContact($deeplinkContact)
@@ -2339,7 +2345,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Profile $profile
+     * @param  Profile $profile
      * @return Contact
      */
     public function setProfile($profile)
@@ -2358,7 +2364,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Community|Collections\ArrayCollection $community
+     * @param  Community|Collections\ArrayCollection $community
      * @return Contact
      */
     public function setCommunity($community)
@@ -2377,7 +2383,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Registration $registration
+     * @param  Collections\ArrayCollection|\Event\Entity\Registration $registration
      * @return Contact
      */
     public function setRegistration($registration)
@@ -2396,7 +2402,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Badge\Badge $badge
+     * @param  Collections\ArrayCollection|\Event\Entity\Badge\Badge $badge
      * @return Contact
      */
     public function setBadge($badge)
@@ -2415,7 +2421,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Badge\Contact $badgeContact
+     * @param  Collections\ArrayCollection|\Event\Entity\Badge\Contact $badgeContact
      * @return Contact
      */
     public function setBadgeContact($badgeContact)
@@ -2434,7 +2440,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Booth\Contact[] $boothContact
+     * @param  Collections\ArrayCollection|\Event\Entity\Booth\Contact[] $boothContact
      * @return Contact
      */
     public function setBoothContact($boothContact)
@@ -2453,7 +2459,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Booth[] $projectBooth
+     * @param  Collections\ArrayCollection|\Project\Entity\Booth[] $projectBooth
      * @return Contact
      */
     public function setProjectBooth($projectBooth)
@@ -2472,7 +2478,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
+     * @param  Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
      * @return Contact
      */
     public function setOrganisationBooth($organisationBooth)
@@ -2491,7 +2497,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Booth\Financial $boothFinancial
+     * @param  Collections\ArrayCollection|\Event\Entity\Booth\Financial $boothFinancial
      * @return Contact
      */
     public function setBoothFinancial($boothFinancial)
@@ -2510,7 +2516,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Note[]|Collections\ArrayCollection $note
+     * @param  Note[]|Collections\ArrayCollection $note
      * @return Contact
      */
     public function setNote($note)
@@ -2529,7 +2535,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Selection|Collections\ArrayCollection $selection
+     * @param  Selection|Collections\ArrayCollection $selection
      * @return Contact
      */
     public function setSelection($selection)
@@ -2548,7 +2554,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param SelectionContact|Collections\ArrayCollection $selectionContact
+     * @param  SelectionContact|Collections\ArrayCollection $selectionContact
      * @return Contact
      */
     public function setSelectionContact($selectionContact)
@@ -2567,7 +2573,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Mailing\Entity\Contact $mailingContact
+     * @param  Collections\ArrayCollection|\Mailing\Entity\Contact $mailingContact
      * @return Contact
      */
     public function setMailingContact($mailingContact)
@@ -2586,7 +2592,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Mailing\Entity\Mailing $mailing
+     * @param  Collections\ArrayCollection|\Mailing\Entity\Mailing $mailing
      * @return Contact
      */
     public function setMailing($mailing)
@@ -2605,7 +2611,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Result\Result $result
+     * @param  Collections\ArrayCollection|\Project\Entity\Result\Result $result
      * @return Contact
      */
     public function setResult($result)
@@ -2624,7 +2630,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage $workpackage
+     * @param  Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage $workpackage
      * @return Contact
      */
     public function setWorkpackage($workpackage)
@@ -2643,7 +2649,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Document $workpackageDocument
+     * @param  Collections\ArrayCollection|\Project\Entity\Workpackage\Document $workpackageDocument
      * @return Contact
      */
     public function setWorkpackageDocument($workpackageDocument)
@@ -2662,7 +2668,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Message $ideaMessage
+     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Message $ideaMessage
      * @return Contact
      */
     public function setIdeaMessage($ideaMessage)
@@ -2681,7 +2687,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation $evaluation
+     * @param  Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation $evaluation
      * @return Contact
      */
     public function setEvaluation($evaluation)
@@ -2700,7 +2706,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\Calendar|Collections\ArrayCollection $calendar
+     * @param  \Calendar\Entity\Calendar|Collections\ArrayCollection $calendar
      * @return Contact
      */
     public function setCalendar($calendar)
@@ -2719,7 +2725,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\Contact|Collections\ArrayCollection $calendarContact
+     * @param  \Calendar\Entity\Contact|Collections\ArrayCollection $calendarContact
      * @return Contact
      */
     public function setCalendarContact($calendarContact)
@@ -2738,7 +2744,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\Document|Collections\ArrayCollection $calendarDocument
+     * @param  \Calendar\Entity\Document|Collections\ArrayCollection $calendarDocument
      * @return Contact
      */
     public function setCalendarDocument($calendarDocument)
@@ -2757,7 +2763,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Calendar\Entity\ScheduleContact|Collections\ArrayCollection $scheduleContact
+     * @param  \Calendar\Entity\ScheduleContact|Collections\ArrayCollection $scheduleContact
      * @return Contact
      */
     public function setScheduleContact($scheduleContact)
@@ -2776,7 +2782,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Review\Review $projectReview
+     * @param  Collections\ArrayCollection|\Project\Entity\Review\Review $projectReview
      * @return Contact
      */
     public function setProjectReview($projectReview)
@@ -2795,7 +2801,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Review\VersionReview $projectVersionReview
+     * @param  Collections\ArrayCollection|\Project\Entity\Review\VersionReview $projectVersionReview
      * @return Contact
      */
     public function setProjectVersionReview($projectVersionReview)
@@ -2814,7 +2820,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\Report $projectReport
+     * @param  Collections\ArrayCollection|\Project\Entity\Report\Report $projectReport
      * @return Contact
      */
     public function setProjectReport($projectReport)
@@ -2833,7 +2839,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Calendar\Review $projectCalendarReview
+     * @param  Collections\ArrayCollection|\Project\Entity\Calendar\Review $projectCalendarReview
      * @return Contact
      */
     public function setProjectCalendarReview($projectCalendarReview)
@@ -2852,7 +2858,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Invite[] $invite
+     * @param  Collections\ArrayCollection|\Project\Entity\Invite[] $invite
      * @return Contact
      */
     public function setInvite($invite)
@@ -2871,7 +2877,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Invite[] $inviteContact
+     * @param  Collections\ArrayCollection|\Project\Entity\Invite[] $inviteContact
      * @return Contact
      */
     public function setInviteContact($inviteContact)
@@ -2890,7 +2896,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInvite
+     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInvite
      * @return Contact
      */
     public function setIdeaInvite($ideaInvite)
@@ -2909,7 +2915,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInviteContact
+     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInviteContact
      * @return Contact
      */
     public function setIdeaInviteContact($ideaInviteContact)
@@ -2928,7 +2934,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Loi|Collections\ArrayCollection $loi
+     * @param  \Affiliation\Entity\Loi|Collections\ArrayCollection $loi
      * @return Contact
      */
     public function setLoi($loi)
@@ -2947,7 +2953,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\Doa|Collections\ArrayCollection $affiliationDoa
+     * @param  \Affiliation\Entity\Doa|Collections\ArrayCollection $affiliationDoa
      * @return Contact
      */
     public function setAffiliationDoa($affiliationDoa)
@@ -2966,7 +2972,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Admin\Entity\Permit\Contact $permitContact
+     * @param  \Admin\Entity\Permit\Contact $permitContact
      * @return Contact
      */
     public function setPermitContact($permitContact)
@@ -2985,7 +2991,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Admin\Entity\Session $session
+     * @param  \Admin\Entity\Session $session
      * @return Contact
      */
     public function setSession($session)
@@ -3004,7 +3010,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Member\Entity\Member $member
+     * @param  \Member\Entity\Member $member
      * @return Contact
      */
     public function setMember($member)
@@ -3015,6 +3021,24 @@ class Contact extends EntityAbstract implements
     }
 
     /**
+     * @return \Member\Entity\Applicant
+     */
+    public function getApplicant()
+    {
+        return $this->applicant;
+    }
+
+    /**
+     * @param  \Member\Entity\Applicant $applicant
+     * @return Contact
+     */
+    public function setApplicant($applicant)
+    {
+        $this->applicant = $applicant;
+
+        return $this;
+    }
+    /**
      * @return \Member\Entity\Presidium
      */
     public function getPresidium()
@@ -3023,7 +3047,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Member\Entity\Presidium $presidium
+     * @param  \Member\Entity\Presidium $presidium
      * @return Contact
      */
     public function setPresidium($presidium)
@@ -3042,7 +3066,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
+     * @param  Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
      * @return Contact
      */
     public function setVoter($voter)
@@ -3061,7 +3085,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
+     * @param  Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
      * @return Contact
      */
     public function setTour($tour)
@@ -3080,7 +3104,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
+     * @param  Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
      * @return Contact
      */
     public function setTourContact($tourContact)
@@ -3099,7 +3123,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
+     * @param  \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
      * @return Contact
      */
     public function setDoaReminderReceiver($doaReminderReceiver)
@@ -3118,7 +3142,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderSender
+     * @param  \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderSender
      * @return Contact
      */
     public function setDoaReminderSender($doaReminderSender)
@@ -3137,7 +3161,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
+     * @param  \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
      * @return Contact
      */
     public function setLoiReminderReceiver($loiReminderReceiver)
@@ -3156,7 +3180,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderSender
+     * @param  \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderSender
      * @return Contact
      */
     public function setLoiReminderSender($loiReminderSender)
@@ -3175,7 +3199,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\News\Entity\Blog $blog
+     * @param  Collections\ArrayCollection|\News\Entity\Blog $blog
      * @return Contact
      */
     public function setBlog($blog)
@@ -3194,7 +3218,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\News\Entity\Message $blogMessage
+     * @param  Collections\ArrayCollection|\News\Entity\Message $blogMessage
      * @return Contact
      */
     public function setBlogMessage($blogMessage)
@@ -3213,7 +3237,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Member\Entity\Election\Candidate[] $candidate
+     * @param  Collections\ArrayCollection|\Member\Entity\Election\Candidate[] $candidate
      * @return Contact
      */
     public function setCandidate($candidate)
@@ -3232,7 +3256,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Member\Entity\Election\Electorate[] $electorate
+     * @param  Collections\ArrayCollection|\Member\Entity\Election\Electorate[] $electorate
      * @return Contact
      */
     public function setElectorate($electorate)
@@ -3251,7 +3275,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[] $journalEntry
+     * @param  Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[] $journalEntry
      * @return Contact
      */
     public function setJournalEntry($journalEntry)
@@ -3270,7 +3294,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $journal
+     * @param  Collections\ArrayCollection|\Invoice\Entity\Journal[] $journal
      * @return Contact
      */
     public function setJournal($journal)
@@ -3289,7 +3313,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $organisationJournal
+     * @param  Collections\ArrayCollection|\Invoice\Entity\Journal[] $organisationJournal
      * @return Contact
      */
     public function setOrganisationJournal($organisationJournal)
@@ -3308,7 +3332,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Log[] $invoiceLog
+     * @param  Collections\ArrayCollection|\Invoice\Entity\Log[] $invoiceLog
      * @return Contact
      */
     public function setInvoiceLog($invoiceLog)
@@ -3327,7 +3351,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Reminder[] $reminder
+     * @param  Collections\ArrayCollection|\Invoice\Entity\Reminder[] $reminder
      * @return Contact
      */
     public function setReminder($reminder)
@@ -3346,7 +3370,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Achievement[] $achievement
+     * @param  Collections\ArrayCollection|\Project\Entity\Achievement[] $achievement
      * @return Contact
      */
     public function setAchievement($achievement)
@@ -3384,7 +3408,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Partner $ideaPartner
+     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Partner $ideaPartner
      * @return Contact
      */
     public function setIdeaPartner($ideaPartner)
@@ -3403,7 +3427,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Ambassador\Entity\Announcement[]|Collections\ArrayCollection $announcement
+     * @param  \Ambassador\Entity\Announcement[]|Collections\ArrayCollection $announcement
      * @return Contact
      */
     public function setAnnouncement($announcement)

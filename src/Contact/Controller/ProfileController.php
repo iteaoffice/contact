@@ -34,7 +34,6 @@ class ProfileController extends ContactAbstractController implements
     OrganisationServiceAwareInterface
 {
 
-
     /**
      * @return ViewModel
      */
@@ -99,7 +98,6 @@ class ProfileController extends ContactAbstractController implements
             $contactService->getContact()
         );
         $form->bind($contactService->getContact());
-
 
         /**
          * When the organisation name is typed, we force the value to zero

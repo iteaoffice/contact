@@ -32,7 +32,7 @@ class Profile extends Form
 {
     /**
      * @param ServiceLocatorInterface $serviceLocator
-     * @param Contact $contact
+     * @param Contact                 $contact
      */
     public function __construct(ServiceLocatorInterface $serviceLocator, Contact $contact)
     {
@@ -260,7 +260,6 @@ class Profile extends Form
                 ],
             ]
         );
-
 
         $contactOrganisationFieldSet->add(
             [

@@ -235,7 +235,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
     }
 
     /**
-     * @param SearchService $searchService
+     * @param  SearchService             $searchService
      * @return ContactAbstractController
      */
     public function setSearchService(SearchService $searchService)
