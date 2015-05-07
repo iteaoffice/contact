@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office copyright message placeholder.
  *
@@ -7,7 +8,6 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
-
 namespace Contact\Options;
 
 use Zend\Stdlib\AbstractOptions;
@@ -33,7 +33,7 @@ class ModuleOptions extends AbstractOptions implements
     protected $communityViaProjectParticipation = false;
 
     /**
-     * @param boolean $communityViaMembers
+     * @param bool $communityViaMembers
      *
      * @return CommunityOptionsInterface
      */
@@ -45,7 +45,7 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getCommunityViaMembers()
     {
@@ -53,7 +53,7 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * @param boolean $communityViaProjectParticipation
+     * @param bool $communityViaProjectParticipation
      *
      * @return CommunityOptionsInterface
      */
@@ -65,7 +65,7 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getCommunityViaProjectParticipation()
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office copyright message placeholder.
  *
@@ -7,7 +8,6 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
-
 namespace Contact\View\Helper;
 
 use Contact\Entity\Selection;
@@ -74,11 +74,11 @@ class SelectionLink extends LinkAbstract
         switch ($this->getAction()) {
             case 'new':
                 $this->setRouter('zfcadmin/selection-manager/new');
-                $this->setText($this->translate("txt-new-selection"));
+                $this->setText($this->translate('txt-new-selection'));
                 break;
             case 'list':
                 $this->setRouter('zfcadmin/selection-manager/list');
-                $this->setText($this->translate("txt-list-selections"));
+                $this->setText($this->translate('txt-list-selections'));
 
                 foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery(
                 ) as $key => $param) {
@@ -90,17 +90,17 @@ class SelectionLink extends LinkAbstract
             case 'edit':
                 $this->setRouter('zfcadmin/selection-manager/edit');
                 $this->setText(
-                    sprintf($this->translate("txt-edit-selection-%s"), $this->getSelection()->getSelection())
+                    sprintf($this->translate('txt-edit-selection-%s'), $this->getSelection()->getSelection())
                 );
                 break;
             case 'view':
                 $this->setRouter('zfcadmin/selection-manager/view');
                 $this->setText(
-                    sprintf($this->translate("txt-view-selection-%s"), $this->getSelection()->getSelection())
+                    sprintf($this->translate('txt-view-selection-%s'), $this->getSelection()->getSelection())
                 );
                 break;
             default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
+                throw new \Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));
         }
     }
 
