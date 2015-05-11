@@ -184,6 +184,14 @@ return [
                     'route' => 'zfcadmin/facebook-manager/view',
                     'roles' => [strtolower(Access::ACCESS_OFFICE)]
                 ],
+                [
+                    'route' => 'cli-partner-search-update',
+                    'roles' => []
+                ],
+                [
+                    'route' => 'cli-partner-search-reset',
+                    'roles' => []
+                ],
             ],
         ],
     ],

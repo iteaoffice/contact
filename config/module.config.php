@@ -24,6 +24,7 @@ $config = [
             Controller\ControllerInitializer::class
         ],
         'invokables'   => [
+            Controller\ConsoleController::class          => Controller\ConsoleController::class,
             Controller\ContactController::class          => Controller\ContactController::class,
             Controller\ProfileController::class          => Controller\ProfileController::class,
             Controller\SelectionManagerController::class => Controller\SelectionManagerController::class,
@@ -103,6 +104,7 @@ $config = [
 ];
 $configFiles = [
     __DIR__ . '/module.config.routes.php',
+    __DIR__ . '/module.config.routes.console.php',
     __DIR__ . '/module.config.navigation.php',
     __DIR__ . '/module.config.authorize.php',
     __DIR__ . '/module.config.community.php',

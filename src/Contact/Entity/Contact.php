@@ -284,8 +284,7 @@ class Contact extends EntityAbstract implements
      */
     private $openId;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact",
-     * fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      * @var \Contact\Entity\ContactOrganisation
      */
@@ -856,7 +855,6 @@ class Contact extends EntityAbstract implements
         $this->reminder = new Collections\ArrayCollection();
         $this->achievement = new Collections\ArrayCollection();
         $this->comment = new Collections\ArrayCollection();
-        $this->ambassador = new Collections\ArrayCollection();
         $this->announcement = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
@@ -1646,22 +1644,22 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  \Doctrine\Common\Collections\ArrayCollection $ambassador
-     * @return $this
+     * @return \Ambassador\Entity\Ambassador
+     */
+    public function getAmbassador()
+    {
+        return $this->ambassador;
+    }
+
+    /**
+     * @param \Ambassador\Entity\Ambassador $ambassador
+     * @return Contact
      */
     public function setAmbassador($ambassador)
     {
         $this->ambassador = $ambassador;
 
         return $this;
-    }
-
-    /**
-     * @return \Ambassador\Entity\Ambassador[]\Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getAmbassador()
-    {
-        return $this->ambassador;
     }
 
     /**
