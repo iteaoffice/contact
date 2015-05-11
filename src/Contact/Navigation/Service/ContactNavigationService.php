@@ -249,7 +249,7 @@ class ContactNavigationService extends NavigationServiceAbstract
                     'pages'  => [
                         [
                             'label'  => $this->translate("txt-account-information"),
-                            'route'  => 'contact/profile',
+                            'route'  => 'community/contact/profile/view',
                             'active' => true,
                             'router' => $this->getRouter(),
                             'pages'  => [

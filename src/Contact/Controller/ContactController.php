@@ -175,7 +175,7 @@ class ContactController extends ContactAbstractController implements
                     _("txt-password-successfully-been-updated")
                 );
 
-                return $this->redirect()->toRoute('contact/profile');
+                return $this->redirect()->toRoute('community/contact/profile/view');
             }
         }
 
