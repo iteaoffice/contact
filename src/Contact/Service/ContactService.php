@@ -242,6 +242,14 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * @return bool
+     */
+    public function isFunder()
+    {
+        return !is_null($this->getContact()->getFunder());
+    }
+
+    /**
      * @return OrganisationService|null
      */
     public function findOrganisationService()
