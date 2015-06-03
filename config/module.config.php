@@ -30,7 +30,7 @@ $config = [
             Controller\SelectionManagerController::class => Controller\SelectionManagerController::class,
             Controller\FacebookManagerController::class  => Controller\FacebookManagerController::class,
             Controller\FacebookController::class         => Controller\FacebookController::class,
-            Controller\ContactManagerController::class   => Controller\ContactManagerController::class,
+            Controller\ContactAdminController::class     => Controller\ContactAdminController::class,
         ],
     ],
     'view_manager'    => [

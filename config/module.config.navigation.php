@@ -30,12 +30,12 @@ return [
             // And finally, here is where we define our page hierarchy
             'contact' => [
                 'label'    => _("txt-contact-admin"),
-                'route'    => 'zfcadmin/contact-manager',
+                'route'    => 'zfcadmin/contact-admin/list',
                 'resource' => 'zfcadmin',
                 'pages'    => [
                     'contacts'   => [
                         'label' => _("txt-contacts"),
-                        'route' => 'zfcadmin/contact-manager/list',
+                        'route' => 'zfcadmin/contact-admin/list',
                     ],
                     'selections' => [
                         'label' => _("txt-selections"),
@@ -51,7 +51,7 @@ return [
                     ],
                     'import'     => [
                         'label' => _("txt-import"),
-                        'route' => 'zfcadmin/contact-manager/import',
+                        'route' => 'zfcadmin/contact-admin/import',
                     ],
                     'access'     => [
                         'label' => _("txt-access"),
@@ -59,7 +59,7 @@ return [
                     ],
                     'statistics' => [
                         'label' => _("txt-contact-statistics"),
-                        'route' => 'zfcadmin/contact-manager/statistics',
+                        'route' => 'zfcadmin/contact-admin/statistics',
                     ],
                 ],
             ],

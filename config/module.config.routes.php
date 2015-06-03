@@ -222,12 +222,12 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes'  => [
-                    'contact-manager'   => [
+                    'contact-admin'     => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/contact',
                             'defaults' => [
-                                'controller' => Controller\ContactManagerController::class,
+                                'controller' => Controller\ContactAdminController::class,
                                 'action'     => 'list',
                                 'page'       => 1,
                             ],
@@ -238,15 +238,11 @@ return [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
-                                    'route'    => '/list.html',
+                                    'route'    => '/list[/f-:encodedFilter][/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list',
                                     ],
                                 ],
-                                'query'    => [
-                                    'search' => null,
-                                    'page'   => null,
-                                ]
                             ],
                             'view'        => [
                                 'type'     => 'Segment',

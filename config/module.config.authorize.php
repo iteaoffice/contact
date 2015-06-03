@@ -108,47 +108,47 @@ return [
                     'roles' => []
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager',
+                    'route'     => 'zfcadmin/contact-admin',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/list',
+                    'route'     => 'zfcadmin/contact-admin/list',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/edit',
+                    'route'     => 'zfcadmin/contact-admin/edit',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/permit',
+                    'route'     => 'zfcadmin/contact-admin/permit',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/view',
+                    'route'     => 'zfcadmin/contact-admin/view',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/impersonate',
+                    'route'     => 'zfcadmin/contact-admin/impersonate',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/statistics',
+                    'route'     => 'zfcadmin/contact-admin/statistics',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/import',
+                    'route'     => 'zfcadmin/contact-admin/import',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/search',
+                    'route'     => 'zfcadmin/contact-admin/search',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],

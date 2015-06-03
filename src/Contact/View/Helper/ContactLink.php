@@ -76,15 +76,15 @@ class ContactLink extends LinkAbstract
     {
         switch ($this->getAction()) {
             case 'new':
-                $this->setRouter('zfcadmin/contact-manager/new');
+                $this->setRouter('zfcadmin/contact-admin/new');
                 $this->setText($this->translate("txt-new-contact"));
                 break;
             case 'list':
-                $this->setRouter('zfcadmin/contact-manager/list');
+                $this->setRouter('zfcadmin/contact-admin/list');
                 $this->setText($this->translate("txt-list-contacts"));
                 break;
             case 'edit-admin':
-                $this->setRouter('zfcadmin/contact-manager/edit');
+                $this->setRouter('zfcadmin/contact-admin/edit');
                 $this->setText(sprintf($this->translate("txt-edit-contact-%s"), $this->getContact()->getDisplayName()));
                 break;
             case 'profile':
@@ -103,16 +103,16 @@ class ContactLink extends LinkAbstract
                     $this->getContact()->getDisplayName()));
                 break;
             case 'view-admin':
-                $this->setRouter('zfcadmin/contact-manager/view');
+                $this->setRouter('zfcadmin/contact-admin/view');
                 $this->setText(sprintf($this->translate("txt-view-contact-%s"), $this->getContact()->getDisplayName()));
                 break;
             case 'impersonate':
-                $this->setRouter('zfcadmin/contact-manager/impersonate');
+                $this->setRouter('zfcadmin/contact-admin/impersonate');
                 $this->setText(sprintf($this->translate("txt-impersonate-contact-%s"),
                     $this->getContact()->getDisplayName()));
                 break;
             case 'permit':
-                $this->setRouter('zfcadmin/contact-manager/permit');
+                $this->setRouter('zfcadmin/contact-admin/permit');
                 $this->setText(sprintf($this->translate("txt-permit-of-contact-%s"),
                     $this->getContact()->getDisplayName()));
                 break;

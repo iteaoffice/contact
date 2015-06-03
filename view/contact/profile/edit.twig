@@ -43,7 +43,7 @@
 <fieldset>
     <legend>{{ translate("txt-organisation") }}</legend>
 
-    <div class="organisation {% if not contactService.hasOrganisation() %}hidden{% endif %}">
+    <div class="organisation {% if not hasOrganisations %}hidden{% endif %}">
 
         {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
 
@@ -65,7 +65,7 @@
 
 
     <div id="organisation_country"
-         {% if contactService.hasOrganisation() %}class="hidden"{% endif %}>
+         {% if hasOrganisations %}class="hidden"{% endif %}>
         {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
         {{ ztbformelement(form.get('contact_organisation').get('country')) }}
     </div>

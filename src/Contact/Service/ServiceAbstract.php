@@ -17,6 +17,8 @@ use Contact\Entity\EntityAbstract;
 use Contact\Entity\Selection;
 use Deeplink\Service\DeeplinkService;
 use Deeplink\Service\DeeplinkServiceAwareInterface;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Event\Service\MeetingService;
 use General\Service\EmailService;
 use General\Service\EmailServiceAwareInterface;
@@ -46,6 +48,10 @@ abstract class ServiceAbstract implements
      * @var \Doctrine\ORM\EntityManager
      */
     protected $entityManager;
+    /**
+     * @var Contact
+     */
+    protected $contact;
     /**
      * @var ServiceLocatorInterface
      */
@@ -94,12 +100,29 @@ abstract class ServiceAbstract implements
     }
 
     /**
+     * @param string $entity
+     * @param  $filter
+     *
+     * @return Query
+     */
+    public function findEntitiesFiltered($entity, $filter)
+    {
+        $equipmentList = $this->getEntityManager()->getRepository($this->getFullEntityName($entity))->findFiltered(
+            $filter,
+            AbstractQuery::HYDRATE_SIMPLEOBJECT
+        );
+
+
+        return $equipmentList;
+    }
+
+    /**
      * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager()
     {
         if (null === $this->entityManager) {
-            $this->entityManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+            $this->entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         }
 
         return $this->entityManager;
@@ -385,4 +408,25 @@ abstract class ServiceAbstract implements
     {
         return $this->getServiceLocator()->get('contact_contact_service');
     }
+
+    /**
+     * @return Contact
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param Contact $contact
+     * @return ServiceAbstract
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
+
+        return $this;
+    }
+
+
 }

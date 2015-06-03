@@ -43,7 +43,7 @@ class Profile extends Form
         /**
          * @var $entityManager EntityManager
          */
-        $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
+        $entityManager = $serviceLocator->get('Doctrine\ORM\EntityManager');
         $contactService = $serviceLocator->get('contact_contact_service');
         $generalService = $serviceLocator->get(GeneralService::class);
         $doctrineHydrator = new ProfileHydrator($entityManager);

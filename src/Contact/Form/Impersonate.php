@@ -39,7 +39,7 @@ class Impersonate extends Form
                 'name'       => 'target',
                 'options'    => [
                     'target_class'   => 'Deeplink\Entity\Target',
-                    'object_manager' => $sm->get('doctrine.entitymanager.orm_default'),
+                    'object_manager' => $sm->get('Doctrine\ORM\EntityManager'),
                     'find_method'    => [
                         'name'   => 'findTargetsWithRoute',
                         'params' => [

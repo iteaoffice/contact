@@ -16,6 +16,7 @@ use Contact\Entity\Selection;
 use Contact\Entity\SelectionSql;
 use Contact\Options;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Organisation\Entity\Organisation;
 
@@ -47,6 +48,58 @@ class Contact extends EntityRepository
 
         return $qb->getQuery();
     }
+
+    /**
+     * @param array $filter
+     * @return Query
+     */
+    public function findFiltered(array $filter)
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->join('c.contactOrganisation', 'co');
+        $queryBuilder->join('co.organisation', 'o');
+
+
+        if (array_key_exists('search', $filter)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->like('c.firstName', ':like'),
+                    $queryBuilder->expr()->like('c.middleName', ':like'),
+                    $queryBuilder->expr()->like('c.lastName', ':like'),
+                    $queryBuilder->expr()->like('c.email', ':like')
+                )
+            );
+
+            $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
+        }
+
+        if (array_key_exists('organisation', $filter)) {
+
+            $queryBuilder->andWhere($queryBuilder->expr()->in('o.id', implode($filter['organisation'], ', ')));
+        }
+
+        $direction = 'ASC';
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'])) {
+            $direction = strtoupper($filter['direction']);
+        }
+
+        switch ($filter['order']) {
+            case 'name':
+                $queryBuilder->addOrderBy('c.lastName', $direction);
+                break;
+            case 'organisation':
+                $queryBuilder->addOrderBy('o.organisation', $direction);
+                break;
+            default:
+                $queryBuilder->addOrderBy('c.id', $direction);
+
+        }
+
+        return $queryBuilder->getQuery();
+    }
+
 
     /**
      * @param $projectId
@@ -166,7 +219,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param  bool      $onlyPublic
+     * @param  bool $onlyPublic
      * @return Contact[]
      */
     public function findContactsWithActiveProfile($onlyPublic)
@@ -194,7 +247,7 @@ class Contact extends EntityRepository
     /**
      *  Returns true of false depending if a contact is a community member.
      *
-     * @param Entity\Contact                    $contact
+     * @param Entity\Contact $contact
      * @param Options\CommunityOptionsInterface $options
      *
      * @return boolean|null
@@ -387,7 +440,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Entity\Contact $contact
-     * @param SelectionSql   $sql
+     * @param SelectionSql $sql
      *
      * @return bool
      */
@@ -412,7 +465,7 @@ class Contact extends EntityRepository
      * This is basic search for contacts (based on the name, and email.
      *
      * @param string $searchItem
-     * @param int    $maxResults
+     * @param int $maxResults
      *
      * @return Entity\Contact[]
      */

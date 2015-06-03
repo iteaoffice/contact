@@ -83,6 +83,9 @@ class ProfileController extends ContactAbstractController implements
             $this->zfcUserAuthentication()->getIdentity()->getId()
         );
 
+        //Find the amount of possible organisations
+        $organisations = $this->getOrganisationService()->findOrganisationForProfileEditByContact($contactService->getContact());
+
         $branches = [];
         if ($contactService->hasOrganisation()) {
             $branches = $this->getOrganisationService()->findBranchesByOrganisation($contactService->getContact()->getContactOrganisation()->getOrganisation());
@@ -166,10 +169,11 @@ class ProfileController extends ContactAbstractController implements
 
         return new ViewModel(
             [
-                'form'           => $form,
-                'branches'       => $branches,
-                'contactService' => $contactService,
-                'fullVersion'    => true,
+                'form'             => $form,
+                'branches'         => $branches,
+                'contactService'   => $contactService,
+                'hasOrganisations' => sizeof($organisations) > 1, ///We need to exclude the none of the above :)
+                'fullVersion'      => true,
             ]
         );
     }

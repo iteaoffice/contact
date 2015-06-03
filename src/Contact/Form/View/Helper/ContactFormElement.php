@@ -372,7 +372,7 @@ class ContactFormElement extends ZendFormElement
             ->appendScript(
                 "var options = {
         ajax: {
-            url: '".$this->view->url('zfcadmin/contact-manager/search')."',
+            url: '".$this->view->url('zfcadmin/contact-admin/search')."',
             type: 'POST',
             dataType: 'json',
             data: {

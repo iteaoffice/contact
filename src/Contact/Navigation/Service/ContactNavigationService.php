@@ -117,19 +117,19 @@ class ContactNavigationService extends NavigationServiceAbstract
         $adminNavigation = $this->getNavigation()->findOneBy('route', 'zfcadmin');
         $this->getContactService()->setContactId($this->getRouteMatch()->getParam('id'));
         switch ($this->getRouteMatch()->getMatchedRouteName()) {
-            case 'zfcadmin/contact-manager/view':
+            case 'zfcadmin/contact-admin/view':
                 $adminNavigation->addPage([
                     'label'  => sprintf($this->translate("txt-manage-contact-%s"),
                         $this->getContactService()->parseFullName()),
-                    'route'  => 'zfcadmin/contact-manager/view',
+                    'route'  => 'zfcadmin/contact-admin/view',
                     'router' => $this->getRouter(),
                 ]);
                 break;
-            case 'zfcadmin/contact-manager/edit':
+            case 'zfcadmin/contact-admin/edit':
                 $adminNavigation->addPage([
                     'label'  => sprintf($this->translate("txt-manage-contact-%s"),
                         $this->getContactService()->parseFullName()),
-                    'route'  => 'zfcadmin/contact-manager/view',
+                    'route'  => 'zfcadmin/contact-admin/view',
                     'router' => $this->getRouter(),
                     'pages'  => [
                         [
@@ -145,11 +145,11 @@ class ContactNavigationService extends NavigationServiceAbstract
                     ],
                 ]);
                 break;
-            case 'zfcadmin/contact-manager/impersonate':
+            case 'zfcadmin/contact-admin/impersonate':
                 $adminNavigation->addPage([
                     'label'  => sprintf($this->translate("txt-manage-contact-%s"),
                         $this->getContactService()->parseFullName()),
-                    'route'  => 'zfcadmin/contact-manager/view',
+                    'route'  => 'zfcadmin/contact-admin/view',
                     'router' => $this->getRouter(),
                     'pages'  => [
                         [

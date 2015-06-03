@@ -33,7 +33,7 @@ class Contact extends Form
     {
         parent::__construct($object->get('underscore_entity_name'));
         $this->serviceManager = $serviceManager;
-        $entityManager = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
         $contactFieldset = new \Contact\Form\ContactFieldset($entityManager, new Entity\Contact());
         $contactFieldset->setUseAsBaseFieldset(true);
         $this->add($contactFieldset);

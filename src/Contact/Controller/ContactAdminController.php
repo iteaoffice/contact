@@ -10,9 +10,10 @@
 
 namespace Contact\Controller;
 
+use Contact\Controller\Plugin\GetFilter;
 use Contact\Controller\Plugin\HandleImport;
+use Contact\Form\ContactFilter;
 use Contact\Form\Import;
-use Contact\Form\Search;
 use Contact\Form\Statistics;
 use Contact\Service\StatisticsService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -25,8 +26,9 @@ use Zend\View\Model\ViewModel;
  * Class ContactManagerController.
  *
  * @method HandleImport handleImport()
+ * @method GetFilter getContactFilter()
  */
-class ContactManagerController extends ContactAbstractController
+class ContactAdminController extends ContactAbstractController
 {
     /**
      * @return ViewModel
@@ -34,18 +36,18 @@ class ContactManagerController extends ContactAbstractController
     public function listAction()
     {
         $page = $this->params()->fromRoute('page', 1);
-        $filterPlugin = $this->getOrganisationFilter();
-        $organisationQuery = $this->getOrganisationService()->findEntitiesFiltered(
-            'organisation',
+        $filterPlugin = $this->getContactFilter();
+        $contactQuery = $this->getContactService()->findEntitiesFiltered(
+            'contact',
             $filterPlugin->getFilter()
         );
 
-        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($organisationQuery, false)));
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
 
-        $form = new OrganisationFilter($this->getOrganisationService());
+        $form = new ContactFilter($this->getContactService());
 
         $form->setData(['filter' => $filterPlugin->getFilter()]);
 
@@ -128,7 +130,7 @@ class ContactManagerController extends ContactAbstractController
             $result = $this->getContactService()->newEntity($form->getData());
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact-manager/'.strtolower($this->params('entity')),
+                'zfcadmin/contact-admin/' . strtolower($this->params('entity')),
                 ['id' => $result->getId()]
             );
         }
@@ -149,12 +151,12 @@ class ContactManagerController extends ContactAbstractController
         );
         $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
         $form->setAttribute('class', 'form-horizontal live-form');
-        $form->setAttribute('id', 'contact-contact-'.$entity->getId());
+        $form->setAttribute('id', 'contact-contact-' . $entity->getId());
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $result = $this->getContactService()->updateEntity($form->getData());
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact/'.strtolower($entity->get('dashed_entity_name')),
+                'zfcadmin/contact/' . strtolower($entity->get('dashed_entity_name')),
                 ['id' => $result->getId()]
             );
         }

@@ -12,6 +12,7 @@
 
 namespace Contact;
 
+use Contact\Controller\Plugin\GetFilter;
 use Contact\Controller\Plugin\HandleImport;
 use Contact\Controller\Plugin\PartnerSearch;
 use Contact\Version\Version;
@@ -81,8 +82,9 @@ class Module implements
     {
         return [
             'invokables' => [
-                'handleImport'  => HandleImport::class,
-                'partnerSearch' => PartnerSearch::class,
+                'handleImport'     => HandleImport::class,
+                'partnerSearch'    => PartnerSearch::class,
+                'getContactFilter' => GetFilter::class,
             ],
         ];
     }
