@@ -51,6 +51,4 @@ class PartnerSearch extends AbstractPlugin implements ServiceLocatorAwareInterfa
 
         return $this;
     }
-
-
 }

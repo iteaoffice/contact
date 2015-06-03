@@ -1037,7 +1037,6 @@ class ContactService extends ServiceAbstract
             } else {
                 $currentContactOrganisation->setBranch(null);
             }
-
         } else {
             /**
              * No organisation is chosen (the option 'none of the above' was taken, so create the organisation

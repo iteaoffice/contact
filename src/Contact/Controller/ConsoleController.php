@@ -43,5 +43,4 @@ class ConsoleController extends ContactAbstractController implements SearchServi
         $this->getSearchService()->clearIndex(true);
         $this->getSearchService()->updateContactIndex();
     }
-
 }

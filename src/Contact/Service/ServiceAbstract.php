@@ -427,6 +427,4 @@ abstract class ServiceAbstract implements
 
         return $this;
     }
-
-
 }

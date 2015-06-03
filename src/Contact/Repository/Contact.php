@@ -76,7 +76,6 @@ class Contact extends EntityRepository
         }
 
         if (array_key_exists('organisation', $filter)) {
-
             $queryBuilder->andWhere($queryBuilder->expr()->in('o.id', implode($filter['organisation'], ', ')));
         }
 

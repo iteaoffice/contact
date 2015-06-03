@@ -282,5 +282,4 @@ class ContactController extends ContactAbstractController implements
             'showAlwaysFirstAndLast' => true,
         ]);
     }
-
 }
