@@ -2,7 +2,9 @@
   "name": "debranova/contact",
   "type": "library",
   "description": "General code for Debranova contacts",
-  "keywords": ["contact"],
+  "keywords": [
+    "contact"
+  ],
   "license": "proprietary",
   "homepage": "http://debranova.org",
   "support": {
@@ -26,8 +28,8 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php":">5.5",
-    "zendframework/zendframework": "~2.4.0",
+    "php": ">5.5",
+    "zendframework/zendframework": "~2.5",
     "doctrine/doctrine-orm-module": "0.9.*@dev"
   },
   "require-dev": {
