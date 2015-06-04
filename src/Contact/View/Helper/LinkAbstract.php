@@ -106,16 +106,17 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
         $this->parseAction();
         $this->parseShow();
         if ('social' === $this->getShow()) {
-            return $serverUrl->__invoke().$url($this->router, $this->routerParams);
+            return $serverUrl->__invoke() . $url($this->router, $this->routerParams);
         }
         $uri = '<a href="%s" title="%s" class="%s">%s</a>';
 
         return sprintf(
             $uri,
-            $serverUrl().$url($this->router, $this->routerParams, ['query' => $this->queryParams]),
-            $this->text,
+            $serverUrl() . $url($this->router, $this->routerParams),
+            htmlentities($this->text),
             implode(' ', $this->classes),
-            implode('', $this->linkContent)
+            in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('',
+                $this->linkContent) : htmlentities(implode('', $this->linkContent))
         );
     }
 
@@ -148,7 +149,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                 }
 
                 if ($this->getShow() === 'button') {
-                    $this->addLinkContent(' '.$this->getText());
+                    $this->addLinkContent(' ' . $this->getText());
                     $this->addClasses("btn btn-primary");
                 }
 
@@ -301,8 +302,8 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param EntityAbstract $entity
-     * @param string         $assertion
-     * @param string         $action
+     * @param string $assertion
+     * @param string $action
      *
      * @return bool
      */
@@ -364,7 +365,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param null|EntityAbstract $resource
-     * @param string              $privilege
+     * @param string $privilege
      *
      * @return bool
      */
@@ -383,7 +384,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      *
      * @param string $key
      * @param        $value
-     * @param bool   $allowNull
+     * @param bool $allowNull
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
@@ -400,7 +401,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      *
      * @param string $key
      * @param        $value
-     * @param bool   $allowNull
+     * @param bool $allowNull
      */
     public function addQueryParam($key, $value, $allowNull = true)
     {
@@ -498,7 +499,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     }
 
     /**
-     * @param  string       $hash
+     * @param  string $hash
      * @return LinkAbstract
      */
     public function setHash($hash)
