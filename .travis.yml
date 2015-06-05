@@ -15,7 +15,9 @@ script:
   - ./vendor/bin/php-cs-fixer fix -v ./src --level=psr2 --dry-run
 
 notifications:
-  email: info@jield.nl
+  email:
+  - info@jield.nl
+  - andre.hebben@artemis-ia.eu
 
 matrix:
   fast_finish: true
