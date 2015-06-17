@@ -8,7 +8,6 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
-
 namespace Contact\Options;
 
 use Zend\Stdlib\AbstractOptions;
@@ -33,6 +32,11 @@ class ModuleOptions extends AbstractOptions implements
      */
     protected $communityViaProjectParticipation = false;
 
+    /**
+     * Template for rendering of the facebook
+     * @var string
+      */
+    protected $facebookTemplate = 'contact/facebook/facebook';
     /**
      * @param bool $communityViaMembers
      *
@@ -71,5 +75,21 @@ class ModuleOptions extends AbstractOptions implements
     public function getCommunityViaProjectParticipation()
     {
         return $this->communityViaProjectParticipation;
+    }
+
+
+    /**
+     * @param $facebookTemplate
+     */
+    public function setFacebookTemplate($facebookTemplate){
+        $this->facebookTemplate = $facebookTemplate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacebookTemplate(){
+
+        return $this->facebookTemplate;
     }
 }

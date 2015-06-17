@@ -11,7 +11,6 @@
 namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
-use Affiliation\Service\AffiliationService;
 use Calendar\Entity\Calendar;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
@@ -51,13 +50,6 @@ use ZfcUser\Options\UserServiceOptionsInterface;
 class ContactService extends ServiceAbstract
 {
     /**
-     * Constant to determine which affiliations must be taken from the database.
-     */
-    const WHICH_ALL = 1;
-    const WHICH_ONLY_ACTIVE = 2;
-    const WHICH_ONLY_EXPIRED = 3;
-
-    /**
      * @var AddressService
      */
     protected $addressService;
@@ -69,7 +61,10 @@ class ContactService extends ServiceAbstract
      * @var UserServiceOptionsInterface
      */
     protected $zfcUserOptions;
-
+    /**
+     * @var Contact
+     */
+    protected $contact;
     /**
      * @var array
      */
@@ -93,27 +88,6 @@ class ContactService extends ServiceAbstract
         }
 
         return $contact;
-    }
-
-    /**
-     * @param int $which
-     * @return int
-     */
-    public function getAffiliationCount($which = AffiliationService::WHICH_ALL)
-    {
-        return ($this->getContact()->getAffiliation()->filter(
-            function (Affiliation $affiliation) use ($which) {
-                switch ($which) {
-                    case AffiliationService::WHICH_ONLY_ACTIVE:
-                        return is_null($affiliation->getDateEnd());
-                    case AffiliationService::WHICH_ONLY_INACTIVE:
-                        return !is_null($affiliation->getDateEnd());
-                    default:
-                        return true;
-                }
-
-            }
-        )->count());
     }
 
     /**
@@ -191,7 +165,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * Find all contacts which are active and have a CV.
-     * @param  bool $onlyPublic
+     * @param  bool      $onlyPublic
      * @return Contact[]
      */
     public function findContactsWithActiveProfile($onlyPublic = true)
@@ -235,7 +209,7 @@ class ContactService extends ServiceAbstract
 
         if (!is_null($this->getContact()->getTitle()->getAttention())) {
             return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
+        } elseif ((int) $this->getContact()->getGender()->getId() !== 0) {
             return $this->getContact()->getGender()->getAttention();
         }
 
@@ -265,14 +239,6 @@ class ContactService extends ServiceAbstract
     public function hasOrganisation()
     {
         return !is_null($this->getContact()->getContactOrganisation());
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFunder()
-    {
-        return !is_null($this->getContact()->getFunder());
     }
 
     /**
@@ -418,7 +384,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param Contact $contact
-     * @param int $type
+     * @param int     $type
      *
      * @return null|Phone
      */
@@ -501,7 +467,7 @@ class ContactService extends ServiceAbstract
          */
         $contact = $this->newEntity($contact);
         //Create a target
-        $target = $this->getDeeplinkService()->createTargetFromRoute('community/contact/profile/view');
+        $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
         //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
         $email = $this->getEmailService()->create();
@@ -919,13 +885,13 @@ class ContactService extends ServiceAbstract
                     return 'Unknown';
                 }
 
-                return (string)$contact->getContactOrganisation()->getOrganisation();
+                return (string) $contact->getContactOrganisation()->getOrganisation();
             case Facebook::DISPLAY_COUNTRY:
                 if (is_null($contact->getContactOrganisation())) {
                     return 'Unknown';
                 }
 
-                return (string)$contact->getContactOrganisation()->getOrganisation()->getCountry();
+                return (string) $contact->getContactOrganisation()->getOrganisation()->getCountry();
             case Facebook::DISPLAY_PROJECTS:
 
                 $projects = [];
@@ -955,7 +921,7 @@ class ContactService extends ServiceAbstract
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed.
      *
-     * @param string $password
+     * @param string  $password
      * @param Contact $contact
      *
      * @return bool
@@ -1008,7 +974,7 @@ class ContactService extends ServiceAbstract
      * $contactOrganisation['country'] > CountryId
      *
      * @param Contact $contact
-     * @param array $contactOrganisation
+     * @param array   $contactOrganisation
      */
     public function updateContactOrganisation(
         Contact $contact,
@@ -1029,7 +995,7 @@ class ContactService extends ServiceAbstract
          */
         if (isset($contactOrganisation['organisation_id']) && $contactOrganisation['organisation_id'] != '0') {
             $organisation = $this->getOrganisationService()->findEntityById('organisation',
-                (int)$contactOrganisation['organisation_id']);
+                (int) $contactOrganisation['organisation_id']);
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
             if (!empty($contactOrganisation['branch'])) {
@@ -1037,6 +1003,7 @@ class ContactService extends ServiceAbstract
             } else {
                 $currentContactOrganisation->setBranch(null);
             }
+
         } else {
             /**
              * No organisation is chosen (the option 'none of the above' was taken, so create the organisation
@@ -1048,7 +1015,7 @@ class ContactService extends ServiceAbstract
             if (empty($contactOrganisation['organisation'])) {
                 return;
             }
-            $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+            $country = $this->getGeneralService()->findEntityById('country', (int) $contactOrganisation['country']);
 
             /*
              * Look for the organisation based on the name (without branch) and country + email
@@ -1128,8 +1095,8 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param int $optInId
-     * @param bool $enable
+     * @param int     $optInId
+     * @param bool    $enable
      * @param Contact $contact
      */
     public function updateOptInForContact(
@@ -1149,7 +1116,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param int $optInId
+     * @param int     $optInId
      * @param Contact $contact
      *
      * @return OptIn
@@ -1180,6 +1147,16 @@ class ContactService extends ServiceAbstract
         return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
             ->searchContacts($searchItem);
     }
+
+
+    /**
+     * Returns which template is to  be used for facebook
+     * @return string
+     */
+    public function getFacebookTemplate(){
+       return  $this->getCommunityOptions()->getFacebookTemplate();
+    }
+
 
     /**
      * Create an array with the incomplete items in the profile and the relative weight.
