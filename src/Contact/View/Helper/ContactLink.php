@@ -89,18 +89,24 @@ class ContactLink extends LinkAbstract
                 break;
             case 'profile':
                 $this->setRouter('community/contact/profile/view');
-                $this->setText(sprintf($this->translate("txt-view-profile-of-contact-%s"),
-                    $this->getContact()->getDisplayName()));
+                $this->setText(sprintf(
+                    $this->translate("txt-view-profile-of-contact-%s"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             case 'profile-contact':
                 $this->setRouter('community/contact/profile/contact');
-                $this->setText(sprintf($this->translate("txt-view-profile-of-contact-%s"),
-                    $this->getContact()->getDisplayName()));
+                $this->setText(sprintf(
+                    $this->translate("txt-view-profile-of-contact-%s"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             case 'signature':
                 $this->setRouter('community/contact/signature');
-                $this->setText(sprintf($this->translate("txt-view-signature-of-contact-%s"),
-                    $this->getContact()->getDisplayName()));
+                $this->setText(sprintf(
+                    $this->translate("txt-view-signature-of-contact-%s"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-admin/view');
@@ -108,13 +114,17 @@ class ContactLink extends LinkAbstract
                 break;
             case 'impersonate':
                 $this->setRouter('zfcadmin/contact-admin/impersonate');
-                $this->setText(sprintf($this->translate("txt-impersonate-contact-%s"),
-                    $this->getContact()->getDisplayName()));
+                $this->setText(sprintf(
+                    $this->translate("txt-impersonate-contact-%s"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             case 'permit':
                 $this->setRouter('zfcadmin/contact-admin/permit');
-                $this->setText(sprintf($this->translate("txt-permit-of-contact-%s"),
-                    $this->getContact()->getDisplayName()));
+                $this->setText(sprintf(
+                    $this->translate("txt-permit-of-contact-%s"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             case 'edit-profile':
                 $this->setRouter('community/contact/profile/edit');

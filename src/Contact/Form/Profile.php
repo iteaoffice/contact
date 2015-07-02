@@ -246,8 +246,11 @@ class Profile extends Form
                     ],
                     'label_generator'           => function (Organisation $organisation) {
                         if (!is_null($organisation->getCountry())) {
-                            return sprintf("%s (%s)", $organisation->getOrganisation(),
-                                $organisation->getCountry()->getCountry());
+                            return sprintf(
+                                "%s (%s)",
+                                $organisation->getOrganisation(),
+                                $organisation->getCountry()->getCountry()
+                            );
                         } else {
                             return sprintf("%s", $organisation->getOrganisation());
                         }

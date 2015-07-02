@@ -77,19 +77,19 @@ class ModuleOptions extends AbstractOptions implements
         return $this->communityViaProjectParticipation;
     }
 
-
     /**
      * @param $facebookTemplate
      */
-    public function setFacebookTemplate($facebookTemplate){
+    public function setFacebookTemplate($facebookTemplate)
+    {
         $this->facebookTemplate = $facebookTemplate;
     }
 
     /**
      * @return mixed
      */
-    public function getFacebookTemplate(){
-
+    public function getFacebookTemplate()
+    {
         return $this->facebookTemplate;
     }
 }

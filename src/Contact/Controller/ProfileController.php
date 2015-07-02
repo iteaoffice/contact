@@ -33,7 +33,6 @@ class ProfileController extends ContactAbstractController implements
     SearchServiceAwareInterface,
     OrganisationServiceAwareInterface
 {
-
     /**
      * @return ViewModel
      */

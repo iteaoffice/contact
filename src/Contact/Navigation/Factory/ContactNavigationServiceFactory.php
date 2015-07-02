@@ -29,7 +29,6 @@ class ContactNavigationServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-
         $contactNavigationService = new ContactNavigationService();
 
         $contactNavigationService->setTranslator($serviceLocator->get('viewhelpermanager')->get('translate'));

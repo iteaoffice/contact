@@ -251,8 +251,10 @@ class ContactController extends ContactAbstractController implements
                 }
             }
 
-            $form->addSearchResults($this->getSearchService()->getFacetSet(),
-                $this->getSearchService()->getResultSet()->getFacetSet());
+            $form->addSearchResults(
+                $this->getSearchService()->getFacetSet(),
+                $this->getSearchService()->getResultSet()->getFacetSet()
+            );
 
             $form->setData($this->getRequest()->getQuery()->toArray());
         }

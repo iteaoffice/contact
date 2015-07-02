@@ -47,7 +47,6 @@ class ContactFilter extends Form
             ]
         );
 
-
         $this->add($filterFieldset);
 
         $this->add(

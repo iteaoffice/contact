@@ -460,8 +460,7 @@ class ContactService extends ServiceAbstract
          * Include all the optIns
          */
         $contact->setOptIn($this->getEntityManager()->getRepository('Contact\Entity\OptIn')
-            ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
-        );
+            ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE]));
         /**
          * @var $contact Contact
          */
@@ -494,8 +493,10 @@ class ContactService extends ServiceAbstract
         //Create the account
         $contact = $this->findContactByEmail($emailAddress, true);
         if (is_null($contact)) {
-            throw new \InvalidArgumentException(sprintf("The contact with emailAddress %s cannot be found",
-                $emailAddress));
+            throw new \InvalidArgumentException(sprintf(
+                "The contact with emailAddress %s cannot be found",
+                $emailAddress
+            ));
         }
         $contactService = $this->createServiceElement($contact);
         //Create a target
@@ -791,9 +792,12 @@ class ContactService extends ServiceAbstract
             return false;
         }
 
-        return $this->getAdminService()->contactHasPermit($this->getContact(), $role,
+        return $this->getAdminService()->contactHasPermit(
+            $this->getContact(),
+            $role,
             str_replace('doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_full_entity_name'))),
-            $entity->getId());
+            $entity->getId()
+        );
     }
 
     /**
@@ -844,11 +848,9 @@ class ContactService extends ServiceAbstract
          * A dedicated array will therefore be created
          */
         $contacts = [];
-        foreach (
-            $this->getEntityManager()->getRepository(
-                $this->getFullEntityName('Contact')
-            )->findContactsInFacebook($facebook) as $contact
-        ) {
+        foreach ($this->getEntityManager()->getRepository(
+            $this->getFullEntityName('Contact')
+        )->findContactsInFacebook($facebook) as $contact) {
             $singleContact = [];
 
             $singleContact['contact'] = $contact;
@@ -893,7 +895,6 @@ class ContactService extends ServiceAbstract
 
                 return (string)$contact->getContactOrganisation()->getOrganisation()->getCountry();
             case Facebook::DISPLAY_PROJECTS:
-
                 $projects = [];
 
                 /*
@@ -994,8 +995,10 @@ class ContactService extends ServiceAbstract
          * If this value != 0, a choice has been made from the dropdown and we will then take the branch as default
          */
         if (isset($contactOrganisation['organisation_id']) && $contactOrganisation['organisation_id'] != '0') {
-            $organisation = $this->getOrganisationService()->findEntityById('organisation',
-                (int)$contactOrganisation['organisation_id']);
+            $organisation = $this->getOrganisationService()->findEntityById(
+                'organisation',
+                (int)$contactOrganisation['organisation_id']
+            );
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
             if (!empty($contactOrganisation['branch'])) {
@@ -1003,7 +1006,6 @@ class ContactService extends ServiceAbstract
             } else {
                 $currentContactOrganisation->setBranch(null);
             }
-
         } else {
             /**
              * No organisation is chosen (the option 'none of the above' was taken, so create the organisation
@@ -1024,7 +1026,8 @@ class ContactService extends ServiceAbstract
                 ->findOrganisationByNameCountryAndEmailAddress(
                     $contactOrganisation['organisation'],
                     $country,
-                    $contact->getEmail());
+                    $contact->getEmail()
+                );
             $organisationFound = false;
             /*
              * We did not find an organisation, so we need to create it
@@ -1073,7 +1076,8 @@ class ContactService extends ServiceAbstract
                                 - strlen($currentContactOrganisation->getBranch()))
                         ) {
                             $currentContactOrganisation->setBranch(
-                                str_replace($contactOrganisation['organisation'],
+                                str_replace(
+                                    $contactOrganisation['organisation'],
                                     '~',
                                     $foundOrganisation->getOrganisation()
                                 )
@@ -1156,7 +1160,6 @@ class ContactService extends ServiceAbstract
     {
         return $this->getCommunityOptions()->getFacebookTemplate();
     }
-
 
     /**
      * Create an array with the incomplete items in the profile and the relative weight.

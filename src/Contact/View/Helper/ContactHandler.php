@@ -53,7 +53,6 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
          */
         $this->extractContentParam($content);
         switch ($content->getHandler()->getHandler()) {
-
             case 'contact_optin_button':
                 return $this->parseOptInButton($this->getOptIn());
             default:

@@ -42,7 +42,7 @@ class PartnerSearch extends AbstractPlugin implements ServiceLocatorAwareInterfa
     }
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param  ServiceLocatorInterface $serviceLocator
      * @return PartnerSearch
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)

@@ -1672,7 +1672,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Ambassador\Entity\Ambassador $ambassador
+     * @param  \Ambassador\Entity\Ambassador $ambassador
      * @return Contact
      */
     public function setAmbassador($ambassador)
@@ -3465,7 +3465,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[] $ideaMessageBoard
+     * @param  Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[] $ideaMessageBoard
      * @return Contact
      */
     public function setIdeaMessageBoard($ideaMessageBoard)

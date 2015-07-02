@@ -64,7 +64,6 @@ class AddressTypeSort extends EntityAbstract
      */
     public function __construct()
     {
-
     }
 
     /**

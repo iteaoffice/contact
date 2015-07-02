@@ -20,7 +20,6 @@ use Search\Service\SearchServiceAwareInterface;
  */
 class ConsoleController extends ContactAbstractController implements SearchServiceAwareInterface
 {
-
     /**
      * Check the status of pending trainigs and send an email to the involved mehtor
      *

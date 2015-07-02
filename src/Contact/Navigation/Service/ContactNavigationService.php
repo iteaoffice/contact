@@ -58,8 +58,10 @@ class ContactNavigationService extends NavigationServiceAbstract
                 $communityNavigation = $this->getNavigation()->findOneBy('route', 'community/contact/search');
 
                 //Find the contact
-                $contact = $this->getContactService()->findEntityById('contact',
-                    $this->getRouteMatch()->getParam('id'));
+                $contact = $this->getContactService()->findEntityById(
+                    'contact',
+                    $this->getRouteMatch()->getParam('id')
+                );
 
                 $communityNavigation->addPage(
                     [
@@ -122,22 +124,28 @@ class ContactNavigationService extends NavigationServiceAbstract
         switch ($this->getRouteMatch()->getMatchedRouteName()) {
             case 'zfcadmin/contact-admin/view':
                 $adminNavigation->addPage([
-                    'label'  => sprintf($this->translate("txt-manage-contact-%s"),
-                        $this->getContactService()->parseFullName()),
+                    'label'  => sprintf(
+                        $this->translate("txt-manage-contact-%s"),
+                        $this->getContactService()->parseFullName()
+                    ),
                     'route'  => 'zfcadmin/contact-admin/view',
                     'router' => $this->getRouter(),
                 ]);
                 break;
             case 'zfcadmin/contact-admin/edit':
                 $adminNavigation->addPage([
-                    'label'  => sprintf($this->translate("txt-manage-contact-%s"),
-                        $this->getContactService()->parseFullName()),
+                    'label'  => sprintf(
+                        $this->translate("txt-manage-contact-%s"),
+                        $this->getContactService()->parseFullName()
+                    ),
                     'route'  => 'zfcadmin/contact-admin/view',
                     'router' => $this->getRouter(),
                     'pages'  => [
                         [
-                            'label'  => sprintf($this->translate("txt-edit-contact-%s"),
-                                $this->getContactService()->parseFullName()),
+                            'label'  => sprintf(
+                                $this->translate("txt-edit-contact-%s"),
+                                $this->getContactService()->parseFullName()
+                            ),
                             'route'  => $this->getRouteMatch()->getMatchedRouteName(),
                             'active' => true,
                             'router' => $this->getRouter(),
@@ -150,14 +158,18 @@ class ContactNavigationService extends NavigationServiceAbstract
                 break;
             case 'zfcadmin/contact-admin/impersonate':
                 $adminNavigation->addPage([
-                    'label'  => sprintf($this->translate("txt-manage-contact-%s"),
-                        $this->getContactService()->parseFullName()),
+                    'label'  => sprintf(
+                        $this->translate("txt-manage-contact-%s"),
+                        $this->getContactService()->parseFullName()
+                    ),
                     'route'  => 'zfcadmin/contact-admin/view',
                     'router' => $this->getRouter(),
                     'pages'  => [
                         [
-                            'label'  => sprintf($this->translate("txt-impersonate-contact-%s"),
-                                $this->getContactService()->parseFullName()),
+                            'label'  => sprintf(
+                                $this->translate("txt-impersonate-contact-%s"),
+                                $this->getContactService()->parseFullName()
+                            ),
                             'route'  => $this->getRouteMatch()->getMatchedRouteName(),
                             'active' => true,
                             'router' => $this->getRouter(),
