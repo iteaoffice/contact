@@ -1153,7 +1153,8 @@ class ContactService extends ServiceAbstract
      * Returns which template is to  be used for facebook
      * @return string
      */
-    public function getFacebookTemplate(){
+    public function getFacebookTemplate()
+    {
        return  $this->getCommunityOptions()->getFacebookTemplate();
     }
 

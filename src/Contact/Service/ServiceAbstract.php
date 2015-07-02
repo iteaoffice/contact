@@ -112,7 +112,6 @@ abstract class ServiceAbstract implements
             AbstractQuery::HYDRATE_SIMPLEOBJECT
         );
 
-
         return $equipmentList;
     }
 
@@ -418,7 +417,7 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @param Contact $contact
+     * @param  Contact         $contact
      * @return ServiceAbstract
      */
     public function setContact($contact)

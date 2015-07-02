@@ -50,7 +50,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param array $filter
+     * @param  array $filter
      * @return Query
      */
     public function findFiltered(array $filter)
@@ -60,7 +60,6 @@ class Contact extends EntityRepository
         $queryBuilder->from('Contact\Entity\Contact', 'c');
         $queryBuilder->join('c.contactOrganisation', 'co');
         $queryBuilder->join('co.organisation', 'o');
-
 
         if (array_key_exists('search', $filter)) {
             $queryBuilder->andWhere(
@@ -98,7 +97,6 @@ class Contact extends EntityRepository
 
         return $queryBuilder->getQuery();
     }
-
 
     /**
      * @param $projectId
@@ -218,7 +216,7 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param  bool $onlyPublic
+     * @param  bool      $onlyPublic
      * @return Contact[]
      */
     public function findContactsWithActiveProfile($onlyPublic)
@@ -239,14 +237,13 @@ class Contact extends EntityRepository
         }
 
         //        $queryBuilder->setMaxResults(20);
-
         return $queryBuilder->getQuery()->getResult();
     }
 
     /**
      *  Returns true of false depending if a contact is a community member.
      *
-     * @param Entity\Contact $contact
+     * @param Entity\Contact                    $contact
      * @param Options\CommunityOptionsInterface $options
      *
      * @return boolean|null
@@ -439,7 +436,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Entity\Contact $contact
-     * @param SelectionSql $sql
+     * @param SelectionSql   $sql
      *
      * @return bool
      */
@@ -464,7 +461,7 @@ class Contact extends EntityRepository
      * This is basic search for contacts (based on the name, and email.
      *
      * @param string $searchItem
-     * @param int $maxResults
+     * @param int    $maxResults
      *
      * @return Entity\Contact[]
      */

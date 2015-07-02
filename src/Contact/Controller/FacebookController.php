@@ -42,6 +42,7 @@ class FacebookController extends ContactAbstractController implements EmailServi
                 'contactInFacebook' => $this->getContactService()->findContactInFacebook($facebook),
             ]);
         $view->setTemplate($this->getContactService()->getFacebookTemplate());
+
         return $view;
     }
 

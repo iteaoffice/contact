@@ -124,7 +124,6 @@ class Module implements
         ];
     }
 
-
     /**
      * Returns a string containing a banner text, that describes the module and/or the application.
      * The banner is shown in the console window, when the user supplies invalid command-line parameters or invokes

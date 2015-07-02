@@ -271,7 +271,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
     }
 
     /**
-     * @param OrganisationService $organisationService
+     * @param  OrganisationService       $organisationService
      * @return ContactAbstractController
      */
     public function setOrganisationService(OrganisationService $organisationService)
