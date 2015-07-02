@@ -248,6 +248,18 @@ class Contact extends EntityAbstract implements
      */
     private $projectVersion;
     /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Report\Item", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Report\Item[]|Collections\ArrayCollection()
+     */
+    private $projectReportItem;
+    /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Report\EffortSpent", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Report\Item[]|Collections\ArrayCollection()
+     */
+    private $projectReportEffortSpent;
+    /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Document\Document|Collections\ArrayCollection()
@@ -749,6 +761,13 @@ class Contact extends EntityAbstract implements
      */
     private $achievement;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Log", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Log[]|Collections\ArrayCollection()
+     */
+    private $projectLog;
+    /**
      * @ORM\OneToMany(targetEntity="Ambassador\Entity\Document\Comment", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Ambassador\Entity\Document\Comment[]|Collections\ArrayCollection()
@@ -795,6 +814,7 @@ class Contact extends EntityAbstract implements
         $this->organisationLog = new Collections\ArrayCollection();
         $this->affiliationLog = new Collections\ArrayCollection();
         $this->affiliationDescription = new Collections\ArrayCollection();
+        $this->projectLog = new Collections\ArrayCollection();
         $this->affiliation = new Collections\ArrayCollection();
         $this->financial = new Collections\ArrayCollection();
         $this->invoice = new Collections\ArrayCollection();
@@ -906,7 +926,7 @@ class Contact extends EntityAbstract implements
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -1376,7 +1396,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int                $id
+     * @param  int $id
      * @return void|UserInterface
      */
     public function setId($id)
@@ -1525,7 +1545,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  int                $state
+     * @param  int $state
      * @return null|UserInterface
      */
     public function setState($state)
@@ -1633,7 +1653,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  string  $department
+     * @param  string $department
      * @return Contact
      */
     public function setDepartment($department)
@@ -1709,7 +1729,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  CV      $cv
+     * @param  CV $cv
      * @return Contact
      */
     public function setCv($cv)
@@ -3036,6 +3056,7 @@ class Contact extends EntityAbstract implements
 
         return $this;
     }
+
     /**
      * @return \Member\Entity\Presidium
      */
@@ -3450,6 +3471,63 @@ class Contact extends EntityAbstract implements
     public function setIdeaMessageBoard($ideaMessageBoard)
     {
         $this->ideaMessageBoard = $ideaMessageBoard;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Log[]
+     */
+    public function getProjectLog()
+    {
+        return $this->projectLog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Log[] $projectLog
+     * @return Contact
+     */
+    public function setProjectLog($projectLog)
+    {
+        $this->projectLog = $projectLog;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Report\Item[]
+     */
+    public function getProjectReportItem()
+    {
+        return $this->projectReportItem;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Report\Item[] $projectReportItem
+     * @return Contact
+     */
+    public function setProjectReportItem($projectReportItem)
+    {
+        $this->projectReportItem = $projectReportItem;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Report\Item[]
+     */
+    public function getProjectReportEffortSpent()
+    {
+        return $this->projectReportEffortSpent;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Report\Item[] $projectReportEffortSpent
+     * @return Contact
+     */
+    public function setProjectReportEffortSpent($projectReportEffortSpent)
+    {
+        $this->projectReportEffortSpent = $projectReportEffortSpent;
 
         return $this;
     }

@@ -316,7 +316,7 @@ class ContactFormElement extends ZendFormElement
 
         $controls = str_replace(
             ['<select'],
-            ['<select class="selectpicker" data-live-search="true"'],
+            ['<select class="select-picker-contact" data-live-search="true"'],
             $controls
         );
 
@@ -401,7 +401,7 @@ class ContactFormElement extends ZendFormElement
             return array;
         }
     };
-    $('.selectpicker').selectpicker().ajaxSelectPicker(options);",
+    $('.select-picker-contact').selectpicker().ajaxSelectPicker(options);",
                 'text/javascript'
             );
 

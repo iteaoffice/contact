@@ -11,7 +11,6 @@
 namespace Contact\Navigation\Factory;
 
 use Contact\Navigation\Service\ContactNavigationService;
-use Contact\Service\ContactService;
 use Zend\Navigation\Navigation;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -30,7 +29,9 @@ class ContactNavigationServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+
         $contactNavigationService = new ContactNavigationService();
+
         $contactNavigationService->setTranslator($serviceLocator->get('viewhelpermanager')->get('translate'));
         /*
          * @var ContactService
@@ -44,9 +45,8 @@ class ContactNavigationServiceFactory implements FactoryInterface
         if ($serviceLocator->get('zfcuser_auth_service')->hasIdentity()) {
             $contactNavigationService->setContact($serviceLocator->get('zfcuser_auth_service')->getIdentity());
         }
-        /*
-         * @var Navigation
-         */
+
+        /* @var $navigation Navigation */
         $navigation = $serviceLocator->get('navigation');
         $contactNavigationService->setNavigation($navigation);
 

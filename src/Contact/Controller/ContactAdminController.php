@@ -218,9 +218,10 @@ class ContactAdminController extends ContactAbstractController
         foreach ($this->getContactService()->searchContacts($search) as $result) {
             $text = trim(
                 sprintf(
-                    "%s %s",
+                    "%s, %s (%s)",
+                    trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
                     $result['firstName'],
-                    trim(sprintf("%s %s", $result['middleName'], $result['lastName']))
+                    $result['email']
                 )
             );
 

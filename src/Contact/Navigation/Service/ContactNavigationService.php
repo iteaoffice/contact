@@ -115,6 +115,9 @@ class ContactNavigationService extends NavigationServiceAbstract
     protected function updateAdminNavigation()
     {
         $adminNavigation = $this->getNavigation()->findOneBy('route', 'zfcadmin');
+        if (is_null($this->getRouteMatch()->getParam('id'))) {
+            return;
+        }
         $this->getContactService()->setContactId($this->getRouteMatch()->getParam('id'));
         switch ($this->getRouteMatch()->getMatchedRouteName()) {
             case 'zfcadmin/contact-admin/view':
