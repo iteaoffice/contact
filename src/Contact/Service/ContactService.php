@@ -466,7 +466,7 @@ class ContactService extends ServiceAbstract
          */
         $contact = $this->newEntity($contact);
         //Create a target
-        $target = $this->getDeeplinkService()->createTargetFromRoute('contact/profile');
+        $target = $this->getDeeplinkService()->createTargetFromRoute('community/contact/profile/view');
         //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
         $email = $this->getEmailService()->create();
