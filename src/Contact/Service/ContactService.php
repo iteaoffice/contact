@@ -11,6 +11,7 @@
 namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
+use Affiliation\Service\AffiliationService;
 use Calendar\Entity\Calendar;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
@@ -50,6 +51,13 @@ use ZfcUser\Options\UserServiceOptionsInterface;
 class ContactService extends ServiceAbstract
 {
     /**
+     * Constant to determine which affiliations must be taken from the database.
+     */
+    const WHICH_ALL = 1;
+    const WHICH_ONLY_ACTIVE = 2;
+    const WHICH_ONLY_EXPIRED = 3;
+
+    /**
      * @var AddressService
      */
     protected $addressService;
@@ -61,6 +69,7 @@ class ContactService extends ServiceAbstract
      * @var UserServiceOptionsInterface
      */
     protected $zfcUserOptions;
+
     /**
      * @var Contact
      */
@@ -88,6 +97,27 @@ class ContactService extends ServiceAbstract
         }
 
         return $contact;
+    }
+
+    /**
+     * @param int $which
+     * @return int
+     */
+    public function getAffiliationCount($which = AffiliationService::WHICH_ALL)
+    {
+        return ($this->getContact()->getAffiliation()->filter(
+            function (Affiliation $affiliation) use ($which) {
+                switch ($which) {
+                    case AffiliationService::WHICH_ONLY_ACTIVE:
+                        return is_null($affiliation->getDateEnd());
+                    case AffiliationService::WHICH_ONLY_INACTIVE:
+                        return !is_null($affiliation->getDateEnd());
+                    default:
+                        return true;
+                }
+
+            }
+        )->count());
     }
 
     /**
@@ -239,6 +269,14 @@ class ContactService extends ServiceAbstract
     public function hasOrganisation()
     {
         return !is_null($this->getContact()->getContactOrganisation());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFunder()
+    {
+        return !is_null($this->getContact()->getFunder());
     }
 
     /**
