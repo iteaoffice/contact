@@ -31,20 +31,20 @@ class FacebookController extends ContactAbstractController implements EmailServi
      */
     public function facebookAction()
     {
-        /*
-         * @var Facebook
+        /**
+         * @var $facebook Facebook
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
-        $view =  new ViewModel(
+        $view = new ViewModel(
             [
                 'facebook'          => $facebook,
                 'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
                 'contactInFacebook' => $this->getContactService()->findContactInFacebook($facebook),
             ]
         );
-            $view->setTemplate($this->getContactService()->getFacebookTemplate());
+        $view->setTemplate($this->getContactService()->getFacebookTemplate());
 
-            return $view;
+        return $view;
     }
 
     /**
@@ -54,8 +54,8 @@ class FacebookController extends ContactAbstractController implements EmailServi
      */
     public function sendMessageAction()
     {
-        /*
-         * @var Facebook
+        /**
+         * @var $facebook Facebook
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
 
