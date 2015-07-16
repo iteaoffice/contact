@@ -113,7 +113,7 @@ class Contact extends EntityRepository
         $queryBuilder = $this->findContactByProjectIdQueryBuilder();
         $queryBuilder->setParameter(1, $projectId);
 
-        return $queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
@@ -186,7 +186,7 @@ class Contact extends EntityRepository
 
         $queryBuilder->setMaxResults(1);
 
-        return $queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getOneOrNullResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getOneOrNullResult();
     }
 
     /**
@@ -200,7 +200,7 @@ class Contact extends EntityRepository
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('c.dateOfBirth'));
 
-        return $queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
@@ -214,7 +214,7 @@ class Contact extends EntityRepository
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->innerJoin('c.cv', 'cv');
 
-        return $queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
@@ -240,7 +240,7 @@ class Contact extends EntityRepository
 
         //        $queryBuilder->setMaxResults(20);
 
-        return $queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
@@ -271,7 +271,7 @@ class Contact extends EntityRepository
             $queryBuilder->setParameter('contact', $contact);
 
             //check update
-            if (sizeof($queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -285,7 +285,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //check update
-            if (sizeof($queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -304,7 +304,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
             /*
@@ -320,7 +320,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
             /*
@@ -338,7 +338,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -552,6 +552,6 @@ class Contact extends EntityRepository
         $findContactByProjectIdQueryBuilder->setParameter('project', $calendar->getProjectCalendar()->getProject());
         $findContactByProjectIdQueryBuilder->addOrderBy('c.lastName', 'ASC');
 
-        return $findContactByProjectIdQueryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult();
+        return $findContactByProjectIdQueryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 }

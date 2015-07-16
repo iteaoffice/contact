@@ -40,7 +40,7 @@ class Facebook extends EntityRepository
             )
         );
 
-        return $queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**

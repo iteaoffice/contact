@@ -38,6 +38,6 @@ class Address extends EntityRepository
         $queryBuilder->orderBy('s.sort', 'ASC');
         $queryBuilder->setMaxResults(1);
 
-        return $queryBuilder->getQuery()->useResultCache(true)->useQueryCache(true)->getOneOrNullResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getOneOrNullResult();
     }
 }
