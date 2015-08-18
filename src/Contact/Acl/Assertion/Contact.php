@@ -24,10 +24,10 @@ class Contact extends AssertionAbstract
      * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
      * privileges, respectively.
      *
-     * @param Acl               $acl
-     * @param RoleInterface     $role
+     * @param Acl $acl
+     * @param RoleInterface $role
      * @param ResourceInterface $resource
-     * @param string            $privilege
+     * @param string $privilege
      *
      * @return bool
      */
@@ -40,6 +40,16 @@ class Contact extends AssertionAbstract
             return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }
 
-        return $this->hasContact();
+        switch ($privilege) {
+            case 'view-admin':
+            case 'edit-admin':
+            case 'impersonate':
+            case 'permit':
+                return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+            default:
+                return $this->hasContact();
+        }
+
+
     }
 }

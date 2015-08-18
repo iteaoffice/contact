@@ -57,6 +57,7 @@ class ContactLink extends LinkAbstract
         } else {
             $this->setAlternativeShow($hash);
         }
+
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())
         ) {
             return '';
