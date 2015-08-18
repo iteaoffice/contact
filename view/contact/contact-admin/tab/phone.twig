@@ -1,0 +1,22 @@
+<h2>{{ translate("txt-phone") }}</h2>
+
+
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>{{ translate("txt-phone-id") }}</th>
+        <th>{{ translate("txt-phone-type") }}</th>
+        <th>{{ translate("txt-phone-phone") }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for phone in contactService.contact.phone %}
+        <tr>
+            <td>{{ phone.id }}</td>
+            <td>{{ phone.type }}</td>
+            <td>{{ phone.phone }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+

@@ -77,7 +77,7 @@ class ContactService extends ServiceAbstract
     /**
      * @var array
      */
-    protected $contacts;
+    protected $contacts = [];
 
     /**
      * This function returns the contact by the hash. The hash has as format contactId-CHECKSUM which needs to be checked.
@@ -233,7 +233,7 @@ class ContactService extends ServiceAbstract
         /*
          * Return nothing when the contact object is created and does not have all the relevant information
          */
-        if (is_null($this->getContact()->getTitle()) || $this->getContact()->getGender()) {
+        if (is_null($this->getContact()->getTitle()) || is_null($this->getContact()->getGender())) {
             return '';
         }
 

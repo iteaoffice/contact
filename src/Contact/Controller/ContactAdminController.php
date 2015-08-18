@@ -18,6 +18,7 @@ use Contact\Form\Statistics;
 use Contact\Service\StatisticsService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
+use Project\Service\ProjectServiceAwareInterface;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -28,7 +29,7 @@ use Zend\View\Model\ViewModel;
  * @method HandleImport handleImport()
  * @method GetFilter getContactFilter()
  */
-class ContactAdminController extends ContactAbstractController
+class ContactAdminController extends ContactAbstractController implements ProjectServiceAwareInterface
 {
     /**
      * @return ViewModel
@@ -65,20 +66,29 @@ class ContactAdminController extends ContactAbstractController
      */
     public function viewAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
-        $selections = $this->getSelectionService()->findSelectionsByContact($contactService->getContact());
+        $contactService = $this->getContactService()->setContactId($this->params('id'));
+        $contact = clone $contactService->getContact();
+        $selections = $this->getSelectionService()->findSelectionsByContact($contact);
+        $optIn = $this->getContactService()->findAll('optIn');
+
+        if ($contactService->isEmpty()) {
+            return $this->notFoundAction();
+        }
 
         return new ViewModel(
             [
                 'contactService' => $contactService,
                 'selections'     => $selections,
+                'projects'       => $this->getProjectService()->findProjectParticipationByContact($contact),
+                'projectService' => $this->getProjectService(),
+                'optIn'          => $optIn,
             ]
         );
     }
 
     public function permitAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+        $contactService = $this->getContactService()->setContactId($this->params('id'));
 
         $this->getAdminService()->findPermitContactByContact($contactService->getContact());
 
@@ -94,9 +104,14 @@ class ContactAdminController extends ContactAbstractController
      */
     public function impersonateAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+        $contactService = $this->getContactService()->setContactId($this->params('id'));
         $form = $this->getServiceLocator()->get('contact_impersonate_form');
-        $form->setData($_POST);
+
+        $data = array_merge_recursive(
+            $this->getRequest()->getPost()->toArray()
+        );
+
+        $form->setData($data);
         $deeplink = false;
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $data = $form->getData();
@@ -114,54 +129,6 @@ class ContactAdminController extends ContactAbstractController
                 'form'           => $form,
             ]
         );
-    }
-
-    /**
-     * Create a new entity.
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function newAction()
-    {
-        $entity = $this->getEvent()->getRouteMatch()->getParam('entity');
-        $form = $this->getFormService()->prepare($this->params('entity'), null, $_POST);
-        $form->setAttribute('class', 'form-horizontal');
-        if ($this->getRequest()->isPost() && $form->isValid()) {
-            $result = $this->getContactService()->newEntity($form->getData());
-
-            return $this->redirect()->toRoute(
-                'zfcadmin/contact-admin/' . strtolower($this->params('entity')),
-                ['id' => $result->getId()]
-            );
-        }
-
-        return new ViewModel(['form' => $form, 'entity' => $entity, 'fullVersion' => true]);
-    }
-
-    /**
-     * Edit an entity by finding it and call the corresponding form.
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function editAction()
-    {
-        $entity = $this->getContactService()->findEntityById(
-            $this->getEvent()->getRouteMatch()->getParam('entity'),
-            $this->getEvent()->getRouteMatch()->getParam('id')
-        );
-        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
-        $form->setAttribute('class', 'form-horizontal live-form');
-        $form->setAttribute('id', 'contact-contact-' . $entity->getId());
-        if ($this->getRequest()->isPost() && $form->isValid()) {
-            $result = $this->getContactService()->updateEntity($form->getData());
-
-            return $this->redirect()->toRoute(
-                'zfcadmin/contact/' . strtolower($entity->get('dashed_entity_name')),
-                ['id' => $result->getId()]
-            );
-        }
-
-        return new ViewModel(['form' => $form, 'entity' => $entity, 'fullVersion' => true]);
     }
 
     /**

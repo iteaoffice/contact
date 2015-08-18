@@ -55,7 +55,11 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function newAction()
     {
-        $form = $this->getFormService()->prepare('facebook', null, $_POST);
+        $data = array_merge_recursive(
+            $this->getRequest()->getPost()->toArray()
+        );
+
+        $form = $this->getFormService()->prepare('facebook', null, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             /*
@@ -79,14 +83,17 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function editAction()
     {
-        /*
-         * @var Facebook
+        /**
+         * @var $facebook Facebook
          */
         $facebook = $this->getContactService()->findEntityById(
             'facebook',
             $this->params('id')
         );
-        $form = $this->getFormService()->prepare($facebook->get('entity_name'), $facebook, $_POST);
+        $data = array_merge_recursive(
+            $this->getRequest()->getPost()->toArray()
+        );
+        $form = $this->getFormService()->prepare($facebook->get('entity_name'), $facebook, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             if (isset($data['delete'])) {
@@ -97,7 +104,7 @@ class FacebookManagerController extends ContactAbstractController
 
                 $this->getContactService()->removeEntity($facebook);
                 $this->flashMessenger()->setNamespace('success')->addMessage(
-                    sprintf(_("txt-facebook-has-successfully-been-deleted"))
+                    sprintf($this->translate("txt-facebook-has-successfully-been-deleted"))
                 );
 
                 return $this->redirect()->toRoute('zfcadmin/facebook-manager/list');

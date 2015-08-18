@@ -29,7 +29,16 @@ class OptIn extends EntityAbstract
      * Feature to decide which opt-ins to enable on registration.
      */
     const AUTO_SUBSCRIBE = 1;
-    const NO_AUTO_SUBSCRIBE = 2;
+    const NO_AUTO_SUBSCRIBE = 0;
+
+    /**
+     * @var array
+     */
+    protected static $autoSubscribeTemplates = [
+        self::AUTO_SUBSCRIBE    => "txt-auto-subscribe",
+        self::NO_AUTO_SUBSCRIBE => "txt-no-auto-subscribe",
+    ];
+
     /**
      * @ORM\Column(name="optin_id", type="integer", nullable=false)
      * @ORM\Id
@@ -57,7 +66,6 @@ class OptIn extends EntityAbstract
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-description"})
-     * @Annotation\Attributes({"class":"span3"})
      *
      * @var string
      */
@@ -115,7 +123,7 @@ class OptIn extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->optIn;
+        return (string)$this->optIn;
     }
 
     /**
@@ -169,25 +177,11 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements.
-     *
      * @return array
      */
-    public function getArrayCopy()
+    public static function getAutoSubscribeTemplates()
     {
-        return [
-            'contact' => $this->contact,
-        ];
-    }
-
-    /**
-     * Function needed for the population of forms.
-     *
-     * @return array
-     */
-    public function populate()
-    {
-        return $this->getArrayCopy();
+        return self::$autoSubscribeTemplates;
     }
 
     /**
@@ -278,10 +272,14 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @return int
+     * @param bool $textual
+     * @return int|string
      */
-    public function getAutoSubscribe()
+    public function getAutoSubscribe($textual = false)
     {
+        if ($textual) {
+            return self::$autoSubscribeTemplates[$this->autoSubscribe];
+        }
         return $this->autoSubscribe;
     }
 

@@ -72,6 +72,9 @@ class ContactLink extends LinkAbstract
         return $this->createLink();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function parseAction()
     {
         switch ($this->getAction()) {
@@ -85,7 +88,7 @@ class ContactLink extends LinkAbstract
                 break;
             case 'edit-admin':
                 $this->setRouter('zfcadmin/contact-admin/edit');
-                $this->setText(sprintf($this->translate("txt-edit-contact-%s"), $this->getContact()->getDisplayName()));
+                $this->setText(sprintf($this->translate("txt-edit-contact-in-admin-%s"), $this->getContact()->getDisplayName()));
                 break;
             case 'profile':
                 $this->setRouter('community/contact/profile/view');
@@ -110,7 +113,7 @@ class ContactLink extends LinkAbstract
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-admin/view');
-                $this->setText(sprintf($this->translate("txt-view-contact-%s"), $this->getContact()->getDisplayName()));
+                $this->setText(sprintf($this->translate("txt-view-contact-in-admin-%s"), $this->getContact()->getDisplayName()));
                 break;
             case 'impersonate':
                 $this->setRouter('zfcadmin/contact-admin/impersonate');

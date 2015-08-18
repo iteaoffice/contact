@@ -36,6 +36,23 @@ return [
                     'contacts'   => [
                         'label' => _("txt-contacts"),
                         'route' => 'zfcadmin/contact-admin/list',
+                        'pages' => [
+                            'view-contact' => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/contact-admin/view',
+                                'visible' => false,
+                            ],
+                            'edit-contact' => [
+                                'label'   => _('txt-edit'),
+                                'route'   => 'zfcadmin/contact-admin/edit',
+                                'visible' => false,
+                            ],
+                            'impersonate-contact' => [
+                                'label'   => _('txt-impersonate'),
+                                'route'   => 'zfcadmin/contact-admin/impersonate',
+                                'visible' => false,
+                            ],
+                        ]
                     ],
                     'selections' => [
                         'label' => _("txt-selections"),

@@ -1,0 +1,27 @@
+<h2>{{ translate("txt-address") }}</h2>
+
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>{{ translate("txt-address-id") }}</th>
+        <th>{{ translate("txt-address-type") }}</th>
+        <th>{{ translate("txt-address-address") }}</th>
+        <th>{{ translate("txt-address-zip-code") }}</th>
+        <th>{{ translate("txt-address-city") }}</th>
+        <th>{{ translate("txt-address-country") }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for address in contactService.contact.address %}
+        <tr>
+            <td>{{ address.id }}</td>
+            <td>{{ address.type }}</td>
+            <td>{{ address.address }}</td>
+            <td>{{ address.zipCode }}</td>
+            <td>{{ address.city }}</td>
+            <td>{{ address.country }}</td>
+        </tr>
+    {% endfor %}
+    </thead>
+</table>
+

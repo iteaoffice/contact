@@ -25,6 +25,7 @@ use General\Service\EmailService;
 use General\Service\GeneralService;
 use General\Service\GeneralServiceAwareInterface;
 use Organisation\Service\OrganisationService;
+use Project\Service\ProjectService;
 use Search\Service\SearchService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
@@ -58,6 +59,10 @@ abstract class ContactAbstractController extends AbstractActionController implem
      */
     protected $organisationService;
     /**
+     * @var ProjectService
+     */
+    protected $projectService;
+    /**
      * @var GeneralService
      */
     protected $generalService;
@@ -89,7 +94,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
      */
     public function getContactService()
     {
-        return $this->contactService;
+        return clone $this->contactService;
     }
 
     /**
@@ -235,7 +240,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
     }
 
     /**
-     * @param  SearchService             $searchService
+     * @param  SearchService $searchService
      * @return ContactAbstractController
      */
     public function setSearchService(SearchService $searchService)
@@ -271,12 +276,31 @@ abstract class ContactAbstractController extends AbstractActionController implem
     }
 
     /**
-     * @param  OrganisationService       $organisationService
+     * @param  OrganisationService $organisationService
      * @return ContactAbstractController
      */
     public function setOrganisationService(OrganisationService $organisationService)
     {
         $this->organisationService = $organisationService;
+
+        return $this;
+    }
+
+    /**
+     * @return ProjectService
+     */
+    public function getProjectService()
+    {
+        return $this->projectService;
+    }
+
+    /**
+     * @param ProjectService $projectService
+     * @return ContactAbstractController
+     */
+    public function setProjectService(ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
 
         return $this;
     }

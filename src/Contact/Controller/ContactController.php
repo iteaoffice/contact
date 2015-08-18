@@ -163,7 +163,13 @@ class ContactController extends ContactAbstractController implements
             $this->getServiceLocator()->get('contact_password_form_filter')
         );
         $form->setAttribute('class', 'form-horizontal');
-        $form->setData($_POST);
+
+        $data = array_merge_recursive(
+            $this->getRequest()->getPost()->toArray(),
+            $this->getRequest()->getFiles()->toArray()
+        );
+
+        $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
             if ($this->getContactService()->updatePasswordForContact(
