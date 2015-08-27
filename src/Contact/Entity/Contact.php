@@ -3535,9 +3535,9 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param MemberFinancial $memberFinancial
+     * @param \Member\Entity\MemberFinancial $memberFinancial
      */
-    public function setMemberFinancial(MemberFinancial $memberFinancial){
+    public function setMemberFinancial(\Member\Entity\MemberFinancial $memberFinancial){
         $this->memberFinancial = $memberFinancial;
         return $this;
     }
