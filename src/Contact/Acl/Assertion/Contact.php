@@ -49,7 +49,5 @@ class Contact extends AssertionAbstract
             default:
                 return $this->hasContact();
         }
-
-
     }
 }
