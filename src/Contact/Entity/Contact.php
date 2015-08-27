@@ -641,6 +641,12 @@ class Contact extends EntityAbstract implements
      */
     private $member;
     /**
+     * @ORM\OneToOne(targetEntity="Member\Entity\MemberFinancial", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @Annotation\Exclude()
+     * @var \Member\Entity\MemberFinancial
+     */
+    private $memberFinancial;
+    /**
      * @ORM\OneToOne(targetEntity="Member\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      * @var \Member\Entity\Applicant
@@ -3526,5 +3532,20 @@ class Contact extends EntityAbstract implements
         $this->projectReportEffortSpent = $projectReportEffortSpent;
 
         return $this;
+    }
+
+    /**
+     * @param MemberFinancial $memberFinancial
+     */
+    public function setMemberFinancial(MemberFinancial $memberFinancial){
+        $this->memberFinancial = $memberFinancial;
+        return $this;
+    }
+
+    /**
+     * @return \Member\Entity\MemberFinancial
+     */
+    public function getMemberFinancial(){
+        return $this->memberFinancial;
     }
 }
