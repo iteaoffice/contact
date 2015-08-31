@@ -640,10 +640,11 @@ class Contact extends EntityAbstract implements
      * @var \Member\Entity\Member
      */
     private $member;
+
     /**
-     * @ORM\OneToOne(targetEntity="Member\Entity\MemberFinancial", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
-     * @Annotation\Exclude()
-     * @var \Member\Entity\MemberFinancial
+     * @ORM\OneToMany(targetEntity="Member\Entity\Financial", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude();
+     * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
      */
     private $memberFinancial;
     /**
