@@ -644,7 +644,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="Member\Entity\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude();
-     * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     * @var \Member\Entity\Financial[]|Collections\ArrayCollection
      */
     private $memberFinancial;
     /**
