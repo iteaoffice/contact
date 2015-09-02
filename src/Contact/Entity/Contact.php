@@ -640,13 +640,13 @@ class Contact extends EntityAbstract implements
      * @var \Member\Entity\Member
      */
     private $member;
-
     /**
      * @ORM\OneToMany(targetEntity="Member\Entity\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude();
      * @var \Member\Entity\Financial[]|Collections\ArrayCollection
      */
     private $memberFinancial;
+
     /**
      * @ORM\OneToOne(targetEntity="Member\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
@@ -883,6 +883,7 @@ class Contact extends EntityAbstract implements
         $this->achievement = new Collections\ArrayCollection();
         $this->comment = new Collections\ArrayCollection();
         $this->announcement = new Collections\ArrayCollection();
+        $this->memberFinancial = new  Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -3536,16 +3537,17 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param \Member\Entity\MemberFinancial $memberFinancial
+     * @param  Collections\ArrayCollection|\Member\Entity\Financial[] $memberFinancial
      */
-    public function setMemberFinancial(\Member\Entity\MemberFinancial $memberFinancial)
+    public function setMemberFinancial($memberFinancial)
     {
         $this->memberFinancial = $memberFinancial;
+
         return $this;
     }
 
     /**
-     * @return \Member\Entity\MemberFinancial
+     * @return Collections\ArrayCollection|\Member\Entity\Financial[] $memberFinancial
      */
     public function getMemberFinancial()
     {
