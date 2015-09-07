@@ -12,12 +12,15 @@ namespace Contact\Controller;
 
 use Contact\Controller\Plugin\GetFilter;
 use Contact\Controller\Plugin\HandleImport;
+use Contact\Entity\Contact;
+use Contact\Entity\ContactOrganisation;
 use Contact\Form\ContactFilter;
 use Contact\Form\Import;
 use Contact\Form\Statistics;
 use Contact\Service\StatisticsService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
+use Organisation\Service\OrganisationServiceAwareInterface;
 use Project\Service\ProjectServiceAwareInterface;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
@@ -29,7 +32,7 @@ use Zend\View\Model\ViewModel;
  * @method HandleImport handleImport()
  * @method GetFilter getContactFilter()
  */
-class ContactAdminController extends ContactAbstractController implements ProjectServiceAwareInterface
+class ContactAdminController extends ContactAbstractController implements ProjectServiceAwareInterface, OrganisationServiceAwareInterface
 {
     /**
      * @return ViewModel
@@ -125,6 +128,90 @@ class ContactAdminController extends ContactAbstractController implements Projec
         return new ViewModel(
             [
                 'deeplink'       => $deeplink,
+                'contactService' => $contactService,
+                'form'           => $form,
+            ]
+        );
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function editAction()
+    {
+        $contactService = $this->getContactService()->setContactId($this->params('id'));
+
+        //Get contacts in an organisation
+        if ($contactService->hasOrganisation()) {
+            $data = array_merge(
+                [
+                    'organisation' => $contactService->getContact()->getContactOrganisation()->getOrganisation()->getId(),
+                    'branch'       => $contactService->getContact()->getContactOrganisation()->getBranch()
+                ],
+                $this->getRequest()->getPost()->toArray()
+            );
+
+            $form = $this->getFormService()->prepare(
+                $contactService->getContact(),
+                $contactService->getContact(),
+                $data
+            );
+
+
+            $form->get('organisation')->setValueOptions([
+                $contactService->getContact()->getContactOrganisation()->getOrganisation()->getId() => $contactService->getContact()->getContactOrganisation()->getOrganisation()->getOrganisation()
+            ]);
+        } else {
+            $data = array_merge(
+                $this->getRequest()->getPost()->toArray()
+            );
+            $form = $this->getFormService()->prepare(
+                $contactService->getContact(),
+                $contactService->getContact(),
+                $data
+            );
+        }
+
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $contactService->getContact()->getId()]
+                );
+            }
+
+            if ($form->isValid()) {
+                /**
+                 * @var $contact Contact
+                 */
+                $contact = $form->getData();
+                $contact = $this->getContactService()->updateEntity($contact);
+
+                //Update the contactOrganisation (if set)
+                if (is_null($contact->getContactOrganisation())) {
+                    $contactOrganisation = new ContactOrganisation();
+                    $contactOrganisation->setContact($contact);
+                } else {
+                    $contactOrganisation = $contact->getContactOrganisation();
+                }
+
+                $contactOrganisation->setBranch(strlen($data['branch']) === 0 ? null : $data['branch']);
+                $contactOrganisation->setOrganisation($this->getOrganisationService()->setOrganisationId($data['organisation'])->getOrganisation());
+
+                $this->getContactService()->updateEntity($contactOrganisation);
+
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $contactService->getContact()->getId()]
+                );
+            } else {
+                var_dump($form->getInputFilter()->getMessages());
+            }
+        }
+
+        return new ViewModel(
+            [
                 'contactService' => $contactService,
                 'form'           => $form,
             ]

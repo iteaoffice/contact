@@ -8,8 +8,11 @@
  * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
  */
 use Admin\Entity\Access;
+use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
+use Contact\Acl\Assertion\Phone as PhoneAssertion;
+use Contact\Acl\Assertion\Note as NoteAssertion;
 
 return [
     'bjyauthorize' => [
@@ -185,8 +188,34 @@ return [
                     'roles' => [strtolower(Access::ACCESS_OFFICE)]
                 ],
                 [
-                    'route' => 'cli-partner-search-update',
-                    'roles' => []
+                    'route'     => 'zfcadmin/address-manager/edit',
+                    'roles'     => [],
+                    'assertion' => AddressAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/address-manager/new',
+                    'roles'     => [],
+                    'assertion' => AddressAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/phone-manager/edit',
+                    'roles'     => [],
+                    'assertion' => PhoneAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/phone-manager/new',
+                    'roles'     => [],
+                    'assertion' => PhoneAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/note-manager/edit',
+                    'roles'     => [],
+                    'assertion' => NoteAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/note-manager/new',
+                    'roles'     => [],
+                    'assertion' => NoteAssertion::class
                 ],
                 [
                     'route' => 'cli-partner-search-reset',

@@ -15,6 +15,7 @@ use Zend\Form\Annotation;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Entity for the Contact.
@@ -26,7 +27,7 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @category    Contact
  */
-class Address extends EntityAbstract
+class Address extends EntityAbstract implements ResourceInterface
 {
     /**
      * @ORM\Column(name="address_id", length=10, type="integer", nullable=false)
@@ -39,7 +40,7 @@ class Address extends EntityAbstract
     private $id;
     /**
      * @ORM\Column(name="address", type="string", length=80, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-address"})
      *
      * @var string
@@ -120,19 +121,23 @@ class Address extends EntityAbstract
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->getAddress();
+    }
+
+    /**
      * Returns the string identifier of the Resource.
      *
      * @return string
      */
     public function getResourceId()
     {
-        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
 
-    public function toArray()
-    {
-        return $this->getArrayCopy();
-    }
 
     /**
      * Set input filter.
@@ -242,29 +247,6 @@ class Address extends EntityAbstract
         return $this->inputFilter;
     }
 
-    /**
-     * Needed for the hydration of form elements.
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return [
-            'country' => $this->country->getIso3(),
-            'type'    => $this->type,
-            'address' => $this->address,
-            'city'    => $this->city,
-            'zipCode' => $this->zipCode,
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
 
     /**
      * @param string $address

@@ -1,0 +1,37 @@
+{% do form.prepare() %}
+{% do form.setAttribute('class','form-horizontal') %}
+
+{{ form().openTag(form)|raw }}
+
+{% set contact = form.get('contact') %}
+
+<fieldset>
+    <legend>{{ translate("txt-contact-information") }}</legend>
+    {{ ztbformelement(contact.get('firstName')) }}
+    {{ ztbformelement(contact.get('middleName')) }}
+    {{ ztbformelement(contact.get('lastName')) }}
+    {{ ztbformelement(contact.get('email')) }}
+    {{ ztbformelement(contact.get('gender')) }}
+    {{ ztbformelement(contact.get('title')) }}
+</fieldset>
+
+<fieldset>
+    <legend>{{ translate("txt-organisation-information") }}</legend>
+    {{ organisationformelement(form.get('organisation')) }}
+    {{ ztbformelement(form.get('branch')) }}
+    {{ ztbformelement(contact.get('department')) }}
+    {{ ztbformelement(contact.get('position')) }}
+</fieldset>
+
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('cancel')) }}
+        {% if form.has('deactivate') %}
+            {{ ztbformelement(form.get('deactivate')) }}
+        {% endif %}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}

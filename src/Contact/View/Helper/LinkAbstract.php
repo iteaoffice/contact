@@ -14,7 +14,11 @@ namespace Contact\View\Helper;
 use BjyAuthorize\Controller\Plugin\IsAllowed;
 use BjyAuthorize\Service\Authorize;
 use Contact\Acl\Assertion\AssertionAbstract;
+use Contact\Entity\Address;
+use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
+use Contact\Entity\Note;
+use Contact\Entity\Phone;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -84,6 +88,22 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      * @var int
      */
     protected $page;
+    /**
+     * @var Contact
+     */
+    protected $contact;
+    /**
+     * @var Address
+     */
+    protected $address;
+    /**
+     * @var Note
+     */
+    protected $note;
+    /**
+     * @var Phone
+     */
+    protected $phone;
 
     /**
      * This function produces the link in the end.
@@ -508,6 +528,98 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     public function setHash($hash)
     {
         $this->hash = $hash;
+
+        return $this;
+    }
+
+    /**
+     * @return Contact
+     */
+    public function getContact()
+    {
+        if (is_null($this->contact)) {
+            $this->contact = new Contact();
+        }
+
+        return $this->contact;
+    }
+
+    /**
+     * @param Contact $contact
+     * @return LinkAbstract
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getAddress()
+    {
+        if (is_null($this->address)) {
+            $this->address = new Address();
+        }
+
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     * @return LinkAbstract
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Note
+     */
+    public function getNote()
+    {
+        if (is_null($this->note)) {
+            $this->note = new Note();
+        }
+
+        return $this->note;
+    }
+
+    /**
+     * @param Note $note
+     * @return LinkAbstract
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return Phone
+     */
+    public function getPhone()
+    {
+        if (is_null($this->phone)) {
+            $this->phone = new Phone();
+        }
+
+        return $this->phone;
+    }
+
+    /**
+     * @param Phone $phone
+     * @return LinkAbstract
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
 
         return $this;
     }

@@ -25,7 +25,8 @@
     {% if contactService.hasOrganisation() %}
         <dd>{{ organisationLink(
             contactService.findOrganisationService,'view-admin', 'name',contactService.contact.contactOrganisation.branch
-            ) }}, ({{ contactService.contact.contactOrganisation.organisation.type}}) {{ contactService.contact.contactOrganisation.organisation.country }}</dd>
+            ) }}, ({{ contactService.contact.contactOrganisation.organisation.type }}
+            ) {{ contactService.contact.contactOrganisation.organisation.country }}</dd>
     {% else %}
         <dd>{{ translate("txt-no-organisation-provided") }}</dd>
     {% endif %}
@@ -49,13 +50,14 @@
         <tbody>
         {% for note in contactService.contact.note %}
             <tr>
-                <td>{{ note.id }}</td>
+                <td>{{ note.id }} {{ noteLink(note,'edit','icon') }}</td>
                 <td>{{ note.source }}</td>
                 <td>{{ note.note }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    {{ noteLink(null,'new','button') }}
 {% else %}
     {{ ztbalert().info(translate("txt-no-notes-available-for-this-contact"))|raw }}
 {% endif %}

@@ -1,9 +1,0 @@
-<div class="row-fluid">
-    <div class="span12">
-        <h1>{{ translate("txt-%s-new-title")|format(entity) }}</h1>
-
-        <p class="lead">{{ translate("txt-%s-new-explanation")|format(entity) }}</p>
-
-        {% include 'contact/partial/form/' ~ entity with [{'entity': entity}, {'form': form}] %}
-    </div>
-</div>

@@ -51,9 +51,8 @@
                     {% endif %}
                     <tr>
                         <td>{{ contactLink(contact, 'view-admin', 'name') }}</td>
-                        <td>{{ contact.email }}</td>
-                        <td>{% if organisationService and not organisationService.isEmpty() %}{{ organisationLink(organisationService,'view-admin','name') }}
-                                <div class="pull-right">{{ organisationLink(organisationService,'view','icon') }}</div>{% endif %}
+                        <td>{{ contact.email }} <a href="maito:{{ contact.email }}"><i class="fa fa-envelope-o"></i> </a></td>
+                        <td>{% if organisationService and not organisationService.isEmpty() %}{{ organisationLink(organisationService,'view-admin','name') }}{% endif %}
                         </td>
                         <td>{{ contact.contactOrganisation.organisation.country }}</td>
                         <td>{{ contactService.getAffiliationCount(constant("Affiliation\\Service\\AffiliationService::WHICH_ONLY_ACTIVE")) }}</td>

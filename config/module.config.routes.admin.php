@@ -218,6 +218,102 @@ return [
                             ],
                         ],
                     ],
+                    'address-manager'   => [
+                        'type'          => 'Segment',
+                        'options'       => [
+                            'route'    => '/address',
+                            'defaults' => [
+                                'controller' => Controller\AddressManagerController::class,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'new'  => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new/contact-[:contact].html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'phone-manager'   => [
+                        'type'          => 'Segment',
+                        'options'       => [
+                            'route'    => '/phone',
+                            'defaults' => [
+                                'controller' => Controller\PhoneManagerController::class,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'new'  => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new/contact-[:contact].html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'note-manager'   => [
+                        'type'          => 'Segment',
+                        'options'       => [
+                            'route'    => '/note',
+                            'defaults' => [
+                                'controller' => Controller\NoteManagerController::class,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'new'  => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new/contact-[:contact].html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ]

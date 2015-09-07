@@ -140,6 +140,8 @@ abstract class AssertionAbstract implements
             $roles = [$roles];
         }
 
+        $roles = array_map('strtolower', $roles);
+
         foreach ($this->getAccessRoles() as $access) {
             if (in_array(strtolower($access), $roles)) {
                 return true;
