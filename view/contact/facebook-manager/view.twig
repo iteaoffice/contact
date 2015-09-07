@@ -1,3 +1,6 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-facebook-%s")|format(facebook)) %}
+
 <h1>{{ translate("txt-facebook-%s")|format(facebook) }}
     {{ facebookLink(facebook,'edit','button') }}
     {{ facebookLink(null,'list','button') }}
@@ -47,6 +50,7 @@
             <th>{{ translate(facebook.getTitle(true)) }}</th>
             <th>{{ translate(facebook.getSubTitle(true)) }}</th>
             <th>{{ translate("txt-phone") }}</th>
+            <th>{{ translate("txt-mobile") }}</th>
             <th>{{ translate("txt-email") }}</th>
         </tr>
         </thead>
@@ -57,6 +61,7 @@
                 <td>{{ contact.title|raw }}</td>
                 <td>{{ contact.subTitle|raw }}</td>
                 <td>{{ contact.phone }}</td>
+                <td>{{ contact.mobile }}</td>
                 <td>{{ contact.email }}</td>
             </tr>
 

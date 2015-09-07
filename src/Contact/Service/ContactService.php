@@ -859,6 +859,26 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * @param Selection $selection
+     *
+     * @return Contact[]
+     */
+    public function findContactsInSelectionAsArray(Selection $selection)
+    {
+        /*
+         * A selection can have 2 methods, either SQL or a contacts. We need to query both
+         */
+        if (!is_null($selection->getSql())) {
+            //We have a dynamic query, check if the contact is in the selection
+            return $this->getEntityManager()->getRepository($this->getFullEntityName('Contact'))
+                ->findContactsBySelectionSQL($selection->getSql(), true);
+        } else {
+            return $this->getEntityManager()->getRepository($this->getFullEntityName('Contact'))
+                ->findContactsBySelectionContact($selection, true);
+        }
+    }
+
+    /**
      * Get a list of facebooks by contact (based on the access role).
      *
      * @param Contact $contact
@@ -900,6 +920,7 @@ class ContactService extends ServiceAbstract
 
             $contacts[] = $singleContact;
         }
+
 
         return $contacts;
     }
@@ -1155,6 +1176,16 @@ class ContactService extends ServiceAbstract
             $contact->removeOptIn($collection);
         }
         $this->updateEntity($contact);
+    }
+
+    /**
+     * @param OptIn $optIn
+     * @return Contact[]
+     */
+    public function findContactsByOptInAsArray(OptIn $optIn)
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
+            ->findContactsByOptIn($optIn, true);
     }
 
     /**

@@ -37,12 +37,12 @@ return [
                         'label' => _("txt-contacts"),
                         'route' => 'zfcadmin/contact-admin/list',
                         'pages' => [
-                            'view-contact' => [
+                            'view-contact'        => [
                                 'label'   => _('txt-view'),
                                 'route'   => 'zfcadmin/contact-admin/view',
                                 'visible' => false,
                             ],
-                            'edit-contact' => [
+                            'edit-contact'        => [
                                 'label'   => _('txt-edit'),
                                 'route'   => 'zfcadmin/contact-admin/edit',
                                 'visible' => false,
@@ -61,6 +61,18 @@ return [
                     'facebook'   => [
                         'label' => _("txt-facebook"),
                         'route' => 'zfcadmin/facebook-manager/list',
+                        'pages' => [
+                            'view-facebook' => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/facebook-manager/view',
+                                'visible' => false,
+                            ],
+                            'edit-facebook' => [
+                                'label'   => _('txt-edit'),
+                                'route'   => 'zfcadmin/facebook-manager/view',
+                                'visible' => false,
+                            ],
+                        ]
                     ],
                     'permit'     => [
                         'label' => _("txt-permissions"),

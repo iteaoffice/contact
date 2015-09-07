@@ -25,16 +25,21 @@
                         <i class="fa fa-envelope-o"></i>&nbsp;<a
                             href="mailto:{{ contact.email }}">{{ contact.email }}</a><br>
                     {% endif %}
-                    {% if
-                    contact.phone|length > 0 and
-                    (facebook.getShowPhone() in [constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER"),constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")] or
-                    (
-                    facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and
-                    contactInFacebook
-                    )) %}
+                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")%}
+                        {% if contactInFacebook and contact.mobile|length > 0 %}
+                            <i class="fa fa-mobile"></i>&nbsp;{{ contact.mobile }}
+                        {% elseif contact.phone|length > 0 %}
+                            <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                        {% endif %}
+                    {% endif %}
+                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and contact.phone|length > 0 %}
+                        {% if contactInFacebook %}
+                            <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                        {% endif %}
+                    {% endif %}
+                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") and contact.phone|length > 0 %}
                         <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
                     {% endif %}
-
                 </div>
             </div>
         </div>

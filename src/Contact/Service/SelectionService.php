@@ -46,6 +46,14 @@ class SelectionService extends ServiceAbstract
     }
 
     /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return is_null($this->selection) || is_null($this->selection->getId());
+    }
+
+    /**
      * @return int
      */
     public function getAmountOfContacts()

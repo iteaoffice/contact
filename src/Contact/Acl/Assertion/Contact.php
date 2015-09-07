@@ -37,7 +37,7 @@ class Contact extends AssertionAbstract
          * A meeting can be shown when we have a contact
          */
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {
-            return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+            return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
         }
 
         switch ($privilege) {
@@ -45,7 +45,7 @@ class Contact extends AssertionAbstract
             case 'edit-admin':
             case 'impersonate':
             case 'permit':
-                return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+                return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
             default:
                 return $this->hasContact();
         }

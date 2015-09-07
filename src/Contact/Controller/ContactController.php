@@ -63,8 +63,7 @@ class ContactController extends ContactAbstractController implements
         /*
          * Do a check if the given has is correct to avoid guessing the image
          */
-        if (is_null($photo)
-            || $this->getEvent()->getRouteMatch()->getParam('hash')
+        if (is_null($photo) || is_null($photo->getPhoto()) || $this->getEvent()->getRouteMatch()->getParam('hash')
             !== $photo->getHash()
         ) {
             return $this->notFoundAction();

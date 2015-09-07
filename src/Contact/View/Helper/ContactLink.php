@@ -27,10 +27,10 @@ class ContactLink extends LinkAbstract
 
     /**
      * @param Contact $contact
-     * @param string  $action
-     * @param string  $show
-     * @param null    $hash
-     * @param null    $alternativeShow
+     * @param string $action
+     * @param string $show
+     * @param null $hash
+     * @param null $alternativeShow
      *
      * @return string
      *
@@ -60,11 +60,12 @@ class ContactLink extends LinkAbstract
 
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())
         ) {
-            return '';
+            return 'asdf';
         }
         $this->setShowOptions([
             'email'     => $this->getContact()->getEmail(),
             'paginator' => $this->getAlternativeShow(),
+            'firstname' => $this->getContact()->getFirstName(),
             'name'      => $this->getContact()->getDisplayName(),
         ]);
         $this->addRouterParam('hash', $hash);
@@ -89,7 +90,10 @@ class ContactLink extends LinkAbstract
                 break;
             case 'edit-admin':
                 $this->setRouter('zfcadmin/contact-admin/edit');
-                $this->setText(sprintf($this->translate("txt-edit-contact-in-admin-%s"), $this->getContact()->getDisplayName()));
+                $this->setText(sprintf(
+                    $this->translate("txt-edit-contact-in-admin-%s"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             case 'profile':
                 $this->setRouter('community/contact/profile/view');
@@ -114,7 +118,10 @@ class ContactLink extends LinkAbstract
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-admin/view');
-                $this->setText(sprintf($this->translate("txt-view-contact-in-admin-%s"), $this->getContact()->getDisplayName()));
+                $this->setText(sprintf(
+                    $this->translate("txt-view-contact-in-admin-%s"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             case 'impersonate':
                 $this->setRouter('zfcadmin/contact-admin/impersonate');

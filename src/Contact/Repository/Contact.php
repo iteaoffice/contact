@@ -350,10 +350,11 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param SelectionSql $sql
+     * @param bool $toArray
      *
      * @return Entity\Contact[]
      */
-    public function findContactsBySelectionSQL(SelectionSQL $sql)
+    public function findContactsBySelectionSQL(SelectionSQL $sql, $toArray = false)
     {
         $resultSetMap = new ResultSetMapping();
         $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
@@ -368,7 +369,11 @@ class Contact extends EntityRepository
             $resultSetMap
         );
 
-        return $query->getResult();
+        if ($toArray) {
+            return $query->getArrayResult();
+        } else {
+            return $query->getResult();
+        }
     }
 
     /**
@@ -417,10 +422,11 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Selection $selection
+     * @param bool $toArray
      *
      * @return Entity\Contact[]
      */
-    public function findContactsBySelectionContact(Selection $selection)
+    public function findContactsBySelectionContact(Selection $selection, $toArray = false)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c');
@@ -432,8 +438,36 @@ class Contact extends EntityRepository
         $qb->setParameter(1, $selection->getId());
         $qb->orderBy('c.lastName');
 
-        return $qb->getQuery()->getResult();
+        if ($toArray) {
+            return $qb->getQuery()->getArrayResult();
+        } else {
+            return $qb->getQuery()->getResult();
+        }
     }
+
+    /**
+     * @param Entity\OptIn $optIn
+     * @param bool $toArray
+     *
+     * @return Entity\Contact[]
+     */
+    public function findContactsByOptIn(Entity\OptIn $optIn, $toArray = false)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('c');
+        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->join("c.optIn", 'optIn');
+        $qb->where($qb->expr()->in('optIn.id', $optIn->getId()));
+
+        $qb->orderBy('c.lastName');
+
+        if ($toArray) {
+            return $qb->getQuery()->getArrayResult();
+        } else {
+            return $qb->getQuery()->getResult();
+        }
+    }
+
 
     /**
      * Return Contact entities based on a selection SQL using a native SQL query.
