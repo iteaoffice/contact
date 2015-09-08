@@ -1843,7 +1843,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Rationale
+     * @return Collections\ArrayCollection|\Project\Entity\Rationale[]
      */
     public function getRationale()
     {
@@ -1851,7 +1851,7 @@ class Contact extends EntityAbstract implements
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Rationale $rationale
+     * @param  Collections\ArrayCollection|\Project\Entity\Rationale[] $rationale
      * @return Contact
      */
     public function setRationale($rationale)
