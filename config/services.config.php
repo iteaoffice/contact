@@ -33,6 +33,9 @@ return [
         'contact_phone_form'        => function ($sm) {
             return new Form\CreateObject($sm, new Entity\Phone());
         },
+        'contact_selection_form'    => function ($sm) {
+            return new Form\CreateObject($sm, new Entity\Selection());
+        },
         'contact_impersonate_form'  => function ($sm) {
             return new Form\Impersonate($sm);
         },

@@ -26,6 +26,7 @@ use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\ServerUrl;
 use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
+use Contact\Entity\Selection;
 
 /**
  * Class LinkAbstract.
@@ -104,6 +105,10 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      * @var Phone
      */
     protected $phone;
+    /**
+     * @var Selection
+     */
+    protected $selection;
 
     /**
      * This function produces the link in the end.
@@ -620,6 +625,29 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * @return Selection
+     */
+    public function getSelection()
+    {
+        if (is_null($this->selection)) {
+            $this->selection = new Selection();
+        }
+
+        return $this->selection;
+    }
+
+    /**
+     * @param Selection $selection
+     * @return LinkAbstract
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
 
         return $this;
     }

@@ -21,16 +21,11 @@ use Contact\Entity\Selection;
 class SelectionLink extends LinkAbstract
 {
     /**
-     * @var Selection
-     */
-    protected $selection;
-
-    /**
      * @param Selection $selection
-     * @param string    $action
-     * @param string    $show
-     * @param null      $page
-     * @param null      $alternativeShow
+     * @param string $action
+     * @param string $show
+     * @param null $page
+     * @param null $alternativeShow
      *
      * @return string
      *
@@ -70,6 +65,9 @@ class SelectionLink extends LinkAbstract
         return $this->createLink();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function parseAction()
     {
         switch ($this->getAction()) {
@@ -81,8 +79,7 @@ class SelectionLink extends LinkAbstract
                 $this->setRouter('zfcadmin/selection-manager/list');
                 $this->setText($this->translate('txt-list-selections'));
 
-                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery(
-                ) as $key => $param) {
+                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key => $param) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
@@ -94,6 +91,12 @@ class SelectionLink extends LinkAbstract
                     sprintf($this->translate('txt-edit-selection-%s'), $this->getSelection()->getSelection())
                 );
                 break;
+            case 'edit-contacts':
+                $this->setRouter('zfcadmin/selection-manager/edit-contacts');
+                $this->setText(
+                    sprintf($this->translate('txt-edit-contacts-selection-%s'), $this->getSelection()->getSelection())
+                );
+                break;
             case 'view':
                 $this->setRouter('zfcadmin/selection-manager/view');
                 $this->setText(
@@ -103,25 +106,5 @@ class SelectionLink extends LinkAbstract
             default:
                 throw new \Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));
         }
-    }
-
-    /**
-     * @return Selection
-     */
-    public function getSelection()
-    {
-        if (is_null($this->selection)) {
-            $this->selection = new Selection();
-        }
-
-        return $this->selection;
-    }
-
-    /**
-     * @param Selection $selection
-     */
-    public function setSelection($selection)
-    {
-        $this->selection = $selection;
     }
 }

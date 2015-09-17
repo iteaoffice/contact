@@ -13,6 +13,8 @@ namespace Contact\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * SelectionContact.
@@ -24,7 +26,7 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class SelectionContact
+class SelectionContact extends EntityAbstract
 {
     /**
      * @var integer
@@ -60,6 +62,49 @@ class SelectionContact
      * @var \DateTime
      */
     private $dateCreated;
+
+    /**
+     * Magic Getter.
+     *
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        return $this->$property;
+    }
+
+    /**
+     * Magic Setter.
+     *
+     * @param $property
+     * @param $value
+     */
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
+
+    /**
+     * Set input filter.
+     *
+     * @param InputFilterInterface $inputFilter
+     *
+     * @throws \Exception
+     */
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Setting an inputFilter is currently not supported");
+    }
+
+    /**
+     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
+     */
+    public function getInputFilter()
+    {
+        return new InputFilter();
+    }
 
     /**
      * @param \Contact\Entity\Contact $contact

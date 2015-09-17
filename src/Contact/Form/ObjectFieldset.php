@@ -34,7 +34,7 @@ class ObjectFieldset extends Fieldset
         $doctrineHydrator = new DoctrineHydrator($entityManager);
         $this->setHydrator($doctrineHydrator)->setObject($object);
         $builder = new AnnotationBuilder();
-        /*
+        /**
          * Go over the different form elements and add them to the form
          */
         foreach ($builder->createForm($object)->getElements() as $element) {

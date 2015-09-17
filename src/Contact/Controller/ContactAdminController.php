@@ -10,8 +10,6 @@
 
 namespace Contact\Controller;
 
-use Contact\Controller\Plugin\GetFilter;
-use Contact\Controller\Plugin\HandleImport;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Form\ContactFilter;
@@ -29,8 +27,7 @@ use Zend\View\Model\ViewModel;
 /**
  * Class ContactManagerController.
  *
- * @method HandleImport handleImport()
- * @method GetFilter getContactFilter()
+ *
  */
 class ContactAdminController extends ContactAbstractController implements ProjectServiceAwareInterface, OrganisationServiceAwareInterface
 {
@@ -287,8 +284,16 @@ class ContactAdminController extends ContactAbstractController implements Projec
             }
 
             $results[] = [
-                'value' => $result['id'],
-                'text'  => $text,
+                'value'        => $result['id'],
+                'text'         => $text,
+                'name'         => sprintf(
+                    "%s, %s",
+                    trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
+                    $result['firstName']
+                ),
+                'id'           => $result['id'],
+                'email'        => $result['email'],
+                'organisation' => $result['organisation']
             ];
         }
 

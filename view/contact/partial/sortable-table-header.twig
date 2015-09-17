@@ -1,2 +1,10 @@
 {% if order == criteria %}{{ direction == 'desc' ? '<i class="fa fa-sort-alpha-desc"></i>' : '<i class="fa fa-sort-alpha-asc"></i>' }}{% endif %}
-<a href="{{ url(route,{'encodedFilter': encodedFilter,'id': id},{'fragment':fragment}) }}?order={{ criteria }}&direction={{ direction == 'desc' ? 'asc' : 'desc' }}">{{ text }}</a>
+
+{% if params %}
+    {% set params = {'encodedFilter': encodedFilter,'id': id}|merge(params) %}
+{% else %}
+    {% set params = {'encodedFilter': encodedFilter,'id': id} %}
+{% endif %}
+
+
+<a href="{{ url(route,params,{'fragment':fragment}) }}?order={{ criteria }}&direction={{ direction == 'desc' ? 'asc' : 'desc' }}">{{ text }}</a>

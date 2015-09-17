@@ -11,8 +11,8 @@ use Admin\Entity\Access;
 use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
-use Contact\Acl\Assertion\Phone as PhoneAssertion;
 use Contact\Acl\Assertion\Note as NoteAssertion;
+use Contact\Acl\Assertion\Phone as PhoneAssertion;
 
 return [
     'bjyauthorize' => [
@@ -165,6 +165,10 @@ return [
                 ],
                 [
                     'route' => 'zfcadmin/selection-manager/edit',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/edit-contacts',
                     'roles' => [strtolower(Access::ACCESS_OFFICE)]
                 ],
                 [

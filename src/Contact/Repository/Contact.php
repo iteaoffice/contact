@@ -505,8 +505,10 @@ class Contact extends EntityRepository
     public function searchContacts($searchItem, $maxResults = 12)
     {
         $qb = $this->_em->createQueryBuilder();
-        $qb->select(['c.id', 'c.firstName', 'c.middleName', 'c.lastName', 'c.email']);
+        $qb->select(['c.id', 'c.firstName', 'c.middleName', 'c.lastName', 'c.email', 'o.organisation']);
         $qb->from("Contact\Entity\Contact", 'c');
+        $qb->leftJoin('c.contactOrganisation', 'co');
+        $qb->join('co.organisation', 'o');
         $qb->distinct('c.id');
 
         $qb->where(

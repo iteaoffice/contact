@@ -49,3 +49,7 @@ _("txt-show-phone-explanation");
 _("txt-show-mobile-phone-to-members");
 _("txt-show-title-explanation");
 _("txt-show-phone-explanation");
+
+_("txt-sql");
+_("txt-no-event-registrations-were-found-for-this-contact");
+_("txt-no-cv-available");

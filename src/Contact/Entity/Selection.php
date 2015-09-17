@@ -46,6 +46,9 @@ class Selection extends EntityAbstract
      * Constant for private = 1 (hidden).
      */
     const IS_PRIVATE = 1;
+    const TYPE_SQL = 1;
+    const TYPE_FIXED = 2;
+
     /**
      * Textual versions of the hideForOthers.
      *
@@ -105,7 +108,7 @@ class Selection extends EntityAbstract
     private $dateDeleted;
     /**
      * @ORM\Column(name="note", type="string", length=40, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-note"})
      *
      * @var string
@@ -224,7 +227,7 @@ class Selection extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->selection;
+        return (string)$this->selection;
     }
 
     /**
@@ -289,7 +292,7 @@ class Selection extends EntityAbstract
                 $factory->createInput(
                     [
                         'name'     => 'note',
-                        'required' => true,
+                        'required' => false,
                         'filters'  => [
                             ['name' => 'StripTags'],
                             ['name' => 'StringTrim'],
@@ -301,7 +304,7 @@ class Selection extends EntityAbstract
                 $factory->createInput(
                     [
                         'name'     => 'tag',
-                        'required' => true,
+                        'required' => false,
                         'filters'  => [
                             ['name' => 'StripTags'],
                             ['name' => 'StringTrim'],
@@ -312,32 +315,16 @@ class Selection extends EntityAbstract
             $inputFilter->add(
                 $factory->createInput(
                     [
-                        'name'       => 'personal',
-                        'required'   => true,
-                        'validators' => [
-                            [
-                                'name'    => 'InArray',
-                                'options' => [
-                                    'haystack' => array_keys($this->getPersonalTemplates()),
-                                ],
-                            ],
-                        ],
+                        'name'     => 'personal',
+                        'required' => true,
                     ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
                     [
-                        'name'       => 'private',
-                        'required'   => true,
-                        'validators' => [
-                            [
-                                'name'    => 'InArray',
-                                'options' => [
-                                    'haystack' => array_keys($this->getPrivateTemplates()),
-                                ],
-                            ],
-                        ],
+                        'name'     => 'private',
+                        'required' => true,
                     ]
                 )
             );

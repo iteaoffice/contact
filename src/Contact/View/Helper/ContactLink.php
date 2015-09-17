@@ -60,7 +60,7 @@ class ContactLink extends LinkAbstract
 
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())
         ) {
-            return 'asdf';
+            return '';
         }
         $this->setShowOptions([
             'email'     => $this->getContact()->getEmail(),

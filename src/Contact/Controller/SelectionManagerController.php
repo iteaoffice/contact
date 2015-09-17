@@ -10,7 +10,9 @@
 
 namespace Contact\Controller;
 
-use Contact\Form\Search;
+use Contact\Entity\Selection;
+use Contact\Form\SelectionContacts;
+use Contact\Form\SelectionFilter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Zend\Paginator\Paginator;
@@ -26,31 +28,29 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function listAction()
     {
-        $paginator = null;
-        $searchForm = new Search();
+        $page = $this->params()->fromRoute('page', 1);
+        $filterPlugin = $this->getContactFilter();
+        $contactQuery = $this->getContactService()->findEntitiesFiltered(
+            'selection',
+            $filterPlugin->getFilter()
+        );
 
-        $search = $this->getRequest()->getQuery()->get('q');
-        $page = $this->getRequest()->getQuery()->get('page');
-
-        $searchForm->setData($_GET);
-
-        if ($this->getRequest()->isGet() && $searchForm->isValid() && !empty($search)) {
-            $selectionQuery = $this->getSelectionService()->searchSelection($search);
-        } else {
-            $selectionQuery = $this->getSelectionService()->searchSelection();
-        }
-
-        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($selectionQuery)));
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
 
-        return new ViewModel(
-            [
-                'paginator' => $paginator,
-                'form'      => $searchForm,
-            ]
-        );
+        $form = new SelectionFilter($this->getSelectionService());
+
+        $form->setData(['filter' => $filterPlugin->getFilter()]);
+
+        return new ViewModel([
+            'paginator'     => $paginator,
+            'form'          => $form,
+            'encodedFilter' => urlencode($filterPlugin->getHash()),
+            'order'         => $filterPlugin->getOrder(),
+            'direction'     => $filterPlugin->getDirection(),
+        ]);
     }
 
     /**
@@ -62,79 +62,171 @@ class SelectionManagerController extends ContactAbstractController
             $this->getEvent()->getRouteMatch()->getParam('id')
         );
 
+        /**
+         * If the query is wrong an exception is thrown now
+         */
+        try {
+            $contacts = $this->getContactService()->findContactsInSelection(
+                $selectionService->getSelection()
+            );
+            $error = false;
+        } catch (\Exception $e) {
+            $contacts = [];
+            $error = $e->getMessage();
+        }
+
         return new ViewModel(
             [
                 'selectionService' => $selectionService,
-                'contacts'         => $this->getContactService()->findContactsInSelection(
-                    $selectionService->getSelection()
-                ),
+                'contacts'         => $contacts,
+                'error'            => $error,
             ]
         );
     }
 
     /**
-     * Create a new entity.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
-    public function newAction()
+    public function editContactsAction()
     {
-        $entity = $this->getEvent()->getRouteMatch()->getParam('entity');
-        $form = $this->getFormService()->prepare($this->params('entity'), null, $_POST);
-        $form->setAttribute('class', 'form-horizontal');
-        if ($this->getRequest()->isPost() && $form->isValid()) {
-            $result = $this->getSelectionService()->newEntity($form->getData());
+        $selectionService = $this->getSelectionService()->setSelectionId($this->params('id'));
+        if ($selectionService->isEmpty()) {
+            return $this->notFoundAction();
+        }
+
+        $data = array_merge(
+            [
+                'type' => $selectionService->isSql() ? Selection::TYPE_SQL : Selection::TYPE_FIXED,
+                'sql'  => $selectionService->isSql() ? $selectionService->getSelection()->getSql()->getQuery() : null
+            ],
+            $this->getRequest()->getPost()->toArray()
+        );
+
+
+        $form = new SelectionContacts($this->getSelectionService());
+        $form->setData($data);
+
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(
+                    'zfcadmin/selection-manager/view',
+                    ['id' => $selectionService->getSelection()->getId()]
+                );
+            }
+
+
+            $this->getSelectionService()->updateSelectionContacts($selectionService->getSelection(), $data);
+
+            /**
+             * @var $selection Selection
+             */
 
             return $this->redirect()->toRoute(
-                'zfcadmin/selection-manager/'.strtolower($this->params('entity')),
-                ['id' => $result->getId()]
+                'zfcadmin/selection-manager/view',
+                ['id' => $selectionService->getSelection()->getId()]
             );
         }
 
-        return new ViewModel(['form' => $form, 'entity' => $entity, 'fullVersion' => true]);
+        return new ViewModel([
+            'selectionService' => $selectionService,
+            'form'             => $form
+        ]);
     }
 
     /**
-     * Edit an entity by finding it and call the corresponding form.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function editAction()
     {
-        $entity = $this->getSelectionService()->findEntityById(
-            $this->getEvent()->getRouteMatch()->getParam('entity'),
-            $this->getEvent()->getRouteMatch()->getParam('id')
-        );
-        $form = $this->getFormService()->prepare($entity->get('entity_name'), $entity, $_POST);
-        $form->setAttribute('class', 'form-horizontal live-form');
-        $form->setAttribute('id', 'selection-selection-'.$entity->getId());
-        if ($this->getRequest()->isPost() && $form->isValid()) {
-            $result = $this->getSelectionService()->updateEntity($form->getData());
-
-            return $this->redirect()->toRoute(
-                'zfcadmin/selection/'.strtolower($entity->get('dashed_entity_name')),
-                ['id' => $result->getId()]
-            );
+        $selectionService = $this->getSelectionService()->setSelectionId($this->params('id'));
+        if ($selectionService->isEmpty()) {
+            return $this->notFoundAction();
         }
 
-        return new ViewModel(['form' => $form, 'entity' => $entity, 'fullVersion' => true]);
+        $data = array_merge(
+            $this->getRequest()->getPost()->toArray()
+        );
+
+        $form = $this->getFormService()->prepare(
+            $selectionService->getSelection()->get('entity_name'),
+            $selectionService->getSelection(),
+            $data
+        );
+
+        $form->setAttribute('class', 'form-horizontal');
+
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(
+                    'zfcadmin/selection-manager/view',
+                    ['id' => $selectionService->getSelection()->getId()]
+                );
+            }
+
+            /**
+             * Save the form
+             */
+            if ($form->isValid()) {
+                /**
+                 * @var $selection Selection
+                 */
+                $selection = $form->getData();
+                $this->getSelectionService()->updateEntity($selection);
+
+                return $this->redirect()->toRoute(
+                    'zfcadmin/selection-manager/view',
+                    ['id' => $selectionService->getSelection()->getId()]
+                );
+            }
+        }
+
+        return new ViewModel(['form' => $form, 'selectionService' => $selectionService]);
     }
 
     /**
-     * (soft-delete) an entity.
-     *
-     * @return \Zend\Http\Response
+     * @return \Zend\Http\Response|ViewModel
      */
-    public function deleteAction()
+    public function newAction()
     {
-        $entity = $this->getSelectionService()->findEntityById(
-            $this->getEvent()->getRouteMatch()->getParam('entity'),
-            $this->getEvent()->getRouteMatch()->getParam('id')
-        );
-        $this->getSelectionService()->removeEntity($entity);
+        $selection = new Selection();
 
-        return $this->redirect()->toRoute(
-            'zfcadmin/selection-manager/'.$entity->get('dashed_entity_name').'s'
+        $data = array_merge(
+            $this->getRequest()->getPost()->toArray()
         );
+
+        $form = $this->getFormService()->prepare(
+            $selection->get('entity_name'),
+            $selection,
+            $data
+        );
+
+        $form->setAttribute('class', 'form-horizontal');
+
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('zfcadmin/selection-manager/list');
+            }
+
+            /**
+             * Save the form
+             */
+            if ($form->isValid()) {
+                /**
+                 * @var $selection Selection
+                 */
+                $selection = $form->getData();
+                $this->getSelectionService()->updateEntity($selection);
+
+                return $this->redirect()->toRoute(
+                    'zfcadmin/selection-manager/view',
+                    ['id' => $selection->getId()]
+                );
+            }
+        }
+
+        return new ViewModel(['form' => $form]);
     }
 }

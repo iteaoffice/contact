@@ -12,6 +12,7 @@ namespace Contact\Repository;
 
 use Contact\Entity;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 
 /**
  * @category    Contact
@@ -19,21 +20,73 @@ use Doctrine\ORM\EntityRepository;
 class Selection extends EntityRepository
 {
     /**
-     * @param $searchItem
-     *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @param array $filter
+     * @return Query
      */
-    public function searchSelections($searchItem)
+    public function findFiltered(array $filter)
     {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('s');
-        $qb->from("Contact\Entity\Selection", 's');
-        $qb->distinct('s.id');
-        $qb->andWhere('s.selection LIKE :searchItem');
-        $qb->setParameter('searchItem', "%".$searchItem."%");
-        $qb->orderBy('s.id', 'DESC');
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('s');
+        $queryBuilder->from('Contact\Entity\Selection', 's');
 
-        return $qb;
+        if (array_key_exists('search', $filter)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->like('s.selection', ':like'),
+                    $queryBuilder->expr()->like('s.tag', ':like')
+                )
+            );
+
+            $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
+        }
+
+        if (array_key_exists('sql', $filter)) {
+            $queryBuilder->join('s.sql', 'sql');
+        }
+
+        if (array_key_exists('tags', $filter)) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('s.tag', $filter['tags']));
+        }
+
+        $direction = 'ASC';
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'])) {
+            $direction = strtoupper($filter['direction']);
+        }
+
+        switch ($filter['order']) {
+            case 'name':
+                $queryBuilder->addOrderBy('s.selection', $direction);
+                break;
+            case 'tag':
+                $queryBuilder->addOrderBy('s.tag', $direction);
+                break;
+            case 'owner':
+                $queryBuilder->join('s.contact', 'contact');
+                $queryBuilder->addOrderBy('contact.lastName', $direction);
+                break;
+            case 'date':
+                $queryBuilder->addOrderBy('s.dateCreated', $direction);
+                break;
+            default:
+                $queryBuilder->addOrderBy('s.id', $direction);
+
+        }
+
+        return $queryBuilder->getQuery();
+    }
+
+    /**
+     * @return array
+     */
+    public function findTags()
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('s.tag');
+        $queryBuilder->distinct();
+        $queryBuilder->from("Contact\\Entity\\Selection", 's');
+        $queryBuilder->orderBy('s.tag', 'ASC');
+
+        return $queryBuilder->getQuery()->getArrayResult();
     }
 
     /**

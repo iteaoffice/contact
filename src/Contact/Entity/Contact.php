@@ -262,7 +262,7 @@ class Contact extends EntityAbstract implements
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Document[]\Document|Collections\ArrayCollection()
+     * @var \Project\Entity\Document\Document[]\Document|Collections\ArrayCollection()
      */
     private $projectDocument;
     /**

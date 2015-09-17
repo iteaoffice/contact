@@ -118,7 +118,7 @@ return [
                         ],
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'list' => [
+                            'list'          => [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
@@ -132,7 +132,7 @@ return [
                                     'page'   => null,
                                 ]
                             ],
-                            'new'  => [
+                            'new'           => [
                                 'type'     => 'Literal',
                                 'priority' => 1000,
                                 'options'  => [
@@ -142,7 +142,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'view' => [
+                            'view'          => [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
@@ -152,13 +152,23 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit' => [
+                            'edit'          => [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
                                     'route'    => '/edit/[:id].html',
                                     'defaults' => [
                                         'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                            'edit-contacts' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit-contacts/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit-contacts',
                                     ],
                                 ],
                             ],
@@ -250,7 +260,7 @@ return [
                             ],
                         ],
                     ],
-                    'phone-manager'   => [
+                    'phone-manager'     => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/phone',
@@ -282,7 +292,7 @@ return [
                             ],
                         ],
                     ],
-                    'note-manager'   => [
+                    'note-manager'      => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/note',

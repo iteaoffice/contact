@@ -12,6 +12,8 @@ namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * SelectionSql.
@@ -23,7 +25,7 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class SelectionSql
+class SelectionSql extends EntityAbstract
 {
     /**
      * @ORM\Column(name="sql_id", type="integer", nullable=false)
@@ -50,6 +52,49 @@ class SelectionSql
      * @var string
      */
     private $query;
+
+    /**
+     * Magic Getter.
+     *
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        return $this->$property;
+    }
+
+    /**
+     * Magic Setter.
+     *
+     * @param $property
+     * @param $value
+     */
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
+
+    /**
+     * Set input filter.
+     *
+     * @param InputFilterInterface $inputFilter
+     *
+     * @throws \Exception
+     */
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Setting an inputFilter is currently not supported");
+    }
+
+    /**
+     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
+     */
+    public function getInputFilter()
+    {
+        return new InputFilter();
+    }
 
     /**
      * @param int $id

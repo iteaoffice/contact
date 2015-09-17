@@ -12,6 +12,8 @@ namespace Contact\Service;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
+use Contact\Entity\SelectionContact;
+use Contact\Entity\SelectionSql;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -58,7 +60,20 @@ class SelectionService extends ServiceAbstract
      */
     public function getAmountOfContacts()
     {
-        return sizeof($this->getContactService()->findContactsInSelection($this->selection));
+        try {
+            return sizeof($this->getContactService()->findContactsInSelection($this->selection));
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function findTags()
+    {
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))
+            ->findTags();
     }
 
     /**
@@ -107,6 +122,67 @@ class SelectionService extends ServiceAbstract
 
         return $result;
     }
+
+    /**
+     * @param array $data
+     *
+     * array (size=5)
+     * 'type' => string '2' (length=1)
+     * 'added' => string '20388' (length=5)
+     * 'removed' => string '' (length=0)
+     * 'sql' => string '' (length=0)
+     *
+     *
+     */
+    public function updateSelectionContacts(Selection $selection, array $data)
+    {
+        /**
+         * First update the selection based on the type
+         */
+        if ((int)$data['type'] === Selection::TYPE_FIXED) {
+            //remove the query
+            if (!is_null($sql = $selection->getSql())) {
+                $this->removeEntity($sql);
+            }
+
+            //Update the contacts
+            if (!empty($data['added'])) {
+                foreach (explode(',', $data['added']) as $contactId) {
+                    $contact = $this->getContactService()->findEntityById('contact', $contactId);
+
+                    $contactService = clone $this->getContactService();
+                    $contactService->setContact($contact);
+
+                    if (!$contactService->isEmpty() && !$contactService->inSelection($selection)) {
+                        $selectionContact = new SelectionContact();
+                        $selectionContact->setContact($contact);
+                        $selectionContact->setSelection($selection);
+                        $this->newEntity($selectionContact);
+                    }
+                }
+            }
+
+            //Update the contacts
+            if (!empty($data['removed'])) {
+                foreach (explode(',', $data['removed']) as $contactId) {
+                    foreach ($selection->getSelectionContact() as $selectionContact) {
+                        if ($selectionContact->getContact()->getId() === (int)$contactId) {
+                            $this->removeEntity($selectionContact);
+                        }
+                    }
+                }
+            }
+        } else {
+            $selectionSql = $selection->getSql();
+            if (is_null($selectionSql)) {
+                $selectionSql = new SelectionSql();
+                $selectionSql->setSelection($selection);
+            }
+            $selectionSql->setQuery($data['sql']);
+            $this->updateEntity($selectionSql);
+        }
+    }
+
 
     /**
      * @param \Contact\Entity\Selection $selection

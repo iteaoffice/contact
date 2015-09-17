@@ -30,13 +30,17 @@ use Search\Service\SearchService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
+use Contact\Controller\Plugin\GetFilter;
+use Contact\Controller\Plugin\HandleImport;
 
 /**
  * @category    Contact
  *
- * @method      ZfcUserAuthentication zfcUserAuthentication()
- * @method      FlashMessenger flashMessenger()
- * @method      IsAllowed isAllowed($resource, $action)
+ * @method ZfcUserAuthentication zfcUserAuthentication()
+ * @method FlashMessenger flashMessenger()
+ * @method IsAllowed isAllowed($resource, $action)
+ * @method HandleImport handleImport()
+ * @method GetFilter getContactFilter()
  */
 abstract class ContactAbstractController extends AbstractActionController implements
     SelectionServiceAwareInterface,
