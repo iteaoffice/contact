@@ -1,29 +1,25 @@
 {
-  "name": "debranova/contact",
+  "name": "iteaoffice/contact",
   "type": "library",
-  "description": "General code for Debranova contacts",
+  "description": "General code for contacts",
   "keywords": [
     "contact"
   ],
   "license": "proprietary",
-  "homepage": "http://debranova.org",
+  "homepage": "https://itea3.org",
   "support": {
-    "email": "ticket@itea2.org"
+    "email": "ticket@itea3.org"
   },
   "repositories": [
     {
       "type": "composer",
-      "url": "http://packages.debranova.org"
+      "url": "http://packages.itea3.eu"
     }
   ],
   "authors": [
     {
       "name": "Johan van der Heide",
       "email": "johan.van.der.heide@itea3.org"
-    },
-    {
-      "name": "Andre Hebben",
-      "email": "andre.hebben@artemis-ia.eu"
     }
   ],
   "minimum-stability": "dev",
