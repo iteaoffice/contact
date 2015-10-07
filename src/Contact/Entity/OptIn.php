@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -17,7 +18,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Optin
+ * Optin.
  *
  * @ORM\Table(name="optin")
  * @ORM\Entity
@@ -25,14 +26,24 @@ use Zend\InputFilter\InputFilterInterface;
 class OptIn extends EntityAbstract
 {
     /**
-     * Feature to decide which opt-ins to enable on registration
+     * Feature to decide which opt-ins to enable on registration.
      */
     const AUTO_SUBSCRIBE = 1;
-    const NO_AUTO_SUBSCRIBE = 2;
+    const NO_AUTO_SUBSCRIBE = 0;
+
+    /**
+     * @var array
+     */
+    protected static $autoSubscribeTemplates = [
+        self::AUTO_SUBSCRIBE    => "txt-auto-subscribe",
+        self::NO_AUTO_SUBSCRIBE => "txt-no-auto-subscribe",
+    ];
+
     /**
      * @ORM\Column(name="optin_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -41,11 +52,13 @@ class OptIn extends EntityAbstract
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-opt-in"})
      * @Annotation\Attributes({"class":"span3"})
+     *
      * @var string
      */
     private $optIn;
     /**
      * @ORM\Column(name="auto_subscribe", type="integer", nullable=false)
+     *
      * @var integer
      */
     private $autoSubscribe;
@@ -53,19 +66,21 @@ class OptIn extends EntityAbstract
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-description"})
-     * @Annotation\Attributes({"class":"span3"})
+     *
      * @var string
      */
     private $description;
     /**
      * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="optIn")
      * @Annotation\Exclude();
+     *
      * @var \Contact\Entity\Contact[]
      */
     private $contact;
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="optIn")
      * @Annotation\Exclude()
+     *
      * @var \Mailing\Entity\Mailing[]
      */
     private $mailing;
@@ -81,7 +96,7 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -93,12 +108,10 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -110,15 +123,14 @@ class OptIn extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->optIn;
+        return (string)$this->optIn;
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -165,29 +177,15 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
-     *
      * @return array
      */
-    public function getArrayCopy()
+    public static function getAutoSubscribeTemplates()
     {
-        return [
-            'contact' => $this->contact,
-        ];
+        return self::$autoSubscribeTemplates;
     }
 
     /**
-     * Function needed for the population of forms
-     *
-     * @return array
-     */
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
-    /**
-     * New function needed to make the hydrator happy
+     * New function needed to make the hydrator happy.
      *
      * @param Collections\Collection $collection
      */
@@ -274,10 +272,14 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @return int
+     * @param bool $textual
+     * @return int|string
      */
-    public function getAutoSubscribe()
+    public function getAutoSubscribe($textual = false)
     {
+        if ($textual) {
+            return self::$autoSubscribeTemplates[$this->autoSubscribe];
+        }
         return $this->autoSubscribe;
     }
 

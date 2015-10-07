@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +19,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Domain
+ * Domain.
  *
  * @ORM\Table(name="contact_photo")
  * @ORM\Entity
@@ -27,47 +28,52 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_photo")
  *
  * @category    Contact
- * @package     Entity
  */
 class Photo extends EntityAbstract
 {
     /**
-     * Key needed for the encryption and decryption of the Keys
+     * Key needed for the encryption and decryption of the Keys.
      */
     const HASH_KEY = 'afc26c5daef5373cf4acb7ee107d423f';
     /**
      * @ORM\Column(name="photo_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
     /**
      * @ORM\Column(name="photo", type="blob", nullable=true)
      * @Annotation\Exclude()
+     *
      * @var resource
      */
     private $photo;
     /**
      * @ORM\Column(name="height", type="integer", nullable=true)
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $height;
     /**
      * @ORM\Column(name="width", type="integer", nullable=true)
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $width;
     /**
      * @ORM\Column(name="thumb", type="blob", nullable=true)
+     *
      * @var resource
      */
     private $thumb;
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="update")
+     *
      * @var \DateTime
      */
     private $dateUpdated;
@@ -75,6 +81,7 @@ class Photo extends EntityAbstract
      * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade="persist", inversedBy="contactPhoto")
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
      * @Annotation\Exclude()
+     *
      * @var ContentType
      */
     private $contentType;
@@ -83,13 +90,14 @@ class Photo extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
 
     /**
      * Although an alternative does not have a clear hash, we can create one based on the id;
-     * Don't use the elements from underlying objects since this gives confusion
+     * Don't use the elements from underlying objects since this gives confusion.
      *
      * @return string
      */
@@ -99,7 +107,7 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
@@ -107,7 +115,7 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -119,12 +127,10 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -140,11 +146,10 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -198,7 +203,7 @@ class Photo extends EntityAbstract
 
     /**
      * Get the corresponding fileName of a file if it was cached
-     * Use a dash (-) to make the distinction between the format to avoid the need of an extra folder
+     * Use a dash (-) to make the distinction between the format to avoid the need of an extra folder.
      *
      * @return string
      */
@@ -214,7 +219,7 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Remove all the cached images of a user
+     * Remove all the cached images of a user.
      *
      * @ORM\PreUpdate
      */

@@ -24,6 +24,18 @@ return [
         'contact_facebook_form'     => function ($sm) {
             return new Form\CreateObject($sm, new Entity\Facebook());
         },
+        'contact_address_form'      => function ($sm) {
+            return new Form\CreateObject($sm, new Entity\Address());
+        },
+        'contact_note_form'         => function ($sm) {
+            return new Form\CreateObject($sm, new Entity\Note());
+        },
+        'contact_phone_form'        => function ($sm) {
+            return new Form\CreateObject($sm, new Entity\Phone());
+        },
+        'contact_selection_form'    => function ($sm) {
+            return new Form\CreateObject($sm, new Entity\Selection());
+        },
         'contact_impersonate_form'  => function ($sm) {
             return new Form\Impersonate($sm);
         },

@@ -1,19 +1,24 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
- * Domain
+ * Domain.
  *
  * @ORM\Table(name="contact_note")
  * @ORM\Entity
@@ -21,9 +26,8 @@ use Zend\Form\Annotation;
  * @Annotation\Name("contact_note")
  *
  * @category    Contact
- * @package     Entity
  */
-class Note
+class Note extends EntityAbstract implements ResourceInterface
 {
     const SOURCE_SIGNATURE = 'signature';
 
@@ -31,21 +35,29 @@ class Note
      * @ORM\Column(name="note_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
     /**
      * @ORM\Column(name="note", type="string", length=255, nullable=true)
+     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @Annotation\Options({"label":"txt-note"})
+     *
      * @var string
      */
     private $note;
     /**
      * @ORM\Column(name="source", type="string", length=32, nullable=true)
+     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Options({"label":"txt-source"})
+     *
      * @var string
      */
     private $source;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
+     *
      * @var \DateTime
      */
     private $dateCreated;
@@ -54,9 +66,114 @@ class Note
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
+
+
+    /**
+     * Magic Getter.
+     *
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        return $this->$property;
+    }
+
+    /**
+     * Magic Setter.
+     *
+     * @param $property
+     * @param $value
+     */
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->getNote();
+    }
+
+    /**
+     * Returns the string identifier of the Resource.
+     *
+     * @return string
+     */
+    public function getResourceId()
+    {
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
+    }
+
+
+    /**
+     * Set input filter.
+     *
+     * @param InputFilterInterface $inputFilter
+     *
+     * @throws \Exception
+     */
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Setting an inputFilter is currently not supported");
+    }
+
+    /**
+     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
+     */
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+            $factory = new InputFactory();
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'       => 'source',
+                        'required'   => true,
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                        'validators' => [
+                            [
+                                'name'    => 'StringLength',
+                                'options' => [
+                                    'encoding' => 'UTF-8',
+                                    'min'      => 1,
+                                    'max'      => 80,
+                                ],
+                            ],
+                        ],
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'note',
+                        'required' => true,
+                        'filters'  => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                    ]
+                )
+            );
+            $this->inputFilter = $inputFilter;
+        }
+
+        return $this->inputFilter;
+    }
+
 
     /**
      * @param \Contact\Entity\Contact $contact

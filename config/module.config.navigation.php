@@ -16,17 +16,43 @@ return [
                 'label' => _("txt-contacts"),
                 'route' => 'community/contact',
             ],
+            'idea'    => [
+                'pages' => [
+                    'partner-search' => [
+                        'order' => 60,
+                        'label' => _("txt-partner-search"),
+                        'route' => 'community/contact/search'
+                    ]
+                ],
+            ],
         ],
         'admin'     => [
             // And finally, here is where we define our page hierarchy
             'contact' => [
                 'label'    => _("txt-contact-admin"),
-                'route'    => 'zfcadmin/contact-manager',
+                'route'    => 'zfcadmin/contact-admin/list',
                 'resource' => 'zfcadmin',
                 'pages'    => [
                     'contacts'   => [
                         'label' => _("txt-contacts"),
-                        'route' => 'zfcadmin/contact-manager/list',
+                        'route' => 'zfcadmin/contact-admin/list',
+                        'pages' => [
+                            'view-contact'        => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/contact-admin/view',
+                                'visible' => false,
+                            ],
+                            'edit-contact'        => [
+                                'label'   => _('txt-edit'),
+                                'route'   => 'zfcadmin/contact-admin/edit',
+                                'visible' => false,
+                            ],
+                            'impersonate-contact' => [
+                                'label'   => _('txt-impersonate'),
+                                'route'   => 'zfcadmin/contact-admin/impersonate',
+                                'visible' => false,
+                            ],
+                        ]
                     ],
                     'selections' => [
                         'label' => _("txt-selections"),
@@ -35,6 +61,18 @@ return [
                     'facebook'   => [
                         'label' => _("txt-facebook"),
                         'route' => 'zfcadmin/facebook-manager/list',
+                        'pages' => [
+                            'view-facebook' => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/facebook-manager/view',
+                                'visible' => false,
+                            ],
+                            'edit-facebook' => [
+                                'label'   => _('txt-edit'),
+                                'route'   => 'zfcadmin/facebook-manager/view',
+                                'visible' => false,
+                            ],
+                        ]
                     ],
                     'permit'     => [
                         'label' => _("txt-permissions"),
@@ -42,7 +80,7 @@ return [
                     ],
                     'import'     => [
                         'label' => _("txt-import"),
-                        'route' => 'zfcadmin/contact-manager/import',
+                        'route' => 'zfcadmin/contact-admin/import',
                     ],
                     'access'     => [
                         'label' => _("txt-access"),
@@ -50,7 +88,7 @@ return [
                     ],
                     'statistics' => [
                         'label' => _("txt-contact-statistics"),
-                        'route' => 'zfcadmin/contact-manager/statistics',
+                        'route' => 'zfcadmin/contact-admin/statistics',
                     ],
                 ],
             ],

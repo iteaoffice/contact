@@ -1,0 +1,48 @@
+<h2>{{ translate("txt-mailing") }}</h2>
+
+<h3>{{ translate("txt-opt-in") }}</h3>
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>{{ translate("txt-opt-in") }}</th>
+        <th>{{ translate("txt-description") }}</th>
+        <th>{{ translate("txt-auto-subscribe") }}</th>
+        <th>{{ translate("txt-active") }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for optIn in optIn %}
+        <tr>
+            <td>{{ optIn.optIn }}</td>
+            <td>{{ optIn.description }}</td>
+            <td>{{ translate(optIn.autoSubscribe(true)) }}</td>
+            <td>{% for contactOptIn in contactService.contact.optIn if optIn.id == contactOptIn.id %}YES{% endfor %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h3>{{ translate("txt-mailings") }}</h3>
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>{{ translate("txt-id") }}</th>
+        <th>{{ translate("txt-mailing") }}</th>
+        <th>{{ translate("txt-subject") }}</th>
+        <th>{{ translate("txt-owner") }}</th>
+        <th>{{ translate("txt-sent") }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for mailingContact in contactService.contact.mailingContact %}
+        <tr>
+            <td>{{ mailingContact.mailing.id }}</td>
+            <td>{{ mailingLink(mailingContact.mailing,'view','name') }}</td>
+            <td>{{ mailingContact.mailing.mailSubject }}</td>
+            <td>{{ contactLink(mailingContact.mailing.contact,'view-admin','name') }}</td>
+            <td>{{ mailingContact.dateSent|time_diff }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+

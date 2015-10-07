@@ -1,3 +1,6 @@
-<h1>{{ translate("txt-new-facebooks") }}</h1>
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-new-facebook")) %}
+
+<h1>{{ translate("txt-new-facebook") }}</h1>
 
 {% include 'contact/partial/form/facebook' with [{'form': form}] %}

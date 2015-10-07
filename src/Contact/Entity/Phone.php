@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -14,9 +15,10 @@ use Zend\Form\Annotation;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
- * Phone
+ * Phone.
  *
  * @ORM\Table(name="contact_phone")
  * @ORM\Entity
@@ -24,15 +26,15 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_phone")
  *
  * @category    Contact
- * @package     Entity
  */
-class Phone extends EntityAbstract
+class Phone extends EntityAbstract implements ResourceInterface
 {
     /**
      * @ORM\Column(name="phone_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
+     *
      * @var integer
      */
     private $id;
@@ -40,6 +42,7 @@ class Phone extends EntityAbstract
      * @ORM\Column(name="phone", type="string", length=40, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-phone-number"})
+     *
      * @var string
      */
     private $phone;
@@ -48,6 +51,7 @@ class Phone extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -59,19 +63,20 @@ class Phone extends EntityAbstract
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\PhoneType"})
      * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
+     *
      * @var \Contact\Entity\PhoneType
      */
     private $type;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -83,12 +88,10 @@ class Phone extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -100,15 +103,24 @@ class Phone extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
-     * Set input filter
+     * Returns the string identifier of the Resource.
+     *
+     * @return string
+     */
+    public function getResourceId()
+    {
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
+    }
+
+    /**
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -123,43 +135,43 @@ class Phone extends EntityAbstract
     {
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'       => 'phone',
                         'required'   => true,
-                        'filters'    => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                        'validators' => [
+                            [
                                 'name'    => 'StringLength',
-                                'options' => array(
+                                'options' => [
                                     'encoding' => 'UTF-8',
                                     'min'      => 1,
                                     'max'      => 40,
-                                ),
-                            ),
-                        ),
-                    )
+                                ],
+                            ],
+                        ],
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'contact',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'type',
                         'required' => true,
-                    )
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -169,16 +181,16 @@ class Phone extends EntityAbstract
     }
 
     /**
-     * Needed for the hydration of form elements
+     * Needed for the hydration of form elements.
      *
      * @return array
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'contact' => $this->contact,
             'type'    => $this->type,
-        );
+        ];
     }
 
     /**

@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Service
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Service;
 
 use Admin\Service\AdminService;
@@ -16,6 +17,8 @@ use Contact\Entity\EntityAbstract;
 use Contact\Entity\Selection;
 use Deeplink\Service\DeeplinkService;
 use Deeplink\Service\DeeplinkServiceAwareInterface;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Event\Service\MeetingService;
 use General\Service\EmailService;
 use General\Service\EmailServiceAwareInterface;
@@ -29,7 +32,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * ServiceAbstract
+ * ServiceAbstract.
  */
 abstract class ServiceAbstract implements
     ServiceLocatorAwareInterface,
@@ -45,6 +48,10 @@ abstract class ServiceAbstract implements
      * @var \Doctrine\ORM\EntityManager
      */
     protected $entityManager;
+    /**
+     * @var Contact
+     */
+    protected $contact;
     /**
      * @var ServiceLocatorInterface
      */
@@ -93,12 +100,28 @@ abstract class ServiceAbstract implements
     }
 
     /**
+     * @param string $entity
+     * @param  $filter
+     *
+     * @return Query
+     */
+    public function findEntitiesFiltered($entity, $filter)
+    {
+        $equipmentList = $this->getEntityManager()->getRepository($this->getFullEntityName($entity))->findFiltered(
+            $filter,
+            AbstractQuery::HYDRATE_SIMPLEOBJECT
+        );
+
+        return $equipmentList;
+    }
+
+    /**
      * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager()
     {
         if (null === $this->entityManager) {
-            $this->entityManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+            $this->entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         }
 
         return $this->entityManager;
@@ -133,7 +156,7 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * Create a full path to the entity for Doctrine
+     * Create a full path to the entity for Doctrine.
      *
      * @param $entity
      *
@@ -141,21 +164,21 @@ abstract class ServiceAbstract implements
      */
     public function getFullEntityName($entity)
     {
-        /**
+        /*
          * Convert a - to a camelCased situation
          */
         if (strpos($entity, '-') !== false) {
             $entity = explode('-', $entity);
-            $entity = $entity[0].ucfirst($entity[1]);
+            $entity = $entity[0] . ucfirst($entity[1]);
         }
 
-        return ucfirst(implode('', array_slice(explode('\\', __NAMESPACE__), 0, 1))).'\\'.'Entity'.'\\'.ucfirst(
+        return ucfirst(implode('', array_slice(explode('\\', __NAMESPACE__), 0, 1))) . '\\' . 'Entity' . '\\' . ucfirst(
             $entity
         );
     }
 
     /**
-     * Find 1 entity based on the id
+     * Find 1 entity based on the id.
      *
      * @param string $entity
      * @param        $id
@@ -168,22 +191,19 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\EntityAbstract $entity
+     * @param EntityAbstract $entity
      *
-     * @return \Contact\Entity\EntityAbstract
+     * @return EntityAbstract
      */
     public function newEntity(EntityAbstract $entity)
     {
-        $this->getEntityManager()->persist($entity);
-        $this->getEntityManager()->flush();
-
-        return $entity;
+        return $this->updateEntity($entity);
     }
 
     /**
-     * @param \Contact\Entity\EntityAbstract $entity
+     * @param EntityAbstract $entity
      *
-     * @return \Contact\Entity\EntityAbstract
+     * @return EntityAbstract
      */
     public function updateEntity(EntityAbstract $entity)
     {
@@ -194,7 +214,7 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @param \Contact\Entity\EntityAbstract $entity
+     * @param EntityAbstract $entity
      *
      * @return bool
      */
@@ -207,7 +227,7 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * Build dynamically a entity based on the full entity name
+     * Build dynamically a entity based on the full entity name.
      *
      * @param $entity
      *
@@ -386,5 +406,24 @@ abstract class ServiceAbstract implements
     public function getContactService()
     {
         return $this->getServiceLocator()->get('contact_contact_service');
+    }
+
+    /**
+     * @return Contact
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param  Contact         $contact
+     * @return ServiceAbstract
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
+
+        return $this;
     }
 }

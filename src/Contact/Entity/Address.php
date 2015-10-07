@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -14,9 +15,10 @@ use Zend\Form\Annotation;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
- * Entity for the Contact
+ * Entity for the Contact.
  *
  * @ORM\Table(name="contact_address")
  * @ORM\Entity(repositoryClass="Contact\Repository\Address")
@@ -24,22 +26,23 @@ use Zend\InputFilter\InputFilterInterface;
  * @Annotation\Name("contact_address")
  *
  * @category    Contact
- * @package     Entity
  */
-class Address extends EntityAbstract
+class Address extends EntityAbstract implements ResourceInterface
 {
     /**
      * @ORM\Column(name="address_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $id;
     /**
      * @ORM\Column(name="address", type="string", length=80, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-address"})
+     *
      * @var string
      */
     private $address;
@@ -47,6 +50,7 @@ class Address extends EntityAbstract
      * @ORM\Column(name="zipcode", type="string", length=20, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-zip-code"})
+     *
      * @var string
      */
     private $zipCode;
@@ -54,6 +58,7 @@ class Address extends EntityAbstract
      * @ORM\Column(name="city", type="string", length=40, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-city"})
+     *
      * @var string
      */
     private $city;
@@ -65,6 +70,7 @@ class Address extends EntityAbstract
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\AddressType"})
      * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
+     *
      * @var \Contact\Entity\AddressType
      */
     private $type;
@@ -74,6 +80,7 @@ class Address extends EntityAbstract
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * })
      * @Annotation\Type("\Zend\Form\Element\Hidden")
+     *
      * @var Contact
      */
     private $contact;
@@ -85,12 +92,13 @@ class Address extends EntityAbstract
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Country"})
      * @Annotation\Attributes({"label":"txt-country", "required":"true","class":"span3"})
+     *
      * @var \General\Entity\Country
      */
     private $country;
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -102,12 +110,10 @@ class Address extends EntityAbstract
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -115,26 +121,29 @@ class Address extends EntityAbstract
     }
 
     /**
-     * Returns the string identifier of the Resource
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->getAddress();
+    }
+
+    /**
+     * Returns the string identifier of the Resource.
      *
      * @return string
      */
     public function getResourceId()
     {
-        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
 
-    public function toArray()
-    {
-        return $this->getArrayCopy();
-    }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -238,29 +247,6 @@ class Address extends EntityAbstract
         return $this->inputFilter;
     }
 
-    /**
-     * Needed for the hydration of form elements
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return [
-            'country' => $this->country->getIso3(),
-            'type'    => $this->type,
-            'address' => $this->address,
-            'city'    => $this->city,
-            'zipCode' => $this->zipCode,
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
 
     /**
      * @param string $address

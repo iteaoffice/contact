@@ -1,14 +1,16 @@
 <?php
 /**
- * Japaveh Webdesign copyright message placeholder
+ * Japaveh Webdesign copyright message placeholder.
  *
  * @category    Controller
- * @package     Service
+ *
  * @author      Johan van der Heide <info@japaveh.nl>
  * @copyright   2004-2014 Japaveh Webdesign
  * @license     http://solodb.net/license.txt proprietary
+ *
  * @link        http://solodb.net
  */
+
 namespace Contact\Controller;
 
 use Contact\Service\ContactServiceAwareInterface;
@@ -20,13 +22,14 @@ use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Japaveh Webdesign copyright message placeholder
+ * Japaveh Webdesign copyright message placeholder.
  *
  * @category    Controller
- * @package     Service
+ *
  * @author      Johan van der Heide <info@japaveh.nl>
  * @copyright   2004-2014 Japaveh Webdesign
  * @license     http://solodb.net/license.txt proprietary
+ *
  * @link        http://solodb.net
  */
 class ControllerInitializer implements InitializerInterface
@@ -34,8 +37,6 @@ class ControllerInitializer implements InitializerInterface
     /**
      * @param                                           $instance
      * @param ServiceLocatorInterface|ControllerManager $controllerManager
-     *
-     * @return void
      */
     public function initialize($instance, ServiceLocatorInterface $controllerManager)
     {
@@ -47,7 +48,7 @@ class ControllerInitializer implements InitializerInterface
             FormServiceAwareInterface::class      => 'contact_form_service',
             ContactServiceAwareInterface::class   => 'contact_contact_service',
         ];
-        /**
+        /*
          * @var $controllerManager ControllerManager
          */
         $sm = $controllerManager->getServiceLocator();

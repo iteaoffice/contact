@@ -1,17 +1,17 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Hydrator
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Hydrator;
 
 use Contact\Entity\Address;
 use Contact\Entity\AddressType;
-use Contact\Entity\Community;
 use Contact\Entity\Contact;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
@@ -20,8 +20,7 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use Organisation\Service\OrganisationService;
 
 /**
- * Class Profile
- * @package Contact\Hydrator
+ * Class Profile.
  */
 class Profile extends DoctrineObject
 {
@@ -43,27 +42,24 @@ class Profile extends DoctrineObject
             if ($address->getType()->getId() === AddressType::ADDRESS_TYPE_MAIL) {
                 $values['address']['address'] = $address->getAddress();
                 $values['address']['zipCode'] = $address->getZipCode();
-                $values['address']['city']    = $address->getCity();
+                $values['address']['city'] = $address->getCity();
                 $values['address']['country'] = $address->getCountry();
             }
         }
-        unset($values['community']);
-        foreach ($object->getCommunity() as $community) {
-            $values['community'][$community->getType()->getId()]['community'] = $community->getCommunity();
-        }
+
         unset($values['profile']);
-        $values['profile']['visible']     = !is_null($object->getProfile()) ? $object->getProfile()->getVisible(
-        ) : null;
-        $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription(
-        ) : null;
-        /**
-         * Set the contact organisation
+        $values['profile']['visible'] = !is_null($object->getProfile()) ? $object->getProfile()->getVisible() : null;
+        $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription() : null;
+        /*
+         * Set the contact organisation, this will be taken from the contact_organisation item and can be userd
+         * to pre-fill the values
          */
         $contactService = new ContactService();
         $contactService->setContact($object);
         if (!is_null($object->getContactOrganisation())) {
             $organisationService = new OrganisationService();
             $organisationService->setOrganisation($object->getContactOrganisation()->getOrganisation());
+            $values['contact_organisation']['organisation_id'] = $organisationService->getOrganisation()->getId();
             $values['contact_organisation']['organisation'] = $organisationService->parseOrganisationWithBranch(
                 $contactService->getContact()->getContactOrganisation()->getBranch()
             );
@@ -89,18 +85,24 @@ class Profile extends DoctrineObject
         $this->prepare($object);
         /**
          * Reformat the phone, address and community for the Contact object
+         *
          */
         if ($object instanceof Contact) {
-            /**
+            /*
              * Reset the data array and store the values locally
              */
-            $phoneData           = $data['phone'];
-            $data['phone']       = [];
-            $addressInfo         = $data['address'];
-            $data['address']     = [];
-            $communityData       = $data['community'];
-            $data['community']   = [];
-            $contact             = $this->hydrateByValue($data, $object);
+            $phoneData = $data['phone'];
+            $data['phone'] = [];
+            $addressInfo = $data['address'];
+            $data['address'] = [];
+
+            /**
+             * @var $contact Contact
+             */
+            $contact = $this->hydrateByValue($data, $object);
+            /**
+             * @var $currentPhoneNumbers Phone[]
+             */
             $currentPhoneNumbers = $contact->getPhone()->getSnapshot();
             //Reset the array
             $contact->getPhone()->clear();
@@ -116,17 +118,17 @@ class Profile extends DoctrineObject
             foreach ($currentPhoneNumbers as $phone) {
                 if (!in_array(
                     $phone->getType()->getId(),
-                    array(
+                    [
                         PhoneType::PHONE_TYPE_MOBILE,
                         PhoneType::PHONE_TYPE_DIRECT,
-                    )
+                    ]
                 )
                 ) {
                     $contact->getPhone()->add($phone);
                 }
             }
             $currentAddress = $contact->getAddress()->getSnapshot();
-            /**
+            /*
              * Reformat the address
              */
             $contact->getAddress()->clear();
@@ -147,25 +149,11 @@ class Profile extends DoctrineObject
                 }
             }
             foreach ($currentAddress as $address) {
-                if (!in_array($address->getType()->getId(), array(AddressType::ADDRESS_TYPE_MAIL))) {
+                if (!in_array($address->getType()->getId(), [AddressType::ADDRESS_TYPE_MAIL])) {
                     $contact->getAddress()->add($address);
                 }
             }
-            /**
-             * Reformat the community
-             */
-            $contact->getCommunity()->clear();
-            foreach ($communityData as $communityTypeId => $communityInfo) {
-                if (!empty($communityInfo['community'])) {
-                    $community = new Community();
-                    $community->setType(
-                        $this->objectManager->getReference('General\Entity\CommunityType', $communityTypeId)
-                    );
-                    $community->setCommunity($communityInfo['community']);
-                    $community->setContact($contact);
-                    $contact->getCommunity()->add($community);
-                }
-            }
+
             $contact->getProfile()->setContact($contact);
 
             return $contact;

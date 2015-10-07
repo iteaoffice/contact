@@ -1,12 +1,13 @@
 <?php
 /**
- * DebraNova copyright message placeholder
+ * DebraNova copyright message placeholder.
  *
  * @category    Contact
- * @package     Repository
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Repository;
 
 use Calendar\Entity\Calendar;
@@ -15,17 +16,17 @@ use Contact\Entity\Selection;
 use Contact\Entity\SelectionSql;
 use Contact\Options;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Organisation\Entity\Organisation;
 
 /**
  * @category    Contact
- * @package     Repository
  */
 class Contact extends EntityRepository
 {
     /**
-     * Return a list of all contacts
+     * Return a list of all contacts.
      *
      * @param null $limit
      *
@@ -38,7 +39,7 @@ class Contact extends EntityRepository
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->distinct('c.id');
         $qb->orderBy('c.id', 'DESC');
-        /**
+        /*
          * Only add a limit when asked
          */
         if (!is_null($limit)) {
@@ -49,9 +50,61 @@ class Contact extends EntityRepository
     }
 
     /**
+     * @param array $filter
+     * @return Query
+     */
+    public function findFiltered(array $filter)
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->join('c.contactOrganisation', 'co');
+        $queryBuilder->join('co.organisation', 'o');
+
+
+        if (array_key_exists('search', $filter)) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->like('c.firstName', ':like'),
+                    $queryBuilder->expr()->like('c.middleName', ':like'),
+                    $queryBuilder->expr()->like('c.lastName', ':like'),
+                    $queryBuilder->expr()->like('c.email', ':like')
+                )
+            );
+
+            $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
+        }
+
+        if (array_key_exists('organisation', $filter)) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('o.id', implode($filter['organisation'], ', ')));
+        }
+
+        $direction = 'ASC';
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'])) {
+            $direction = strtoupper($filter['direction']);
+        }
+
+        switch ($filter['order']) {
+            case 'name':
+                $queryBuilder->addOrderBy('c.lastName', $direction);
+                break;
+            case 'organisation':
+                $queryBuilder->addOrderBy('o.organisation', $direction);
+                break;
+            default:
+                $queryBuilder->addOrderBy('c.id', $direction);
+
+        }
+
+        return $queryBuilder->getQuery();
+    }
+
+
+    /**
      * @param $projectId
      *
      * @return array
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \InvalidArgumentException
      */
@@ -60,7 +113,7 @@ class Contact extends EntityRepository
         $queryBuilder = $this->findContactByProjectIdQueryBuilder();
         $queryBuilder->setParameter(1, $projectId);
 
-        return $queryBuilder->getQuery()->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
@@ -133,7 +186,7 @@ class Contact extends EntityRepository
 
         $queryBuilder->setMaxResults(1);
 
-        return $queryBuilder->getQuery()->getOneOrNullResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getOneOrNullResult();
     }
 
     /**
@@ -147,7 +200,7 @@ class Contact extends EntityRepository
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('c.dateOfBirth'));
 
-        return $queryBuilder->getQuery()->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
@@ -161,13 +214,39 @@ class Contact extends EntityRepository
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->innerJoin('c.cv', 'cv');
 
-        return $queryBuilder->getQuery()->getResult();
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
-     *  Returns true of false depending if a contact is a community member
+     * @param  bool $onlyPublic
+     * @return Contact[]
+     */
+    public function findContactsWithActiveProfile($onlyPublic)
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->innerJoin('c.profile', 'p');
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
+        $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('p.description'));
+        //Exclude the empty descriptions
+        $queryBuilder->andWhere('p.description <> ?2');
+        $queryBuilder->setParameter(2, '');
+
+        if ($onlyPublic) {
+            $queryBuilder->andWhere('p.visible <> ?1');
+            $queryBuilder->setParameter(1, Entity\Profile::VISIBLE_HIDDEN);
+        }
+
+        //        $queryBuilder->setMaxResults(20);
+
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+    }
+
+    /**
+     *  Returns true of false depending if a contact is a community member.
      *
-     * @param Entity\Contact                    $contact
+     * @param Entity\Contact $contact
      * @param Options\CommunityOptionsInterface $options
      *
      * @return boolean|null
@@ -175,8 +254,8 @@ class Contact extends EntityRepository
     public function findIsCommunityMember(Entity\Contact $contact, Options\CommunityOptionsInterface $options)
     {
         if ($options->getCommunityViaMembers()) {
-            /**
-             * @var $memberRepository \Member\Repository\Member
+            /*
+             * @var \Member\Repository\Member
              */
             $memberRepository = $this->getEntityManager()->getRepository('Member\Entity\Member');
             $queryBuilder = $this->_em->createQueryBuilder();
@@ -192,7 +271,7 @@ class Contact extends EntityRepository
             $queryBuilder->setParameter('contact', $contact);
 
             //check update
-            if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -206,7 +285,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //check update
-            if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -214,7 +293,7 @@ class Contact extends EntityRepository
         }
         if ($options->getCommunityViaProjectParticipation()) {
             $projectRepository = $this->getEntityManager()->getRepository('Project\Entity\Project');
-            /**
+            /*
              * Go over the associates first
              */
             $queryBuilder = $this->_em->createQueryBuilder();
@@ -225,10 +304,10 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
-            /**
+            /*
              * Go over the affiliations
              */
             $queryBuilder = $this->_em->createQueryBuilder();
@@ -241,10 +320,10 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
-            /**
+            /*
              * Go over the affiliations via the cluster
              */
             $queryBuilder = $this->_em->createQueryBuilder();
@@ -259,7 +338,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->getResult()) > 0) {
+            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -268,13 +347,14 @@ class Contact extends EntityRepository
     }
 
     /**
-     * Return Contact entities based on a selection SQL using a native SQL query
+     * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param SelectionSql $sql
+     * @param bool $toArray
      *
      * @return Entity\Contact[]
      */
-    public function findContactsBySelectionSQL(SelectionSQL $sql)
+    public function findContactsBySelectionSQL(SelectionSQL $sql, $toArray = false)
     {
         $resultSetMap = new ResultSetMapping();
         $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
@@ -284,16 +364,20 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('c', 'middlename', 'middleName');
         $resultSetMap->addFieldResult('c', 'lastname', 'lastName');
         $query = $this->getEntityManager()->createNativeQuery(
-            "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (".
-            $sql->getQuery().") AND date_end IS NULL",
+            "SELECT contact_id, email, firstname, middlename, lastname FROM contact WHERE contact_id IN (" .
+            $sql->getQuery() . ") AND date_end IS NULL",
             $resultSetMap
         );
 
-        return $query->getResult();
+        if ($toArray) {
+            return $query->getArrayResult();
+        } else {
+            return $query->getResult();
+        }
     }
 
     /**
-     * Return Contact entities based on a query generated by the Facebook functionality
+     * Return Contact entities based on a query generated by the Facebook functionality.
      *
      * @param Entity\Facebook $facebook
      *
@@ -335,13 +419,14 @@ class Contact extends EntityRepository
     }
 
     /**
-     * Return Contact entities based on a selection SQL using a native SQL query
+     * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Selection $selection
+     * @param bool $toArray
      *
      * @return Entity\Contact[]
      */
-    public function findContactsBySelectionContact(Selection $selection)
+    public function findContactsBySelectionContact(Selection $selection, $toArray = false)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c');
@@ -353,14 +438,42 @@ class Contact extends EntityRepository
         $qb->setParameter(1, $selection->getId());
         $qb->orderBy('c.lastName');
 
-        return $qb->getQuery()->getResult();
+        if ($toArray) {
+            return $qb->getQuery()->getArrayResult();
+        } else {
+            return $qb->getQuery()->getResult();
+        }
     }
 
     /**
-     * Return Contact entities based on a selection SQL using a native SQL query
+     * @param Entity\OptIn $optIn
+     * @param bool $toArray
+     *
+     * @return Entity\Contact[]
+     */
+    public function findContactsByOptIn(Entity\OptIn $optIn, $toArray = false)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('c');
+        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->join("c.optIn", 'optIn');
+        $qb->where($qb->expr()->in('optIn.id', $optIn->getId()));
+
+        $qb->orderBy('c.lastName');
+
+        if ($toArray) {
+            return $qb->getQuery()->getArrayResult();
+        } else {
+            return $qb->getQuery()->getResult();
+        }
+    }
+
+
+    /**
+     * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Entity\Contact $contact
-     * @param SelectionSql   $sql
+     * @param SelectionSql $sql
      *
      * @return bool
      */
@@ -374,7 +487,7 @@ class Contact extends EntityRepository
              contact_id
              FROM contact
              WHERE contact_id
-             IN (".$sql->getQuery().") AND contact_id = ".$contact->getId(),
+             IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
             $resultSetMap
         );
 
@@ -382,18 +495,20 @@ class Contact extends EntityRepository
     }
 
     /**
-     * This is basic search for contacts (based on the name, and email
+     * This is basic search for contacts (based on the name, and email.
      *
      * @param string $searchItem
-     * @param int    $maxResults
+     * @param int $maxResults
      *
      * @return Entity\Contact[]
      */
     public function searchContacts($searchItem, $maxResults = 12)
     {
         $qb = $this->_em->createQueryBuilder();
-        $qb->select(['c.id', 'c.firstName', 'c.middleName', 'c.lastName', 'c.email']);
+        $qb->select(['c.id', 'c.firstName', 'c.middleName', 'c.lastName', 'c.email', 'o.organisation']);
         $qb->from("Contact\Entity\Contact", 'c');
+        $qb->leftJoin('c.contactOrganisation', 'co');
+        $qb->join('co.organisation', 'o');
         $qb->distinct('c.id');
 
         $qb->where(
@@ -404,9 +519,9 @@ class Contact extends EntityRepository
                         $qb->expr()->concat($qb->expr()->literal(' '), 'c.middleName'),
                         $qb->expr()->concat($qb->expr()->literal(' '), 'c.lastName')
                     ),
-                    $qb->expr()->literal("%".$searchItem."%")
+                    $qb->expr()->literal("%" . $searchItem . "%")
                 ),
-                $qb->expr()->like('c.email', $qb->expr()->literal("%".$searchItem."%"))
+                $qb->expr()->like('c.email', $qb->expr()->literal("%" . $searchItem . "%"))
             )
         );
 
@@ -418,7 +533,8 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param  Organisation $organisation
+     * @param Organisation $organisation
+     *
      * @return Contact[]
      */
     public function findContactsInOrganisation(Organisation $organisation)
@@ -444,12 +560,13 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @param  Calendar         $calendar
+     * @param Calendar $calendar
+     *
      * @return Entity\Contact[]
      */
     public function findPossibleContactByCalendar(Calendar $calendar)
     {
-        /**
+        /*
          * Use the contactQueryBuilder and exclude the ones which are already present based on the roles
          */
         $findContactByProjectIdQueryBuilder = $this->findContactByProjectIdQueryBuilder();
@@ -471,6 +588,6 @@ class Contact extends EntityRepository
         $findContactByProjectIdQueryBuilder->setParameter('project', $calendar->getProjectCalendar()->getProject());
         $findContactByProjectIdQueryBuilder->addOrderBy('c.lastName', 'ASC');
 
-        return $findContactByProjectIdQueryBuilder->getQuery()->getResult();
+        return $findContactByProjectIdQueryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 }

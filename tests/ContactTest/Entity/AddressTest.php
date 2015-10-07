@@ -39,7 +39,7 @@ class AddressTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager  = $this->serviceManager->get('doctrine.entitymanager.orm_default');
+        $this->entityManager  = $this->serviceManager->get('Doctrine\ORM\EntityManager');
         $contact              = $this->entityManager->getReference("Contact\Entity\Contact", 1);
         $country              = $this->entityManager->getReference("General\Entity\Country", 1);
         $type                 = new \Contact\Entity\AddressType();

@@ -1,20 +1,24 @@
 <?php
 
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     View
- * @subpackage  Helper
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\View\Helper;
 
 use BjyAuthorize\Controller\Plugin\IsAllowed;
 use BjyAuthorize\Service\Authorize;
 use Contact\Acl\Assertion\AssertionAbstract;
+use Contact\Entity\Address;
+use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
+use Contact\Entity\Note;
+use Contact\Entity\Phone;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -22,10 +26,10 @@ use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\ServerUrl;
 use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
+use Contact\Entity\Selection;
 
 /**
- * Class LinkAbstract
- * @package Project\View\Helper
+ * Class LinkAbstract.
  */
 abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwareInterface
 {
@@ -45,6 +49,10 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      * @var string
      */
     protected $router;
+    /**
+     * @var string
+     */
+    protected $hash;
     /**
      * @var string
      */
@@ -81,9 +89,29 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      * @var int
      */
     protected $page;
+    /**
+     * @var Contact
+     */
+    protected $contact;
+    /**
+     * @var Address
+     */
+    protected $address;
+    /**
+     * @var Note
+     */
+    protected $note;
+    /**
+     * @var Phone
+     */
+    protected $phone;
+    /**
+     * @var Selection
+     */
+    protected $selection;
 
     /**
-     * This function produces the link in the end
+     * This function produces the link in the end.
      *
      * @return string
      */
@@ -103,16 +131,19 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
         $this->parseAction();
         $this->parseShow();
         if ('social' === $this->getShow()) {
-            return $serverUrl->__invoke().$url($this->router, $this->routerParams);
+            return $serverUrl->__invoke() . $url($this->router, $this->routerParams);
         }
         $uri = '<a href="%s" title="%s" class="%s">%s</a>';
 
         return sprintf(
             $uri,
-            $serverUrl().$url($this->router, $this->routerParams, ['query' => $this->queryParams]),
-            $this->text,
+            $serverUrl() . $url($this->router, $this->routerParams),
+            htmlentities($this->text),
             implode(' ', $this->classes),
-            implode('', $this->linkContent)
+            in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode(
+                '',
+                $this->linkContent
+            ) : htmlentities(implode('', $this->linkContent))
         );
     }
 
@@ -137,6 +168,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                         $this->addLinkContent('<i class="fa fa-envelope"></i>');
                         break;
                     case 'edit':
+                    case 'edit-admin':
                         $this->addLinkContent('<i class="fa fa-pencil-square-o"></i>');
                         break;
                     default:
@@ -145,7 +177,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                 }
 
                 if ($this->getShow() === 'button') {
-                    $this->addLinkContent(' '.$this->getText());
+                    $this->addLinkContent(' ' . $this->getText());
                     $this->addClasses("btn btn-primary");
                 }
 
@@ -162,9 +194,10 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                 $this->addLinkContent($this->getAlternativeShow());
                 break;
             case 'social':
-                /**
+                /*
                  * Social is treated in the createLink function, no content needs to be created
                  */
+
                 return;
             default:
                 if (!array_key_exists($this->getShow(), $this->showOptions)) {
@@ -280,7 +313,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     }
 
     /**
-     * Reset the params
+     * Reset the params.
      */
     public function resetRouterParams()
     {
@@ -297,8 +330,8 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param EntityAbstract $entity
-     * @param string         $assertion
-     * @param string         $action
+     * @param string $assertion
+     * @param string $action
      *
      * @return bool
      */
@@ -360,7 +393,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param null|EntityAbstract $resource
-     * @param string              $privilege
+     * @param string $privilege
      *
      * @return bool
      */
@@ -375,11 +408,11 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     }
 
     /**
-     * Add a parameter to the list of parameters for the router
+     * Add a parameter to the list of parameters for the router.
      *
      * @param string $key
      * @param        $value
-     * @param bool   $allowNull
+     * @param bool $allowNull
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
@@ -392,11 +425,11 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     }
 
     /**
-     * Add a parameter to the list of parameters for the query
+     * Add a parameter to the list of parameters for the query.
      *
      * @param string $key
      * @param        $value
-     * @param bool   $allowNull
+     * @param bool $allowNull
      */
     public function addQueryParam($key, $value, $allowNull = true)
     {
@@ -434,7 +467,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * RouteInterface match returned by the router.
-     * Use a test on is_null to have the possibility to overrule the serviceLocator lookup for unit tets reasons
+     * Use a test on is_null to have the possibility to overrule the serviceLocator lookup for unit tets reasons.
      *
      * @return RouteMatch.
      */
@@ -483,5 +516,139 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
         $this->page = $page;
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param  string $hash
+     * @return LinkAbstract
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+
+        return $this;
+    }
+
+    /**
+     * @return Contact
+     */
+    public function getContact()
+    {
+        if (is_null($this->contact)) {
+            $this->contact = new Contact();
+        }
+
+        return $this->contact;
+    }
+
+    /**
+     * @param Contact $contact
+     * @return LinkAbstract
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getAddress()
+    {
+        if (is_null($this->address)) {
+            $this->address = new Address();
+        }
+
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     * @return LinkAbstract
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Note
+     */
+    public function getNote()
+    {
+        if (is_null($this->note)) {
+            $this->note = new Note();
+        }
+
+        return $this->note;
+    }
+
+    /**
+     * @param Note $note
+     * @return LinkAbstract
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return Phone
+     */
+    public function getPhone()
+    {
+        if (is_null($this->phone)) {
+            $this->phone = new Phone();
+        }
+
+        return $this->phone;
+    }
+
+    /**
+     * @param Phone $phone
+     * @return LinkAbstract
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * @return Selection
+     */
+    public function getSelection()
+    {
+        if (is_null($this->selection)) {
+            $this->selection = new Selection();
+        }
+
+        return $this->selection;
+    }
+
+    /**
+     * @param Selection $selection
+     * @return LinkAbstract
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
+
+        return $this;
     }
 }

@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Project
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller\Plugin;
 
 use Contact\Entity\Contact;
@@ -17,8 +18,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Validator\EmailAddress;
 
 /**
- * Class HandleImport
- * @package Contact\Controller\Plugin
+ * Class HandleImport.
  */
 class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterface
 {
@@ -31,7 +31,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
      */
     protected $header = [];
     /**
-     * Inverse lookup-array which keeps the keys of the columns
+     * Inverse lookup-array which keeps the keys of the columns.
      *
      * @var array
      */
@@ -59,6 +59,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
 
     /**
      * @param $data
+     *
      * @return $this
      */
     public function __invoke($data)
@@ -75,7 +76,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
     }
 
     /**
-     * Body function, creating the contactObjects
+     * Body function, creating the contactObjects.
      */
     private function importContent()
     {
@@ -90,14 +91,13 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
     }
 
     /**
-     * With this function we will do some basic testing to see if the least amount of information is available
-     *
+     * With this function we will do some basic testing to see if the least amount of information is available.
      */
     protected function validateData()
     {
         $minimalRequiredElements = ['email', 'firstname', 'lastname'];
 
-        /**
+        /*
          * Go over all elements and check if the required elements are present
          */
         foreach ($minimalRequiredElements as $element) {
@@ -106,12 +106,12 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
             }
         }
 
-        /**
+        /*
          * Create the lookup-table
          */
         $this->headerKeys = array_flip($this->header);
 
-        /**
+        /*
          * Validate the emails.
          */
         $counter = 2;
@@ -129,7 +129,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
     }
 
     /**
-     * $this function extracts the data and created local arrays
+     * $this function extracts the data and created local arrays.
      *
      * @param $data
      */
@@ -138,7 +138,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
         //Explode first on the \n to have the different rows
         $data = explode("\n", $data);
 
-        /**
+        /*
          * Correct first the delimiter, normally a ; but it can be a ;
          */
         if (strpos($data[0], ';') !== false) {
@@ -147,7 +147,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
 
         $this->header = explode($this->delimiter, $data[0]);
 
-        /**
+        /*
          * Go over the rest of the data and add the rows to the array
          */
         for ($i = 1; $i < sizeof($data); $i++) {

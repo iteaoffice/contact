@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
 
 /**
- * Entity for a DND
+ * Entity for a DND.
  *
  * @ORM\Table(name="contact_dnd")
  * @ORM\Entity
@@ -22,7 +23,6 @@ use Zend\Form\Annotation;
  * @Annotation\Name("contact_dnd")
  *
  * @category    Contact
- * @package     Entity
  */
 class Dnd //extends EntityAbstract implements ResourceInterface
 {
@@ -31,6 +31,7 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $id;
@@ -38,6 +39,7 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
+     *
      * @var \DateTime
      */
     private $dateCreated;
@@ -45,18 +47,21 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="date_updated", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
+     *
      * @var \DateTime
      */
     private $dateUpdated;
     /**
      * @ORM\Column(name="size", type="integer", nullable=false)
      * @Annotation\Exclude()
+     *
      * @var integer
      */
     private $size;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\DndObject", cascade={"persist"}, mappedBy="dnd")
      * @Annotation\Exclude()
+     *
      * @var \Contact\Entity\DndObject
      */
     private $object;
@@ -65,6 +70,7 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact;
@@ -73,6 +79,7 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\File")
      * @Annotation\Options({"label":"txt-dnd-file"})
+     *
      * @var \General\Entity\ContentType
      */
     private $contentType;
@@ -81,6 +88,7 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="program_id", referencedColumnName="program_id")
      * })
+     *
      * @var \Program\Entity\Program
      */
     private $program;

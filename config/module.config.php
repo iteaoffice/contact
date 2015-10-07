@@ -9,56 +9,57 @@
  */
 namespace Contact;
 
-use Contact\Acl\Assertion\Contact as ContactAssertion;
-use Contact\Acl\Assertion\Facebook as FacebookAssertion;
-use Contact\Controller\ControllerInitializer;
+use Contact\Acl\Assertion;
 use Contact\Form\View\Helper\ContactFormElement;
-use Contact\Service\SelectionService;
-use Contact\Service\ServiceInitializer;
-use Contact\Service\StatisticsService;
-use Contact\View\Helper\CommunityLink;
-use Contact\View\Helper\ContactHandler;
-use Contact\View\Helper\ContactLink;
-use Contact\View\Helper\CreateContactFromArray;
-use Contact\View\Helper\CreatePhotoFromArray;
-use Contact\View\Helper\FacebookLink;
-use Contact\View\Helper\SelectionLink;
-use Contact\View\Helper\ViewHelperInitializer;
+use Contact\Service;
+use Contact\View\Helper;
 use Zend\Stdlib\ArrayUtils;
 
 $config = [
     'controllers'     => [
         'initializers' => [
-            ControllerInitializer::class
+            Controller\ControllerInitializer::class
         ],
         'invokables'   => [
-            'contact-index'            => 'Contact\Controller\ContactController',
-            'contact-selection'        => 'Contact\Controller\SelectionManagerController',
-            'contact-facebook-manager' => 'Contact\Controller\FacebookManagerController',
-            'contact-facebook'         => 'Contact\Controller\FacebookController',
-            'contact-manager'          => 'Contact\Controller\ContactManagerController',
+            Controller\ConsoleController::class          => Controller\ConsoleController::class,
+            Controller\ContactController::class          => Controller\ContactController::class,
+            Controller\ProfileController::class          => Controller\ProfileController::class,
+            Controller\SelectionManagerController::class => Controller\SelectionManagerController::class,
+            Controller\FacebookManagerController::class  => Controller\FacebookManagerController::class,
+            Controller\FacebookController::class         => Controller\FacebookController::class,
+            Controller\AddressManagerController::class   => Controller\AddressManagerController::class,
+            Controller\PhoneManagerController::class     => Controller\PhoneManagerController::class,
+            Controller\NoteManagerController::class      => Controller\NoteManagerController::class,
+            Controller\ContactAdminController::class     => Controller\ContactAdminController::class,
         ],
     ],
     'view_manager'    => [
         'template_map' => include __DIR__ . '/../template_map.php',
     ],
     'view_helpers'    => [
-        'initializers' => [ViewHelperInitializer::class],
+        'initializers' => [
+            Helper\ViewHelperInitializer::class
+        ],
         'invokables'   => [
             'contactformelement'     => ContactFormElement::class,
-            'communityLink'          => CommunityLink::class,
-            'createContactFromArray' => CreateContactFromArray::class,
-            'createPhotoFromArray'   => CreatePhotoFromArray::class,
-            'contactHandler'         => ContactHandler::class,
-            'contactServiceProxy'    => 'Contact\View\Helper\ContactServiceProxy',
-            'contactLink'            => ContactLink::class,
-            'selectionLink'          => SelectionLink::class,
-            'facebookLink'           => FacebookLink::class,
-            'contactPhoto'           => 'Contact\View\Helper\ContactPhoto',
+            'communityLink'          => Helper\CommunityLink::class,
+            'createContactFromArray' => Helper\CreateContactFromArray::class,
+            'createPhotoFromArray'   => Helper\CreatePhotoFromArray::class,
+            'contactHandler'         => Helper\ContactHandler::class,
+            'contactServiceProxy'    => Helper\ContactServiceProxy::class,
+            'contactLink'            => Helper\ContactLink::class,
+            'selectionLink'          => Helper\SelectionLink::class,
+            'facebookLink'           => Helper\FacebookLink::class,
+            'addressLink'            => Helper\AddressLink::class,
+            'noteLink'               => Helper\NoteLink::class,
+            'phoneLink'              => Helper\PhoneLink::class,
+            'contactPhoto'           => Helper\ContactPhoto::class,
         ]
     ],
     'service_manager' => [
-        'initializers' => [ServiceInitializer::class],
+        'initializers' => [
+            Service\ServiceInitializer::class
+        ],
         'factories'    => [
             'contact_contact_navigation_service'                       => 'Contact\Navigation\Factory\ContactNavigationServiceFactory',
             'contact_module_config'                                    => 'Contact\Factory\ConfigServiceFactory',
@@ -66,28 +67,42 @@ $config = [
             'Contact\Provider\Identity\AuthenticationIdentityProvider' => 'Contact\Factory\AuthenticationIdentityProviderServiceFactory',
         ],
         'invokables'   => [
-            ContactAssertion::class        => ContactAssertion::class,
-            FacebookAssertion::class       => FacebookAssertion::class,
-            SelectionService::class        => SelectionService::class,
-            StatisticsService::class       => StatisticsService::class,
-            'contact_contact_service'      => 'Contact\Service\ContactService',
-            'contact_address_service'      => 'Contact\Service\AddressService',
-            'contact_form_service'         => 'Contact\Service\FormService',
-            'contact_contact_form_filter'  => 'Contact\Form\FilterContact',
-            'contact_facebook_form_filter' => 'Contact\Form\FilterCreateObject',
-            'contact_password_form'        => 'Contact\Form\Password',
-            'contact_password_form_filter' => 'Contact\Form\PasswordFilter',
+            Assertion\Contact::class         => Assertion\Contact::class,
+            Assertion\Facebook::class        => Assertion\Facebook::class,
+            Assertion\Address::class         => Assertion\Address::class,
+            Assertion\Note::class            => Assertion\Note::class,
+            Assertion\Phone::class           => Assertion\Phone::class,
+            Assertion\Selection::class       => Assertion\Selection::class,
+            Service\SelectionService::class  => Service\SelectionService::class,
+            Service\StatisticsService::class => Service\StatisticsService::class,
+            Service\ContactService::class    => Service\ContactService::class,
+            Service\AddressService::class    => Service\AddressService::class,
+            'contact_contact_service'        => 'Contact\Service\ContactService',
+            'contact_address_service'        => 'Contact\Service\AddressService',
+            'contact_form_service'           => 'Contact\Service\FormService',
+            'contact_contact_form_filter'    => 'Contact\Form\FilterContact',
+            'contact_facebook_form_filter'   => 'Contact\Form\FilterCreateObject',
+            'contact_address_form_filter'    => 'Contact\Form\FilterCreateObject',
+            'contact_note_form_filter'       => 'Contact\Form\FilterCreateObject',
+            'contact_phone_form_filter'      => 'Contact\Form\FilterCreateObject',
+            'contact_selection_form_filter'  => 'Contact\Form\FilterCreateObject',
+            'contact_password_form'          => 'Contact\Form\Password',
+            'contact_password_form_filter'   => 'Contact\Form\PasswordFilter',
         ]
     ],
     'doctrine'        => [
         'driver'       => [
             'contact_annotation_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'paths' => [__DIR__ . '/../src/Contact/Entity/']
+                'paths' => [
+                    __DIR__ . '/../src/Contact/Entity/'
+                ]
             ],
             'orm_default'               => [
                 'class'   => 'Doctrine\ORM\Mapping\Driver\DriverChain',
-                'drivers' => [__NAMESPACE__ . '\Entity' => 'contact_annotation_driver',]
+                'drivers' => [
+                    __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
+                ]
             ],
         ],
         'eventmanager' => [
@@ -102,6 +117,8 @@ $config = [
 ];
 $configFiles = [
     __DIR__ . '/module.config.routes.php',
+    __DIR__ . '/module.config.routes.console.php',
+    __DIR__ . '/module.config.routes.admin.php',
     __DIR__ . '/module.config.navigation.php',
     __DIR__ . '/module.config.authorize.php',
     __DIR__ . '/module.config.community.php',

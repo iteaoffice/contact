@@ -1,24 +1,24 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Domain
+ * Domain.
  *
  * @ORM\Table(name="contact_link")
  * @ORM\Entity
  *
  * @category    Contact
- * @package     Entity
  */
 class Link
 {
@@ -26,6 +26,7 @@ class Link
      * @ORM\Column(name="link_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -34,6 +35,7 @@ class Link
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact1_id", referencedColumnName="contact_id")
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact1;
@@ -42,6 +44,7 @@ class Link
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact2_id", referencedColumnName="contact_id")
      * })
+     *
      * @var \Contact\Entity\Contact
      */
     private $contact2;

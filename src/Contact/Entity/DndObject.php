@@ -1,24 +1,24 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Entity for a DND
+ * Entity for a DND.
  *
  * @ORM\Table(name="contact_dnd_object")
  * @ORM\Entity
  *
  * @category    Contact
- * @package     Entity
  */
 class DndObject //extends EntityAbstract implements ResourceInterface
 {
@@ -32,6 +32,7 @@ class DndObject //extends EntityAbstract implements ResourceInterface
     private $id;
     /**
      * @ORM\Column(name="object", type="blob", nullable=false)
+     *
      * @var string
      */
     private $object;
@@ -40,6 +41,7 @@ class DndObject //extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="dnd_id", referencedColumnName="dnd_id", unique=true)
      * })
+     *
      * @var \Contact\Entity\Dnd;
      */
     private $dnd;

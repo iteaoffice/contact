@@ -1,17 +1,17 @@
 <?php
+
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Options
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
 namespace Contact\Options;
 
 /**
- * Interface CommunityOptionsInterface
- * @package Contact\Options
+ * Interface CommunityOptionsInterface.
  */
 interface CommunityOptionsInterface
 {
@@ -23,7 +23,7 @@ interface CommunityOptionsInterface
     public function setCommunityViaMembers($communityViaMembers);
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getCommunityViaMembers();
 
@@ -35,7 +35,18 @@ interface CommunityOptionsInterface
     public function setCommunityViaProjectParticipation($communityViaProjectParticipation);
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getCommunityViaProjectParticipation();
+
+    /**
+     * @return mixed
+     */
+    public function getFacebookTemplate();
+
+    /**
+     * @param $facebookTemplate
+     * @return mixed
+     */
+    public function setFacebookTemplate($facebookTemplate);
 }

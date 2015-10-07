@@ -1,0 +1,20 @@
+<h2>{{ translate("txt-selections") }}</h2>
+
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>{{ translate("txt-id") }}</th>
+        <th>{{ translate("txt-selection") }}</th>
+        <th>{{ translate("txt-type") }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for selection in selections %}
+        <tr>
+            <td>{{ selection.id }}</td>
+            <td>{{ selectionLink(selection,'view','name') }}</td>
+            <td>{% if selection.sql %}{{ translate('txt-sql') }}{% else %}{{ translate("txt-fixed") }}{% endif %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

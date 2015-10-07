@@ -1,9 +1,10 @@
 <?php
+
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Project
- * @package     Options
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
@@ -15,24 +16,29 @@ class ModuleOptions extends AbstractOptions implements
     CommunityOptionsInterface
 {
     /**
-     * Turn off strict options mode
+     * Turn off strict options mode.
      */
     protected $__strictMode__ = false;
     /**
-     * Trigger to see if the community consists of members
+     * Trigger to see if the community consists of members.
      *
      * @var bool
      */
     protected $communityViaMembers = false;
     /**
-     * Bool to see if a project is an EU project
+     * Bool to see if a project is an EU project.
      *
      * @var bool
      */
     protected $communityViaProjectParticipation = false;
 
     /**
-     * @param boolean $communityViaMembers
+     * Template for rendering of the facebook
+     * @var string
+      */
+    protected $facebookTemplate = 'contact/facebook/facebook';
+    /**
+     * @param bool $communityViaMembers
      *
      * @return CommunityOptionsInterface
      */
@@ -44,7 +50,7 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getCommunityViaMembers()
     {
@@ -52,7 +58,7 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * @param boolean $communityViaProjectParticipation
+     * @param bool $communityViaProjectParticipation
      *
      * @return CommunityOptionsInterface
      */
@@ -64,10 +70,26 @@ class ModuleOptions extends AbstractOptions implements
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getCommunityViaProjectParticipation()
     {
         return $this->communityViaProjectParticipation;
+    }
+
+    /**
+     * @param $facebookTemplate
+     */
+    public function setFacebookTemplate($facebookTemplate)
+    {
+        $this->facebookTemplate = $facebookTemplate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacebookTemplate()
+    {
+        return $this->facebookTemplate;
     }
 }

@@ -19,4 +19,5 @@
     <p>{{ translate("txt-use-the-deeplink-to-visit-the-target-use-a-new-private-session") }}</p>
     {{ deeplinkLink(deeplink,'view') }}
     {{ deeplinkLink(deeplink,'view','qr-code') }}
+    <a href="{{ deeplinkLink(deeplink,'view') }}" class="btn btn-primary">Impersonate</a>
 {% endif %}

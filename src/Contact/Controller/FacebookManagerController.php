@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Facebook
- * @package     Controller
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
@@ -34,8 +35,8 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function viewAction()
     {
-        /**
-         * @var $facebook Facebook
+        /*
+         * @var Facebook
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
 
@@ -48,17 +49,21 @@ class FacebookManagerController extends ContactAbstractController
     }
 
     /**
-     * Create a new facebook
+     * Create a new facebook.
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function newAction()
     {
-        $form = $this->getFormService()->prepare('facebook', null, $_POST);
+        $data = array_merge_recursive(
+            $this->getRequest()->getPost()->toArray()
+        );
+
+        $form = $this->getFormService()->prepare('facebook', null, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            /**
-             * @var $facebook Facebook
+            /*
+             * @var Facebook
              */
             $facebook = $this->getContactService()->newEntity($form->getData());
 
@@ -72,7 +77,7 @@ class FacebookManagerController extends ContactAbstractController
     }
 
     /**
-     * Edit an facebook by finding it and call the corresponding form
+     * Edit an facebook by finding it and call the corresponding form.
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -85,18 +90,21 @@ class FacebookManagerController extends ContactAbstractController
             'facebook',
             $this->params('id')
         );
-        $form = $this->getFormService()->prepare($facebook->get('entity_name'), $facebook, $_POST);
+        $data = array_merge_recursive(
+            $this->getRequest()->getPost()->toArray()
+        );
+        $form = $this->getFormService()->prepare($facebook->get('entity_name'), $facebook, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             if (isset($data['delete'])) {
-                /**
-                 * @var $facebook Facebook
+                /*
+                 * @var Facebook
                  */
                 $facebook = $form->getData();
 
                 $this->getContactService()->removeEntity($facebook);
                 $this->flashMessenger()->setNamespace('success')->addMessage(
-                    sprintf(_("txt-facebook-has-successfully-been-deleted"))
+                    sprintf($this->translate("txt-facebook-has-successfully-been-deleted"))
                 );
 
                 return $this->redirect()->toRoute('zfcadmin/facebook-manager/list');

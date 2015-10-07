@@ -1,43 +1,80 @@
-<h1 id="title">{{ translate("txt-selection-list") }}</h1>
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-selection-list")) %}
+
+{{ form().closeTag()|raw }}
 
 {% do form.prepare() %}
 
-    {{ form().openTag(form)|raw }}
+{{ form().openTag(form)|raw }}
 
-<div class="input-group">
-    {{ formelement(form.get('q')) }}
-    <span class="input-group-btn">{{ formelement(form.get('submit')) }}</span>
+{% set filter = form.get('filter') %}
+
+<input type="hidden" name="filter[order]" value="{{ order }}">
+<input type="hidden" name="filter[direction]" value="{{ direction }}">
+
+<div class="row">
+
+    <div class="col-md-9">
+
+        <h1>{{ translate("txt-selection-list") }}</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <p class="lead">{{ translate("txt-selection-list-explanation") }}</p>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    {{ formelement(filter.get('search')) }}
+                    <span class="input-group-btn">{{ formelement(form.get('submit')) }}</span></div>
+            </div>
+        </div>
+
+        {% if paginator.pageRange > 0 %}
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'owner', 'text': translate('txt-owner')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'tag', 'text': translate('txt-tag')} %}</th>
+                    <th>{{ translate("txt-contacts") }}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'date', 'text': translate('txt-date')} %}</th>
+                </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+                <tbody>
+                {% for selection in paginator.getCurrentItems() %}
+                    <tr>
+                        <td>{{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}</td>
+                        <td>{{ selection.contact.displayName }}</td>
+                        <td>{{ selection.tag }}</td>
+                        <td>{% if selection.sql %}-/-{% else %}{{ selection.selectionContact.count }}{% endif %}</td>
+                        <td>{{ selection.dateCreated|time_diff }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
+        {% else %}
+            {{ ztbalert().info(translate("txt-no-selections-found"))|raw }}
+        {% endif %}
+    </div>
+    <div class="col-md-3">
+        <div class="well well-sm">
+            <fieldset>
+
+                {{ ztbformelement(filter.get('tags')) }}
+
+                <div class="form-group">
+                    {{ ztbformelement(form.get('submit')) }}
+                    {{ ztbformelement(form.get('clear')) }}
+                </div>
+            </fieldset>
+        </div>
+    </div>
 </div>
 
 {{ form().closeTag()|raw }}
 
-    {% if paginator.pageRange > 0 %}
-        <table class="table table-hover table-striped">
-            <thead>
-            <tr>
-                <th>{{ translate("txt-name") }}</th>
-                <th>{{ translate("txt-owner") }}</th>
-                <th>{{ translate("txt-contacts") }}</th>
-                <th>{{ translate("txt-date") }}</th>
-            </tr>
-            </thead>
-            <tfoot>
-            </tfoot>
-            <tbody>
-            {% for selection in paginator.getCurrentItems() %}
-                <tr>
-                    <td>{{ selectionLink(selection,'view', 'name') }}</td>
-                    <td>{{ selection.contact.displayName }}</td>
-                    <td>{% if selection.sql %}-/-{% else %}{{ selection.selectionContact.count }}{% endif %}</td>
-
-                    <td>{{ selection.dateCreated|string_date }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
-    {% else %}
-        {{ ztbalert().info(translate("txt-no-selections-found"))|raw }}
-    {% endif %}
 
 {{ selectionLink(null,'new', 'button') }}

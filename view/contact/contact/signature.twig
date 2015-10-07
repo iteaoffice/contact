@@ -1,26 +1,58 @@
-<h1>{{ translate("txt-signature") }}</h1>
+{% set contactService = contactServiceProxy(zfcUserIdentity()) %}
 
-<p>
-    Copy the HTML content of the signature below and save this at the following location
-    <code>%appdata%\Microsoft\signatures\signature.htm</code>
+{% do headTitle().append(translate("txt-profile")) %}
+{% do headTitle().append(contactService.parseFullname()) %}
 
-    In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and replies
-</p>
+<h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
 
-<h2>{{ translate("txt-preview") }}</h2>
-{% include 'contact/partial/signature' %}
+<ul id="tab" class="nav nav-tabs">
+    <li><a href="{{ url('community/contact/profile/view') }}#profile">{{ translate("txt-profile")|capitalize }}</a></li>
+    <li>
+        <a href="{{ url('community/contact/profile/view') }}#organisation">{{ translate("txt-organisation")|capitalize }}</a>
+    </li>
+    <li><a href="{{ url('community/contact/profile/view') }}#event">{{ translate("txt-events")|capitalize }}</a></li>
+    <li><a href="{{ url('community/contact/profile/view') }}#updates">{{ translate("txt-updates")|capitalize }}</a></li>
+    {% if isAllowed('zfcadmin', 'index') %}
+        <li class="active"><a
+                    href="{{ url('community/contact/signature') }}">{{ translate("txt-signature")|capitalize }}</a>
+        </li>
+    {% endif %}
+</ul>
 
-<h2>{{ translate("txt-source") }}</h2>
-<form role="form">
-    <div class="form-group">
-        <textarea cols="100" rows="20">{% include 'contact/partial/signature' %}</textarea>
+
+
+<div id="tabContent" class="tab-content">
+
+    <div class="tab-pane fade in active" id="profile">
+        <h1 class="home">{{ translate("txt-signature") }}</h1>
+        <p>
+            Copy the HTML content of the signature below and save this at the following location (Windows 8.1)
+            <code>C:\Users\%username%\AppData\Roaming\Microsoft\Signatures\signature.htm</code>
+
+            In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and
+            replies
+        </p>
+
+
+        <h2>{{ translate("txt-source") }}</h2>
+
+        <form role="form">
+            <div class="form-group">
+                {% if constant('DEBRANOVA_HOST') == 'itea' %}
+                <textarea rows="30">{% include 'contact/partial/signature/itea' %}</textarea>
+                {% endif %}
+                {% if constant('DEBRANOVA_HOST') == 'artemisia' %}
+                    <textarea rows="30">{% include 'contact/partial/signature/artemisia' %}</textarea>
+                {% endif %}
+            </div>
+        </form>
+
+
+        <style type="text/css">
+            textarea {
+                width: 100%;
+                font-family: Courier, monospace;
+            }
+        </style>
     </div>
-</form>
-
-
-<style type="text/css">
-    textarea {
-        width: 100%;
-        font-family: Courier, monospace;
-    }
-</style>
+</div>

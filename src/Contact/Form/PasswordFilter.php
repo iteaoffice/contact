@@ -1,12 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
- * @package     Form
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
  */
+
 namespace Contact\Form;
 
 use Zend\InputFilter\InputFilter;
@@ -14,7 +15,7 @@ use Zend\InputFilter\InputFilter;
 class PasswordFilter extends InputFilter
 {
     /**
-     * Have a custom password validator
+     * Have a custom password validator.
      */
     public function __construct()
     {

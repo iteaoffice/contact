@@ -1,0 +1,77 @@
+<h2>{{ translate("txt-legal") }}</h2>
+
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>{{ translate("txt-type") }}</th>
+        <th>{{ translate("txt-project") }}</th>
+        <th>{{ translate("txt-call") }}</th>
+        <th>{{ translate("txt-program") }}</th>
+        <th>{{ translate("txt-date-created") }}</th>
+        <th>{{ translate("txt-date-signed") }}</th>
+        <th>{{ translate("txt-date-approved") }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for nda in contactService.contact.nda %}
+        <tr>
+            <td>{{ translate("txt-nda") }} {{ ndaLink(nda,'download','icon') }} {{ ndaLink(nda,'view-admin','icon') }}</td>
+            <td></td>
+            <td>{% if nda.call %}{{ callLink(nda.call,'view-admin') }}{% else %}{{ translate("txt-living-roadmap") }}{% endif %}</td>
+            <td>{% if nda.call %}{{ nda.call.program }}{% endif %}</td>
+            <td>{{ nda.dateCreated|time_diff }}</td>
+            <td>{{ nda.dateSigned|time_diff }}</td>
+            <td>{{ nda.dateApproved|time_diff }}</td>
+        </tr>
+    {% endfor %}
+    {% for dnd in contactService.contact.dnd %}
+        <tr>
+            <td>{{ translate("txt-dnd") }}</td>
+            <td></td>
+            <td></td>
+            <td>{{ dnd.program }}</td>
+            <td>{{ dnd.dateCreated|time_diff }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+    {% endfor %}
+    {% for affiliationDoa in contactService.contact.affiliationDoa %}
+        <tr>
+            {% set projectService = projectServiceProxy(affiliationDoa.affiliation.project) %}
+            <td>{{ translate("txt-project-doa") }} {{ doaLink(affiliationDoa,'download','icon') }}{{ doaLink(affiliationDoa,'view-admin','icon') }}</td>
+            <td>{{ projectLink(projectService,'view-admin','name') }}</td>
+            <td>{{ callLink(projectService.project.call,'view-admin','name') }}</td>
+            <td>{{ projectService.project.call.program }}</td>
+
+            <td>{{ affiliationDoa.dateCreated|time_diff }}</td>
+            <td>{{ affiliationDoa.dateSigned|time_diff }}</td>
+            <td>{{ affiliationDoa.dateApproved|time_diff }}</td>
+        </tr>
+    {% endfor %}
+    {% for loi in contactService.contact.loi %}
+        <tr>
+            {% set projectService = projectServiceProxy(loi.affiliation.project) %}
+            <td>{{ translate("txt-loi") }} {{ loiLink(loi,'download','icon') }} {{ loiLink(loi,'view-admin','icon') }}</td>
+            <td>{{ projectLink(projectService,'view-admin','name') }}</td>
+            <td>{{ callLink(projectService.project.call,'view-admin','name') }}</td>
+            <td>{{ projectService.project.call.program }}</td>
+
+            <td></td>
+            <td>{{ loi.dateSigned|time_diff }}</td>
+            <td>{{ loi.dateApproved|time_diff }}</td>
+        </tr>
+    {% endfor %}
+    {% for programDoa in contactService.contact.programDoa %}
+        <tr>
+            <td>{{ translate("txt-program-doa") }} {{ programDoaLink(programDoa,'download','icon') }}</td>
+            <td></td>
+            <td></td>
+            <td>{{ programDoa.program }}</td>
+
+            <td>{{ programDoa.dateCreated|time_diff }}</td>
+            <td>{{ programDoa.dateSigned|time_diff }}</td>
+            <td>{{ programDoa.dateApproved|time_diff }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,109 @@
+{% do headTitle().append(translate("txt-partner-search")) %}
+<h1>{{ translate("txt-partner-search") }}</h1>
+
+{% do form.prepare() %}
+{{ form().openTag(form)|raw }}
+
+<div class="row">
+
+    <div class="col-md-9">
+
+        <div class="input-group">
+            {{ formelement(form.get('query')) }}
+            <span class="input-group-btn">
+                {{ formelement(form.get('search')) }}
+                {{ formelement(form.get('reset')) }}
+            </span>
+        </div>
+
+        <p class="text-muted">{{ translate("txt-%s-items-on-%s-pages")|format(paginator.adapter.count,paginator.pageRange) }}</p>
+
+        {{ ztbalert().info(translate("txt-partner-search-engine-explanation"))|raw }}
+
+        <hr>
+
+        {% if paginator.adapter.count > 0 %}
+
+            <div class="row">
+                <div class="pull-right">
+                    {% include 'event/partial/pagination-control' with {'paginator': paginator} %}
+                </div>
+            </div>
+
+            <div class="row">
+
+            {% for result in paginator.getCurrentItems() %}
+
+                {% set contact = CreateContactFromArray(
+                {'id': result.fields.contact_id }
+                ) %}
+
+                <div class="col-sm-3">
+                    <div class="thumbnail contact-box">
+                        <div class="information-box-header">
+                            <h5>
+                                <a href="{{ url("community/contact/profile/contact", {'id': result.fields.contact_id,'hash': contact.parseHash()}) }}">{{ result.fields.fullname }}</a>
+                            </h5>
+                        </div>
+                        <div class="contact-box-image">
+                            {% if result.fields.photo_url|length == 0 %}
+                                <img src="assets/{{ constant("DEBRANOVA_HOST") }}/style/image/anonymous.jpg"
+                                     class="img-responsive">
+                            {% else %}
+                                <img class="img-responsive" src="{{ result.fields.photo_url }}">
+                            {% endif %}
+                        </div>
+                        <div class="caption caption-relative">
+                            {{ result.fields.organisation }}<br>
+                            {{ result.fields.country }}
+                        </div>
+                    </div>
+                </div>
+                {% if loop.index is divisibleby(4) %}
+                    </div>
+                    <div class="row">
+                {% endif %}
+
+            {% endfor %}
+            </div>
+
+            <div class="row">
+                <div class="pull-right">
+                    {% include 'event/partial/pagination-control' with {'paginator': paginator} %}
+                </div>
+            </div>
+        {% else %}
+            {{ ztbalert().info(translate("txt-no-search-results-found"))|raw }}
+        {% endif %}
+    </div>
+
+    <div class="col-md-3">
+        {% set facets = form.get('facet') %}
+        {% for facet in facets %}
+            {{ ztbformelement(facet, null, '%s%s%s') }}
+        {% endfor %}
+    </div>
+
+
+    {{ form().closeTag()|raw }}
+
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('input[type="checkbox"]').on('click', function () {
+            $('#search').submit();
+        });
+        $('#searchButton').on('click', function () {
+            $('#search').submit();
+        });
+        $('#resetButton').on('click', function () {
+            $('input[type="checkbox"]').each(function () {
+                this.removeAttribute('checked');
+            });
+            $('input[name="query"]').val('');
+            $('#search').submit();
+        });
+    });
+</script>

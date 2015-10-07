@@ -10,6 +10,9 @@
     <li><a href="#organisation" data-toggle="tab">{{ translate("txt-organisation")|capitalize }}</a></li>
     <li><a href="#event" data-toggle="tab">{{ translate("txt-events")|capitalize }}</a></li>
     <li><a href="#updates" data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
+    {% if isAllowed('zfcadmin', 'index') %}
+        <li>{{ contactLink(contactService.contact,'signature', 'text') }}</li>
+    {% endif %}
 </ul>
 
 <div id="tabContent" class="tab-content">
@@ -38,18 +41,6 @@
             {% endif %}
             <dt>{{ translate("txt-expertise") }}</dt>
             <dd>{{ contactService.contact.profile.description }}</dd>
-            <dt>{{ translate("txt-community") }}</dt>
-            {% for community in contactService.contact.community %}
-                {% if loop.first %}<dd>{% endif %}{{ communityLink(community) }}{% if loop.last %}</dd>{% endif %}
-            {% else %}
-                <dd>{{ translate("txt-no-community-known") }}</dd>
-            {% endfor %}
-            <dt>{{ translate("txt-open-id") }}</dt>
-            {% for openId in contactService.contact.openId %}
-                <dd>{{ translate("txt-open-id") }} - {{ openId }}</dd>
-            {% else %}
-                <dd>{{ translate("txt-no-open-in-known") }}</dd>
-            {% endfor %}
         </dl>
 
         {{ contactLink(contactService.contact,'edit-profile', 'button') }}
@@ -81,8 +72,10 @@
                     <dt>{{ translate("txt-position") }}</dt>
                     <dd>{{ contactService.contact.position }}</dd>
                 {% endif %}
-                <dt>{{ translate("txt-general-description") }}</dt>
-                <dd>{{ organisationService.organisation.description|raw }}</dd>
+                {% if organisationService.organisation.description|length > 0 %}
+                    <dt>{{ translate("txt-general-description") }}</dt>
+                    <dd>{{ organisationService.organisation.description|raw }}</dd>
+                {% endif %}
             </dl>
         {% else %}
             {{ ztbalert().info(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}

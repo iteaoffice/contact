@@ -8,8 +8,11 @@
  * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
  */
 use Admin\Entity\Access;
+use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
+use Contact\Acl\Assertion\Note as NoteAssertion;
+use Contact\Acl\Assertion\Phone as PhoneAssertion;
 
 return [
     'bjyauthorize' => [
@@ -42,20 +45,6 @@ return [
              */
             'BjyAuthorize\Guard\Route' => [
                 [
-                    'route'     => 'contact/edit',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
-                    'route'     => 'community/contact/profile',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
-                    'route' => 'community/contact',
-                    'roles' => [strtolower(Access::ACCESS_USER)]
-                ],
-                [
                     'route'     => 'community/contact/facebook/facebook',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => FacebookAssertion::class
@@ -66,22 +55,32 @@ return [
                     'assertion' => FacebookAssertion::class
                 ],
                 [
-                    'route'     => 'contact/profile',
+                    'route'     => 'community/contact/profile/edit',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/profile-edit',
+                    'route'     => 'community/contact/profile/view',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/profile/contact',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/signature',
+                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'community/contact/search',
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class
                 ],
                 [
                     'route'     => 'contact/get-address-by-type',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
-                    'route'     => 'community/contact/profile-edit',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -91,12 +90,14 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/change-password',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
+                    'route' => 'contact/has-session',
+                    'roles' => [
+                        strtolower(Access::ACCESS_PUBLIC),
+                        strtolower(Access::ACCESS_USER)
+                    ]
                 ],
                 [
-                    'route'     => 'contact/signature',
+                    'route'     => 'contact/change-password',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -106,67 +107,124 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/search',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
-                    'assertion' => ContactAssertion::class
-                ],
-                [
                     'route' => 'assets/contact-photo',
                     'roles' => []
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager',
+                    'route'     => 'zfcadmin/contact-admin',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/list',
+                    'route'     => 'zfcadmin/contact-admin/list',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/edit',
+                    'route'     => 'zfcadmin/contact-admin/edit',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/permit',
+                    'route'     => 'zfcadmin/contact-admin/permit',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/view',
+                    'route'     => 'zfcadmin/contact-admin/view',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/impersonate',
+                    'route'     => 'zfcadmin/contact-admin/impersonate',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/statistics',
+                    'route'     => 'zfcadmin/contact-admin/statistics',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/import',
+                    'route'     => 'zfcadmin/contact-admin/import',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-manager/search',
+                    'route'     => 'zfcadmin/contact-admin/search',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
-                ['route' => 'zfcadmin/selection-manager/list', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/new', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/edit', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/selection-manager/view', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/list', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/new', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/edit', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
-                ['route' => 'zfcadmin/facebook-manager/view', 'roles' => [strtolower(Access::ACCESS_OFFICE)]],
+                [
+                    'route' => 'zfcadmin/selection-manager/list',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/new',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/edit',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/edit-contacts',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/view',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/list',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/new',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/edit',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/facebook-manager/view',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route'     => 'zfcadmin/address-manager/edit',
+                    'roles'     => [],
+                    'assertion' => AddressAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/address-manager/new',
+                    'roles'     => [],
+                    'assertion' => AddressAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/phone-manager/edit',
+                    'roles'     => [],
+                    'assertion' => PhoneAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/phone-manager/new',
+                    'roles'     => [],
+                    'assertion' => PhoneAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/note-manager/edit',
+                    'roles'     => [],
+                    'assertion' => NoteAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/note-manager/new',
+                    'roles'     => [],
+                    'assertion' => NoteAssertion::class
+                ],
+                [
+                    'route' => 'cli-partner-search-reset',
+                    'roles' => []
+                ],
             ],
         ],
     ],

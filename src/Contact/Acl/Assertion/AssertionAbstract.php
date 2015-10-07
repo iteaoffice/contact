@@ -1,15 +1,16 @@
 <?php
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office copyright message placeholder.
  *
  * @category   Project
- * @package    Acl
- * @subpackage Assertion
+ *
  * @author     Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright  2004-2014 ITEA Office
  * @license    http://debranova.org/license.txt proprietary
+ *
  * @link       http://debranova.org
  */
+
 namespace Contact\Acl\Assertion;
 
 use Admin\Service\AdminService;
@@ -21,14 +22,14 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Create a link to an document
+ * Create a link to an document.
  *
  * @category   Project
- * @package    Acl
- * @subpackage Assertion
+ *
  * @author     Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright  2004-2014 ITEA Office
  * @license    http://debranova.org/license.txt proprietary
+ *
  * @link       http://debranova.org
  */
 abstract class AssertionAbstract implements
@@ -105,7 +106,7 @@ abstract class AssertionAbstract implements
     }
 
     /**
-     * The contact service
+     * The contact service.
      *
      * @param ContactService $contactService
      *
@@ -127,7 +128,7 @@ abstract class AssertionAbstract implements
     }
 
     /**
-     * Returns true when a role or roles have access
+     * Returns true when a role or roles have access.
      *
      * @param $roles
      *
@@ -138,6 +139,9 @@ abstract class AssertionAbstract implements
         if (!is_array($roles)) {
             $roles = [$roles];
         }
+
+        $roles = array_map('strtolower', $roles);
+
         foreach ($this->getAccessRoles() as $access) {
             if (in_array(strtolower($access), $roles)) {
                 return true;

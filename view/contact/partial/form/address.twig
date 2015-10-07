@@ -1,0 +1,31 @@
+{% do form.prepare() %}
+{% do form.setAttribute('class','form-horizontal') %}
+
+{{ form().openTag(form)|raw }}
+
+<div class="form-group">
+    <label class="col-sm-3 control-label">{{ translate("txt-contact") }}</label>
+
+    <div class="col-sm-9">
+        <p class="form-control-static">{{ contactLink(contact,'view-admin', 'name') }}</p>
+    </div>
+</div>
+
+{% set address = form.get('address') %}
+{{ ztbformelement(address.get('type')) }}
+{{ ztbformelement(address.get('address')) }}
+{{ ztbformelement(address.get('zipCode')) }}
+{{ ztbformelement(address.get('city')) }}
+{{ ztbformelement(address.get('country')) }}
+
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('cancel')) }}
+        {% if form.has('delete') %}
+            {{ ztbformelement(form.get('delete')) }}
+        {% endif %}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}

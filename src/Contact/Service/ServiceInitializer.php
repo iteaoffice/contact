@@ -1,14 +1,16 @@
 <?php
 /**
- * Japaveh Webdesign copyright message placeholder
+ * Japaveh Webdesign copyright message placeholder.
  *
  * @category    Contact
- * @package     Service
+ *
  * @author      Johan van der Heide <info@japaveh.nl>
  * @copyright   2004-2014 Japaveh Webdesign
  * @license     http://solodb.net/license.txt proprietary
+ *
  * @link        http://solodb.net
  */
+
 namespace Contact\Service;
 
 use Zend\ServiceManager\InitializerInterface;
@@ -16,13 +18,14 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Japaveh Webdesign copyright message placeholder
+ * Japaveh Webdesign copyright message placeholder.
  *
  * @category    Contact
- * @package     Service
+ *
  * @author      Johan van der Heide <info@japaveh.nl>
  * @copyright   2004-2014 Japaveh Webdesign
  * @license     http://solodb.net/license.txt proprietary
+ *
  * @link        http://solodb.net
  */
 class ServiceInitializer implements InitializerInterface
@@ -30,15 +33,13 @@ class ServiceInitializer implements InitializerInterface
     /**
      * @param                         $instance
      * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return void
      */
     public function initialize($instance, ServiceLocatorInterface $serviceLocator)
     {
         if (!is_object($instance)) {
             return;
         }
-        /**
+        /*
          * Have a central place to inject the service locator
          */
         if ($instance instanceof ServiceLocatorAwareInterface) {
@@ -49,7 +50,7 @@ class ServiceInitializer implements InitializerInterface
             AddressServiceAwareInterface::class => 'contact_address_service',
             ContactServiceAwareInterface::class => 'contact_contact_service',
         ];
-        /**
+        /*
          * Go over each interface to see if we should add an interface
          */
         foreach (class_implements($instance) as $interface) {

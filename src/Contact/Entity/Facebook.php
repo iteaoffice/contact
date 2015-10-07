@@ -1,12 +1,13 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * Debranova copyright message placeholder.
  *
  * @category    Contact
- * @package     Entity
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2014 Debranova
  */
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -18,7 +19,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
- * Entity for the Facebook
+ * Entity for the Facebook.
  *
  * @ORM\Table(name="facebook")
  * @ORM\Entity(repositoryClass="Contact\Repository\Facebook")
@@ -26,7 +27,6 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  * @Annotation\Name("contact_facebook")
  *
  * @category    Contact
- * @package     Entity
  */
 class Facebook extends EntityAbstract implements ResourceInterface
 {
@@ -37,7 +37,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     const DISPLAY_PROJECTS = 5;
 
     /**
-     * Textual versions of the display
+     * Textual versions of the display.
      *
      * @var array
      */
@@ -54,7 +54,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     const SHOW_EMAIL_ALL = 3;
 
     /**
-     * Textual versions of the display
+     * Textual versions of the display.
      *
      * @var array
      */
@@ -67,29 +67,31 @@ class Facebook extends EntityAbstract implements ResourceInterface
     const SHOW_PHONE_NO = 1;
     const SHOW_PHONE_MEMBER = 2;
     const SHOW_PHONE_ALL = 3;
+    const SHOW_MOBILE_PHONE_MEMBER = 4;
 
     /**
-     * Textual versions of the display
+     * Textual versions of the display.
      *
      * @var array
      */
     protected $showPhoneTemplates = [
-        self::SHOW_PHONE_NO     => 'txt-hide-phone',
-        self::SHOW_PHONE_MEMBER => 'txt-show-phone-to-members',
-        self::SHOW_PHONE_ALL    => 'txt-show-phone-to-all',
+        self::SHOW_PHONE_NO            => 'txt-hide-phone',
+        self::SHOW_PHONE_MEMBER        => 'txt-show-phone-to-members',
+        self::SHOW_MOBILE_PHONE_MEMBER => 'txt-show-mobile-phone-to-members',
+        self::SHOW_PHONE_ALL           => 'txt-show-phone-to-all',
     ];
 
     /**
-     * Constant for public = 0 (not public)
+     * Constant for public = 0 (not public).
      */
     const CAN_NOT_SEND_MESSAGE = 0;
     /**
-     * Constant for public = 1 (hidden)
+     * Constant for public = 1 (hidden).
      */
     const CAN_SEND_MESSAGE = 1;
 
     /**
-     * Textual versions of the hideForOthers
+     * Textual versions of the hideForOthers.
      *
      * @var array
      */
@@ -99,16 +101,16 @@ class Facebook extends EntityAbstract implements ResourceInterface
     ];
 
     /**
-     * Constant for public = 0 (not public)
+     * Constant for public = 0 (not public).
      */
     const NOT_PUBLIC = 0;
     /**
-     * Constant for public = 1 (hidden)
+     * Constant for public = 1 (hidden).
      */
     const IS_PUBLIC = 1;
 
     /**
-     * Textual versions of the hideForOthers
+     * Textual versions of the hideForOthers.
      *
      * @var array
      */
@@ -120,6 +122,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="facebook_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @var integer
      */
     private $id;
@@ -127,6 +130,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="facebook", type="string", length=80, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-facebook"})
+     *
      * @var string
      */
     private $facebook;
@@ -136,6 +140,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Attributes({"array":"publicTemplates"})
      * @Annotation\Attributes({"label":"txt-public", "required":"true"})
      * @Annotation\Required(true)
+     *
      * @var int
      */
     private $public;
@@ -143,8 +148,9 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="can_send_message", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"canSendMessageTemplates"})
-     * @Annotation\Attributes({"label":"txt-can-send-message", "required":"true"})
+     * @Annotation\Attributes({"label":"txt-can-send-message", "required":"true","help-block": "txt-can-send-message-explanation"})
      * @Annotation\Required(true)
+     *
      * @var int
      */
     private $canSendMessage;
@@ -156,6 +162,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * "class":"form-control",
      * "placeholder":"txt-from-clause"})
      * @Annotation\Options({"label":"txt-from-clause","help-block": "txt-from-clause-explanation"})
+     *
      * @var string
      */
     private $fromClause;
@@ -167,6 +174,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * "class":"form-control",
      * "placeholder":"txt-where-clause"})
      * @Annotation\Options({"label":"txt-where-clause","help-block": "txt-where-clause-explanation"})
+     *
      * @var string
      */
     private $whereClause;
@@ -178,6 +186,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * "class":"form-control",
      * "placeholder":"txt-orderby-clause"})
      * @Annotation\Options({"label":"txt-orderby-clause","help-block": "txt-orderby-clause-explanation"})
+     *
      * @var string
      */
     private $orderbyClause;
@@ -189,6 +198,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * "class":"form-control",
      * "placeholder":"txt-contact-key"})
      * @Annotation\Options({"label":"txt-contact-key","help-block": "txt-contact-key-explanation"})
+     *
      * @var string
      */
     private $contactKey;
@@ -198,6 +208,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-title","help-block": "txt-title-explanation"})
+     *
      * @var string
      */
     private $title;
@@ -207,6 +218,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-sub-title","help-block": "txt-sub-title-explanation"})
+     *
      * @var int
      */
     private $subtitle;
@@ -216,6 +228,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Attributes({"array":"showEmailTemplates"})
      * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-show-email-title","help-block": "txt-show-email-explanation"})
+     *
      * @var string
      */
     private $showEmail;
@@ -224,7 +237,8 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"showPhoneTemplates"})
      * @Annotation\Required(true)
-     * @Annotation\Options({"label":"txt-show-phone-title","help-block": "txt-show-title-explanation"})
+     * @Annotation\Options({"label":"txt-show-phone-title","help-block": "txt-show-phone-explanation"})
+     *
      * @var string
      */
     private $showPhone;
@@ -238,12 +252,13 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
      * @Annotation\Options({"target_class":"Admin\Entity\Access"})
      * @Annotation\Attributes({"label":"txt-access","multiple":"true"})
+     *
      * @var \Admin\Entity\Access[]|Collections\ArrayCollection
      */
     private $access;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
@@ -251,7 +266,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Magic Getter
+     * Magic Getter.
      *
      * @param $property
      *
@@ -263,12 +278,10 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Magic Setter
+     * Magic Setter.
      *
      * @param $property
      * @param $value
-     *
-     * @return void
      */
     public function __set($property, $value)
     {
@@ -284,7 +297,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Returns the string identifier of the Resource
+     * Returns the string identifier of the Resource.
      *
      * @return string
      */
@@ -334,7 +347,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * New function needed to make the hydrator happy
+     * New function needed to make the hydrator happy.
      *
      * @param Collections\Collection $collection
      */
@@ -346,7 +359,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * New function needed to make the hydrator happy
+     * New function needed to make the hydrator happy.
      *
      * @param Collections\Collection $collection
      */
@@ -358,11 +371,10 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Set input filter
+     * Set input filter.
      *
      * @param InputFilterInterface $inputFilter
      *
-     * @return void
      * @throws \Exception
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -455,7 +467,8 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool $textual
+     * @param bool $textual
+     *
      * @return int
      */
     public function getPublic($textual = false)
@@ -540,7 +553,8 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool   $textual
+     * @param bool $textual
+     *
      * @return string
      */
     public function getTitle($textual = false)
@@ -561,7 +575,8 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool   $textual
+     * @param bool $textual
+     *
      * @return string
      */
     public function getSubtitle($textual = false)
@@ -582,7 +597,8 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool   $textual
+     * @param bool $textual
+     *
      * @return string
      */
     public function getCanSendMessage($textual = false)
@@ -619,7 +635,8 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool       $textual
+     * @param bool $textual
+     *
      * @return string|int
      */
     public function getShowEmail($textual = false)
@@ -640,7 +657,8 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param  bool       $textual
+     * @param bool $textual
+     *
      * @return string|int
      */
     public function getShowPhone($textual = false)

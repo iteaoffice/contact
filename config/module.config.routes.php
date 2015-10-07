@@ -7,30 +7,19 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
  */
+
+use Contact\Controller;
+
 return [
     'router' => [
         'routes' => [
-            'contact_shortcut' => [
-                'type'     => 'Segment',
-                'priority' => -1000,
-                'options'  => [
-                    'route'       => 'c/:id',
-                    'constraints' => [
-                        'id' => '\d+',
-                    ],
-                    'defaults'    => [
-                        'controller' => 'contact',
-                        'action'     => 'contactRedirect',
-                    ],
-                ],
-            ],
-            'assets'           => [
+            'assets'    => [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [
                     'route'    => '/assets/' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test'),
                     'defaults' => [
-                        'controller' => 'contact-index',
+                        'controller' => Controller\ContactController::class,
                     ],
                 ],
                 'may_terminate' => true,
@@ -40,35 +29,27 @@ return [
                         'options' => [
                             'route'    => "/contact-photo/[:id]-[:hash].[:ext]",
                             'defaults' => [
-                                'controller' => 'contact-index',
+                                'controller' => Controller\ContactController::class,
                                 'action'     => 'photo',
                             ],
                         ],
                     ],
                 ],
             ],
-            'contact'          => [
+            'contact'   => [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [
                     'route'    => '/contact',
                     'defaults' => [
                         'namespace'  => 'contact',
-                        'controller' => 'contact-index',
+                        'controller' => Controller\ContactController::class,
                         'action'     => 'index',
                     ],
                 ],
                 'may_terminate' => true,
                 'child_routes'  => [
-                    'signature'           => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/signature.html',
-                            'defaults' => [
-                                'action' => 'signature',
-                            ],
-                        ],
-                    ],
+
                     'photo'               => [
                         'type'    => 'Segment',
                         'options' => [
@@ -78,30 +59,21 @@ return [
                             ],
                         ],
                     ],
-                    'profile'             => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/profile.html',
-                            'defaults' => [
-                                'action' => 'profile',
-                            ],
-                        ],
-                    ],
-                    'profile-edit'        => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/edit/profile.html',
-                            'defaults' => [
-                                'action' => 'profile-edit',
-                            ],
-                        ],
-                    ],
                     'opt-in-update'       => [
                         'type'    => 'Segment',
                         'options' => [
                             'route'    => '/update/opt-in.html',
                             'defaults' => [
                                 'action' => 'opt-in-update',
+                            ],
+                        ],
+                    ],
+                    'has-session'         => [
+                        'type'    => 'Segment',
+                        'options' => [
+                            'route'    => '/has-session.html',
+                            'defaults' => [
+                                'action' => 'has-session',
                             ],
                         ],
                     ],
@@ -125,7 +97,7 @@ return [
                     ],
                 ],
             ],
-            'community'        => [
+            'community' => [
                 'child_routes' => [
                     'contact' => [
                         'type'          => 'Segment',
@@ -134,19 +106,41 @@ return [
                             'route'    => '/contact',
                             'defaults' => [
                                 'namespace'  => 'contact',
-                                'controller' => 'contact-index',
+                                'controller' => Controller\ContactController::class,
                                 'action'     => 'index',
                             ],
                         ],
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'facebook'     => [
+                            'search'    => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/search.html',
+                                    'defaults' => [
+                                        'action' => 'search',
+                                    ],
+                                    'query'    => [
+                                        'search' => null,
+                                        'page'   => null,
+                                    ]
+                                ],
+                            ],
+                            'signature' => [
+                                'type'    => 'Literal',
+                                'options' => [
+                                    'route'    => '/signature.html',
+                                    'defaults' => [
+                                        'action' => 'signature',
+                                    ],
+                                ],
+                            ],
+                            'facebook'  => [
                                 'type'         => 'Segment',
                                 'options'      => [
                                     'route'    => '/facebook',
                                     'defaults' => [
                                         'action'     => 'facebook',
-                                        'controller' => 'contact-facebook',
+                                        'controller' => Controller\FacebookController::class,
                                     ],
                                 ],
                                 'child_routes' => [
@@ -156,8 +150,7 @@ return [
                                         'options'  => [
                                             'route'    => '/[:id].html',
                                             'defaults' => [
-                                                'namespace' => 'contact',
-                                                'action'    => 'facebook',
+                                                'action' => 'facebook',
                                             ],
                                         ],
                                     ],
@@ -167,249 +160,48 @@ return [
                                         'options'  => [
                                             'route'    => '/send-message/[:id].html',
                                             'defaults' => [
-                                                'namespace' => 'contact',
-                                                'action'    => 'send-message',
+                                                'action' => 'send-message',
                                             ],
                                         ],
                                     ],
                                 ],
                             ],
-                            'profile-edit' => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/edit/profile.html',
+                            'profile'   => [
+                                'type'         => 'Segment',
+                                'options'      => [
+                                    'route'    => '/profile',
                                     'defaults' => [
-                                        'action' => 'profile-edit',
+                                        'action'     => 'profile',
+                                        'controller' => Controller\ProfileController::class,
                                     ],
                                 ],
-                            ],
-                            'profile'      => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/profile.html',
-                                    'defaults' => [
-                                        'action' => 'profile',
+                                'child_routes' => [
+                                    'edit'    => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/edit.html',
+                                            'defaults' => [
+                                                'action' => 'edit',
+                                            ],
+                                        ],
                                     ],
-                                ],
-                            ],
-                        ]
-                    ]
-                ]
-            ],
-            'zfcadmin'         => [
-                'type'          => 'Literal',
-                'priority'      => 1000,
-                'options'       => [
-                    'route'    => '/admin',
-                    'defaults' => [
-                        'controller' => 'admin',
-                        'action'     => 'index',
-                    ],
-                ],
-                'may_terminate' => true,
-                'child_routes'  => [
-                    'contact-manager'   => [
-                        'type'          => 'Segment',
-                        'options'       => [
-                            'route'    => '/contact',
-                            'defaults' => [
-                                'controller' => 'contact-manager',
-                                'action'     => 'list',
-                                'page'       => 1,
-                            ],
-                        ],
-                        'may_terminate' => true,
-                        'child_routes'  => [
-                            'list'        => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/list.html',
-                                    'defaults' => [
-                                        'action' => 'list',
+                                    'view'    => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/view.html',
+                                            'defaults' => [
+                                                'action' => 'view',
+                                            ],
+                                        ],
                                     ],
-                                ],
-                                'query'    => [
-                                    'search' => null,
-                                    'page'   => null,
-                                ]
-                            ],
-                            'view'        => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/view/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'view',
-                                    ],
-                                ],
-                            ],
-                            'impersonate' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/impersonate/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'impersonate',
-                                    ],
-                                ],
-                            ],
-                            'edit'        => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/edit/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'edit',
-                                    ],
-                                ],
-                            ],
-                            'permit'      => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/permissions/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'permit',
-                                    ],
-                                ],
-                            ],
-                            'search'      => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/search.html',
-                                    'defaults' => [
-                                        'action' => 'search',
-                                    ],
-                                ],
-                            ],
-                            'statistics'  => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/statistics.html',
-                                    'defaults' => [
-                                        'action' => 'statistics',
-                                    ],
-                                ],
-                            ],
-                            'import'      => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/import.html',
-                                    'defaults' => [
-                                        'action' => 'import',
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                    'selection-manager' => [
-                        'type'          => 'Segment',
-                        'options'       => [
-                            'route'    => '/selection',
-                            'defaults' => [
-                                'controller' => 'contact-selection',
-                                'action'     => 'list',
-                                'page'       => 1,
-                            ],
-                        ],
-                        'may_terminate' => true,
-                        'child_routes'  => [
-                            'list' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/list.html',
-                                    'defaults' => [
-                                        'action' => 'list',
-                                    ],
-                                ],
-                                'query'    => [
-                                    'search' => null,
-                                    'page'   => null,
-                                ]
-                            ],
-                            'new'  => [
-                                'type'     => 'Literal',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/new.html',
-                                    'defaults' => [
-                                        'action' => 'new',
-                                    ],
-                                ],
-                            ],
-                            'view' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/view/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'view',
-                                    ],
-                                ],
-                            ],
-                            'edit' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/edit/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'edit',
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                    'facebook-manager'  => [
-                        'type'          => 'Segment',
-                        'options'       => [
-                            'route'    => '/facebook',
-                            'defaults' => [
-                                'controller' => 'contact-facebook-manager',
-                                'action'     => 'list',
-                                'page'       => 1,
-                            ],
-                        ],
-                        'may_terminate' => true,
-                        'child_routes'  => [
-                            'list' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/list.html',
-                                    'defaults' => [
-                                        'action' => 'list',
-                                    ],
-                                ]
-                            ],
-                            'new'  => [
-                                'type'     => 'Literal',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/new.html',
-                                    'defaults' => [
-                                        'action' => 'new',
-                                    ],
-                                ],
-                            ],
-                            'view' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/view/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'view',
-                                    ],
-                                ],
-                            ],
-                            'edit' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
-                                    'route'    => '/edit/[:id].html',
-                                    'defaults' => [
-                                        'action' => 'edit',
+                                    'contact' => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/contact/[:id]-[:hash].html',
+                                            'defaults' => [
+                                                'action' => 'contact',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],
@@ -417,6 +209,6 @@ return [
                     ],
                 ],
             ],
-        ]
-    ]
+        ],
+    ],
 ];
