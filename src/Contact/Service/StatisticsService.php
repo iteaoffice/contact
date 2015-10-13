@@ -21,8 +21,10 @@ namespace Contact\Service;
  */
 class StatisticsService extends ServiceAbstract
 {
+    /**
+     * @param $filter
+     */
     public function setFilter($filter)
     {
-        var_dump($filter);
     }
 }

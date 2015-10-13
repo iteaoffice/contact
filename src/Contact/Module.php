@@ -100,12 +100,10 @@ class Module implements
     {
         $app = $e->getParam('application');
         $em = $app->getEventManager();
-        $em->attach(
-            MvcEvent::EVENT_DISPATCH,
-            function (MvcEvent $event) {
-                $event->getApplication()->getServiceManager()->get('contact_contact_navigation_service')->update();
-            }
-        );
+        $em->attach(MvcEvent::EVENT_DISPATCH, function (MvcEvent $event) {
+            $event->getApplication()->getServiceManager()
+                ->get('contact_contact_navigation_service')->update();
+        });
     }
 
     /**
@@ -138,6 +136,8 @@ class Module implements
      */
     public function getConsoleBanner(AdapterInterface $console)
     {
-        return 'debranova/contact ' . Version::VERSION . ' console application - powered by Zend Framework ' . \Zend\Version\Version::VERSION;
+        return 'debranova/contact ' . Version::VERSION
+        . ' console application - powered by Zend Framework '
+        . \Zend\Version\Version::VERSION;
     }
 }

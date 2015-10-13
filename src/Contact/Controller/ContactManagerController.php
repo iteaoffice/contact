@@ -72,49 +72,6 @@ class ContactManagerController extends ContactAbstractController
     }
 
     /**
-     * @return ViewModel
-     */
-    public function statisticsAction()
-    {
-        $filter = $this->getRequest()->getQuery()->get('filter', []);
-        /*
-         * @var StatisticsService
-         */
-        $statisticsService = $this->getServiceLocator()->get(StatisticsService::class);
-
-        $form = new Statistics();
-        $form->setData($_GET);
-
-        $contacts = [];
-        if ($this->getRequest()->isGet() && $form->isValid()) {
-            $statisticsService->setFilter($form->getData());
-//            $contacts = $statisticsService->getContacts();
-        }
-
-        return new ViewModel(['form' => $form, 'contacts' => $contacts]);
-    }
-
-    /**
-     * @return ViewModel
-     */
-    public function importAction()
-    {
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray(),
-            $this->getRequest()->getFiles()->toArray()
-        );
-        $form = new Import();
-        $form->setData($data);
-
-        $handleImport = null;
-        if ($this->getRequest()->isPost() && $form->isValid()) {
-            $handleImport = $this->handleImport(file_get_contents($data['file']['tmp_name']));
-        }
-
-        return new ViewModel(['form' => $form, 'handleImport' => $handleImport]);
-    }
-
-    /**
      * @return JsonModel
      */
     public function searchAction()

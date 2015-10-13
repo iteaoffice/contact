@@ -202,8 +202,6 @@ class ContactAdminController extends ContactAbstractController implements Projec
                     'zfcadmin/contact-admin/view',
                     ['id' => $contactService->getContact()->getId()]
                 );
-            } else {
-                var_dump($form->getInputFilter()->getMessages());
             }
         }
 
@@ -232,7 +230,6 @@ class ContactAdminController extends ContactAbstractController implements Projec
         $contacts = [];
         if ($this->getRequest()->isGet() && $form->isValid()) {
             $statisticsService->setFilter($form->getData());
-//            $contacts = $statisticsService->getContacts();
         }
 
         return new ViewModel(['form' => $form, 'contacts' => $contacts]);

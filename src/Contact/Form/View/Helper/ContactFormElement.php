@@ -269,7 +269,7 @@ class ContactFormElement extends ZendFormElement
          * Disable by default the inArrayValidator
          */
         $element->setDisableInArrayValidator(true);
-        $renderer = $elementHelper->getView();
+        $elementHelper->getView();
 
         $id = $element->getAttribute('id') ?: $element->getAttribute('name');
         $element->setAttribute('class', 'form-control');

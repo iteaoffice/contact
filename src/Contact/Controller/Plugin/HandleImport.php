@@ -71,8 +71,6 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
         if (!$this->hasErrors()) {
             $this->importContent();
         }
-
-        var_dump($this->contacts);
     }
 
     /**
@@ -150,7 +148,8 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
         /*
          * Go over the rest of the data and add the rows to the array
          */
-        for ($i = 1; $i < sizeof($data); $i++) {
+        $amount = sizeof($data);
+        for ($i = 1; $i < $amount; $i++) {
             $row = explode($this->delimiter, $data[$i]);
 
             if (sizeof($row) === sizeof($this->header)) {
