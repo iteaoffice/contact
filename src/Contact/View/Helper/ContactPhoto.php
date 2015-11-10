@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\View\Helper;
@@ -29,9 +29,25 @@ class ContactPhoto extends ImageAbstract
      *
      * @return string
      */
-    public function __invoke(Contact $contact, $height = null, $responsive = true, $classes = null)
-    {
-        /*
+    public function __invoke(
+        Contact $contact,
+        $height = null,
+        $responsive = true,
+        $classes = null
+    ) {
+        if (is_null($contact->getPhoto())) {
+            return sprintf(
+                '<img src="assets/' . DEBRANOVA_HOST
+                . '/style/image/anonymous.jpg" class="%s" %s>',
+                !($responsive && is_null($height)) ?: implode(
+                    ' ',
+                    ['img-responsive']
+                ),
+                is_null($height) ?: 'height="' . $height . '"'
+            );
+        }
+
+        /**
          * @var Photo
          */
         $photo = $contact->getPhoto()->first();
@@ -52,9 +68,13 @@ class ContactPhoto extends ImageAbstract
          */
         if (!$photo || is_null($photo->getId())) {
             return sprintf(
-                '<img src="assets/'.DEBRANOVA_HOST.'/style/image/anonymous.jpg" class="%s" %s>',
-                !($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
-                is_null($height) ?: 'height="'.$height.'"'
+                '<img src="assets/' . DEBRANOVA_HOST
+                . '/style/image/anonymous.jpg" class="%s" %s>',
+                !($responsive && is_null($height)) ?: implode(
+                    ' ',
+                    ['img-responsive']
+                ),
+                is_null($height) ?: 'height="' . $height . '"'
             );
         }
 

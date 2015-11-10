@@ -1,3 +1,6 @@
+{% do headTitle().append(translate("admin")) %}
+{% do headTitle().append(translate("txt-impersonate-user-%s")|format(contactService.parseFullname())) %}
+
 <h1>{{ translate("txt-impersonate-user-%s")|format(contactService.parseFullname()) }}</h1>
 <p class="lead">{{ translate("txt-select-a-target-and-press-submit-to-get-the-deeplinks") }}</p>
 

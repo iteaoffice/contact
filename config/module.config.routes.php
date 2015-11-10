@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
+ * @copyright   Copyright (c] 2004-2015 ITEA Office (https://itea3.org]
  */
 
 use Contact\Controller;
@@ -17,7 +17,8 @@ return [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [
-                    'route'    => '/assets/' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test'),
+                    'route'    => '/assets/' . (defined("DEBRANOVA_HOST")
+                            ? DEBRANOVA_HOST : 'test'),
                     'defaults' => [
                         'controller' => Controller\ContactController::class,
                     ],

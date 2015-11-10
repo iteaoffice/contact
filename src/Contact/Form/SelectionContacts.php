@@ -36,6 +36,26 @@ class SelectionContacts extends Form
         $this->setAttribute('action', '');
         $this->setAttribute("onsubmit", "return storeChanges();");
 
+        $selections = [];
+        foreach ($selectionService->findAll('selection') as $selection) {
+            $selections[$selection->getId()] = $selection->getSelection();
+        }
+
+        asort($selections);
+
+        $this->add([
+            'type'       => 'Zend\Form\Element\Select',
+            'name'       => 'selection',
+            'options'    => [
+                'inline'        => true,
+                'value_options' => $selections
+            ],
+            'attributes' => [
+                'id'    => 'selection',
+                'class' => 'form-control',
+            ],
+        ]);
+
         $this->add(
             [
                 'type'       => 'Zend\Form\Element\Hidden',

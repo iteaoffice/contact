@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Navigation\Service;
@@ -84,7 +84,7 @@ class ContactNavigationService extends NavigationServiceAbstract
      */
     public function includeFacebooksInNavigation()
     {
-        $communityNavigation = $this->getNavigation()->findOneBy('route', 'community/contact');
+        $communityNavigation = $this->getNavigation()->findOneBy('id', 'community/contact');
 
         if (is_null($communityNavigation)) {
             throw new \InvalidArgumentException(sprintf("The route with id %s cannot be found", 'community/contact'));

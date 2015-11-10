@@ -7,10 +7,10 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   2004-2014 ITEA Office
- * @license     http://debranova.org/license.txt proprietary
+ * @copyright   2004-2015 ITEA Office
+ * @license     https://itea3.org/license.txt proprietary
  *
- * @link        http://debranova.org
+ * @link        https://itea3.org
  */
 
 namespace Contact\Form;
@@ -26,9 +26,9 @@ use Zend\Validator\File\Size;
  * @category   Contact
  *
  * @author     Johan van der Heide <johan.van.der.heide@itea3.org>
- * @license    http://debranova.org/licence.txt proprietary
+ * @license    https://itea3.org/licence.txt proprietary
  *
- * @link       http://debranova.org
+ * @link       https://itea3.org
  */
 class Import extends Form implements InputFilterProviderInterface
 {

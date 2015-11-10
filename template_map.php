@@ -23,7 +23,6 @@ return array(
     'contact/facebook/send-message'           => __DIR__ . '//view/contact/facebook/send-message.twig',
     'contact/facebook/facebook'               => __DIR__ . '//view/contact/facebook/facebook.twig',
     'contact/contact-admin/statistics'        => __DIR__ . '//view/contact/contact-admin/statistics.twig',
-    'contact/contact-admin/new'               => __DIR__ . '//view/contact/contact-admin/new.twig',
     'contact/contact-admin/list'              => __DIR__ . '//view/contact/contact-admin/list.twig',
     'contact/contact-admin/impersonate'       => __DIR__ . '//view/contact/contact-admin/impersonate.twig',
     'contact/contact-admin/view'              => __DIR__ . '//view/contact/contact-admin/view.twig',

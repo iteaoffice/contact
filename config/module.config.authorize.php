@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
+ * @copyright   Copyright (c] 2004-2015 ITEA Office (https://itea3.org]
  */
 use Admin\Entity\Access;
 use Contact\Acl\Assertion\Address as AddressAssertion;
@@ -169,6 +169,10 @@ return [
                 ],
                 [
                     'route' => 'zfcadmin/selection-manager/edit-contacts',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/get-contacts',
                     'roles' => [strtolower(Access::ACCESS_OFFICE)]
                 ],
                 [

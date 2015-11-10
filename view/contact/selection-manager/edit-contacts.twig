@@ -42,6 +42,15 @@
             <h2>{{ translate("txt-choose-contacts") }}</h2>
 
             <div class="input-group">
+                {{ formelement(form.get('selection'),"%s%s%s") }}
+                <span class="input-group-btn">
+        <input type="button" class="btn btn-primary" onclick="selectionSearch(document.getElementById('selection').value)"
+               value="GET">
+      </span>
+            </div>
+            <br>
+
+            <div class="input-group">
                 <input type="text" id="searchstring" class="form-control">
             <span class="input-group-btn">
         <input type="button" class="btn btn-primary" onclick="wildSearch(document.getElementById('searchstring').value)"
@@ -290,6 +299,10 @@
         getContacts(id);
     }
 
+    function selectionSearch(id) {
+        getContactsFromSelection(id);
+    }
+
     function storeChanges() {
         document.getElementById('added').value = Selection.getAddList();
         document.getElementById('removed').value = Selection.getRemoveList();
@@ -305,6 +318,34 @@
             dataType: 'json',
             data: {
                 search: q
+            },
+            success: function (result, status) {
+                Contacts.items.length = 0;
+                for (var i = 0; i < result.length; i++) {
+                    Contacts.Add(
+                            result[i].id,
+                            result[i].name,
+                            result[i].email,
+                            result[i].organisation
+                    );
+                }
+                Contacts.Render();
+            }
+        });
+    }
+
+    /**
+     * Load the contacts based on a search action
+     * @param q
+     */
+    function getContactsFromSelection(q) {
+
+        $.ajax({
+            method: 'post',
+            url: '{{ url('zfcadmin/selection-manager/get-contacts') }}',
+            dataType: 'json',
+            data: {
+                id: q
             },
             success: function (result, status) {
                 Contacts.items.length = 0;
