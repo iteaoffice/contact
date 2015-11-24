@@ -57,13 +57,13 @@ class ContactController extends ContactAbstractController implements
          */
         $photo = $this->getContactService()->findEntityById(
             'photo',
-            $this->getEvent()->getRouteMatch()->getParam('id')
+            $this->params('id')
         );
 
         /*
          * Do a check if the given has is correct to avoid guessing the image
          */
-        if (is_null($photo) || is_null($photo->getPhoto()) || $this->getEvent()->getRouteMatch()->getParam('hash')
+        if (is_null($photo) || is_null($photo->getPhoto()) || $this->params('hash')
             !== $photo->getHash()
         ) {
             return $this->notFoundAction();

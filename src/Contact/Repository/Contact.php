@@ -58,8 +58,8 @@ class Contact extends EntityRepository
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
         $queryBuilder->from('Contact\Entity\Contact', 'c');
-        $queryBuilder->join('c.contactOrganisation', 'co');
-        $queryBuilder->join('co.organisation', 'o');
+        $queryBuilder->leftJoin('c.contactOrganisation', 'co');
+        $queryBuilder->leftJoin('co.organisation', 'o');
 
 
         if (array_key_exists('search', $filter)) {

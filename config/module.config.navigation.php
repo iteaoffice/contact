@@ -17,6 +17,15 @@ return [
                 'id'    => 'community/contact',
                 'uri'   => '#',
             ],
+            'project' => [
+                'pages' => [
+                    'partner-search' => [
+                        'order' => 60,
+                        'label' => _("txt-partner-search"),
+                        'route' => 'community/contact/search'
+                    ]
+                ],
+            ],
             'idea'    => [
                 'pages' => [
                     'partner-search' => [

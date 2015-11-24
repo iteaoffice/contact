@@ -58,13 +58,10 @@ class ContactNavigationService extends NavigationServiceAbstract
                 $communityNavigation = $this->getNavigation()->findOneBy('route', 'community/contact/search');
 
                 //Find the contact
-                $contact = $this->getContactService()->findEntityById(
-                    'contact',
-                    $this->getRouteMatch()->getParam('id')
-                );
+                $contact = $this->getContactService()
+                    ->findEntityById('contact', $this->getRouteMatch()->getParam('id'));
 
-                $communityNavigation->addPage(
-                    [
+                $communityNavigation->addPage([
                         'label'  => sprintf($this->translate("txt-profile-of-%s"), $contact->getDisplayName()),
                         'route'  => 'community/contact/profile/contact',
                         'active' => true,
@@ -73,8 +70,7 @@ class ContactNavigationService extends NavigationServiceAbstract
                             'id'   => $contact->getId(),
                             'hash' => $contact->parseHash()
                         ]
-                    ]
-                );
+                    ]);
                 break;
         }
     }
@@ -87,7 +83,7 @@ class ContactNavigationService extends NavigationServiceAbstract
         $communityNavigation = $this->getNavigation()->findOneBy('id', 'community/contact');
 
         if (is_null($communityNavigation)) {
-            throw new \InvalidArgumentException(sprintf("The route with id %s cannot be found", 'community/contact'));
+            return null;
         }
 
         /*

@@ -29,7 +29,7 @@ class ContactManagerController extends ContactAbstractController
      */
     public function permitAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+        $contactService = $this->getContactService()->setContactId($this->params('id'));
 
         $this->getAdminService()->findPermitContactByContact($contactService->getContact());
 
@@ -49,7 +49,7 @@ class ContactManagerController extends ContactAbstractController
             $this->getRequest()->getPost()->toArray()
         );
 
-        $contactService = $this->getContactService()->setContactId($this->getEvent()->getRouteMatch()->getParam('id'));
+        $contactService = $this->getContactService()->setContactId($this->params('id'));
         $form = $this->getServiceLocator()->get('contact_impersonate_form');
         $form->setData($data);
         $deeplink = false;

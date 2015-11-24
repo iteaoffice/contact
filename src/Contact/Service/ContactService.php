@@ -1311,6 +1311,8 @@ class ContactService extends ServiceAbstract
         $contacts = [];
         $contactRole = [];
 
+
+
         /*
          * Add the technical contact
          */
