@@ -21,6 +21,7 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Organisation\Service\OrganisationServiceAwareInterface;
 use Project\Service\ProjectServiceAwareInterface;
 use Zend\Paginator\Paginator;
+use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -38,10 +39,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
     {
         $page = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
-        $contactQuery = $this->getContactService()->findEntitiesFiltered(
-            'contact',
-            $filterPlugin->getFilter()
-        );
+        $contactQuery = $this->getContactService()->findEntitiesFiltered('contact', $filterPlugin->getFilter());
 
         $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
@@ -75,15 +73,13 @@ class ContactAdminController extends ContactAbstractController implements Projec
             return $this->notFoundAction();
         }
 
-        return new ViewModel(
-            [
-                'contactService' => $contactService,
-                'selections'     => $selections,
-                'projects'       => $this->getProjectService()->findProjectParticipationByContact($contact),
-                'projectService' => $this->getProjectService(),
-                'optIn'          => $optIn,
-            ]
-        );
+        return new ViewModel([
+            'contactService' => $contactService,
+            'selections'     => $selections,
+            'projects'       => $this->getProjectService()->findProjectParticipationByContact($contact),
+            'projectService' => $this->getProjectService(),
+            'optIn'          => $optIn,
+        ]);
     }
 
     public function permitAction()
@@ -92,11 +88,9 @@ class ContactAdminController extends ContactAbstractController implements Projec
 
         $this->getAdminService()->findPermitContactByContact($contactService->getContact());
 
-        return new ViewModel(
-            [
-                'contactService' => $contactService,
-            ]
-        );
+        return new ViewModel([
+            'contactService' => $contactService,
+        ]);
     }
 
     /**
@@ -107,9 +101,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
         $contactService = $this->getContactService()->setContactId($this->params('id'));
         $form = $this->getServiceLocator()->get('contact_impersonate_form');
 
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray()
-        );
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
         $form->setData($data);
         $deeplink = false;
@@ -122,13 +114,11 @@ class ContactAdminController extends ContactAbstractController implements Projec
             $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contactService->getContact(), null, $key);
         }
 
-        return new ViewModel(
-            [
-                'deeplink'       => $deeplink,
-                'contactService' => $contactService,
-                'form'           => $form,
-            ]
-        );
+        return new ViewModel([
+            'deeplink'       => $deeplink,
+            'contactService' => $contactService,
+            'form'           => $form,
+        ]);
     }
 
     /**
@@ -140,42 +130,31 @@ class ContactAdminController extends ContactAbstractController implements Projec
 
         //Get contacts in an organisation
         if ($contactService->hasOrganisation()) {
-            $data = array_merge(
-                [
-                    'organisation' => $contactService->getContact()->getContactOrganisation()->getOrganisation()->getId(),
-                    'branch'       => $contactService->getContact()->getContactOrganisation()->getBranch()
-                ],
-                $this->getRequest()->getPost()->toArray()
-            );
+            $data = array_merge([
+                'organisation' => $contactService->getContact()->getContactOrganisation()->getOrganisation()->getId(),
+                'branch'       => $contactService->getContact()->getContactOrganisation()->getBranch()
+            ], $this->getRequest()->getPost()->toArray());
 
-            $form = $this->getFormService()->prepare(
-                $contactService->getContact(),
-                $contactService->getContact(),
-                $data
-            );
+            $form = $this->getFormService()
+                ->prepare($contactService->getContact(), $contactService->getContact(), $data);
 
 
             $form->get('organisation')->setValueOptions([
-                $contactService->getContact()->getContactOrganisation()->getOrganisation()->getId() => $contactService->getContact()->getContactOrganisation()->getOrganisation()->getOrganisation()
+                $contactService->getContact()->getContactOrganisation()->getOrganisation()
+                    ->getId() => $contactService->getContact()->getContactOrganisation()->getOrganisation()
+                    ->getOrganisation()
             ]);
         } else {
-            $data = array_merge(
-                $this->getRequest()->getPost()->toArray()
-            );
-            $form = $this->getFormService()->prepare(
-                $contactService->getContact(),
-                $contactService->getContact(),
-                $data
-            );
+            $data = array_merge($this->getRequest()->getPost()->toArray());
+            $form = $this->getFormService()
+                ->prepare($contactService->getContact(), $contactService->getContact(), $data);
         }
 
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
-                return $this->redirect()->toRoute(
-                    'zfcadmin/contact-admin/view',
-                    ['id' => $contactService->getContact()->getId()]
-                );
+                return $this->redirect()
+                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
             }
 
             if ($form->isValid()) {
@@ -194,23 +173,20 @@ class ContactAdminController extends ContactAbstractController implements Projec
                 }
 
                 $contactOrganisation->setBranch(strlen($data['branch']) === 0 ? null : $data['branch']);
-                $contactOrganisation->setOrganisation($this->getOrganisationService()->setOrganisationId($data['organisation'])->getOrganisation());
+                $contactOrganisation->setOrganisation($this->getOrganisationService()
+                    ->setOrganisationId($data['organisation'])->getOrganisation());
 
                 $this->getContactService()->updateEntity($contactOrganisation);
 
-                return $this->redirect()->toRoute(
-                    'zfcadmin/contact-admin/view',
-                    ['id' => $contactService->getContact()->getId()]
-                );
+                return $this->redirect()
+                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
             }
         }
 
-        return new ViewModel(
-            [
-                'contactService' => $contactService,
-                'form'           => $form,
-            ]
-        );
+        return new ViewModel([
+            'contactService' => $contactService,
+            'form'           => $form,
+        ]);
     }
 
     /**
@@ -244,12 +220,38 @@ class ContactAdminController extends ContactAbstractController implements Projec
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
         );
-        $form = new Import();
+        $form = new Import($this->getContactService(), $this->getSelectionService());
         $form->setData($data);
 
+        /** store the data in the session, so we can use it when we really handle the import */
+        $importSession = new Container('import');
+
         $handleImport = null;
-        if ($this->getRequest()->isPost() && $form->isValid()) {
-            $handleImport = $this->handleImport(file_get_contents($data['file']['tmp_name']));
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['upload']) && $form->isValid()) {
+                $fileData = file_get_contents($data['file']['tmp_name'], FILE_TEXT);
+
+                $importSession->active = true;
+                $importSession->fileData = $fileData;
+
+                $handleImport = $this->handleImport(
+                    $fileData,
+                    null,
+                    isset($data['optIn']) ? $data['optIn'] : [],
+                    $data['selection_id'],
+                    $data['selection']
+                );
+            }
+
+            if (isset($data['import']) && $importSession->active && isset($data['key'])) {
+                $handleImport = $this->handleImport(
+                    $importSession->fileData,
+                    $data['key'],
+                    isset($data['optIn']) ? $data['optIn'] : [],
+                    $data['selection_id'],
+                    $data['selection']
+                );
+            }
         }
 
         return new ViewModel(['form' => $form, 'handleImport' => $handleImport]);
@@ -264,14 +266,16 @@ class ContactAdminController extends ContactAbstractController implements Projec
 
         $results = [];
         foreach ($this->getContactService()->searchContacts($search) as $result) {
-            $text = trim(
-                sprintf(
-                    "%s, %s (%s)",
-                    trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
-                    $result['firstName'],
-                    $result['email']
-                )
-            );
+            $text = trim(sprintf(
+                "%s, %s (%s)",
+                trim(sprintf(
+                    "%s %s",
+                    $result['middleName'],
+                    $result['lastName']
+                )),
+                $result['firstName'],
+                $result['email']
+            ));
 
             /*
              * Do a fall-back to the email when the name is empty
@@ -285,7 +289,11 @@ class ContactAdminController extends ContactAbstractController implements Projec
                 'text'         => $text,
                 'name'         => sprintf(
                     "%s, %s",
-                    trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
+                    trim(sprintf(
+                        "%s %s",
+                        $result['middleName'],
+                        $result['lastName']
+                    )),
                     $result['firstName']
                 ),
                 'id'           => $result['id'],

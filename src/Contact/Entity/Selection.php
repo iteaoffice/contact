@@ -192,6 +192,9 @@ class Selection extends EntityAbstract
      */
     public function __construct()
     {
+        $this->private = self::NOT_PRIVATE;
+        $this->personal = self::NOT_PERSONAL;
+
         $this->selectionContact = new Collections\ArrayCollection();
         $this->mailingList = new Collections\ArrayCollection();
         $this->mailing = new Collections\ArrayCollection();

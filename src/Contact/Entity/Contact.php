@@ -1815,7 +1815,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return OptIn|Collections\ArrayCollection
+     * @return OptIn[]|Collections\ArrayCollection
      */
     public function getOptIn()
     {
@@ -1823,7 +1823,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  OptIn|Collections\ArrayCollection $optIn
+     * @param  OptIn[]|Collections\ArrayCollection $optIn
      *
      * @return Contact
      */
@@ -2598,7 +2598,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Selection|Collections\ArrayCollection
+     * @return Selection[]|Collections\ArrayCollection
      */
     public function getSelection()
     {
@@ -2606,7 +2606,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  Selection|Collections\ArrayCollection $selection
+     * @param  Selection[]|Collections\ArrayCollection $selection
      *
      * @return Contact
      */

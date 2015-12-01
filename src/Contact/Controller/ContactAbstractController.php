@@ -39,7 +39,7 @@ use Contact\Controller\Plugin\HandleImport;
  * @method ZfcUserAuthentication zfcUserAuthentication()
  * @method FlashMessenger flashMessenger()
  * @method IsAllowed isAllowed($resource, $action)
- * @method HandleImport handleImport()
+ * @method HandleImport handleImport($data, $import, $optIn, $selectionId, $selectionName)
  * @method GetFilter getContactFilter()
  */
 abstract class ContactAbstractController extends AbstractActionController implements
