@@ -12,6 +12,7 @@ namespace Contact;
 use Contact\Acl\Assertion;
 use Contact\Form\View\Helper\ContactFormElement;
 use Contact\Service;
+use Contact\Search;
 use Contact\View\Helper;
 use Zend\Stdlib\ArrayUtils;
 
@@ -67,27 +68,28 @@ $config = [
             'Contact\Provider\Identity\AuthenticationIdentityProvider' => 'Contact\Factory\AuthenticationIdentityProviderServiceFactory',
         ],
         'invokables'   => [
-            Assertion\Contact::class         => Assertion\Contact::class,
-            Assertion\Facebook::class        => Assertion\Facebook::class,
-            Assertion\Address::class         => Assertion\Address::class,
-            Assertion\Note::class            => Assertion\Note::class,
-            Assertion\Phone::class           => Assertion\Phone::class,
-            Assertion\Selection::class       => Assertion\Selection::class,
-            Service\SelectionService::class  => Service\SelectionService::class,
-            Service\StatisticsService::class => Service\StatisticsService::class,
-            Service\ContactService::class    => Service\ContactService::class,
-            Service\AddressService::class    => Service\AddressService::class,
-            'contact_contact_service'        => 'Contact\Service\ContactService',
-            'contact_address_service'        => 'Contact\Service\AddressService',
-            'contact_form_service'           => 'Contact\Service\FormService',
-            'contact_contact_form_filter'    => 'Contact\Form\FilterContact',
-            'contact_facebook_form_filter'   => 'Contact\Form\FilterCreateObject',
-            'contact_address_form_filter'    => 'Contact\Form\FilterCreateObject',
-            'contact_note_form_filter'       => 'Contact\Form\FilterCreateObject',
-            'contact_phone_form_filter'      => 'Contact\Form\FilterCreateObject',
-            'contact_selection_form_filter'  => 'Contact\Form\FilterCreateObject',
-            'contact_password_form'          => 'Contact\Form\Password',
-            'contact_password_form_filter'   => 'Contact\Form\PasswordFilter',
+            Assertion\Contact::class            => Assertion\Contact::class,
+            Assertion\Facebook::class           => Assertion\Facebook::class,
+            Assertion\Address::class            => Assertion\Address::class,
+            Assertion\Note::class               => Assertion\Note::class,
+            Assertion\Phone::class              => Assertion\Phone::class,
+            Assertion\Selection::class          => Assertion\Selection::class,
+            Service\SelectionService::class     => Service\SelectionService::class,
+            Service\StatisticsService::class    => Service\StatisticsService::class,
+            Service\ContactService::class       => Service\ContactService::class,
+            Service\AddressService::class       => Service\AddressService::class,
+            Search\ContactSearchService::class  => Search\ContactSearchService::class,
+            'contact_contact_service'           => 'Contact\Service\ContactService',
+            'contact_address_service'           => 'Contact\Service\AddressService',
+            'contact_form_service'              => 'Contact\Service\FormService',
+            'contact_contact_form_filter'       => 'Contact\Form\FilterContact',
+            'contact_facebook_form_filter'      => 'Contact\Form\FilterCreateObject',
+            'contact_address_form_filter'       => 'Contact\Form\FilterCreateObject',
+            'contact_note_form_filter'          => 'Contact\Form\FilterCreateObject',
+            'contact_phone_form_filter'         => 'Contact\Form\FilterCreateObject',
+            'contact_selection_form_filter'     => 'Contact\Form\FilterCreateObject',
+            'contact_password_form'             => 'Contact\Form\Password',
+            'contact_password_form_filter'      => 'Contact\Form\PasswordFilter',
         ]
     ],
     'doctrine'        => [
@@ -123,6 +125,7 @@ $configFiles = [
     __DIR__ . '/module.config.authorize.php',
     __DIR__ . '/module.config.community.php',
     __DIR__ . '/module.config.contact.php',
+    __DIR__ . '/module.config.search.php',
 ];
 foreach ($configFiles as $configFile) {
     $config = ArrayUtils::merge($config, include $configFile);

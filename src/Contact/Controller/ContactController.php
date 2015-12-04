@@ -21,6 +21,7 @@ use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
+use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
  * @category    Contact
@@ -252,7 +253,10 @@ class ContactController extends ContactAbstractController implements
                         $quotedValues[] = sprintf("\"%s\"", $value);
                     }
 
-                    $this->getSearchService()->addFilterQuery($facetField, implode(" OR ", $quotedValues));
+                    $this->getSearchService()->addFilterQuery(
+                        $facetField, 
+                        implode(' '.SolariumQuery::QUERY_OPERATOR_OR.' ', $quotedValues)
+                    );
                 }
             }
 
@@ -264,15 +268,11 @@ class ContactController extends ContactAbstractController implements
             $form->setData($this->getRequest()->getQuery()->toArray());
         }
 
-
-
         $page = $this->getRequest()->getQuery()->get('page', 1);
         $paginator = new Paginator(new SolariumPaginator($client, $this->getSearchService()->getQuery()));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 16);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
-
-
 
         //Create the search-result as url-field (without the page)
         $params = $this->getRequest()->getQuery()->toArray();

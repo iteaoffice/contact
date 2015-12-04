@@ -32,6 +32,8 @@ use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 use Contact\Controller\Plugin\GetFilter;
 use Contact\Controller\Plugin\HandleImport;
+use Contact\Search\ContactSearchServiceAwareInterface;
+use Contact\Search\ContactSearchService;
 
 /**
  * @category    Contact
@@ -48,7 +50,8 @@ abstract class ContactAbstractController extends AbstractActionController implem
     FormServiceAwareInterface,
     ContactServiceAwareInterface,
     DeeplinkServiceAwareInterface,
-    GeneralServiceAwareInterface
+    GeneralServiceAwareInterface,
+    ContactSearchServiceAwareInterface
 {
     /**
      * @var AdminService
@@ -90,6 +93,10 @@ abstract class ContactAbstractController extends AbstractActionController implem
      * @var FormService
      */
     protected $formService;
+    /**
+     * @var ContactSearchService
+     */
+    protected $contactSearchService;
 
     /**
      * Gateway to the Contact Service.
@@ -305,6 +312,26 @@ abstract class ContactAbstractController extends AbstractActionController implem
     public function setProjectService(ProjectService $projectService)
     {
         $this->projectService = $projectService;
+
+        return $this;
+    }
+    
+    /**
+     * @return ContactSearchService
+     */
+    public function getContactSearchService()
+    {
+        return $this->contactSearchService;
+    }
+
+    /**
+     * @param ContactSearchService $contactSearchService
+     *
+     * @return ContactAbstractController
+     */
+    public function setContactSearchService(ContactSearchService $contactSearchService)
+    {
+        $this->contactSearchService = $contactSearchService;
 
         return $this;
     }
