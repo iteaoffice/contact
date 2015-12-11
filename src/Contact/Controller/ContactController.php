@@ -236,55 +236,49 @@ class ContactController extends ContactAbstractController implements
      */
     public function searchAction()
     {
-        $client = $this->getSearchService()->getSolrClient('contact');
+        $searchService = $this->getContactSearchService();
+        $page = $this->params('page', 1);
         $form = new SearchResult();
+        $data = array_merge(['query' => '*', 'facet' => []], $this->getRequest()->getQuery()->toArray());
+        
         if ($this->getRequest()->isGet()) {
-            //Only produce an isValid as we don't care about the result
-            if (is_null($query = $this->getRequest()->getQuery()->get('query'))) {
-                $query = '*';
-            }
-
-            $this->getSearchService()->facetSearchContact($query);
-
-            if (is_array($facet = $this->getRequest()->getQuery()->get('facet'))) {
-                foreach ($facet as $facetField => $values) {
+            $searchService->setSearch($data['query']);
+            if (isset($data['facet'])) {
+                foreach ($data['facet'] as $facetField => $values) {
                     $quotedValues = [];
                     foreach ($values as $value) {
                         $quotedValues[] = sprintf("\"%s\"", $value);
                     }
 
-                    $this->getSearchService()->addFilterQuery(
-                        $facetField, 
+                    $searchService->addFilterQuery(
+                        $facetField,
                         implode(' '.SolariumQuery::QUERY_OPERATOR_OR.' ', $quotedValues)
                     );
                 }
             }
 
             $form->addSearchResults(
-                $this->getSearchService()->getFacetSet(),
-                $this->getSearchService()->getResultSet()->getFacetSet()
+                $searchService->getQuery()->getFacetSet(),
+                $searchService->getResultSet()->getFacetSet()
             );
-
-            $form->setData($this->getRequest()->getQuery()->toArray());
+            $form->setData($data);
         }
-
-        $page = $this->getRequest()->getQuery()->get('page', 1);
-        $paginator = new Paginator(new SolariumPaginator($client, $this->getSearchService()->getQuery()));
+        
+        $paginator = new Paginator(new SolariumPaginator(
+            $searchService->getSolrClient(),
+            $searchService->getQuery()
+        ));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 16);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
-
-        //Create the search-result as url-field (without the page)
-        $params = $this->getRequest()->getQuery()->toArray();
-        unset($params['page']);
-
+        
         return new ViewModel([
             'form'                   => $form,
             'paginator'              => $paginator,
-            'queryParams'            => http_build_query($params),
+            'queryParams'            => http_build_query($data),
             'routeName'              => $this->getEvent()->getRouteMatch()->getMatchedRouteName(),
             'params'                 => $this->getEvent()->getRouteMatch()->getParams(),
-            'currentPage'            => $this->getRequest()->getQuery()->get('page', 1),
+            'currentPage'            => $page,
             'lastPage'               => $paginator->getPageRange(),
             'showAlwaysFirstAndLast' => true,
         ]);
