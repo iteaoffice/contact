@@ -13,8 +13,8 @@
 
 namespace Contact\Controller;
 
-use Contact\Service;
 use Contact\Search;
+use Contact\Service;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -33,8 +33,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class ControllerInitializer implements InitializerInterface
 {
     /**
-     * @param                                           $instance
+     * @param string                                    $instance
      * @param ServiceLocatorInterface|ControllerManager $controllerManager
+     *
+     * @return void
      */
     public function initialize($instance, ServiceLocatorInterface $controllerManager)
     {

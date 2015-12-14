@@ -13,6 +13,7 @@
 
 namespace Contact\Service;
 
+use Contact\Search;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -46,9 +47,10 @@ class ServiceInitializer implements InitializerInterface
             $instance->setServiceLocator($serviceLocator);
         }
         $arrayCheck = [
-            SelectionServiceAwareInterface::class  => SelectionService::class,
-            AddressServiceAwareInterface::class => 'contact_address_service',
-            ContactServiceAwareInterface::class => 'contact_contact_service',
+            SelectionServiceAwareInterface::class            => SelectionService::class,
+            AddressServiceAwareInterface::class              => 'contact_address_service',
+            ContactServiceAwareInterface::class              => 'contact_contact_service',
+            Search\ContactSearchServiceAwareInterface::class => Search\ContactServiceAwareInterface::class,
         ];
         /*
          * Go over each interface to see if we should add an interface

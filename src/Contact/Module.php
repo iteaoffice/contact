@@ -101,8 +101,7 @@ class Module implements
         $app = $e->getParam('application');
         $em = $app->getEventManager();
         $em->attach(MvcEvent::EVENT_DISPATCH, function (MvcEvent $event) {
-            $event->getApplication()->getServiceManager()
-                ->get('contact_contact_navigation_service')->update();
+            $event->getApplication()->getServiceManager()->get('contact_contact_navigation_service')->update();
         });
     }
 
@@ -115,10 +114,6 @@ class Module implements
     {
         return [
             'Contact management',
-            // Describe available commands
-            'partner-search reset'  => 'Reset the partner search (wipe and rebuilt index)',
-            'partner-search update' => 'Update the Partner search',
-
         ];
     }
 
@@ -136,8 +131,7 @@ class Module implements
      */
     public function getConsoleBanner(AdapterInterface $console)
     {
-        return 'debranova/contact ' . Version::VERSION
-        . ' console application - powered by Zend Framework '
+        return 'iteaoffice/contact ' . Version::VERSION . ' console application - powered by Zend Framework '
         . \Zend\Version\Version::VERSION;
     }
 }

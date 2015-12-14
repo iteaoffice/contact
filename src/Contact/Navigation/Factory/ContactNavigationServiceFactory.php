@@ -11,6 +11,7 @@
 namespace Contact\Navigation\Factory;
 
 use Contact\Navigation\Service\ContactNavigationService;
+use Contact\Service\ContactService;
 use Zend\Navigation\Navigation;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -32,8 +33,8 @@ class ContactNavigationServiceFactory implements FactoryInterface
         $contactNavigationService = new ContactNavigationService();
 
         $contactNavigationService->setTranslator($serviceLocator->get('viewhelpermanager')->get('translate'));
-        /*
-         * @var ContactService
+        /**
+         * @var $contactService ContactService
          */
         $contactService = clone $serviceLocator->get('contact_contact_service');
         $contactNavigationService->setContactService($contactService);

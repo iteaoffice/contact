@@ -67,6 +67,18 @@ return [
                     'selections' => [
                         'label' => _("txt-selections"),
                         'route' => 'zfcadmin/selection-manager/list',
+                        'pages' => [
+                            'view-selection' => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/selection-manager/view',
+                                'visible' => false,
+                            ],
+                            'edit-selection' => [
+                                'label'   => _('txt-edit'),
+                                'route'   => 'zfcadmin/selection-manager/edit',
+                                'visible' => false,
+                            ],
+                        ]
                     ],
                     'facebook'   => [
                         'label' => _("txt-facebook"),
@@ -95,6 +107,18 @@ return [
                     'access'     => [
                         'label' => _("txt-access"),
                         'route' => 'zfcadmin/access-manager/list',
+                        'pages' => [
+                            'view-access' => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/access-manager/view',
+                                'visible' => false,
+                            ],
+                            'edit-access' => [
+                                'label'   => _('txt-edit'),
+                                'route'   => 'zfcadmin/access-manager/edit',
+                                'visible' => false,
+                            ],
+                        ]
                     ],
                     'statistics' => [
                         'label' => _("txt-contact-statistics"),

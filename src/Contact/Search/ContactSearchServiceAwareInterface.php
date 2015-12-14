@@ -10,16 +10,23 @@
 
 namespace Contact\Search;
 
+/**
+ * Interface ContactSearchServiceAwareInterface
+ *
+ * @package Contact\Search
+ */
 interface ContactSearchServiceAwareInterface
 {
     /**
      * Set a contact search service
+     *
      * @param ContactSearchService $contactSearchService
      */
     public function setContactSearchService(ContactSearchService $contactSearchService);
 
     /**
      * Get the contact search service
+     *
      * @return ContactSearchService
      */
     public function getContactSearchService();

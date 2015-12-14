@@ -23,18 +23,20 @@ use Solarium\QueryType\Select\Query\Query;
 class ContactSearchService extends AbstractSearchService implements ContactServiceAwareInterface
 {
     const SOLR_CONNECTION = 'contact';
-    
+
     /**
      * The contact service
+     *
      * @var ContactService
      */
     protected $contactService;
-    
+
     /**
      * Update or insert a contact document
+     *
      * @param Contact $contact
      *
-     * <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" /> 
+     * <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
      * <field name="contact_id" type="int" indexed="true" stored="true" omitNorms="true"/>
      * <field name="fullname" type="text_general" indexed="true" stored="true" omitNorms="true"/>
      * <field name="lastname" type="string" indexed="true" stored="true" omitNorms="true"/>
@@ -70,8 +72,8 @@ class ContactSearchService extends AbstractSearchService implements ContactServi
                 && ($contact->getPhoto()->count() > 0)
             ) {
                 $photo = $contact->getPhoto()->first();
-                $contactDocument->photo_url = $this->getServiceLocator()->get('viewhelpermanager')
-                    ->get('url')->__invoke('assets/contact-photo', [
+                $contactDocument->photo_url = $this->getServiceLocator()->get('viewhelpermanager')->get('url')
+                    ->__invoke('assets/contact-photo', [
                         'hash' => $photo->getHash(),
                         'ext'  => $photo->getContentType()->getExtension(),
                         'id'   => $photo->getId(),
@@ -80,28 +82,29 @@ class ContactSearchService extends AbstractSearchService implements ContactServi
         }
 
         if (!is_null($contact->getContactOrganisation())) {
-            $contactDocument->organisation = $contact->getContactOrganisation()
-                ->getOrganisation()->getOrganisation();
-            $contactDocument->organisation_type = $contact->getContactOrganisation()
-                ->getOrganisation()->getType();
-            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()
-                ->getCountry()->getCountry();
+            $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
+            $contactDocument->organisation_type = $contact->getContactOrganisation()->getOrganisation()->getType();
+            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()->getCountry()
+                ->getCountry();
         }
 
         if (!is_null($contact->getCv())) {
             $contactDocument->cv = str_replace(
-                PHP_EOL, '', strip_tags(stream_get_contents($contact->getCv()->getCv()))
+                PHP_EOL,
+                '',
+                strip_tags(stream_get_contents($contact->getCv()->getCv()))
             );
         }
-        
+
         $update->addDocument($contactDocument);
         $update->addCommit();
 
         return $this->executeUpdateDocument($update);
     }
-    
+
     /**
      * Update the current index and optionally clear all existing data.
+     *
      * @param boolean $clear
      */
     public function updateIndex($clear = false)
@@ -109,21 +112,24 @@ class ContactSearchService extends AbstractSearchService implements ContactServi
         $contacts = $this->getContactService()->findContactsWithActiveProfile(true);
         $this->updateIndexWithCollection($contacts, $clear);
     }
-    
+
     /**
      * @param string $searchTerm
      * @param string $order
      * @param string $direction
+     *
      * @return ContactSearchService
      */
     public function setSearch($searchTerm, $order = 'lastname', $direction = Query::SORT_ASC)
     {
         $this->setQuery($this->getSolrClient()->createSelect());
-        $this->getQuery()->setQuery(
-            str_replace('%s', $searchTerm, implode(' '.Query::QUERY_OPERATOR_OR.' ', [
-                'fullname:*%s*', 'position:*%s*', 'organisation:*%s', 'profile:*%s*', 'country:*%s*'
-            ]))
-        );
+        $this->getQuery()->setQuery(str_replace('%s', $searchTerm, implode(' ' . Query::QUERY_OPERATOR_OR . ' ', [
+                'fullname:*%s*',
+                'position:*%s*',
+                'organisation:*%s',
+                'profile:*%s*',
+                'country:*%s*'
+            ])));
 
         $this->getQuery()->addSort($order, $direction);
 
@@ -134,10 +140,10 @@ class ContactSearchService extends AbstractSearchService implements ContactServi
             $facetSet->createFacetField('organisation')->setField('organisation')->setMinCount(1);
         }
         $facetSet->createFacetField('country')->setField('country')->setMinCount(1)->setExcludes(['country']);
-    
+
         return $this;
     }
-    
+
     /**
      * @return ContactService
      */
@@ -149,11 +155,12 @@ class ContactSearchService extends AbstractSearchService implements ContactServi
     /**
      * @param ContactService $contactService
      *
-     * @return ServiceAbstract
+     * @return ContactSearchService
      */
     public function setContactService(ContactService $contactService)
     {
         $this->contactService = $contactService;
+
         return $this;
     }
 }
