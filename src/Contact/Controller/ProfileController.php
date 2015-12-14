@@ -150,6 +150,7 @@ class ProfileController extends ContactAbstractController implements
                     $contact->removePhoto($collection);
                 }
             };
+
             $contact = $this->getContactService()->updateEntity($contact);
             /**
              * The contact_organisation is different and not a drop-down.
