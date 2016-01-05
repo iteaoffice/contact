@@ -19,6 +19,7 @@ use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
 use Contact\Entity\Note;
 use Contact\Entity\Phone;
+use Contact\Entity\Selection;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -26,7 +27,6 @@ use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\ServerUrl;
 use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
-use Contact\Entity\Selection;
 
 /**
  * Class LinkAbstract.
@@ -137,13 +137,12 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
         return sprintf(
             $uri,
-            $serverUrl() . $url($this->router, $this->routerParams),
+            $serverUrl() . $url($this->router,
+            $this->routerParams),
             htmlentities($this->text),
             implode(' ', $this->classes),
-            in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode(
-                '',
-                $this->linkContent
-            ) : htmlentities(implode('', $this->linkContent))
+            in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
+            : htmlentities(implode('', $this->linkContent))
         );
     }
 
@@ -164,6 +163,11 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
             case 'icon':
             case 'button':
                 switch ($this->getAction()) {
+                    case 'view-admin':
+                    case 'view':
+                        $this->addLinkContent('<i class="fa fa-user"></i>');
+                        break;
+
                     case 'send-message':
                         $this->addLinkContent('<i class="fa fa-envelope"></i>');
                         break;
@@ -187,9 +191,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                 break;
             case 'paginator':
                 if (is_null($this->getAlternativeShow())) {
-                    throw new \InvalidArgumentException(
-                        sprintf("this->alternativeShow cannot be null for a paginator link")
-                    );
+                    throw new \InvalidArgumentException(sprintf("this->alternativeShow cannot be null for a paginator link"));
                 }
                 $this->addLinkContent($this->getAlternativeShow());
                 break;
@@ -201,13 +203,14 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                 return;
             default:
                 if (!array_key_exists($this->getShow(), $this->showOptions)) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            "The option \"%s\" should be available in the showOptions array, only \"%s\" are available",
-                            $this->getShow(),
-                            implode(', ', array_keys($this->showOptions))
+                    throw new \InvalidArgumentException(sprintf(
+                        "The option \"%s\" should be available in the showOptions array, only \"%s\" are available",
+                        $this->getShow(),
+                        implode(
+                            ', ',
+                            array_keys($this->showOptions)
                         )
-                    );
+                    ));
                 }
                 $this->addLinkContent($this->showOptions[$this->getShow()]);
                 break;
@@ -330,8 +333,8 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param EntityAbstract $entity
-     * @param string $assertion
-     * @param string $action
+     * @param string         $assertion
+     * @param string         $action
      *
      * @return bool
      */
@@ -393,7 +396,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param null|EntityAbstract $resource
-     * @param string $privilege
+     * @param string              $privilege
      *
      * @return bool
      */
@@ -412,7 +415,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      *
      * @param string $key
      * @param        $value
-     * @param bool $allowNull
+     * @param bool   $allowNull
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
@@ -429,7 +432,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
      *
      * @param string $key
      * @param        $value
-     * @param bool $allowNull
+     * @param bool   $allowNull
      */
     public function addQueryParam($key, $value, $allowNull = true)
     {
@@ -528,6 +531,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param  string $hash
+     *
      * @return LinkAbstract
      */
     public function setHash($hash)
@@ -551,6 +555,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param Contact $contact
+     *
      * @return LinkAbstract
      */
     public function setContact($contact)
@@ -574,6 +579,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param Address $address
+     *
      * @return LinkAbstract
      */
     public function setAddress($address)
@@ -597,6 +603,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param Note $note
+     *
      * @return LinkAbstract
      */
     public function setNote($note)
@@ -620,6 +627,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param Phone $phone
+     *
      * @return LinkAbstract
      */
     public function setPhone($phone)
@@ -643,6 +651,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
     /**
      * @param Selection $selection
+     *
      * @return LinkAbstract
      */
     public function setSelection($selection)

@@ -647,9 +647,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     private $memberFinancial;
 
     /**
-     * @ORM\OneToOne(targetEntity="Member\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="Member\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
-     * @var \Member\Entity\Applicant
+     * @var \Member\Entity\Applicant[]|Collections\ArrayCollection
      */
     private $applicant;
     /**
@@ -3118,7 +3118,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Member\Entity\Applicant
+     * @return \Member\Entity\Applicant|Collections\ArrayCollection
      */
     public function getApplicant()
     {
