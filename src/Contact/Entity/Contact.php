@@ -806,6 +806,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $changerequestCostChange;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Changerequest\Country", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Changerequest\Country
+     */
+    private $changerequestCountry;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Version\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
@@ -913,6 +920,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->memberFinancial = new  Collections\ArrayCollection();
         $this->changerequestProcess = new  Collections\ArrayCollection();
         $this->changerequestCostChange = new  Collections\ArrayCollection();
+        $this->changerequestCountry = new  Collections\ArrayCollection();
         $this->versionContact = new  Collections\ArrayCollection();
         $this->workpackageContact = new  Collections\ArrayCollection();
         /**
@@ -975,11 +983,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     public function getResourceId()
     {
-        return sprintf(
-            "%s:%s",
-            $this->get("underscore_full_entity_name"),
-            $this->getId()
-        );
+        return sprintf("%s:%s", $this->get("underscore_full_entity_name"), $this->getId());
     }
 
     /**
@@ -1592,11 +1596,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     public function getDisplayName()
     {
-        $name = sprintf(
-            "%s %s",
-            $this->firstName,
-            trim(implode(' ', [$this->middleName, $this->lastName]))
-        );
+        $name = sprintf("%s %s", $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
         return !empty(trim($name)) ? $name : $this->email;
     }
@@ -1610,11 +1610,15 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $name = sprintf(
             "%s. %s",
-            substr($this->firstName, 0, 1),
+            substr(
+                $this->firstName,
+                0,
+                1
+            ),
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return !empty($name) ? $name : $this->email;
+            return !empty($name) ? $name : $this->email;
     }
 
     /**
@@ -1624,11 +1628,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     public function getFormName()
     {
-        $name = sprintf(
-            "%s, %s",
-            trim(implode(' ', [$this->middleName, $this->lastName])),
-            $this->firstName
-        );
+        $name = sprintf("%s, %s", trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
         return !empty($name) ? $name : $this->email;
     }
@@ -3639,6 +3639,8 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
 
     /**
      * @param  Collections\ArrayCollection|\Member\Entity\Financial[] $memberFinancial
+     *
+     * @return Contact
      */
     public function setMemberFinancial($memberFinancial)
     {
@@ -3693,6 +3695,22 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->changerequestCostChange = $changerequestCostChange;
 
         return $this;
+    }
+
+    /**
+     * @return \Project\Entity\Changerequest\Country
+     */
+    public function getChangerequestCountry()
+    {
+        return $this->changerequestCountry;
+    }
+
+    /**
+     * @param \Project\Entity\Changerequest\Country $changerequestCountry
+     */
+    public function setChangerequestCountry($changerequestCountry)
+    {
+        $this->changerequestCountry = $changerequestCountry;
     }
 
     /**
