@@ -1618,7 +1618,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-            return !empty($name) ? $name : $this->email;
+        return !empty($name) ? $name : $this->email;
     }
 
     /**
