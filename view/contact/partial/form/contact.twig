@@ -5,8 +5,11 @@
 
 {% set contact = form.get('contact') %}
 
+{{ formelement(contact.get('id')) }}
+
 <fieldset>
     <legend>{{ translate("txt-contact-information") }}</legend>
+
     {{ ztbformelement(contact.get('firstName')) }}
     {{ ztbformelement(contact.get('middleName')) }}
     {{ ztbformelement(contact.get('lastName')) }}
@@ -17,12 +20,16 @@
 
 <fieldset>
     <legend>{{ translate("txt-organisation-information") }}</legend>
-    {{ organisationformelement(form.get('organisation')) }}
-    {{ ztbformelement(form.get('branch')) }}
+    {{ organisationformelement(contact.get('organisation')) }}
+    {{ ztbformelement(contact.get('branch')) }}
     {{ ztbformelement(contact.get('department')) }}
     {{ ztbformelement(contact.get('position')) }}
 </fieldset>
 
+<fieldset>
+    <legend>{{ translate("txt-organisation-information") }}</legend>
+    {{ ztbformelement(contact.get('access')) }}
+</fieldset>
 
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
@@ -30,6 +37,9 @@
         {{ ztbformelement(form.get('cancel')) }}
         {% if form.has('deactivate') %}
             {{ ztbformelement(form.get('deactivate')) }}
+        {% endif %}
+        {% if form.has('reactivate') %}
+            {{ ztbformelement(form.get('reactivate')) }}
         {% endif %}
     </div>
 </div>

@@ -117,7 +117,7 @@ return [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
-                                    'route'    => '/list.html',
+                                    'route'    => '/list[/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list',
                                     ],

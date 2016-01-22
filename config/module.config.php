@@ -82,7 +82,7 @@ $config = [
             'contact_contact_service'          => 'Contact\Service\ContactService',
             'contact_address_service'          => 'Contact\Service\AddressService',
             'contact_form_service'             => 'Contact\Service\FormService',
-            'contact_contact_form_filter'      => 'Contact\Form\FilterContact',
+
             'contact_facebook_form_filter'     => 'Contact\Form\FilterCreateObject',
             'contact_address_form_filter'      => 'Contact\Form\FilterCreateObject',
             'contact_note_form_filter'         => 'Contact\Form\FilterCreateObject',
@@ -112,6 +112,7 @@ $config = [
                 'subscribers' => [
                     'Gedmo\Timestampable\TimestampableListener',
                     'Gedmo\Sluggable\SluggableListener',
+                    'Gedmo\SoftDeleteable\SoftDeleteableListener'
                 ]
             ],
         ],

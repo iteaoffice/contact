@@ -69,8 +69,10 @@ class Selection extends EntityRepository
                 break;
             default:
                 $queryBuilder->addOrderBy('s.id', $direction);
-
         }
+
+        //Do not show the deleted ones
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('s.dateDeleted'));
 
         return $queryBuilder->getQuery();
     }
@@ -85,6 +87,8 @@ class Selection extends EntityRepository
         $queryBuilder->distinct();
         $queryBuilder->from("Contact\\Entity\\Selection", 's');
         $queryBuilder->orderBy('s.tag', 'ASC');
+
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('s.dateDeleted'));
 
         return $queryBuilder->getQuery()->getArrayResult();
     }

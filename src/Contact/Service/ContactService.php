@@ -75,7 +75,7 @@ class ContactService extends ServiceAbstract
      */
     protected $contact;
     /**
-     * @var array
+     * @var Contact[]
      */
     protected $contacts = [];
 
@@ -93,7 +93,7 @@ class ContactService extends ServiceAbstract
         $contact = $this->setContactId($contactId)->getContact();
 
         if ($contact->parseHash() !== $hash) {
-            return;
+            return null;
         }
 
         return $contact;
@@ -101,23 +101,22 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param int $which
+     *
      * @return int
      */
     public function getAffiliationCount($which = AffiliationService::WHICH_ALL)
     {
-        return ($this->getContact()->getAffiliation()->filter(
-            function (Affiliation $affiliation) use ($which) {
-                switch ($which) {
-                    case AffiliationService::WHICH_ONLY_ACTIVE:
-                        return is_null($affiliation->getDateEnd());
-                    case AffiliationService::WHICH_ONLY_INACTIVE:
-                        return !is_null($affiliation->getDateEnd());
-                    default:
-                        return true;
-                }
-
+        return ($this->getContact()->getAffiliation()->filter(function (Affiliation $affiliation) use ($which) {
+            switch ($which) {
+                case AffiliationService::WHICH_ONLY_ACTIVE:
+                    return is_null($affiliation->getDateEnd());
+                case AffiliationService::WHICH_ONLY_INACTIVE:
+                    return !is_null($affiliation->getDateEnd());
+                default:
+                    return true;
             }
-        )->count());
+
+        })->count());
     }
 
     /**
@@ -169,7 +168,7 @@ class ContactService extends ServiceAbstract
      */
     public function findAllContacts()
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContacts();
+        return $this->getEntityManager()->getRepository(Contact::class)->findContacts();
     }
 
     /**
@@ -179,8 +178,7 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsWithDateOfBirth()
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-            ->findContactsWithDateOfBirth();
+        return $this->getEntityManager()->getRepository(Contact::class)->findContactsWithDateOfBirth();
     }
 
     /**
@@ -190,17 +188,19 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsWithCV()
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContactsWithCV();
+        return $this->getEntityManager()->getRepository(Contact::class)->findContactsWithCV();
     }
 
     /**
      * Find all contacts which are active and have a CV.
+     *
      * @param  bool $onlyPublic
+     *
      * @return Contact[]
      */
     public function findContactsWithActiveProfile($onlyPublic = true)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))->findContactsWithActiveProfile($onlyPublic);
+        return $this->getEntityManager()->getRepository(Contact::class)->findContactsWithActiveProfile($onlyPublic);
     }
 
     /**
@@ -208,9 +208,19 @@ class ContactService extends ServiceAbstract
      *
      * @return \Event\Entity\Meeting\Meeting[]
      */
-    public function findUpcomingMeetings()
+    public function findUnregisteredMeetingsByContact()
     {
         return $this->getMeetingService()->findUnregisteredMeetingsByContact($this->getContact());
+    }
+
+    /**
+     * Find a list of upcoming meetings were a user can registerre
+     *
+     * @return \Event\Entity\Meeting\Meeting[]
+     */
+    public function findUpcomingMeetings()
+    {
+        return $this->getMeetingService()->findUpcomingMeetingByContact($this->getContact());
     }
 
     /**
@@ -254,7 +264,7 @@ class ContactService extends ServiceAbstract
     public function parseOrganisation()
     {
         if (!$this->hasOrganisation()) {
-            return;
+            return null;
         }
 
         return $this->findOrganisationService()->parseOrganisationWithBranch($this->getContact()
@@ -277,6 +287,14 @@ class ContactService extends ServiceAbstract
     public function isFunder()
     {
         return !is_null($this->getContact()->getFunder());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return is_null($this->getContact()->getDateEnd());
     }
 
     /**
@@ -422,7 +440,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param Contact $contact
-     * @param int $type
+     * @param int     $type
      *
      * @return null|Phone
      */
@@ -562,8 +580,7 @@ class ContactService extends ServiceAbstract
      */
     public function findContactByEmail($email, $onlyMain = false)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-            ->findContactByEmail($email, $onlyMain);
+        return $this->getEntityManager()->getRepository(Contact::class)->findContactByEmail($email, $onlyMain);
     }
 
     /**
@@ -613,7 +630,7 @@ class ContactService extends ServiceAbstract
      */
     public function isCommunity()
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
+        return $this->getEntityManager()->getRepository(Contact::class)
             ->findIsCommunityMember($this->getContact(), $this->getCommunityOptions());
     }
 
@@ -685,7 +702,7 @@ class ContactService extends ServiceAbstract
         }
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
-            return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
+            return $this->getEntityManager()->getRepository(Contact::class)
                 ->isContactInSelectionSQL($this->getContact(), $selection->getSql());
         }
         /*
@@ -850,11 +867,10 @@ class ContactService extends ServiceAbstract
          */
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
-            return $this->getEntityManager()->getRepository($this->getFullEntityName('Contact'))
+            return $this->getEntityManager()->getRepository(Contact::class)
                 ->findContactsBySelectionSQL($selection->getSql());
         } else {
-            return $this->getEntityManager()->getRepository($this->getFullEntityName('Contact'))
-                ->findContactsBySelectionContact($selection);
+            return $this->getEntityManager()->getRepository(Contact::class)->findContactsBySelectionContact($selection);
         }
     }
 
@@ -870,10 +886,10 @@ class ContactService extends ServiceAbstract
          */
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
-            return $this->getEntityManager()->getRepository($this->getFullEntityName('Contact'))
+            return $this->getEntityManager()->getRepository(Contact::class)
                 ->findContactsBySelectionSQL($selection->getSql(), true);
         } else {
-            return $this->getEntityManager()->getRepository($this->getFullEntityName('Contact'))
+            return $this->getEntityManager()->getRepository(Contact::class)
                 ->findContactsBySelectionContact($selection, true);
         }
     }
@@ -906,9 +922,7 @@ class ContactService extends ServiceAbstract
          * A dedicated array will therefore be created
          */
         $contacts = [];
-        foreach ($this->getEntityManager()->getRepository(
-            $this->getFullEntityName('Contact')
-        )->findContactsInFacebook($facebook) as $contact) {
+        foreach ($this->getEntityManager()->getRepository(Contact::class)->findContactsInFacebook($facebook) as $contact) {
             $singleContact = [];
 
             $singleContact['contact'] = $contact;
@@ -981,7 +995,7 @@ class ContactService extends ServiceAbstract
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed.
      *
-     * @param string $password
+     * @param string  $password
      * @param Contact $contact
      *
      * @return bool
@@ -1034,7 +1048,7 @@ class ContactService extends ServiceAbstract
      * $contactOrganisation['country'] > CountryId
      *
      * @param Contact $contact
-     * @param array $contactOrganisation
+     * @param array   $contactOrganisation
      */
     public function updateContactOrganisation(
         Contact $contact,
@@ -1054,10 +1068,8 @@ class ContactService extends ServiceAbstract
          * If this value != 0, a choice has been made from the dropdown and we will then take the branch as default
          */
         if (isset($contactOrganisation['organisation_id']) && $contactOrganisation['organisation_id'] != '0') {
-            $organisation = $this->getOrganisationService()->findEntityById(
-                'organisation',
-                (int)$contactOrganisation['organisation_id']
-            );
+            $organisation = $this->getOrganisationService()
+                ->findEntityById('organisation', (int)$contactOrganisation['organisation_id']);
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
             if (!empty($contactOrganisation['branch'])) {
@@ -1131,16 +1143,15 @@ class ContactService extends ServiceAbstract
                     }
                     if (!$organisationFound) {
                         //Create only a branch when the name is found and the given names do not match in length
-                        if (strlen($foundOrganisation->getOrganisation()) < (strlen($contactOrganisation['organisation'])
+                        if (strlen($foundOrganisation->getOrganisation())
+                            < (strlen($contactOrganisation['organisation'])
                                 - strlen($currentContactOrganisation->getBranch()))
                         ) {
-                            $currentContactOrganisation->setBranch(
-                                str_replace(
-                                    $contactOrganisation['organisation'],
-                                    '~',
-                                    $foundOrganisation->getOrganisation()
-                                )
-                            );
+                            $currentContactOrganisation->setBranch(str_replace(
+                                $contactOrganisation['organisation'],
+                                '~',
+                                $foundOrganisation->getOrganisation()
+                            ));
                         } else {
                             //Reset the branch otherwise
                             $currentContactOrganisation->setBranch(null);
@@ -1158,8 +1169,8 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param int $optInId
-     * @param bool $enable
+     * @param int     $optInId
+     * @param bool    $enable
      * @param Contact $contact
      */
     public function updateOptInForContact(
@@ -1180,16 +1191,16 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param OptIn $optIn
+     *
      * @return Contact[]
      */
     public function findContactsByOptInAsArray(OptIn $optIn)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-            ->findContactsByOptIn($optIn, true);
+        return $this->getEntityManager()->getRepository(Contact::class)->findContactsByOptIn($optIn, true);
     }
 
     /**
-     * @param int $optInId
+     * @param int     $optInId
      * @param Contact $contact
      *
      * @return OptIn
@@ -1223,6 +1234,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * Returns which template is to  be used for facebook
+     *
      * @return string
      */
     public function getFacebookTemplate()
@@ -1297,7 +1309,7 @@ class ContactService extends ServiceAbstract
      */
     public function findIsCommunityMember(Contact $contact)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
+        return $this->getEntityManager()->getRepository(Contact::class)
             ->findIsCommunityMember($contact, $this->getCommunityOptions());
     }
 
@@ -1310,7 +1322,6 @@ class ContactService extends ServiceAbstract
     {
         $contacts = [];
         $contactRole = [];
-
 
 
         /*
@@ -1376,8 +1387,7 @@ class ContactService extends ServiceAbstract
             throw new \Exception("A projectCalendar is required to find the contacts");
         }
 
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('Contact'))
-            ->findPossibleContactByCalendar($calendar);
+        return $this->getEntityManager()->getRepository(Contact::class)->findPossibleContactByCalendar($calendar);
     }
 
     /**
@@ -1388,7 +1398,6 @@ class ContactService extends ServiceAbstract
     public function findContactsInOrganisation(
         Organisation $organisation
     ) {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('contact'))
-            ->findContactsInOrganisation($organisation);
+        return $this->getEntityManager()->getRepository(Contact::class)->findContactsInOrganisation($organisation);
     }
 }

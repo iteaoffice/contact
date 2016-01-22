@@ -23,6 +23,7 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @ORM\Table(name="selection")
  * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
+ * @Gedmo\SoftDeleteable(fieldName="dateDeleted")
  * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_selection")
  *
@@ -30,6 +31,8 @@ use Zend\InputFilter\InputFilterInterface;
  */
 class Selection extends EntityAbstract
 {
+    const SELECTION_INVOICE_CORE = 1;
+    const SELECTION_PROJECT_MANAGEMENT = 219;
     /**
      * Constant for notPersonal = 0 (not personal).
      */
@@ -54,19 +57,21 @@ class Selection extends EntityAbstract
      *
      * @var array
      */
-    protected $personalTemplates = [
-        self::NOT_PERSONAL => 'txt-not-personal',
-        self::PERSONAL     => 'txt-personal',
-    ];
+    protected static $personalTemplates
+        = [
+            self::NOT_PERSONAL => 'txt-not-personal',
+            self::PERSONAL     => 'txt-personal',
+        ];
     /**
      * Textual versions of the hideForOthers.
      *
      * @var array
      */
-    protected $privateTemplates = [
-        self::NOT_PRIVATE => 'txt-not-private',
-        self::IS_PRIVATE  => 'txt-private',
-    ];
+    protected static $privateTemplates
+        = [
+            self::NOT_PRIVATE => 'txt-not-private',
+            self::IS_PRIVATE  => 'txt-private',
+        ];
     /**
      * @ORM\Column(name="selection_id", length=10, type="integer", nullable=false)
      * @ORM\Id
@@ -93,7 +98,7 @@ class Selection extends EntityAbstract
     private $tag;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
-     * @Gedmo\Timestampable(on="update")
+     * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
      *
      * @var \DateTime
@@ -119,7 +124,8 @@ class Selection extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
-     * @Annotation\Exclude()
+     * @Annotation\Type("\Zend\Form\Element\Select")
+     * @Annotation\Options({"label":"txt-owner"})
      *
      * @var Contact
      */
@@ -128,8 +134,7 @@ class Selection extends EntityAbstract
      * @ORM\Column(name="personal", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"personalTemplates"})
-     * @Annotation\Attributes({"label":"txt-personal", "required":"true"})
-     * @Annotation\Required(true)
+     * @Annotation\Attributes({"label":"txt-personal"})
      *
      * @var int
      */
@@ -236,17 +241,17 @@ class Selection extends EntityAbstract
     /**
      * @return array
      */
-    public function getPersonalTemplates()
+    public static function getPersonalTemplates()
     {
-        return $this->personalTemplates;
+        return self::$personalTemplates;
     }
 
     /**
      * @return array
      */
-    public function getPrivateTemplates()
+    public static function getPrivateTemplates()
     {
-        return $this->privateTemplates;
+        return self::$privateTemplates;
     }
 
     /**
@@ -269,96 +274,54 @@ class Selection extends EntityAbstract
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'       => 'selection',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
-                        ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 80,
-                                ],
+            $inputFilter->add($factory->createInput([
+                    'name'       => 'selection',
+                    'required'   => true,
+                    'filters'    => [
+                        ['name' => 'StripTags'],
+                        ['name' => 'StringTrim'],
+                    ],
+                    'validators' => [
+                        [
+                            'name'    => 'StringLength',
+                            'options' => [
+                                'encoding' => 'UTF-8',
+                                'min'      => 1,
+                                'max'      => 80,
                             ],
                         ],
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'note',
-                        'required' => false,
-                        'filters'  => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
-                        ],
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'tag',
-                        'required' => false,
-                        'filters'  => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
-                        ],
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'personal',
-                        'required' => true,
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'private',
-                        'required' => true,
-                    ]
-                )
-            );
+                    ],
+                ]));
+            $inputFilter->add($factory->createInput([
+                    'name'     => 'note',
+                    'required' => false,
+                    'filters'  => [
+                        ['name' => 'StripTags'],
+                        ['name' => 'StringTrim'],
+                    ],
+                ]));
+            $inputFilter->add($factory->createInput([
+                    'name'     => 'tag',
+                    'required' => false,
+                    'filters'  => [
+                        ['name' => 'StripTags'],
+                        ['name' => 'StringTrim'],
+                    ],
+                ]));
+            $inputFilter->add($factory->createInput([
+                    'name'     => 'personal',
+                    'required' => true,
+                ]));
+            $inputFilter->add($factory->createInput([
+                    'name'     => 'private',
+                    'required' => true,
+                ]));
             $this->inputFilter = $inputFilter;
         }
 
         return $this->inputFilter;
     }
 
-    /**
-     * Needed for the hydration of form elements.
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return [
-            'selection'   => $this->selection,
-            'tag'         => $this->tag,
-            'dateCreated' => $this->dateCreated,
-            'dateDeleted' => $this->dateDeleted,
-            'note'        => $this->note,
-            'personal'    => $this->personal,
-            'private'     => $this->private,
-        ];
-    }
-
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
 
     /**
      * @param \Contact\Entity\Contact $contact
@@ -451,8 +414,12 @@ class Selection extends EntityAbstract
     /**
      * @return int
      */
-    public function getPersonal()
+    public function getPersonal($textual = false)
     {
+        if ($textual) {
+            return self::$personalTemplates[$this->personal];
+        }
+
         return $this->personal;
     }
 
@@ -465,10 +432,16 @@ class Selection extends EntityAbstract
     }
 
     /**
+     * @param bool $textual
+     *
      * @return int
      */
-    public function getPrivate()
+    public function getPrivate($textual = false)
     {
+        if ($textual) {
+            return self::$privateTemplates[$this->private];
+        }
+
         return $this->private;
     }
 

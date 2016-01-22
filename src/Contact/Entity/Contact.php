@@ -58,7 +58,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @ORM\Column(name="contact_id", type="integer", length=10, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Exclude()
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      * @var int
      */
     private $id;

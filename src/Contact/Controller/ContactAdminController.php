@@ -82,6 +82,9 @@ class ContactAdminController extends ContactAbstractController implements Projec
         ]);
     }
 
+    /***
+     * @return ViewModel
+     */
     public function permitAction()
     {
         $contactService = $this->getContactService()->setContactId($this->params('id'));
@@ -128,36 +131,76 @@ class ContactAdminController extends ContactAbstractController implements Projec
     {
         $contactService = $this->getContactService()->setContactId($this->params('id'));
 
+        if ($contactService->isEmpty()) {
+            return $this->notFoundAction();
+        }
+
+        $contact = $contactService->getContact();
+
         //Get contacts in an organisation
         if ($contactService->hasOrganisation()) {
             $data = array_merge([
-                'organisation' => $contactService->getContact()->getContactOrganisation()->getOrganisation()->getId(),
-                'branch'       => $contactService->getContact()->getContactOrganisation()->getBranch()
+                'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
+                'branch'       => $contact->getContactOrganisation()->getBranch()
             ], $this->getRequest()->getPost()->toArray());
 
-            $form = $this->getFormService()
-                ->prepare($contactService->getContact(), $contactService->getContact(), $data);
+            $form = $this->getFormService()->prepare($contact, $contact, $data);
 
 
-            $form->get('organisation')->setValueOptions([
+            $form->get('contact')->get('organisation')->setValueOptions([
                 $contactService->getContact()->getContactOrganisation()->getOrganisation()
                     ->getId() => $contactService->getContact()->getContactOrganisation()->getOrganisation()
                     ->getOrganisation()
             ]);
         } else {
             $data = array_merge($this->getRequest()->getPost()->toArray());
-            $form = $this->getFormService()
-                ->prepare($contactService->getContact(), $contactService->getContact(), $data);
+            $form = $this->getFormService()->prepare($contact, $contact, $data);
+        }
+
+        /** Show or hide buttons based on the status of a contact */
+        if ($contactService->isActive()) {
+            $form->remove('reactivate');
+        } else {
+            $form->remove('deactivate');
         }
 
 
         if ($this->getRequest()->isPost()) {
+
+            /** Deactivate a contact */
+            if (isset($data['deactivate'])) {
+                $this->flashMessenger()
+                    ->addSuccessMessage(sprintf($this->translate("txt-contact-%s-has-been-deactivated"), $contact));
+
+                $contact->setDateEnd(new \DateTime());
+                $this->getContactService()->updateEntity($contact);
+
+                return $this->redirect()
+                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
+            }
+
+            /** Reactivate a contact */
+            if (isset($data['reactivate'])) {
+                $this->flashMessenger()
+                    ->addSuccessMessage(sprintf($this->translate("txt-contact-%s-has-been-reactivated"), $contact));
+
+                $contact->setDateEnd(null);
+                $this->getContactService()->updateEntity($contact);
+
+                return $this->redirect()
+                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
+            }
+
+            /** Cancel the form */
             if (isset($data['cancel'])) {
                 return $this->redirect()
                     ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
             }
 
+            /** Handle the form */
             if ($form->isValid()) {
+                var_dump($data);
+                die();
                 /**
                  * @var $contact Contact
                  */
@@ -180,6 +223,8 @@ class ContactAdminController extends ContactAbstractController implements Projec
 
                 return $this->redirect()
                     ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
+            } else {
+                var_dump($form->getInputFilter()->getMessages());
             }
         }
 
@@ -268,11 +313,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
         foreach ($this->getContactService()->searchContacts($search) as $result) {
             $text = trim(sprintf(
                 "%s, %s (%s)",
-                trim(sprintf(
-                    "%s %s",
-                    $result['middleName'],
-                    $result['lastName']
-                )),
+                trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
                 $result['firstName'],
                 $result['email']
             ));
@@ -289,11 +330,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
                 'text'         => $text,
                 'name'         => sprintf(
                     "%s, %s",
-                    trim(sprintf(
-                        "%s %s",
-                        $result['middleName'],
-                        $result['lastName']
-                    )),
+                    trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
                     $result['firstName']
                 ),
                 'id'           => $result['id'],
