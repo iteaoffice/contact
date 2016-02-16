@@ -31,7 +31,7 @@ class ContactOrganisation extends EntityAbstract
     /**
      * @var integer
      *
-     * @ORM\Column(name="contact_organisation_id", type="integer", nullable=false)
+     * @ORM\Column(name="contact_organisation_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

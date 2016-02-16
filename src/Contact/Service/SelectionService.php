@@ -42,6 +42,9 @@ class SelectionService extends ServiceAbstract
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isSql()
     {
         return !is_null($this->selection->getSql());
@@ -72,8 +75,7 @@ class SelectionService extends ServiceAbstract
      */
     public function findTags()
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))
-            ->findTags();
+        return $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))->findTags();
     }
 
     /**
@@ -96,20 +98,19 @@ class SelectionService extends ServiceAbstract
      */
     public function findSelectionsByContact(Contact $contact)
     {
-        $selections = $this->getEntityManager()->getRepository(
-            $this->getFullEntityName('selection')
-        )->findFixedSelectionsByContact(
-            $contact
-        );
+        $selections = $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))
+            ->findFixedSelectionsByContact($contact);
 
-        /*
-         * Find now the dynamic selections
+        /**
+         * @var $selection Selection
          */
         foreach ($this->findAll('selection') as $selection) {
-            /*
-             * @var Selection;
+            /**
+             * Skip the deleted selections and the ones the user is in
              */
-            if (!is_null($selection->getSql()) && $this->getContactService()->inSelection($selection)) {
+            if (is_null($selection->getDateDeleted()) && !is_null($selection->getSql())
+                && $this->getContactService()->inSelection($selection)
+            ) {
                 $selections[] = $selection;
             }
         }

@@ -7,6 +7,8 @@ return array(
     'Contact\Repository\Address'                                   => __DIR__ . '/src/Contact/Repository/Address.php',
     'Contact\Options\CommunityOptionsInterface'                    => __DIR__ . '/src/Contact/Options/CommunityOptionsInterface.php',
     'Contact\Options\ModuleOptions'                                => __DIR__ . '/src/Contact/Options/ModuleOptions.php',
+    'Contact\Search\ContactSearchServiceAwareInterface'            => __DIR__ . '/src/Contact/Search/ContactSearchServiceAwareInterface.php',
+    'Contact\Search\ContactSearchService'                          => __DIR__ . '/src/Contact/Search/ContactSearchService.php',
     'Contact\Module'                                               => __DIR__ . '/src/Contact/Module.php',
     'Contact\Provider\Identity\AuthenticationIdentityProvider'     => __DIR__ . '/src/Contact/Provider/Identity/AuthenticationIdentityProvider.php',
     'Contact\Hydrator\Profile'                                     => __DIR__ . '/src/Contact/Hydrator/Profile.php',
@@ -92,6 +94,7 @@ return array(
     'Contact\Controller\ControllerInitializer'                     => __DIR__ . '/src/Contact/Controller/ControllerInitializer.php',
     'Contact\Controller\PhoneManagerController'                    => __DIR__ . '/src/Contact/Controller/PhoneManagerController.php',
     'Contact\Controller\ContactController'                         => __DIR__ . '/src/Contact/Controller/ContactController.php',
+    'Contact\InputFilter\ContactFilter'                            => __DIR__ . '/src/Contact/InputFilter/ContactFilter.php',
     'Contact\Navigation\Factory\ContactNavigationServiceFactory'   => __DIR__ . '/src/Contact/Navigation/Factory/ContactNavigationServiceFactory.php',
     'Contact\Navigation\Service\ContactNavigationService'          => __DIR__ . '/src/Contact/Navigation/Service/ContactNavigationService.php',
     'Contact\Navigation\Service\NavigationServiceAbstract'         => __DIR__ . '/src/Contact/Navigation/Service/NavigationServiceAbstract.php',
@@ -118,5 +121,4 @@ return array(
     'Contact\Form\SelectionContacts'                               => __DIR__ . '/src/Contact/Form/SelectionContacts.php',
     'Contact\Form\Statistics'                                      => __DIR__ . '/src/Contact/Form/Statistics.php',
     'Contact\Form\PasswordFilter'                                  => __DIR__ . '/src/Contact/Form/PasswordFilter.php',
-    'Contact\Form\FilterContact'                                   => __DIR__ . '/src/Contact/Form/FilterContact.php',
 );

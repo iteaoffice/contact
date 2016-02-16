@@ -85,7 +85,7 @@ class Profile extends EntityAbstract
         self::VISIBLE_PUBLIC    => 'txt-visibility-public',
     );
     /**
-     * @ORM\Column(name="profile_id", type="integer", nullable=false)
+     * @ORM\Column(name="profile_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()

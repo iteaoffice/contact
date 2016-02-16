@@ -21,6 +21,7 @@ class Selection extends EntityRepository
 {
     /**
      * @param array $filter
+     *
      * @return Query
      */
     public function findFiltered(array $filter)
@@ -30,12 +31,13 @@ class Selection extends EntityRepository
         $queryBuilder->from('Contact\Entity\Selection', 's');
 
         if (array_key_exists('search', $filter)) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->like('s.selection', ':like'),
-                    $queryBuilder->expr()->like('s.tag', ':like')
-                )
-            );
+            $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                $queryBuilder->expr()->like(
+                    's.selection',
+                    ':like'
+                ),
+                $queryBuilder->expr()->like('s.tag', ':like')
+            ));
 
             $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
         }
@@ -94,6 +96,21 @@ class Selection extends EntityRepository
     }
 
     /**
+     * @return array
+     */
+    public function findActive()
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('s');
+        $queryBuilder->from("Contact\\Entity\\Selection", 's');
+        $queryBuilder->orderBy('s.selection', 'ASC');
+
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('s.dateDeleted'));
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
      * @param Entity\Contact $contact
      *
      * @return null|Entity\Selection
@@ -111,11 +128,7 @@ class Selection extends EntityRepository
         $subSelect->where('contact = :contact');
         $queryBuilder->setParameter('contact', $contact);
 
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->orX(
-                $queryBuilder->expr()->in('s.id', $subSelect->getDQL())
-            )
-        );
+        $queryBuilder->andWhere($queryBuilder->expr()->orX($queryBuilder->expr()->in('s.id', $subSelect->getDQL())));
 
         return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }

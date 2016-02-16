@@ -45,7 +45,7 @@ class SelectionMailinglist
     /**
      * @var integer
      *
-     * @ORM\Column(name="mailinglist_id", type="integer", nullable=false)
+     * @ORM\Column(name="mailinglist_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

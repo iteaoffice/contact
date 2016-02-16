@@ -26,28 +26,29 @@ class ContactLink extends LinkAbstract
     protected $contact;
 
     /**
-     * @param Contact $contact
-     * @param string  $action
-     * @param string  $show
-     * @param null    $hash
-     * @param null    $alternativeShow
+     * @param Contact|null $contact
+     * @param string       $action
+     * @param string       $show
+     * @param null         $hash
+     * @param null         $alternativeShow
+     * @param null         $fragment
      *
      * @return string
-     *
-     * @throws \RuntimeException
-     * @throws \Exception
      */
     public function __invoke(
         Contact $contact = null,
         $action = 'view',
         $show = 'name',
         $hash = null,
-        $alternativeShow = null
+        $alternativeShow = null,
+        $fragment = null
     ) {
         $this->setContact($contact);
         $this->setAction($action);
         $this->setShow($show);
         $this->setHash($hash);
+        $this->setFragment($fragment);
+
 
         /*
          * If the alternativeShow is not null, use it an otherwise take the hash
@@ -62,19 +63,16 @@ class ContactLink extends LinkAbstract
             return '';
         }
         $this->setShowOptions([
-            'email'     => $this->getContact()->getEmail(),
-            'paginator' => $this->getAlternativeShow(),
-            'firstname' => $this->getContact()->getFirstName(),
-            'initials'  => sprintf(
+            'email'           => $this->getContact()->getEmail(),
+            'paginator'       => $this->getAlternativeShow(),
+            'alternativeShow' => $this->getAlternativeShow(),
+            'firstname'       => $this->getContact()->getFirstName(),
+            'initials'        => sprintf(
                 "%s%s",
-                substr(
-                    $this->getContact()->getFirstName(),
-                    0,
-                    1
-                ),
+                substr($this->getContact()->getFirstName(), 0, 1),
                 substr($this->getContact()->getLastName(), 0, 1)
             ),
-            'name'      => $this->getContact()->getDisplayName(),
+            'name'            => $this->getContact()->getDisplayName(),
         ]);
         $this->addRouterParam('hash', $hash);
         $this->addRouterParam('id', $this->getContact()->getId());

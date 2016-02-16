@@ -53,6 +53,16 @@ class ContactFilter extends InputFilter
             ],
         ]);
 
+        $inputFilter->add([
+            'name'     => 'dateOfBirth',
+            'required' => false,
+        ]);
+
+        $inputFilter->add([
+            'name'     => 'access',
+            'required' => false,
+        ]);
+
 
         $inputFilter->add([
             'name'       => 'organisation',
@@ -64,7 +74,7 @@ class ContactFilter extends InputFilter
                         'object_repository' => $entityManager->getRepository(Organisation::class),
                         'object_manager'    => $entityManager,
                         'use_context'       => true,
-                        'fields'            => 'organisation',
+                        'fields'            => 'id',
                     ],
                 ],
             ],

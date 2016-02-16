@@ -56,7 +56,7 @@
                         <td>{% if organisationService and not organisationService.isEmpty() %}{{ organisationLink(organisationService,'view-admin','name') }}{% endif %}
                         </td>
                         <td>{{ contact.contactOrganisation.organisation.country }}</td>
-                        <td>{{ contactService.getAffiliationCount(constant("Affiliation\\Service\\AffiliationService::WHICH_ONLY_ACTIVE")) }}</td>
+                        <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
                         <td>{{ contactLink(contact, 'edit-admin', 'icon') }}</td>
                     </tr>
                 {% endfor %}

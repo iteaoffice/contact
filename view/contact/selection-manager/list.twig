@@ -47,14 +47,14 @@
                     <tr {% if selection.dateDeleted %}class="danger"{% endif %}>
                         <td>
                             {% if selection.dateDeleted %}
-                                <i class="fa fa-trash" title="{{ selectionService.selection.dateDeleted|time_diff }}"></i>
+                                <i class="fa fa-trash" title="{{ selectionService.selection.dateDeleted|string_date }}"></i>
                             {% endif %}
 
                             {{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}</td>
                         <td>{{ contactLink(selection.contact,'view-admin','name') }}</td>
                         <td>{{ selection.tag }}</td>
                         <td>{% if selection.sql %}-/-{% else %}{{ selection.selectionContact.count }}{% endif %}</td>
-                        <td>{{ selection.dateCreated|time_diff }}</td>
+                        <td>{{ selection.dateCreated|string_date }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

@@ -373,13 +373,16 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('co', 'id', 'contact_organisation_id');
 
         $resultSetMap->addJoinedEntityResult('Organisation\Entity\Organisation', 'o', 'co', 'organisation');
+        $resultSetMap->addJoinedEntityResult('General\Entity\Country', 'cy', 'o', 'country');
 
         $resultSetMap->addFieldResult('o', 'organisation', 'organisation');
+        $resultSetMap->addFieldResult('cy', 'country', 'country');
 
-        $query = $this->getEntityManager()->createNativeQuery("SELECT c.contact_id, email, firstname, middlename, lastname, co.contact_organisation_id, o.organisation FROM contact c
+        $query = $this->getEntityManager()->createNativeQuery("SELECT c.contact_id, email, firstname, middlename, lastname, co.contact_organisation_id, o.organisation, cy.country FROM contact c
                 LEFT JOIN contact_organisation co ON co.contact_id = c.contact_id
-                JOIN organisation  o       ON co.organisation_id = o.organisation_id
-            WHERE c.contact_id IN (" . $sql->getQuery() . ") AND date_end IS NULL", $resultSetMap);
+                LEFT JOIN organisation o ON co.organisation_id = o.organisation_id
+                LEFT JOIN country cy ON o.country_id = cy.country_id
+            WHERE c.contact_id IN (" . $sql->getQuery() . ") AND date_end IS NULL ORDER BY lastName", $resultSetMap);
 
         /**
          * 'c_id' => int 5059
@@ -388,11 +391,12 @@ class Contact extends EntityRepository
          * 'c_middleName' => null
          * 'c_lastName' => string 'Gide' (length=4)
          * 'o_organisation' => string 'Thales' (length=6)
+         * 'cy_country' => string 'Thales' (length=6)
          */
-
         if ($toArray) {
-            return $query->getResult(AbstractQuery::HYDRATE_SCALAR);
+            return $this->reIndexContactArray($query->getResult(AbstractQuery::HYDRATE_SCALAR));
         } else {
+            //Note that the contactOrgansiation is always empty
             return $query->getResult();
         }
     }
@@ -460,7 +464,7 @@ class Contact extends EntityRepository
         $qb->orderBy('c.lastName');
 
         if ($toArray) {
-            return $qb->getQuery()->getResult(AbstractQuery::HYDRATE_SCALAR);
+            return $this->reIndexContactArray($qb->getQuery()->getResult(AbstractQuery::HYDRATE_SCALAR));
         } else {
             return $qb->getQuery()->getResult();
         }
@@ -601,5 +605,40 @@ class Contact extends EntityRepository
         $findContactByProjectIdQueryBuilder->addOrderBy('c.lastName', 'ASC');
 
         return $findContactByProjectIdQueryBuilder->getQuery()->useQueryCache(true)->getResult();
+    }
+
+    /**
+     * @param $contacts
+     *
+     * @return array
+     */
+    private function reIndexContactArray($contacts)
+    {
+        //Normalize the array to default values
+        foreach ($contacts as $k => $contact) {
+            $contact['id'] = $contact['c_id'];
+            unset($contact['c_id']);
+            $contact['email'] = $contact['c_email'];
+            unset($contact['c_email']);
+            $contact['firstName'] = $contact['c_firstName'];
+            unset($contact['c_firstName']);
+            $contact['middleName'] = $contact['c_middleName'];
+            unset($contact['c_middleName']);
+            $contact['lastName'] = $contact['c_lastName'];
+            unset($contact['c_lastName']);
+            $contact['fullname'] = sprintf(
+                "%s %s",
+                $contact['firstName'],
+                trim(implode(' ', [$contact['middleName'], $contact['lastName']]))
+            );
+            $contact['organisation'] = $contact['o_organisation'];
+            unset($contact['o_organisation']);
+            $contact['country'] = $contact['cy_country'];
+            unset($contact['cy_country']);
+
+            $contacts[$k] = $contact;
+        }
+
+        return $contacts;
     }
 }

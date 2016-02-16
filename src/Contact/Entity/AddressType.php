@@ -31,7 +31,7 @@ class AddressType extends EntityAbstract
     const ADDRESS_TYPE_HOME = 4;
     const ADDRESS_TYPE_BOOTH_FINANCIAL = 5;
     /**
-     * @ORM\Column(name="type_id", type="integer", nullable=false)
+     * @ORM\Column(name="type_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

@@ -584,6 +584,18 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * @param $name
+     *
+     * @return null|Selection
+     */
+    public function findSelectionByName($name)
+    {
+        return $this->getEntityManager()->getRepository(Selection::class)->findOneBy([
+            'selection' => $name
+        ]);
+    }
+
+    /**
      * @param Contact $contact
      *
      * @return ContactService
@@ -701,9 +713,13 @@ class ContactService extends ServiceAbstract
             throw new \InvalidArgumentException("The contact cannot be null");
         }
         if (!is_null($selection->getSql())) {
-            //We have a dynamic query, check if the contact is in the selection
-            return $this->getEntityManager()->getRepository(Contact::class)
-                ->isContactInSelectionSQL($this->getContact(), $selection->getSql());
+            try {
+                //We have a dynamic query, check if the contact is in the selection
+                return $this->getEntityManager()->getRepository(Contact::class)
+                    ->isContactInSelectionSQL($this->getContact(), $selection->getSql());
+            } catch (\Exception $e) {
+                print sprintf("Selection %s is giving troubles ()", $selection->getId(), $e->getMessage());
+            }
         }
         /*
          * The selection contains contacts, do an extra query to find the contact
@@ -857,10 +873,11 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param Selection $selection
+     * @param bool      $toArray
      *
      * @return Contact[]
      */
-    public function findContactsInSelection(Selection $selection)
+    public function findContactsInSelection(Selection $selection, $toArray = false)
     {
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
@@ -868,7 +885,7 @@ class ContactService extends ServiceAbstract
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             return $this->getEntityManager()->getRepository(Contact::class)
-                ->findContactsBySelectionSQL($selection->getSql());
+                ->findContactsBySelectionSQL($selection->getSql(), $toArray);
         } else {
             return $this->getEntityManager()->getRepository(Contact::class)->findContactsBySelectionContact($selection);
         }
@@ -886,12 +903,14 @@ class ContactService extends ServiceAbstract
          */
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
-            return $this->getEntityManager()->getRepository(Contact::class)
+            $contacts = $this->getEntityManager()->getRepository(Contact::class)
                 ->findContactsBySelectionSQL($selection->getSql(), true);
         } else {
-            return $this->getEntityManager()->getRepository(Contact::class)
+            $contacts = $this->getEntityManager()->getRepository(Contact::class)
                 ->findContactsBySelectionContact($selection, true);
         }
+
+        return $contacts;
     }
 
     /**

@@ -68,6 +68,10 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     /**
      * @var array List of parameters needed to construct the URL from the router
      */
+    protected $fragment = null;
+    /**
+     * @var array List of parameters needed to construct the URL from the router
+     */
     protected $routerParams = [];
     /**
      * @var array List of parameters needed to construct the URL from the router
@@ -137,8 +141,8 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
 
         return sprintf(
             $uri,
-            $serverUrl() . $url($this->router,
-            $this->routerParams),
+            $serverUrl() . $url($this->router, $this->routerParams,
+                is_null($this->getFragment()) ?: ['fragment' => $this->getFragment()]),
             htmlentities($this->text),
             implode(' ', $this->classes),
             in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
@@ -166,6 +170,10 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                     case 'view-admin':
                     case 'view':
                         $this->addLinkContent('<i class="fa fa-user"></i>');
+                        break;
+                    case 'export-excel':
+                    case 'export-csv':
+                        $this->addLinkContent('<i class="fa fa-file-excel-o"></i>');
                         break;
 
                     case 'send-message':
@@ -206,10 +214,7 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
                     throw new \InvalidArgumentException(sprintf(
                         "The option \"%s\" should be available in the showOptions array, only \"%s\" are available",
                         $this->getShow(),
-                        implode(
-                            ', ',
-                            array_keys($this->showOptions)
-                        )
+                        implode(', ', array_keys($this->showOptions))
                     ));
                 }
                 $this->addLinkContent($this->showOptions[$this->getShow()]);
@@ -657,6 +662,26 @@ abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwar
     public function setSelection($selection)
     {
         $this->selection = $selection;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFragment()
+    {
+        return $this->fragment;
+    }
+
+    /**
+     * @param array $fragment
+     *
+     * @return LinkAbstract
+     */
+    public function setFragment($fragment)
+    {
+        $this->fragment = $fragment;
 
         return $this;
     }

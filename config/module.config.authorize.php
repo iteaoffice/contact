@@ -176,6 +176,14 @@ return [
                     'roles' => [strtolower(Access::ACCESS_OFFICE)]
                 ],
                 [
+                    'route' => 'zfcadmin/selection-manager/export/csv',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/export/excel',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
                     'route' => 'zfcadmin/selection-manager/view',
                     'roles' => [strtolower(Access::ACCESS_OFFICE)]
                 ],

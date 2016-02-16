@@ -200,18 +200,18 @@ class ContactController extends ContactAbstractController implements
             'typeId'
         );
 
-        $this->getContactService()->setContactId($contactId);
+        $contactService = $this->getContactService()->setContactId($contactId);
 
-        if ($this->getContactService()->isEmpty()) {
+        if ($contactService->isEmpty()) {
             return $this->notFoundAction();
         }
 
         switch ($typeId) {
             case AddressType::ADDRESS_TYPE_FINANCIAL:
-                $address = $this->getContactService()->getAddressByTypeId(AddressType::ADDRESS_TYPE_FINANCIAL);
+                $address = $contactService->getAddressByTypeId(AddressType::ADDRESS_TYPE_FINANCIAL);
                 break;
             case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
-                $address = $this->getContactService()->getAddressByTypeId(AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+                $address = $contactService->getAddressByTypeId(AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
                 break;
             default:
                 return $this->notFoundAction();

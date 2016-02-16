@@ -25,7 +25,7 @@ class DndObject //extends EntityAbstract implements ResourceInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="object_id", type="integer", nullable=false)
+     * @ORM\Column(name="object_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

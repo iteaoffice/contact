@@ -55,7 +55,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
             self::MESSENGER_ACTIVE => self::MESSENGER_ACTIVE_VALUE,
         ];
     /**
-     * @ORM\Column(name="contact_id", type="integer", length=10, nullable=false)
+     * @ORM\Column(name="contact_id", length=10, type="integer", length=10, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
@@ -137,7 +137,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @ORM\Column(name="date_birth", type="date", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Date")
-     * @Annotation\Options({"label":"txt-date"})
+     * @Annotation\Options({"label":"txt-date-of-birth"})
      * @var \DateTime
      */
     private $dateOfBirth;
@@ -157,8 +157,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     private $lastUpdate;
     /**
      * @ORM\Column(name="date_end", type="datetime", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Date")
-     * @Annotation\Options({"label":"txt-date-end"})
+     * @Annotation\Exclude()
      * @var \datetime
      */
     private $dateEnd;
@@ -176,8 +175,19 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * )
      * @ORM\OrderBy({"access"="ASC"})
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
-     * @Annotation\Options({"target_class":"Admin\Entity\Access"})
-     * @Annotation\Attributes({"label":"txt-access"})
+     * @Annotation\Options({
+     *      "target_class":"Admin\Entity\Access",
+     *      "find_method":{
+     *          "name":"findBy",
+     *          "params": {
+     *              "criteria":{},
+     *              "orderBy":{
+     *                  "access":"ASC"}
+     *              }
+     *          }
+     *      }
+     * )
+     * @Annotation\Attributes({"label":"txt-access","help-block":"txt-access-help-block"})
      * @var \Admin\Entity\Access[]|Collections\ArrayCollection()
      */
     private $access;
@@ -1610,11 +1620,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $name = sprintf(
             "%s. %s",
-            substr(
-                $this->firstName,
-                0,
-                1
-            ),
+            substr($this->firstName, 0, 1),
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
@@ -2195,7 +2201,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Affiliation\Entity\Financial|Collections\ArrayCollection
+     * @return \Affiliation\Entity\Financial[]|Collections\ArrayCollection
      */
     public function getFinancial()
     {
@@ -2203,7 +2209,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  \Affiliation\Entity\Financial|Collections\ArrayCollection $financial
+     * @param  \Affiliation\Entity\Financial[]|Collections\ArrayCollection $financial
      *
      * @return Contact
      */

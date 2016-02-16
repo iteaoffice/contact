@@ -57,3 +57,5 @@ _("txt-no-cv-available");
 _("txt-select-all");
 _("txt-remove");
 _("txt-add");
+
+_("txt-organisation-help-block");

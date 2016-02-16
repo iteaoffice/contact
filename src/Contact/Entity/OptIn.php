@@ -40,7 +40,7 @@ class OptIn extends EntityAbstract
     ];
 
     /**
-     * @ORM\Column(name="optin_id", type="integer", nullable=false)
+     * @ORM\Column(name="optin_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -57,7 +57,7 @@ class OptIn extends EntityAbstract
      */
     private $optIn;
     /**
-     * @ORM\Column(name="auto_subscribe", type="integer", nullable=false)
+     * @ORM\Column(name="auto_subscribe", length=10, type="integer", nullable=false)
      *
      * @var integer
      */

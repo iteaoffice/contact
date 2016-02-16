@@ -32,7 +32,7 @@ use Zend\Validator\EmailAddress;
 class Email extends EntityAbstract implements ResourceInterface
 {
     /**
-     * @ORM\Column(name="email_id", type="integer", nullable=false)
+     * @ORM\Column(name="email_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()

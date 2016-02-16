@@ -29,7 +29,7 @@ use Zend\InputFilter\InputFilterInterface;
 class OpenId extends EntityAbstract
 {
     /**
-     * @ORM\Column(name="openid_id", type="integer", nullable=false)
+     * @ORM\Column(name="openid_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

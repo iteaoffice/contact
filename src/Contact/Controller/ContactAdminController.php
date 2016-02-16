@@ -51,11 +51,12 @@ class ContactAdminController extends ContactAbstractController implements Projec
         $form->setData(['filter' => $filterPlugin->getFilter()]);
 
         return new ViewModel([
-            'paginator'     => $paginator,
-            'form'          => $form,
-            'encodedFilter' => urlencode($filterPlugin->getHash()),
-            'order'         => $filterPlugin->getOrder(),
-            'direction'     => $filterPlugin->getDirection(),
+            'paginator'      => $paginator,
+            'form'           => $form,
+            'encodedFilter'  => urlencode($filterPlugin->getHash()),
+            'order'          => $filterPlugin->getOrder(),
+            'direction'      => $filterPlugin->getDirection(),
+            'projectService' => $this->getProjectService()
         ]);
     }
 
@@ -157,6 +158,9 @@ class ContactAdminController extends ContactAbstractController implements Projec
             $form = $this->getFormService()->prepare($contact, $contact, $data);
         }
 
+        //Disable the inarray validator for organisations
+        $form->get('contact')->get('organisation')->setDisableInArrayValidator(true);
+
         /** Show or hide buttons based on the status of a contact */
         if ($contactService->isActive()) {
             $form->remove('reactivate');
@@ -199,12 +203,11 @@ class ContactAdminController extends ContactAbstractController implements Projec
 
             /** Handle the form */
             if ($form->isValid()) {
-                var_dump($data);
-                die();
                 /**
                  * @var $contact Contact
                  */
                 $contact = $form->getData();
+
                 $contact = $this->getContactService()->updateEntity($contact);
 
                 //Update the contactOrganisation (if set)
@@ -215,9 +218,10 @@ class ContactAdminController extends ContactAbstractController implements Projec
                     $contactOrganisation = $contact->getContactOrganisation();
                 }
 
-                $contactOrganisation->setBranch(strlen($data['branch']) === 0 ? null : $data['branch']);
+                $contactOrganisation->setBranch(strlen($data['contact']['branch']) === 0 ? null
+                    : $data['contact']['branch']);
                 $contactOrganisation->setOrganisation($this->getOrganisationService()
-                    ->setOrganisationId($data['organisation'])->getOrganisation());
+                    ->setOrganisationId($data['contact']['organisation'])->getOrganisation());
 
                 $this->getContactService()->updateEntity($contactOrganisation);
 

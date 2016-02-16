@@ -200,6 +200,10 @@ class SelectionManagerController extends ContactAbstractController
 
         $form->setAttribute('class', 'form-horizontal');
 
+        $form->get('selection')->get('contact')->setValueOptions([
+            $this->zfcUserAuthentication()->getIdentity()->getId() => $this->zfcUserAuthentication()->getIdentity()
+                ->getFormName()
+        ])->setDisableInArrayValidator(true);
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
@@ -259,5 +263,59 @@ class SelectionManagerController extends ContactAbstractController
         }
 
         return new JsonModel($results);
+    }
+
+    /**
+     * @return array|\Zend\Stdlib\ResponseInterface
+     */
+    public function exportCsvAction()
+    {
+        $selectionService = $this->getSelectionService()->setSelectionId($this->params('id'));
+
+        if ($selectionService->isEmpty()) {
+            return $this->notFoundAction();
+        }
+
+        // Open the output stream
+        $fh = fopen('php://output', 'w');
+
+        ob_start();
+
+        fputcsv($fh, [
+            'Email',
+            'Firstname',
+            'Lastname',
+            'Organisation',
+            'Country'
+        ]);
+
+        foreach ($this->getContactService()->findContactsInSelection($selectionService->getSelection(), true) as $contact) {
+            fputcsv($fh, [
+                $contact['email'],
+                $contact['firstName'],
+                trim(sprintf("%s %s", $contact['middleName'], $contact['lastName'])),
+                $contact['organisation'],
+                $contact['country']
+            ]);
+        }
+
+        $string = ob_get_clean();
+
+        //To be able to open the file correctly in Excel, we need to convert it to UTF-16LE
+        $string = mb_convert_encoding($string, 'UTF-16LE', 'UTF8');
+
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'text/csv');
+        $headers->addHeaderLine(
+            'Content-Disposition',
+            "attachment; filename=\"selection_" . $selectionService->getSelection()->getSelection() . ".csv\""
+        );
+        $headers->addHeaderLine('Accept-Ranges', 'bytes');
+        $headers->addHeaderLine('Content-Length', strlen($string));
+
+        $response->setContent($string);
+
+        return $response;
     }
 }

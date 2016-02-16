@@ -33,10 +33,10 @@
             <dt>{{ translate("txt-personal") }}</dt>
             <dd>{{ translate(selectionService.selection.getPersonal(true))|raw }}</dd>
             <dt>{{ translate("txt-date-created") }}</dt>
-            <dd>{{ selectionService.selection.dateCreated|time_diff }}</dd>
+            <dd>{{ selectionService.selection.dateCreated|string_date }}</dd>
             {% if selectionService.selection.dateDeleted %}
                 <dt>{{ translate("txt-date-deleted") }}</dt>
-                <dd><i class="fa fa-trash"></i> {{ selectionService.selection.dateDeleted|time_diff }}</dd>
+                <dd><i class="fa fa-trash"></i> {{ selectionService.selection.dateDeleted|string_date }}</dd>
             {% endif %}
             {% if selectionService.selection.contact %}
                 <dt>{{ translate("txt-owner") }}</dt>
@@ -58,8 +58,7 @@
         {% endif %}
 
         {{ selectionLink( selectionService.selection,'edit','button') }}
-
-
+        {{ selectionLink( selectionService.selection ,'edit-contacts','button') }}
         {{ selectionLink( null ,'list','button') }}
     </div>
     <div class="tab-pane" id="contacts">
@@ -78,10 +77,10 @@
                 {% for contact in contacts %}
                     <tr>
                         <td>
-                            <a href="{{ url('zfcadmin/contact-admin/view',{'id':contact['c_id']}) }}">{{ contact['c_firstName'] }} {{ contact['c_middleName'] }} {{ contact['c_lastName'] }}</a>
+                            <a href="{{ url('zfcadmin/contact-admin/view',{'id':contact['id']}) }}">{{ contact['firstName'] }} {{ contact['middleName'] }} {{ contact['lastName'] }}</a>
                         </td>
-                        <td>{{ contact['c_email'] }}</td>
-                        <td>{{ contact['o_organisation'] }}</td>
+                        <td>{{ contact['email'] }}</td>
+                        <td>{{ contact['organisation'] }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -91,6 +90,8 @@
         {% endif %}
 
         {{ selectionLink( selectionService.selection ,'edit-contacts','button') }}
+        {{ selectionLink( selectionService.selection ,'export-csv','button') }}
+        {{ selectionLink( selectionService.selection ,'export-excel','button') }}
     </div>
     <div class="tab-pane" id="mailings">
         <h2>{{ translate("txt-mailings") }}</h2>
@@ -110,7 +111,7 @@
                         <td>{{ mailingLink(mailing,'view','name') }}</td>
                         <td>{{ mailing.mailSubject }}</td>
                         <td>{{ contactLink(mailing.contact,'view-admin','name') }}</td>
-                        <td>{{ mailing.dateCreated|time_diff }}</td>
+                        <td>{{ mailing.dateCreated|string_date }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -142,7 +143,6 @@
         {% endif %}
     </div>
 </div>
-
 
 
 <script type="text/javascript">
