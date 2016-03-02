@@ -452,11 +452,12 @@ class Contact extends EntityRepository
     public function findContactsBySelectionContact(Selection $selection, $toArray = false)
     {
         $qb = $this->_em->createQueryBuilder();
-        $qb->select('c', 'co', 'o');
+        $qb->select('c', 'co', 'o', 'cy');
         $qb->from("Contact\Entity\Contact", 'c');
         $qb->join('c.selectionContact', 'sc');
         $qb->leftJoin('c.contactOrganisation', 'co');
         $qb->join('co.organisation', 'o');
+        $qb->join('o.country', 'cy');
         $qb->distinct('c.id');
         $qb->andWhere($qb->expr()->isNull('c.dateEnd'));
         $qb->andWhere('sc.selection = ?1');

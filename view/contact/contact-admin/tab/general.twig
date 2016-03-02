@@ -25,8 +25,8 @@
     {% if contactService.hasOrganisation() %}
         <dd>{{ organisationLink(
             contactService.findOrganisationService,'view-admin', 'name',contactService.contact.contactOrganisation.branch
-            ) }}, ({{ contactService.contact.contactOrganisation.organisation.type }}
-            ) {{ contactService.contact.contactOrganisation.organisation.country }}</dd>
+            ) }}, ({{ contactService.contact.contactOrganisation.organisation.type }})
+            {{ countryLink(contactService.contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
     {% else %}
         <dd>{{ translate("txt-no-organisation-provided") }}</dd>
     {% endif %}
@@ -35,6 +35,12 @@
     <dd>{{ contactService.contact.department|default(translate("txt-unknown")) }}</dd>
     <dt>{{ translate("txt-position") }}</dt>
     <dd>{{ contactService.contact.position }}</dd>
+    <dt>{{ translate("txt-access") }}</dt>
+    {% for access in contactService.contact.access %}
+        <dd>{{ accessLink(access,'view','name') }}</dd>
+    {% else %}
+        <dd>{{ translate("txt-no-access-defined") }}</dd>
+    {% endfor %}
 </dl>
 
 <h3>{{ translate("txt-notes") }}</h3>

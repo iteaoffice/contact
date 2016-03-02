@@ -207,7 +207,6 @@ class ContactAdminController extends ContactAbstractController implements Projec
                  * @var $contact Contact
                  */
                 $contact = $form->getData();
-
                 $contact = $this->getContactService()->updateEntity($contact);
 
                 //Update the contactOrganisation (if set)
@@ -227,14 +226,66 @@ class ContactAdminController extends ContactAbstractController implements Projec
 
                 return $this->redirect()
                     ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
-            } else {
-                var_dump($form->getInputFilter()->getMessages());
             }
         }
 
         return new ViewModel([
             'contactService' => $contactService,
             'form'           => $form,
+        ]);
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function newAction()
+    {
+        $contact = new Contact();
+
+
+        $data = array_merge($this->getRequest()->getPost()->toArray());
+        $form = $this->getFormService()->prepare($contact, $contact, $data);
+
+        //Disable the inarray validator for organisations
+        $form->get('contact')->get('organisation')->setDisableInArrayValidator(true);
+
+        /** Show or hide buttons based on the status of a contact */
+
+        $form->remove('reactivate');
+        $form->remove('deactivate');
+
+
+        if ($this->getRequest()->isPost()) {
+
+            /** Cancel the form */
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('zfcadmin/contact-admin/list');
+            }
+
+            /** Handle the form */
+            if ($form->isValid()) {
+                /**
+                 * @var $contact Contact
+                 */
+                $contact = $form->getData();
+                $contact = $this->getContactService()->updateEntity($contact);
+
+                $contactOrganisation = new ContactOrganisation();
+                $contactOrganisation->setContact($contact);
+
+                $contactOrganisation->setBranch(strlen($data['contact']['branch']) === 0 ? null
+                    : $data['contact']['branch']);
+                $contactOrganisation->setOrganisation($this->getOrganisationService()
+                    ->setOrganisationId($data['contact']['organisation'])->getOrganisation());
+
+                $this->getContactService()->updateEntity($contactOrganisation);
+
+                return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form,
         ]);
     }
 

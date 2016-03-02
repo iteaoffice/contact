@@ -36,6 +36,15 @@ return [
                                     ],
                                 ],
                             ],
+                            'new'        => [
+                                'type'    => 'Literal',
+                                'options' => [
+                                    'route'    => '/new.html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
                             'view'        => [
                                 'type'    => 'Segment',
                                 'options' => [

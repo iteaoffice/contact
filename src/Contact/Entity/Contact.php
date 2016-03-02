@@ -1098,42 +1098,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * Needed for the hydration of form elements
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return [
-            'project'        => $this->project,
-            'projectVersion' => $this->projectVersion,
-            'address'        => $this->address,
-            'phone'          => $this->phone,
-            'community'      => $this->community,
-            'emailAddress'   => $this->emailAddress,
-            'access'         => $this->access,
-            'optIn'          => $this->optIn,
-            'web'            => $this->web,
-            'domain'         => $this->domain,
-            'technology'     => $this->technology,
-            'cv'             => $this->cv,
-            'email'          => $this->email,
-            'dnd'            => $this->dnd,
-            'nda'            => $this->nda,
-            'programDoa'     => $this->programDoa,
-            'openId'         => $this->openId,
-            'note'           => $this->note,
-            'idea'           => $this->idea,
-            'photo'          => $this->photo,
-        ];
-    }
-
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
-    /**
      * Returns the string identifier of the Role.
      * We return the access here since that entity keeps the access roles
      *
@@ -1188,7 +1152,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function addAccess(Collections\Collection $accessCollection)
     {
         foreach ($accessCollection as $access) {
-            $access->contact = $this;
             $this->access->add($access);
         }
     }
@@ -1213,7 +1176,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function addAddress(Collections\Collection $addressCollection)
     {
         foreach ($addressCollection as $address) {
-            $address->contact = $this;
             $this->address->add($address);
         }
     }
@@ -1238,7 +1200,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function addPhone(Collections\Collection $phoneCollection)
     {
         foreach ($phoneCollection as $phone) {
-            $phone->contact = $this;
             $this->phone->add($phone);
         }
     }
@@ -1263,7 +1224,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function addPhoto(Collections\Collection $photoCollection)
     {
         foreach ($photoCollection as $photo) {
-            $photo->contact = $this;
             $this->photo->add($photo);
         }
     }
@@ -1288,7 +1248,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function addCommunity(Collections\Collection $communityCollection)
     {
         foreach ($communityCollection as $community) {
-            $community->contact = $this;
             $this->community->add($community);
         }
     }

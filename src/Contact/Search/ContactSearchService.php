@@ -38,14 +38,14 @@ class ContactSearchService extends AbstractSearchService implements ContactServi
      *
      * <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
      * <field name="contact_id" type="int" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="fullname" type="c_text" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="lastname" type="c_text" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="position" type="c_text" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="type" type="lowercase" indexed="true" stored="true" omitNorms="true"/>
+     * <field name="fullname" type="text_general" indexed="true" stored="true" omitNorms="true"/>
+     * <field name="lastname" type="string" indexed="true" stored="true" omitNorms="true"/>
+     * <field name="position" type="text_en_splitting" indexed="true" stored="true" omitNorms="true"/>
+     * <field name="type" type="string" indexed="true" stored="true" omitNorms="true"/>
      * <field name="photo_url" type="string" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="organisation" type="c_text" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="organisation_type" type="lowercase" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="country" type="lowercase" indexed="true" stored="true" omitNorms="true"/>
+     * <field name="organisation" type="string" indexed="true" stored="true" omitNorms="true"/>
+     * <field name="organisation_type" type="string" indexed="true" stored="true" omitNorms="true"/>
+     * <field name="country" type="string" indexed="true" stored="true" omitNorms="true"/>
      * <field name="profile" type="text_en_splitting" indexed="true" stored="true" omitNorms="true"/>
      * <field name="cv" type="text_en_splitting" indexed="true" stored="true" omitNorms="true"/>
      *
@@ -123,13 +123,14 @@ class ContactSearchService extends AbstractSearchService implements ContactServi
     public function setSearch($searchTerm, $order = 'lastname', $direction = Query::SORT_ASC)
     {
         $this->setQuery($this->getSolrClient()->createSelect());
-        $this->getQuery()->setQuery(
-            static::parseQuery($searchTerm, [
-                'fullname', 'position', 'organisation', 'profile', 'country'
-            ])
-        );
-        
-        $this->getQuery()->addSort('score', Query::SORT_DESC);
+        $this->getQuery()->setQuery(str_replace('%s', $searchTerm, implode(' ' . Query::QUERY_OPERATOR_OR . ' ', [
+                'fullname:*%s*',
+                'position:*%s*',
+                'organisation:*%s',
+                'profile:*%s*',
+                'country:*%s*'
+            ])));
+
         $this->getQuery()->addSort($order, $direction);
 
         $facetSet = $this->getQuery()->getFacetSet();

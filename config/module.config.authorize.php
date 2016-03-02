@@ -116,6 +116,11 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
+                    'route'     => 'zfcadmin/contact-admin/new',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
                     'route'     => 'zfcadmin/contact-admin/list',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class

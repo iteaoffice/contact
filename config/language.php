@@ -59,3 +59,4 @@ _("txt-remove");
 _("txt-add");
 
 _("txt-organisation-help-block");
+_("txt-date-of-birth");
