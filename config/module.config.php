@@ -9,7 +9,8 @@
  */
 namespace Contact;
 
-use Contact\Acl\Assertion;
+use Contact\Acl;
+use Contact\Factory;
 use Contact\Form\View\Helper\ContactFormElement;
 use Contact\Search;
 use Contact\Service;
@@ -18,30 +19,27 @@ use Zend\Stdlib\ArrayUtils;
 
 $config = [
     'controllers'     => [
-        'initializers' => [
-            Controller\ControllerInitializer::class
+        'invokables'         => [
+            //            Controller\ConsoleController::class,
+            //            Controller\ContactController::class,
+            //            Controller\ProfileController::class,
+            //            Controller\SelectionManagerController::class,
+            //            Controller\FacebookManagerController::class,
+            //            Controller\FacebookController::class,
+            //            Controller\AddressManagerController::class,
+            //            Controller\PhoneManagerController::class,
+            //            Controller\NoteManagerController::class,
+            //            Controller\ContactAdminController::class,
         ],
-        'invokables'   => [
-            Controller\ConsoleController::class          => Controller\ConsoleController::class,
-            Controller\ContactController::class          => Controller\ContactController::class,
-            Controller\ProfileController::class          => Controller\ProfileController::class,
-            Controller\SelectionManagerController::class => Controller\SelectionManagerController::class,
-            Controller\FacebookManagerController::class  => Controller\FacebookManagerController::class,
-            Controller\FacebookController::class         => Controller\FacebookController::class,
-            Controller\AddressManagerController::class   => Controller\AddressManagerController::class,
-            Controller\PhoneManagerController::class     => Controller\PhoneManagerController::class,
-            Controller\NoteManagerController::class      => Controller\NoteManagerController::class,
-            Controller\ContactAdminController::class     => Controller\ContactAdminController::class,
+        'abstract_factories' => [
+            Controller\Factory\ControllerInvokableAbstractFactory::class,
         ],
     ],
     'view_manager'    => [
         'template_map' => include __DIR__ . '/../template_map.php',
     ],
     'view_helpers'    => [
-        'initializers' => [
-            Helper\ViewHelperInitializer::class
-        ],
-        'invokables'   => [
+        'invokables' => [
             'contactformelement'     => ContactFormElement::class,
             'communityLink'          => Helper\CommunityLink::class,
             'createContactFromArray' => Helper\CreateContactFromArray::class,
@@ -55,56 +53,56 @@ $config = [
             'noteLink'               => Helper\NoteLink::class,
             'phoneLink'              => Helper\PhoneLink::class,
             'contactPhoto'           => Helper\ContactPhoto::class,
-        ]
+        ],
     ],
     'service_manager' => [
-        'initializers' => [
-            Service\ServiceInitializer::class
-        ],
-        'factories'    => [
+        'factories'          => [
             'contact_contact_navigation_service'                       => 'Contact\Navigation\Factory\ContactNavigationServiceFactory',
-            'contact_module_config'                                    => 'Contact\Factory\ConfigServiceFactory',
-            'contact_cache'                                            => 'Contact\Factory\CacheFactory',
             'Contact\Provider\Identity\AuthenticationIdentityProvider' => 'Contact\Factory\AuthenticationIdentityProviderServiceFactory',
+            Service\SelectionService::class                            => Factory\SelectionServiceFactory::class,
+            Service\ContactService::class                              => Factory\ContactServiceFactory::class,
+            Service\AddressService::class                              => Factory\AddressServiceFactory::class,
+            Service\FormService::class                                 => Factory\FormServiceFactory::class,
+            Options\ModuleOptions::class                               => Factory\ModuleOptionsFactory::class,
+            Search\Service\ContactSearchService::class                 => Search\Factory\ContactSearchFactory::class,
+            //            Acl\Assertion\Contact::class,
+            //            Acl\Assertion\Facebook::class,
+            //            Acl\Assertion\Address::class,
+            //            Acl\Assertion\Note::class,
+            //            Acl\Assertion\Phone::class,
+            //            Acl\Assertion\Selection::class,
         ],
-        'invokables'   => [
-            Assertion\Contact::class           => Assertion\Contact::class,
-            Assertion\Facebook::class          => Assertion\Facebook::class,
-            Assertion\Address::class           => Assertion\Address::class,
-            Assertion\Note::class              => Assertion\Note::class,
-            Assertion\Phone::class             => Assertion\Phone::class,
-            Assertion\Selection::class         => Assertion\Selection::class,
-            Service\SelectionService::class    => Service\SelectionService::class,
-            Service\StatisticsService::class   => Service\StatisticsService::class,
-            Service\ContactService::class      => Service\ContactService::class,
-            Service\AddressService::class      => Service\AddressService::class,
-            Search\ContactSearchService::class => Search\ContactSearchService::class,
-            'contact_contact_service'          => 'Contact\Service\ContactService',
-            'contact_address_service'          => 'Contact\Service\AddressService',
-            'contact_form_service'             => 'Contact\Service\FormService',
+        'abstract_factories' => [
+            Acl\Factory\AssertionInvokableAbstractFactory::class,
+        ],
+        'shared'             => [
+            // Usually, you'll only indicate services that should **NOT** be
+            // shared -- i.e., ones where you want a different instance
+            // every time.
+            Service\ContactService::class => false,
+        ],
+        'invokables'         => [
 
-            'contact_facebook_form_filter'     => 'Contact\Form\FilterCreateObject',
-            'contact_address_form_filter'      => 'Contact\Form\FilterCreateObject',
-            'contact_note_form_filter'         => 'Contact\Form\FilterCreateObject',
-            'contact_phone_form_filter'        => 'Contact\Form\FilterCreateObject',
-            'contact_selection_form_filter'    => 'Contact\Form\FilterCreateObject',
-            'contact_password_form'            => 'Contact\Form\Password',
-            'contact_password_form_filter'     => 'Contact\Form\PasswordFilter',
-        ]
+            'contact_facebook_form_filter'  => 'Contact\Form\FilterCreateObject',
+            'contact_address_form_filter'   => 'Contact\Form\FilterCreateObject',
+            'contact_note_form_filter'      => 'Contact\Form\FilterCreateObject',
+            'contact_phone_form_filter'     => 'Contact\Form\FilterCreateObject',
+            'contact_selection_form_filter' => 'Contact\Form\FilterCreateObject',
+        ],
     ],
     'doctrine'        => [
         'driver'       => [
             'contact_annotation_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => [
-                    __DIR__ . '/../src/Contact/Entity/'
-                ]
+                    __DIR__ . '/../src/Contact/Entity/',
+                ],
             ],
             'orm_default'               => [
                 'class'   => 'Doctrine\ORM\Mapping\Driver\DriverChain',
                 'drivers' => [
                     __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
-                ]
+                ],
             ],
         ],
         'eventmanager' => [
@@ -112,8 +110,8 @@ $config = [
                 'subscribers' => [
                     'Gedmo\Timestampable\TimestampableListener',
                     'Gedmo\Sluggable\SluggableListener',
-                    'Gedmo\SoftDeleteable\SoftDeleteableListener'
-                ]
+                    'Gedmo\SoftDeleteable\SoftDeleteableListener',
+                ],
             ],
         ],
     ],
@@ -125,7 +123,6 @@ $configFiles = [
     __DIR__ . '/module.config.navigation.php',
     __DIR__ . '/module.config.authorize.php',
     __DIR__ . '/module.config.community.php',
-    __DIR__ . '/module.config.contact.php',
     __DIR__ . '/module.config.search.php',
 ];
 foreach ($configFiles as $configFile) {

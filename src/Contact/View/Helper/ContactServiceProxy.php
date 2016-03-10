@@ -25,7 +25,7 @@ class ContactServiceProxy extends HelperAbstract
      */
     public function __invoke(Contact $contact)
     {
-        $contactService = clone $this->serviceLocator->getServiceLocator()->get('contact_contact_service');
+        $contactService = clone $this->serviceLocator->getServiceLocator()->get(ContactService::class);
 
         return $contactService->setContact($contact);
     }

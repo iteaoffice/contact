@@ -12,36 +12,28 @@ namespace Contact\Controller;
 
 use Contact\Entity\AddressType;
 use Contact\Entity\Photo;
-use General\Service\EmailServiceAwareInterface;
+use Contact\Form\Password;
+use Contact\InputFilter\PasswordFilter;
 use Search\Form\SearchResult;
 use Search\Paginator\Adapter\SolariumPaginator;
-use Search\Service\SearchServiceAwareInterface;
-use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
-use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
- * @category    Contact
+ * Class ContactController
  *
- * @method      ZfcUserAuthentication zfcUserAuthentication()
- * @method      FlashMessenger flashMessenger()
- * @method      bool isAllowed($resource, $action)
+ * @package Contact\Controller
  */
-class ContactController extends ContactAbstractController implements
-    EmailServiceAwareInterface,
-    SearchServiceAwareInterface
+class ContactController extends ContactAbstractController
 {
     /**
      * @return ViewModel
      */
     public function signatureAction()
     {
-        $contactService = $this->getContactService()->setContact(
-            $this->zfcUserAuthentication()->getIdentity()
-        );
+        $contactService = $this->getContactService()->setContact($this->zfcUserAuthentication()->getIdentity());
 
         return new ViewModel(['contactService' => $contactService]);
     }
@@ -56,16 +48,13 @@ class ContactController extends ContactAbstractController implements
         /**
          * @var $photo Photo
          */
-        $photo = $this->getContactService()->findEntityById(
-            'photo',
-            $this->params('id')
-        );
+        $photo = $this->getContactService()->findEntityById('photo', $this->params('id'));
 
         /*
          * Do a check if the given has is correct to avoid guessing the image
          */
-        if (is_null($photo) || is_null($photo->getPhoto()) || $this->params('hash')
-            !== $photo->getHash()
+        if (is_null($photo) || is_null($photo->getPhoto())
+            || $this->params('hash') !== $photo->getHash()
         ) {
             return $this->notFoundAction();
         }
@@ -83,16 +72,10 @@ class ContactController extends ContactAbstractController implements
         }
 
         $response = $this->getResponse();
-        $response->getHeaders()
-            ->addHeaderLine(
-                'Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000)
-            )
-            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
-            ->addHeaderLine("Pragma: public")
-            ->addHeaderLine(
-                'Content-Type: ' . $photo->getContentType()->getContentType()
-            )
-            ->addHeaderLine('Content-Length: ' . (string) strlen($file));
+        $response->getHeaders()->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
+            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")->addHeaderLine("Pragma: public")
+            ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
+            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -105,39 +88,29 @@ class ContactController extends ContactAbstractController implements
      */
     public function optInUpdateAction()
     {
-        $optInId = (int) $this->params()->fromQuery('optInId');
+        $optInId = (int)$this->params()->fromQuery('optInId');
 
         /*
          * We do not specify the enable, so we give the result
          */
         if (is_null($enable = $this->params()->fromQuery('enable'))) {
-            return new JsonModel(
-                [
-                    'enable' => $this->getContactService()
-                        ->hasOptInEnabledByContact(
-                            $optInId,
-                            $this->zfcUserAuthentication()->getIdentity()
-                        ),
-                    'id'     => $optInId,
-                ]
-            );
+            return new JsonModel([
+                'enable' => $this->getContactService()
+                    ->hasOptInEnabledByContact($optInId, $this->zfcUserAuthentication()->getIdentity()),
+                'id'     => $optInId,
+            ]);
         }
 
         //Make a boolean value of $enable
         $enable = ($enable === 'true');
 
-        $this->getContactService()->updateOptInForContact(
-            $optInId,
-            $enable,
-            $this->zfcUserAuthentication()->getIdentity()
-        );
+        $this->getContactService()
+            ->updateOptInForContact($optInId, $enable, $this->zfcUserAuthentication()->getIdentity());
 
-        return new JsonModel(
-            [
-                'enable' => $enable,
-                'id'     => $optInId,
-            ]
-        );
+        return new JsonModel([
+            'enable' => $enable,
+            'id'     => $optInId,
+        ]);
     }
 
     /**
@@ -145,9 +118,7 @@ class ContactController extends ContactAbstractController implements
      */
     public function hasSessionAction()
     {
-        $viewModel = new ViewModel(
-            ['hasSession' => $this->zfcUserAuthentication()->getIdentity()]
-        );
+        $viewModel = new ViewModel(['hasSession' => $this->zfcUserAuthentication()->getIdentity()]);
         $viewModel->setTerminal(true);
 
         return $viewModel;
@@ -158,10 +129,8 @@ class ContactController extends ContactAbstractController implements
      */
     public function changePasswordAction()
     {
-        $form = $this->getServiceLocator()->get('contact_password_form');
-        $form->setInputFilter(
-            $this->getServiceLocator()->get('contact_password_form_filter')
-        );
+        $form = new Password();
+        $form->setInputFilter(new PasswordFilter());
         $form->setAttribute('class', 'form-horizontal');
 
         $data = array_merge_recursive(
@@ -172,14 +141,11 @@ class ContactController extends ContactAbstractController implements
         $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
-            if ($this->getContactService()->updatePasswordForContact(
-                $formData['password'],
-                $this->zfcUserAuthentication()->getIdentity()
-            )
+            if ($this->getContactService()
+                ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity())
             ) {
-                $this->flashMessenger()->setNamespace('success')->addMessage(
-                    _("txt-password-successfully-been-updated")
-                );
+                $this->flashMessenger()->setNamespace('success')
+                    ->addMessage($this->translate("txt-password-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
             }
@@ -193,12 +159,8 @@ class ContactController extends ContactAbstractController implements
      */
     public function getAddressByTypeAction()
     {
-        $contactId = (int) $this->getEvent()->getRequest()->getQuery()->get(
-            'id'
-        );
-        $typeId = (int) $this->getEvent()->getRequest()->getQuery()->get(
-            'typeId'
-        );
+        $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
+        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
 
         $contactService = $this->getContactService()->setContactId($contactId);
 
@@ -221,14 +183,12 @@ class ContactController extends ContactAbstractController implements
             return new JsonModel();
         }
 
-        return new JsonModel(
-            [
-                'address' => $address->getAddress()->getAddress(),
-                'zipCode' => $address->getAddress()->getZipCode(),
-                'city'    => $address->getAddress()->getCity(),
-                'country' => $address->getAddress()->getCountry()->getId(),
-            ]
-        );
+        return new JsonModel([
+            'address' => $address->getAddress()->getAddress(),
+            'zipCode' => $address->getAddress()->getZipCode(),
+            'city'    => $address->getAddress()->getCity(),
+            'country' => $address->getAddress()->getCountry()->getId(),
+        ]);
     }
 
     /**
@@ -240,7 +200,7 @@ class ContactController extends ContactAbstractController implements
         $page = $this->params('page', 1);
         $form = new SearchResult();
         $data = array_merge(['query' => '*', 'facet' => []], $this->getRequest()->getQuery()->toArray());
-        
+
         if ($this->getRequest()->isGet()) {
             $searchService->setSearch($data['query']);
             if (isset($data['facet'])) {
@@ -252,7 +212,7 @@ class ContactController extends ContactAbstractController implements
 
                     $searchService->addFilterQuery(
                         $facetField,
-                        implode(' '.SolariumQuery::QUERY_OPERATOR_OR.' ', $quotedValues)
+                        implode(' ' . SolariumQuery::QUERY_OPERATOR_OR . ' ', $quotedValues)
                     );
                 }
             }
@@ -263,15 +223,12 @@ class ContactController extends ContactAbstractController implements
             );
             $form->setData($data);
         }
-        
-        $paginator = new Paginator(new SolariumPaginator(
-            $searchService->getSolrClient(),
-            $searchService->getQuery()
-        ));
+
+        $paginator = new Paginator(new SolariumPaginator($searchService->getSolrClient(), $searchService->getQuery()));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 16);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
-        
+
         return new ViewModel([
             'form'                   => $form,
             'paginator'              => $paginator,

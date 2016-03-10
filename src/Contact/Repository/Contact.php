@@ -250,11 +250,11 @@ class Contact extends EntityRepository
      *  Returns true of false depending if a contact is a community member.
      *
      * @param Entity\Contact                    $contact
-     * @param Options\CommunityOptionsInterface $options
+     * @param Options\ModuleOptions $options
      *
      * @return boolean|null
      */
-    public function findIsCommunityMember(Entity\Contact $contact, Options\CommunityOptionsInterface $options)
+    public function findIsCommunityMember(Entity\Contact $contact, Options\ModuleOptions $options)
     {
         if ($options->getCommunityViaMembers()) {
             /*

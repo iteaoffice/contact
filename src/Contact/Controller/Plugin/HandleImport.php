@@ -288,7 +288,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
                 }
                 $contact->addOptIn($contactOptIn);
 
-                if (!$this->getContactService()->setContact($contact)->inSelection($this->getSelection())) {
+                if (!$this->getContactService()->contactInSelection($contact, $this->getSelection())) {
                     $selectionContact = new SelectionContact();
                     $selectionContact->setSelection($this->getSelection());
                     $selectionContact->setContact($contact);
@@ -440,7 +440,8 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
         if (!empty($selectionName)) {
             $selection = new Selection();
             $selection->setSelection($selectionName);
-            $selection->setContact($this->getServiceLocator()->get('zfcuser_auth_service')->getIdentity());
+            $selection->setContact($this->getServiceLocator()->get('Application\Authentication\Service')
+                ->getIdentity());
 
             $selection = $this->getContactService()->newEntity($selection);
             $this->setSelection($selection);
@@ -507,7 +508,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
      */
     public function getContactService()
     {
-        return clone $this->getServiceLocator()->get('contact_contact_service');
+        return clone $this->getServiceLocator()->get(ContactService::class);
     }
 
     /**

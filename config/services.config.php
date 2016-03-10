@@ -39,9 +39,7 @@ return [
         'contact_selection_form'      => function (ServiceManager $sm) {
             return new Form\CreateObject($sm, new Entity\Selection());
         },
-        'contact_impersonate_form'    => function (ServiceManager $sm) {
-            return new Form\Impersonate($sm);
-        },
+        
         'contact_contact_form_filter' => function (ServiceManager $sm) {
             return new InputFilter\ContactFilter($sm->get(EntityManager::class));
 

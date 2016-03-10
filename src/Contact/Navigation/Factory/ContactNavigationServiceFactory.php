@@ -30,26 +30,31 @@ class ContactNavigationServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $contactNavigationService = new ContactNavigationService();
+        try {
+            $contactNavigationService = new ContactNavigationService();
 
-        $contactNavigationService->setTranslator($serviceLocator->get('viewhelpermanager')->get('translate'));
-        /**
-         * @var $contactService ContactService
-         */
-        $contactService = clone $serviceLocator->get('contact_contact_service');
-        $contactNavigationService->setContactService($contactService);
-        $application = $serviceLocator->get('application');
-        $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());
-        $contactNavigationService->setRouter($application->getMvcEvent()->getRouter());
+            $contactNavigationService->setTranslator($serviceLocator->get('viewhelpermanager')->get('translate'));
+            /**
+             * @var $contactService ContactService
+             */
+            $contactService = clone $serviceLocator->get(ContactService::class);
+            $contactNavigationService->setContactService($contactService);
+            $application = $serviceLocator->get('application');
+            $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());
+            $contactNavigationService->setRouter($application->getMvcEvent()->getRouter());
 
-        if ($serviceLocator->get('zfcuser_auth_service')->hasIdentity()) {
-            $contactNavigationService->setContact($serviceLocator->get('zfcuser_auth_service')->getIdentity());
+            if ($serviceLocator->get('Application\Authentication\Service')->hasIdentity()) {
+                $contactNavigationService->setContact($serviceLocator->get('Application\Authentication\Service')->getIdentity());
+            }
+
+            /* @var $navigation Navigation */
+            $navigation = $serviceLocator->get('navigation');
+            $contactNavigationService->setNavigation($navigation);
+
+            return $contactNavigationService;
+        } catch (\Exception $e) {
+            var_dump($e);
+            die();
         }
-
-        /* @var $navigation Navigation */
-        $navigation = $serviceLocator->get('navigation');
-        $contactNavigationService->setNavigation($navigation);
-
-        return $contactNavigationService;
     }
 }

@@ -14,7 +14,6 @@ use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
 use Contact\Service\ContactService;
 use Content\Entity\Content;
-use Zend\Cache\Storage\Adapter\AbstractAdapter;
 use Zend\Http\Request;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
@@ -76,7 +75,9 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
             switch ($param->getParameter()->getParam()) {
                 case 'optin':
                     if (!is_null($optInId = $param->getParameterId())) {
-                        $this->setOptIn($this->getContactService()->findEntityById('optIn', $optInId));
+                        /** @var OptIn $optIn */
+                        $optIn = $this->getContactService()->findEntityById('optIn', $optInId);
+                        $this->setOptIn($optIn);
                     }
                     break;
                 default:
@@ -142,7 +143,7 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
      */
     public function getContactService()
     {
-        return $this->getServiceLocator()->get('contact_contact_service');
+        return $this->getServiceLocator()->get(ContactService::class);
     }
 
     /**
@@ -172,14 +173,11 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
      */
     public function parseOptInButton(OptIn $optIn)
     {
-        return $this->getRenderer()->render(
-            'contact/partial/optin-button',
-            [
-                'includeAngularApp' => true,
-                'optIn'             => $optIn,
-                'hasIdentity'       => $this->getServiceLocator()->get('zfcuser_auth_service')->hasIdentity(),
-            ]
-        );
+        return $this->getRenderer()->render('contact/partial/optin-button', [
+            'includeAngularApp' => true,
+            'optIn'             => $optIn,
+            'hasIdentity'       => $this->getServiceLocator()->get('Application\Authentication\Service')->hasIdentity(),
+        ]);
     }
 
     /**
@@ -189,12 +187,9 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
      */
     public function parseContact(ContactService $contactService)
     {
-        return $this->getRenderer()->render(
-            'contact/partial/contact',
-            [
-                'contact' => $contactService->getContact(),
-            ]
-        );
+        return $this->getRenderer()->render('contact/partial/contact', [
+            'contact' => $contactService->getContact(),
+        ]);
     }
 
     /**
@@ -203,22 +198,6 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
     public function getRenderer()
     {
         return $this->getServiceLocator()->get('ZfcTwigRenderer');
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->getServiceLocator()->get('contact_module_config');
-    }
-
-    /**
-     * @return AbstractAdapter
-     */
-    public function getCache()
-    {
-        return $this->getServiceLocator()->get('contact_cache');
     }
 
     /**

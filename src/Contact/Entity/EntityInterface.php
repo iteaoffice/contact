@@ -12,6 +12,8 @@ namespace Contact\Entity;
 
 interface EntityInterface
 {
+    public function getId();
+
     public function __get($property);
 
     public function __set($property, $value);

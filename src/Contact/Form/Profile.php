@@ -14,16 +14,15 @@ use Contact\Entity\Contact;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Profile as ProfileEntity;
 use Contact\Hydrator\Profile as ProfileHydrator;
+use Contact\Service\ContactService;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityRadio;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Country;
-use General\Service\GeneralService;
 use Organisation\Entity\Organisation;
 use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  *
@@ -31,20 +30,19 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class Profile extends Form
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param Contact                 $contact
+     * Profile constructor.
+     * @param EntityManager $entityManager
+     * @param ContactService $contactService
+     * @param Contact $contact
      */
-    public function __construct(ServiceLocatorInterface $serviceLocator, Contact $contact)
+    public function __construct(EntityManager $entityManager, ContactService $contactService, Contact $contact)
     {
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         $this->setAttribute('action', '');
-        /**
-         * @var $entityManager EntityManager
-         */
-        $entityManager = $serviceLocator->get('Doctrine\ORM\EntityManager');
-        $contactService = $serviceLocator->get('contact_contact_service');
+
+        /** @var ContactService $contactService */
         $doctrineHydrator = new ProfileHydrator($entityManager);
         $this->setHydrator($doctrineHydrator)->setObject($contact);
         /*
@@ -135,6 +133,7 @@ class Profile extends Form
          * Produce a list of all phone numbers
          */
         $phoneFieldSet = new Fieldset('phone');
+        /** @var PhoneType $phoneType */
         foreach ($contactService->findAll('phoneType') as $phoneType) {
             if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE])) {
                 $fieldSet = new Fieldset($phoneType->getId());
@@ -210,8 +209,8 @@ class Profile extends Form
                         'name'   => 'findBy',
                         'params' => [
                             'criteria' => [],
-                            'orderBy'  => ['country' => 'ASC']
-                        ]
+                            'orderBy'  => ['country' => 'ASC'],
+                        ],
                     ],
                 ],
                 'attributes' => [
@@ -230,7 +229,7 @@ class Profile extends Form
                 'options'    => [
                     'label'                     => _("txt-organisation"),
                     'label_options'             => [
-                        'disable_html_escape' => true
+                        'disable_html_escape' => true,
                     ],
                     'escape'                    => false,
                     'disable_inarray_validator' => true,
@@ -240,7 +239,7 @@ class Profile extends Form
                         'name'   => 'findOrganisationForProfileEditByContact',
                         'params' => [
                             'criteria' => [],
-                            'contact'  => $contact
+                            'contact'  => $contact,
                         ],
                     ],
                     'label_generator'           => function (Organisation $organisation) {
@@ -289,8 +288,8 @@ class Profile extends Form
                         'name'   => 'findBy',
                         'params' => [
                             'criteria' => [],
-                            'orderBy'  => ['country' => 'ASC']
-                        ]
+                            'orderBy'  => ['country' => 'ASC'],
+                        ],
                     ],
                 ],
                 'attributes' => [

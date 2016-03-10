@@ -11,29 +11,22 @@
 namespace Contact\Controller;
 
 use Admin\Service\AdminService;
-use Admin\Service\AdminServiceAwareInterface;
 use BjyAuthorize\Controller\Plugin\IsAllowed;
+use Contact\Controller\Plugin;
+use Contact\Search\Service\ContactSearchService;
 use Contact\Service\ContactService;
-use Contact\Service\ContactServiceAwareInterface;
 use Contact\Service\FormService;
-use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\SelectionService;
-use Contact\Service\SelectionServiceAwareInterface;
 use Deeplink\Service\DeeplinkService;
-use Deeplink\Service\DeeplinkServiceAwareInterface;
+use Doctrine\ORM\EntityManager;
 use General\Service\EmailService;
 use General\Service\GeneralService;
-use General\Service\GeneralServiceAwareInterface;
 use Organisation\Service\OrganisationService;
 use Project\Service\ProjectService;
 use Search\Service\SearchService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
-use Contact\Controller\Plugin\GetFilter;
-use Contact\Controller\Plugin\HandleImport;
-use Contact\Search\ContactSearchServiceAwareInterface;
-use Contact\Search\ContactSearchService;
 
 /**
  * @category    Contact
@@ -41,18 +34,16 @@ use Contact\Search\ContactSearchService;
  * @method ZfcUserAuthentication zfcUserAuthentication()
  * @method FlashMessenger flashMessenger()
  * @method IsAllowed isAllowed($resource, $action)
- * @method HandleImport handleImport($data, $import, $optIn, $selectionId, $selectionName)
- * @method GetFilter getContactFilter()
+ * @method Plugin\HandleImport handleImport($data, $import, $optIn, $selectionId, $selectionName)
+ * @method Plugin\PartnerSearch partnerSearch()
+ * @method Plugin\GetFilter getContactFilter()
  */
-abstract class ContactAbstractController extends AbstractActionController implements
-    SelectionServiceAwareInterface,
-    AdminServiceAwareInterface,
-    FormServiceAwareInterface,
-    ContactServiceAwareInterface,
-    DeeplinkServiceAwareInterface,
-    GeneralServiceAwareInterface,
-    ContactSearchServiceAwareInterface
+abstract class ContactAbstractController extends AbstractActionController
 {
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
     /**
      * @var AdminService
      */
@@ -252,6 +243,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
     /**
      * @param  SearchService $searchService
+     *
      * @return ContactAbstractController
      */
     public function setSearchService(SearchService $searchService)
@@ -288,6 +280,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
     /**
      * @param  OrganisationService $organisationService
+     *
      * @return ContactAbstractController
      */
     public function setOrganisationService(OrganisationService $organisationService)
@@ -307,6 +300,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
     /**
      * @param ProjectService $projectService
+     *
      * @return ContactAbstractController
      */
     public function setProjectService(ProjectService $projectService)
@@ -315,7 +309,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
         return $this;
     }
-    
+
     /**
      * @return ContactSearchService
      */
@@ -332,6 +326,26 @@ abstract class ContactAbstractController extends AbstractActionController implem
     public function setContactSearchService(ContactSearchService $contactSearchService)
     {
         $this->contactSearchService = $contactSearchService;
+
+        return $this;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @param EntityManager $entityManager
+     *
+     * @return ContactAbstractController
+     */
+    public function setEntityManager($entityManager)
+    {
+        $this->entityManager = $entityManager;
 
         return $this;
     }

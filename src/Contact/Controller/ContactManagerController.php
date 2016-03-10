@@ -10,17 +10,13 @@
 
 namespace Contact\Controller;
 
-use Contact\Controller\Plugin\HandleImport;
-use Contact\Form\Import;
 use Contact\Form\Statistics;
 use Contact\Service\StatisticsService;
-use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
 
 /**
- * Class ContactManagerController.
+ * Class ContactManagerController
  *
- * @method HandleImport handleImport()
+ * @package Contact\Controller
  */
 class ContactManagerController extends ContactAbstractController
 {

@@ -11,13 +11,10 @@
 
 namespace Contact\Controller;
 
-use Contact\Controller\Plugin\PartnerSearch;
-use Search\Service\SearchServiceAwareInterface;
-
 /**
  * Class ContactController.
- * @method PartnerSearch partnerSearch()
+ *
  */
-class ConsoleController extends ContactAbstractController implements SearchServiceAwareInterface
+class ConsoleController extends ContactAbstractController
 {
 }

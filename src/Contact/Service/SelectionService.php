@@ -27,10 +27,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class SelectionService extends ServiceAbstract
 {
-    /**
-     * @var Selection
-     */
-    protected $selection;
 
     /** @param int $id
      * @return SelectionService;
@@ -109,7 +105,7 @@ class SelectionService extends ServiceAbstract
              * Skip the deleted selections and the ones the user is in
              */
             if (is_null($selection->getDateDeleted()) && !is_null($selection->getSql())
-                && $this->getContactService()->inSelection($selection)
+                && $this->getContactService()->contactInSelection($contact, $selection)
             ) {
                 $selections[] = $selection;
             }
@@ -151,10 +147,7 @@ class SelectionService extends ServiceAbstract
                 foreach (explode(',', $data['added']) as $contactId) {
                     $contact = $this->getContactService()->findEntityById('contact', $contactId);
 
-                    $contactService = clone $this->getContactService();
-                    $contactService->setContact($contact);
-
-                    if (!$contactService->isEmpty() && !$contactService->inSelection($selection)) {
+                    if (!$contact->isEmpty() && !$this->getContactService()->contactInSelection($contact, $selection)) {
                         $selectionContact = new SelectionContact();
                         $selectionContact->setContact($contact);
                         $selectionContact->setSelection($selection);

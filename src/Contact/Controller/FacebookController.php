@@ -12,7 +12,6 @@ namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
 use Contact\Form\SendMessage;
-use General\Service\EmailServiceAwareInterface;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use Zend\View\Model\ViewModel;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
@@ -24,7 +23,7 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  * @method      FlashMessenger flashMessenger()
  * @method      bool isAllowed($resource, $action)
  */
-class FacebookController extends ContactAbstractController implements EmailServiceAwareInterface
+class FacebookController extends ContactAbstractController
 {
     /**
      * @return ViewModel
@@ -32,13 +31,13 @@ class FacebookController extends ContactAbstractController implements EmailServi
     public function facebookAction()
     {
         /**
-         * @var $facebook Facebook
+         * @var Facebook $facebook
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
         $view = new ViewModel([
             'facebook'          => $facebook,
             'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
-            'contactInFacebook' => $this->getContactService()->findContactInFacebook($facebook),
+            'contactInFacebook' => $this->getContactService()->isContactInFacebook($this->zfcUserAuthentication()->getIdentity(), $facebook),
         ]);
         $view->setTemplate($this->getContactService()->getFacebookTemplate());
 

@@ -13,13 +13,10 @@ namespace Contact\Controller;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Form\ContactFilter;
+use Contact\Form\Impersonate;
 use Contact\Form\Import;
-use Contact\Form\Statistics;
-use Contact\Service\StatisticsService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Organisation\Service\OrganisationServiceAwareInterface;
-use Project\Service\ProjectServiceAwareInterface;
 use Zend\Paginator\Paginator;
 use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
@@ -30,7 +27,7 @@ use Zend\View\Model\ViewModel;
  *
  *
  */
-class ContactAdminController extends ContactAbstractController implements ProjectServiceAwareInterface, OrganisationServiceAwareInterface
+class ContactAdminController extends ContactAbstractController
 {
     /**
      * @return ViewModel
@@ -56,7 +53,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
             'encodedFilter'  => urlencode($filterPlugin->getHash()),
             'order'          => $filterPlugin->getOrder(),
             'direction'      => $filterPlugin->getDirection(),
-            'projectService' => $this->getProjectService()
+            'projectService' => $this->getProjectService(),
         ]);
     }
 
@@ -65,17 +62,16 @@ class ContactAdminController extends ContactAbstractController implements Projec
      */
     public function viewAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->params('id'));
-        $contact = clone $contactService->getContact();
+        $contact = $this->getContactService()->findEntityById('contact', $this->params('id'));
         $selections = $this->getSelectionService()->findSelectionsByContact($contact);
         $optIn = $this->getContactService()->findAll('optIn');
 
-        if ($contactService->isEmpty()) {
+        if ($contact->isEmpty()) {
             return $this->notFoundAction();
         }
 
         return new ViewModel([
-            'contactService' => $contactService,
+            'contact'        => $contact,
             'selections'     => $selections,
             'projects'       => $this->getProjectService()->findProjectParticipationByContact($contact),
             'projectService' => $this->getProjectService(),
@@ -103,7 +99,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
     public function impersonateAction()
     {
         $contactService = $this->getContactService()->setContactId($this->params('id'));
-        $form = $this->getServiceLocator()->get('contact_impersonate_form');
+        $form = new Impersonate($this->getEntityManager());
 
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
@@ -142,7 +138,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
         if ($contactService->hasOrganisation()) {
             $data = array_merge([
                 'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
-                'branch'       => $contact->getContactOrganisation()->getBranch()
+                'branch'       => $contact->getContactOrganisation()->getBranch(),
             ], $this->getRequest()->getPost()->toArray());
 
             $form = $this->getFormService()->prepare($contact, $contact, $data);
@@ -151,7 +147,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
             $form->get('contact')->get('organisation')->setValueOptions([
                 $contactService->getContact()->getContactOrganisation()->getOrganisation()
                     ->getId() => $contactService->getContact()->getContactOrganisation()->getOrganisation()
-                    ->getOrganisation()
+                    ->getOrganisation(),
             ]);
         } else {
             $data = array_merge($this->getRequest()->getPost()->toArray());
@@ -292,28 +288,6 @@ class ContactAdminController extends ContactAbstractController implements Projec
     /**
      * @return ViewModel
      */
-    public function statisticsAction()
-    {
-        $filter = $this->getRequest()->getQuery()->get('filter', []);
-        /*
-         * @var StatisticsService
-         */
-        $statisticsService = $this->getServiceLocator()->get(StatisticsService::class);
-
-        $form = new Statistics();
-        $form->setData($_GET);
-
-        $contacts = [];
-        if ($this->getRequest()->isGet() && $form->isValid()) {
-            $statisticsService->setFilter($form->getData());
-        }
-
-        return new ViewModel(['form' => $form, 'contacts' => $contacts]);
-    }
-
-    /**
-     * @return ViewModel
-     */
     public function importAction()
     {
         $data = array_merge_recursive(
@@ -390,7 +364,7 @@ class ContactAdminController extends ContactAbstractController implements Projec
                 ),
                 'id'           => $result['id'],
                 'email'        => $result['email'],
-                'organisation' => $result['organisation']
+                'organisation' => $result['organisation'],
             ];
         }
 

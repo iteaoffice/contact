@@ -12,23 +12,13 @@
 namespace Contact\Service;
 
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
-class FormService implements ServiceLocatorAwareInterface
+class FormService extends ServiceAbstract
 {
     /**
      * @var Form
      */
     protected $form;
-    /**
-     * @var \Contact\Service\ContactService
-     */
-    protected $contactService;
-    /**
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
 
     /**
      * @param null $className
@@ -40,15 +30,15 @@ class FormService implements ServiceLocatorAwareInterface
     public function getForm($className = null, $entity = null, $bind = true)
     {
         if (!is_null($className) && is_null($entity)) {
-            $entity = $this->getContactService()->getEntity($className);
+            $entity = $this->getEntity($className);
         }
         if (!is_object($entity)) {
             throw new \InvalidArgumentException("No entity created given");
         }
-        $formName   = 'contact_'.$entity->get('underscore_entity_name').'_form';
-        $form       = $this->getServiceLocator()->get($formName);
-        $filterName = 'contact_'.$entity->get('underscore_entity_name').'_form_filter';
-        $filter     = $this->getServiceLocator()->get($filterName);
+        $formName = 'contact_' . $entity->get('underscore_entity_name') . '_form';
+        $form = $this->getServiceLocator()->get($formName);
+        $filterName = 'contact_' . $entity->get('underscore_entity_name') . '_form_filter';
+        $filter = $this->getServiceLocator()->get($filterName);
         $form->setInputFilter($filter);
         if ($bind) {
             $form->bind($entity);
@@ -70,47 +60,5 @@ class FormService implements ServiceLocatorAwareInterface
         $form->setData($data);
 
         return $form;
-    }
-
-    /**
-     * @param ContactService $contactService
-     */
-    public function setContactService($contactService)
-    {
-        $this->contactService = $contactService;
-    }
-
-    /**
-     * Get contactService.
-     *
-     * @return ContactService.
-     */
-    public function getContactService()
-    {
-        if (null === $this->contactService) {
-            $this->contactService = $this->getServiceLocator()->get('contact_contact_service');
-        }
-
-        return $this->contactService;
-    }
-
-    /**
-     * Set the service locator.
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-    }
-
-    /**
-     * Get the service locator.
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
     }
 }

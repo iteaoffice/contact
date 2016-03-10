@@ -26,12 +26,17 @@ class AuthenticationIdentityProviderServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $user = $serviceLocator->get('zfcuser_user_service');
-        $simpleIdentityProvider = new AuthenticationIdentityProvider($user->getAuthService(), $serviceLocator);
-        $config = $serviceLocator->get('BjyAuthorize\Config');
-        $simpleIdentityProvider->setDefaultRole($config['default_role']);
-        $simpleIdentityProvider->setAuthenticatedRole($config['authenticated_role']);
+        try {
+            $user = $serviceLocator->get('zfcuser_user_service');
+            $simpleIdentityProvider = new AuthenticationIdentityProvider($user->getAuthService(), $serviceLocator);
+            $config = $serviceLocator->get('BjyAuthorize\Config');
+            $simpleIdentityProvider->setDefaultRole($config['default_role']);
+            $simpleIdentityProvider->setAuthenticatedRole($config['authenticated_role']);
 
-        return $simpleIdentityProvider;
+            return $simpleIdentityProvider;
+        } catch (\Exception $e) {
+            var_dump($e);
+            die();
+        }
     }
 }
