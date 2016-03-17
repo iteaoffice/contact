@@ -5,7 +5,7 @@
  * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\View\Helper;
@@ -25,7 +25,7 @@ class ContactServiceProxy extends HelperAbstract
      */
     public function __invoke(Contact $contact)
     {
-        $contactService = clone $this->serviceLocator->getServiceLocator()->get('contact_contact_service');
+        $contactService = clone $this->serviceLocator->getServiceLocator()->get(ContactService::class);
 
         return $contactService->setContact($contact);
     }

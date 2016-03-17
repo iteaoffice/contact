@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\View\Helper;
@@ -22,10 +22,10 @@ class SelectionLink extends LinkAbstract
 {
     /**
      * @param Selection $selection
-     * @param string $action
-     * @param string $show
-     * @param null $page
-     * @param null $alternativeShow
+     * @param string    $action
+     * @param string    $show
+     * @param null      $page
+     * @param null      $alternativeShow
      *
      * @return string
      *
@@ -53,11 +53,9 @@ class SelectionLink extends LinkAbstract
             $this->setAlternativeShow($page);
         }
 
-        $this->setShowOptions(
-            [
+        $this->setShowOptions([
                 'name' => $this->getSelection()->getSelection(),
-            ]
-        );
+            ]);
         $this->addRouterParam('page', $page);
 
         $this->addRouterParam('id', $this->getSelection()->getId());
@@ -79,7 +77,8 @@ class SelectionLink extends LinkAbstract
                 $this->setRouter('zfcadmin/selection-manager/list');
                 $this->setText($this->translate('txt-list-selections'));
 
-                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key => $param) {
+                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
+                    $param) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
@@ -87,21 +86,38 @@ class SelectionLink extends LinkAbstract
                 break;
             case 'edit':
                 $this->setRouter('zfcadmin/selection-manager/edit');
-                $this->setText(
-                    sprintf($this->translate('txt-edit-selection-%s'), $this->getSelection()->getSelection())
-                );
+                $this->setText(sprintf(
+                    $this->translate('txt-edit-selection-%s'),
+                    $this->getSelection()->getSelection()
+                ));
                 break;
             case 'edit-contacts':
                 $this->setRouter('zfcadmin/selection-manager/edit-contacts');
-                $this->setText(
-                    sprintf($this->translate('txt-edit-contacts-selection-%s'), $this->getSelection()->getSelection())
-                );
+                $this->setText(sprintf(
+                    $this->translate('txt-edit-contacts-selection-%s'),
+                    $this->getSelection()->getSelection()
+                ));
+                break;
+            case 'export-csv':
+                $this->setRouter('zfcadmin/selection-manager/export/csv');
+                $this->setText(sprintf(
+                    $this->translate('txt-export-selection-to-%s-csv'),
+                    $this->getSelection()->getSelection()
+                ));
+                break;
+            case 'export-excel':
+                $this->setRouter('zfcadmin/selection-manager/export/excel');
+                $this->setText(sprintf(
+                    $this->translate('txt-export-selection-to-%s-excel'),
+                    $this->getSelection()->getSelection()
+                ));
                 break;
             case 'view':
                 $this->setRouter('zfcadmin/selection-manager/view');
-                $this->setText(
-                    sprintf($this->translate('txt-view-selection-%s'), $this->getSelection()->getSelection())
-                );
+                $this->setText(sprintf(
+                    $this->translate('txt-view-selection-%s'),
+                    $this->getSelection()->getSelection()
+                ));
                 break;
             default:
                 throw new \Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));

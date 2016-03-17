@@ -2,10 +2,15 @@
 /**
  * ITEA Office copyright message placeholder.
  *
- * @category    Content
+ * PHP Version 5
+ *
+ * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   2004-2016 ITEA Office
+ * @license     https://itea3.org/license.txt proprietary
+ *
+ * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
 
 namespace Contact\Form;
@@ -16,8 +21,12 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Radio;
 use Zend\Form\Fieldset;
 
+/**
+ * Class ObjectFieldset.
+ */
 class ContactFieldset extends Fieldset
 {
     /**
@@ -27,99 +36,51 @@ class ContactFieldset extends Fieldset
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-        $contact          = new Entity\Contact();
-        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Contact');
-        $this->setHydrator($doctrineHydrator)->setObject($contact);
+        $doctrineHydrator = new DoctrineHydrator($entityManager);
+        $this->setHydrator($doctrineHydrator)->setObject($object);
         $builder = new AnnotationBuilder();
-        /*
+        /**
          * Go over the different form elements and add them to the form
          */
         foreach ($builder->createForm($object)->getElements() as $element) {
-            /*
+            /**
              * Go over each element to add the objectManager to the EntitySelect
              */
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
-                $element->setOptions(
-                    array(
-                        'object_manager' => $entityManager,
-                    )
-                );
+                $element->setOptions(array_merge_recursive($element->getOptions(), [
+                    'object_manager' => $entityManager,
+                ]));
+            }
+            if ($element instanceof Radio) {
+                $attributes = $element->getAttributes();
+                $valueOptionsArray = 'get' . ucfirst($attributes['array']);
+                $element->setOptions(array_merge_recursive($element->getOptions(), [
+                    'value_options' => $object->$valueOptionsArray(),
+                ]));
             }
             //Add only when a type is provided
             if (array_key_exists('type', $element->getAttributes())) {
                 $this->add($element);
             }
         }
-//        $contactPhone = new ContactPhoneFieldset($entityManager, new Entity\Phone());
-//        $contactPhone->setObject(new Entity\Phone());
-//        $this->add(
-//            array(
-//                'type'    => 'Zend\Form\Element\Collection',
-//                'name'    => 'phone',
-//                'options' => array(
-//                    'label'                  => _("txt-phone-information"),
-//                    'count'                  => 1,
-//                    'should_create_template' => true,
-//                    'template_placeholder'   => '__placeholder__',
-//                    'allow_add'              => true,
-//                    'target_element'         => $contactPhone,
-//                ),
-//            )
-//        );
-//        $contactProfileFieldset = new \Contact\Form\ContactProfileFieldset($entityManager, new Entity\Profile());
-//        $this->add($contactProfileFieldset);
-//        $contactPhoto = new \Contact\Form\ContactPhotoFieldset($entityManager, new Entity\Photo());
-//        $contactPhoto->setObject(new Entity\Photo());
-//        $this->add(
-//            array(
-//                'type'    => 'Zend\Form\Element\Collection',
-//                'name'    => 'photo',
-//                'options' => array(
-//                    'label'                  => _("txt-profile-photo"),
-//                    'count'                  => 1,
-//                    'should_create_template' => true,
-//                    'template_placeholder'   => '__placeholder__',
-//                    'allow_add'              => false,
-//                    'target_element'         => $contactPhoto,
-//                ),
-//            )
-//        );
-//        $contactAddress = new ContactAddressFieldset($entityManager, new Entity\Address());
-//        $contactAddress->setObject(new Entity\Address());
-//        $this->add(
-//            array(
-//                'type'    => 'Zend\Form\Element\Collection',
-//                'name'    => 'address',
-//                'options' => array(
-//                    'label'                  => _("txt-address-information"),
-//                    'count'                  => 1,
-//                    'should_create_template' => true,
-//                    'template_placeholder'   => '__placeholder__',
-//                    'allow_add'              => true,
-//                    'target_element'         => $contactAddress,
-//                ),
-//            )
-//        );
-//        $contactCommunity = new ContactCommunityFieldset($entityManager, new Entity\Community());
-//        $contactCommunity->setObject(new Entity\Community());
-//        $this->add(
-//            array(
-//                'type'    => 'Zend\Form\Element\Collection',
-//                'name'    => 'community',
-//                'options' => array(
-//                    'label'                  => _("txt-community-information"),
-//                    'count'                  => 5,
-//                    'should_create_template' => true,
-//                    'template_placeholder'   => '__placeholder__',
-//                    'allow_add'              => true,
-//                    'target_element'         => $contactCommunity,
-//                ),
-//            )
-//        );
-//        $contactOrganisationFieldset = new \Contact\Form\ContactOrganisationFieldset(
-//            $entityManager,
-//            new Entity\ContactOrganisation()
-//        );
-//        $this->add($contactOrganisationFieldset);
+
+        $this->add([
+            'type'    => '\Zend\Form\Element\Select',
+            'name'    => 'organisation',
+            'options' => [
+                'disable_inarray_validator' => true,
+                "label"                     => _("txt-organisation"),
+                "help-block"                => _("txt-organisation-help-block"),
+            ],
+        ]);
+
+        $this->add([
+            'type'    => '\Zend\Form\Element\Text',
+            'name'    => 'branch',
+            'options' => [
+                "label"      => _("txt-branch"),
+                "help-block" => _("txt-branch-help-block"),
+            ],
+        ]);
     }
 }

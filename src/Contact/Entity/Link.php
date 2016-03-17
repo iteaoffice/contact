@@ -1,11 +1,11 @@
 <?php
 /**
- * Debranova copyright message placeholder.
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 Debranova
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Entity;
@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Link
 {
     /**
-     * @ORM\Column(name="link_id", type="integer", nullable=false)
+     * @ORM\Column(name="link_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

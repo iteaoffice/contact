@@ -5,12 +5,13 @@
  * @category    Calecontactr
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Navigation\Factory;
 
 use Contact\Navigation\Service\ContactNavigationService;
+use Contact\Service\ContactService;
 use Zend\Navigation\Navigation;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -32,17 +33,18 @@ class ContactNavigationServiceFactory implements FactoryInterface
         $contactNavigationService = new ContactNavigationService();
 
         $contactNavigationService->setTranslator($serviceLocator->get('viewhelpermanager')->get('translate'));
-        /*
-         * @var ContactService
+        /**
+         * @var $contactService ContactService
          */
-        $contactService = clone $serviceLocator->get('contact_contact_service');
+        $contactService = clone $serviceLocator->get(ContactService::class);
         $contactNavigationService->setContactService($contactService);
         $application = $serviceLocator->get('application');
         $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());
         $contactNavigationService->setRouter($application->getMvcEvent()->getRouter());
 
-        if ($serviceLocator->get('zfcuser_auth_service')->hasIdentity()) {
-            $contactNavigationService->setContact($serviceLocator->get('zfcuser_auth_service')->getIdentity());
+        if ($serviceLocator->get('Application\Authentication\Service')->hasIdentity()) {
+            $contactNavigationService->setContact($serviceLocator->get('Application\Authentication\Service')
+                ->getIdentity());
         }
 
         /* @var $navigation Navigation */

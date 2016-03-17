@@ -19,7 +19,7 @@
             <dt>{{ translate("txt-country") }}</dt>
             <dd>{{ contactService.parseCountry() }}</dd>
             <dt>{{ translate("txt-expertise") }}</dt>
-            <dd>{{ contactService.contact.profile.description|raw }}</dd>
+            <dd>{{ contactService.contact.profile.description|nl2br|raw }}</dd>
         </dl>
     </div>
 

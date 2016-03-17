@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Version;
@@ -21,7 +21,7 @@ final class Version
     /**
      * Zend Framework version identification - see compareVersion().
      */
-    const VERSION = '1.2-dev';
+    const VERSION = '2.0.0';
     /**
      * Github Service Identifier for version information is retrieved from.
      */
@@ -91,16 +91,9 @@ final class Version
         }
         self::$latestVersion = 'not available';
         if (null === $httpClient && !ini_get('allow_url_fopen')) {
-            trigger_error(
-                sprintf(
-                    'allow_url_fopen is not set, and no Zend\Http\Client '.
-                    'was passed. You must either set allow_url_fopen in '.
-                    'your PHP configuration or pass a configured '.
-                    'Zend\Http\Client as the second argument to %s.',
-                    __METHOD__
-                ),
-                E_USER_WARNING
-            );
+            trigger_error(sprintf('allow_url_fopen is not set, and no Zend\Http\Client '
+                . 'was passed. You must either set allow_url_fopen in ' . 'your PHP configuration or pass a configured '
+                . 'Zend\Http\Client as the second argument to %s.', __METHOD__), E_USER_WARNING);
 
             return self::$latestVersion;
         }
@@ -108,13 +101,7 @@ final class Version
         if ($service === self::VERSION_SERVICE_GITHUB) {
             $response = self::getLatestFromGithub($httpClient);
         } else {
-            trigger_error(
-                sprintf(
-                    'Unknown version service: %s',
-                    $service
-                ),
-                E_USER_WARNING
-            );
+            trigger_error(sprintf('Unknown version service: %s', $service), E_USER_WARNING);
         }
         if ($response) {
             self::$latestVersion = $response;
@@ -132,16 +119,14 @@ final class Version
      */
     protected static function getLatestFromGithub(Http\Client $httpClient = null)
     {
-        $url = 'https://api.github.com/repos/debranova/contact/git/refs/tags/release-';
-        $url .= '?client_id=2b1088587b9820f33583&amp;client_secret=1738809f67b3fbf4198f2bc36ef54c52d6a3bb6c';
+        $url = 'https://api.github.com/repos/iteaoffice/contact/git/refs/tags/release-';
+
         if ($httpClient === null) {
-            $context = stream_context_create(
-                array(
-                    'http' => array(
-                        'user_agent' => sprintf('debranova-version/%s', self::VERSION),
-                    ),
-                )
-            );
+            $context = stream_context_create([
+                    'http' => [
+                        'user_agent' => sprintf('iteaoffice-version/%s', self::VERSION),
+                    ],
+                ]);
             $apiResponse = file_get_contents($url, false, $context);
         } else {
             $request = new Http\Request();
@@ -154,21 +139,15 @@ final class Version
         }
         $decodedResponse = Json::decode($apiResponse, Json::TYPE_ARRAY);
         // Simplify the API response into a simple array of version numbers
-        $tags = array_map(
-            function ($tag) {
-                return substr($tag['ref'], 18); // Reliable because we're
-                // filtering on 'refs/tags/release-'
-            },
-            $decodedResponse
-        );
+        $tags = array_map(function ($tag) {
+            return substr($tag['ref'], 18); // Reliable because we're
+            // filtering on 'refs/tags/release-'
+        }, $decodedResponse);
 
         // Fetch the latest version number from the array
-        return array_reduce(
-            $tags,
-            function ($a, $b) {
-                return version_compare($a, $b, '>') ? $a : $b;
-            }
-        );
+        return array_reduce($tags, function ($a, $b) {
+            return version_compare($a, $b, '>') ? $a : $b;
+        });
     }
 
     /**

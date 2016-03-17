@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
+ * @copyright   Copyright (c] 2004-2015 ITEA Office (https://itea3.org]
  */
 use Admin\Entity\Access;
 use Contact\Acl\Assertion\Address as AddressAssertion;
@@ -80,12 +80,12 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/get-address-by-type',
+                    'route'     => 'community/contact/get-address-by-type',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/opt-in-update',
+                    'route'     => 'community/contact/opt-in-update',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -97,12 +97,12 @@ return [
                     ]
                 ],
                 [
-                    'route'     => 'contact/change-password',
+                    'route'     => 'community/contact/change-password',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/photo',
+                    'route'     => 'community/contact/photo',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -112,6 +112,11 @@ return [
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin',
+                    'roles'     => [strtolower(Access::ACCESS_OFFICE)],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
+                    'route'     => 'zfcadmin/contact-admin/new',
                     'roles'     => [strtolower(Access::ACCESS_OFFICE)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -169,6 +174,18 @@ return [
                 ],
                 [
                     'route' => 'zfcadmin/selection-manager/edit-contacts',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/get-contacts',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/export/csv',
+                    'roles' => [strtolower(Access::ACCESS_OFFICE)]
+                ],
+                [
+                    'route' => 'zfcadmin/selection-manager/export/excel',
                     'roles' => [strtolower(Access::ACCESS_OFFICE)]
                 ],
                 [

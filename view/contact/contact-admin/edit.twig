@@ -1,3 +1,4 @@
+
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-edit-contact-%s")|format(contactService.contact.displayName)) %}
 
@@ -6,3 +7,5 @@
 {% include 'contact/partial/form/contact' %}
 
 {{ contactLink( null ,'list','button') }}
+
+

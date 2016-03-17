@@ -1,11 +1,11 @@
 <?php
 /**
- * DebraNova copyright message placeholder.
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Repository;
@@ -21,6 +21,7 @@ class Selection extends EntityRepository
 {
     /**
      * @param array $filter
+     *
      * @return Query
      */
     public function findFiltered(array $filter)
@@ -30,12 +31,13 @@ class Selection extends EntityRepository
         $queryBuilder->from('Contact\Entity\Selection', 's');
 
         if (array_key_exists('search', $filter)) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->like('s.selection', ':like'),
-                    $queryBuilder->expr()->like('s.tag', ':like')
-                )
-            );
+            $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                $queryBuilder->expr()->like(
+                    's.selection',
+                    ':like'
+                ),
+                $queryBuilder->expr()->like('s.tag', ':like')
+            ));
 
             $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
         }
@@ -69,8 +71,10 @@ class Selection extends EntityRepository
                 break;
             default:
                 $queryBuilder->addOrderBy('s.id', $direction);
-
         }
+
+        //Do not show the deleted ones
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('s.dateDeleted'));
 
         return $queryBuilder->getQuery();
     }
@@ -86,7 +90,24 @@ class Selection extends EntityRepository
         $queryBuilder->from("Contact\\Entity\\Selection", 's');
         $queryBuilder->orderBy('s.tag', 'ASC');
 
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('s.dateDeleted'));
+
         return $queryBuilder->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function findActive()
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('s');
+        $queryBuilder->from("Contact\\Entity\\Selection", 's');
+        $queryBuilder->orderBy('s.selection', 'ASC');
+
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('s.dateDeleted'));
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
@@ -107,11 +128,7 @@ class Selection extends EntityRepository
         $subSelect->where('contact = :contact');
         $queryBuilder->setParameter('contact', $contact);
 
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->orX(
-                $queryBuilder->expr()->in('s.id', $subSelect->getDQL())
-            )
-        );
+        $queryBuilder->andWhere($queryBuilder->expr()->orX($queryBuilder->expr()->in('s.id', $subSelect->getDQL())));
 
         return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }

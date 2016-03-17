@@ -5,33 +5,28 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
 
 use Admin\Service\AdminService;
-use Admin\Service\AdminServiceAwareInterface;
 use BjyAuthorize\Controller\Plugin\IsAllowed;
+use Contact\Controller\Plugin;
+use Contact\Search\Service\ContactSearchService;
 use Contact\Service\ContactService;
-use Contact\Service\ContactServiceAwareInterface;
 use Contact\Service\FormService;
-use Contact\Service\FormServiceAwareInterface;
 use Contact\Service\SelectionService;
-use Contact\Service\SelectionServiceAwareInterface;
 use Deeplink\Service\DeeplinkService;
-use Deeplink\Service\DeeplinkServiceAwareInterface;
+use Doctrine\ORM\EntityManager;
 use General\Service\EmailService;
 use General\Service\GeneralService;
-use General\Service\GeneralServiceAwareInterface;
 use Organisation\Service\OrganisationService;
 use Project\Service\ProjectService;
 use Search\Service\SearchService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
-use Contact\Controller\Plugin\GetFilter;
-use Contact\Controller\Plugin\HandleImport;
 
 /**
  * @category    Contact
@@ -39,17 +34,16 @@ use Contact\Controller\Plugin\HandleImport;
  * @method ZfcUserAuthentication zfcUserAuthentication()
  * @method FlashMessenger flashMessenger()
  * @method IsAllowed isAllowed($resource, $action)
- * @method HandleImport handleImport()
- * @method GetFilter getContactFilter()
+ * @method Plugin\HandleImport handleImport($data, $import, $optIn, $selectionId, $selectionName)
+ * @method Plugin\PartnerSearch partnerSearch()
+ * @method Plugin\GetFilter getContactFilter()
  */
-abstract class ContactAbstractController extends AbstractActionController implements
-    SelectionServiceAwareInterface,
-    AdminServiceAwareInterface,
-    FormServiceAwareInterface,
-    ContactServiceAwareInterface,
-    DeeplinkServiceAwareInterface,
-    GeneralServiceAwareInterface
+abstract class ContactAbstractController extends AbstractActionController
 {
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
     /**
      * @var AdminService
      */
@@ -90,6 +84,10 @@ abstract class ContactAbstractController extends AbstractActionController implem
      * @var FormService
      */
     protected $formService;
+    /**
+     * @var ContactSearchService
+     */
+    protected $contactSearchService;
 
     /**
      * Gateway to the Contact Service.
@@ -245,6 +243,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
     /**
      * @param  SearchService $searchService
+     *
      * @return ContactAbstractController
      */
     public function setSearchService(SearchService $searchService)
@@ -266,7 +265,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
         /*
          * @var Translate
          */
-        $translate = $this->getServiceLocator()->get('ViewHelperManager')->get('translate');
+        $translate = $this->getPluginManager()->getServiceLocator()->get('ViewHelperManager')->get('translate');
 
         return $translate($string);
     }
@@ -281,6 +280,7 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
     /**
      * @param  OrganisationService $organisationService
+     *
      * @return ContactAbstractController
      */
     public function setOrganisationService(OrganisationService $organisationService)
@@ -300,11 +300,52 @@ abstract class ContactAbstractController extends AbstractActionController implem
 
     /**
      * @param ProjectService $projectService
+     *
      * @return ContactAbstractController
      */
     public function setProjectService(ProjectService $projectService)
     {
         $this->projectService = $projectService;
+
+        return $this;
+    }
+
+    /**
+     * @return ContactSearchService
+     */
+    public function getContactSearchService()
+    {
+        return $this->contactSearchService;
+    }
+
+    /**
+     * @param ContactSearchService $contactSearchService
+     *
+     * @return ContactAbstractController
+     */
+    public function setContactSearchService(ContactSearchService $contactSearchService)
+    {
+        $this->contactSearchService = $contactSearchService;
+
+        return $this;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @param EntityManager $entityManager
+     *
+     * @return ContactAbstractController
+     */
+    public function setEntityManager($entityManager)
+    {
+        $this->entityManager = $entityManager;
 
         return $this;
     }

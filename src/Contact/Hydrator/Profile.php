@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Hydrator;
@@ -51,7 +51,7 @@ class Profile extends DoctrineObject
         $values['profile']['visible'] = !is_null($object->getProfile()) ? $object->getProfile()->getVisible() : null;
         $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription() : null;
         /*
-         * Set the contact organisation, this will be taken from the contact_organisation item and can be userd
+         * Set the contact organisation, this will be taken from the contact_organisation item and can be used
          * to pre-fill the values
          */
         $contactService = new ContactService();
@@ -82,6 +82,8 @@ class Profile extends DoctrineObject
      */
     public function hydrate(array $data, $object)
     {
+        unset($data['contact_organisation']);
+
         $this->prepare($object);
         /**
          * Reformat the phone, address and community for the Contact object

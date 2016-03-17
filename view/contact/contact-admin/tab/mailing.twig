@@ -40,7 +40,7 @@
             <td>{{ mailingLink(mailingContact.mailing,'view','name') }}</td>
             <td>{{ mailingContact.mailing.mailSubject }}</td>
             <td>{{ contactLink(mailingContact.mailing.contact,'view-admin','name') }}</td>
-            <td>{{ mailingContact.dateSent|time_diff }}</td>
+            <td>{{ mailingContact.dateSent|string_date }}</td>
         </tr>
     {% endfor %}
     </tbody>

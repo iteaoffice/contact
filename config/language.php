@@ -53,3 +53,10 @@ _("txt-show-phone-explanation");
 _("txt-sql");
 _("txt-no-event-registrations-were-found-for-this-contact");
 _("txt-no-cv-available");
+
+_("txt-select-all");
+_("txt-remove");
+_("txt-add");
+
+_("txt-organisation-help-block");
+_("txt-date-of-birth");

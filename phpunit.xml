@@ -8,19 +8,10 @@
          processIsolation="false"
          backupGlobals="false"
          syntaxCheck="true"
-        >
-    <testsuite name="debranova/program Test Suite">
+>
+    <testsuite name="iteaoffice/contact">
         <directory>./tests/ContactTest</directory>
     </testsuite>
-
-    <php>
-        <const name="DEBRANOVA_HOST" value="test"/>
-        <const name="DEBRANOVA_APP" value="test"/>
-        <const name="DEBRANOVA_APPLICATION" value="test"/>
-        <const name="DEBRANOVA_ENV" value="development"/>
-        <const name="TEST_SUITE" value="full"/>
-    </php>
-
     <filter>
         <whitelist>
             <directory suffix=".php">./src</directory>
@@ -29,5 +20,6 @@
 
     <logging>
         <log type="coverage-clover" target="./clover.xml"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
 </phpunit>

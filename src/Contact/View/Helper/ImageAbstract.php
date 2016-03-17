@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\View\Helper;
@@ -67,11 +67,11 @@ abstract class ImageAbstract extends AbstractHelper implements ServiceLocatorAwa
      */
     public function createImageUrl()
     {
-        /*
-         * @var Url
+        /**
+         * @var Url $url
          */
         $url = $this->serviceLocator->get('url');
-        /*
+        /**
          * @var array
          */
         $config = $this->serviceLocator->getServiceLocator()->get('config');
@@ -89,13 +89,13 @@ abstract class ImageAbstract extends AbstractHelper implements ServiceLocatorAwa
             $url($this->router, $this->routerParams),
             $this->imageId,
             implode(' ', $this->classes),
-            is_null($this->height) ? null : ' height="'.$this->height.'px"'
+            is_null($this->height) ? null : ' height="' . $this->height . 'px"'
         );
 
         if (!$this->lightBox) {
             return $image;
         } else {
-            return '<a href="'.$url($this->router, $this->routerParams).'" data-lightbox="itea">'.$image.'</a>';
+            return '<a href="' . $url($this->router, $this->routerParams) . '" data-lightbox="itea">' . $image . '</a>';
         }
     }
 

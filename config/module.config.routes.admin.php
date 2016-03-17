@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c] 2004-2014 ITEA Office (http://itea3.org]
+ * @copyright   Copyright (c] 2004-2015 ITEA Office (https://itea3.org]
  */
 
 use Contact\Controller;
@@ -28,19 +28,26 @@ return [
                         'may_terminate' => true,
                         'child_routes'  => [
                             'list'        => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/list[/f-:encodedFilter][/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list',
                                     ],
                                 ],
                             ],
+                            'new'        => [
+                                'type'    => 'Literal',
+                                'options' => [
+                                    'route'    => '/new.html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
                             'view'        => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/view/[:id].html',
                                     'defaults' => [
                                         'action' => 'view',
@@ -48,9 +55,8 @@ return [
                                 ],
                             ],
                             'impersonate' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/impersonate/[:id].html',
                                     'defaults' => [
                                         'action' => 'impersonate',
@@ -58,9 +64,8 @@ return [
                                 ],
                             ],
                             'edit'        => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/edit/[:id].html',
                                     'defaults' => [
                                         'action' => 'edit',
@@ -68,9 +73,8 @@ return [
                                 ],
                             ],
                             'permit'      => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/permissions/[:id].html',
                                     'defaults' => [
                                         'action' => 'permit',
@@ -83,15 +87,6 @@ return [
                                     'route'    => '/search.html',
                                     'defaults' => [
                                         'action' => 'search',
-                                    ],
-                                ],
-                            ],
-                            'statistics'  => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/statistics.html',
-                                    'defaults' => [
-                                        'action' => 'statistics',
                                     ],
                                 ],
                             ],
@@ -122,7 +117,7 @@ return [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
-                                    'route'    => '/list.html',
+                                    'route'    => '/list[/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list',
                                     ],
@@ -133,9 +128,8 @@ return [
                                 ]
                             ],
                             'new'           => [
-                                'type'     => 'Literal',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Literal',
+                                'options' => [
                                     'route'    => '/new.html',
                                     'defaults' => [
                                         'action' => 'new',
@@ -143,9 +137,8 @@ return [
                                 ],
                             ],
                             'view'          => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/view/[:id].html',
                                     'defaults' => [
                                         'action' => 'view',
@@ -153,9 +146,8 @@ return [
                                 ],
                             ],
                             'edit'          => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/edit/[:id].html',
                                     'defaults' => [
                                         'action' => 'edit',
@@ -163,12 +155,49 @@ return [
                                 ],
                             ],
                             'edit-contacts' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/edit-contacts/[:id].html',
                                     'defaults' => [
                                         'action' => 'edit-contacts',
+                                    ],
+                                ],
+                            ],
+                            'get-contacts'  => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/get-contacts.html',
+                                    'defaults' => [
+                                        'action' => 'get-contacts',
+                                    ],
+                                ],
+                            ],
+                            'export'        => [
+                                'type'         => 'Literal',
+                                'options'      => [
+                                    'route'    => '/export',
+                                    'defaults' => [
+                                        'action' => 'export',
+                                    ],
+                                ],
+                                'child_routes' => [
+                                    'csv'   => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/[:id].csv',
+                                            'defaults' => [
+                                                'action' => 'export-csv',
+                                            ],
+                                        ],
+                                    ],
+                                    'excel' => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/[:id].xlsx',
+                                            'defaults' => [
+                                                'action' => 'export-excel',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],

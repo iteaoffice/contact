@@ -1,11 +1,11 @@
 <?php
 /**
- * Debranova copyright message placeholder.
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 Debranova
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Acl\Assertion;
@@ -24,10 +24,10 @@ class Contact extends AssertionAbstract
      * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
      * privileges, respectively.
      *
-     * @param Acl $acl
-     * @param RoleInterface $role
+     * @param Acl               $acl
+     * @param RoleInterface     $role
      * @param ResourceInterface $resource
-     * @param string $privilege
+     * @param string            $privilege
      *
      * @return bool
      */
@@ -44,6 +44,7 @@ class Contact extends AssertionAbstract
             case 'view-admin':
             case 'edit-admin':
             case 'impersonate':
+            case 'new':
             case 'permit':
                 return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
             default:

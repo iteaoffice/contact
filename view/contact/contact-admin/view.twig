@@ -1,5 +1,8 @@
+{% set contactService = contactServiceProxy(contact) %}
+
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(contactService.parseFullname()) %}
+
 
 <h1>{{ contactService.parseAttention() }} {{ contactService.parseFullname() }}</h1>
 

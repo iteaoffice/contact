@@ -1,3 +1,7 @@
+{% do headLink().appendStylesheet(
+'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css'
+) %}
+
 {% do form.prepare() %}
 {% do form.setAttribute('class','form-horizontal') %}
 
@@ -5,24 +9,32 @@
 
 {% set contact = form.get('contact') %}
 
+{{ formelement(contact.get('id')) }}
+
 <fieldset>
     <legend>{{ translate("txt-contact-information") }}</legend>
+
     {{ ztbformelement(contact.get('firstName')) }}
     {{ ztbformelement(contact.get('middleName')) }}
     {{ ztbformelement(contact.get('lastName')) }}
     {{ ztbformelement(contact.get('email')) }}
     {{ ztbformelement(contact.get('gender')) }}
     {{ ztbformelement(contact.get('title')) }}
+    {{ ztbformelement(contact.get('dateOfBirth')) }}
 </fieldset>
 
 <fieldset>
     <legend>{{ translate("txt-organisation-information") }}</legend>
-    {{ organisationformelement(form.get('organisation')) }}
-    {{ ztbformelement(form.get('branch')) }}
+    {{ organisationformelement(contact.get('organisation')) }}
+    {{ ztbformelement(contact.get('branch')) }}
     {{ ztbformelement(contact.get('department')) }}
     {{ ztbformelement(contact.get('position')) }}
 </fieldset>
 
+<fieldset>
+    <legend>{{ translate("txt-access-information") }}</legend>
+    {{ ztbformelement(contact.get('access')) }}
+</fieldset>
 
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
@@ -31,7 +43,17 @@
         {% if form.has('deactivate') %}
             {{ ztbformelement(form.get('deactivate')) }}
         {% endif %}
+        {% if form.has('reactivate') %}
+            {{ ztbformelement(form.get('reactivate')) }}
+        {% endif %}
     </div>
 </div>
 
 {{ form().closeTag()|raw }}
+
+<script type="text/javascript">
+    $('input[type=date]').datepicker({
+        sliderAccessArgs: {touchonly: false},
+        dateFormat: 'yy-mm-dd'
+    });
+</script>

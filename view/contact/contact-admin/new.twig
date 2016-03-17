@@ -1,0 +1,8 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-create-contact")) %}
+
+<h1>{{ translate("txt-create-contact") }} </h1>
+
+{% include 'contact/partial/form/contact' %}
+
+{{ contactLink( null ,'list','button') }}

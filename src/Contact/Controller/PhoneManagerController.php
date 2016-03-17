@@ -5,7 +5,7 @@
  * @category    Phone
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -35,9 +35,7 @@ class PhoneManagerController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray()
-        );
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
         $form = $this->getFormService()->prepare('phone', null, $data);
         $form->remove('delete');
@@ -52,11 +50,8 @@ class PhoneManagerController extends ContactAbstractController
                 $this->getContactService()->newEntity($phone);
             }
 
-            return $this->redirect()->toRoute(
-                'zfcadmin/contact-admin/view',
-                ['id' => $contact->getId()],
-                ['fragment' => 'phone']
-            );
+            return $this->redirect()
+                ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'phone']);
         }
 
         return new ViewModel([
@@ -77,9 +72,7 @@ class PhoneManagerController extends ContactAbstractController
          * @var $phone Phone
          */
         $phone = $this->getContactService()->findEntityById('phone', $this->params('id'));
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray()
-        );
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
         $form = $this->getFormService()->prepare($phone->get('entity_name'), $phone, $data);
 
         if ($this->getRequest()->isPost()) {
@@ -88,15 +81,15 @@ class PhoneManagerController extends ContactAbstractController
              */
             if (isset($data['delete'])) {
                 $this->getContactService()->removeEntity($phone);
-                $this->flashMessenger()->setNamespace('success')->addMessage(
-                    sprintf($this->translate("txt-phone-has-successfully-been-deleted"))
-                );
+                $this->flashMessenger()->setNamespace('success')
+                    ->addMessage(sprintf($this->translate("txt-phone-has-successfully-been-deleted")));
 
-                return $this->redirect()->toRoute(
-                    'zfcadmin/contact-admin/view',
-                    ['id' => $phone->getContact()->getId()],
-                    ['fragment' => 'phone']
-                );
+                return $this->redirect()
+                    ->toRoute(
+                        'zfcadmin/contact-admin/view',
+                        ['id' => $phone->getContact()->getId()],
+                        ['fragment' => 'phone']
+                    );
             }
 
             if (!isset($data['cancel']) && $form->isValid()) {

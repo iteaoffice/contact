@@ -5,7 +5,7 @@
  * @category    ContactTest
  * @package     Entity
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 namespace ContactTest\Service;
 
@@ -33,66 +33,15 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->serviceManager = Bootstrap::getServiceManager();
-        $this->entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
+
         $this->contactService = new ContactService();
         $this->contactService->setServiceLocator($this->serviceManager);
     }
 
-    public function testCanFindContactByEmail()
+    public function testCanInstantiate()
     {
-        $contactEmail = 'test@example.com';
-        $contact = $this->contactService->findContactByEmail($contactEmail);
-        $this->assertNotNull($contact);
-        $this->assertEquals($contact->getEmail(), $contactEmail);
+        $this->assertInstanceOf(ContactService::class, $this->contactService);
     }
 
-    public function testCanFindAllContacts()
-    {
-        $contacts = $this->contactService->findAll('contact');
-        $this->assertTrue(is_array($contacts));
-        foreach ($contacts as $contact) {
-            $this->assertInstanceOf('Contact\Entity\Contact', $contact);
-        }
-    }
 
-    public function testCanFindContactById()
-    {
-        $contact = $this->contactService->findEntityById('contact', 1);
-        $this->isInstanceOf('Contact\Entity\Contact', $contact);
-        $this->assertEquals(1, $contact->getId());
-    }
-
-    public function testCanUpdateContact()
-    {
-        $contact = $this->contactService->findEntityById('contact', 1);
-        $contact->setPassword('newPassword');
-        $this->assertInstanceOf('Contact\Entity\Contact', $this->contactService->updateEntity($contact));
-        $contact = $this->contactService->findEntityById('contact', 1);
-        $this->assertEquals('newPassword', $contact->getPassword());
-        $this->assertEquals(1, $contact->getId());
-    }
-
-    public function testCanCreateContact()
-    {
-        $contact = $this->contactService->findEntityById('contact', 1);
-        $contact->setEmail('new-test@example.com');
-        $contact = $this->contactService->newEntity($contact);
-        $this->assertInstanceOf('Contact\Entity\Contact', $contact);
-    }
-
-    public function testCanRemoveContact()
-    {
-        $contact = $this->contactService->findEntityById('contact', 2);
-        $this->assertTrue($this->contactService->removeEntity($contact));
-        $contact = $this->contactService->findEntityById('contact', 2);
-        $this->assertNull($contact);
-    }
-
-    public function getEntity()
-    {
-        $entity = 'contact';
-        $fullEntity = $this->contactService->getEntity($entity);
-        $fullEntityName = $this->contactService->getFullEntityName($entity);
-        $this->assertInstanceOf($fullEntityName, $fullEntity);
-    }
 }

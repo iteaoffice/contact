@@ -5,57 +5,45 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Service;
 
 use Admin\Service\AdminService;
-use Admin\Service\AdminServiceAwareInterface;
+use Contact\Entity\Address;
 use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
 use Contact\Entity\Selection;
+use Contact\Options\ModuleOptions;
 use Deeplink\Service\DeeplinkService;
-use Deeplink\Service\DeeplinkServiceAwareInterface;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Event\Service\MeetingService;
 use General\Service\EmailService;
-use General\Service\EmailServiceAwareInterface;
 use General\Service\GeneralService;
-use General\Service\GeneralServiceAwareInterface;
 use Organisation\Service\OrganisationService;
-use Organisation\Service\OrganisationServiceAwareInterface;
 use Project\Service\ProjectService;
-use Project\Service\ProjectServiceAwareInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfcUser\Options\UserServiceOptionsInterface;
 
 /**
  * ServiceAbstract.
  */
-abstract class ServiceAbstract implements
-    ServiceLocatorAwareInterface,
-    ServiceInterface,
-    DeeplinkServiceAwareInterface,
-    EmailServiceAwareInterface,
-    GeneralServiceAwareInterface,
-    OrganisationServiceAwareInterface,
-    ProjectServiceAwareInterface,
-    AdminServiceAwareInterface
+abstract class ServiceAbstract implements ServiceInterface
 {
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     protected $entityManager;
     /**
-     * @var Contact
-     */
-    protected $contact;
-    /**
      * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
+    /**
+     * @var ModuleOptions
+     */
+    protected $moduleOptions;
     /**
      * @var DeeplinkService
      */
@@ -64,6 +52,10 @@ abstract class ServiceAbstract implements
      * @var ProjectService
      */
     protected $projectService;
+    /**
+     * @var ContactService
+     */
+    protected $contactService;
     /**
      * @var SelectionService
      */
@@ -88,6 +80,27 @@ abstract class ServiceAbstract implements
      * @var AdminService
      */
     protected $adminService;
+    /**
+     * @var AddressService
+     */
+    protected $addressService;
+    /**
+     * @var UserServiceOptionsInterface
+     */
+    protected $zfcUserOptions;
+    /**
+     * @var Contact
+     */
+    protected $contact;
+    /**
+     * @var Address
+     */
+    protected $address;
+    /**
+     * @var Selection
+     */
+    protected $selection;
+
 
     /**
      * @param   $entity
@@ -101,58 +114,16 @@ abstract class ServiceAbstract implements
 
     /**
      * @param string $entity
-     * @param  $filter
+     * @param        $filter
      *
      * @return Query
      */
     public function findEntitiesFiltered($entity, $filter)
     {
-        $equipmentList = $this->getEntityManager()->getRepository($this->getFullEntityName($entity))->findFiltered(
-            $filter,
-            AbstractQuery::HYDRATE_SIMPLEOBJECT
-        );
+        $equipmentList = $this->getEntityManager()->getRepository($this->getFullEntityName($entity))
+            ->findFiltered($filter, AbstractQuery::HYDRATE_SIMPLEOBJECT);
 
         return $equipmentList;
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getEntityManager()
-    {
-        if (null === $this->entityManager) {
-            $this->entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-        }
-
-        return $this->entityManager;
-    }
-
-    /**
-     * @param \Doctrine\ORM\EntityManager $entityManager
-     */
-    public function setEntityManager($entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
-    /**
-     * @return \Zend\ServiceManager\ServiceManager
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return ServiceAbstract
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-
-        return $this;
     }
 
     /**
@@ -172,9 +143,8 @@ abstract class ServiceAbstract implements
             $entity = $entity[0] . ucfirst($entity[1]);
         }
 
-        return ucfirst(implode('', array_slice(explode('\\', __NAMESPACE__), 0, 1))) . '\\' . 'Entity' . '\\' . ucfirst(
-            $entity
-        );
+        return ucfirst(implode('', array_slice(explode('\\', __NAMESPACE__), 0, 1))) . '\\' . 'Entity' . '\\'
+        . ucfirst($entity);
     }
 
     /**
@@ -241,21 +211,61 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @return GeneralService
+     * @return \Doctrine\ORM\EntityManager
      */
-    public function getGeneralService()
+    public function getEntityManager()
     {
-        return $this->generalService;
+        return $this->entityManager;
     }
 
     /**
-     * @param GeneralService $generalService
+     * @param \Doctrine\ORM\EntityManager $entityManager
      *
      * @return ServiceAbstract
      */
-    public function setGeneralService(GeneralService $generalService)
+    public function setEntityManager($entityManager)
     {
-        $this->generalService = $generalService;
+        $this->entityManager = $entityManager;
+
+        return $this;
+    }
+
+    /**
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return ServiceAbstract
+     */
+    public function setServiceLocator($serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+
+        return $this;
+    }
+
+    /**
+     * @return ModuleOptions
+     */
+    public function getModuleOptions()
+    {
+        return $this->moduleOptions;
+    }
+
+    /**
+     * @param ModuleOptions $moduleOptions
+     *
+     * @return ServiceAbstract
+     */
+    public function setModuleOptions($moduleOptions)
+    {
+        $this->moduleOptions = $moduleOptions;
 
         return $this;
     }
@@ -273,69 +283,9 @@ abstract class ServiceAbstract implements
      *
      * @return ServiceAbstract
      */
-    public function setDeeplinkService(DeeplinkService $deeplinkService)
+    public function setDeeplinkService($deeplinkService)
     {
         $this->deeplinkService = $deeplinkService;
-
-        return $this;
-    }
-
-    /**
-     * @return EmailService
-     */
-    public function getEmailService()
-    {
-        return $this->emailService;
-    }
-
-    /**
-     * @param EmailService $emailService
-     *
-     * @return ServiceAbstract
-     */
-    public function setEmailService(EmailService $emailService)
-    {
-        $this->emailService = $emailService;
-
-        return $this;
-    }
-
-    /**
-     * @return OrganisationService
-     */
-    public function getOrganisationService()
-    {
-        return $this->organisationService;
-    }
-
-    /**
-     * @param OrganisationService $organisationService
-     *
-     * @return ServiceAbstract
-     */
-    public function setOrganisationService(OrganisationService $organisationService)
-    {
-        $this->organisationService = $organisationService;
-
-        return $this;
-    }
-
-    /**
-     * @return MeetingService
-     */
-    public function getMeetingService()
-    {
-        return $this->getServiceLocator()->get(MeetingService::class);
-    }
-
-    /**
-     * @param MeetingService $meetingService
-     *
-     * @return ServiceAbstract
-     */
-    public function setMeetingService(MeetingService $meetingService)
-    {
-        $this->meetingService = $meetingService;
 
         return $this;
     }
@@ -353,7 +303,7 @@ abstract class ServiceAbstract implements
      *
      * @return ServiceAbstract
      */
-    public function setProjectService(ProjectService $projectService)
+    public function setProjectService($projectService)
     {
         $this->projectService = $projectService;
 
@@ -361,27 +311,7 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @return adminService
-     */
-    public function getAdminService()
-    {
-        return $this->adminService;
-    }
-
-    /**
-     * @param adminService $adminService
-     *
-     * @return ServiceAbstract
-     */
-    public function setAdminService(adminService $adminService)
-    {
-        $this->adminService = $adminService;
-
-        return $this;
-    }
-
-    /**
-     * @return selectionService
+     * @return SelectionService
      */
     public function getSelectionService()
     {
@@ -389,11 +319,11 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @param selectionService $selectionService
+     * @param SelectionService $selectionService
      *
      * @return ServiceAbstract
      */
-    public function setSelectionService(selectionService $selectionService)
+    public function setSelectionService($selectionService)
     {
         $this->selectionService = $selectionService;
 
@@ -401,11 +331,151 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @return ContactService
+     * @return MeetingService
      */
-    public function getContactService()
+    public function getMeetingService()
     {
-        return $this->getServiceLocator()->get('contact_contact_service');
+        if (is_null($this->meetingService)) {
+            $this->meetingService = $this->getServiceLocator()->get(MeetingService::class);
+        }
+
+        return $this->meetingService;
+    }
+
+    /**
+     * @param MeetingService $meetingService
+     *
+     * @return ServiceAbstract
+     */
+    public function setMeetingService($meetingService)
+    {
+        $this->meetingService = $meetingService;
+
+        return $this;
+    }
+
+    /**
+     * @return OrganisationService
+     */
+    public function getOrganisationService()
+    {
+        return $this->organisationService;
+    }
+
+    /**
+     * @param OrganisationService $organisationService
+     *
+     * @return ServiceAbstract
+     */
+    public function setOrganisationService($organisationService)
+    {
+        $this->organisationService = $organisationService;
+
+        return $this;
+    }
+
+    /**
+     * @return GeneralService
+     */
+    public function getGeneralService()
+    {
+        return $this->generalService;
+    }
+
+    /**
+     * @param GeneralService $generalService
+     *
+     * @return ServiceAbstract
+     */
+    public function setGeneralService($generalService)
+    {
+        $this->generalService = $generalService;
+
+        return $this;
+    }
+
+    /**
+     * @return EmailService
+     */
+    public function getEmailService()
+    {
+        if (is_null($this->emailService)) {
+            $this->emailService = $this->getServiceLocator()->get(EmailService::class);
+        }
+
+        return $this->emailService;
+    }
+
+    /**
+     * @param EmailService $emailService
+     *
+     * @return ServiceAbstract
+     */
+    public function setEmailService($emailService)
+    {
+        $this->emailService = $emailService;
+
+        return $this;
+    }
+
+    /**
+     * @return AdminService
+     */
+    public function getAdminService()
+    {
+        return $this->adminService;
+    }
+
+    /**
+     * @param AdminService $adminService
+     *
+     * @return ServiceAbstract
+     */
+    public function setAdminService($adminService)
+    {
+        $this->adminService = $adminService;
+
+        return $this;
+    }
+
+    /**
+     * @return AddressService
+     */
+    public function getAddressService()
+    {
+        return $this->addressService;
+    }
+
+    /**
+     * @param AddressService $addressService
+     *
+     * @return ServiceAbstract
+     */
+    public function setAddressService($addressService)
+    {
+        $this->addressService = $addressService;
+
+        return $this;
+    }
+
+    /**
+     * @return UserServiceOptionsInterface
+     */
+    public function getZfcUserOptions()
+    {
+        return $this->zfcUserOptions;
+    }
+
+    /**
+     * @param UserServiceOptionsInterface $zfcUserOptions
+     *
+     * @return ServiceAbstract
+     */
+    public function setZfcUserOptions($zfcUserOptions)
+    {
+        $this->zfcUserOptions = $zfcUserOptions;
+
+        return $this;
     }
 
     /**
@@ -417,12 +487,73 @@ abstract class ServiceAbstract implements
     }
 
     /**
-     * @param  Contact         $contact
+     * @param Contact $contact
+     *
      * @return ServiceAbstract
      */
     public function setContact($contact)
     {
         $this->contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     *
+     * @return ServiceAbstract
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Selection
+     */
+    public function getSelection()
+    {
+        return $this->selection;
+    }
+
+    /**
+     * @param Selection $selection
+     *
+     * @return ServiceAbstract
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
+
+        return $this;
+    }
+
+    /**
+     * @return ContactService
+     */
+    public function getContactService()
+    {
+        return $this->contactService;
+    }
+
+    /**
+     * @param ContactService $contactService
+     *
+     * @return ServiceAbstract
+     */
+    public function setContactService($contactService)
+    {
+        $this->contactService = $contactService;
 
         return $this;
     }

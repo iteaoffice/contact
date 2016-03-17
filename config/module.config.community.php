@@ -14,7 +14,7 @@ $settings = [
      */
     'community_via_members'               => (DEBRANOVA_HOST === 'artemisia'),
     'community_via_project_participation' => true,
-    'facebook_template' => 'contact/facebook/facebook',
+    'facebook_template'                   => 'contact/facebook/facebook',
 ];
 /**
  * You do not need to edit below this line

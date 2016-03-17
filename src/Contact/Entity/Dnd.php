@@ -1,11 +1,11 @@
 <?php
 /**
- * Debranova copyright message placeholder.
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 Debranova
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Entity;
@@ -27,7 +27,7 @@ use Zend\Form\Annotation;
 class Dnd //extends EntityAbstract implements ResourceInterface
 {
     /**
-     * @ORM\Column(name="dnd_id", type="integer", nullable=false)
+     * @ORM\Column(name="dnd_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
@@ -52,7 +52,7 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      */
     private $dateUpdated;
     /**
-     * @ORM\Column(name="size", type="integer", nullable=false)
+     * @ORM\Column(name="size", length=10, type="integer", nullable=false)
      * @Annotation\Exclude()
      *
      * @var integer

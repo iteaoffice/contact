@@ -1,11 +1,11 @@
 <?php
 /**
- * Debranova copyright message placeholder.
+ * ITEA Office copyright message placeholder.
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 Debranova
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Entity;
@@ -27,7 +27,7 @@ class AddressTypeSort extends EntityAbstract
     const ADDRESS_TYPE_FINANCIAL = 3;
     const ADDRESS_TYPE_HOME      = 4;
     /**
-     * @ORM\Column(name="type_id", type="integer", nullable=false)
+     * @ORM\Column(name="type_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -53,7 +53,7 @@ class AddressTypeSort extends EntityAbstract
      */
     private $subType;
     /**
-     * @ORM\Column(name="sort", type="integer", nullable=true)
+     * @ORM\Column(name="sort", length=10, type="integer", nullable=true)
      *
      * @var string
      */

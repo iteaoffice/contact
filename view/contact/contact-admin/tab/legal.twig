@@ -19,9 +19,9 @@
             <td></td>
             <td>{% if nda.call %}{{ callLink(nda.call,'view-admin') }}{% else %}{{ translate("txt-living-roadmap") }}{% endif %}</td>
             <td>{% if nda.call %}{{ nda.call.program }}{% endif %}</td>
-            <td>{{ nda.dateCreated|time_diff }}</td>
-            <td>{{ nda.dateSigned|time_diff }}</td>
-            <td>{{ nda.dateApproved|time_diff }}</td>
+            <td>{{ nda.dateCreated|string_date }}</td>
+            <td>{{ nda.dateSigned|string_date }}</td>
+            <td>{{ nda.dateApproved|string_date }}</td>
         </tr>
     {% endfor %}
     {% for dnd in contactService.contact.dnd %}
@@ -30,7 +30,7 @@
             <td></td>
             <td></td>
             <td>{{ dnd.program }}</td>
-            <td>{{ dnd.dateCreated|time_diff }}</td>
+            <td>{{ dnd.dateCreated|string_date }}</td>
             <td></td>
             <td></td>
         </tr>
@@ -43,9 +43,9 @@
             <td>{{ callLink(projectService.project.call,'view-admin','name') }}</td>
             <td>{{ projectService.project.call.program }}</td>
 
-            <td>{{ affiliationDoa.dateCreated|time_diff }}</td>
-            <td>{{ affiliationDoa.dateSigned|time_diff }}</td>
-            <td>{{ affiliationDoa.dateApproved|time_diff }}</td>
+            <td>{{ affiliationDoa.dateCreated|string_date }}</td>
+            <td>{{ affiliationDoa.dateSigned|string_date }}</td>
+            <td>{{ affiliationDoa.dateApproved|string_date }}</td>
         </tr>
     {% endfor %}
     {% for loi in contactService.contact.loi %}
@@ -57,8 +57,8 @@
             <td>{{ projectService.project.call.program }}</td>
 
             <td></td>
-            <td>{{ loi.dateSigned|time_diff }}</td>
-            <td>{{ loi.dateApproved|time_diff }}</td>
+            <td>{{ loi.dateSigned|string_date }}</td>
+            <td>{{ loi.dateApproved|string_date }}</td>
         </tr>
     {% endfor %}
     {% for programDoa in contactService.contact.programDoa %}
@@ -68,9 +68,9 @@
             <td></td>
             <td>{{ programDoa.program }}</td>
 
-            <td>{{ programDoa.dateCreated|time_diff }}</td>
-            <td>{{ programDoa.dateSigned|time_diff }}</td>
-            <td>{{ programDoa.dateApproved|time_diff }}</td>
+            <td>{{ programDoa.dateCreated|string_date }}</td>
+            <td>{{ programDoa.dateSigned|string_date }}</td>
+            <td>{{ programDoa.dateApproved|string_date }}</td>
         </tr>
     {% endfor %}
     </tbody>

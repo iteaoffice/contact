@@ -5,14 +5,13 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Form;
 
+use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\ServiceManager;
 
 /**
  * Class Impersonate.
@@ -20,14 +19,10 @@ use Zend\ServiceManager\ServiceManager;
 class Impersonate extends Form
 {
     /**
-     * @var ServiceLocatorInterface
+     * Impersonate constructor.
+     * @param EntityManager $entityManager
      */
-    protected $serviceLocator;
-
-    /**
-     * @param ServiceManager $sm
-     */
-    public function __construct(ServiceManager $sm)
+    public function __construct(EntityManager $entityManager)
     {
         parent::__construct();
         $this->setAttribute('method', 'post');
@@ -39,7 +34,7 @@ class Impersonate extends Form
                 'name'       => 'target',
                 'options'    => [
                     'target_class'   => 'Deeplink\Entity\Target',
-                    'object_manager' => $sm->get('Doctrine\ORM\EntityManager'),
+                    'object_manager' => $entityManager,
                     'find_method'    => [
                         'name'   => 'findTargetsWithRoute',
                         'params' => [

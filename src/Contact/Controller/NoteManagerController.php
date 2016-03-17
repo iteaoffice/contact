@@ -5,7 +5,7 @@
  * @category    Note
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -35,9 +35,7 @@ class NoteManagerController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray()
-        );
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
         $form = $this->getFormService()->prepare('note', null, $data);
         $form->remove('delete');
@@ -52,11 +50,8 @@ class NoteManagerController extends ContactAbstractController
                 $this->getContactService()->newEntity($note);
             }
 
-            return $this->redirect()->toRoute(
-                'zfcadmin/contact-admin/view',
-                ['id' => $contact->getId()],
-                ['fragment' => 'general']
-            );
+            return $this->redirect()
+                ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'general']);
         }
 
         return new ViewModel([
@@ -77,9 +72,7 @@ class NoteManagerController extends ContactAbstractController
          * @var $note Note
          */
         $note = $this->getContactService()->findEntityById('note', $this->params('id'));
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray()
-        );
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
         $form = $this->getFormService()->prepare($note->get('entity_name'), $note, $data);
 
         if ($this->getRequest()->isPost()) {
@@ -88,9 +81,8 @@ class NoteManagerController extends ContactAbstractController
              */
             if (isset($data['delete'])) {
                 $this->getContactService()->removeEntity($note);
-                $this->flashMessenger()->setNamespace('success')->addMessage(
-                    sprintf($this->translate("txt-note-has-successfully-been-deleted"))
-                );
+                $this->flashMessenger()->setNamespace('success')
+                    ->addMessage(sprintf($this->translate("txt-note-has-successfully-been-deleted")));
 
                 return $this->redirect()->toRoute(
                     'zfcadmin/contact-admin/view',

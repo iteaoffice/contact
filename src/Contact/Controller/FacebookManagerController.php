@@ -5,7 +5,7 @@
  * @category    Facebook
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (http://itea3.org)
+ * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -23,11 +23,9 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function listAction()
     {
-        return new ViewModel(
-            [
+        return new ViewModel([
                 'facebook' => $this->getContactService()->findAll('facebook'),
-            ]
-        );
+            ]);
     }
 
     /**
@@ -40,12 +38,10 @@ class FacebookManagerController extends ContactAbstractController
          */
         $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
 
-        return new ViewModel(
-            [
+        return new ViewModel([
                 'facebook' => $facebook,
                 'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
-            ]
-        );
+            ]);
     }
 
     /**
@@ -55,9 +51,7 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function newAction()
     {
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray()
-        );
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
         $form = $this->getFormService()->prepare('facebook', null, $data);
 
@@ -67,10 +61,7 @@ class FacebookManagerController extends ContactAbstractController
              */
             $facebook = $this->getContactService()->newEntity($form->getData());
 
-            return $this->redirect()->toRoute(
-                'zfcadmin/facebook-manager/view',
-                ['id' => $facebook->getId()]
-            );
+            return $this->redirect()->toRoute('zfcadmin/facebook-manager/view', ['id' => $facebook->getId()]);
         }
 
         return new ViewModel(['form' => $form]);
@@ -86,13 +77,8 @@ class FacebookManagerController extends ContactAbstractController
         /**
          * @var $facebook Facebook
          */
-        $facebook = $this->getContactService()->findEntityById(
-            'facebook',
-            $this->params('id')
-        );
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray()
-        );
+        $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
         $form = $this->getFormService()->prepare($facebook->get('entity_name'), $facebook, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
@@ -103,9 +89,8 @@ class FacebookManagerController extends ContactAbstractController
                 $facebook = $form->getData();
 
                 $this->getContactService()->removeEntity($facebook);
-                $this->flashMessenger()->setNamespace('success')->addMessage(
-                    sprintf($this->translate("txt-facebook-has-successfully-been-deleted"))
-                );
+                $this->flashMessenger()->setNamespace('success')
+                    ->addMessage(sprintf($this->translate("txt-facebook-has-successfully-been-deleted")));
 
                 return $this->redirect()->toRoute('zfcadmin/facebook-manager/list');
             }
@@ -114,10 +99,7 @@ class FacebookManagerController extends ContactAbstractController
                 $facebook = $this->getContactService()->updateEntity($facebook);
             }
 
-            return $this->redirect()->toRoute(
-                'zfcadmin/facebook-manager/view',
-                ['id' => $facebook->getId()]
-            );
+            return $this->redirect()->toRoute('zfcadmin/facebook-manager/view', ['id' => $facebook->getId()]);
         }
 
         return new ViewModel(['form' => $form]);

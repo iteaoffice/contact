@@ -1,9 +1,15 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-import-contacts")) %}
+
 <h1>{{ translate("txt-import-contacts") }}</h1>
 
 {% do form.prepare() %}
 
 {{ form().openTag(form)|raw }}
 
+ {{ ztbformelement(form.get('selection_id')) }}
+ {{ ztbformelement(form.get('selection')) }}
+ {{ ztbformelement(form.get('optIn')) }}
  {{ ztbformelement(form.get('file')) }}
 
 <div class="form-group">
@@ -28,26 +34,36 @@
             </div>
         {% endif %}
     </div>
+
+
 </div>
 
 
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
         {{ ztbformelement(form.get('upload')) }}
+        {{ ztbformelement(form.get('import')) }}
     </div>
 </div>
 
-{{ form().closeTag()|raw }}
+{% if  handleImport.getImportedContacts()|length > 0 %}
+    {{ ztbalert().info(translate("txt-%s-contacts-imported")|format(handleImport.getImportedContacts()|length))|raw }}
+{% endif %}
 
-{{ handleImport.getContacts()|length }}
-
-{% if  handleImport.getContacts()|length > 0 %}
+<form method="post" action="">
+    {% if  handleImport.getContacts()|length > 0 %}
     <table class="table table-hover table-striped">
         <thead>
         <tr>
-            <th class="col-md-2">{{ translate("txt-name") }}</th>
-            <th class="col-md-2">{{ translate("txt-email") }}</th>
-            <th>{{ translate("txt-organisation") }}</th>
+            <th><input type="checkbox" id="check_all"></th>
+            <th class="col-md-1">{{ translate("txt-title") }}</th>
+            <th class="col-md-2">{{ translate("txt-firstname") }}</th>
+            <th class="col-md-1">{{ translate("txt-middlename") }}</th>
+            <th class="col-md-2">{{ translate("txt-lastname") }}</th>
+            <th class="col-md-1">{{ translate("txt-gender") }}</th>
+            <th class="col-md-1">{{ translate("txt-email") }}</th>
+            <th class="col-md-2">{{ translate("txt-phone") }}</th>
+            <th class="col-md-2">{{ translate("txt-position") }}</th>
         </tr>
         </thead>
         <tfoot>
@@ -55,16 +71,45 @@
         <tbody>
         {% for contact in handleImport.getContacts() %}
             <tr>
-                <td>{{ contactLink(contact,'view-admin', 'name') }}</td>
-                <td>{{ contactLink(contact,'view-admin', 'email') }}</td>
-                <td>
-                    {% if contact.contactOrganisation %}
-                        {% set organisationService = organisationServiceProxy(contact.contactOrganisation.organisation) %}
-                        {{ organisationLink(organisationService, 'view', 'name') }}
-                    {% endif %}
-                </td>
+                <td><input type="checkbox" name="key[]" value="{{ contact.key }}"></td>
+                <td>{{ contact.title }}</td>
+                <td>{{ contact.firstname }} {% if contact.id %}{{ contactLink(contact,'view-admin', 'icon') }}{% endif %}</td>
+                <td>{{ contact.middlename }}</td>
+                <td>{{ contact.lastname }}</td>
+                <td>{{ contact.gender }}</td>
+                <td>{{ contact.email }}</td>
+                <td>{% for phone in contact.phone %}{{ phone.phone }}{% endfor %}</td>
+                <td>{{ contact.position }}</td>
+            </tr>
+            <tr>
+                <th>{{ translate("txt-organisation") }}</th>
+                <td colspan="3">{{ contact.contactOrganisation.organisation }}</td>
+                <th>{{ translate("txt-country") }}</th>
+                <td>{{ contact.contactOrganisation.organisation.country }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+</form>
+
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            {{ ztbformelement(form.get('import')) }}
+        </div>
+    </div>
+
+
+{{ form().closeTag()|raw }}
+
 {% endif %}
+
+<script type="text/javascript">
+    $('#check_all').change(function () {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        if ($(this).is(':checked')) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+        }
+    });
+</script>
