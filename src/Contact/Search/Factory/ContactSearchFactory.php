@@ -34,18 +34,13 @@ class ContactSearchFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        try {
-            $searchService = new ContactSearchService();
-            $searchService->setServiceLocator($serviceLocator);
+        $searchService = new ContactSearchService();
+        $searchService->setServiceLocator($serviceLocator);
 
-            /** @var ContactService $contactService */
-            $contactService = $serviceLocator->get(ContactService::class);
-            $searchService->setContactService($contactService);
+        /** @var ContactService $contactService */
+        $contactService = $serviceLocator->get(ContactService::class);
+        $searchService->setContactService($contactService);
 
-            return $searchService;
-        } catch (\Exception $e) {
-            var_dump($e);
-            die('test');
-        }
+        return $searchService;
     }
 }

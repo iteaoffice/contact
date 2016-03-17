@@ -34,23 +34,18 @@ class SelectionServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        try {
-            $selectionService = new SelectionService();
-            $selectionService->setServiceLocator($serviceLocator);
+        $selectionService = new SelectionService();
+        $selectionService->setServiceLocator($serviceLocator);
 
-            /** @var EntityManager $entityManager */
-            $entityManager = $serviceLocator->get(EntityManager::class);
-            $selectionService->setEntityManager($entityManager);
+        /** @var EntityManager $entityManager */
+        $entityManager = $serviceLocator->get(EntityManager::class);
+        $selectionService->setEntityManager($entityManager);
 
-            /** @var ContactService $contactService */
-            $contactService = $serviceLocator->get(ContactService::class);
-            $selectionService->setContactService($contactService);
+        /** @var ContactService $contactService */
+        $contactService = $serviceLocator->get(ContactService::class);
+        $selectionService->setContactService($contactService);
 
-            return $selectionService;
-        } catch (\Exception $e) {
-            var_dump($e);
-            die('test');
-        }
+        return $selectionService;
     }
 }
 

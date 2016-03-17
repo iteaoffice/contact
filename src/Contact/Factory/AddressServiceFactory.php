@@ -34,21 +34,13 @@ class AddressServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        try {
-            $addressService = new AddressService();
-            $addressService->setServiceLocator($serviceLocator);
+        $addressService = new AddressService();
+        $addressService->setServiceLocator($serviceLocator);
 
-            /** @var EntityManager $entityManager */
-            $entityManager = $serviceLocator->get(EntityManager::class);
-            $addressService->setEntityManager($entityManager);
+        /** @var EntityManager $entityManager */
+        $entityManager = $serviceLocator->get(EntityManager::class);
+        $addressService->setEntityManager($entityManager);
 
-            return $addressService;
-        } catch (\Exception $e) {
-            var_dump($e);
-            die('test');
-        }
+        return $addressService;
     }
 }
-
-
-//zfcuser_module_options

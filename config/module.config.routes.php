@@ -13,12 +13,11 @@ use Contact\Controller;
 return [
     'router' => [
         'routes' => [
-            'assets'    => [
+            'assets' => [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [
-                    'route'    => '/assets/' . (defined("DEBRANOVA_HOST")
-                            ? DEBRANOVA_HOST : 'test'),
+                    'route'    => '/assets/' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test'),
                     'defaults' => [
                         'controller' => Controller\ContactController::class,
                     ],
@@ -37,67 +36,7 @@ return [
                     ],
                 ],
             ],
-            'contact'   => [
-                'type'          => 'Literal',
-                'priority'      => 1000,
-                'options'       => [
-                    'route'    => '/contact',
-                    'defaults' => [
-                        'namespace'  => 'contact',
-                        'controller' => Controller\ContactController::class,
-                        'action'     => 'index',
-                    ],
-                ],
-                'may_terminate' => true,
-                'child_routes'  => [
 
-                    'photo'               => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/photo/[:contactHash].[:ext]',
-                            'defaults' => [
-                                'action' => 'photo',
-                            ],
-                        ],
-                    ],
-                    'opt-in-update'       => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/update/opt-in.html',
-                            'defaults' => [
-                                'action' => 'opt-in-update',
-                            ],
-                        ],
-                    ],
-                    'has-session'         => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/has-session.html',
-                            'defaults' => [
-                                'action' => 'has-session',
-                            ],
-                        ],
-                    ],
-                    'change-password'     => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/edit/password.html',
-                            'defaults' => [
-                                'action' => 'change-password',
-                            ],
-                        ],
-                    ],
-                    'get-address-by-type' => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'    => '/get-address.html',
-                            'defaults' => [
-                                'action' => 'get-address-by-type',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
             'community' => [
                 'child_routes' => [
                     'contact' => [
@@ -113,7 +52,7 @@ return [
                         ],
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'search'    => [
+                            'search'              => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/search.html',
@@ -126,7 +65,7 @@ return [
                                     ]
                                 ],
                             ],
-                            'signature' => [
+                            'signature'           => [
                                 'type'    => 'Literal',
                                 'options' => [
                                     'route'    => '/signature.html',
@@ -135,7 +74,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'facebook'  => [
+                            'facebook'            => [
                                 'type'         => 'Segment',
                                 'options'      => [
                                     'route'    => '/facebook',
@@ -167,7 +106,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'profile'   => [
+                            'profile'             => [
                                 'type'         => 'Segment',
                                 'options'      => [
                                     'route'    => '/profile',
@@ -203,6 +142,42 @@ return [
                                                 'action' => 'contact',
                                             ],
                                         ],
+                                    ],
+                                ],
+                            ],
+                            'opt-in-update'       => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/update/opt-in.html',
+                                    'defaults' => [
+                                        'action' => 'opt-in-update',
+                                    ],
+                                ],
+                            ],
+                            'has-session'         => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/has-session.html',
+                                    'defaults' => [
+                                        'action' => 'has-session',
+                                    ],
+                                ],
+                            ],
+                            'change-password'     => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/edit/password.html',
+                                    'defaults' => [
+                                        'action' => 'change-password',
+                                    ],
+                                ],
+                            ],
+                            'get-address-by-type' => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/get-address.html',
+                                    'defaults' => [
+                                        'action' => 'get-address-by-type',
                                     ],
                                 ],
                             ],

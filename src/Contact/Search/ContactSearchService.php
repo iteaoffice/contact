@@ -8,19 +8,19 @@
  * @copyright Copyright (c) 2004-2015 ITEA Office (http://itea3.org)
  */
 
-namespace Contact\Search\Service;
+namespace Contact\Search;
 
 use Contact\Entity\Contact;
-use Contact\Entity\Photo;
 use Contact\Entity\Profile;
 use Contact\Service\ContactService;
+use Contact\Service\ContactServiceAwareInterface;
 use Search\Service\AbstractSearchService;
 use Solarium\QueryType\Select\Query\Query;
 
 /**
  * Contact Solr search service
  */
-class ContactSearchService extends AbstractSearchService
+class ContactSearchService extends AbstractSearchService implements ContactServiceAwareInterface
 {
     const SOLR_CONNECTION = 'contact';
 
@@ -71,7 +71,6 @@ class ContactSearchService extends AbstractSearchService
             if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
                 && ($contact->getPhoto()->count() > 0)
             ) {
-                /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
                 $contactDocument->photo_url = $this->getServiceLocator()->get('ViewHelperManager')->get('url')
                     ->__invoke('assets/contact-photo', [
@@ -125,12 +124,12 @@ class ContactSearchService extends AbstractSearchService
     {
         $this->setQuery($this->getSolrClient()->createSelect());
         $this->getQuery()->setQuery(str_replace('%s', $searchTerm, implode(' ' . Query::QUERY_OPERATOR_OR . ' ', [
-            'fullname:*%s*',
-            'position:*%s*',
-            'organisation:*%s',
-            'profile:*%s*',
-            'country:*%s*',
-        ])));
+                'fullname:*%s*',
+                'position:*%s*',
+                'organisation:*%s',
+                'profile:*%s*',
+                'country:*%s*'
+            ])));
 
         $this->getQuery()->addSort($order, $direction);
 

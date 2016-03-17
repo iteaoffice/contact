@@ -13,6 +13,7 @@ namespace Contact\Controller;
 use Contact\Entity\Selection;
 use Contact\Form\SelectionContacts;
 use Contact\Form\SelectionFilter;
+use Contact\Service\SelectionService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Zend\Paginator\Paginator;
@@ -125,7 +126,9 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function editAction()
     {
+        /** @var SelectionService $selectionService */
         $selectionService = $this->getSelectionService()->setSelectionId($this->params('id'));
+
         if ($selectionService->isEmpty()) {
             return $this->notFoundAction();
         }
@@ -140,10 +143,14 @@ class SelectionManagerController extends ContactAbstractController
 
         $form->setAttribute('class', 'form-horizontal');
 
-        $form->get('selection')->get('contact')->setValueOptions([
-            $selectionService->getSelection()->getContact()->getId() => $selectionService->getSelection()->getContact()
-                ->getFormName()
-        ])->setDisableInArrayValidator(true);
+        if (!is_null($selectionService->getSelection()->getContact())) {
+            $form->get('selection')->get('contact')->setValueOptions([
+                $selectionService->getSelection()->getContact()->getId() => $selectionService->getSelection()
+                    ->getContact()->getFormName()
+            ]);
+        }
+
+        $form->get('selection')->get('contact')->setDisableInArrayValidator(true);
 
 
         if ($this->getRequest()->isPost()) {
@@ -176,8 +183,6 @@ class SelectionManagerController extends ContactAbstractController
 
                 return $this->redirect()
                     ->toRoute('zfcadmin/selection-manager/view', ['id' => $selectionService->getSelection()->getId()]);
-            } else {
-                var_dump($form->getInputFilter()->getMessages());
             }
         }
 

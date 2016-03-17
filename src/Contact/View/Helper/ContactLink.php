@@ -148,7 +148,7 @@ class ContactLink extends LinkAbstract
                 $this->setText($this->translate("txt-edit-your-profile"));
                 break;
             case 'change-password':
-                $this->setRouter('contact/change-password');
+                $this->setRouter('community/contact/change-password');
                 /*
                  * Users can have access without a password (via the deeplink)
                  * We will therefore have the option to set a password

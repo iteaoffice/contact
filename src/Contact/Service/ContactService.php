@@ -894,7 +894,7 @@ class ContactService extends ServiceAbstract
                  *
                  * @var ProjectLink
                  */
-                $projectLink = $this->getServiceLocator()->get('viewhelpermanager')->get('projectLink');
+                $projectLink = $this->getServiceLocator()->get('ViewHelperManager')->get('projectLink');
 
                 foreach ($this->getProjectService()->findProjectsByProjectContact($contact) as $project) {
                     $projectService = $this->getProjectService()->setProject($project);

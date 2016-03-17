@@ -802,24 +802,24 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $ambassador;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Changerequest\Process", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Process", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\Changerequest\Process
+     * @var \Project\Entity\ChangeRequest\Process
      */
     private $changerequestProcess;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Changerequest\CostChange", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\CostChange", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\Changerequest\CostChange
+     * @var \Project\Entity\ChangeRequest\CostChange
      */
     private $changerequestCostChange;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Changerequest\Country", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Country", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\Changerequest\Country
+     * @var \Project\Entity\ChangeRequest\Country
      */
     private $changerequestCountry;
     /**
@@ -3623,19 +3623,19 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Project\Entity\Changerequest\Process
+     * @return \Project\Entity\ChangeRequest\Process
      */
-    public function getChangerequestProcess()
+    public function getChangeRequestProcess()
     {
         return $this->changerequestProcess;
     }
 
     /**
-     * @param \Project\Entity\Changerequest\Process $changerequestProcess
+     * @param \Project\Entity\ChangeRequest\Process $changerequestProcess
      *
      * @return Contact
      */
-    public function setChangerequestProcess($changerequestProcess)
+    public function setChangeRequestProcess($changerequestProcess)
     {
         $this->changerequestProcess = $changerequestProcess;
 
@@ -3643,19 +3643,19 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Project\Entity\Changerequest\CostChange
+     * @return \Project\Entity\ChangeRequest\CostChange
      */
-    public function getChangerequestCostChange()
+    public function getChangeRequestCostChange()
     {
         return $this->changerequestCostChange;
     }
 
     /**
-     * @param \Project\Entity\Changerequest\CostChange $changerequestCostChange
+     * @param \Project\Entity\ChangeRequest\CostChange $changerequestCostChange
      *
      * @return Contact
      */
-    public function setChangerequestCostChange($changerequestCostChange)
+    public function setChangeRequestCostChange($changerequestCostChange)
     {
         $this->changerequestCostChange = $changerequestCostChange;
 
@@ -3663,17 +3663,17 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Project\Entity\Changerequest\Country
+     * @return \Project\Entity\ChangeRequest\Country
      */
-    public function getChangerequestCountry()
+    public function getChangeRequestCountry()
     {
         return $this->changerequestCountry;
     }
 
     /**
-     * @param \Project\Entity\Changerequest\Country $changerequestCountry
+     * @param \Project\Entity\ChangeRequest\Country $changerequestCountry
      */
-    public function setChangerequestCountry($changerequestCountry)
+    public function setChangeRequestCountry($changerequestCountry)
     {
         $this->changerequestCountry = $changerequestCountry;
     }

@@ -399,6 +399,10 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function getEmailService()
     {
+        if (is_null($this->emailService)) {
+            $this->emailService = $this->getServiceLocator()->get(EmailService::class);
+        }
+
         return $this->emailService;
     }
 

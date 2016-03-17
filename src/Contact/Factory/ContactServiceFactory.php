@@ -20,7 +20,6 @@ use Contact\Service\AddressService;
 use Contact\Service\ContactService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
-use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
 use Project\Service\ProjectService;
@@ -42,54 +41,45 @@ class ContactServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        try {
-            $contactService = new ContactService();
-            $contactService->setServiceLocator($serviceLocator);
+        $contactService = new ContactService();
+        $contactService->setServiceLocator($serviceLocator);
 
-            /** @var EntityManager $entityManager */
-            $entityManager = $serviceLocator->get(EntityManager::class);
-            $contactService->setEntityManager($entityManager);
+        /** @var EntityManager $entityManager */
+        $entityManager = $serviceLocator->get(EntityManager::class);
+        $contactService->setEntityManager($entityManager);
 
-            /** @var AdminService $adminService */
-            $adminService = $serviceLocator->get(AdminService::class);
-            $contactService->setAdminService($adminService);
+        /** @var AdminService $adminService */
+        $adminService = $serviceLocator->get(AdminService::class);
+        $contactService->setAdminService($adminService);
 
-            /** @var ProjectService $projectService */
-            $projectService = $serviceLocator->get(ProjectService::class);
-            $contactService->setProjectService($projectService);
+        /** @var ProjectService $projectService */
+        $projectService = $serviceLocator->get(ProjectService::class);
+        $contactService->setProjectService($projectService);
 
-            /** @var OrganisationService $organisationService */
-            $organisationService = $serviceLocator->get(OrganisationService::class);
-            $contactService->setOrganisationService($organisationService);
+        /** @var OrganisationService $organisationService */
+        $organisationService = $serviceLocator->get(OrganisationService::class);
+        $contactService->setOrganisationService($organisationService);
 
-            /** @var AddressService $addressService */
-            $addressService = $serviceLocator->get(AddressService::class);
-            $contactService->setAddressService($addressService);
+        /** @var AddressService $addressService */
+        $addressService = $serviceLocator->get(AddressService::class);
+        $contactService->setAddressService($addressService);
 
-            /** @var GeneralService $generalService */
-            $generalService = $serviceLocator->get(GeneralService::class);
-            $contactService->setGeneralService($generalService);
+        /** @var GeneralService $generalService */
+        $generalService = $serviceLocator->get(GeneralService::class);
+        $contactService->setGeneralService($generalService);
 
-            /** @var DeeplinkService $deeplinkService */
-            $deeplinkService = $serviceLocator->get(DeeplinkService::class);
-            $contactService->setDeeplinkService($deeplinkService);
+        /** @var DeeplinkService $deeplinkService */
+        $deeplinkService = $serviceLocator->get(DeeplinkService::class);
+        $contactService->setDeeplinkService($deeplinkService);
 
-            /** @var EmailService $emailService */
-            $emailService = $serviceLocator->get(EmailService::class);
-            $contactService->setEmailService($emailService);
+        /** @var ModuleOptions $moduleOptions */
+        $moduleOptions = $serviceLocator->get(ModuleOptions::class);
+        $contactService->setModuleOptions($moduleOptions);
 
-            /** @var ModuleOptions $moduleOptions */
-            $moduleOptions = $serviceLocator->get(ModuleOptions::class);
-            $contactService->setModuleOptions($moduleOptions);
+        /** @var UserServiceOptionsInterface $zfcModuleOptions */
+        $zfcModuleOptions = $serviceLocator->get('zfcuser_module_options');
+        $contactService->setZfcUserOptions($zfcModuleOptions);
 
-            /** @var UserServiceOptionsInterface $zfcModuleOptions */
-            $zfcModuleOptions = $serviceLocator->get('zfcuser_module_options');
-            $contactService->setZfcUserOptions($zfcModuleOptions);
-
-            return $contactService;
-        } catch (\Exception $e) {
-            var_dump($e);
-            die('test');
-        }
+        return $contactService;
     }
 }

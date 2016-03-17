@@ -52,69 +52,63 @@ class ControllerInvokableAbstractFactory implements AbstractFactoryInterface
      * Create service with name
      *
      * @param ServiceLocatorInterface|ControllerManager $serviceLocator
-     * @param string $name
-     * @param string $requestedName
+     * @param string                                    $name
+     * @param string                                    $requestedName
      *
      * @return mixed
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-        try {
+        /** @var ContactAbstractController $controller */
+        $controller = new $requestedName();
+        $controller->setServiceLocator($serviceLocator);
 
-            /** @var ContactAbstractController $controller */
-            $controller = new $requestedName();
-            $controller->setServiceLocator($serviceLocator);
+        $serviceManager = $serviceLocator->getServiceLocator();
 
-            $serviceManager = $serviceLocator->getServiceLocator();
+        /** @var ContactService $contactService */
+        $contactService = $serviceManager->get(ContactService::class);
+        $controller->setContactService($contactService);
 
-            /** @var ContactService $contactService */
-            $contactService = $serviceManager->get(ContactService::class);
-            $controller->setContactService($contactService);
+        /** @var FormService $formService */
+        $formService = $serviceManager->get(FormService::class);
+        $controller->setFormService($formService);
 
-            /** @var FormService $formService */
-            $formService = $serviceManager->get(FormService::class);
-            $controller->setFormService($formService);
+        /** @var SelectionService $selectionService */
+        $selectionService = $serviceManager->get(SelectionService::class);
+        $controller->setSelectionService($selectionService);
 
-            /** @var SelectionService $selectionService */
-            $selectionService = $serviceManager->get(SelectionService::class);
-            $controller->setSelectionService($selectionService);
+        /** @var EntityManager $entityManager */
+        $entityManager = $serviceManager->get(EntityManager::class);
+        $controller->setEntityManager($entityManager);
 
-            /** @var EntityManager $entityManager */
-            $entityManager = $serviceManager->get(EntityManager::class);
-            $controller->setEntityManager($entityManager);
+        /** @var AdminService $adminService */
+        $adminService = $serviceManager->get(AdminService::class);
+        $controller->setAdminService($adminService);
 
-            /** @var AdminService $adminService */
-            $adminService = $serviceManager->get(AdminService::class);
-            $controller->setAdminService($adminService);
+        /** @var DeeplinkService $deeplinkService */
+        $deeplinkService = $serviceManager->get(DeeplinkService::class);
+        $controller->setDeeplinkService($deeplinkService);
 
-            /** @var DeeplinkService $deeplinkService */
-            $deeplinkService = $serviceManager->get(DeeplinkService::class);
-            $controller->setDeeplinkService($deeplinkService);
+        /** @var GeneralService $generalService */
+        $generalService = $serviceManager->get(GeneralService::class);
+        $controller->setGeneralService($generalService);
 
-            /** @var GeneralService $generalService */
-            $generalService = $serviceManager->get(GeneralService::class);
-            $controller->setGeneralService($generalService);
+        /** @var ContactSearchService $contactSearchService */
+        $contactSearchService = $serviceManager->get(ContactSearchService::class);
+        $controller->setContactSearchService($contactSearchService);
 
-            /** @var ContactSearchService $contactSearchService */
-            $contactSearchService = $serviceManager->get(ContactSearchService::class);
-            $controller->setContactSearchService($contactSearchService);
+        /** @var EmailService $emailService */
+        $emailService = $serviceManager->get(EmailService::class);
+        $controller->setEmailService($emailService);
 
-            /** @var EmailService $emailService */
-            $emailService = $serviceManager->get(EmailService::class);
-            $controller->setEmailService($emailService);
+        /** @var ProjectService $projectService */
+        $projectService = $serviceManager->get(ProjectService::class);
+        $controller->setProjectService($projectService);
 
-            /** @var ProjectService $projectService */
-            $projectService = $serviceManager->get(ProjectService::class);
-            $controller->setProjectService($projectService);
+        /** @var OrganisationService $organisationService */
+        $organisationService = $serviceManager->get(OrganisationService::class);
+        $controller->setOrganisationService($organisationService);
 
-            /** @var OrganisationService $organisationService */
-            $organisationService = $serviceManager->get(OrganisationService::class);
-            $controller->setOrganisationService($organisationService);
-
-            return $controller;
-        } catch (\Exception $e) {
-            var_dump($e);
-            die();
-        }
+        return $controller;
     }
 }

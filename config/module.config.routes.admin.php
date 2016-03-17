@@ -90,15 +90,6 @@ return [
                                     ],
                                 ],
                             ],
-                            'statistics'  => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/statistics.html',
-                                    'defaults' => [
-                                        'action' => 'statistics',
-                                    ],
-                                ],
-                            ],
                             'import'      => [
                                 'type'    => 'Segment',
                                 'options' => [

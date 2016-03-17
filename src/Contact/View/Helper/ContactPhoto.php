@@ -37,18 +37,14 @@ class ContactPhoto extends ImageAbstract
     ) {
         if (is_null($contact->getPhoto())) {
             return sprintf(
-                '<img src="assets/' . DEBRANOVA_HOST
-                . '/style/image/anonymous.jpg" class="%s" %s>',
-                !($responsive && is_null($height)) ?: implode(
-                    ' ',
-                    ['img-responsive']
-                ),
+                '<img src="assets/' . DEBRANOVA_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
+                !($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
                 is_null($height) ?: 'height="' . $height . '"'
             );
         }
 
         /**
-         * @var Photo
+         * @var Photo $photo
          */
         $photo = $contact->getPhoto()->first();
 
@@ -68,12 +64,8 @@ class ContactPhoto extends ImageAbstract
          */
         if (!$photo || is_null($photo->getId())) {
             return sprintf(
-                '<img src="assets/' . DEBRANOVA_HOST
-                . '/style/image/anonymous.jpg" class="%s" %s>',
-                !($responsive && is_null($height)) ?: implode(
-                    ' ',
-                    ['img-responsive']
-                ),
+                '<img src="assets/' . DEBRANOVA_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
+                !($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
                 is_null($height) ?: 'height="' . $height . '"'
             );
         }

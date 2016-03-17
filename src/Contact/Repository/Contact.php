@@ -165,6 +165,8 @@ class Contact extends EntityRepository
             $queryBuilder->expr()->in('c.id', $projectLeaders->getDQL())
         ));
 
+        $queryBuilder->addOrderBy('c.lastName', 'ASC');
+
         return $queryBuilder;
     }
 

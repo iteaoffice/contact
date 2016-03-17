@@ -80,12 +80,12 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/get-address-by-type',
+                    'route'     => 'community/contact/get-address-by-type',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/opt-in-update',
+                    'route'     => 'community/contact/opt-in-update',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
@@ -97,12 +97,12 @@ return [
                     ]
                 ],
                 [
-                    'route'     => 'contact/change-password',
+                    'route'     => 'community/contact/change-password',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
                 [
-                    'route'     => 'contact/photo',
+                    'route'     => 'community/contact/photo',
                     'roles'     => [strtolower(Access::ACCESS_USER)],
                     'assertion' => ContactAssertion::class
                 ],
