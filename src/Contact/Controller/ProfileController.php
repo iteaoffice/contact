@@ -46,7 +46,7 @@ class ProfileController extends ContactAbstractController
         $contactService = $this->getContactService()->setContactId($this->params('id'));
 
         if ($contactService->isEmpty() || $contactService->getContact()->parseHash() !== $this->params('hash')) {
-            //            return $this->notFoundAction();
+            return $this->notFoundAction();
         }
 
         return new ViewModel([

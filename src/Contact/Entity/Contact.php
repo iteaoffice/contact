@@ -784,24 +784,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $projectLog;
     /**
-     * @ORM\OneToMany(targetEntity="Ambassador\Entity\Document\Comment", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Ambassador\Entity\Document\Comment[]|Collections\ArrayCollection
-     */
-    private $comment;
-    /**
-     * @ORM\OneToMany(targetEntity="Ambassador\Entity\Announcement", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Ambassador\Entity\Announcement[]|Collections\ArrayCollection
-     */
-    private $announcement;
-    /**
-     * @ORM\OneToOne(targetEntity="\Ambassador\Entity\Ambassador", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Ambassador\Entity\Ambassador
-     */
-    private $ambassador;
-    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Process", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
@@ -925,8 +907,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->invoiceLog = new Collections\ArrayCollection();
         $this->reminder = new Collections\ArrayCollection();
         $this->achievement = new Collections\ArrayCollection();
-        $this->comment = new Collections\ArrayCollection();
-        $this->announcement = new Collections\ArrayCollection();
         $this->memberFinancial = new  Collections\ArrayCollection();
         $this->changerequestProcess = new  Collections\ArrayCollection();
         $this->changerequestCostChange = new  Collections\ArrayCollection();
@@ -1639,25 +1619,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         return $this;
     }
 
-    /**
-     * @return \Ambassador\Entity\Ambassador
-     */
-    public function getAmbassador()
-    {
-        return $this->ambassador;
-    }
-
-    /**
-     * @param  \Ambassador\Entity\Ambassador $ambassador
-     *
-     * @return Contact
-     */
-    public function setAmbassador($ambassador)
-    {
-        $this->ambassador = $ambassador;
-
-        return $this;
-    }
 
     /**
      * @return \Admin\Entity\Access[]|Collections\ArrayCollection
@@ -3463,26 +3424,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Ambassador\Entity\Document\Comment[]|Collections\ArrayCollection
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection $comment
-     *
-     * @return Contact
-     */
-    public function setComment(Collections\ArrayCollection $comment)
-    {
-        $this->comment = $comment;
-
-        return $this;
-    }
-
-    /**
      * @return Collections\ArrayCollection|\Project\Entity\Idea\Partner
      */
     public function getIdeaPartner()
@@ -3498,26 +3439,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setIdeaPartner($ideaPartner)
     {
         $this->ideaPartner = $ideaPartner;
-
-        return $this;
-    }
-
-    /**
-     * @return \Ambassador\Entity\Announcement[]|Collections\ArrayCollection
-     */
-    public function getAnnouncement()
-    {
-        return $this->announcement;
-    }
-
-    /**
-     * @param  \Ambassador\Entity\Announcement[]|Collections\ArrayCollection $announcement
-     *
-     * @return Contact
-     */
-    public function setAnnouncement($announcement)
-    {
-        $this->announcement = $announcement;
 
         return $this;
     }
