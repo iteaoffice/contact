@@ -117,10 +117,7 @@ class ContactLink extends LinkAbstract
                 break;
             case 'signature':
                 $this->setRouter('community/contact/signature');
-                $this->setText(sprintf(
-                    $this->translate("txt-view-signature-of-contact-%s"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText($this->translate("txt-signature"));
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-admin/view');

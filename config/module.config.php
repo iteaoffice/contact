@@ -12,6 +12,7 @@ namespace Contact;
 use Contact\Acl;
 use Contact\Factory;
 use Contact\Form\View\Helper\ContactFormElement;
+use Contact\Navigation;
 use Contact\Search;
 use Contact\Service;
 use Contact\View\Helper;
@@ -57,8 +58,8 @@ $config = [
     ],
     'service_manager' => [
         'factories'          => [
-            'contact_contact_navigation_service'                       => 'Contact\Navigation\Factory\ContactNavigationServiceFactory',
-            'Contact\Provider\Identity\AuthenticationIdentityProvider' => 'Contact\Factory\AuthenticationIdentityProviderServiceFactory',
+            Navigation\Service\ContactNavigationService::class         => Navigation\Factory\ContactNavigationServiceFactory::class,
+            'Contact\Provider\Identity\AuthenticationIdentityProvider' => Factory\AuthenticationIdentityProviderServiceFactory::class,
             Service\SelectionService::class                            => Factory\SelectionServiceFactory::class,
             Service\ContactService::class                              => Factory\ContactServiceFactory::class,
             Service\AddressService::class                              => Factory\AddressServiceFactory::class,
@@ -82,7 +83,6 @@ $config = [
             Service\ContactService::class => false,
         ],
         'invokables'         => [
-
             'contact_facebook_form_filter'  => 'Contact\Form\FilterCreateObject',
             'contact_address_form_filter'   => 'Contact\Form\FilterCreateObject',
             'contact_note_form_filter'      => 'Contact\Form\FilterCreateObject',

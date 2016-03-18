@@ -15,9 +15,11 @@ namespace Contact;
 use Contact\Controller\Plugin\GetFilter;
 use Contact\Controller\Plugin\HandleImport;
 use Contact\Controller\Plugin\PartnerSearch;
+use Contact\Navigation\Service\ContactNavigationService;
 use Contact\Version\Version;
 use Zend\Console\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
+use Zend\EventManager\EventManager;
 use Zend\ModuleManager\Feature;
 use Zend\Mvc\MvcEvent;
 
@@ -99,9 +101,10 @@ class Module implements
     public function onBootstrap(EventInterface $e)
     {
         $app = $e->getParam('application');
+        /** @var EventManager $em */
         $em = $app->getEventManager();
         $em->attach(MvcEvent::EVENT_DISPATCH, function (MvcEvent $event) {
-            $event->getApplication()->getServiceManager()->get('contact_contact_navigation_service')->update();
+            $event->getApplication()->getServiceManager()->get(ContactNavigationService::class)->update();
         });
     }
 

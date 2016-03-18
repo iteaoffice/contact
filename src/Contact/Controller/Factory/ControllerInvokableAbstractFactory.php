@@ -55,7 +55,7 @@ class ControllerInvokableAbstractFactory implements AbstractFactoryInterface
      * @param string                                    $name
      * @param string                                    $requestedName
      *
-     * @return mixed
+     * @return ContactAbstractController
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
