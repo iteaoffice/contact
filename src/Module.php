@@ -2,12 +2,15 @@
 /**
  * ITEA Office copyright message placeholder.
  *
- * @category    SoloDB
+ * PHP Version 5
+ *
+ * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (https://itea3.org)
+ * @copyright   2004-2016 ITEA Office
+ * @license     https://itea3.org/license.txt proprietary
  *
- * @version     4.0
+ * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
 
 namespace Contact;
@@ -16,8 +19,6 @@ use Contact\Controller\Plugin\GetFilter;
 use Contact\Controller\Plugin\HandleImport;
 use Contact\Controller\Plugin\PartnerSearch;
 use Contact\Navigation\Service\ContactNavigationService;
-use Contact\Version\Version;
-use Zend\Console\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManager;
 use Zend\ModuleManager\Feature;
@@ -37,11 +38,11 @@ class Module implements
     {
         return [
             'Zend\Loader\ClassMapAutoloader' => [
-                __DIR__ . '/../../autoload_classmap.php',
+                __DIR__ . '/../autoload_classmap.php',
             ],
             'Zend\Loader\StandardAutoloader' => [
                 'namespaces' => [
-                    __NAMESPACE__ => __DIR__ . '/../../src/' . __NAMESPACE__,
+                    __NAMESPACE__ => __DIR__ . '/../src/',
                 ],
             ],
         ];
@@ -52,7 +53,7 @@ class Module implements
      */
     public function getConfig()
     {
-        return include __DIR__ . '/../../config/module.config.php';
+        return include __DIR__ . '/../config/module.config.php';
     }
 
     /**
@@ -62,17 +63,7 @@ class Module implements
      */
     public function getServiceConfig()
     {
-        return include __DIR__ . '/../../config/services.config.php';
-    }
-
-    /**
-     * Go to the service configuration.
-     *
-     * @return array
-     */
-    public function getViewHelperConfig()
-    {
-        return include __DIR__ . '/../../config/viewhelpers.config.php';
+        return include __DIR__ . '/../config/services.config.php';
     }
 
     /**
@@ -106,35 +97,5 @@ class Module implements
         $em->attach(MvcEvent::EVENT_DISPATCH, function (MvcEvent $event) {
             $event->getApplication()->getServiceManager()->get(ContactNavigationService::class)->update();
         });
-    }
-
-    /**
-     * @param \Zend\Console\Adapter\AdapterInterface $console
-     *
-     * @return array
-     */
-    public function getConsoleUsage(AdapterInterface $console)
-    {
-        return [
-            'Contact management',
-        ];
-    }
-
-    /**
-     * Returns a string containing a banner text, that describes the module and/or the application.
-     * The banner is shown in the console window, when the user supplies invalid command-line parameters or invokes
-     * the application with no parameters.
-     *
-     * The method is called with active Zend\Console\Adapter\AdapterInterface that can be used to directly access Console and send
-     * output.
-     *
-     * @param AdapterInterface $console
-     *
-     * @return string|null
-     */
-    public function getConsoleBanner(AdapterInterface $console)
-    {
-        return 'iteaoffice/contact ' . Version::VERSION . ' console application - powered by Zend Framework '
-        . \Zend\Version\Version::VERSION;
     }
 }

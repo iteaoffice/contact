@@ -354,6 +354,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Project\Entity\Idea\Partner[]|Collections\ArrayCollection
      */
     private $ideaPartner;
+
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -390,6 +391,36 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Invoice\Entity\Invoice[]|Collections\ArrayCollection
      */
     private $invoice;
+    /**
+     * @ORM\OneToMany(targetEntity="Partner\Entity\Partner", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Partner\Entity\Partner[]|Collections\ArrayCollection
+     */
+    private $partner;
+    /**
+     * @ORM\OneToMany(targetEntity="Partner\Entity\Financial", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude();
+     * @var \Partner\Entity\Financial[]|Collections\ArrayCollection
+     */
+    private $partnerFinancial;
+    /**
+     * @ORM\OneToMany(targetEntity="Partner\Entity\Organisation", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Partner\Entity\Organisation[]|Collections\ArrayCollection
+     */
+    private $partnerOrganisation;
+    /**
+     * @ORM\OneToMany(targetEntity="Partner\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Partner\Entity\Affiliation[]|Collections\ArrayCollection
+     */
+    private $partnerAffiliation;
+    /**
+     * @ORM\OneToMany(targetEntity="Partner\Entity\Affiliation\Log", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Partner\Entity\Affiliation\Log[]|Collections\ArrayCollection
+     */
+    private $partnerAffiliationLog;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Publication", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -849,6 +880,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->affiliationDescription = new Collections\ArrayCollection();
         $this->projectLog = new Collections\ArrayCollection();
         $this->affiliation = new Collections\ArrayCollection();
+        $this->partner = new Collections\ArrayCollection();
+        $this->partnerFinancial = new Collections\ArrayCollection();
+        $this->partnerAffiliationLog = new Collections\ArrayCollection();
+        $this->partnerAffiliation = new Collections\ArrayCollection();
+        $this->partnerOrganisation = new Collections\ArrayCollection();
         $this->financial = new Collections\ArrayCollection();
         $this->invoice = new Collections\ArrayCollection();
         $this->publication = new Collections\ArrayCollection();
@@ -858,6 +894,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->deeplinkContact = new Collections\ArrayCollection();
         $this->community = new Collections\ArrayCollection();
         $this->registration = new Collections\ArrayCollection();
+        $this->memberFinancial = new Collections\ArrayCollection();
         $this->badge = new Collections\ArrayCollection();
         $this->badgeContact = new Collections\ArrayCollection();
         $this->boothFinancial = new Collections\ArrayCollection();
@@ -3524,23 +3561,23 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Member\Entity\Financial[] $memberFinancial
+     * @param  Collections\ArrayCollection|\Partner\Entity\Financial[] $partnerFinancial
      *
      * @return Contact
      */
-    public function setMemberFinancial($memberFinancial)
+    public function setPartnerFinancial($partnerFinancial)
     {
-        $this->memberFinancial = $memberFinancial;
+        $this->partnerFinancial = $partnerFinancial;
 
         return $this;
     }
 
     /**
-     * @return Collections\ArrayCollection|\Member\Entity\Financial[] $memberFinancial
+     * @return Collections\ArrayCollection|\Partner\Entity\Financial[] $partnerFinancial
      */
-    public function getMemberFinancial()
+    public function getPartnerFinancial()
     {
-        return $this->memberFinancial;
+        return $this->partnerFinancial;
     }
 
     /**
@@ -3635,6 +3672,106 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setWorkpackageContact($workpackageContact)
     {
         $this->workpackageContact = $workpackageContact;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Partner\Entity\Affiliation[]
+     */
+    public function getPartnerAffiliation()
+    {
+        return $this->partnerAffiliation;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Partner\Entity\Affiliation[] $partnerAffiliation
+     *
+     * @return Contact
+     */
+    public function setPartnerAffiliation($partnerAffiliation)
+    {
+        $this->partnerAffiliation = $partnerAffiliation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Partner\Entity\Affiliation\Log[]
+     */
+    public function getPartnerAffiliationLog()
+    {
+        return $this->partnerAffiliationLog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Partner\Entity\Affiliation\Log[] $partnerAffiliationLog
+     *
+     * @return Contact
+     */
+    public function setPartnerAffiliationLog($partnerAffiliationLog)
+    {
+        $this->partnerAffiliationLog = $partnerAffiliationLog;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Member\Entity\Financial[]
+     */
+    public function getMemberFinancial()
+    {
+        return $this->memberFinancial;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Member\Entity\Financial[] $memberFinancial
+     *
+     * @return Contact
+     */
+    public function setMemberFinancial($memberFinancial)
+    {
+        $this->memberFinancial = $memberFinancial;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Partner\Entity\Organisation[]
+     */
+    public function getPartnerOrganisation()
+    {
+        return $this->partnerOrganisation;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Partner\Entity\Organisation[] $partnerOrganisation
+     *
+     * @return Contact
+     */
+    public function setPartnerOrganisation($partnerOrganisation)
+    {
+        $this->partnerOrganisation = $partnerOrganisation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Partner\Entity\Partner[]
+     */
+    public function getPartner()
+    {
+        return $this->partner;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Partner\Entity\Partner[] $partner
+     *
+     * @return Contact
+     */
+    public function setPartner($partner)
+    {
+        $this->partner = $partner;
 
         return $this;
     }

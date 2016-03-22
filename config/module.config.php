@@ -66,20 +66,11 @@ $config = [
             Service\FormService::class                                 => Factory\FormServiceFactory::class,
             Options\ModuleOptions::class                               => Factory\ModuleOptionsFactory::class,
             Search\Service\ContactSearchService::class                 => Search\Factory\ContactSearchFactory::class,
-            //            Acl\Assertion\Contact::class,
-            //            Acl\Assertion\Facebook::class,
-            //            Acl\Assertion\Address::class,
-            //            Acl\Assertion\Note::class,
-            //            Acl\Assertion\Phone::class,
-            //            Acl\Assertion\Selection::class,
         ],
         'abstract_factories' => [
             Acl\Factory\AssertionInvokableAbstractFactory::class,
         ],
         'shared'             => [
-            // Usually, you'll only indicate services that should **NOT** be
-            // shared -- i.e., ones where you want a different instance
-            // every time.
             Service\ContactService::class => false,
         ],
         'invokables'         => [
@@ -95,7 +86,7 @@ $config = [
             'contact_annotation_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => [
-                    __DIR__ . '/../src/Contact/Entity/',
+                    __DIR__ . '/../src/Entity/',
                 ],
             ],
             'orm_default'               => [

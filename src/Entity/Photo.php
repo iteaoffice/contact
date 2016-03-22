@@ -209,7 +209,7 @@ class Photo extends EntityAbstract
      */
     public function getCacheFileName()
     {
-        $cacheDir = __DIR__.'/../../../../../../public'.DIRECTORY_SEPARATOR.'assets'.
+        $cacheDir = __DIR__.'/../../../../../public'.DIRECTORY_SEPARATOR.'assets'.
             DIRECTORY_SEPARATOR.DEBRANOVA_HOST.DIRECTORY_SEPARATOR.'contact-photo';
 
         return $cacheDir.DIRECTORY_SEPARATOR

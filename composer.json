@@ -39,8 +39,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Contact\\": "src/Contact/",
-      "ContactTest\\": "tests/ContactTest/"
+      "Contact\\": "src/",
+      "ContactTest\\": "tests/"
     }
   },
   "config": {

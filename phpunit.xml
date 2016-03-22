@@ -1,4 +1,4 @@
-<phpunit bootstrap="tests/ContactTest/Bootstrap.php"
+<phpunit bootstrap="tests/Bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -10,7 +10,7 @@
          syntaxCheck="true"
 >
     <testsuite name="iteaoffice/contact">
-        <directory>./tests/ContactTest</directory>
+        <directory>./tests</directory>
     </testsuite>
     <filter>
         <whitelist>

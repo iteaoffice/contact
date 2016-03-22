@@ -496,7 +496,7 @@ class ContactService extends ServiceAbstract
         }
         $contactService = $this->createServiceElement($contact);
         //Create a target
-        $target = $this->getDeeplinkService()->createTargetFromRoute('contact/change-password');
+        $target = $this->getDeeplinkService()->createTargetFromRoute('community/contact/change-password');
         //Create a deeplink for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
         /*
