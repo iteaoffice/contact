@@ -50,8 +50,7 @@
                 <td>{{ contactLink(contact,'view-admin', 'email') }}</td>
                 <td>
                     {% if contact.contactOrganisation %}
-                        {% set organisationService = organisationServiceProxy(contact.contactOrganisation.organisation) %}
-                        {{ organisationLink(organisationService, 'view', 'name') }}
+                        {{ organisationLink(contact.contactOrganisation.organisation, 'view', 'name') }}
                     {% endif %}
                 </td>
                 <td></td>

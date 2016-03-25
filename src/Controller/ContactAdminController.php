@@ -137,25 +137,20 @@ class ContactAdminController extends ContactAbstractController
         //Get contacts in an organisation
         if ($contactService->hasOrganisation()) {
             $data = array_merge([
-                'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
-                'branch'       => $contact->getContactOrganisation()->getBranch(),
+                'contact' => [
+                    'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
+                    'branch'       => $contact->getContactOrganisation()->getBranch(),
+                ]
             ], $this->getRequest()->getPost()->toArray());
 
             $form = $this->getFormService()->prepare($contact, $contact, $data);
-
-
-            $form->get('contact')->get('organisation')->setValueOptions([
-                $contactService->getContact()->getContactOrganisation()->getOrganisation()
-                    ->getId() => $contactService->getContact()->getContactOrganisation()->getOrganisation()
-                    ->getOrganisation(),
-            ]);
+            $form->get('contact')->get("organisation")->injectOrganisation($contact->getContactOrganisation()
+                ->getOrganisation());
         } else {
             $data = array_merge($this->getRequest()->getPost()->toArray());
             $form = $this->getFormService()->prepare($contact, $contact, $data);
         }
 
-        //Disable the inarray validator for organisations
-        $form->get('contact')->get('organisation')->setDisableInArrayValidator(true);
 
         /** Show or hide buttons based on the status of a contact */
         if ($contactService->isActive()) {

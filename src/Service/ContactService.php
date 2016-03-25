@@ -11,7 +11,6 @@
 namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
-use Affiliation\Service\AffiliationService;
 use Calendar\Entity\Calendar;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
@@ -79,26 +78,6 @@ class ContactService extends ServiceAbstract
         }
 
         return $contact;
-    }
-
-    /**
-     * @param int $which
-     *
-     * @return int
-     */
-    public function getAffiliationCount($which = AffiliationService::WHICH_ALL)
-    {
-        return ($this->getContact()->getAffiliation()->filter(function (Affiliation $affiliation) use ($which) {
-            switch ($which) {
-                case AffiliationService::WHICH_ONLY_ACTIVE:
-                    return is_null($affiliation->getDateEnd());
-                case AffiliationService::WHICH_ONLY_INACTIVE:
-                    return !is_null($affiliation->getDateEnd());
-                default:
-                    return true;
-            }
-
-        })->count());
     }
 
     /** @param int $id
@@ -196,6 +175,10 @@ class ContactService extends ServiceAbstract
      */
     public function parseLastName()
     {
+        if ($this->isEmpty()) {
+            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
+        }
+
         return trim(implode(' ', [$this->getContact()->getMiddleName(), $this->getContact()->getLastName()]));
     }
 
@@ -206,6 +189,10 @@ class ContactService extends ServiceAbstract
      */
     public function parseAttention()
     {
+        if ($this->isEmpty()) {
+            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
+        }
+
         /*
          * Return nothing when the contact object is created and does not have all the relevant information
          */
@@ -229,6 +216,10 @@ class ContactService extends ServiceAbstract
      */
     public function parseOrganisation()
     {
+        if ($this->isEmpty()) {
+            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
+        }
+
         if (!$this->hasOrganisation()) {
             return null;
         }
@@ -286,6 +277,10 @@ class ContactService extends ServiceAbstract
      */
     public function parseCountry()
     {
+        if ($this->isEmpty()) {
+            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
+        }
+
         if (!$this->hasOrganisation()) {
             return null;
         }
@@ -316,8 +311,8 @@ class ContactService extends ServiceAbstract
      */
     public function getAddressByTypeId($typeId)
     {
-        if (is_null($this->getContact())) {
-            throw new \InvalidArgumentException(sprintf("A contact should be set"));
+        if ($this->isEmpty()) {
+            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
         }
 
         /*
@@ -555,6 +550,10 @@ class ContactService extends ServiceAbstract
      */
     public function parseFullName()
     {
+        if ($this->isEmpty()) {
+            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
+        }
+
         return $this->getContact()->getDisplayName();
     }
 
@@ -565,6 +564,10 @@ class ContactService extends ServiceAbstract
      */
     public function parseSignature()
     {
+        if ($this->isEmpty()) {
+            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
+        }
+
         /*
          * Go over the notes and find the signature of the contact
          */

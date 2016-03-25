@@ -92,48 +92,54 @@ class ProfileController extends ContactAbstractController
 
         $form->setData($data);
 
-        if ($this->getRequest()->isPost() && $form->isValid()) {
-            $contact = $form->getData();
-            $fileData = $this->params()->fromFiles();
-            if (!empty($fileData['file']['name'])) {
-                $photo = $contactService->getContact()->getPhoto()->first();
-                if (!$photo) {
-                    //Create a photo element
-                    $photo = new Photo();
-                }
-                $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
-                $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
-                $imageSizeValidator = new ImageSize();
-                $imageSizeValidator->isValid($fileData['file']);
-                $photo->setWidth($imageSizeValidator->width);
-                $photo->setHeight($imageSizeValidator->height);
-                $photo->setContentType($this->getGeneralService()
-                    ->findContentTypeByContentTypeName($fileData['file']['type']));
-                $collection = new ArrayCollection();
-                $collection->add($photo);
-                $contact->addPhoto($collection);
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('community/contact/profile/view');
             }
-            /*
-             * Remove any unwanted photo's
-             */
-            foreach ($contact->getPhoto() as $photo) {
-                if (is_null($photo->getWidth())) {
-                    $collection = new ArrayCollection();
-                    $collection->add($photo);
-                    $contact->removePhoto($collection);
+
+            if ($form->isValid()) {
+                $contact = $form->getData();
+                $fileData = $this->params()->fromFiles();
+                if (!empty($fileData['file']['name'])) {
+                    /** @var Photo $photo */
+                    $photo = $contactService->getContact()->getPhoto()->first();
+                    if (!$photo) {
+                        //Create a photo element
+                        $photo = new Photo();
+                    }
+                    $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
+                    $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
+                    $photo->setContact($this->zfcUserAuthentication()->getIdentity());
+                    $imageSizeValidator = new ImageSize();
+                    $imageSizeValidator->isValid($fileData['file']);
+                    $photo->setWidth($imageSizeValidator->width);
+                    $photo->setHeight($imageSizeValidator->height);
+                    $photo->setContentType($this->getGeneralService()
+                        ->findContentTypeByContentTypeName($fileData['file']['type']));
+                    $this->getContactService()->updateEntity($photo);
                 }
-            };
+                /*
+                 * Remove any unwanted photo's
+                 */
+                foreach ($contact->getPhoto() as $photo) {
+                    if (is_null($photo->getWidth())) {
+                        $collection = new ArrayCollection();
+                        $collection->add($photo);
+                        $contact->removePhoto($collection);
+                    }
+                };
 
-            $contact = $this->getContactService()->updateEntity($contact);
-            /**
-             * The contact_organisation is different and not a drop-down.
-             * we will extract the organisation name from the contact_organisation text-field
-             */
-            $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
-            $this->flashMessenger()->setNamespace('success')
-                ->addMessage(_("txt-profile-has-successfully-been-updated"));
+                $contact = $this->getContactService()->updateEntity($contact);
+                /**
+                 * The contact_organisation is different and not a drop-down.
+                 * we will extract the organisation name from the contact_organisation text-field
+                 */
+                $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
+                $this->flashMessenger()->setNamespace('success')
+                    ->addMessage(_("txt-profile-has-successfully-been-updated"));
 
-            return $this->redirect()->toRoute('community/contact/profile/view');
+                return $this->redirect()->toRoute('community/contact/profile/view');
+            }
         }
 
         return new ViewModel([

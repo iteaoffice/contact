@@ -4,7 +4,7 @@
 
 <h3>{{ translate("txt-organisation") }}</h3>
 {{ organisationLink(
-contactService.findOrganisationService,'view', 'name',contactService.contact.contactOrganisation.branch
+contactService.contact.contactOrganisation.organisation,'view', 'name',contactService.contact.contactOrganisation.branch
 ) }}
 {{ translate("txt-in") }} {{ contactService.contact.contactOrganisation.organisation.country }}
 

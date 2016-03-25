@@ -24,7 +24,7 @@
     <dt>{{ translate("txt-organisation") }}</dt>
     {% if contactService.hasOrganisation() %}
         <dd>{{ organisationLink(
-            contactService.findOrganisationService,'view-admin', 'name',contactService.contact.contactOrganisation.branch
+            contactService.contact.contactOrganisation.organisation,'view-admin', 'name',contactService.contact.contactOrganisation.branch
             ) }}, ({{ contactService.contact.contactOrganisation.organisation.type }})
             {{ countryLink(contactService.contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
     {% else %}

@@ -11,7 +11,6 @@
 
 namespace Contact\View\Helper;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\Url;
@@ -20,7 +19,7 @@ use Zend\View\HelperPluginManager;
 /**
  * Class LinkAbstract.
  */
-abstract class HelperAbstract extends AbstractHelper implements ServiceLocatorAwareInterface
+abstract class HelperAbstract extends AbstractHelper
 {
     /**
      * @var HelperPluginManager
@@ -58,7 +57,7 @@ abstract class HelperAbstract extends AbstractHelper implements ServiceLocatorAw
      */
     public function translate($string)
     {
-        return $this->serviceLocator->get('translate')->__invoke($string);
+        return $this->getServiceLocator()->get('translate')->__invoke($string);
     }
 
     /**
@@ -69,6 +68,6 @@ abstract class HelperAbstract extends AbstractHelper implements ServiceLocatorAw
      */
     public function getUrl($router, array $params)
     {
-        return $this->serviceLocator->get('url')->__invoke($router, $params);
+        return $this->getServiceLocator()->get('url')->__invoke($router, $params);
     }
 }

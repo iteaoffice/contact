@@ -21,7 +21,6 @@ use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
 use Zend\Mvc\Router\RouteMatch;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\ServerUrl;
@@ -31,7 +30,7 @@ use Zend\View\HelperPluginManager;
 /**
  * Class LinkAbstract.
  */
-abstract class LinkAbstract extends AbstractHelper implements ServiceLocatorAwareInterface
+abstract class LinkAbstract extends AbstractHelper
 {
     /**
      * @var HelperPluginManager

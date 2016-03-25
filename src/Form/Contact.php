@@ -12,8 +12,8 @@ namespace Contact\Form;
 
 use Contact\Entity;
 use Contact\Entity\EntityAbstract;
+use Doctrine\ORM\EntityManager;
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceManager;
 
 /**
  *
@@ -21,28 +21,21 @@ use Zend\ServiceManager\ServiceManager;
 class Contact extends Form
 {
     /**
-     * @var ServiceManager
-     */
-    protected $serviceManager;
-
-    /**
-     * @param ServiceManager $serviceManager
+     * Contact constructor.
+     *
+     * @param EntityManager  $entityManager
      * @param EntityAbstract $object
      */
-    public function __construct(ServiceManager $serviceManager, EntityAbstract $object)
+    public function __construct(EntityManager $entityManager, EntityAbstract $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
 
         $this->setAttribute('method', 'post');
         $this->setAttribute('action', '');
 
-        $this->serviceManager = $serviceManager;
-        /** @var \Doctrine\ORM\EntityManager $entityManager */
-        $entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
         $contactFieldset = new ContactFieldset($entityManager, new Entity\Contact());
         $contactFieldset->setUseAsBaseFieldset(true);
         $this->add($contactFieldset);
-
 
 
         $this->add([

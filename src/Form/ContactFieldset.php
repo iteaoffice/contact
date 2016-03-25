@@ -25,7 +25,9 @@ use Zend\Form\Element\Radio;
 use Zend\Form\Fieldset;
 
 /**
- * Class ObjectFieldset.
+ * Class ContactFieldset
+ *
+ * @package Contact\Form
  */
 class ContactFieldset extends Fieldset
 {
@@ -65,12 +67,11 @@ class ContactFieldset extends Fieldset
         }
 
         $this->add([
-            'type'    => '\Zend\Form\Element\Select',
+            'type'    => '\Organisation\Form\Element\Organisation',
             'name'    => 'organisation',
             'options' => [
-                'disable_inarray_validator' => true,
-                "label"                     => _("txt-organisation"),
-                "help-block"                => _("txt-organisation-help-block"),
+                "label"      => _("txt-organisation"),
+                "help-block" => _("txt-organisation-help-block"),
             ],
         ]);
 

@@ -22,7 +22,7 @@ return [
             return new Options\ModuleOptions(isset($config['community']) ? $config['community'] : []);
         },
         'contact_contact_form'        => function (ServiceManager $sm) {
-            return new Form\Contact($sm, new Entity\Contact());
+            return new Form\Contact($sm->get(EntityManager::class), new Entity\Contact());
         },
         'contact_facebook_form'       => function (ServiceManager $sm) {
             return new Form\CreateObject($sm, new Entity\Facebook());

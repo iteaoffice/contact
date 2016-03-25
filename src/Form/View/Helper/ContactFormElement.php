@@ -208,7 +208,7 @@ class ContactFormElement extends ZendFormElement
      */
     public function setGroupWrapper($groupWrapper)
     {
-        $this->groupWrapper = (string) $groupWrapper;
+        $this->groupWrapper = (string)$groupWrapper;
 
         return $this;
     }
@@ -232,7 +232,7 @@ class ContactFormElement extends ZendFormElement
      */
     public function setControlWrapper($controlWrapper)
     {
-        $this->controlWrapper = (string) $controlWrapper;
+        $this->controlWrapper = (string)$controlWrapper;
 
         return $this;
     }
@@ -281,23 +281,16 @@ class ContactFormElement extends ZendFormElement
         }
 
         if ($label && !$element->getOption('skipLabel')) {
-            $controlLabel .= $labelHelper->openTag(
-                [
-                    'class' => 'col-lg-3 '.(
-                        $element->getOption(
-                            'wrapCheckboxInLabel'
-                        ) ? 'checkbox' : 'control-label'),
-                ] + ($element->hasAttribute('id') ? ['for' => $id] : [])
-            );
+            $controlLabel .= $labelHelper->openTag([
+                    'class' => 'col-lg-3 ' . ($element->getOption('wrapCheckboxInLabel') ? 'checkbox'
+                            : 'control-label'),
+                ] + ($element->hasAttribute('id') ? ['for' => $id] : []));
 
             if (null !== ($translator = $labelHelper->getTranslator())) {
-                $label = $translator->translate(
-                    $label,
-                    $labelHelper->getTranslatorTextDomain()
-                );
+                $label = $translator->translate($label, $labelHelper->getTranslatorTextDomain());
             }
             if ($element->getOption('wrapCheckboxInLabel')) {
-                $controlLabel .= $elementHelper->render($element).' ';
+                $controlLabel .= $elementHelper->render($element) . ' ';
             }
             if ($element->getOption('skipLabelEscape')) {
                 $controlLabel .= $label;
@@ -324,21 +317,16 @@ class ContactFormElement extends ZendFormElement
          * Now apply the magic
          */
         if ($element->isMultiple()) {
-            $controls = str_replace(
-                ['data-live-search="true"'],
-                ['multiple data-live-search="true"'],
-                $controls
-            );
+            $controls = str_replace(['data-live-search="true"'], ['multiple data-live-search="true"'], $controls);
         }
 
-        $html = $controlLabel.
-            sprintf(
-                $controlWrapper,
-                $id,
-                $controls,
-                $descriptionHelper->render($element),
-                $elementErrorHelper->render($element)
-            );
+        $html = $controlLabel . sprintf(
+            $controlWrapper,
+            $id,
+            $controls,
+            $descriptionHelper->render($element),
+            $elementErrorHelper->render($element)
+        );
         $addtClass = ($element->getMessages()) ? ' has-error' : '';
 
         return sprintf($groupWrapper, $addtClass, $id, $html);
@@ -357,22 +345,12 @@ class ContactFormElement extends ZendFormElement
     {
         //Inject the javascript in the header
         $this->view->headLink()->appendStylesheet('/assets/css/bootstrap-select.min.css');
-        $this->view->headScript()
-            ->appendFile(
-                '/assets/js/bootstrap-select.min.js',
-                'text/javascript'
-            );
-        $this->view->headScript()
-            ->appendFile(
-                '/assets/js/ajax-bootstrap-select.min.js',
-                'text/javascript'
-            );
+        $this->view->headScript()->appendFile('/assets/js/bootstrap-select.min.js', 'text/javascript');
+        $this->view->headScript()->appendFile('/assets/js/ajax-bootstrap-select.min.js', 'text/javascript');
 
-        $this->view->inlineScript()
-            ->appendScript(
-                "var options = {
+        $this->view->inlineScript()->appendScript("var options = {
         ajax: {
-            url: '".$this->view->url('zfcadmin/contact-admin/search')."',
+            url: '" . $this->view->url('zfcadmin/contact-admin/search') . "',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -401,9 +379,7 @@ class ContactFormElement extends ZendFormElement
             return array;
         }
     };
-    $('.select-picker-contact').selectpicker().ajaxSelectPicker(options);",
-                'text/javascript'
-            );
+    $('.select-picker-contact').selectpicker().ajaxSelectPicker(options);", 'text/javascript');
 
         if ($element) {
             return $this->render($element, $groupWrapper, $controlWrapper);
