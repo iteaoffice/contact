@@ -14,7 +14,9 @@ use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 
 /**
- * Class VersionServiceProxy.
+ * Class CreateContactFromArray
+ *
+ * @package Contact\View\Helper
  */
 class CreateContactFromArray extends HelperAbstract
 {

@@ -28,22 +28,16 @@ use Zend\Mvc\MvcEvent;
 /**
  *
  */
-class Module implements
-    Feature\AutoloaderProviderInterface,
-    Feature\ServiceProviderInterface,
-    Feature\ConfigProviderInterface,
-    Feature\BootstrapListenerInterface
+class Module implements Feature\AutoloaderProviderInterface, Feature\ConfigProviderInterface, Feature\BootstrapListenerInterface
 {
+    /**
+     * @return array
+     */
     public function getAutoloaderConfig()
     {
         return [
             'Zend\Loader\ClassMapAutoloader' => [
                 __DIR__ . '/../autoload_classmap.php',
-            ],
-            'Zend\Loader\StandardAutoloader' => [
-                'namespaces' => [
-                    __NAMESPACE__ => __DIR__ . '/../src/',
-                ],
             ],
         ];
     }
@@ -54,16 +48,6 @@ class Module implements
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';
-    }
-
-    /**
-     * Go to the service configuration.
-     *
-     * @return array
-     */
-    public function getServiceConfig()
-    {
-        return include __DIR__ . '/../config/services.config.php';
     }
 
     /**

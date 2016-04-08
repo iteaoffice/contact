@@ -19,11 +19,12 @@ use Contact\Service\FormService;
 use Contact\Service\SelectionService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
+use Event\Service\RegistrationService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
+use Program\Service\CallService;
 use Project\Service\ProjectService;
-use Search\Service\SearchService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
@@ -53,6 +54,10 @@ abstract class ContactAbstractController extends AbstractActionController
      */
     protected $contactService;
     /**
+     * @var RegistrationService
+     */
+    protected $registrationService;
+    /**
      * @var OrganisationService
      */
     protected $organisationService;
@@ -69,10 +74,6 @@ abstract class ContactAbstractController extends AbstractActionController
      */
     protected $emailService;
     /**
-     * @var SearchService
-     */
-    protected $searchService;
-    /**
      * @var DeeplinkService
      */
     protected $deeplinkService;
@@ -80,6 +81,10 @@ abstract class ContactAbstractController extends AbstractActionController
      * @var SelectionService
      */
     protected $selectionService;
+    /**
+     * @var CallService;
+     */
+    protected $callService;
     /**
      * @var FormService
      */
@@ -234,26 +239,6 @@ abstract class ContactAbstractController extends AbstractActionController
     }
 
     /**
-     * @return SearchService
-     */
-    public function getSearchService()
-    {
-        return $this->searchService;
-    }
-
-    /**
-     * @param  SearchService $searchService
-     *
-     * @return ContactAbstractController
-     */
-    public function setSearchService(SearchService $searchService)
-    {
-        $this->searchService = $searchService;
-
-        return $this;
-    }
-
-    /**
      * Proxy for the flash messenger helper to have the string translated earlier.
      *
      * @param $string
@@ -346,6 +331,46 @@ abstract class ContactAbstractController extends AbstractActionController
     public function setEntityManager($entityManager)
     {
         $this->entityManager = $entityManager;
+
+        return $this;
+    }
+
+    /**
+     * @return CallService
+     */
+    public function getCallService()
+    {
+        return $this->callService;
+    }
+
+    /**
+     * @param CallService $callService
+     *
+     * @return ContactAbstractController
+     */
+    public function setCallService($callService)
+    {
+        $this->callService = $callService;
+
+        return $this;
+    }
+
+    /**
+     * @return RegistrationService
+     */
+    public function getRegistrationService()
+    {
+        return $this->registrationService;
+    }
+
+    /**
+     * @param RegistrationService $registrationService
+     *
+     * @return ContactAbstractController
+     */
+    public function setRegistrationService($registrationService)
+    {
+        $this->registrationService = $registrationService;
 
         return $this;
     }

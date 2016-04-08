@@ -29,7 +29,7 @@ class PhoneManagerController extends ContactAbstractController
         /**
          * @var $contact Contact
          */
-        $contact = $this->getContactService()->setContactId($this->params('contact'))->getContact();
+        $contact = $this->getContactService()->findContactById($this->params('contact'));
 
         if (is_null($contact)) {
             return $this->notFoundAction();
@@ -37,7 +37,7 @@ class PhoneManagerController extends ContactAbstractController
 
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
-        $form = $this->getFormService()->prepare('phone', null, $data);
+        $form = $this->getFormService()->prepare(Phone::class, null, $data);
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
@@ -71,9 +71,9 @@ class PhoneManagerController extends ContactAbstractController
         /**
          * @var $phone Phone
          */
-        $phone = $this->getContactService()->findEntityById('phone', $this->params('id'));
+        $phone = $this->getContactService()->findEntityById(Phone::class, $this->params('id'));
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($phone->get('entity_name'), $phone, $data);
+        $form = $this->getFormService()->prepare($phone, $phone, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
@@ -94,7 +94,7 @@ class PhoneManagerController extends ContactAbstractController
 
             if (!isset($data['cancel']) && $form->isValid()) {
                 /**
-                 * @var Phone
+                 * @var Phone $phone
                  */
                 $phone = $form->getData();
                 $phone = $this->getContactService()->updateEntity($phone);

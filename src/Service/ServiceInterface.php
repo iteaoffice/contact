@@ -15,22 +15,23 @@ use Contact\Entity\EntityAbstract;
 interface ServiceInterface
 {
     /**
-     * @return string
-     */
-    public function getFullEntityName($entity);
-
-    /**
-     * @return EntityAbstract
+     * @param EntityAbstract $entity
+     *
+     * @return EntityAbstract $entity
      */
     public function updateEntity(EntityAbstract $entity);
 
     /**
+     * @param EntityAbstract $entity
+     *
      * @return EntityAbstract
      */
     public function newEntity(EntityAbstract $entity);
 
     /**
-     * @return \Contact\Entity\OptIn[]
+     * @param $entity
+     *
+     * @return EntityAbstract[]
      */
     public function findAll($entity);
 }

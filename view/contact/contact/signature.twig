@@ -1,9 +1,7 @@
-{% set contactService = contactServiceProxy(zfcUserIdentity()) %}
-
 {% do headTitle().append(translate("txt-profile")) %}
-{% do headTitle().append(contactService.parseFullname()) %}
+{% do headTitle().append(contact.parseFullName()) %}
 
-<h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
+<h1 class="home">{{ translate("txt-hello-%s")|format(contact.parseFullName()) }}</h1>
 
 <ul id="tab" class="nav nav-tabs">
     <li><a href="{{ url('community/contact/profile/view') }}#profile">{{ translate("txt-profile")|capitalize }}</a></li>
@@ -27,7 +25,7 @@
         <p>
             Copy the HTML content of the signature below and save this at the following location (Windows 8/10)<br>
             <code>C:\Users\%username%\AppData\Roaming\Microsoft\Signatures\signature.htm</code>
-        <br>
+            <br>
             In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and
             replies
         </p>

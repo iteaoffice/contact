@@ -29,7 +29,7 @@ class AddressManagerController extends ContactAbstractController
         /**
          * @var $contact Contact
          */
-        $contact = $this->getContactService()->setContactId($this->params('contact'))->getContact();
+        $contact = $this->getContactService()->findContactById($this->params('contact'));
 
         if (is_null($contact)) {
             return $this->notFoundAction();
@@ -37,7 +37,7 @@ class AddressManagerController extends ContactAbstractController
 
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
-        $form = $this->getFormService()->prepare('address', null, $data);
+        $form = $this->getFormService()->prepare(Address::class, null, $data);
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
@@ -71,9 +71,9 @@ class AddressManagerController extends ContactAbstractController
         /**
          * @var $address Address
          */
-        $address = $this->getContactService()->findEntityById('address', $this->params('id'));
+        $address = $this->getContactService()->findEntityById(Address::class, $this->params('id'));
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($address->get('entity_name'), $address, $data);
+        $form = $this->getFormService()->prepare($address, $address, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
@@ -110,7 +110,6 @@ class AddressManagerController extends ContactAbstractController
         return new ViewModel([
             'form'    => $form,
             'contact' => $address->getContact(),
-
         ]);
     }
 }

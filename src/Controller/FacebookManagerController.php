@@ -24,8 +24,8 @@ class FacebookManagerController extends ContactAbstractController
     public function listAction()
     {
         return new ViewModel([
-                'facebook' => $this->getContactService()->findAll('facebook'),
-            ]);
+            'facebook' => $this->getContactService()->findAll(Facebook::class),
+        ]);
     }
 
     /**
@@ -33,15 +33,15 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function viewAction()
     {
-        /*
-         * @var Facebook
+        /**
+         * @var Facebook $facebook
          */
-        $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
+        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
 
         return new ViewModel([
-                'facebook' => $facebook,
-                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
-            ]);
+            'facebook' => $facebook,
+            'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
+        ]);
     }
 
     /**
@@ -53,13 +53,14 @@ class FacebookManagerController extends ContactAbstractController
     {
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
-        $form = $this->getFormService()->prepare('facebook', null, $data);
+        $form = $this->getFormService()->prepare(Facebook::class, null, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            /*
-             * @var Facebook
+            /**
+             * @var Facebook $facebook
              */
-            $facebook = $this->getContactService()->newEntity($form->getData());
+            $facebook = $form->getData();
+            $facebook = $this->getContactService()->newEntity($facebook);
 
             return $this->redirect()->toRoute('zfcadmin/facebook-manager/view', ['id' => $facebook->getId()]);
         }
@@ -77,9 +78,9 @@ class FacebookManagerController extends ContactAbstractController
         /**
          * @var $facebook Facebook
          */
-        $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
+        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($facebook->get('entity_name'), $facebook, $data);
+        $form = $this->getFormService()->prepare($facebook, $facebook, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             if (isset($data['delete'])) {

@@ -10,7 +10,6 @@
 
 namespace Contact\View\Helper;
 
-use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
 use Contact\Service\ContactService;
 use Content\Entity\Content;
@@ -31,10 +30,6 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
      * @var HelperPluginManager
      */
     protected $serviceLocator;
-    /**
-     * @var Contact
-     */
-    protected $contact;
     /**
      * @var OptIn
      */
@@ -76,12 +71,11 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
                 case 'optin':
                     if (!is_null($optInId = $param->getParameterId())) {
                         /** @var OptIn $optIn */
-                        $optIn = $this->getContactService()->findEntityById('optIn', $optInId);
+                        $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
                         $this->setOptIn($optIn);
                     }
                     break;
                 default:
-                    $this->setContactId($param->getParameterId());
                     break;
             }
         }
@@ -120,40 +114,11 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
     }
 
     /**
-     * @return Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param Contact $contact
-     */
-    public function setContact($contact)
-    {
-        if (!$contact instanceof Contact) {
-            $contact = $this->getContactService()->findEntityById('contact', $contact);
-        }
-        $this->contact = $contact;
-    }
-
-    /**
      * @return ContactService
      */
     public function getContactService()
     {
         return $this->getServiceLocator()->get(ContactService::class);
-    }
-
-    /**
-     * @param string $id
-     *
-     * @return ContactService
-     */
-    public function setContactId($id)
-    {
-        return $this->getContactService()->setContactId($id);
     }
 
     /**
@@ -177,18 +142,6 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
             'includeAngularApp' => true,
             'optIn'             => $optIn,
             'hasIdentity'       => $this->getServiceLocator()->get('Application\Authentication\Service')->hasIdentity(),
-        ]);
-    }
-
-    /**
-     * @param ContactService $contactService
-     *
-     * @return string
-     */
-    public function parseContact(ContactService $contactService)
-    {
-        return $this->getRenderer()->render('contact/partial/contact', [
-            'contact' => $contactService->getContact(),
         ]);
     }
 

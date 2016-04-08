@@ -14,9 +14,6 @@ use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use ZfcUser\Entity\UserInterface;
 
@@ -1004,114 +1001,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * Returns the string identifier of the Resource
+     * Proxythe full name of a project.
      *
      * @return string
      */
-    public function getResourceId()
+    public function parseFullName()
     {
-        return sprintf("%s:%s", $this->get("underscore_full_entity_name"), $this->getId());
-    }
-
-    /**
-     * Set input filter
-     *
-     * @param  InputFilterInterface $inputFilter
-     *
-     * @return void
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (!$this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-            $inputFilter->add($factory->createInput([
-                'name'       => 'firstName',
-                'required'   => true,
-                'filters'    => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 100,
-                        ],
-                    ],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'middleName',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'       => 'lastName',
-                'required'   => true,
-                'filters'    => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 100,
-                        ],
-                    ],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'phone',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'address',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'community',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'emailAddress',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'dateOfBirth',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'dateEnd',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'messenger',
-                'required' => false,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'access',
-                'required' => false,
-            ]));
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
+        return $this->getDisplayName();
     }
 
     /**
@@ -1370,20 +1266,26 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param \General\Entity\Gender $gender
-     */
-    public function setGender($gender)
-    {
-        $this->gender = $gender;
-    }
-
-    /**
      * @return \General\Entity\Gender
      */
     public function getGender()
     {
         return $this->gender;
     }
+
+    /**
+     * @param \General\Entity\Gender $gender
+     *
+     * @return Contact
+     */
+    public function setGender($gender)
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    
 
     /**
      * @param  int $id
@@ -1520,20 +1422,26 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param \General\Entity\Title $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
      * @return \General\Entity\Title
      */
     public function getTitle()
     {
         return $this->title;
     }
+
+    /**
+     * @param \General\Entity\Title $title
+     *
+     * @return Contact
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    
 
     /**
      * @param  int $state

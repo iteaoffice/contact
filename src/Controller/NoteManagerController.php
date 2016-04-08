@@ -29,7 +29,7 @@ class NoteManagerController extends ContactAbstractController
         /**
          * @var $contact Contact
          */
-        $contact = $this->getContactService()->setContactId($this->params('contact'))->getContact();
+        $contact = $this->getContactService()->findContactById($this->params('contact'));
 
         if (is_null($contact)) {
             return $this->notFoundAction();
@@ -37,7 +37,7 @@ class NoteManagerController extends ContactAbstractController
 
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
-        $form = $this->getFormService()->prepare('note', null, $data);
+        $form = $this->getFormService()->prepare(Note::class, null, $data);
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
@@ -71,9 +71,9 @@ class NoteManagerController extends ContactAbstractController
         /**
          * @var $note Note
          */
-        $note = $this->getContactService()->findEntityById('note', $this->params('id'));
+        $note = $this->getContactService()->findEntityById(Note::class, $this->params('id'));
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($note->get('entity_name'), $note, $data);
+        $form = $this->getFormService()->prepare($note, $note, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
@@ -94,7 +94,7 @@ class NoteManagerController extends ContactAbstractController
 
             if (!isset($data['cancel']) && $form->isValid()) {
                 /**
-                 * @var Note
+                 * @var Note $note
                  */
                 $note = $form->getData();
                 $note = $this->getContactService()->updateEntity($note);

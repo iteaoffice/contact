@@ -33,9 +33,10 @@ class ContactController extends ContactAbstractController
      */
     public function signatureAction()
     {
-        $contactService = $this->getContactService()->setContact($this->zfcUserAuthentication()->getIdentity());
-
-        return new ViewModel(['contactService' => $contactService]);
+        return new ViewModel([
+            'contactService' => $this->getContactService(),
+            'contact'        => $this->zfcUserAuthentication()->getIdentity()
+        ]);
     }
 
     /**
@@ -48,7 +49,7 @@ class ContactController extends ContactAbstractController
         /**
          * @var $photo Photo
          */
-        $photo = $this->getContactService()->findEntityById('photo', $this->params('id'));
+        $photo = $this->getContactService()->findEntityById(Photo::class, $this->params('id'));
 
         /*
          * Do a check if the given has is correct to avoid guessing the image
@@ -162,18 +163,20 @@ class ContactController extends ContactAbstractController
         $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
         $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
 
-        $contactService = $this->getContactService()->setContactId($contactId);
+        $contact = $this->getContactService()->findContactById($contactId);
 
-        if ($contactService->isEmpty()) {
+        if (is_null($contact)) {
             return $this->notFoundAction();
         }
 
         switch ($typeId) {
             case AddressType::ADDRESS_TYPE_FINANCIAL:
-                $address = $contactService->getAddressByTypeId(AddressType::ADDRESS_TYPE_FINANCIAL);
+                $address = $this->getContactService()
+                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
                 break;
             case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
-                $address = $contactService->getAddressByTypeId(AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+                $address = $this->getContactService()
+                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
                 break;
             default:
                 return $this->notFoundAction();
@@ -184,10 +187,10 @@ class ContactController extends ContactAbstractController
         }
 
         return new JsonModel([
-            'address' => $address->getAddress()->getAddress(),
-            'zipCode' => $address->getAddress()->getZipCode(),
-            'city'    => $address->getAddress()->getCity(),
-            'country' => $address->getAddress()->getCountry()->getId(),
+            'address' => $address->getAddress(),
+            'zipCode' => $address->getZipCode(),
+            'city'    => $address->getCity(),
+            'country' => $address->getCountry()->getId(),
         ]);
     }
 

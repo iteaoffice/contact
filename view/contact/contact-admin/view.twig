@@ -1,10 +1,8 @@
-{% set contactService = contactServiceProxy(contact) %}
-
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(contactService.parseFullname()) %}
 
 
-<h1>{{ contactService.parseAttention() }} {{ contactService.parseFullname() }}</h1>
+<h1>{{ contactService.parseAttention(contact) }} {{ contact.parseFullname() }}</h1>
 
 <div class="row">
 
@@ -59,11 +57,11 @@
         </div>
 
         <hr>
-        {{ contactLink(contactService.contact,'edit-admin','button') }}
-        {{ contactLink(contactService.contact,'permit','button') }}
-        {{ contactLink(contactService.contact,'impersonate','button') }}
+        {{ contactLink(contact,'edit-admin','button') }}
+        {{ contactLink(contact,'permit','button') }}
+        {{ contactLink(contact,'impersonate','button') }}
     </div>
     <div class="col-md-2">
-        {{ contactPhoto(contactService.contact) }}
+        {{ contactPhoto(contact) }}
     </div>
 </div>

@@ -1,6 +1,6 @@
 <h2>{{ translate("txt-project-idea") }}</h2>
 
-{% if contactService.contact.idea.count() > 0 %}
+{% if contact.idea.count() > 0 %}
     <table class="table table-hover table-striped">
         <thead>
         <tr>
@@ -12,14 +12,13 @@
         </tr>
         </thead>
         <tbody>
-        {% for idea in contactService.contact.idea %}
+        {% for idea in contact.idea %}
             <tr>
-                {% set ideaService = ideaServiceProxy(idea) %}
-                <td>{{ ideaLink(ideaService,'view-admin','name') }}</td>
-                <td>{{ ideaLink(ideaService,'view-admin','title') }}</td>
-                <td>{{ callLink(ideaService.idea.call,'view-admin','name') }}</td>
-                <td>{{ ideaService.idea.message.count() }}</td>
-                <td>{{ ideaService.idea.partner.count() }}</td>
+                <td>{{ ideaLink(idea,'view-admin','name') }}</td>
+                <td>{{ ideaLink(idea,'view-admin','title') }}</td>
+                <td>{{ callLink(idea.call,'view-admin','name') }}</td>
+                <td>{{ idea.message.count() }}</td>
+                <td>{{ idea.partner.count() }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -30,7 +29,7 @@
 
 <h2>{{ translate("txt-project-idea-comments") }}</h2>
 
-{% if contactService.contact.ideaMessage.count() > 0 %}
+{% if contact.ideaMessage.count() > 0 %}
     <table class="table table-hover table-striped">
         <thead>
         <tr>
@@ -41,12 +40,11 @@
         </tr>
         </thead>
         <tbody>
-        {% for message in contactService.contact.ideaMessage %}
+        {% for message in contact.ideaMessage %}
             <tr>
-                {% set ideaService = ideaServiceProxy(message.idea) %}
-                <td>{{ ideaLink(ideaService,'view-admin','number') }}</td>
-                <td>{{ ideaService.idea.title }}</td>
-                <td>{{ callLink(ideaService.idea.call,'view-admin','name') }}</td>
+                <td>{{ ideaLink(message.idea,'view-admin','number') }}</td>
+                <td>{{ message.idea.title }}</td>
+                <td>{{ callLink(message.idea.call,'view-admin','name') }}</td>
                 <td>{{ message }}</td>
             </tr>
         {% endfor %}

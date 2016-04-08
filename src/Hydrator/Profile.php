@@ -15,8 +15,8 @@ use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
-use Contact\Service\ContactService;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use General\Entity\Country;
 use Organisation\Service\OrganisationService;
 
 /**
@@ -25,20 +25,20 @@ use Organisation\Service\OrganisationService;
 class Profile extends DoctrineObject
 {
     /**
-     * @param Contact $object
+     * @param Contact $contact
      *
      * @return array
      */
-    public function extract($object)
+    public function extract($contact)
     {
-        $this->prepare($object);
-        $values = $this->extractByValue($object);
+        $this->prepare($contact);
+        $values = $this->extractByValue($contact);
         unset($values['phone']);
-        foreach ($object->getPhone() as $phone) {
+        foreach ($contact->getPhone() as $phone) {
             $values['phone'][$phone->getType()->getId()]['phone'] = $phone->getPhone();
         }
         unset($values['address']);
-        foreach ($object->getAddress() as $address) {
+        foreach ($contact->getAddress() as $address) {
             if ($address->getType()->getId() === AddressType::ADDRESS_TYPE_MAIL) {
                 $values['address']['address'] = $address->getAddress();
                 $values['address']['zipCode'] = $address->getZipCode();
@@ -48,24 +48,25 @@ class Profile extends DoctrineObject
         }
 
         unset($values['profile']);
-        $values['profile']['visible'] = !is_null($object->getProfile()) ? $object->getProfile()->getVisible() : null;
-        $values['profile']['description'] = !is_null($object->getProfile()) ? $object->getProfile()->getDescription() : null;
+        $values['profile']['visible'] = !is_null($contact->getProfile()) ? $contact->getProfile()->getVisible() : null;
+        $values['profile']['description'] = !is_null($contact->getProfile()) ? $contact->getProfile()->getDescription()
+            : null;
         /*
          * Set the contact organisation, this will be taken from the contact_organisation item and can be used
          * to pre-fill the values
          */
-        $contactService = new ContactService();
-        $contactService->setContact($object);
-        if (!is_null($object->getContactOrganisation())) {
-            $organisationService = new OrganisationService();
-            $organisationService->setOrganisation($object->getContactOrganisation()->getOrganisation());
-            $values['contact_organisation']['organisation_id'] = $organisationService->getOrganisation()->getId();
-            $values['contact_organisation']['organisation'] = $organisationService->parseOrganisationWithBranch(
-                $contactService->getContact()->getContactOrganisation()->getBranch()
-            );
-            if (!is_null($object->getContactOrganisation())) {
-                $values['contact_organisation']['country'] =
-                    $object->getContactOrganisation()->getOrganisation()->getCountry()->getId();
+        $organisationService = new OrganisationService();
+        if (!is_null($contact->getContactOrganisation())) {
+            $values['contact_organisation']['organisation_id'] = $contact->getContactOrganisation()->getOrganisation()
+                ->getId();
+            $values['contact_organisation']['organisation']
+                = $organisationService->parseOrganisationWithBranch(
+                    $contact->getContactOrganisation()->getBranch(),
+                    $contact->getContactOrganisation()->getOrganisation()
+                );
+            if (!is_null($contact->getContactOrganisation())) {
+                $values['contact_organisation']['country'] = $contact->getContactOrganisation()->getOrganisation()
+                    ->getCountry()->getId();
             }
         }
 
@@ -73,23 +74,23 @@ class Profile extends DoctrineObject
     }
 
     /**
-     * Hydrate $object with the provided $data.
+     * Hydrate $contact with the provided $data.
      *
      * @param array   $data
-     * @param Contact $object
+     * @param Contact $contact
      *
      * @return object
      */
-    public function hydrate(array $data, $object)
+    public function hydrate(array $data, $contact)
     {
         unset($data['contact_organisation']);
 
-        $this->prepare($object);
+        $this->prepare($contact);
         /**
          * Reformat the phone, address and community for the Contact object
          *
          */
-        if ($object instanceof Contact) {
+        if ($contact instanceof Contact) {
             /*
              * Reset the data array and store the values locally
              */
@@ -101,9 +102,9 @@ class Profile extends DoctrineObject
             /**
              * @var $contact Contact
              */
-            $contact = $this->hydrateByValue($data, $object);
+            $contact = $this->hydrateByValue($data, $contact);
             /**
-             * @var $currentPhoneNumbers Phone[]
+             * @var Phone[] $currentPhoneNumbers
              */
             $currentPhoneNumbers = $contact->getPhone()->getSnapshot();
             //Reset the array
@@ -111,24 +112,24 @@ class Profile extends DoctrineObject
             foreach ($phoneData as $phoneTypeId => $phoneElement) {
                 if (!empty($phoneElement['phone'])) {
                     $phone = new Phone();
-                    $phone->setType($this->objectManager->getReference('Contact\Entity\PhoneType', $phoneTypeId));
+                    /** @var PhoneType $phoneType */
+                    $phoneType = $this->objectManager->getRepository(PhoneType::class)->find($phoneTypeId);
+                    $phone->setType($phoneType);
                     $phone->setPhone($phoneElement['phone']);
                     $phone->setContact($contact);
                     $contact->getPhone()->add($phone);
                 }
             }
             foreach ($currentPhoneNumbers as $phone) {
-                if (!in_array(
-                    $phone->getType()->getId(),
-                    [
-                        PhoneType::PHONE_TYPE_MOBILE,
-                        PhoneType::PHONE_TYPE_DIRECT,
-                    ]
-                )
+                if (!in_array($phone->getType()->getId(), [
+                    PhoneType::PHONE_TYPE_MOBILE,
+                    PhoneType::PHONE_TYPE_DIRECT,
+                ])
                 ) {
                     $contact->getPhone()->add($phone);
                 }
             }
+            /** @var Address[] $currentAddress */
             $currentAddress = $contact->getAddress()->getSnapshot();
             /*
              * Reformat the address
@@ -137,16 +138,17 @@ class Profile extends DoctrineObject
             if (array_key_exists('address', $addressInfo)) {
                 if (!empty($addressInfo['address'])) {
                     $address = new Address();
-                    $address->setType(
-                        $this->objectManager->getReference('Contact\Entity\AddressType', AddressType::ADDRESS_TYPE_MAIL)
-                    );
+                    /** @var AddressType $addressType */
+                    $addressType = $this->objectManager->getRepository(AddressType::class)
+                        ->find(AddressType::ADDRESS_TYPE_MAIL);
+                    $address->setType($addressType);
                     $address->setAddress($addressInfo['address']);
                     $address->setZipCode($addressInfo['zipCode']);
                     $address->setCity($addressInfo['city']);
                     $address->setContact($contact);
-                    $address->setCountry(
-                        $this->objectManager->getReference('General\Entity\Country', $addressInfo['country'])
-                    );
+                    /** @var Country $country */
+                    $country = $this->objectManager->getRepository(Country::class)->find($addressInfo['country']);
+                    $address->setCountry($country);
                     $contact->getAddress()->add($address);
                 }
             }
@@ -161,6 +163,6 @@ class Profile extends DoctrineObject
             return $contact;
         }
 
-        return $this->hydrateByValue($data, $object);
+        return $this->hydrateByValue($data, $contact);
     }
 }

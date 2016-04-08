@@ -10,6 +10,7 @@
 
 namespace Contact\Controller;
 
+use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,10 +30,11 @@ class ProfileController extends ContactAbstractController
      */
     public function viewAction()
     {
-        $contactService = $this->getContactService()->setContact($this->zfcUserAuthentication()->getIdentity());
-
         return new ViewModel([
-            'contactService' => $contactService,
+            'contactService' => $this->getContactService(),
+            'contact'        => $this->zfcUserAuthentication()->getIdentity(),
+            'optIns'         => $this->getContactService()->findAll(OptIn::class),
+            'callService'    => $this->getCallService(),
             'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
             'hasNda'         => $this->getPluginManager()->getServiceLocator()->get(ModuleOptions::class)->getHasNda(),
         ]);
@@ -43,14 +45,15 @@ class ProfileController extends ContactAbstractController
      */
     public function contactAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->params('id'));
+        $contact = $this->getContactService()->findContactById($this->params('id'));
 
-        if ($contactService->isEmpty() || $contactService->getContact()->parseHash() !== $this->params('hash')) {
+        if (is_null($contact) || $contact->parseHash() !== $this->params('hash')) {
             return $this->notFoundAction();
         }
 
         return new ViewModel([
-            'contactService' => $contactService,
+            'contactService' => $this->getContactService(),
+            'contact'        => $contact,
         ]);
     }
 
@@ -61,17 +64,16 @@ class ProfileController extends ContactAbstractController
      */
     public function editAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->zfcUserAuthentication()->getIdentity()
-            ->getId());
+        $contact = $this->zfcUserAuthentication()->getIdentity();
+        ;
 
         //Find the amount of possible organisations
-        $organisations = $this->getOrganisationService()
-            ->findOrganisationForProfileEditByContact($contactService->getContact());
+        $organisations = $this->getOrganisationService()->findOrganisationForProfileEditByContact($contact);
 
         $branches = [];
-        if ($contactService->hasOrganisation()) {
-            $branches = $this->getOrganisationService()->findBranchesByOrganisation($contactService->getContact()
-                ->getContactOrganisation()->getOrganisation());
+        if ($this->getContactService()->hasOrganisation($contact)) {
+            $branches = $this->getOrganisationService()->findBranchesByOrganisation($contact->getContactOrganisation()
+                ->getOrganisation());
         }
 
         $data = array_merge_recursive(
@@ -79,8 +81,8 @@ class ProfileController extends ContactAbstractController
             $this->getRequest()->getFiles()->toArray()
         );
 
-        $form = new Profile($this->getEntityManager(), $this->getContactService(), $contactService->getContact());
-        $form->bind($contactService->getContact());
+        $form = new Profile($this->getEntityManager(), $this->getContactService(), $contact);
+        $form->bind($contact);
 
         /**
          * When the organisation name is typed, we force the value to zero
@@ -102,7 +104,7 @@ class ProfileController extends ContactAbstractController
                 $fileData = $this->params()->fromFiles();
                 if (!empty($fileData['file']['name'])) {
                     /** @var Photo $photo */
-                    $photo = $contactService->getContact()->getPhoto()->first();
+                    $photo = $contact->getPhoto()->first();
                     if (!$photo) {
                         //Create a photo element
                         $photo = new Photo();

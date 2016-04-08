@@ -1,6 +1,6 @@
 <h2>{{ translate("txt-phone") }}</h2>
 
-{% if contactService.contact.phone.count() > 0 %}
+{% if contact.phone.count() > 0 %}
     <table class="table table-hover table-striped">
         <thead>
         <tr>
@@ -10,7 +10,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for phone in contactService.contact.phone %}
+        {% for phone in contact.phone %}
             <tr>
                 <td>{{ phone.id }} {{ phoneLink(phone,'edit','icon') }}</td>
                 <td>{{ phone.type }}</td>
@@ -23,4 +23,4 @@
     {{ ztbalert().info(translate("txt-no-phone-numbers-found"))|raw }}
 {% endif %}
 
-{{ phoneLink(null,'new','button', contactService.contact) }}
+{{ phoneLink(null,'new','button', contact) }}

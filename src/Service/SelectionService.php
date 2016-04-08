@@ -28,39 +28,35 @@ use Doctrine\ORM\QueryBuilder;
 class SelectionService extends ServiceAbstract
 {
 
-    /** @param int $id
-     * @return SelectionService;
+    /**
+     * @param $id
+     *
+     * @return null|Selection
      */
-    public function setSelectionId($id)
+    public function findSelectionById($id)
     {
-        $this->setSelection($this->findEntityById('selection', $id));
-
-        return $this;
+        return $this->getEntityManager()->getRepository(Selection::class)->find($id);
     }
 
     /**
+     * @param Selection $selection
+     *
      * @return bool
      */
-    public function isSql()
+    public function isSql(Selection $selection)
     {
-        return !is_null($this->selection->getSql());
+        return !is_null($selection->getSql());
     }
 
     /**
-     * @return bool
-     */
-    public function isEmpty()
-    {
-        return is_null($this->selection) || is_null($this->selection->getId());
-    }
-
-    /**
+     * @param Selection $selection
+     *
      * @return int
      */
-    public function getAmountOfContacts()
+    public function getAmountOfContacts(Selection $selection)
     {
         try {
-            return sizeof($this->getContactService()->findContactsInSelection($this->selection));
+            return sizeof($this->getContactService()->findContactsInSelection($selection));
         } catch (\Exception $e) {
             return null;
         }
@@ -71,7 +67,7 @@ class SelectionService extends ServiceAbstract
      */
     public function findTags()
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))->findTags();
+        return $this->getEntityManager()->getRepository(Selection::class)->findTags();
     }
 
     /**
@@ -81,8 +77,7 @@ class SelectionService extends ServiceAbstract
      */
     public function searchSelection($query = null)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))
-            ->searchSelections($query);
+        return $this->getEntityManager()->getRepository(Selection::class)->searchSelections($query);
     }
 
     /**
@@ -94,13 +89,13 @@ class SelectionService extends ServiceAbstract
      */
     public function findSelectionsByContact(Contact $contact)
     {
-        $selections = $this->getEntityManager()->getRepository($this->getFullEntityName('selection'))
+        $selections = $this->getEntityManager()->getRepository(Selection::class)
             ->findFixedSelectionsByContact($contact);
 
         /**
          * @var $selection Selection
          */
-        foreach ($this->findAll('selection') as $selection) {
+        foreach ($this->findAll(Selection::class) as $selection) {
             /**
              * Skip the deleted selections and the ones the user is in
              */
@@ -121,7 +116,8 @@ class SelectionService extends ServiceAbstract
     }
 
     /**
-     * @param array $data
+     * @param Selection $selection
+     * @param array     $data
      *
      * array (size=5)
      * 'type' => string '2' (length=1)
@@ -145,7 +141,7 @@ class SelectionService extends ServiceAbstract
             //Update the contacts
             if (!empty($data['added'])) {
                 foreach (explode(',', $data['added']) as $contactId) {
-                    $contact = $this->getContactService()->findEntityById('contact', $contactId);
+                    $contact = $this->getContactService()->findContactById($contactId);
 
                     if (!$contact->isEmpty() && !$this->getContactService()->contactInSelection($contact, $selection)) {
                         $selectionContact = new SelectionContact();
@@ -175,26 +171,5 @@ class SelectionService extends ServiceAbstract
             $selectionSql->setQuery($data['sql']);
             $this->updateEntity($selectionSql);
         }
-    }
-
-
-    /**
-     * @param \Contact\Entity\Selection $selection
-     *
-     * @return SelectionService;
-     */
-    public function setSelection($selection)
-    {
-        $this->selection = $selection;
-
-        return $this;
-    }
-
-    /**
-     * @return \Contact\Entity\Selection
-     */
-    public function getSelection()
-    {
-        return $this->selection;
     }
 }

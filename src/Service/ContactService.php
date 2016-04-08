@@ -12,6 +12,7 @@ namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
 use Calendar\Entity\Calendar;
+use Contact\Entity\Address;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
@@ -21,6 +22,7 @@ use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Selection;
+use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -29,10 +31,9 @@ use General\Entity\Country;
 use General\Entity\Gender;
 use General\Entity\Title;
 use Organisation\Entity\Organisation;
+use Organisation\Entity\Type;
 use Organisation\Entity\Web;
-use Organisation\Service\OrganisationService;
 use Project\Entity\Project;
-use Project\Service\ProjectService;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Validator\EmailAddress;
 
@@ -71,7 +72,7 @@ class ContactService extends ServiceAbstract
     {
         list($contactId, $hash) = explode('-', $hash);
 
-        $contact = $this->setContactId($contactId)->getContact();
+        $contact = $this->getEntityManager()->find(Contact::class, $contactId);
 
         if ($contact->parseHash() !== $hash) {
             return null;
@@ -80,28 +81,30 @@ class ContactService extends ServiceAbstract
         return $contact;
     }
 
-    /** @param int $id
-     * @return ContactService;
+    /**
+     * @param int $id
+     *
+     * @return Contact|null
      */
-    public function setContactId($id)
+    public function findContactById($id)
     {
-        $this->setContact($this->findEntityById('contact', $id));
-
-        return $this;
+        $this->getEntityManager()->find(Contact::class, $id);
     }
 
     /**
-     * @return array
+     * @param Contact[] $contacts
+     *
+     * @return array $return
      */
-    public function toFormValueOptions()
+    public function toFormValueOptions(array $contacts)
     {
-        $contacts = [];
-        foreach ($this->contacts as $contact) {
-            $contacts[$contact->getId()] = $contact->getFormName();
+        $return = [];
+        foreach ($contacts as $contact) {
+            $return[$contact->getId()] = $contact->getFormName();
         }
-        asort($contacts);
+        asort($return);
 
-        return $contacts;
+        return $return;
     }
 
     /**
@@ -171,39 +174,35 @@ class ContactService extends ServiceAbstract
     /**
      * Get the last name.
      *
+     * @param Contact $contact
+     *
      * @return string
      */
-    public function parseLastName()
+    public function parseLastName(Contact $contact)
     {
-        if ($this->isEmpty()) {
-            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
-        }
-
-        return trim(implode(' ', [$this->getContact()->getMiddleName(), $this->getContact()->getLastName()]));
+        return trim(implode(' ', [$contact->getMiddleName(), $contact->getLastName()]));
     }
 
     /**
      * Create the attention of a contact.
      *
+     * @param Contact $contact
+     *
      * @return string
      */
-    public function parseAttention()
+    public function parseAttention(Contact $contact)
     {
-        if ($this->isEmpty()) {
-            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
-        }
-
         /*
          * Return nothing when the contact object is created and does not have all the relevant information
          */
-        if (is_null($this->getContact()->getTitle()) || is_null($this->getContact()->getGender())) {
+        if (is_null($contact->getTitle()) || is_null($contact->getGender())) {
             return '';
         }
 
-        if (!is_null($this->getContact()->getTitle()->getAttention())) {
-            return $this->getContact()->getTitle()->getAttention();
-        } elseif ((int)$this->getContact()->getGender()->getId() !== 0) {
-            return $this->getContact()->getGender()->getAttention();
+        if (!is_null($contact->getTitle()->getAttention())) {
+            return $contact->getTitle()->getAttention();
+        } elseif ((int)$contact->getGender()->getId() !== 0) {
+            return $contact->getGender()->getAttention();
         }
 
         return '';
@@ -212,119 +211,100 @@ class ContactService extends ServiceAbstract
     /**
      * Dedicated function to have the organisation of a contact (or null).
      *
+     * @param Contact $contact
+     *
      * @return null|string
      */
-    public function parseOrganisation()
+    public function parseOrganisation(Contact $contact)
     {
-        if ($this->isEmpty()) {
-            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
-        }
-
-        if (!$this->hasOrganisation()) {
+        if (!$this->hasOrganisation($contact)) {
             return null;
         }
 
-        return $this->findOrganisationService()->parseOrganisationWithBranch($this->getContact()
-            ->getContactOrganisation()->getBranch());
+        return $this->getOrganisationService()->parseOrganisationWithBranch($contact->getContactOrganisation()
+            ->getBranch(), $contact->getContactOrganisation()->getOrganisation());
     }
 
     /**
      * Boolean value to check if  contact has a contactOrganisation (and is thus linked to an organisation.
      *
+     * @param Contact $contact
+     *
      * @return bool
      */
-    public function hasOrganisation()
+    public function hasOrganisation(Contact $contact)
     {
-        return !is_null($this->getContact()->getContactOrganisation());
+        return !is_null($contact->getContactOrganisation());
     }
 
     /**
+     * @param Contact $contact
+     *
      * @return bool
      */
-    public function isFunder()
+    public function isFunder(Contact $contact)
     {
-        return !is_null($this->getContact()->getFunder());
+        return !is_null($contact->getFunder());
     }
 
     /**
+     * @param Contact $contact
+     *
      * @return bool
      */
-    public function isActive()
+    public function isActive(Contact $contact)
     {
-        return is_null($this->getContact()->getDateEnd());
-    }
-
-    /**
-     * @return OrganisationService|null
-     */
-    public function findOrganisationService()
-    {
-        /*
-         * Return null when the contactOrganisation is not defined
-         */
-        if (!$this->hasOrganisation()) {
-            return null;
-        }
-
-        return $this->getOrganisationService()->setOrganisationId($this->getContact()->getContactOrganisation()
-            ->getOrganisation()->getId());
+        return is_null($contact->getDateEnd());
     }
 
     /**
      * Dedicated function to have the organisation of a contact (or null).
      *
+     * @param Contact $contact
+     *
      * @return null|Country
      */
-    public function parseCountry()
+    public function parseCountry(Contact $contact)
     {
-        if ($this->isEmpty()) {
-            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
-        }
-
-        if (!$this->hasOrganisation()) {
+        if (!$this->hasOrganisation($contact)) {
             return null;
         }
 
-        return $this->getContact()->getContactOrganisation()->getOrganisation()->getCountry();
+        return $contact->getContactOrganisation()->getOrganisation()->getCountry();
     }
 
     /**
      * Find the mail address of a contact.
      *
-     * @throws \InvalidArgumentException
+     * @param Contact $contact
      *
-     * @return AddressService
+     *
+     * @return Address
      */
-    public function getMailAddress()
+    public function getMailAddress(Contact $contact)
     {
-        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_MAIL);
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_MAIL);
     }
 
     /**
-     * @param $typeId
+     * @param         $typeId
      *
-     * @return AddressService|null
+     * @return Address|null
+     *
+     * @param Contact $contact
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      */
-    public function getAddressByTypeId($typeId)
+    public function getAddressByTypeId(Contact $contact, $typeId)
     {
-        if ($this->isEmpty()) {
-            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
-        }
-
-        /*
-         * @var AddressType
+        /**
+         * @var AddressType $addressType
          */
-        $addressType = $this->getEntityManager()->find($this->getFullEntityName('AddressType'), $typeId);
+        $addressType = $this->getEntityManager()->find(AddressType::class, $typeId);
 
-        if (is_null($this->getContact())) {
-            throw new \InvalidArgumentException(sprintf("A invalid AddressType (%s) requested", $addressType));
-        }
-
-        return $this->getAddressService()->findAddressByContactAndType($this->getContact(), $addressType);
+        return $this->getAddressService()->findAddressByContactAndType($contact, $addressType);
     }
 
 
@@ -333,11 +313,13 @@ class ContactService extends ServiceAbstract
      *
      * @throws \InvalidArgumentException
      *
-     * @return AddressService
+     * @param Contact $contact
+     *
+     * @return Address
      */
-    public function getVisitAddress()
+    public function getVisitAddress(Contact $contact)
     {
-        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_VISIT);
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_VISIT);
     }
 
     /**
@@ -345,11 +327,13 @@ class ContactService extends ServiceAbstract
      *
      * @throws \InvalidArgumentException
      *
-     * @return AddressService
+     * @param Contact $contact
+     *
+     * @return Address
      */
-    public function getFinancialAddress()
+    public function getFinancialAddress(Contact $contact)
     {
-        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_FINANCIAL);
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
     }
 
     /**
@@ -357,27 +341,27 @@ class ContactService extends ServiceAbstract
      *
      * @throws \InvalidArgumentException
      *
-     * @return AddressService
+     * @param Contact $contact
+     *
+     * @return Address
      */
-    public function getBoothFinancialAddress()
+    public function getBoothFinancialAddress(Contact $contact)
     {
-        return $this->getAddressByTypeId(AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
     }
 
     /**
      * Find the direct phone number of a contact.
      *
+     * @param Contact $contact
+     *
      * @return Phone
      *
      * @throws \InvalidArgumentException
      */
-    public function getDirectPhone()
+    public function getDirectPhone(Contact $contact)
     {
-        if (is_null($this->getContact())) {
-            throw new \InvalidArgumentException(sprintf("A contact should be set"));
-        }
-
-        return $this->getPhoneByContactAndType($this->getContact(), PhoneType::PHONE_TYPE_DIRECT);
+        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
     }
 
     /**
@@ -392,7 +376,7 @@ class ContactService extends ServiceAbstract
             throw new \InvalidArgumentException(sprintf("A invalid phone type chosen"));
         }
 
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('phone'))->findOneBy([
+        return $this->getEntityManager()->getRepository(Phone::class)->findOneBy([
             'contact' => $contact,
             'type'    => $type,
         ]);
@@ -401,25 +385,15 @@ class ContactService extends ServiceAbstract
     /**
      * Find the mobile phone number of a contact.
      *
+     * @param Contact $contact
+     *
      * @return Phone
      *
      * @throws \InvalidArgumentException
      */
-    public function getMobilePhone()
+    public function getMobilePhone(Contact $contact)
     {
-        if (is_null($this->getContact())) {
-            throw new \InvalidArgumentException(sprintf("A contact should be set"));
-        }
-
-        return $this->getPhoneByContactAndType($this->getContact(), PhoneType::PHONE_TYPE_MOBILE);
-    }
-
-    /**
-     * @return \Project\Service\ProjectService[]
-     */
-    public function findProjects()
-    {
-        return $this->getProjectService()->findProjectByContact($this->getContact());
+        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
     }
 
 
@@ -445,8 +419,8 @@ class ContactService extends ServiceAbstract
 
         $contact->setLastName($lastName);
         //Fix the gender
-        $contact->setGender($this->getGeneralService()->findEntityById('gender', Gender::GENDER_UNKNOWN));
-        $contact->setTitle($this->getGeneralService()->findEntityById('title', Title::TITLE_UNKNOWN));
+        $contact->setGender($this->getGeneralService()->findEntityById(Gender::class, Gender::GENDER_UNKNOWN));
+        $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
         /*
          * Include all the optIns
          */
@@ -489,7 +463,6 @@ class ContactService extends ServiceAbstract
                 $emailAddress
             ));
         }
-        $contactService = $this->createServiceElement($contact);
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('community/contact/change-password');
         //Create a deeplink for the user which redirects to the profile-page
@@ -499,8 +472,8 @@ class ContactService extends ServiceAbstract
          */
         $email = $this->getEmailService()->create();
         $this->getEmailService()->setTemplate("/auth/forgotpassword:mail");
-        $email->addTo($emailAddress, $contactService->parseFullName());
-        $email->setFullname($contactService->parseFullName());
+        $email->addTo($emailAddress, $contact->parseFullName());
+        $email->setFullname($contact->parseFullName());
         $email->setUrl($this->getDeeplinkService()->parseDeeplinkUrl($deeplink));
         $this->getEmailService()->send();
 
@@ -530,48 +503,18 @@ class ContactService extends ServiceAbstract
         ]);
     }
 
-    /**
-     * @param Contact $contact
-     *
-     * @return ContactService
-     */
-    private function createServiceElement(Contact $contact)
-    {
-        $contactService = clone $this;
-        $contactService->setContact($contact);
-
-        return $contactService;
-    }
-
-    /**
-     * Parse the full name of a project.
-     *
-     * @return string
-     */
-    public function parseFullName()
-    {
-        if ($this->isEmpty()) {
-            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
-        }
-
-        return $this->getContact()->getDisplayName();
-    }
 
     /**
      * Find the relevant items out of the notes tree.
      *
      * @return string
      */
-    public function parseSignature()
+    public function parseSignature(Contact $contact)
     {
-        if ($this->isEmpty()) {
-            throw new \InvalidArgumentException(sprintf("Contact cannot be empty for %s", __FUNCTION__));
-        }
-
         /*
          * Go over the notes and find the signature of the contact
          */
-        foreach ($this->contact->getNote() as $note) {
+        foreach ($contact->getNote() as $note) {
             if ($note->getSource() === Note::SOURCE_SIGNATURE) {
                 return $note->getNote();
             }
@@ -639,8 +582,7 @@ class ContactService extends ServiceAbstract
          * The selection contains contacts, do an extra query to find the contact
          */
         if (sizeof($selection->getSelectionContact()) > 0) {
-            $findContact = $this->getEntityManager()->getRepository($this->getFullEntityName('SelectionContact'))
-                ->findOneBy([
+            $findContact = $this->getEntityManager()->getRepository(SelectionContact::class)->findOneBy([
                     'contact'   => $contact,
                     'selection' => $selection,
                 ]);
@@ -667,46 +609,31 @@ class ContactService extends ServiceAbstract
      */
     public function isContactInProject(Contact $contact, Project $project)
     {
-        $this->getProjectService()->setProject($project);
-        $projectContacts = $this->findContactsInProject($this->getProjectService());
+        $projectContacts = $this->findContactsInProject($project);
 
         return array_key_exists($contact->getId(), $projectContacts);
     }
 
     /**
-     * @return bool
-     */
-    public function isEmpty()
-    {
-        return is_null($this->contact) || is_null($this->contact->getId());
-    }
-
-    /**
      * Produce a list of contacts which are active in a project.
      *
-     * @param ProjectService $projectService
+     * @param Project $project
      *
      * @return Contact[]
      *
      * @throws \InvalidArgumentException
      */
-    public function findContactsInProject(ProjectService $projectService)
+    public function findContactsInProject(Project $project)
     {
-        /*
-         * Throw an exception when no project is selected
-         */
-        if (is_null($projectService->getProject())) {
-            throw new \InvalidArgumentException(sprintf("No project selected"));
-        }
         $contacts = [];
         /*
          * Add the project leader
          */
-        $contacts[$projectService->getProject()->getContact()->getId()] = $projectService->getProject()->getContact();
+        $contacts[$project->getContact()->getId()] = $project->getContact();
         /*
          * Add the contacts form the affiliations and the associates
          */
-        foreach ($projectService->getProject()->getAffiliation() as $affiliation) {
+        foreach ($project->getAffiliation() as $affiliation) {
             $contacts[$affiliation->getContact()->getId()] = $affiliation->getContact();
             foreach ($affiliation->getAssociate() as $associate) {
                 $contacts[$associate->getId()] = $associate;
@@ -715,7 +642,7 @@ class ContactService extends ServiceAbstract
         /*
          * Add the workpackage leaders
          */
-        foreach ($projectService->getProject()->getWorkpackage() as $workpackage) {
+        foreach ($project->getWorkpackage() as $workpackage) {
             $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();
         }
 
@@ -749,8 +676,7 @@ class ContactService extends ServiceAbstract
      */
     public function isContactInFacebook(Contact $contact, Facebook $facebook)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('facebook'))
-            ->isContactInFacebook($contact, $facebook);
+        return $this->getEntityManager()->getRepository(Facebook::class)->isContactInFacebook($contact, $facebook);
     }
 
     /**
@@ -769,7 +695,7 @@ class ContactService extends ServiceAbstract
         return $this->getAdminService()->contactHasPermit(
             $contact,
             $role,
-            str_replace('doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_full_entity_name'))),
+            str_replace('doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_entity_name'))),
             $entity->getId()
         );
     }
@@ -825,8 +751,7 @@ class ContactService extends ServiceAbstract
      */
     public function findFacebookByContact(Contact $contact)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName('facebook'))
-            ->findFacebookByContact($contact);
+        return $this->getEntityManager()->getRepository(Facebook::class)->findFacebookByContact($contact);
     }
 
     /**
@@ -844,6 +769,7 @@ class ContactService extends ServiceAbstract
          * A dedicated array will therefore be created
          */
         $contacts = [];
+        /** @var Contact $contact */
         foreach ($this->getEntityManager()->getRepository(Contact::class)->findContactsInFacebook($facebook) as $contact) {
             $singleContact = [];
 
@@ -900,8 +826,7 @@ class ContactService extends ServiceAbstract
                 $projectLink = $this->getServiceLocator()->get('ViewHelperManager')->get('projectLink');
 
                 foreach ($this->getProjectService()->findProjectsByProjectContact($contact) as $project) {
-                    $projectService = $this->getProjectService()->setProject($project);
-                    $projects[] = $projectLink($projectService, 'view', 'name-without-number');
+                    $projects[] = $projectLink($project, 'view', 'name-without-number');
                 }
 
                 return implode(', ', $projects);
@@ -968,7 +893,7 @@ class ContactService extends ServiceAbstract
          */
         if (isset($contactOrganisation['organisation_id']) && $contactOrganisation['organisation_id'] != '0') {
             $organisation = $this->getOrganisationService()
-                ->findEntityById('organisation', (int)$contactOrganisation['organisation_id']);
+                ->findOrganisationById($contactOrganisation['organisation_id']);
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
             if (!empty($contactOrganisation['branch'])) {
@@ -987,7 +912,7 @@ class ContactService extends ServiceAbstract
             if (empty($contactOrganisation['organisation'])) {
                 return;
             }
-            $country = $this->getGeneralService()->findEntityById('country', (int)$contactOrganisation['country']);
+            $country = $this->getGeneralService()->findEntityById(Country::class, (int)$contactOrganisation['country']);
 
             /*
              * Look for the organisation based on the name (without branch) and country + email
@@ -1006,7 +931,7 @@ class ContactService extends ServiceAbstract
                 $organisation = new Organisation();
                 $organisation->setOrganisation($contactOrganisation['organisation']);
                 $organisation->setCountry($country);
-                $organisation->setType($this->organisationService->findEntityById('Type', 0)); //Unknown
+                $organisation->setType($this->organisationService->findEntityById(Type::class, Type::TYPE_UNKNOWN)); //Unknown
                 /*
                  * Add the domain in the saved domains for this new company
                  * Use the ZF2 EmailAddress validator to strip the hostname out of the EmailAddress
@@ -1077,7 +1002,7 @@ class ContactService extends ServiceAbstract
         $enable,
         Contact $contact
     ) {
-        $optIn = $this->findEntityById('optIn', $optInId);
+        $optIn = $this->findEntityById(OptIn::class, $optInId);
         $collection = new ArrayCollection();
         $collection->add($optIn);
         if ($enable) {
@@ -1215,7 +1140,6 @@ class ContactService extends ServiceAbstract
         $contacts = [];
         $contactRole = [];
 
-
         /*
          * Add the technical contact
          */
@@ -1258,9 +1182,6 @@ class ContactService extends ServiceAbstract
         }
 
         $contactRole = array_map('array_unique', $contactRole);
-
-        //Store the values local for the use of the toArray function
-        $this->contacts = $contacts;
 
         return ['contacts' => $contacts, 'contactRole' => $contactRole];
     }

@@ -18,9 +18,11 @@ use Contact\Service\FormService;
 use Contact\Service\SelectionService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
+use Event\Service\RegistrationService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
+use Program\Service\CallService;
 use Project\Service\ProjectService;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\AbstractFactoryInterface;
@@ -108,6 +110,14 @@ class ControllerInvokableAbstractFactory implements AbstractFactoryInterface
         /** @var OrganisationService $organisationService */
         $organisationService = $serviceManager->get(OrganisationService::class);
         $controller->setOrganisationService($organisationService);
+
+        /** @var CallService $callService */
+        $callService = $serviceManager->get(CallService::class);
+        $controller->setCallService($callService);
+
+        /** @var RegistrationService $registrationService */
+        $registrationService = $serviceManager->get(RegistrationService::class);
+        $controller->setRegistrationService($registrationService);
 
         return $controller;
     }

@@ -12,9 +12,11 @@ namespace Contact\Controller;
 
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
+use Contact\Entity\OptIn;
 use Contact\Form\ContactFilter;
 use Contact\Form\Impersonate;
 use Contact\Form\Import;
+use Deeplink\Entity\Target;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Zend\Paginator\Paginator;
@@ -36,7 +38,7 @@ class ContactAdminController extends ContactAbstractController
     {
         $page = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
-        $contactQuery = $this->getContactService()->findEntitiesFiltered('contact', $filterPlugin->getFilter());
+        $contactQuery = $this->getContactService()->findEntitiesFiltered(Contact::class, $filterPlugin->getFilter());
 
         $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
         $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
@@ -62,20 +64,23 @@ class ContactAdminController extends ContactAbstractController
      */
     public function viewAction()
     {
-        $contact = $this->getContactService()->findEntityById('contact', $this->params('id'));
+        $contact = $this->getContactService()->findContactById($this->params('id'));
         $selections = $this->getSelectionService()->findSelectionsByContact($contact);
-        $optIn = $this->getContactService()->findAll('optIn');
+        $optIn = $this->getContactService()->findAll(OptIn::class);
 
-        if ($contact->isEmpty()) {
+        if (is_null($contact)) {
             return $this->notFoundAction();
         }
 
         return new ViewModel([
-            'contact'        => $contact,
-            'selections'     => $selections,
-            'projects'       => $this->getProjectService()->findProjectParticipationByContact($contact),
-            'projectService' => $this->getProjectService(),
-            'optIn'          => $optIn,
+            'contact'            => $contact,
+            'selections'         => $selections,
+            'projects'           => $this->getProjectService()->findProjectParticipationByContact($contact),
+            'projectService'     => $this->getProjectService(),
+            'optIn'              => $optIn,
+            'callService'        => $this->getCallService(),
+            'registationService' => $this->getRegistrationService(),
+            'ideaService' => $this->getIdeaService(),
         ]);
     }
 
@@ -84,12 +89,12 @@ class ContactAdminController extends ContactAbstractController
      */
     public function permitAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->params('id'));
+        $contact = $this->getContactService()->findContactById($this->params('id'));
 
-        $this->getAdminService()->findPermitContactByContact($contactService->getContact());
+        $this->getAdminService()->findPermitContactByContact($contact);
 
         return new ViewModel([
-            'contactService' => $contactService,
+            'contact' => $contact,
         ]);
     }
 
@@ -98,7 +103,7 @@ class ContactAdminController extends ContactAbstractController
      */
     public function impersonateAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->params('id'));
+        $contact = $this->getContactService()->findContactById($this->params('id'));
         $form = new Impersonate($this->getEntityManager());
 
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
@@ -107,16 +112,18 @@ class ContactAdminController extends ContactAbstractController
         $deeplink = false;
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $data = $form->getData();
-            //Create a target
-            $target = $this->getDeeplinkService()->findEntityById('target', $data['target']);
+
+            /** @var Target $target */
+            $target = $this->getDeeplinkService()->findEntityById(Target::class, $data['target']);
             $key = (!empty($data['key']) ? $data['key'] : null);
             //Create a deeplink for the user which redirects to the profile-page
-            $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contactService->getContact(), null, $key);
+            $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact, null, $key);
         }
 
         return new ViewModel([
             'deeplink'       => $deeplink,
-            'contactService' => $contactService,
+            'contact'        => $contact,
+            'contactService' => $this->getContactService(),
             'form'           => $form,
         ]);
     }
@@ -126,16 +133,15 @@ class ContactAdminController extends ContactAbstractController
      */
     public function editAction()
     {
-        $contactService = $this->getContactService()->setContactId($this->params('id'));
+        $contact = $this->getContactService()->findContactById($this->params('id'));
 
-        if ($contactService->isEmpty()) {
+        if (is_null($contact)) {
             return $this->notFoundAction();
         }
 
-        $contact = $contactService->getContact();
 
         //Get contacts in an organisation
-        if ($contactService->hasOrganisation()) {
+        if ($this->getContactService()->hasOrganisation($contact)) {
             $data = array_merge([
                 'contact' => [
                     'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
@@ -144,8 +150,8 @@ class ContactAdminController extends ContactAbstractController
             ], $this->getRequest()->getPost()->toArray());
 
             $form = $this->getFormService()->prepare($contact, $contact, $data);
-            $form->get('contact')->get("organisation")->injectOrganisation($contact->getContactOrganisation()
-                ->getOrganisation());
+            $form->get('contact_entity_contact')->get("organisation")
+                ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
             $data = array_merge($this->getRequest()->getPost()->toArray());
             $form = $this->getFormService()->prepare($contact, $contact, $data);
@@ -153,7 +159,7 @@ class ContactAdminController extends ContactAbstractController
 
 
         /** Show or hide buttons based on the status of a contact */
-        if ($contactService->isActive()) {
+        if ($this->getContactService()->isActive($contact)) {
             $form->remove('reactivate');
         } else {
             $form->remove('deactivate');
@@ -170,8 +176,7 @@ class ContactAdminController extends ContactAbstractController
                 $contact->setDateEnd(new \DateTime());
                 $this->getContactService()->updateEntity($contact);
 
-                return $this->redirect()
-                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }
 
             /** Reactivate a contact */
@@ -182,14 +187,12 @@ class ContactAdminController extends ContactAbstractController
                 $contact->setDateEnd(null);
                 $this->getContactService()->updateEntity($contact);
 
-                return $this->redirect()
-                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }
 
             /** Cancel the form */
             if (isset($data['cancel'])) {
-                return $this->redirect()
-                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }
 
             /** Handle the form */
@@ -211,17 +214,17 @@ class ContactAdminController extends ContactAbstractController
                 $contactOrganisation->setBranch(strlen($data['contact']['branch']) === 0 ? null
                     : $data['contact']['branch']);
                 $contactOrganisation->setOrganisation($this->getOrganisationService()
-                    ->setOrganisationId($data['contact']['organisation'])->getOrganisation());
+                    ->findOrganisationById($data['contact']['organisation']));
 
                 $this->getContactService()->updateEntity($contactOrganisation);
 
-                return $this->redirect()
-                    ->toRoute('zfcadmin/contact-admin/view', ['id' => $contactService->getContact()->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }
         }
 
         return new ViewModel([
-            'contactService' => $contactService,
+            'contactService' => $this->getContactService(),
+            'contact'        => $contact,
             'form'           => $form,
         ]);
     }
@@ -238,7 +241,7 @@ class ContactAdminController extends ContactAbstractController
         $form = $this->getFormService()->prepare($contact, $contact, $data);
 
         //Disable the inarray validator for organisations
-        $form->get('contact')->get('organisation')->setDisableInArrayValidator(true);
+        $form->get($contact->get("underscore_entity_name"))->get('organisation')->setDisableInArrayValidator(true);
 
         /** Show or hide buttons based on the status of a contact */
 
@@ -267,7 +270,7 @@ class ContactAdminController extends ContactAbstractController
                 $contactOrganisation->setBranch(strlen($data['contact']['branch']) === 0 ? null
                     : $data['contact']['branch']);
                 $contactOrganisation->setOrganisation($this->getOrganisationService()
-                    ->setOrganisationId($data['contact']['organisation'])->getOrganisation());
+                    ->findOrganisationById($data['contact']['organisation']));
 
                 $this->getContactService()->updateEntity($contactOrganisation);
 

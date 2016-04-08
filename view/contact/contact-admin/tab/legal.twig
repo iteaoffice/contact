@@ -1,5 +1,7 @@
 <h2>{{ translate("txt-legal") }}</h2>
 
+{% set contact = contact %}
+
 <table class="table table-hover table-striped">
     <thead>
     <tr>
@@ -13,7 +15,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for nda in contactService.contact.nda %}
+    {% for nda in contact.nda %}
         <tr>
             <td>{{ translate("txt-nda") }} {{ ndaLink(nda,'download','icon') }} {{ ndaLink(nda,'view-admin','icon') }}</td>
             <td></td>
@@ -24,7 +26,7 @@
             <td>{{ nda.dateApproved|string_date }}</td>
         </tr>
     {% endfor %}
-    {% for dnd in contactService.contact.dnd %}
+    {% for dnd in contact.dnd %}
         <tr>
             <td>{{ translate("txt-dnd") }}</td>
             <td></td>
@@ -35,33 +37,33 @@
             <td></td>
         </tr>
     {% endfor %}
-    {% for affiliationDoa in contactService.contact.affiliationDoa %}
+    {% for affiliationDoa in contact.affiliationDoa %}
         <tr>
-            {% set projectService = projectServiceProxy(affiliationDoa.affiliation.project) %}
+            {% set project = affiliationDoa.affiliation.project %}
             <td>{{ translate("txt-project-doa") }} {{ doaLink(affiliationDoa,'download','icon') }}{{ doaLink(affiliationDoa,'view-admin','icon') }}</td>
-            <td>{{ projectLink(projectService,'view-admin','name') }}</td>
-            <td>{{ callLink(projectService.project.call,'view-admin','name') }}</td>
-            <td>{{ projectService.project.call.program }}</td>
+            <td>{{ projectLink(project,'view-admin','name') }}</td>
+            <td>{{ callLink(project.call,'view-admin','name') }}</td>
+            <td>{{ project.call.program }}</td>
 
             <td>{{ affiliationDoa.dateCreated|string_date }}</td>
             <td>{{ affiliationDoa.dateSigned|string_date }}</td>
             <td>{{ affiliationDoa.dateApproved|string_date }}</td>
         </tr>
     {% endfor %}
-    {% for loi in contactService.contact.loi %}
+    {% for loi in contact.loi %}
         <tr>
-            {% set projectService = projectServiceProxy(loi.affiliation.project) %}
+            {% set project = loi.affiliation.project %}
             <td>{{ translate("txt-loi") }} {{ loiLink(loi,'download','icon') }} {{ loiLink(loi,'view-admin','icon') }}</td>
-            <td>{{ projectLink(projectService,'view-admin','name') }}</td>
-            <td>{{ callLink(projectService.project.call,'view-admin','name') }}</td>
-            <td>{{ projectService.project.call.program }}</td>
+            <td>{{ projectLink(project,'view-admin','name') }}</td>
+            <td>{{ callLink(project.call,'view-admin','name') }}</td>
+            <td>{{ project.call.program }}</td>
 
             <td></td>
             <td>{{ loi.dateSigned|string_date }}</td>
             <td>{{ loi.dateApproved|string_date }}</td>
         </tr>
     {% endfor %}
-    {% for programDoa in contactService.contact.programDoa %}
+    {% for programDoa in contact.programDoa %}
         <tr>
             <td>{{ translate("txt-program-doa") }} {{ programDoaLink(programDoa,'download','icon') }}</td>
             <td></td>

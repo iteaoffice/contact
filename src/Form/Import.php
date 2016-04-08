@@ -50,7 +50,7 @@ class Import extends Form implements InputFilterProviderInterface
         $this->setAttribute('class', 'form-horizontal');
 
         $selections = [];
-        foreach ($selectionService->findAll('selection') as $selection) {
+        foreach ($selectionService->findAll(Selection::class) as $selection) {
             /** @var $selection Selection */
             if (is_null($selection->getSql())) {
                 $selections[$selection->getId()] = $selection->getSelection();
@@ -70,7 +70,7 @@ class Import extends Form implements InputFilterProviderInterface
         ]);
 
         $optins = [];
-        foreach ($contactService->findAll('optIn') as $optin) {
+        foreach ($contactService->findAll(OptIn::class) as $optin) {
             /** @var $optin OptIn */
             $optins[$optin->getId()] = $optin->getOptIn();
         }

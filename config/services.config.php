@@ -24,22 +24,6 @@ return [
         'contact_contact_form'        => function (ServiceManager $sm) {
             return new Form\Contact($sm->get(EntityManager::class), new Entity\Contact());
         },
-        'contact_facebook_form'       => function (ServiceManager $sm) {
-            return new Form\CreateObject($sm, new Entity\Facebook());
-        },
-        'contact_address_form'        => function (ServiceManager $sm) {
-            return new Form\CreateObject($sm, new Entity\Address());
-        },
-        'contact_note_form'           => function (ServiceManager $sm) {
-            return new Form\CreateObject($sm, new Entity\Note());
-        },
-        'contact_phone_form'          => function (ServiceManager $sm) {
-            return new Form\CreateObject($sm, new Entity\Phone());
-        },
-        'contact_selection_form'      => function (ServiceManager $sm) {
-            return new Form\CreateObject($sm, new Entity\Selection());
-        },
-        
         'contact_contact_form_filter' => function (ServiceManager $sm) {
             return new InputFilter\ContactFilter($sm->get(EntityManager::class));
 

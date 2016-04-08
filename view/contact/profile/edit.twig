@@ -16,7 +16,7 @@
     <label class="col-sm-3 control-label">{{ translate("txt-email-address") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ contactService.contact.email }}</p>
+        <p class="form-control-static">{{ contact.email }}</p>
     </div>
 </div>
 
@@ -86,7 +86,7 @@
     <label class="col-sm-3 control-label">{{ translate("txt-current-photo") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ contactPhoto(contactService.contact) }}</p>
+        <p class="form-control-static">{{ contactPhoto(contact) }}</p>
     </div>
 </div>
 
@@ -120,7 +120,7 @@
                          * Store the branchValue because the options are rebuilt every time
                          * Use the branch val on form change, and take the current branch in any other case
                          */
-                        var branchValue = '{{ contactService.contact.contactOrganisation.branch|raw }}';
+                        var branchValue = '{{ contact.contactOrganisation.branch|raw }}';
                         if (branchSelect.val() != null) {
                             branchValue = branchSelect.val()
                         }

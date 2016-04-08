@@ -5,7 +5,7 @@
 {% do headScript().appendFile('//cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js', 'text/javascript') %}
 
 
-<h1>{{ selectionService.selection }}</h1>
+<h1>{{ selection }}</h1>
 
 {% if error %}
     {{ ztbalert().danger(error)|raw }}
@@ -25,28 +25,28 @@
         <h2>{{ translate("txt-general") }}</h2>
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
-            <dd>{{ selectionService.selection.selection }}</dd>
+            <dd>{{ selection.selection }}</dd>
             <dt>{{ translate("txt-group-tag") }}</dt>
-            <dd>{{ selectionService.selection.tag|default(translate("txt-not-provided")) }}</dd>
+            <dd>{{ selection.tag|default(translate("txt-not-provided")) }}</dd>
             <dt>{{ translate("txt-note") }}</dt>
-            <dd>{{ selectionService.selection.note|default(translate("txt-not-provided")) }}</dd>
+            <dd>{{ selection.note|default(translate("txt-not-provided")) }}</dd>
             <dt>{{ translate("txt-personal") }}</dt>
-            <dd>{{ translate(selectionService.selection.getPersonal(true))|raw }}</dd>
+            <dd>{{ translate(selection.getPersonal(true))|raw }}</dd>
             <dt>{{ translate("txt-date-created") }}</dt>
-            <dd>{{ selectionService.selection.dateCreated|string_date }}</dd>
-            {% if selectionService.selection.dateDeleted %}
+            <dd>{{ selection.dateCreated|string_date }}</dd>
+            {% if selection.dateDeleted %}
                 <dt>{{ translate("txt-date-deleted") }}</dt>
-                <dd><i class="fa fa-trash"></i> {{ selectionService.selection.dateDeleted|string_date }}</dd>
+                <dd><i class="fa fa-trash"></i> {{ selection.dateDeleted|string_date }}</dd>
             {% endif %}
-            {% if selectionService.selection.contact %}
+            {% if selection.contact %}
                 <dt>{{ translate("txt-owner") }}</dt>
-                <dd>{{ contactLink(selectionService.selection.contact,'view-admin','name') }}</dd>
+                <dd>{{ contactLink(selection.contact,'view-admin','name') }}</dd>
             {% endif %}
             <dt>{{ translate("txt-amount-of-contacts") }}</dt>
             <dd>{{ selectionService.getAmountOfContacts() }}</dd>
-            {% if selectionService.selection.mailingList|length > 0 %}
+            {% if selection.mailingList|length > 0 %}
                 <dt>{{ translate("txt-mailing-lists") }}</dt>
-                {% for mailingList in selectionService.selection.mailingList %}
+                {% for mailingList in selection.mailingList %}
                     <dd>{{ mailingList.alias }}</dd>
                 {% endfor %}
             {% endif %}
@@ -54,11 +54,11 @@
 
         {% if selectionService.isSql() %}
             <h2>{{ translate("txt-sql-query") }}</h2>
-            <pre>{{ selectionService.selection.sql.query }}</pre>
+            <pre>{{ selection.sql.query }}</pre>
         {% endif %}
 
-        {{ selectionLink( selectionService.selection,'edit','button') }}
-        {{ selectionLink( selectionService.selection ,'edit-contacts','button') }}
+        {{ selectionLink( selection,'edit','button') }}
+        {{ selectionLink( selection ,'edit-contacts','button') }}
         {{ selectionLink( null ,'list','button') }}
     </div>
     <div class="tab-pane" id="contacts">
@@ -89,13 +89,13 @@
             {{ ztbalert().warning(translate("txt-no-contacts-in-this-selection"))|raw }}
         {% endif %}
 
-        {{ selectionLink( selectionService.selection ,'edit-contacts','button') }}
-        {{ selectionLink( selectionService.selection ,'export-csv','button') }}
-        {{ selectionLink( selectionService.selection ,'export-excel','button') }}
+        {{ selectionLink( selection ,'edit-contacts','button') }}
+        {{ selectionLink( selection ,'export-csv','button') }}
+        {{ selectionLink( selection ,'export-excel','button') }}
     </div>
     <div class="tab-pane" id="mailings">
         <h2>{{ translate("txt-mailings") }}</h2>
-        {% if selectionService.selection.mailing.count() > 0 %}
+        {% if selection.mailing.count() > 0 %}
             <table class="table table-striped table-condensed">
                 <thead>
                 <tr>
@@ -106,7 +106,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for mailing in selectionService.selection.mailing %}
+                {% for mailing in selection.mailing %}
                     <tr>
                         <td>{{ mailingLink(mailing,'view','name') }}</td>
                         <td>{{ mailing.mailSubject }}</td>
@@ -123,7 +123,7 @@
     <div class="tab-pane" id="access">
         <h2>{{ translate("txt-access") }}</h2>
 
-        {% if selectionService.selection.access.count() > 0 %}
+        {% if selection.access.count() > 0 %}
             <table class="table table-striped table-condensed">
                 <thead>
                 <tr>
@@ -131,7 +131,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for access in  selectionService.selection.access %}
+                {% for access in  selection.access %}
                     <tr>
                         <td>{{ accessLink(access,'view','name') }}</td>
                     </tr>

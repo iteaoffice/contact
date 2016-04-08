@@ -31,9 +31,7 @@ $config = [
         'aliases'    => [
             'communityLink'          => View\Helper\CommunityLink::class,
             'createContactFromArray' => View\Helper\CreateContactFromArray::class,
-            'createPhotoFromArray'   => View\Helper\CreatePhotoFromArray::class,
             'contactHandler'         => View\Helper\ContactHandler::class,
-            'contactServiceProxy'    => View\Helper\ContactServiceProxy::class,
             'contactLink'            => View\Helper\ContactLink::class,
             'selectionLink'          => View\Helper\SelectionLink::class,
             'facebookLink'           => View\Helper\FacebookLink::class,
@@ -48,9 +46,7 @@ $config = [
         'factories'  => [
             View\Helper\CommunityLink::class          => View\Factory\LinkInvokableFactory::class,
             View\Helper\CreateContactFromArray::class => View\Factory\LinkInvokableFactory::class,
-            View\Helper\CreatePhotoFromArray::class   => View\Factory\LinkInvokableFactory::class,
             View\Helper\ContactHandler::class         => View\Factory\LinkInvokableFactory::class,
-            View\Helper\ContactServiceProxy::class    => View\Factory\LinkInvokableFactory::class,
             View\Helper\ContactLink::class            => View\Factory\LinkInvokableFactory::class,
             View\Helper\SelectionLink::class          => View\Factory\LinkInvokableFactory::class,
             View\Helper\FacebookLink::class           => View\Factory\LinkInvokableFactory::class,
@@ -84,13 +80,6 @@ $config = [
         ],
         'shared'             => [
             Service\ContactService::class => false,
-        ],
-        'invokables'         => [
-            'contact_facebook_form_filter'  => 'Contact\Form\FilterCreateObject',
-            'contact_address_form_filter'   => 'Contact\Form\FilterCreateObject',
-            'contact_note_form_filter'      => 'Contact\Form\FilterCreateObject',
-            'contact_phone_form_filter'     => 'Contact\Form\FilterCreateObject',
-            'contact_selection_form_filter' => 'Contact\Form\FilterCreateObject',
         ],
     ],
     'doctrine'        => [

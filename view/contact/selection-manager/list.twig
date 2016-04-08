@@ -47,7 +47,7 @@
                     <tr {% if selection.dateDeleted %}class="danger"{% endif %}>
                         <td>
                             {% if selection.dateDeleted %}
-                                <i class="fa fa-trash" title="{{ selectionService.selection.dateDeleted|string_date }}"></i>
+                                <i class="fa fa-trash" title="{{ selection.dateDeleted|string_date }}"></i>
                             {% endif %}
 
                             {{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}</td>

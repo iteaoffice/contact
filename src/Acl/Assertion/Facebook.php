@@ -25,10 +25,10 @@ class Facebook extends AssertionAbstract
      * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
      * privileges, respectively.
      *
-     * @param Acl $acl
-     * @param RoleInterface $role
+     * @param Acl               $acl
+     * @param RoleInterface     $role
      * @param ResourceInterface $facebook
-     * @param string $privilege
+     * @param string            $privilege
      *
      * @return bool
      */
@@ -41,22 +41,17 @@ class Facebook extends AssertionAbstract
             return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }
 
-        $id = $this->getRouteMatch()->getParam('id');
-        /*
-         * When the privilege is_null (not given by the isAllowed helper), we cannot grab it from the
-         * routeMatch, but we assume that we are viewing an idea
-         */
-        if (is_null($privilege)) {
-            $privilege = $this->getRouteMatch()->getParam('privilege', 'view');
-        }
+        $this->setPrivilege($privilege);
+        $id = $this->getId();
+
         if (!$facebook instanceof FacebookEntity && !is_null($id)) {
             /*
              * @var FacebookEntity
              */
-            $facebook = $this->getContactService()->findEntityById('facebook', $id);
+            $facebook = $this->getContactService()->findEntityById(FacebookEntity::class, $id);
         }
 
-        switch ($privilege) {
+        switch ($this->getPrivilege()) {
             case 'view':
                 if ($facebook->getPublic() === FacebookEntity::IS_PUBLIC) {
                     return true;
@@ -64,8 +59,8 @@ class Facebook extends AssertionAbstract
 
                 return $this->rolesHaveAccess($facebook->getAccess()->toArray());
             case 'send-message':
-                return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE &&
-                $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
+                return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
+                && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
             default:
                 return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
         }

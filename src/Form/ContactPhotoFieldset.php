@@ -26,9 +26,12 @@ class ContactPhotoFieldset extends Fieldset
      */
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
-        parent::__construct($object->get('underscore_entity_name'));
-        $photo            = new Entity\Photo();
-        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Photo');
+        $photo = new Entity\Photo();
+
+        parent::__construct($photo->get('underscore_entity_name'));
+
+        $doctrineHydrator = new DoctrineHydrator($entityManager, Entity\Photo::class);
+        
         $this->setHydrator($doctrineHydrator)->setObject($photo);
         $builder = new AnnotationBuilder();
         /*
@@ -39,26 +42,22 @@ class ContactPhotoFieldset extends Fieldset
              * Go over each element to add the objectManager to the EntitySelect
              */
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
-                $element->setOptions(
-                    array(
+                $element->setOptions([
                         'object_manager' => $entityManager,
-                    )
-                );
+                    ]);
             }
             //Add only when a type is provided
             if (array_key_exists('type', $element->getAttributes())) {
                 $this->add($element);
             }
         }
-        $this->add(
-            array(
+        $this->add([
                 'type'    => '\Zend\Form\Element\File',
                 'name'    => 'file',
-                'options' => array(
+                'options' => [
                     "label"      => "txt-photo-file",
                     "help-block" => _("txt-photo-requirements"),
-                ),
-            )
-        );
+                ],
+            ]);
     }
 }

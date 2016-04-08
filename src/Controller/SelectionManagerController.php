@@ -13,7 +13,6 @@ namespace Contact\Controller;
 use Contact\Entity\Selection;
 use Contact\Form\SelectionContacts;
 use Contact\Form\SelectionFilter;
-use Contact\Service\SelectionService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Zend\Paginator\Paginator;
@@ -32,7 +31,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $page = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
-        $contactQuery = $this->getContactService()->findEntitiesFiltered('selection', $filterPlugin->getFilter());
+        $contactQuery = $this->getContactService()->findEntitiesFiltered(Selection::class, $filterPlugin->getFilter());
 
         $paginator
             = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
@@ -58,14 +57,17 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function viewAction()
     {
-        $selectionService = $this->getSelectionService()->setSelectionId($this->getEvent()->getRouteMatch()
-            ->getParam('id'));
+        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
+
+        if (is_null($selection)) {
+            return $this->notFoundAction();
+        }
 
         /**
          * If the query is wrong an exception is thrown now
          */
         try {
-            $contacts = $this->getContactService()->findContactsInSelectionAsArray($selectionService->getSelection());
+            $contacts = $this->getContactService()->findContactsInSelectionAsArray($selection);
             $error = false;
         } catch (\Exception $e) {
             $contacts = [];
@@ -73,7 +75,8 @@ class SelectionManagerController extends ContactAbstractController
         }
 
         return new ViewModel([
-            'selectionService' => $selectionService,
+            'selectionService' => $this->getSelectionService(),
+            'selection'        => $selection,
             'contacts'         => $contacts,
             'error'            => $error,
         ]);
@@ -84,14 +87,15 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function editContactsAction()
     {
-        $selectionService = $this->getSelectionService()->setSelectionId($this->params('id'));
-        if ($selectionService->isEmpty()) {
+        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
+
+        if (is_null($selection)) {
             return $this->notFoundAction();
         }
 
         $data = array_merge([
-            'type' => $selectionService->isSql() ? Selection::TYPE_SQL : Selection::TYPE_FIXED,
-            'sql'  => $selectionService->isSql() ? $selectionService->getSelection()->getSql()->getQuery() : null
+            'type' => $this->getSelectionService()->isSql($selection) ? Selection::TYPE_SQL : Selection::TYPE_FIXED,
+            'sql'  => $this->getSelectionService()->isSql($selection) ? $selection->getSql()->getQuery() : null
         ], $this->getRequest()->getPost()->toArray());
 
 
@@ -101,22 +105,21 @@ class SelectionManagerController extends ContactAbstractController
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
-                return $this->redirect()
-                    ->toRoute('zfcadmin/selection-manager/view', ['id' => $selectionService->getSelection()->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/selection-manager/view', ['id' => $selection->getId()]);
             }
 
-            $this->getSelectionService()->updateSelectionContacts($selectionService->getSelection(), $data);
+            $this->getSelectionService()->updateSelectionContacts($selection, $data);
 
             /**
              * @var $selection Selection
              */
 
-            return $this->redirect()
-                ->toRoute('zfcadmin/selection-manager/view', ['id' => $selectionService->getSelection()->getId()]);
+            return $this->redirect()->toRoute('zfcadmin/selection-manager/view', ['id' => $selection->getId()]);
         }
 
         return new ViewModel([
-            'selectionService' => $selectionService,
+            'selectionService' => $this->getSelectionService(),
+            'selection'        => $selection,
             'form'             => $form
         ]);
     }
@@ -126,46 +129,39 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function editAction()
     {
-        /** @var SelectionService $selectionService */
-        $selectionService = $this->getSelectionService()->setSelectionId($this->params('id'));
+        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if ($selectionService->isEmpty()) {
+        if (is_null($selection)) {
             return $this->notFoundAction();
         }
 
         $data = array_merge($this->getRequest()->getPost()->toArray());
 
-        $form = $this->getFormService()->prepare(
-            $selectionService->getSelection()->get('entity_name'),
-            $selectionService->getSelection(),
-            $data
-        );
+        $form = $this->getFormService()->prepare($selection, $selection, $data);
 
         $form->setAttribute('class', 'form-horizontal');
 
-        if (!is_null($selectionService->getSelection()->getContact())) {
-            $form->get('selection')->get('contact')->setValueOptions([
-                $selectionService->getSelection()->getContact()->getId() => $selectionService->getSelection()
-                    ->getContact()->getFormName()
+        if (!is_null($selection->getContact())) {
+            $form->get($selection->get('underscore_entity_name'))->get('contact')->setValueOptions([
+                $selection->getContact()->getId() => $selection->getContact()->getFormName()
             ]);
         }
 
-        $form->get('selection')->get('contact')->setDisableInArrayValidator(true);
+        $form->get($selection->get('underscore_entity_name'))->get('contact')->setDisableInArrayValidator(true);
 
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
-                return $this->redirect()
-                    ->toRoute('zfcadmin/selection-manager/view', ['id' => $selectionService->getSelection()->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/selection-manager/view', ['id' => $selection->getId()]);
             }
 
             if (isset($data['delete'])) {
-                $this->getSelectionService()->removeEntity($selectionService->getSelection());
+                $this->getSelectionService()->removeEntity($selection);
 
                 $this->flashMessenger()->setNamespace('success')
                     ->addMessage(sprintf(
                         $this->translate("txt-selection-%s-has-successfully-been-removed"),
-                        $selectionService->getSelection()->getSelection()
+                        $selection->getSelection()
                     ));
 
                 return $this->redirect()->toRoute('zfcadmin/selection-manager/list');
@@ -181,14 +177,14 @@ class SelectionManagerController extends ContactAbstractController
                 $selection = $form->getData();
                 $this->getSelectionService()->updateEntity($selection);
 
-                return $this->redirect()
-                    ->toRoute('zfcadmin/selection-manager/view', ['id' => $selectionService->getSelection()->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/selection-manager/view', ['id' => $selection->getId()]);
             }
         }
 
         return new ViewModel([
             'form'             => $form,
-            'selectionService' => $selectionService
+            'selectionService' => $this->getSelectionService(),
+            'selection'        => $selection,
         ]);
     }
 
@@ -201,11 +197,11 @@ class SelectionManagerController extends ContactAbstractController
 
         $data = array_merge($this->getRequest()->getPost()->toArray());
 
-        $form = $this->getFormService()->prepare($selection->get('entity_name'), $selection, $data);
+        $form = $this->getFormService()->prepare($selection, $selection, $data);
 
         $form->setAttribute('class', 'form-horizontal');
 
-        $form->get('selection')->get('contact')->setValueOptions([
+        $form->get($selection->get('underscore_entity_name'))->get('contact')->setValueOptions([
             $this->zfcUserAuthentication()->getIdentity()->getId() => $this->zfcUserAuthentication()->getIdentity()
                 ->getFormName()
         ])->setDisableInArrayValidator(true);
@@ -237,16 +233,14 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function getContactsAction()
     {
-        $id = $this->getRequest()->getPost()->get('id');
+        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        $selectionService = $this->getSelectionService()->setSelectionId($id);
-
-        if ($selectionService->isEmpty()) {
+        if (is_null($selection)) {
             return $this->notFoundAction();
         }
 
         $results = [];
-        foreach ($this->getContactService()->findContactsInSelection($selectionService->getSelection()) as $contact) {
+        foreach ($this->getContactService()->findContactsInSelection($selection) as $contact) {
             $text = trim(sprintf("%s (%s)", $contact->getFormName(), $contact->getEmail()));
 
             /*
@@ -275,9 +269,9 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function exportCsvAction()
     {
-        $selectionService = $this->getSelectionService()->setSelectionId($this->params('id'));
+        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if ($selectionService->isEmpty()) {
+        if (is_null($selection)) {
             return $this->notFoundAction();
         }
 
@@ -294,7 +288,7 @@ class SelectionManagerController extends ContactAbstractController
             'Country'
         ]);
 
-        foreach ($this->getContactService()->findContactsInSelection($selectionService->getSelection(), true) as $contact) {
+        foreach ($this->getContactService()->findContactsInSelection($selection, true) as $contact) {
             fputcsv($fh, [
                 $contact['email'],
                 $contact['firstName'],
@@ -314,7 +308,7 @@ class SelectionManagerController extends ContactAbstractController
         $headers->addHeaderLine('Content-Type', 'text/csv');
         $headers->addHeaderLine(
             'Content-Disposition',
-            "attachment; filename=\"selection_" . $selectionService->getSelection()->getSelection() . ".csv\""
+            "attachment; filename=\"selection_" . $selection->getSelection() . ".csv\""
         );
         $headers->addHeaderLine('Accept-Ranges', 'bytes');
         $headers->addHeaderLine('Content-Length', strlen($string));

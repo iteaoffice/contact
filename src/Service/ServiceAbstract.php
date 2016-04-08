@@ -11,7 +11,6 @@
 namespace Contact\Service;
 
 use Admin\Service\AdminService;
-use Contact\Entity\Address;
 use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
 use Contact\Entity\Selection;
@@ -88,18 +87,6 @@ abstract class ServiceAbstract implements ServiceInterface
      * @var UserServiceOptionsInterface
      */
     protected $zfcUserOptions;
-    /**
-     * @var Contact
-     */
-    protected $contact;
-    /**
-     * @var Address
-     */
-    protected $address;
-    /**
-     * @var Selection
-     */
-    protected $selection;
 
 
     /**
@@ -109,7 +96,7 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function findAll($entity)
     {
-        return $this->getEntityManager()->getRepository($this->getFullEntityName($entity))->findAll();
+        return $this->getEntityManager()->getRepository($entity)->findAll();
     }
 
     /**
@@ -120,31 +107,10 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function findEntitiesFiltered($entity, $filter)
     {
-        $equipmentList = $this->getEntityManager()->getRepository($this->getFullEntityName($entity))
+        $equipmentList = $this->getEntityManager()->getRepository($entity)
             ->findFiltered($filter, AbstractQuery::HYDRATE_SIMPLEOBJECT);
 
         return $equipmentList;
-    }
-
-    /**
-     * Create a full path to the entity for Doctrine.
-     *
-     * @param $entity
-     *
-     * @return string
-     */
-    public function getFullEntityName($entity)
-    {
-        /*
-         * Convert a - to a camelCased situation
-         */
-        if (strpos($entity, '-') !== false) {
-            $entity = explode('-', $entity);
-            $entity = $entity[0] . ucfirst($entity[1]);
-        }
-
-        return ucfirst(implode('', array_slice(explode('\\', __NAMESPACE__), 0, 1))) . '\\' . 'Entity' . '\\'
-        . ucfirst($entity);
     }
 
     /**
@@ -157,7 +123,7 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function findEntityById($entity, $id)
     {
-        return $this->getEntityManager()->find($this->getFullEntityName($entity), $id);
+        return $this->getEntityManager()->find($entity, $id);
     }
 
     /**
@@ -194,20 +160,6 @@ abstract class ServiceAbstract implements ServiceInterface
         $this->getEntityManager()->flush();
 
         return true;
-    }
-
-    /**
-     * Build dynamically a entity based on the full entity name.
-     *
-     * @param $entity
-     *
-     * @return mixed
-     */
-    public function getEntity($entity)
-    {
-        $entity = $this->getFullEntityName($entity);
-
-        return new $entity();
     }
 
     /**
@@ -474,66 +426,6 @@ abstract class ServiceAbstract implements ServiceInterface
     public function setZfcUserOptions($zfcUserOptions)
     {
         $this->zfcUserOptions = $zfcUserOptions;
-
-        return $this;
-    }
-
-    /**
-     * @return Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param Contact $contact
-     *
-     * @return ServiceAbstract
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-
-        return $this;
-    }
-
-    /**
-     * @return Address
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * @param Address $address
-     *
-     * @return ServiceAbstract
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    /**
-     * @return Selection
-     */
-    public function getSelection()
-    {
-        return $this->selection;
-    }
-
-    /**
-     * @param Selection $selection
-     *
-     * @return ServiceAbstract
-     */
-    public function setSelection($selection)
-    {
-        $this->selection = $selection;
 
         return $this;
     }

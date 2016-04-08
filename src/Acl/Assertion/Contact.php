@@ -40,7 +40,7 @@ class Contact extends AssertionAbstract
             return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
         }
 
-        switch ($privilege) {
+        switch ($this->getPrivilege()) {
             case 'view-admin':
             case 'edit-admin':
             case 'impersonate':

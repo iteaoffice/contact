@@ -33,11 +33,12 @@ class FacebookController extends ContactAbstractController
         /**
          * @var Facebook $facebook
          */
-        $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
+        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
         $view = new ViewModel([
             'facebook'          => $facebook,
             'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
-            'contactInFacebook' => $this->getContactService()->isContactInFacebook($this->zfcUserAuthentication()->getIdentity(), $facebook),
+            'contactInFacebook' => $this->getContactService()->isContactInFacebook($this->zfcUserAuthentication()
+                ->getIdentity(), $facebook),
         ]);
         $view->setTemplate($this->getContactService()->getFacebookTemplate());
 
@@ -54,7 +55,7 @@ class FacebookController extends ContactAbstractController
         /**
          * @var $facebook Facebook
          */
-        $facebook = $this->getContactService()->findEntityById('facebook', $this->params('id'));
+        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
 
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 

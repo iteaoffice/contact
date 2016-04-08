@@ -10,6 +10,11 @@
 
 namespace Contact\Entity;
 
+/**
+ * Interface EntityInterface
+ *
+ * @package Contact\Entity
+ */
 interface EntityInterface
 {
     public function getId();

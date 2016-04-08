@@ -2,15 +2,15 @@
 
 <dl class="dl-horizontal">
     <dt>{{ translate("txt-first-name") }}</dt>
-    <dd>{{ contactService.contact.firstName }}</dd>
+    <dd>{{ contact.firstName }}</dd>
     <dt>{{ translate("txt-last-name") }}</dt>
-    <dd>{{ contactService.contact.lastName }} {% if contactService.contact.middleName %}({{ contactService.contact.middleName }}){% endif %}</dd>
+    <dd>{{ contact.lastName }} {% if contact.middleName %}({{ contact.middleName }}){% endif %}</dd>
     <dt>{{ translate("txt-gender") }}</dt>
-    <dd>{{ contactService.contact.gender.name }} ({{ contactService.contact.gender }})</dd>
+    <dd>{{ contact.gender.name }} ({{ contact.gender }})</dd>
     <dt>{{ translate("txt-title") }}</dt>
-    <dd>{{ contactService.contact.title }} ({{ contactService.parseAttention() }})</dd>
+    <dd>{{ contact.title }} ({{ contactService.parseAttention(contact) }})</dd>
     <dt>{{ translate("txt-primary-email") }}</dt>
-    <dd>{{ contactService.contact.email }} <a href="mailto:{{ contactService.contact.email }}"><i
+    <dd>{{ contact.email }} <a href="mailto:{{ contact.email }}"><i
                     class="fa fa-envelope-o"></i></a></dd>
 
     {% if contact.email.count() > 0 %}
@@ -22,21 +22,21 @@
     {% endif %}
 
     <dt>{{ translate("txt-organisation") }}</dt>
-    {% if contactService.hasOrganisation() %}
+    {% if contactService.hasOrganisation(contact) %}
         <dd>{{ organisationLink(
-            contactService.contact.contactOrganisation.organisation,'view-admin', 'name',contactService.contact.contactOrganisation.branch
-            ) }}, ({{ contactService.contact.contactOrganisation.organisation.type }})
-            {{ countryLink(contactService.contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
+            contact.contactOrganisation.organisation,'view-admin', 'name',contact.contactOrganisation.branch
+            ) }}, ({{ contact.contactOrganisation.organisation.type }})
+            {{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
     {% else %}
         <dd>{{ translate("txt-no-organisation-provided") }}</dd>
     {% endif %}
 
     <dt>{{ translate("txt-department") }}</dt>
-    <dd>{{ contactService.contact.department|default(translate("txt-unknown")) }}</dd>
+    <dd>{{ contact.department|default(translate("txt-unknown")) }}</dd>
     <dt>{{ translate("txt-position") }}</dt>
-    <dd>{{ contactService.contact.position }}</dd>
+    <dd>{{ contact.position }}</dd>
     <dt>{{ translate("txt-access") }}</dt>
-    {% for access in contactService.contact.access %}
+    {% for access in contact.access %}
         <dd>{{ accessLink(access,'view','name') }}</dd>
     {% else %}
         <dd>{{ translate("txt-no-access-defined") }}</dd>
@@ -44,7 +44,7 @@
 </dl>
 
 <h3>{{ translate("txt-notes") }}</h3>
-{% if contactService.contact.note.count() > 0 %}
+{% if contact.note.count() > 0 %}
     <table class="table table-hover table-striped">
         <thead>
         <tr>
@@ -54,7 +54,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for note in contactService.contact.note %}
+        {% for note in contact.note %}
             <tr>
                 <td>{{ note.id }} {{ noteLink(note,'edit','icon') }}</td>
                 <td>{{ note.source }}</td>

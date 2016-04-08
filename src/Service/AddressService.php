@@ -26,14 +26,14 @@ use Contact\Entity\Contact;
 class AddressService extends ServiceAbstract
 {
 
-    /** @param int $id
-     * @return AddressService;
+    /**
+     * @param $id
+     *
+     * @return null|Address
      */
-    public function setAddressId($id)
+    public function findAddressById($id)
     {
-        $this->setAddress($this->findEntityById('address', $id));
-
-        return $this;
+        return $this->getEntityManager()->getRepository(Address::class)->find($id);
     }
 
     /**
@@ -42,31 +42,10 @@ class AddressService extends ServiceAbstract
      * @param Contact     $contact
      * @param AddressType $type
      *
-     * @return AddressService|null;
+     * @return Address|null
      */
     public function findAddressByContactAndType(Contact $contact, AddressType $type)
     {
-        $address = $this->getEntityManager()->getRepository($this->getFullEntityName('address'))
-            ->findAddressByContactAndType($contact, $type);
-
-        if (is_null($address)) {
-            return;
-        }
-
-        return $this->createServiceElement($address);
-    }
-
-    /**
-     * @param Address $address
-     *
-     * @return AddressService
-     */
-    private function createServiceElement(Address $address)
-    {
-        $addressService = new self();
-        $addressService->setServiceLocator($this->getServiceLocator());
-        $addressService->setAddress($address);
-
-        return $addressService;
+        return $this->getEntityManager()->getRepository(Address::class)->findAddressByContactAndType($contact, $type);
     }
 }

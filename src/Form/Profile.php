@@ -12,6 +12,7 @@ namespace Contact\Form;
 
 use Contact\Entity\Contact;
 use Contact\Entity\PhoneType;
+use Contact\Entity\Photo;
 use Contact\Entity\Profile as ProfileEntity;
 use Contact\Hydrator\Profile as ProfileHydrator;
 use Contact\Service\ContactService;
@@ -31,9 +32,10 @@ class Profile extends Form
 {
     /**
      * Profile constructor.
-     * @param EntityManager $entityManager
+     *
+     * @param EntityManager  $entityManager
      * @param ContactService $contactService
-     * @param Contact $contact
+     * @param Contact        $contact
      */
     public function __construct(EntityManager $entityManager, ContactService $contactService, Contact $contact)
     {
@@ -48,14 +50,11 @@ class Profile extends Form
         /*
          * Add a hidden form element for the id to allow a check on the uniqueness of some elements
          */
-        $this->add(
-            [
+        $this->add([
                 'type' => 'Zend\Form\Element\Hidden',
                 'name' => 'id',
-            ]
-        );
-        $this->add(
-            [
+            ]);
+        $this->add([
                 'type'       => EntitySelect::class,
                 'name'       => 'gender',
                 'options'    => [
@@ -69,10 +68,8 @@ class Profile extends Form
                 'attributes' => [
                     'required' => true,
                 ],
-            ]
-        );
-        $this->add(
-            [
+            ]);
+        $this->add([
                 'type'       => EntitySelect::class,
                 'name'       => 'title',
                 'options'    => [
@@ -86,10 +83,8 @@ class Profile extends Form
                 'attributes' => [
                     'required' => true,
                 ],
-            ]
-        );
-        $this->add(
-            [
+            ]);
+        $this->add([
                 'type'       => Text::class,
                 'name'       => 'firstName',
                 'options'    => [
@@ -100,10 +95,8 @@ class Profile extends Form
                     'required'    => true,
                     'placeholder' => _("txt-give-your-first-name"),
                 ],
-            ]
-        );
-        $this->add(
-            [
+            ]);
+        $this->add([
                 'type'       => Text::class,
                 'name'       => 'middleName',
                 'options'    => [
@@ -113,10 +106,8 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-middle-name"),
                 ],
-            ]
-        );
-        $this->add(
-            [
+            ]);
+        $this->add([
                 'type'       => Text::class,
                 'name'       => 'lastName',
                 'options'    => [
@@ -127,18 +118,16 @@ class Profile extends Form
                     'required'    => true,
                     'placeholder' => _("txt-give-your-last-name"),
                 ],
-            ]
-        );
+            ]);
         /**
          * Produce a list of all phone numbers
          */
         $phoneFieldSet = new Fieldset('phone');
         /** @var PhoneType $phoneType */
-        foreach ($contactService->findAll('phoneType') as $phoneType) {
+        foreach ($contactService->findAll(PhoneType::class) as $phoneType) {
             if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE])) {
                 $fieldSet = new Fieldset($phoneType->getId());
-                $fieldSet->add(
-                    [
+                $fieldSet->add([
                         'type'       => Text::class,
                         'name'       => 'phone',
                         'options'    => [
@@ -148,8 +137,7 @@ class Profile extends Form
                             'class'       => 'form-control',
                             'placeholder' => sprintf(_("Give %s phone number"), $phoneType->getType()),
                         ],
-                    ]
-                );
+                    ]);
                 $phoneFieldSet->add($fieldSet);
             }
         }
@@ -158,8 +146,7 @@ class Profile extends Form
          * Add the form field for the address
          */
         $addressFieldSet = new Fieldset('address');
-        $addressFieldSet->add(
-            [
+        $addressFieldSet->add([
                 'type'       => Text::class,
                 'name'       => 'address',
                 'options'    => [
@@ -169,10 +156,8 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-address"),
                 ],
-            ]
-        );
-        $addressFieldSet->add(
-            [
+            ]);
+        $addressFieldSet->add([
                 'type'       => Text::class,
                 'name'       => 'zipCode',
                 'options'    => [
@@ -182,10 +167,8 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-zip-code"),
                 ],
-            ]
-        );
-        $addressFieldSet->add(
-            [
+            ]);
+        $addressFieldSet->add([
                 'type'       => Text::class,
                 'name'       => 'city',
                 'options'    => [
@@ -195,10 +178,8 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-city"),
                 ],
-            ]
-        );
-        $addressFieldSet->add(
-            [
+            ]);
+        $addressFieldSet->add([
                 'type'       => EntitySelect::class,
                 'name'       => 'country',
                 'options'    => [
@@ -216,14 +197,12 @@ class Profile extends Form
                 'attributes' => [
                     'required' => true,
                 ],
-            ]
-        );
+            ]);
         $this->add($addressFieldSet);
 
         $contactOrganisationFieldSet = new Fieldset('contact_organisation');
 
-        $contactOrganisationFieldSet->add(
-            [
+        $contactOrganisationFieldSet->add([
                 'type'       => EntityRadio::class,
                 'name'       => 'organisation_id',
                 'options'    => [
@@ -256,14 +235,13 @@ class Profile extends Form
                     },
                 ],
                 'attributes' => [
-                    'required' => !is_null($contact->getContactOrganisation()), //Only required when a contact has an organisation
+                    'required' => !is_null($contact->getContactOrganisation()),
+                    //Only required when a contact has an organisation
                     'id'       => 'organisation',
                 ],
-            ]
-        );
+            ]);
 
-        $contactOrganisationFieldSet->add(
-            [
+        $contactOrganisationFieldSet->add([
                 'type'       => Text::class,
                 'name'       => 'organisation',
                 'options'    => [
@@ -274,10 +252,8 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-organisation"),
                 ],
-            ]
-        );
-        $contactOrganisationFieldSet->add(
-            [
+            ]);
+        $contactOrganisationFieldSet->add([
                 'type'       => EntitySelect::class,
                 'name'       => 'country',
                 'options'    => [
@@ -295,11 +271,9 @@ class Profile extends Form
                 'attributes' => [
                     'required' => true,
                 ],
-            ]
-        );
+            ]);
         $this->add($contactOrganisationFieldSet);
-        $this->add(
-            [
+        $this->add([
                 'type'       => Text::class,
                 'name'       => 'department',
                 'options'    => [
@@ -309,10 +283,8 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-department"),
                 ],
-            ]
-        );
-        $this->add(
-            [
+            ]);
+        $this->add([
                 'type'       => Text::class,
                 'name'       => 'position',
                 'options'    => [
@@ -322,25 +294,21 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-position"),
                 ],
-            ]
-        );
+            ]);
         /*
          * Produce a list of all phone numbers
          */
         $profileFieldSet = new Fieldset('profile');
         $profileEntity = new ProfileEntity();
-        $profileFieldSet->add(
-            [
+        $profileFieldSet->add([
                 'type'    => 'Zend\Form\Element\Radio',
                 'name'    => 'visible',
                 'options' => [
                     'label'         => _("txt-visibility"),
                     'value_options' => $profileEntity->getVisibleTemplates(),
                 ],
-            ]
-        );
-        $profileFieldSet->add(
-            [
+            ]);
+        $profileFieldSet->add([
                 'type'       => 'Zend\Form\Element\Textarea',
                 'name'       => 'description',
                 'options'    => [
@@ -350,11 +318,9 @@ class Profile extends Form
                     'class'       => 'form-control',
                     'placeholder' => _("txt-give-your-expertise"),
                 ],
-            ]
-        );
+            ]);
         $this->add($profileFieldSet);
-        $this->add(
-            [
+        $this->add([
                 'type'       => '\Zend\Form\Element\File',
                 'name'       => 'file',
                 'attributes' => [
@@ -364,28 +330,23 @@ class Profile extends Form
                     "label"      => "txt-photo-file",
                     "help-block" => _("txt-photo-requirements"),
                 ],
-            ]
-        );
+            ]);
 
-        $this->add(
-            [
+        $this->add([
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
                     'value' => _("txt-update"),
                 ],
-            ]
-        );
-        $this->add(
-            [
+            ]);
+        $this->add([
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'cancel',
                 'attributes' => [
                     'class' => "btn btn-warning",
                     'value' => _("txt-cancel"),
                 ],
-            ]
-        );
+            ]);
     }
 }

@@ -162,25 +162,25 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
             $gender = null;
             $title = null;
             if (isset($this->headerKeys['gender']) && !empty($content[$this->headerKeys['gender']])) {
-                $gender = $contact->setGender($this->getGeneralService()
-                    ->findGenderByGender($content[$this->headerKeys['gender']]));
+                $gender = $this->getGeneralService()->findGenderByGender($content[$this->headerKeys['gender']]);
+                $contact->setGender($gender);
             }
 
             if (!is_null($gender)) {
                 $contact->setGender($gender);
             } else {
-                $contact->setGender($this->getGeneralService()->findEntityById('gender', Gender::GENDER_UNKNOWN));
+                $contact->setGender($this->getGeneralService()->findEntityById(Gender::class, Gender::GENDER_UNKNOWN));
             }
 
             if (isset($this->headerKeys['title']) && !empty($content[$this->headerKeys['title']])) {
-                $title = $contact->setTitle($this->getGeneralService()
-                    ->findTitleByTitle($content[$this->headerKeys['title']]));
+                $title = $this->getGeneralService()->findTitleByTitle($content[$this->headerKeys['title']]);
+                $contact->setTitle($title);
             }
 
             if (!is_null($title)) {
                 $contact->setTitle($title);
             } else {
-                $contact->setTitle($this->getGeneralService()->findEntityById('title', Title::TITLE_UNKNOWN));
+                $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
             }
 
 
@@ -190,7 +190,8 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
             if (isset($this->headerKeys['phone']) && !empty($content[$this->headerKeys['phone']])) {
                 $phone = new Phone();
 
-                $phoneType = $this->getContactService()->findEntityById('phoneType', PhoneType::PHONE_TYPE_DIRECT);
+                /** @var PhoneType $phoneType */
+                $phoneType = $this->getContactService()->findEntityById(PhoneType::class, PhoneType::PHONE_TYPE_DIRECT);
                 $phone->setType($phoneType);
                 $phone->setPhone($content[$this->headerKeys['phone']]);
                 $phone->setContact($contact);
@@ -209,7 +210,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
 
             if (isset($this->headerKeys['organisation_id']) && !empty($content[$this->headerKeys['organisation_id']])) {
                 $organisation = $this->getOrganisationService()
-                    ->setOrganisationId($content[$this->headerKeys['organisation_id']])->getOrganisation();
+                    ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
             }
 
             if (is_null($organisation) && !is_null($country)) {
@@ -342,9 +343,9 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
              * Validate the organisation_id
              */
             if (!empty($this->headerKeys['organisation_id'])) {
-                $organisationService = $this->getOrganisationService()
-                    ->setOrganisationId($this->headerKeys['organisation_id']);
-                if ($organisationService->isEmpty()) {
+                $organisation = $this->getOrganisationService()
+                    ->findOrganisationById($this->headerKeys['organisation_id']);
+                if (is_null($organisation)) {
                     $this->errors[] = sprintf(
                         "Organisation with ID (%s) in row %s is cannot be found",
                         $content[$this->headerKeys['organisation_id']],
@@ -431,9 +432,9 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
 
         /** Parse the $selectionId if not empty */
         if (!empty($selectionId)) {
-            $selectionService = $this->getSelectionService()->setSelectionId((int)$selectionId);
-            if (!$selectionService->isEmpty()) {
-                $this->setSelection($selectionService->getSelection());
+            $selection = $this->getSelectionService()->findSelectionById($selectionId);
+            if (!is_null($selection)) {
+                $this->setSelection($selection);
             }
         }
 
@@ -443,7 +444,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
             $selection->setContact($this->getServiceLocator()->get('Application\Authentication\Service')
                 ->getIdentity());
 
-            $selection = $this->getContactService()->newEntity($selection);
+            $this->getContactService()->newEntity($selection);
             $this->setSelection($selection);
         }
     }
@@ -456,7 +457,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
     private function setOptInFromFormData($includeOptIn)
     {
         foreach ($includeOptIn as $optInId) {
-            $optIn = $this->getContactService()->findEntityById('optIn', $optInId);
+            $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
             if (!is_null($optIn)) {
                 $this->optIn[] = $optIn;
             }
