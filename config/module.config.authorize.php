@@ -16,30 +16,9 @@ use Contact\Acl\Assertion\Phone as PhoneAssertion;
 
 return [
     'bjyauthorize' => [
-        // resource providers provide a list of resources that will be tracked
-        // in the ACL. like roles, they can be hierarchical
-        'resource_providers' => [
-            'BjyAuthorize\Provider\Resource\Config' => [
-                'contact' => [],
-            ],
-        ],
-        /* rules can be specified here with the format:
-         * [roles (array] , resource, [privilege (array|string], assertion]]
-         * assertions will be loaded using the service manager and must implement
-         * Zend\Acl\Assertion\AssertionInterface.
-         * *if you use assertions, define them using the service manager!*
-         */
-        'rule_providers'     => [
-            'BjyAuthorize\Provider\Rule\Config' => [
-                'allow' => [],
-                // Don't mix allow/deny rules if you are using role inheritance.
-                // There are some weird bugs.
-                'deny'  => [],
-            ],
-        ],
         /* Currently, only controller and route guards exist
          */
-        'guards'             => [
+        'guards' => [
             /* If this guard is specified here (i.e. it is enabled], it will block
              * access to all routes unless they are specified here.
              */

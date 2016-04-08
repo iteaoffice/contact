@@ -10,17 +10,16 @@
 return [
     'service_manager' => [
     ],
-    'contact-config'  =>
-        [
-            // cache options have to be compatible with Zend\Cache\StorageFactory::factory
-            'cache_options' => [
-                'adapter' => [
-                    'name' => 'memory',
-                ],
-                'plugins' => [
-                    'serializer',
-                ]
+    'contact-config'  => [
+        // cache options have to be compatible with Zend\Cache\StorageFactory::factory
+        'cache_options' => [
+            'adapter' => [
+                'name' => 'memory',
             ],
-            'cache_key'     => 'contact-cache-' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test')
-        ]
+            'plugins' => [
+                'serializer',
+            ]
+        ],
+        'cache_key'     => 'contact-cache-' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test')
+    ]
 ];
