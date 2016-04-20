@@ -15,9 +15,6 @@
 
 namespace Contact;
 
-use Contact\Controller\Plugin\GetFilter;
-use Contact\Controller\Plugin\HandleImport;
-use Contact\Controller\Plugin\PartnerSearch;
 use Contact\Navigation\Service\ContactNavigationService;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManager;
@@ -48,22 +45,6 @@ class Module implements Feature\AutoloaderProviderInterface, Feature\ConfigProvi
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';
-    }
-
-    /**
-     * Move this to here to have config cache working.
-     *
-     * @return array
-     */
-    public function getControllerPluginConfig()
-    {
-        return [
-            'invokables' => [
-                'handleImport'     => HandleImport::class,
-                'partnerSearch'    => PartnerSearch::class,
-                'getContactFilter' => GetFilter::class,
-            ],
-        ];
     }
 
     /**

@@ -22,10 +22,11 @@ use Contact\Entity\Note;
 class NoteLink extends LinkAbstract
 {
     /**
-     * @param Note|null $note
-     * @param string $action
-     * @param string $show
+     * @param Note|null    $note
+     * @param string       $action
+     * @param string       $show
      * @param Contact|null $contact
+     *
      * @return string
      */
     public function __invoke(
@@ -39,20 +40,13 @@ class NoteLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (!$this->hasAccess(
-            $this->getNote(),
-            NoteAssertion::class,
-            $this->getAction()
-        )
-        ) {
+        if (!$this->hasAccess($this->getNote(), NoteAssertion::class, $this->getAction())) {
             return '';
         }
 
-        $this->setShowOptions(
-            [
+        $this->setShowOptions([
                 'name' => $this->getNote()->getNote(),
-            ]
-        );
+            ]);
         $this->addRouterParam('id', $this->getNote()->getId());
         $this->addRouterParam('contact', $this->getContact()->getId());
 
@@ -75,9 +69,7 @@ class NoteLink extends LinkAbstract
                 break;
             case 'edit':
                 $this->setRouter('zfcadmin/note-manager/edit');
-                $this->setText(
-                    sprintf($this->translate("txt-edit-note-%s"), $this->getNote()->getNote())
-                );
+                $this->setText(sprintf($this->translate("txt-edit-note-%s"), $this->getNote()->getNote()));
                 break;
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));

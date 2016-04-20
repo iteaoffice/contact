@@ -101,7 +101,7 @@ abstract class ContactAbstractController extends AbstractActionController
      */
     public function getContactService()
     {
-        return clone $this->contactService;
+        return $this->contactService;
     }
 
     /**

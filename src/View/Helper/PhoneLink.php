@@ -22,10 +22,11 @@ use Contact\Entity\Phone;
 class PhoneLink extends LinkAbstract
 {
     /**
-     * @param Phone|null $phone
-     * @param string $action
-     * @param string $show
+     * @param Phone|null   $phone
+     * @param string       $action
+     * @param string       $show
      * @param Contact|null $contact
+     *
      * @return string
      */
     public function __invoke(
@@ -39,20 +40,13 @@ class PhoneLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (!$this->hasAccess(
-            $this->getPhone(),
-            PhoneAssertion::class,
-            $this->getAction()
-        )
-        ) {
+        if (!$this->hasAccess($this->getPhone(), PhoneAssertion::class, $this->getAction())) {
             return '';
         }
 
-        $this->setShowOptions(
-            [
+        $this->setShowOptions([
                 'name' => $this->getPhone()->getPhone(),
-            ]
-        );
+            ]);
         $this->addRouterParam('id', $this->getPhone()->getId());
         $this->addRouterParam('contact', $this->getContact()->getId());
 
@@ -75,9 +69,7 @@ class PhoneLink extends LinkAbstract
                 break;
             case 'edit':
                 $this->setRouter('zfcadmin/phone-manager/edit');
-                $this->setText(
-                    sprintf($this->translate("txt-edit-phone-%s"), $this->getPhone()->getPhone())
-                );
+                $this->setText(sprintf($this->translate("txt-edit-phone-%s"), $this->getPhone()->getPhone()));
                 break;
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));

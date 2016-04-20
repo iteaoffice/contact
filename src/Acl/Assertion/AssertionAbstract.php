@@ -16,6 +16,7 @@ namespace Contact\Acl\Assertion;
 use Admin\Service\AdminService;
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
+use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Permissions\Acl\Assertion\AssertionInterface;
@@ -86,6 +87,14 @@ abstract class AssertionAbstract implements AssertionInterface
     }
 
     /**
+     * @return bool
+     */
+    public function hasRouteMatch()
+    {
+        return !is_null($this->getRouteMatch());
+    }
+
+    /**
      * Returns true when a role or roles have access.
      *
      * @param $roles
@@ -139,7 +148,7 @@ abstract class AssertionAbstract implements AssertionInterface
         /**
          * When the privilege is_null (not given by the isAllowed helper), get it from the routeMatch
          */
-        if (is_null($privilege)) {
+        if (is_null($privilege) && $this->hasRouteMatch()) {
             $this->privilege = $this->getRouteMatch()
                 ->getParam('privilege', $this->getRouteMatch()->getParam('action'));
         } else {
@@ -160,10 +169,12 @@ abstract class AssertionAbstract implements AssertionInterface
         if (is_null($this->getRouteMatch())) {
             return null;
         }
+        if (!is_null($id = $this->getRouteMatch()->getParam('id'))) {
+            return (int)$id;
+        }
 
         return null;
     }
-
 
     /**
      * @return ServiceLocatorInterface
@@ -174,7 +185,7 @@ abstract class AssertionAbstract implements AssertionInterface
     }
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface|ContainerInterface $serviceLocator
      *
      * @return AssertionAbstract
      */

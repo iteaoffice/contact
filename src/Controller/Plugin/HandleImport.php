@@ -28,14 +28,13 @@ use Organisation\Entity\Type;
 use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Validator\EmailAddress;
 
 /**
  * Class HandleImport.
  */
-class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterface
+class HandleImport extends AbstractPlugin
 {
     /**
      * @var string
@@ -402,7 +401,6 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
             $row = explode($this->delimiter, $data[$i]);
 
             if (sizeof($row) === sizeof($this->header)) {
-
                 //Trim all the elements
                 $row = array_map('trim', $row);
 
@@ -501,7 +499,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
      */
     public function getServiceLocator()
     {
-        return $this->serviceLocator->getServiceLocator();
+        return $this->serviceLocator;
     }
 
     /**
@@ -509,7 +507,7 @@ class HandleImport extends AbstractPlugin implements ServiceLocatorAwareInterfac
      */
     public function getContactService()
     {
-        return clone $this->getServiceLocator()->get(ContactService::class);
+        return $this->getServiceLocator()->get(ContactService::class);
     }
 
     /**

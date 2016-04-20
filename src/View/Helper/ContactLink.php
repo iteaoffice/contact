@@ -21,11 +21,6 @@ use Contact\Entity\Contact;
 class ContactLink extends LinkAbstract
 {
     /**
-     * @var Contact
-     */
-    protected $contact;
-
-    /**
      * @param Contact|null $contact
      * @param string       $action
      * @param string       $show
@@ -160,25 +155,5 @@ class ContactLink extends LinkAbstract
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
-    }
-
-    /**
-     * @return Contact
-     */
-    public function getContact()
-    {
-        if (is_null($this->contact)) {
-            $this->contact = new Contact();
-        }
-
-        return $this->contact;
-    }
-
-    /**
-     * @param Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
     }
 }

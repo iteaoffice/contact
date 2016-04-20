@@ -14,17 +14,12 @@ use Contact\Entity\OptIn;
 use Contact\Service\ContactService;
 use Content\Entity\Content;
 use Zend\Http\Request;
-use Zend\Mvc\Router\Http\RouteMatch;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\View\Helper\AbstractHelper;
 use Zend\View\HelperPluginManager;
-use ZfcTwig\View\TwigRenderer;
 
 /**
  * Class ContactHandler.
  */
-class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterface
+class ContactHandler extends AbstractViewHelper
 {
     /**
      * @var HelperPluginManager
@@ -82,53 +77,11 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
     }
 
     /**
-     * @return RouteMatch
-     */
-    public function getRouteMatch()
-    {
-        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRouteMatch();
-    }
-
-    /**
-     * Get the service locator.
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator->getServiceLocator();
-    }
-
-    /**
-     * Set the service locator.
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return AbstractHelper
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-
-        return $this;
-    }
-
-    /**
      * @return ContactService
      */
     public function getContactService()
     {
-        return $this->getServiceLocator()->get(ContactService::class);
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
-    public function translate($string)
-    {
-        return $this->serviceLocator->get('translate')->__invoke($string);
+        return $this->getServiceManager()->get(ContactService::class);
     }
 
     /**
@@ -141,16 +94,8 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
         return $this->getRenderer()->render('contact/partial/optin-button', [
             'includeAngularApp' => true,
             'optIn'             => $optIn,
-            'hasIdentity'       => $this->getServiceLocator()->get('Application\Authentication\Service')->hasIdentity(),
+            'hasIdentity'       => $this->getServiceManager()->get('Application\Authentication\Service')->hasIdentity(),
         ]);
-    }
-
-    /**
-     * @return TwigRenderer
-     */
-    public function getRenderer()
-    {
-        return $this->getServiceLocator()->get('ZfcTwigRenderer');
     }
 
     /**
@@ -160,7 +105,7 @@ class ContactHandler extends AbstractHelper implements ServiceLocatorAwareInterf
      */
     public function getRequest()
     {
-        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRequest();
+        return $this->getServiceManager()->get('application')->getMvcEvent()->getRequest();
     }
 
     /**

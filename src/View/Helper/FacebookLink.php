@@ -49,12 +49,7 @@ class FacebookLink extends LinkAbstract
         $this->setShow($show);
         $this->setPage($page);
 
-        if (!$this->hasAccess(
-            $this->getFacebook(),
-            FacebookAssertion::class,
-            $this->getAction()
-        )
-        ) {
+        if (!$this->hasAccess($this->getFacebook(), FacebookAssertion::class, $this->getAction())) {
             return '';
         }
 
@@ -67,11 +62,9 @@ class FacebookLink extends LinkAbstract
             $this->setAlternativeShow($page);
         }
 
-        $this->setShowOptions(
-            [
+        $this->setShowOptions([
                 'name' => $this->getFacebook()->getFacebook(),
-            ]
-        );
+            ]);
         $this->addRouterParam('id', $this->getFacebook()->getId());
 
         return $this->createLink();
@@ -91,8 +84,8 @@ class FacebookLink extends LinkAbstract
                 $this->setRouter('zfcadmin/facebook-manager/list');
                 $this->setText($this->translate("txt-list-facebooks"));
 
-                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery(
-                ) as $key => $param) {
+                foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
+                    $param) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
@@ -100,27 +93,22 @@ class FacebookLink extends LinkAbstract
                 break;
             case 'edit':
                 $this->setRouter('zfcadmin/facebook-manager/edit');
-                $this->setText(
-                    sprintf($this->translate("txt-edit-facebook-%s"), $this->getFacebook()->getFacebook())
-                );
+                $this->setText(sprintf($this->translate("txt-edit-facebook-%s"), $this->getFacebook()->getFacebook()));
                 break;
             case 'view-community':
                 $this->setRouter('community/contact/facebook/facebook');
-                $this->setText(
-                    sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook())
-                );
+                $this->setText(sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook()));
                 break;
             case 'send-message':
                 $this->setRouter('community/contact/facebook/send-message');
-                $this->setText(
-                    sprintf($this->translate("txt-send-message-to-%s"), $this->getFacebook()->getFacebook())
-                );
+                $this->setText(sprintf(
+                    $this->translate("txt-send-message-to-%s"),
+                    $this->getFacebook()->getFacebook()
+                ));
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/facebook-manager/view');
-                $this->setText(
-                    sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook())
-                );
+                $this->setText(sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook()));
                 break;
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));

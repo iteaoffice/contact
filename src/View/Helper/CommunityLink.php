@@ -11,13 +11,14 @@
 namespace Contact\View\Helper;
 
 use Contact\Entity\Community;
+use Zend\View\Helper\Url;
 
 /**
  * Create a link to an area2.
  *
  * @category    Contact
  */
-class CommunityLink extends HelperAbstract
+class CommunityLink extends AbstractViewHelper
 {
     /**
      * @param Community $community
@@ -28,21 +29,26 @@ class CommunityLink extends HelperAbstract
      */
     public function __invoke(Community $community)
     {
-        $uri     = '<a href="%s" title="%s" class="%s">%s</a>';
-        $img     = '<img src="%s">';
+        $uri = '<a href="%s" title="%s" class="%s">%s</a>';
+        $img = '<img src="%s">';
         $classes = [];
-        $link    = preg_replace(
+        $link = preg_replace(
             '/^([^\~]+)(\~(.*))?$/',
-            '${1}'.$community->getCommunity().'$3',
+            '${1}' . $community->getCommunity() . '$3',
             $community->getType()->getLink()
         );
+
+        /**
+         * @var $url Url
+         */
+        $url = $this->getHelperPluginManager()->get('url');
 
         return sprintf(
             $uri,
             $link,
             sprintf($this->translate("txt-go-to-%s-profile"), $community->getType()->getType()),
             implode($classes),
-            sprintf($img, $this->getUrl('assets/style-image', array('source' => $community->getType()->getImage())))
+            sprintf($img, $url('assets/style-image', ['source' => $community->getType()->getImage()]))
         );
     }
 }

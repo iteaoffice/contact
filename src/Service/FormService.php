@@ -16,7 +16,7 @@
 namespace Contact\Service;
 
 use Contact\Form\CreateObject;
-use Contact\Form\FilterCreateObject;
+use Contact\InputFilter\ObjectFilter;
 use Zend\Form\Form;
 
 class FormService extends ServiceAbstract
@@ -38,8 +38,8 @@ class FormService extends ServiceAbstract
             throw new \InvalidArgumentException("No entity created given");
         }
 
-        $formName = 'Contact\\' . $entity->get('entity_name') . '\\Form';
-        $filterName = 'Contact\\InputFilter\\' . $entity->get('entity_name');
+        $formName = 'Contact\\Form\\' . $entity->get('entity_name') . 'Form';
+        $filterName = 'Contact\\InputFilter\\' . $entity->get('entity_name') . 'Filter';
 
         /*
          * The filter and the form can dynamically be created by pulling the form from the serviceManager
@@ -52,7 +52,7 @@ class FormService extends ServiceAbstract
         }
 
         if (!$this->getServiceLocator()->has($filterName)) {
-            $filter = new FilterCreateObject();
+            $filter = new ObjectFilter();
         } else {
             $filter = $this->getServiceLocator()->get($filterName);
         }

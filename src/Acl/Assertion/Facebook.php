@@ -62,7 +62,7 @@ class Facebook extends AssertionAbstract
                 return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
                 && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
             default:
-                return $this->rolesHaveAccess(strtolower(Access::ACCESS_OFFICE));
+                return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }
     }
 }

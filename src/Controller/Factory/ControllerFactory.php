@@ -2,12 +2,16 @@
 /**
  * ITEA Office copyright message placeholder.
  *
- * @category  Publication
+ * PHP Version 5
  *
- * @author    Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright Copyright (c) 2004-2016 ITEA Office (http://itea3.org)
+ * @category    Contact
+ *
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   2004-2016 ITEA Office
+ * @license     https://itea3.org/license.txt proprietary
+ *
+ * @link        http://github.com/iteaoffice/contact for the canonical source repository
  */
-
 namespace Contact\Controller\Factory;
 
 use Admin\Service\AdminService;
@@ -21,51 +25,35 @@ use Doctrine\ORM\EntityManager;
 use Event\Service\RegistrationService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
+use Interop\Container\ContainerInterface;
+use Organisation\Controller\OrganisationAbstractController;
 use Organisation\Service\OrganisationService;
 use Program\Service\CallService;
 use Project\Service\ProjectService;
 use Zend\Mvc\Controller\ControllerManager;
-use Zend\ServiceManager\AbstractFactoryInterface;
+use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Class ControllerInvokableAbstractFactory
+ * Class ControllerFactory
  *
  * @package Contact\Controller\Factory
  */
-class ControllerInvokableAbstractFactory implements AbstractFactoryInterface
+class ControllerFactory implements FactoryInterface
 {
     /**
-     * Determine if we can create a service with name
+     * @param ContainerInterface|ControllerManager $container
+     * @param string                               $requestedName
+     * @param array|null                           $options
      *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param                         $name
-     * @param                         $requestedName
-     *
-     * @return bool
+     * @return mixed
      */
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
-    {
-        return (class_exists($requestedName)
-            && in_array(ContactAbstractController::class, class_parents($requestedName)));
-    }
-
-    /**
-     * Create service with name
-     *
-     * @param ServiceLocatorInterface|ControllerManager $serviceLocator
-     * @param string                                    $name
-     * @param string                                    $requestedName
-     *
-     * @return ContactAbstractController
-     */
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /** @var ContactAbstractController $controller */
         $controller = new $requestedName();
-        $controller->setServiceLocator($serviceLocator);
 
-        $serviceManager = $serviceLocator->getServiceLocator();
+        $serviceManager = $container->getServiceLocator();
 
         /** @var ContactService $contactService */
         $contactService = $serviceManager->get(ContactService::class);
@@ -119,6 +107,19 @@ class ControllerInvokableAbstractFactory implements AbstractFactoryInterface
         $registrationService = $serviceManager->get(RegistrationService::class);
         $controller->setRegistrationService($registrationService);
 
+
         return $controller;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $container
+     * @param string                  $canonicalName
+     * @param string                  $requestedName
+     *
+     * @return OrganisationAbstractController
+     */
+    public function createService(ServiceLocatorInterface $container, $canonicalName = null, $requestedName = null)
+    {
+        return $this($container, $requestedName);
     }
 }

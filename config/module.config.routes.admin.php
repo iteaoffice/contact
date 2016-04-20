@@ -36,7 +36,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'new'        => [
+                            'new'         => [
                                 'type'    => 'Literal',
                                 'options' => [
                                     'route'    => '/new.html',

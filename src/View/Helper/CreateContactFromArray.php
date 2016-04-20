@@ -18,7 +18,7 @@ use Contact\Service\ContactService;
  *
  * @package Contact\View\Helper
  */
-class CreateContactFromArray extends HelperAbstract
+class CreateContactFromArray extends AbstractViewHelper
 {
     /**
      * @param array $contactDetails

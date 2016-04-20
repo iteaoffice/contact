@@ -54,8 +54,8 @@ class SelectionLink extends LinkAbstract
         }
 
         $this->setShowOptions([
-                'name' => $this->getSelection()->getSelection(),
-            ]);
+            'name' => $this->getSelection()->getSelection(),
+        ]);
         $this->addRouterParam('page', $page);
 
         $this->addRouterParam('id', $this->getSelection()->getId());
@@ -77,7 +77,7 @@ class SelectionLink extends LinkAbstract
                 $this->setRouter('zfcadmin/selection-manager/list');
                 $this->setText($this->translate('txt-list-selections'));
 
-                foreach ($this->getServiceLocator()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
+                foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
                     $param) {
                     $this->addQueryParam($key, $param);
                 }

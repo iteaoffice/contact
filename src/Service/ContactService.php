@@ -88,7 +88,7 @@ class ContactService extends ServiceAbstract
      */
     public function findContactById($id)
     {
-        $this->getEntityManager()->find(Contact::class, $id);
+        return $this->getEntityManager()->find(Contact::class, $id);
     }
 
     /**
@@ -583,9 +583,9 @@ class ContactService extends ServiceAbstract
          */
         if (sizeof($selection->getSelectionContact()) > 0) {
             $findContact = $this->getEntityManager()->getRepository(SelectionContact::class)->findOneBy([
-                    'contact'   => $contact,
-                    'selection' => $selection,
-                ]);
+                'contact'   => $contact,
+                'selection' => $selection,
+            ]);
             /*
              * Return true when we found a contact
              */
@@ -931,7 +931,10 @@ class ContactService extends ServiceAbstract
                 $organisation = new Organisation();
                 $organisation->setOrganisation($contactOrganisation['organisation']);
                 $organisation->setCountry($country);
-                $organisation->setType($this->organisationService->findEntityById(Type::class, Type::TYPE_UNKNOWN)); //Unknown
+                $organisation->setType($this->organisationService->findEntityById(
+                    Type::class,
+                    Type::TYPE_UNKNOWN
+                )); //Unknown
                 /*
                  * Add the domain in the saved domains for this new company
                  * Use the ZF2 EmailAddress validator to strip the hostname out of the EmailAddress
