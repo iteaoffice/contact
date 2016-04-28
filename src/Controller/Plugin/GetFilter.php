@@ -148,6 +148,6 @@ class GetFilter extends AbstractPlugin
      */
     public function getServiceLocator()
     {
-        return $this->serviceManager->getServiceLocator();
+        return $this->serviceManager;
     }
 }

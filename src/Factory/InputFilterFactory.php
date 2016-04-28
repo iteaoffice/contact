@@ -4,52 +4,42 @@
  *
  * PHP Version 5
  *
- * @category    Contact
+ * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   2004-2016 ITEA Office
  * @license     https://itea3.org/license.txt proprietary
  *
- * @link        http://github.com/iteaoffice/main for the canonical source repository
+ * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
+
 namespace Contact\Factory;
 
-use Contact\Service\ContactService;
-use Contact\Service\SelectionService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
+use Zend\InputFilter\InputFilter;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Class SelectionServiceFactory
+ * Class InputFilterFactory
  *
  * @package Contact\Factory
  */
-final class SelectionServiceFactory implements FactoryInterface
+final class InputFilterFactory implements FactoryInterface
 {
     /**
-     * @param ContainerInterface $container
-     * @param                    $requestedName
-     * @param array|null         $options
+     * Create an instance of the requested class name.
      *
-     * @return SelectionService
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param null|array         $options
+     *
+     * @return object
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var SelectionService $selectionService */
-        $selectionService = new $requestedName($options);
-        $selectionService->setServiceLocator($container);
-
-        /** @var EntityManager $entityManager */
-        $entityManager = $container->get(EntityManager::class);
-        $selectionService->setEntityManager($entityManager);
-
-        /** @var ContactService $contactService */
-        $contactService = $container->get(ContactService::class);
-        $selectionService->setContactService($contactService);
-
-        return $selectionService;
+        return new $requestedName($container->get(EntityManager::class), $options);
     }
 
     /**
@@ -57,7 +47,7 @@ final class SelectionServiceFactory implements FactoryInterface
      * @param string                  $canonicalName
      * @param string                  $requestedName
      *
-     * @return SelectionService
+     * @return InputFilter
      */
     public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
     {

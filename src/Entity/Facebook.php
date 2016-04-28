@@ -41,13 +41,14 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @var array
      */
-    protected $displayTemplates = [
-        self::DISPLAY_NONE         => 'txt-empty',
-        self::DISPLAY_ORGANISATION => 'txt-organisation',
-        self::DISPLAY_COUNTRY      => 'txt-country',
-        self::DISPLAY_POSITION     => 'txt-position',
-        self::DISPLAY_PROJECTS     => 'txt-projects',
-    ];
+    protected static $displayTemplates
+        = [
+            self::DISPLAY_NONE         => 'txt-empty',
+            self::DISPLAY_ORGANISATION => 'txt-organisation',
+            self::DISPLAY_COUNTRY      => 'txt-country',
+            self::DISPLAY_POSITION     => 'txt-position',
+            self::DISPLAY_PROJECTS     => 'txt-projects',
+        ];
 
     const SHOW_EMAIL_NO = 1;
     const SHOW_EMAIL_MEMBER = 2;
@@ -58,11 +59,12 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @var array
      */
-    protected $showEmailTemplates = [
-        self::SHOW_EMAIL_NO     => 'txt-hide-email',
-        self::SHOW_EMAIL_MEMBER => 'txt-show-email-to-members',
-        self::SHOW_EMAIL_ALL    => 'txt-show-email-to-all',
-    ];
+    protected static $showEmailTemplates
+        = [
+            self::SHOW_EMAIL_NO     => 'txt-hide-email',
+            self::SHOW_EMAIL_MEMBER => 'txt-show-email-to-members',
+            self::SHOW_EMAIL_ALL    => 'txt-show-email-to-all',
+        ];
 
     const SHOW_PHONE_NO = 1;
     const SHOW_PHONE_MEMBER = 2;
@@ -74,12 +76,13 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @var array
      */
-    protected $showPhoneTemplates = [
-        self::SHOW_PHONE_NO            => 'txt-hide-phone',
-        self::SHOW_PHONE_MEMBER        => 'txt-show-phone-to-members',
-        self::SHOW_MOBILE_PHONE_MEMBER => 'txt-show-mobile-phone-to-members',
-        self::SHOW_PHONE_ALL           => 'txt-show-phone-to-all',
-    ];
+    protected static $showPhoneTemplates
+        = [
+            self::SHOW_PHONE_NO            => 'txt-hide-phone',
+            self::SHOW_PHONE_MEMBER        => 'txt-show-phone-to-members',
+            self::SHOW_MOBILE_PHONE_MEMBER => 'txt-show-mobile-phone-to-members',
+            self::SHOW_PHONE_ALL           => 'txt-show-phone-to-all',
+        ];
 
     /**
      * Constant for public = 0 (not public).
@@ -95,10 +98,11 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @var array
      */
-    protected $canSendMessageTemplates = [
-        self::CAN_NOT_SEND_MESSAGE => 'txt-cannot-send-message',
-        self::CAN_SEND_MESSAGE     => 'txt-can-send-message',
-    ];
+    protected static $canSendMessageTemplates
+        = [
+            self::CAN_NOT_SEND_MESSAGE => 'txt-cannot-send-message',
+            self::CAN_SEND_MESSAGE     => 'txt-can-send-message',
+        ];
 
     /**
      * Constant for public = 0 (not public).
@@ -114,10 +118,11 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @var array
      */
-    protected $publicTemplates = [
-        self::NOT_PUBLIC => 'txt-not-public',
-        self::IS_PUBLIC  => 'txt-public',
-    ];
+    protected static $publicTemplates
+        = [
+            self::NOT_PUBLIC => 'txt-not-public',
+            self::IS_PUBLIC  => 'txt-public',
+        ];
     /**
      * @ORM\Column(name="facebook_id", length=10, type="integer", nullable=false)
      * @ORM\Id
@@ -304,57 +309,47 @@ class Facebook extends EntityAbstract implements ResourceInterface
      */
     public function __toString()
     {
-        return (string) $this->facebook;
-    }
-
-    /**
-     * Returns the string identifier of the Resource.
-     *
-     * @return string
-     */
-    public function getResourceId()
-    {
-        return sprintf("%s:%s", __CLASS__, $this->id);
+        return (string)$this->facebook;
     }
 
     /**
      * @return array
      */
-    public function getPublicTemplates()
+    public static function getDisplayTemplates()
     {
-        return $this->publicTemplates;
+        return self::$displayTemplates;
     }
 
     /**
      * @return array
      */
-    public function getCanSendMessageTemplates()
+    public static function getShowEmailTemplates()
     {
-        return $this->canSendMessageTemplates;
+        return self::$showEmailTemplates;
     }
 
     /**
      * @return array
      */
-    public function getDisplayTemplates()
+    public static function getShowPhoneTemplates()
     {
-        return $this->displayTemplates;
+        return self::$showPhoneTemplates;
     }
 
     /**
      * @return array
      */
-    public function getShowEmailTemplates()
+    public static function getCanSendMessageTemplates()
     {
-        return $this->showEmailTemplates;
+        return self::$canSendMessageTemplates;
     }
 
     /**
      * @return array
      */
-    public function getShowPhoneTemplates()
+    public static function getPublicTemplates()
     {
-        return $this->showPhoneTemplates;
+        return self::$publicTemplates;
     }
 
     /**
@@ -401,44 +396,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'       => 'facebook',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
-                        ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 80,
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'public',
-                        'required' => true,
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'canSendMessage',
-                        'required' => true,
-                    ]
-                )
-            );
+            
             $this->inputFilter = $inputFilter;
         }
 

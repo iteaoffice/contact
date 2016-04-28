@@ -8,7 +8,7 @@
     <li><a href="#organisation" data-toggle="tab">{{ translate("txt-organisation")|capitalize }}</a></li>
     <li><a href="#event" data-toggle="tab">{{ translate("txt-events")|capitalize }}</a></li>
     <li><a href="#updates" data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
-    {% if isAllowed('zfcadmin', 'index') %}
+    {% if isAllowed('route/zfcadmin/index') %}
         <li>{{ contactLink(contact,'signature', 'text') }}</li>
     {% endif %}
 </ul>

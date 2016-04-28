@@ -15,6 +15,7 @@
 namespace Contact\Factory;
 
 use Contact\Options\ModuleOptions;
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -23,17 +24,31 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  *
  * @package Contact\Factory
  */
-class ModuleOptionsFactory implements FactoryInterface
+final class ModuleOptionsFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
      *
      * @return ModuleOptions
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $serviceLocator->get('Config');
+        $config = $container->get('Config');
 
         return new ModuleOptions(isset($config['contact_option']) ? $config['contact_option'] : []);
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param string                  $canonicalName
+     * @param string                  $requestedName
+     *
+     * @return ModuleOptions
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
+    {
+        return $this($serviceLocator, $requestedName);
     }
 }

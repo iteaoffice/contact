@@ -10,6 +10,7 @@
 
 namespace Contact\Controller;
 
+use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
@@ -100,6 +101,7 @@ class ProfileController extends ContactAbstractController
             }
 
             if ($form->isValid()) {
+                /** @var Contact $contact */
                 $contact = $form->getData();
                 $fileData = $this->params()->fromFiles();
                 if (!empty($fileData['file']['name'])) {
@@ -147,7 +149,8 @@ class ProfileController extends ContactAbstractController
         return new ViewModel([
             'form'             => $form,
             'branches'         => $branches,
-            'contactService'   => $contactService,
+            'contactService'   => $this->getContactService(),
+            'contact'          => $contact,
             'hasOrganisations' => sizeof($organisations) > 1, ///We need to exclude the none of the above :)
             'fullVersion'      => true,
         ]);

@@ -58,13 +58,14 @@ return [
         ],
         'admin'     => [
             // And finally, here is where we define our page hierarchy
-            'contact' => [
-                'label'    => _("txt-contact-admin"),
+            'contact'    => [
+                'label'    => _("txt-nav-contact"),
                 'route'    => 'zfcadmin/contact-admin/list',
+                'order'    => 10,
                 'resource' => 'zfcadmin',
                 'pages'    => [
                     'contacts'   => [
-                        'label' => _("txt-contacts"),
+                        'label' => _("txt-nav-contact-list"),
                         'route' => 'zfcadmin/contact-admin/list',
                         'pages' => [
                             'view-contact' => [
@@ -116,7 +117,7 @@ return [
                         ]
                     ],
                     'selections' => [
-                        'label' => _("txt-selections"),
+                        'label' => _("txt-nav-selection-list"),
                         'route' => 'zfcadmin/selection-manager/list',
                         'pages' => [
                             'view-contact' => [
@@ -157,7 +158,7 @@ return [
                         ]
                     ],
                     'facebook'   => [
-                        'label' => _("txt-facebook"),
+                        'label' => _("txt-nav-facebook-list"),
                         'route' => 'zfcadmin/facebook-manager/list',
                         'pages' => [
                             'view-facebook' => [
@@ -185,11 +186,7 @@ return [
                                     ],
                                 ],
                             ],
-                        ]
-                    ],
-                    'permit'     => [
-                        'label' => _("txt-permissions"),
-                        'route' => 'zfcadmin/permit-manager/entity/list',
+                        ],
                     ],
                     'import'     => [
                         'label' => _("txt-import"),
@@ -197,6 +194,15 @@ return [
                     ],
                 ],
             ],
+            'management' => [
+                'pages' => [
+                    'permit' => [
+                        'label' => _("txt-permissions"),
+                        'route' => 'zfcadmin/permit-manager/entity/list',
+                    ],
+
+                ]
+            ]
         ],
     ],
 ];

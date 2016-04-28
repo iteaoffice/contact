@@ -12,27 +12,17 @@ namespace Contact\Provider\Identity;
 use Admin\Service\AdminService;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
-use Contact\Service\ContactService;
 use Zend\Authentication\AuthenticationService;
 use Zend\Cache\StorageFactory;
 use Zend\Permissions\Acl\Role\RoleInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Simple identity provider to handle simply guest|user.
+ * Class AuthenticationIdentityProvider
  *
- * @author Ingo Walz <ingo.walz@googlemail.com>
+ * @package Contact\Provider\Identity
  */
 class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityProvider
 {
-    /**
-     * ServiceLocatorInterface.
-     */
-    protected $serviceLocator;
-    /**
-     * @var ContactService;
-     */
-    protected $contactService;
     /**
      * @var AdminService;
      */
@@ -47,13 +37,16 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     protected $config;
 
     /**
-     * @param AuthenticationService   $authService
-     * @param ServiceLocatorInterface $serviceLocator
+     * AuthenticationIdentityProvider constructor.
+     *
+     * @param AuthenticationService $authService
+     * @param AdminService          $adminService
+     * @param array|null            $options
      */
-    public function __construct(AuthenticationService $authService, ServiceLocatorInterface $serviceLocator)
+    public function __construct(AuthenticationService $authService, AdminService $adminService, array $options = null)
     {
         parent::__construct($authService);
-        $this->adminService = $serviceLocator->get(AdminService::class);
+        $this->adminService = $adminService;
     }
 
     /**

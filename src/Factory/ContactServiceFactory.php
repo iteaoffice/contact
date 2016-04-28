@@ -21,6 +21,7 @@ use Contact\Service\ContactService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
 use General\Service\GeneralService;
+use Interop\Container\ContainerInterface;
 use Organisation\Service\OrganisationService;
 use Project\Service\ProjectService;
 use Zend\ServiceManager\FactoryInterface;
@@ -32,54 +33,68 @@ use ZfcUser\Options\UserServiceOptionsInterface;
  *
  * @package Contact\Factory
  */
-class ContactServiceFactory implements FactoryInterface
+final class ContactServiceFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
      *
-     * @return ContactService
+     * @return AddressService
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $contactService = new ContactService();
-        $contactService->setServiceLocator($serviceLocator);
+        $contactService->setServiceLocator($container);
 
         /** @var EntityManager $entityManager */
-        $entityManager = $serviceLocator->get(EntityManager::class);
+        $entityManager = $container->get(EntityManager::class);
         $contactService->setEntityManager($entityManager);
 
         /** @var AdminService $adminService */
-        $adminService = $serviceLocator->get(AdminService::class);
+        $adminService = $container->get(AdminService::class);
         $contactService->setAdminService($adminService);
 
         /** @var ProjectService $projectService */
-        $projectService = $serviceLocator->get(ProjectService::class);
+        $projectService = $container->get(ProjectService::class);
         $contactService->setProjectService($projectService);
 
         /** @var OrganisationService $organisationService */
-        $organisationService = $serviceLocator->get(OrganisationService::class);
+        $organisationService = $container->get(OrganisationService::class);
         $contactService->setOrganisationService($organisationService);
 
         /** @var AddressService $addressService */
-        $addressService = $serviceLocator->get(AddressService::class);
+        $addressService = $container->get(AddressService::class);
         $contactService->setAddressService($addressService);
 
         /** @var GeneralService $generalService */
-        $generalService = $serviceLocator->get(GeneralService::class);
+        $generalService = $container->get(GeneralService::class);
         $contactService->setGeneralService($generalService);
 
         /** @var DeeplinkService $deeplinkService */
-        $deeplinkService = $serviceLocator->get(DeeplinkService::class);
+        $deeplinkService = $container->get(DeeplinkService::class);
         $contactService->setDeeplinkService($deeplinkService);
 
         /** @var ModuleOptions $moduleOptions */
-        $moduleOptions = $serviceLocator->get(ModuleOptions::class);
+        $moduleOptions = $container->get(ModuleOptions::class);
         $contactService->setModuleOptions($moduleOptions);
 
         /** @var UserServiceOptionsInterface $zfcModuleOptions */
-        $zfcModuleOptions = $serviceLocator->get('zfcuser_module_options');
+        $zfcModuleOptions = $container->get('zfcuser_module_options');
         $contactService->setZfcUserOptions($zfcModuleOptions);
 
         return $contactService;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param string                  $canonicalName
+     * @param string                  $requestedName
+     *
+     * @return ContactService
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
+    {
+        return $this($serviceLocator, $requestedName);
     }
 }

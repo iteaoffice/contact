@@ -12,6 +12,7 @@ namespace Contact;
 use Contact\Acl;
 use Contact\Factory;
 use Contact\Form;
+use Contact\InputFilter;
 use Contact\Navigation;
 use Contact\Search;
 use Contact\Service;
@@ -93,6 +94,8 @@ $config = [
             Service\AddressService::class                              => Factory\AddressServiceFactory::class,
             Service\FormService::class                                 => Factory\FormServiceFactory::class,
             Options\ModuleOptions::class                               => Factory\ModuleOptionsFactory::class,
+            InputFilter\FacebookFilter::class                          => Factory\InputFilterFactory::class,
+            Search\Service\ContactSearchService::class                 => Search\Factory\ContactSearchFactory::class,
             Search\Service\ContactSearchService::class                 => Search\Factory\ContactSearchFactory::class,
             Acl\Assertion\Address::class                               => Acl\Factory\AssertionFactory::class,
             Acl\Assertion\Contact::class                               => Acl\Factory\AssertionFactory::class,

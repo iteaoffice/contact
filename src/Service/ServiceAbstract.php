@@ -21,6 +21,7 @@ use Doctrine\ORM\Query;
 use Event\Service\MeetingService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
+use Interop\Container\ContainerInterface;
 use Organisation\Service\OrganisationService;
 use Project\Service\ProjectService;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -191,7 +192,7 @@ abstract class ServiceAbstract implements ServiceInterface
     }
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface|ContainerInterface $serviceLocator
      *
      * @return ServiceAbstract
      */

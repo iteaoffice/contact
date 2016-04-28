@@ -10,7 +10,9 @@
 
 namespace Contact\Factory;
 
+use Admin\Service\AdminService;
 use Contact\Provider\Identity\AuthenticationIdentityProvider;
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -19,19 +21,39 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  *
  * @author Ingo Walz <ingo.walz@googlemail.com>
  */
-class AuthenticationIdentityProviderServiceFactory implements FactoryInterface
+final class AuthenticationIdentityProviderServiceFactory implements FactoryInterface
 {
     /**
-     * {@inheritDoc}
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
+     *
+     * @return AuthenticationIdentityProvider
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $user = $serviceLocator->get('zfcuser_user_service');
-        $simpleIdentityProvider = new AuthenticationIdentityProvider($user->getAuthService(), $serviceLocator);
-        $config = $serviceLocator->get('BjyAuthorize\Config');
+        $user = $container->get('zfcuser_user_service');
+
+        /** @var AdminService $adminService */
+        $adminService = $container->get(AdminService::class);
+        /** @var AuthenticationIdentityProvider $simpleIdentityProvider */
+        $simpleIdentityProvider = new $requestedName($user->getAuthService(), $adminService, $options);
+        $config = $container->get('BjyAuthorize\Config');
         $simpleIdentityProvider->setDefaultRole($config['default_role']);
         $simpleIdentityProvider->setAuthenticatedRole($config['authenticated_role']);
 
         return $simpleIdentityProvider;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param string                  $canonicalName
+     * @param string                  $requestedName
+     *
+     * @return AuthenticationIdentityProvider
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
+    {
+        return $this($serviceLocator, $requestedName);
     }
 }

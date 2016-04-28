@@ -10,7 +10,7 @@
     </li>
     <li><a href="{{ url('community/contact/profile/view') }}#event">{{ translate("txt-events")|capitalize }}</a></li>
     <li><a href="{{ url('community/contact/profile/view') }}#updates">{{ translate("txt-updates")|capitalize }}</a></li>
-    {% if isAllowed('zfcadmin', 'index') %}
+    {% if isAllowed('route/zfcadmin/index') %}
         <li class="active"><a
                     href="{{ url('community/contact/signature') }}">{{ translate("txt-signature")|capitalize }}</a>
         </li>
