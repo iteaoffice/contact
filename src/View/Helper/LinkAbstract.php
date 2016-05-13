@@ -172,9 +172,14 @@ abstract class LinkAbstract extends AbstractViewHelper
                     case 'export-csv':
                         $this->addLinkContent('<i class="fa fa-file-excel-o"></i>');
                         break;
-
+                    case 'import':
+                        $this->addLinkContent('<i class="fa fa-download" aria-hidden="true"></i>');
+                        break;
                     case 'send-message':
                         $this->addLinkContent('<i class="fa fa-envelope"></i>');
+                        break;
+                    case 'new':
+                        $this->addLinkContent('<i class="fa fa-plus"></i>');
                         break;
                     case 'edit':
                     case 'edit-admin':

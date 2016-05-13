@@ -81,6 +81,6 @@ class ContactFilter extends InputFilter
 
         ]);
 
-        $this->add($inputFilter, 'contact');
+        $this->add($inputFilter, 'contact_entity_contact');
     }
 }

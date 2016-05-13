@@ -62,7 +62,7 @@ class Phone extends EntityAbstract implements ResourceInterface
      * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\PhoneType"})
-     * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
+     * @Annotation\Attributes({"label":"txt-type"})
      *
      * @var \Contact\Entity\PhoneType
      */

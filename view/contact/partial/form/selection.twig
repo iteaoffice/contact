@@ -3,7 +3,8 @@
 
 {{ form().openTag(form)|raw }}
 
-{% set selection = form.get('selection') %}
+{% set selection = form.get('contact_entity_selection') %}
+
 {{ ztbformelement(selection.get('selection')) }}
 {{ ztbformelement(selection.get('tag')) }}
 {{ ztbformelement(selection.get('note')) }}

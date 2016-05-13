@@ -89,6 +89,10 @@ class ContactLink extends LinkAbstract
                 $this->setRouter('zfcadmin/contact-admin/list');
                 $this->setText($this->translate("txt-list-contacts"));
                 break;
+            case 'import':
+                $this->setRouter('zfcadmin/contact-admin/import');
+                $this->setText($this->translate("txt-import-contacts"));
+                break;
             case 'edit-admin':
                 $this->setRouter('zfcadmin/contact-admin/edit');
                 $this->setText(sprintf(

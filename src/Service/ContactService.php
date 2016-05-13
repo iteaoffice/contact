@@ -112,7 +112,10 @@ class ContactService extends ServiceAbstract
      */
     public function findAllContacts()
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->findContacts();
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findContacts();
     }
 
     /**
@@ -122,7 +125,10 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsWithDateOfBirth()
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->findContactsWithDateOfBirth();
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findContactsWithDateOfBirth();
     }
 
     /**
@@ -132,7 +138,10 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsWithCV()
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->findContactsWithCV();
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findContactsWithCV();
     }
 
     /**
@@ -144,7 +153,10 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsWithActiveProfile($onlyPublic = true)
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->findContactsWithActiveProfile($onlyPublic);
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findContactsWithActiveProfile($onlyPublic);
     }
 
     /**
@@ -488,7 +500,10 @@ class ContactService extends ServiceAbstract
      */
     public function findContactByEmail($email, $onlyMain = false)
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->findContactByEmail($email, $onlyMain);
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findContactByEmail($email, $onlyMain);
     }
 
     /**
@@ -530,8 +545,10 @@ class ContactService extends ServiceAbstract
      */
     public function isCommunity(Contact $contact)
     {
-        return $this->getEntityManager()->getRepository(Contact::class)
-            ->findIsCommunityMember($contact, $this->getModuleOptions());
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findIsCommunityMember($contact, $this->getModuleOptions());
     }
 
 
@@ -569,11 +586,13 @@ class ContactService extends ServiceAbstract
      */
     public function findContactInSelection(Contact $contact, Selection $selection)
     {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
         if (!is_null($selection->getSql())) {
             try {
                 //We have a dynamic query, check if the contact is in the selection
-                return $this->getEntityManager()->getRepository(Contact::class)
-                    ->isContactInSelectionSQL($contact, $selection->getSql());
+                return $repository->isContactInSelectionSQL($contact, $selection->getSql());
             } catch (\Exception $e) {
                 print sprintf("Selection %s is giving troubles ()", $selection->getId(), $e->getMessage());
             }
@@ -676,7 +695,10 @@ class ContactService extends ServiceAbstract
      */
     public function isContactInFacebook(Contact $contact, Facebook $facebook)
     {
-        return $this->getEntityManager()->getRepository(Facebook::class)->isContactInFacebook($contact, $facebook);
+        /** @var \Contact\Repository\Facebook $repository */
+        $repository = $this->getEntityManager()->getRepository(Facebook::class);
+        
+        return $repository->isContactInFacebook($contact, $facebook);
     }
 
     /**
@@ -708,15 +730,17 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsInSelection(Selection $selection, $toArray = false)
     {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
-            return $this->getEntityManager()->getRepository(Contact::class)
-                ->findContactsBySelectionSQL($selection->getSql(), $toArray);
+            return $repository->findContactsBySelectionSQL($selection->getSql(), $toArray);
         } else {
-            return $this->getEntityManager()->getRepository(Contact::class)->findContactsBySelectionContact($selection);
+            return $repository->findContactsBySelectionContact($selection);
         }
     }
 
@@ -727,16 +751,17 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsInSelectionAsArray(Selection $selection)
     {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
-            $contacts = $this->getEntityManager()->getRepository(Contact::class)
-                ->findContactsBySelectionSQL($selection->getSql(), true);
+            $contacts = $repository->findContactsBySelectionSQL($selection->getSql(), true);
         } else {
-            $contacts = $this->getEntityManager()->getRepository(Contact::class)
-                ->findContactsBySelectionContact($selection, true);
+            $contacts = $repository->findContactsBySelectionContact($selection, true);
         }
 
         return $contacts;
@@ -751,7 +776,10 @@ class ContactService extends ServiceAbstract
      */
     public function findFacebookByContact(Contact $contact)
     {
-        return $this->getEntityManager()->getRepository(Facebook::class)->findFacebookByContact($contact);
+        /** @var \Contact\Repository\Facebook $repository */
+        $repository = $this->getEntityManager()->getRepository(Facebook::class);
+        
+        return $repository->findFacebookByContact($contact);
     }
 
     /**
@@ -762,6 +790,9 @@ class ContactService extends ServiceAbstract
     public function findContactsInFacebook(Facebook $facebook)
     {
 
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        
         /*
          * This function has a special feature to fill the array with contacts.
          * We can for instance try to find the country, organisation or position
@@ -770,7 +801,7 @@ class ContactService extends ServiceAbstract
          */
         $contacts = [];
         /** @var Contact $contact */
-        foreach ($this->getEntityManager()->getRepository(Contact::class)->findContactsInFacebook($facebook) as $contact) {
+        foreach ($repository->findContactsInFacebook($facebook) as $contact) {
             $singleContact = [];
 
             $singleContact['contact'] = $contact;
@@ -1023,7 +1054,10 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsByOptInAsArray(OptIn $optIn)
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->findContactsByOptIn($optIn, true);
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        
+        return $repository->findContactsByOptIn($optIn, true);
     }
 
     /**
@@ -1055,7 +1089,10 @@ class ContactService extends ServiceAbstract
      */
     public function searchContacts($searchItem)
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->searchContacts($searchItem);
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        
+        return $repository->searchContacts($searchItem);
     }
 
 
@@ -1202,7 +1239,10 @@ class ContactService extends ServiceAbstract
             throw new \Exception("A projectCalendar is required to find the contacts");
         }
 
-        return $this->getEntityManager()->getRepository(Contact::class)->findPossibleContactByCalendar($calendar);
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        
+        return $repository->findPossibleContactByCalendar($calendar);
     }
 
     /**
@@ -1212,6 +1252,9 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsInOrganisation(Organisation $organisation)
     {
-        return $this->getEntityManager()->getRepository(Contact::class)->findContactsInOrganisation($organisation);
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        
+        return $repository->findContactsInOrganisation($organisation);
     }
 }

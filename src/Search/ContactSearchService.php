@@ -20,7 +20,7 @@ use Solarium\QueryType\Select\Query\Query;
 /**
  * Contact Solr search service
  */
-class ContactSearchService extends AbstractSearchService implements ContactServiceAwareInterface
+class ContactSearchService extends AbstractSearchService
 {
     const SOLR_CONNECTION = 'contact';
 

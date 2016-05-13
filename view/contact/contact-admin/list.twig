@@ -17,7 +17,7 @@
 
     <div class="col-md-9">
 
-        <h1>{{ translate("txt-contact-list") }}</h1>
+        <h1>{{ translate("txt-contact-list") }} {{ contactLink(null,'new', 'button') }} {{ contactLink(null,'import', 'button') }}</h1>
 
         <div class="row">
             <div class="col-md-6">
@@ -31,11 +31,11 @@
         </div>
 
         {% if paginator.pageRange > 0 %}
-            <table class="table table-striped">
+            <table class="table table-hover table-striped table-condensed">
                 <thead>
                 <tr>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'email', 'text': translate('txt-email')} %}</th>
+                    <th>{{ translate('txt-email') }}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
                     <th>{{ translate("txt-projects") }}</th>
@@ -47,9 +47,9 @@
                 {% for contact in paginator.getCurrentItems() %}
                     <tr>
                         <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
-                        <td>{{ contact.email }} <a href="maito:{{ contact.email }}"><i class="fa fa-envelope-o"></i> </a></td>
+                        <td><a href="maito:{{ contact.email }}" title="{{ contact.email }}"><i class="fa fa-envelope-o"></i> </a></td>
                         <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
-                        <td>{{ contact.contactOrganisation.organisation.country }}</td>
+                        <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
                         <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
                     </tr>
                 {% endfor %}
@@ -64,6 +64,11 @@
     <div class="col-md-3">
         <div class="well well-sm">
             <fieldset>
+
+                {{ ztbformelement(filter.get('hasOrganisation')) }}
+                {{ ztbformelement(filter.get('gender')) }}
+                {{ ztbformelement(filter.get('title')) }}
+
                 <div class="form-group">
                     {{ ztbformelement(form.get('submit')) }}
                     {{ ztbformelement(form.get('clear')) }}
@@ -75,4 +80,4 @@
 
 {{ form().closeTag()|raw }}
 
-{{ contactLink(null,'new', 'button') }}
+

@@ -24,6 +24,7 @@ use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
 use Program\Service\CallService;
+use Project\Service\IdeaService;
 use Project\Service\ProjectService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
@@ -85,6 +86,10 @@ abstract class ContactAbstractController extends AbstractActionController
      * @var CallService;
      */
     protected $callService;
+    /**
+     * @var IdeaService;
+     */
+    protected $ideaService;
     /**
      * @var FormService
      */
@@ -371,6 +376,26 @@ abstract class ContactAbstractController extends AbstractActionController
     public function setRegistrationService($registrationService)
     {
         $this->registrationService = $registrationService;
+
+        return $this;
+    }
+
+    /**
+     * @return IdeaService
+     */
+    public function getIdeaService()
+    {
+        return $this->ideaService;
+    }
+
+    /**
+     * @param IdeaService $ideaService
+     *
+     * @return ContactAbstractController
+     */
+    public function setIdeaService($ideaService)
+    {
+        $this->ideaService = $ideaService;
 
         return $this;
     }

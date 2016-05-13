@@ -104,7 +104,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @ORM\JoinColumn(name="gender_id", referencedColumnName="gender_id", nullable=false)
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Gender"})
-     * @Annotation\Attributes({"label":"txt-attention", "required":"true","class":"span3"})
+     * @Annotation\Attributes({"label":"txt-attention"})
      * @var \General\Entity\Gender
      */
     private $gender;
@@ -113,7 +113,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @ORM\JoinColumn(name="title_id", referencedColumnName="title_id", nullable=false)
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Title"})
-     * @Annotation\Attributes({"label":"txt-title", "required":"true","class":"span3"})
+     * @Annotation\Attributes({"label":"txt-title"})
      * @var \General\Entity\Title
      */
     private $title;
@@ -672,30 +672,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $session;
     /**
-     * @ORM\OneToOne(targetEntity="Member\Entity\Member", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="Partner\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
-     * @var \Member\Entity\Member
-     */
-    private $member;
-    /**
-     * @ORM\OneToMany(targetEntity="Member\Entity\Financial", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude();
-     * @var \Member\Entity\Financial[]|Collections\ArrayCollection
-     */
-    private $memberFinancial;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Member\Entity\Applicant", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
-     * @Annotation\Exclude()
-     * @var \Member\Entity\Applicant[]|Collections\ArrayCollection
+     * @var \Partner\Entity\Applicant[]|Collections\ArrayCollection
      */
     private $applicant;
-    /**
-     * @ORM\OneToOne(targetEntity="Member\Entity\Presidium", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Member\Entity\Presidium
-     */
-    private $presidium;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Exhibition\Voter", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude();
@@ -750,18 +731,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \News\Entity\Message[]|Collections\ArrayCollection
      */
     private $blogMessage;
-    /**
-     * @ORM\OneToMany(targetEntity="Member\Entity\Election\Candidate", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Member\Entity\Election\Candidate[]|Collections\ArrayCollection
-     */
-    private $candidate;
-    /**
-     * @ORM\OneToMany(targetEntity="Member\Entity\Election\Electorate", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Member\Entity\Election\Electorate[]|Collections\ArrayCollection
-     */
-    private $electorate;
     /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal\Entry", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -891,7 +860,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->deeplinkContact = new Collections\ArrayCollection();
         $this->community = new Collections\ArrayCollection();
         $this->registration = new Collections\ArrayCollection();
-        $this->memberFinancial = new Collections\ArrayCollection();
         $this->badge = new Collections\ArrayCollection();
         $this->badgeContact = new Collections\ArrayCollection();
         $this->boothFinancial = new Collections\ArrayCollection();
@@ -933,15 +901,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->doaReminderSender = new Collections\ArrayCollection();
         $this->loiReminderReceiver = new Collections\ArrayCollection();
         $this->loiReminderSender = new Collections\ArrayCollection();
-        $this->candidate = new Collections\ArrayCollection();
-        $this->electorate = new Collections\ArrayCollection();
         $this->journalEntry = new Collections\ArrayCollection();
         $this->journal = new Collections\ArrayCollection();
         $this->organisationJournal = new Collections\ArrayCollection();
         $this->invoiceLog = new Collections\ArrayCollection();
         $this->reminder = new Collections\ArrayCollection();
         $this->achievement = new Collections\ArrayCollection();
-        $this->memberFinancial = new  Collections\ArrayCollection();
         $this->changerequestProcess = new  Collections\ArrayCollection();
         $this->changerequestCostChange = new  Collections\ArrayCollection();
         $this->changerequestCountry = new  Collections\ArrayCollection();
@@ -1285,7 +1250,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         return $this;
     }
 
-    
 
     /**
      * @param  int $id
@@ -1441,7 +1405,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         return $this;
     }
 
-    
 
     /**
      * @param  int $state
@@ -2969,27 +2932,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Member\Entity\Member
-     */
-    public function getMember()
-    {
-        return $this->member;
-    }
-
-    /**
-     * @param  \Member\Entity\Member $member
-     *
-     * @return Contact
-     */
-    public function setMember($member)
-    {
-        $this->member = $member;
-
-        return $this;
-    }
-
-    /**
-     * @return \Member\Entity\Applicant|Collections\ArrayCollection
+     * @return \Partner\Entity\Applicant|Collections\ArrayCollection
      */
     public function getApplicant()
     {
@@ -2997,33 +2940,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  \Member\Entity\Applicant $applicant
+     * @param  \Partner\Entity\Applicant $applicant
      *
      * @return Contact
      */
     public function setApplicant($applicant)
     {
         $this->applicant = $applicant;
-
-        return $this;
-    }
-
-    /**
-     * @return \Member\Entity\Presidium
-     */
-    public function getPresidium()
-    {
-        return $this->presidium;
-    }
-
-    /**
-     * @param  \Member\Entity\Presidium $presidium
-     *
-     * @return Contact
-     */
-    public function setPresidium($presidium)
-    {
-        $this->presidium = $presidium;
 
         return $this;
     }
@@ -3204,46 +3127,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setBlogMessage($blogMessage)
     {
         $this->blogMessage = $blogMessage;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Member\Entity\Election\Candidate[]
-     */
-    public function getCandidate()
-    {
-        return $this->candidate;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection|\Member\Entity\Election\Candidate[] $candidate
-     *
-     * @return Contact
-     */
-    public function setCandidate($candidate)
-    {
-        $this->candidate = $candidate;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Member\Entity\Election\Electorate[]
-     */
-    public function getElectorate()
-    {
-        return $this->electorate;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection|\Member\Entity\Election\Electorate[] $electorate
-     *
-     * @return Contact
-     */
-    public function setElectorate($electorate)
-    {
-        $this->electorate = $electorate;
 
         return $this;
     }
@@ -3620,26 +3503,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setPartnerAffiliationLog($partnerAffiliationLog)
     {
         $this->partnerAffiliationLog = $partnerAffiliationLog;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Member\Entity\Financial[]
-     */
-    public function getMemberFinancial()
-    {
-        return $this->memberFinancial;
-    }
-
-    /**
-     * @param Collections\ArrayCollection|\Member\Entity\Financial[] $memberFinancial
-     *
-     * @return Contact
-     */
-    public function setMemberFinancial($memberFinancial)
-    {
-        $this->memberFinancial = $memberFinancial;
 
         return $this;
     }

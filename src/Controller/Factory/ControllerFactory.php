@@ -29,6 +29,7 @@ use Interop\Container\ContainerInterface;
 use Organisation\Controller\OrganisationAbstractController;
 use Organisation\Service\OrganisationService;
 use Program\Service\CallService;
+use Project\Service\IdeaService;
 use Project\Service\ProjectService;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\FactoryInterface;
@@ -102,6 +103,10 @@ final class ControllerFactory implements FactoryInterface
         /** @var CallService $callService */
         $callService = $serviceManager->get(CallService::class);
         $controller->setCallService($callService);
+
+        /** @var IdeaService $ideaService */
+        $ideaService = $serviceManager->get(IdeaService::class);
+        $controller->setIdeaService($ideaService);
 
         /** @var RegistrationService $registrationService */
         $registrationService = $serviceManager->get(RegistrationService::class);

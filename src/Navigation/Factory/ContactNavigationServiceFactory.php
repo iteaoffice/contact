@@ -36,7 +36,7 @@ class ContactNavigationServiceFactory implements FactoryInterface
         /**
          * @var $contactService ContactService
          */
-        $contactService = clone $serviceLocator->get(ContactService::class);
+        $contactService = $serviceLocator->get(ContactService::class);
         $contactNavigationService->setContactService($contactService);
         $application = $serviceLocator->get('application');
         $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());

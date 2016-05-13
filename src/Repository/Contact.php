@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Organisation\Entity\Organisation;
+use Project\Repository\Project;
 
 /**
  * @category    Contact
@@ -37,7 +38,7 @@ class Contact extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c');
-        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->from(Entity\Contact::class, 'c');
         $qb->distinct('c.id');
         $qb->orderBy('c.id', 'DESC');
         /*
@@ -58,28 +59,38 @@ class Contact extends EntityRepository
     public function findFiltered(array $filter)
     {
         $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('c');
-        $queryBuilder->from('Contact\Entity\Contact', 'c');
-        $queryBuilder->leftJoin('c.contactOrganisation', 'co');
-        $queryBuilder->leftJoin('co.organisation', 'o');
-
+        $queryBuilder->select('content_entity_contact');
+        $queryBuilder->from(Entity\Contact::class, 'content_entity_contact');
 
         if (array_key_exists('search', $filter)) {
             $queryBuilder->andWhere($queryBuilder->expr()->orX(
-                $queryBuilder->expr()->like(
-                    'c.firstName',
-                    ':like'
-                ),
-                $queryBuilder->expr()->like('c.middleName', ':like'),
-                $queryBuilder->expr()->like('c.lastName', ':like'),
-                $queryBuilder->expr()->like('c.email', ':like')
+                $queryBuilder->expr()
+                ->like('content_entity_contact.firstName', ':like'),
+                $queryBuilder->expr()->like('content_entity_contact.middleName', ':like'),
+                $queryBuilder->expr()->like('content_entity_contact.lastName', ':like'),
+                $queryBuilder->expr()->like('content_entity_contact.email', ':like')
             ));
 
             $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
         }
 
-        if (array_key_exists('organisation', $filter)) {
-            $queryBuilder->andWhere($queryBuilder->expr()->in('o.id', implode($filter['organisation'], ', ')));
+        if (array_key_exists('hasOrganisation', $filter)) {
+            $queryBuilder->innerJoin(
+                'content_entity_contact.contactOrganisation',
+                'contact_entity_contact_organisation_for_filter'
+            );
+        }
+
+        if (array_key_exists('gender', $filter)) {
+            $queryBuilder->join('content_entity_contact.gender', 'general_entity_gender');
+            $queryBuilder->andWhere($queryBuilder->expr()
+                ->in('general_entity_gender.id', implode($filter['gender'], ', ')));
+        }
+
+        if (array_key_exists('title', $filter)) {
+            $queryBuilder->join('content_entity_contact.title', 'general_entity_title');
+            $queryBuilder->andWhere($queryBuilder->expr()
+                ->in('general_entity_title.id', implode($filter['title'], ', ')));
         }
 
         $direction = 'ASC';
@@ -89,13 +100,22 @@ class Contact extends EntityRepository
 
         switch ($filter['order']) {
             case 'name':
-                $queryBuilder->addOrderBy('c.lastName', $direction);
+                $queryBuilder->addOrderBy('content_entity_contact.lastName', $direction);
                 break;
             case 'organisation':
-                $queryBuilder->addOrderBy('o.organisation', $direction);
+                $queryBuilder->leftJoin(
+                    'content_entity_contact.contactOrganisation',
+                    'contact_entity_contact_organisation'
+                );
+                $queryBuilder->leftJoin(
+                    'contact_entity_contact_organisation.organisation',
+                    'organisation_entity_organisation'
+                );
+
+                $queryBuilder->addOrderBy('organisation_entity_organisation.organisation', $direction);
                 break;
             default:
-                $queryBuilder->addOrderBy('c.id', $direction);
+                $queryBuilder->addOrderBy('content_entity_contact.id', $direction);
         }
 
         return $queryBuilder->getQuery();
@@ -125,7 +145,7 @@ class Contact extends EntityRepository
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
-        $queryBuilder->from("Contact\Entity\Contact", 'c');
+        $queryBuilder->from(Entity\Contact::class, 'c');
         $queryBuilder->distinct('c.id');
         //Add the associates
         $associates = $this->_em->createQueryBuilder();
@@ -155,10 +175,7 @@ class Contact extends EntityRepository
         $projectLeaders->join('project.contact', 'projectContact');
         $projectLeaders->andWhere('project.id = ?1');
         $queryBuilder->andWhere($queryBuilder->expr()->orX(
-            $queryBuilder->expr()->in(
-                'c.id',
-                $associates->getDQL()
-            ),
+            $queryBuilder->expr()->in('c.id', $associates->getDQL()),
             $queryBuilder->expr()->in('c.id', $affiliates->getDQL()),
             $queryBuilder->expr()->in('c.id', $workpackage->getDQL()),
             $queryBuilder->expr()->in('c.id', $projectLeaders->getDQL())
@@ -179,7 +196,7 @@ class Contact extends EntityRepository
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
-        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->from(Entity\Contact::class, 'c');
         $queryBuilder->orWhere('c.email = ?1');
         $queryBuilder->setParameter(1, $email);
 
@@ -201,7 +218,7 @@ class Contact extends EntityRepository
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
-        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->from(Entity\Contact::class, 'c');
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('c.dateOfBirth'));
 
@@ -215,7 +232,7 @@ class Contact extends EntityRepository
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
-        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->from(Entity\Contact::class, 'c');
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->innerJoin('c.cv', 'cv');
 
@@ -231,7 +248,7 @@ class Contact extends EntityRepository
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('c');
-        $queryBuilder->from('Contact\Entity\Contact', 'c');
+        $queryBuilder->from(Entity\Contact::class, 'c');
         $queryBuilder->innerJoin('c.profile', 'p');
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('c.dateEnd'));
         $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('p.description'));
@@ -250,59 +267,22 @@ class Contact extends EntityRepository
     /**
      *  Returns true of false depending if a contact is a community member.
      *
-     * @param Entity\Contact                    $contact
+     * @param Entity\Contact        $contact
      * @param Options\ModuleOptions $options
      *
      * @return boolean|null
      */
     public function findIsCommunityMember(Entity\Contact $contact, Options\ModuleOptions $options)
     {
-        if ($options->getCommunityViaMembers()) {
-            /*
-             * @var \Member\Repository\Member
-             */
-            $memberRepository = $this->getEntityManager()->getRepository('Member\Entity\Member');
-            $queryBuilder = $this->_em->createQueryBuilder();
-            $queryBuilder->select('contact.id');
-            $queryBuilder->from('Contact\Entity\Contact', 'contact');
-            $queryBuilder->join('contact.contactOrganisation', 'co');
-            $queryBuilder->join('co.organisation', 'organisation');
-            $queryBuilder->join('organisation.clusterMember', 'cluster');
-            $queryBuilder->join('cluster.organisation', 'organisation2');
-            $queryBuilder->join('organisation2.member', 'm');
-            $queryBuilder = $memberRepository->onlyActiveMember($queryBuilder);
-            $queryBuilder->andWhere('co.contact = :contact');
-            $queryBuilder->setParameter('contact', $contact);
-
-            //check update
-            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
-                return true;
-            }
-
-            $queryBuilder = $this->_em->createQueryBuilder();
-            $queryBuilder->select('contact.id');
-            $queryBuilder->from('Contact\Entity\Contact', 'contact');
-            $queryBuilder->join('contact.contactOrganisation', 'co');
-            $queryBuilder->join('co.organisation', 'organisation');
-            $queryBuilder->join('organisation.member', 'm');
-            $queryBuilder = $memberRepository->onlyActiveMember($queryBuilder);
-            $queryBuilder->andWhere('contact = :contact');
-            $queryBuilder->setParameter('contact', $contact);
-            //check update
-            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
-                return true;
-            }
-
-            return false;
-        }
         if ($options->getCommunityViaProjectParticipation()) {
-            $projectRepository = $this->getEntityManager()->getRepository('Project\Entity\Project');
+            /** @var Project $projectRepository */
+            $projectRepository = $this->getEntityManager()->getRepository(\Project\Entity\Project::class);
             /*
              * Go over the associates first
              */
             $queryBuilder = $this->_em->createQueryBuilder();
             $queryBuilder->select('contact.id');
-            $queryBuilder->from('Contact\Entity\Contact', 'contact');
+            $queryBuilder->from(Entity\Contact::class, 'contact');
             $queryBuilder->join('contact.associate', 'a');
             $queryBuilder = $projectRepository->onlyActiveProjectOrRecentPO($queryBuilder);
             $queryBuilder->andWhere('contact = :contact');
@@ -316,7 +296,7 @@ class Contact extends EntityRepository
              */
             $queryBuilder = $this->_em->createQueryBuilder();
             $queryBuilder->select('contact.id');
-            $queryBuilder->from('Contact\Entity\Contact', 'contact');
+            $queryBuilder->from(Entity\Contact::class, 'contact');
             $queryBuilder->join('contact.contactOrganisation', 'co');
             $queryBuilder->join('co.organisation', 'organisation');
             $queryBuilder->join('organisation.affiliation', 'a');
@@ -332,7 +312,7 @@ class Contact extends EntityRepository
              */
             $queryBuilder = $this->_em->createQueryBuilder();
             $queryBuilder->select('contact.id');
-            $queryBuilder->from('Contact\Entity\Contact', 'contact');
+            $queryBuilder->from(Entity\Contact::class, 'contact');
             $queryBuilder->join('contact.contactOrganisation', 'co');
             $queryBuilder->join('co.organisation', 'organisation');
             $queryBuilder->join('organisation.cluster', 'cluster1', 'cluster1.organisation = organisation');
@@ -358,10 +338,10 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsBySelectionSQL(SelectionSQL $sql, $toArray = false)
+    public function findContactsBySelectionSQL(SelectionSql $sql, $toArray = false)
     {
         $resultSetMap = new ResultSetMapping();
-        $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
+        $resultSetMap->addEntityResult(Entity\Contact::class, 'c');
         $resultSetMap->addJoinedEntityResult('Contact\Entity\ContactOrganisation', 'co', 'c', 'contactOrganisation');
 
         $resultSetMap->addFieldResult('c', 'contact_id', 'id');
@@ -412,7 +392,7 @@ class Contact extends EntityRepository
     public function findContactsInFacebook(Entity\Facebook $facebook)
     {
         $resultSetMap = new ResultSetMapping();
-        $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
+        $resultSetMap->addEntityResult(Entity\Contact::class, 'c');
         $resultSetMap->addFieldResult('c', 'contact_id', 'id');
         $resultSetMap->addFieldResult('c', 'email', 'email');
         $resultSetMap->addFieldResult('c', 'firstname', 'firstName');
@@ -454,7 +434,7 @@ class Contact extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c', 'co', 'o', 'cy');
-        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->from(Entity\Contact::class, 'c');
         $qb->join('c.selectionContact', 'sc');
         $qb->leftJoin('c.contactOrganisation', 'co');
         $qb->join('co.organisation', 'o');
@@ -482,7 +462,7 @@ class Contact extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c');
-        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->from(Entity\Contact::class, 'c');
         $qb->join("c.optIn", 'optIn');
         $qb->where($qb->expr()->in('optIn.id', $optIn->getId()));
 
@@ -504,10 +484,10 @@ class Contact extends EntityRepository
      *
      * @return bool
      */
-    public function isContactInSelectionSQL(Entity\Contact $contact, SelectionSQL $sql)
+    public function isContactInSelectionSQL(Entity\Contact $contact, SelectionSql $sql)
     {
         $resultSetMap = new ResultSetMapping();
-        $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
+        $resultSetMap->addEntityResult(Entity\Contact::class, 'c');
         $resultSetMap->addFieldResult('c', 'contact_id', 'id');
         $query = $this->getEntityManager()->createNativeQuery("SELECT
              contact_id
@@ -530,7 +510,7 @@ class Contact extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['c.id', 'c.firstName', 'c.middleName', 'c.lastName', 'c.email', 'o.organisation']);
-        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->from(Entity\Contact::class, 'c');
         $qb->leftJoin('c.contactOrganisation', 'co');
         $qb->join('co.organisation', 'o');
         $qb->distinct('c.id');
@@ -564,7 +544,7 @@ class Contact extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('c');
-        $qb->from("Contact\Entity\Contact", 'c');
+        $qb->from(Entity\Contact::class, 'c');
         $qb->addOrderBy('c.lastName', 'ASC');
 
         //Select the contacts based on their organisations

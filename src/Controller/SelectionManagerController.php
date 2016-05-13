@@ -35,7 +35,7 @@ class SelectionManagerController extends ContactAbstractController
 
         $paginator
             = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
-        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
+        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 25);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
 
@@ -199,12 +199,8 @@ class SelectionManagerController extends ContactAbstractController
 
         $form = $this->getFormService()->prepare($selection, $selection, $data);
 
-        $form->setAttribute('class', 'form-horizontal');
-
-        $form->get($selection->get('underscore_entity_name'))->get('contact')->setValueOptions([
-            $this->zfcUserAuthentication()->getIdentity()->getId() => $this->zfcUserAuthentication()->getIdentity()
-                ->getFormName()
-        ])->setDisableInArrayValidator(true);
+        $form->get('contact_entity_selection')->get('contact')->injectContact($this->zfcUserAuthentication()
+            ->getIdentity());
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {

@@ -69,7 +69,7 @@ class Address extends EntityAbstract implements ResourceInterface
      * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\AddressType"})
-     * @Annotation\Attributes({"label":"txt-type", "required":"true","class":"span3"})
+     * @Annotation\Attributes({"label":"txt-type"})
      *
      * @var \Contact\Entity\AddressType
      */
@@ -90,8 +90,17 @@ class Address extends EntityAbstract implements ResourceInterface
      * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id", nullable=false)
      * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
-     * @Annotation\Options({"target_class":"General\Entity\Country"})
-     * @Annotation\Attributes({"label":"txt-country", "required":"true","class":"span3"})
+     * @Annotation\Options({
+     *      "target_class":"General\Entity\Country",
+     *      "find_method":{
+     *          "name":"findForForm",
+     *          "params": {
+     *              "criteria":{},
+     *              "orderBy":{}
+     *          }}
+     *      }
+     * )
+     * @Annotation\Attributes({"label":"txt-country"})
      *
      * @var \General\Entity\Country
      */
@@ -159,88 +168,68 @@ class Address extends EntityAbstract implements ResourceInterface
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
+            $inputFilter->add($factory->createInput([
+                'name'       => 'address',
+                'required'   => true,
+                'filters'    => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+                'validators' => [
                     [
-                        'name'       => 'address',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 80,
                         ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 80,
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
+                    ],
+                ],
+            ]));
+            $inputFilter->add($factory->createInput([
+                'name'       => 'city',
+                'required'   => true,
+                'filters'    => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+                'validators' => [
                     [
-                        'name'       => 'city',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 40,
                         ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 40,
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
+                    ],
+                ],
+            ]));
+            $inputFilter->add($factory->createInput([
+                'name'       => 'zipCode',
+                'required'   => true,
+                'filters'    => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+                'validators' => [
                     [
-                        'name'       => 'zipCode',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 20,
                         ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 20,
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'type',
-                        'required' => true,
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'country',
-                        'required' => true,
-                    ]
-                )
-            );
+                    ],
+                ],
+            ]));
+            $inputFilter->add($factory->createInput([
+                'name'     => 'type',
+                'required' => true,
+            ]));
+            $inputFilter->add($factory->createInput([
+                'name'     => 'country',
+                'required' => true,
+            ]));
             $this->inputFilter = $inputFilter;
         }
 

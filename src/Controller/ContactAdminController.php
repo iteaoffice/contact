@@ -41,11 +41,11 @@ class ContactAdminController extends ContactAbstractController
         $contactQuery = $this->getContactService()->findEntitiesFiltered(Contact::class, $filterPlugin->getFilter());
 
         $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
-        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 15);
+        $paginator->setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 25);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator->getDefaultItemCountPerPage()));
 
-        $form = new ContactFilter($this->getContactService());
+        $form = new ContactFilter($this->getEntityManager());
 
         $form->setData(['filter' => $filterPlugin->getFilter()]);
 
@@ -80,7 +80,7 @@ class ContactAdminController extends ContactAbstractController
             'optIn'              => $optIn,
             'callService'        => $this->getCallService(),
             'registationService' => $this->getRegistrationService(),
-            'ideaService' => $this->getIdeaService(),
+            'ideaService'        => $this->getIdeaService(),
         ]);
     }
 

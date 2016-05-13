@@ -14,9 +14,11 @@ use Contact\Factory;
 use Contact\Form;
 use Contact\InputFilter;
 use Contact\Navigation;
+use Contact\Provider;
 use Contact\Search;
 use Contact\Service;
 use Contact\View;
+use Zend\Stdlib;
 use Zend\Stdlib\ArrayUtils;
 
 $config = [
@@ -87,22 +89,27 @@ $config = [
     ],
     'service_manager'    => [
         'factories' => [
-            Navigation\Service\ContactNavigationService::class         => Navigation\Factory\ContactNavigationServiceFactory::class,
-            'Contact\Provider\Identity\AuthenticationIdentityProvider' => Factory\AuthenticationIdentityProviderServiceFactory::class,
-            Service\SelectionService::class                            => Factory\SelectionServiceFactory::class,
-            Service\ContactService::class                              => Factory\ContactServiceFactory::class,
-            Service\AddressService::class                              => Factory\AddressServiceFactory::class,
-            Service\FormService::class                                 => Factory\FormServiceFactory::class,
-            Options\ModuleOptions::class                               => Factory\ModuleOptionsFactory::class,
-            InputFilter\FacebookFilter::class                          => Factory\InputFilterFactory::class,
-            Search\Service\ContactSearchService::class                 => Search\Factory\ContactSearchFactory::class,
-            Search\Service\ContactSearchService::class                 => Search\Factory\ContactSearchFactory::class,
-            Acl\Assertion\Address::class                               => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Contact::class                               => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Facebook::class                              => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Note::class                                  => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Phone::class                                 => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Selection::class                             => Acl\Factory\AssertionFactory::class,
+            Navigation\Service\ContactNavigationService::class      => Navigation\Factory\ContactNavigationServiceFactory::class,
+            Navigation\Invokable\ContactLabel::class                => Navigation\Factory\NavigationInvokableFactory::class,
+            Navigation\Invokable\FacebookLabel::class               => Navigation\Factory\NavigationInvokableFactory::class,
+            Navigation\Invokable\SelectionLabel::class              => Navigation\Factory\NavigationInvokableFactory::class,
+            Navigation\Invokable\AddressLabel::class                => Navigation\Factory\NavigationInvokableFactory::class,
+            Navigation\Invokable\PhoneLabel::class                  => Navigation\Factory\NavigationInvokableFactory::class,
+            Provider\Identity\AuthenticationIdentityProvider::class => Factory\AuthenticationIdentityProviderServiceFactory::class,
+            Service\SelectionService::class                         => Factory\SelectionServiceFactory::class,
+            Service\ContactService::class                           => Factory\ContactServiceFactory::class,
+            Service\AddressService::class                           => Factory\AddressServiceFactory::class,
+            Service\FormService::class                              => Factory\FormServiceFactory::class,
+            Options\ModuleOptions::class                            => Factory\ModuleOptionsFactory::class,
+            InputFilter\FacebookFilter::class                       => Factory\InputFilterFactory::class,
+            Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
+            Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
+            Acl\Assertion\Address::class                            => Acl\Factory\AssertionFactory::class,
+            Acl\Assertion\Contact::class                            => Acl\Factory\AssertionFactory::class,
+            Acl\Assertion\Facebook::class                           => Acl\Factory\AssertionFactory::class,
+            Acl\Assertion\Note::class                               => Acl\Factory\AssertionFactory::class,
+            Acl\Assertion\Phone::class                              => Acl\Factory\AssertionFactory::class,
+            Acl\Assertion\Selection::class                          => Acl\Factory\AssertionFactory::class,
         ],
         'shared'    => [
             Service\ContactService::class => false,
@@ -134,17 +141,9 @@ $config = [
         ],
     ],
 ];
-$configFiles = [
-    __DIR__ . '/module.config.routes.php',
-    __DIR__ . '/module.config.routes.console.php',
-    __DIR__ . '/module.config.routes.admin.php',
-    __DIR__ . '/module.config.navigation.php',
-    __DIR__ . '/module.config.authorize.php',
-    __DIR__ . '/module.config.community.php',
-    __DIR__ . '/module.config.search.php',
-];
-foreach ($configFiles as $configFile) {
-    $config = ArrayUtils::merge($config, include $configFile);
+
+foreach (Stdlib\Glob::glob(__DIR__ . '/module.config.{,*}.php', Stdlib\Glob::GLOB_BRACE) as $file) {
+    $config = Stdlib\ArrayUtils::merge($config, include $file);
 }
 
 return $config;

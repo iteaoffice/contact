@@ -61,7 +61,7 @@ class Community extends EntityAbstract
      * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\CommunityType"})
-     * @Annotation\Attributes({"label":"txt-community-type", "required":"true","class":"span3"})
+     * @Annotation\Attributes({"label":"txt-community-type"})
      *
      * @var \General\Entity\CommunityType
      */
