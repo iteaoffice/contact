@@ -37,7 +37,6 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  * @method FlashMessenger flashMessenger()
  * @method IsAllowed isAllowed($resource, $action)
  * @method Plugin\HandleImport handleImport($data, $import, $optIn, $selectionId, $selectionName)
- * @method Plugin\PartnerSearch partnerSearch()
  * @method Plugin\GetFilter getContactFilter()
  */
 abstract class ContactAbstractController extends AbstractActionController

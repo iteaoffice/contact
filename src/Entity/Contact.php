@@ -260,6 +260,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $projectReportItem;
     /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Report\WorkpackageDescription", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Report\WorkpackageDescription[]|Collections\ArrayCollection
+     */
+    private $projectReportWorkpackageDescription;
+    /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Report\EffortSpent", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Report\Item[]|Collections\ArrayCollection
@@ -885,6 +891,8 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->projectReview = new Collections\ArrayCollection();
         $this->projectVersionReview = new Collections\ArrayCollection();
         $this->projectReport = new Collections\ArrayCollection();
+        $this->projectReportItem = new Collections\ArrayCollection();
+        $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
         $this->projectCalendarReview = new Collections\ArrayCollection();
         $this->invite = new Collections\ArrayCollection();
         $this->inviteContact = new Collections\ArrayCollection();
@@ -3543,6 +3551,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setPartner($partner)
     {
         $this->partner = $partner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[]
+     */
+    public function getProjectReportWorkpackageDescription()
+    {
+        return $this->projectReportWorkpackageDescription;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[] $projectReportWorkpackageDescription
+     * @return Contact
+     */
+    public function setProjectReportWorkpackageDescription($projectReportWorkpackageDescription)
+    {
+        $this->projectReportWorkpackageDescription = $projectReportWorkpackageDescription;
 
         return $this;
     }

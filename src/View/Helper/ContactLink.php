@@ -63,8 +63,9 @@ class ContactLink extends LinkAbstract
             'alternativeShow' => $this->getAlternativeShow(),
             'firstname'       => $this->getContact()->getFirstName(),
             'initials'        => sprintf(
-                "%s%s",
+                "%s%s%s",
                 substr($this->getContact()->getFirstName(), 0, 1),
+                substr($this->getContact()->getMiddleName(), 0, 1),
                 substr($this->getContact()->getLastName(), 0, 1)
             ),
             'name'            => $this->getContact()->getDisplayName(),

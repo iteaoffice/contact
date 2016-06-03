@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-admin")) %}
-{% do headTitle().append(translate("txt-impersonate-user-%s")|format(contactService.parseFullname())) %}
+{% do headTitle().append(translate("txt-impersonate-user-%s")|format(contact.parseFullname())) %}
 
-<h1>{{ translate("txt-impersonate-user-%s")|format(contactService.parseFullname()) }}</h1>
+<h1>{{ translate("txt-impersonate-user-%s")|format(contact.parseFullname()) }}</h1>
 <p class="lead">{{ translate("txt-select-a-target-and-press-submit-to-get-the-deeplinks") }}</p>
 
 {% do form.prepare() %}
@@ -22,5 +22,5 @@
     <p>{{ translate("txt-use-the-deeplink-to-visit-the-target-use-a-new-private-session") }}</p>
     {{ deeplinkLink(deeplink,'view') }}
     {{ deeplinkLink(deeplink,'view','qr-code') }}
-    <a href="{{ deeplinkLink(deeplink,'view') }}" class="btn btn-primary">Impersonate</a>
+    <a href="{{ deeplinkLink(deeplink,'view') }}" class="btn btn-primary">{{ translate("txt-impersonate") }}</a>
 {% endif %}

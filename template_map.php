@@ -44,7 +44,6 @@ return array(
     'contact/profile/edit'                    => __DIR__ . '//view/contact/profile/edit.twig',
     'contact/contact/change-password'         => __DIR__ . '//view/contact/contact/change-password.twig',
     'contact/contact/has-session'             => __DIR__ . '//view/contact/contact/has-session.twig',
-    'contact/contact/index'                   => __DIR__ . '//view/contact/contact/index.twig',
     'contact/contact/search'                  => __DIR__ . '//view/contact/contact/search.twig',
     'contact/contact/signature'               => __DIR__ . '//view/contact/contact/signature.twig',
     'contact/note-manager/new'                => __DIR__ . '//view/contact/note-manager/new.twig',

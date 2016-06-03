@@ -43,7 +43,7 @@
                 <dd>{{ contactLink(selection.contact,'view-admin','name') }}</dd>
             {% endif %}
             <dt>{{ translate("txt-amount-of-contacts") }}</dt>
-            <dd>{{ selectionService.getAmountOfContacts() }}</dd>
+            <dd>{{ selectionService.getAmountOfContacts(selection) }}</dd>
             {% if selection.mailingList|length > 0 %}
                 <dt>{{ translate("txt-mailing-lists") }}</dt>
                 {% for mailingList in selection.mailingList %}
@@ -52,14 +52,13 @@
             {% endif %}
         </dl>
 
-        {% if selectionService.isSql() %}
+        {% if selectionService.isSql(selection) %}
             <h2>{{ translate("txt-sql-query") }}</h2>
             <pre>{{ selection.sql.query }}</pre>
         {% endif %}
 
         {{ selectionLink( selection,'edit','button') }}
         {{ selectionLink( selection ,'edit-contacts','button') }}
-        {{ selectionLink( null ,'list','button') }}
     </div>
     <div class="tab-pane" id="contacts">
         <h2>{{ translate("txt-contacts") }}</h2>
