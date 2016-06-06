@@ -16,7 +16,7 @@
             <tr>
                 <td>{{ ideaLink(idea,'view-admin','name') }}</td>
                 <td>{{ ideaLink(idea,'view-admin','title') }}</td>
-                <td>{{ callLink(idea.call,'view-admin','name') }}</td>
+                <td>{{ ideaToolLink(idea.tool,'view-admin','name') }}</td>
                 <td>{{ idea.message.count() }}</td>
                 <td>{{ idea.partner.count() }}</td>
             </tr>
@@ -44,7 +44,7 @@
             <tr>
                 <td>{{ ideaLink(message.idea,'view-admin','number') }}</td>
                 <td>{{ message.idea.title }}</td>
-                <td>{{ callLink(message.idea.call,'view-admin','name') }}</td>
+                <td>{{ ideaToolLink(message.idea.tool,'view-admin','name') }}</td>
                 <td>{{ message }}</td>
             </tr>
         {% endfor %}
