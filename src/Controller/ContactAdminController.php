@@ -74,6 +74,7 @@ class ContactAdminController extends ContactAbstractController
 
         return new ViewModel([
             'contact'            => $contact,
+            'contactService'     => $this->getContactService(),
             'selections'         => $selections,
             'projects'           => $this->getProjectService()->findProjectParticipationByContact($contact),
             'projectService'     => $this->getProjectService(),
