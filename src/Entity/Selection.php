@@ -124,7 +124,7 @@ class Selection extends EntityAbstract
      * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
-     * @Annotation\Type("\Zend\Form\Element\Select")
+     * @Annotation\Type("Contact\Form\Element\Contact")
      * @Annotation\Options({"label":"txt-owner"})
      *
      * @var Contact
@@ -178,12 +178,19 @@ class Selection extends EntityAbstract
      */
     private $mailing;
     /**
-     * @ORM\OneToMany(targetEntity="Event\Entity\Exempt", cascade={"persist"}, mappedBy="selection")
+     * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\OptionCost", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Event\Entity\Exempt[]|Collections\ArrayCollection
+     * @var \Event\Entity\Meeting\OptionCost[]|Collections\ArrayCollection
      */
-    private $exempt;
+    private $meetingOptionCost;
+    /**
+     * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Cost", cascade={"persist"}, mappedBy="selection")
+     * @Annotation\Exclude()
+     *
+     * @var \Event\Entity\Meeting\OptionCost[]|Collections\ArrayCollection
+     */
+    private $meetingCost;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude();
@@ -203,7 +210,8 @@ class Selection extends EntityAbstract
         $this->selectionContact = new Collections\ArrayCollection();
         $this->mailingList = new Collections\ArrayCollection();
         $this->mailing = new Collections\ArrayCollection();
-        $this->exempt = new Collections\ArrayCollection();
+        $this->meetingOptionCost = new Collections\ArrayCollection();
+        $this->meetingCost = new Collections\ArrayCollection();
         $this->access = new Collections\ArrayCollection();
     }
 
@@ -275,47 +283,47 @@ class Selection extends EntityAbstract
             $inputFilter = new InputFilter();
             $factory = new InputFactory();
             $inputFilter->add($factory->createInput([
-                    'name'       => 'selection',
-                    'required'   => true,
-                    'filters'    => [
-                        ['name' => 'StripTags'],
-                        ['name' => 'StringTrim'],
-                    ],
-                    'validators' => [
-                        [
-                            'name'    => 'StringLength',
-                            'options' => [
-                                'encoding' => 'UTF-8',
-                                'min'      => 1,
-                                'max'      => 80,
-                            ],
+                'name'       => 'selection',
+                'required'   => true,
+                'filters'    => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 80,
                         ],
                     ],
-                ]));
+                ],
+            ]));
             $inputFilter->add($factory->createInput([
-                    'name'     => 'note',
-                    'required' => false,
-                    'filters'  => [
-                        ['name' => 'StripTags'],
-                        ['name' => 'StringTrim'],
-                    ],
-                ]));
+                'name'     => 'note',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+            ]));
             $inputFilter->add($factory->createInput([
-                    'name'     => 'tag',
-                    'required' => false,
-                    'filters'  => [
-                        ['name' => 'StripTags'],
-                        ['name' => 'StringTrim'],
-                    ],
-                ]));
+                'name'     => 'tag',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+            ]));
             $inputFilter->add($factory->createInput([
-                    'name'     => 'personal',
-                    'required' => true,
-                ]));
+                'name'     => 'personal',
+                'required' => true,
+            ]));
             $inputFilter->add($factory->createInput([
-                    'name'     => 'private',
-                    'required' => true,
-                ]));
+                'name'     => 'private',
+                'required' => true,
+            ]));
             $this->inputFilter = $inputFilter;
         }
 
@@ -542,19 +550,22 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Event\Entity\Exempt[]|Collections\ArrayCollection $exempt
+     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
      */
-    public function setExempt($exempt)
+    public function getMeetingOptionCost()
     {
-        $this->exempt = $exempt;
+        return $this->meetingOptionCost;
     }
 
     /**
-     * @return \Event\Entity\Exempt[]|Collections\ArrayCollection
+     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingOptionCost
+     * @return Selection
      */
-    public function getExempt()
+    public function setMeetingOptionCost($meetingOptionCost)
     {
-        return $this->exempt;
+        $this->meetingOptionCost = $meetingOptionCost;
+
+        return $this;
     }
 
     /**
@@ -571,5 +582,24 @@ class Selection extends EntityAbstract
     public function getAccess()
     {
         return $this->access;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
+     */
+    public function getMeetingCost()
+    {
+        return $this->meetingCost;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingCost
+     * @return Selection
+     */
+    public function setMeetingCost($meetingCost)
+    {
+        $this->meetingCost = $meetingCost;
+
+        return $this;
     }
 }

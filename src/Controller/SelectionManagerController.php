@@ -198,6 +198,7 @@ class SelectionManagerController extends ContactAbstractController
         $data = array_merge($this->getRequest()->getPost()->toArray());
 
         $form = $this->getFormService()->prepare($selection, $selection, $data);
+        $form->remove('delete');
 
         $form->get('contact_entity_selection')->get('contact')->injectContact($this->zfcUserAuthentication()
             ->getIdentity());
@@ -229,7 +230,7 @@ class SelectionManagerController extends ContactAbstractController
      */
     public function getContactsAction()
     {
-        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
+        $selection = $this->getSelectionService()->findSelectionById($this->params()->fromPost('id'));
 
         if (is_null($selection)) {
             return $this->notFoundAction();

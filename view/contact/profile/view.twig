@@ -5,7 +5,8 @@
 
 <ul id="tab" class="nav nav-tabs">
     <li class="active"><a href="#profile" data-toggle="tab">{{ translate("txt-profile")|capitalize }}</a></li>
-    <li><a href="#organisation" data-toggle="tab">{{ translate("txt-organisation")|capitalize }}</a></li>
+    <li><a href="#organisation" data-toggle="tab">{{ translate("txt-organisation")|capitalize }} {% if not contact.contactOrganisation %}<i class="error fa fa-exclamation-triangle" aria-hidden="true"></i>
+        {% endif %}</a></li>
     <li><a href="#event" data-toggle="tab">{{ translate("txt-events")|capitalize }}</a></li>
     <li><a href="#updates" data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
     {% if isAllowed('route/zfcadmin/index') %}
@@ -44,6 +45,8 @@
         {{ contactLink(contact,'edit-profile', 'button') }}
         {{ contactLink(contact,'change-password', 'button') }}
 
+
+
         {% if hasNda %}
             {{ ndaLink(null,'upload', 'button') }}
         {% endif %}
@@ -74,7 +77,7 @@
                 {% endif %}
             </dl>
         {% else %}
-            {{ ztbalert().info(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
+            {{ ztbalert().danger(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
         {% endif %}
         {{ contactLink(contact,'edit-profile', 'button') }}
     </div>

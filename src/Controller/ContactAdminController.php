@@ -74,6 +74,7 @@ class ContactAdminController extends ContactAbstractController
 
         return new ViewModel([
             'contact'            => $contact,
+            'contactService'     => $this->getContactService(),
             'selections'         => $selections,
             'projects'           => $this->getProjectService()->findProjectParticipationByContact($contact),
             'projectService'     => $this->getProjectService(),
@@ -146,7 +147,7 @@ class ContactAdminController extends ContactAbstractController
                 'contact' => [
                     'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
                     'branch'       => $contact->getContactOrganisation()->getBranch(),
-                ]
+                ],
             ], $this->getRequest()->getPost()->toArray());
 
             $form = $this->getFormService()->prepare($contact, $contact, $data);
@@ -156,7 +157,6 @@ class ContactAdminController extends ContactAbstractController
             $data = array_merge($this->getRequest()->getPost()->toArray());
             $form = $this->getFormService()->prepare($contact, $contact, $data);
         }
-
 
         /** Show or hide buttons based on the status of a contact */
         if ($this->getContactService()->isActive($contact)) {
@@ -203,20 +203,23 @@ class ContactAdminController extends ContactAbstractController
                 $contact = $form->getData();
                 $contact = $this->getContactService()->updateEntity($contact);
 
-                //Update the contactOrganisation (if set)
-                if (is_null($contact->getContactOrganisation())) {
-                    $contactOrganisation = new ContactOrganisation();
-                    $contactOrganisation->setContact($contact);
-                } else {
-                    $contactOrganisation = $contact->getContactOrganisation();
+                /** Update the organisation if there is any */
+                if (isset($data['contact_entity_contact']['organisation'])) {
+                    //Update the contactOrganisation (if set)
+                    if (is_null($contact->getContactOrganisation())) {
+                        $contactOrganisation = new ContactOrganisation();
+                        $contactOrganisation->setContact($contact);
+                    } else {
+                        $contactOrganisation = $contact->getContactOrganisation();
+                    }
+
+                    $contactOrganisation->setBranch(strlen($data['contact_entity_contact']['branch']) === 0 ? null
+                        : $data['contact_entity_contact']['branch']);
+                    $contactOrganisation->setOrganisation($this->getOrganisationService()
+                        ->findOrganisationById($data['contact_entity_contact']['organisation']));
+
+                    $this->getContactService()->updateEntity($contactOrganisation);
                 }
-
-                $contactOrganisation->setBranch(strlen($data['contact']['branch']) === 0 ? null
-                    : $data['contact']['branch']);
-                $contactOrganisation->setOrganisation($this->getOrganisationService()
-                    ->findOrganisationById($data['contact']['organisation']));
-
-                $this->getContactService()->updateEntity($contactOrganisation);
 
                 return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }

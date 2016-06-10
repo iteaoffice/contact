@@ -45,7 +45,7 @@ $config = [
         'factories' => [
             Controller\Plugin\HandleImport::class => Controller\Factory\PluginFactory::class,
             Controller\Plugin\GetFilter::class    => Controller\Factory\PluginFactory::class,
-        ]
+        ],
     ],
     'view_manager'       => [
         'template_map' => include __DIR__ . '/../template_map.php',
@@ -77,7 +77,7 @@ $config = [
             View\Helper\NoteLink::class               => View\Factory\ViewHelperFactory::class,
             View\Helper\PhoneLink::class              => View\Factory\ViewHelperFactory::class,
             View\Helper\ContactPhoto::class           => View\Factory\ViewHelperFactory::class,
-        ]
+        ],
     ],
     'form_elements'      => [
         'aliases'   => [
@@ -102,6 +102,7 @@ $config = [
             Service\FormService::class                              => Factory\FormServiceFactory::class,
             Options\ModuleOptions::class                            => Factory\ModuleOptionsFactory::class,
             InputFilter\FacebookFilter::class                       => Factory\InputFilterFactory::class,
+            InputFilter\ContactFilter::class                        => Factory\InputFilterFactory::class,
             Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
             Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
             Acl\Assertion\Address::class                            => Acl\Factory\AssertionFactory::class,

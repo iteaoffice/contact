@@ -697,7 +697,7 @@ class ContactService extends ServiceAbstract
     {
         /** @var \Contact\Repository\Facebook $repository */
         $repository = $this->getEntityManager()->getRepository(Facebook::class);
-        
+
         return $repository->isContactInFacebook($contact, $facebook);
     }
 
@@ -732,7 +732,7 @@ class ContactService extends ServiceAbstract
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
-        
+
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
@@ -753,7 +753,7 @@ class ContactService extends ServiceAbstract
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
-        
+
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
@@ -778,7 +778,7 @@ class ContactService extends ServiceAbstract
     {
         /** @var \Contact\Repository\Facebook $repository */
         $repository = $this->getEntityManager()->getRepository(Facebook::class);
-        
+
         return $repository->findFacebookByContact($contact);
     }
 
@@ -792,7 +792,7 @@ class ContactService extends ServiceAbstract
 
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
-        
+
         /*
          * This function has a special feature to fill the array with contacts.
          * We can for instance try to find the country, organisation or position
@@ -1056,7 +1056,7 @@ class ContactService extends ServiceAbstract
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
-        
+
         return $repository->findContactsByOptIn($optIn, true);
     }
 
@@ -1091,7 +1091,7 @@ class ContactService extends ServiceAbstract
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
-        
+
         return $repository->searchContacts($searchItem);
     }
 
@@ -1241,7 +1241,7 @@ class ContactService extends ServiceAbstract
 
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
-        
+
         return $repository->findPossibleContactByCalendar($calendar);
     }
 
@@ -1254,7 +1254,7 @@ class ContactService extends ServiceAbstract
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
-        
+
         return $repository->findContactsInOrganisation($organisation);
     }
 }

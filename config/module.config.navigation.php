@@ -21,18 +21,27 @@ return [
                         'label' => _("txt-account-information"),
                         'route' => 'community/contact/profile/view',
                         'pages' => [
-                            'edit-profile'    => [
+                            'edit-profile'                => [
                                 'label' => _("txt-profile-edit"),
                                 'route' => 'community/contact/profile/edit',
                             ],
-                            'view-signature'  => [
+                            'view-signature'              => [
                                 'label' => _("txt-view-signature"),
                                 'route' => 'community/contact/signature',
                             ],
-                            'change-password' => [
+                            'change-password'             => [
                                 'label' => _("txt-change-password"),
                                 'route' => 'community/contact/change-password',
                             ],
+                            'community/mailing/subscribe' => [
+                                'label' => _("txt-subscribe"),
+                                'route' => 'community/mailing/subscribe',
+                            ],
+                            'manage-subscriptions' => [
+                                'label' => _("txt-manage-subscriptions"),
+                                'route' => 'community/mailing/manage-subscriptions',
+                            ],
+
                         ]
                     ],
                 ]

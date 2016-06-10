@@ -3,7 +3,6 @@
 
 <h1>{{ translate("txt-facebook-%s")|format(facebook) }}
     {{ facebookLink(facebook,'edit','button') }}
-    {{ facebookLink(null,'list','button') }}
     {{ facebookLink(facebook,'view-community','button') }}
 </h1>
 
@@ -57,7 +56,7 @@
         <tbody>
         {% for contact in contacts %}
             <tr>
-                <td>{{ contact.contact.displayName }}</td>
+                <td>{{ contactLink(contact.contact,'view-admin','name') }}</td>
                 <td>{{ contact.title|raw }}</td>
                 <td>{{ contact.subTitle|raw }}</td>
                 <td>{{ contact.phone }}</td>

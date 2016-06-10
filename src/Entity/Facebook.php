@@ -13,9 +13,6 @@ namespace Contact\Entity;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
@@ -377,33 +374,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (!$this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-            
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    /**
      * @return int
      */
     public function getId()
@@ -443,7 +413,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function getPublic($textual = false)
     {
         if ($textual) {
-            return $this->publicTemplates[$this->public];
+            return self::$publicTemplates[$this->public];
         }
 
         return $this->public;
@@ -529,7 +499,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function getTitle($textual = false)
     {
         if ($textual) {
-            return $this->displayTemplates[$this->title];
+            return self::$displayTemplates[$this->title];
         }
 
         return $this->title;
@@ -551,7 +521,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function getSubtitle($textual = false)
     {
         if ($textual) {
-            return $this->displayTemplates[$this->subtitle];
+            return self::$displayTemplates[$this->subtitle];
         }
 
         return $this->subtitle;
@@ -573,7 +543,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function getCanSendMessage($textual = false)
     {
         if ($textual) {
-            return $this->canSendMessageTemplates[$this->canSendMessage];
+            return self::$canSendMessageTemplates[$this->canSendMessage];
         }
 
         return $this->canSendMessage;
@@ -611,7 +581,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function getShowEmail($textual = false)
     {
         if ($textual) {
-            return $this->showEmailTemplates[$this->showEmail];
+            return self::$showEmailTemplates[$this->showEmail];
         }
 
         return $this->showEmail;
@@ -633,7 +603,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public function getShowPhone($textual = false)
     {
         if ($textual) {
-            return $this->showPhoneTemplates[$this->showPhone];
+            return self::$showPhoneTemplates[$this->showPhone];
         }
 
         return $this->showPhone;

@@ -33,6 +33,7 @@ class Contact extends AssertionAbstract
      */
     public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $resource = null, $privilege = null)
     {
+        $this->setPrivilege($privilege);
         /*
          * A meeting can be shown when we have a contact
          */

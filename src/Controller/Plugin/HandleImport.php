@@ -154,7 +154,9 @@ class HandleImport extends AbstractPlugin
             $contact = new Contact();
             $contact->key = $key;
             $contact->setFirstName($content[$this->headerKeys['firstname']]);
-            $contact->setMiddleName($content[$this->headerKeys['middlename']]);
+            if (isset($this->headerKeys['middlename']) && !empty($content[$this->headerKeys['middlename']])) {
+                $contact->setMiddleName($content[$this->headerKeys['middlename']]);
+            }
             $contact->setLastName($content[$this->headerKeys['lastname']]);
             $contact->setEmail($content[$this->headerKeys['email']]);
 
@@ -182,8 +184,9 @@ class HandleImport extends AbstractPlugin
                 $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
             }
 
-
-            $contact->setPosition($content[$this->headerKeys['position']]);
+            if (isset($this->headerKeys['phone']) && !empty($content[$this->headerKeys['phone']])) {
+                $contact->setPosition($content[$this->headerKeys['phone']]);
+            }
 
             //If found, set the phone number
             if (isset($this->headerKeys['phone']) && !empty($content[$this->headerKeys['phone']])) {
@@ -201,24 +204,33 @@ class HandleImport extends AbstractPlugin
 
 
             //Try to find the country
-            $country = $this->getGeneralService()->findCountryByName($content[$this->headerKeys['country']]);
+            $country = null;
 
-            //Try to find the organisation
-            $organisationName = $content[$this->headerKeys['organisation']];
+            if (isset($this->headerKeys['country']) && !empty($content[$this->headerKeys['country']])) {
+                $country = $this->getGeneralService()->findCountryByName($content[$this->headerKeys['country']]);
+            }
+
             $organisation = null;
+            $organisationName = null;
+
+            if (isset($this->headerKeys['organisation']) && !empty($content[$this->headerKeys['organisation']])) {
+                //Try to find the organisation
+                $organisationName = $content[$this->headerKeys['organisation']];
+            }
+
 
             if (isset($this->headerKeys['organisation_id']) && !empty($content[$this->headerKeys['organisation_id']])) {
                 $organisation = $this->getOrganisationService()
                     ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
             }
 
-            if (is_null($organisation) && !is_null($country)) {
+            if (is_null($organisation) && !is_null($country) && !is_null($organisationName)) {
                 $organisation = $this->getOrganisationService()
                     ->findOrganisationByNameCountry($organisationName, $country);
             }
 
             //If the organisation does not exist, create it
-            if (is_null($organisation) && !is_null($country)) {
+            if (is_null($organisation) && !is_null($country) && !is_null($organisationName)) {
                 $organisation = new Organisation();
                 $organisation->setOrganisation($organisationName);
                 $organisation->setCountry($country);
@@ -346,7 +358,7 @@ class HandleImport extends AbstractPlugin
                     ->findOrganisationById($this->headerKeys['organisation_id']);
                 if (is_null($organisation)) {
                     $this->errors[] = sprintf(
-                        "Organisation with ID (%s) in row %s is cannot be found",
+                        "Organisation with ID (%s) in row %s cannot be found",
                         $content[$this->headerKeys['organisation_id']],
                         $counter
                     );
@@ -360,7 +372,7 @@ class HandleImport extends AbstractPlugin
                 $country = $this->getGeneralService()->findCountryByName($content[$this->headerKeys['country']]);
                 if (is_null($country)) {
                     $this->warnings[] = sprintf(
-                        "Country (%s) in row %s is cannot be found",
+                        "Country (%s) in row %s cannot be found",
                         $content[$this->headerKeys['country']],
                         $counter
                     );

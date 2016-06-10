@@ -21,7 +21,7 @@
 {{ ztbformelement(form.get('type')) }}
 
 
-<div id="pane-fixed" {% if selectionService.isSql %}style="display: none"{% endif %}>
+<div id="pane-fixed" {% if selectionService.isSql(selection) %}style="display: none"{% endif %}>
     {{ ztbformelement(form.get('added')) }}
     {{ ztbformelement(form.get('removed')) }}
 
@@ -70,7 +70,7 @@
 </div>
 
 
-<div id="pane-sql" {% if not selectionService.isSql %}style="display: none"{% endif %}>
+<div id="pane-sql" {% if not selectionService.isSql(selection) %}style="display: none"{% endif %}>
     {{ ztbformelement(form.get('sql')) }}
     <div class="form-group">
         <div class="col-lg-9" id="sql"></div>
