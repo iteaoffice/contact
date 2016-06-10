@@ -600,6 +600,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $projectReview;
     /**
+     * @ORM\OneToOne(targetEntity="Project\Entity\Review\Contact", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Review\Contact
+     */
+    private $projectReviewContact;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\VersionReview", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Review\VersionReview[]|Collections\ArrayCollection
@@ -2708,6 +2715,24 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $this->projectReview = $projectReview;
 
+        return $this;
+    }
+
+    /**
+     * @return \Project\Entity\Review\Contact
+     */
+    public function getProjectReviewContact()
+    {
+        return $this->projectReviewContact;
+    }
+
+    /**
+     * @param \Project\Entity\Review\Contact $projectReviewContact
+     * @return Contact
+     */
+    public function setProjectReviewContact($projectReviewContact)
+    {
+        $this->projectReviewContact = $projectReviewContact;
         return $this;
     }
 
