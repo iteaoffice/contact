@@ -631,6 +631,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $projectCalendarReview;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Report\Review", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Report\Review[]|Collections\ArrayCollection
+     */
+    private $projectReportReview;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Invite[]|Collections\ArrayCollection
@@ -901,6 +907,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->projectReportItem = new Collections\ArrayCollection();
         $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
         $this->projectCalendarReview = new Collections\ArrayCollection();
+        $this->projectReportReview = new Collections\ArrayCollection();
         $this->invite = new Collections\ArrayCollection();
         $this->inviteContact = new Collections\ArrayCollection();
         $this->loi = new Collections\ArrayCollection();
@@ -2801,6 +2808,24 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $this->projectCalendarReview = $projectCalendarReview;
 
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Report\Review[]
+     */
+    public function getProjectReportReview()
+    {
+        return $this->projectReportReview;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Report\Review[] $projectReportReview
+     * @return Contact
+     */
+    public function setProjectReportReview($projectReportReview)
+    {
+        $this->projectReportReview = $projectReportReview;
         return $this;
     }
 
