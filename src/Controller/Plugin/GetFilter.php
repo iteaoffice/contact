@@ -58,8 +58,8 @@ class GetFilter extends AbstractPlugin
 
         //Add a default order and direction if not known in the filter
         if (!isset($filter['order'])) {
-            $filter['order'] = 'name';
-            $filter['direction'] = 'asc';
+            $filter['order'] = 'dateCreated';
+            $filter['direction'] = 'desc';
         }
 
         //Overrule the order if set in the query

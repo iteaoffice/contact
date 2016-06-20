@@ -48,6 +48,18 @@ class SelectionFilter extends Form
             ]
         );
 
+        $filterFieldset->add([
+            'type'       => 'Zend\Form\Element\MultiCheckbox',
+            'name'       => 'includeDeleted',
+            'options'    => [
+                'value_options' => [1 => _("txt-include-deleted")],
+                'inline'        => true,
+            ],
+            'attributes' => [
+                'label' => _("txt-include-deleted"),
+            ],
+        ]);
+
         $tags = [];
         foreach ($selectionService->findTags() as $tag) {
             if (!empty($tag['tag'])) {

@@ -7,6 +7,11 @@
 
 <h1>{{ selection }}</h1>
 
+{% if selection.dateDeleted %}
+    {{ ztbalert().danger(translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")))|raw }}
+{% endif %}
+
+
 {% if error %}
     {{ ztbalert().danger(error)|raw }}
 {% endif %}

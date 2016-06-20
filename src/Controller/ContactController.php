@@ -200,7 +200,8 @@ class ContactController extends ContactAbstractController
     public function searchAction()
     {
         $searchService = $this->getContactSearchService();
-        $page = $this->params('page', 1);
+        $page = $this->getRequest()->getQuery('page', 1);
+
         $form = new SearchResult();
         $data = array_merge(['query' => '*', 'facet' => []], $this->getRequest()->getQuery()->toArray());
 

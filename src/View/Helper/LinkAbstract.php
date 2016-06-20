@@ -143,7 +143,7 @@ abstract class LinkAbstract extends AbstractViewHelper
             htmlentities($this->text),
             implode(' ', $this->classes),
             in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
-            : htmlentities(implode('', $this->linkContent))
+                : htmlentities(implode('', $this->linkContent))
         );
     }
 
@@ -173,7 +173,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                         $this->addLinkContent('<i class="fa fa-file-excel-o"></i>');
                         break;
                     case 'import':
-                        $this->addLinkContent('<i class="fa fa-download" aria-hidden="true"></i>');
+                        $this->addLinkContent('<i class="fa fa-upload" aria-hidden="true"></i>');
                         break;
                     case 'send-message':
                         $this->addLinkContent('<i class="fa fa-envelope"></i>');

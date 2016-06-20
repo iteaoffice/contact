@@ -10,20 +10,13 @@
 
 namespace Contact\Service;
 
-use Contact\Entity\Contact;
-use Contact\Entity\Selection;
-use Contact\Entity\SelectionContact;
-use Contact\Entity\SelectionSql;
+use Contact\Entity;
+use Contact\Repository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * SelectionService.
- *
- * this is a generic wrapper service for all the other services
- *
- * First parameter of all methods (lowercase, underscore_separated)
- * will be used to fetch the correct model service, one exception is the 'linkModel'
- * method.
+ * Class SelectionService
+ * @package Contact\Service
  */
 class SelectionService extends ServiceAbstract
 {
@@ -31,29 +24,29 @@ class SelectionService extends ServiceAbstract
     /**
      * @param $id
      *
-     * @return null|Selection
+     * @return null|Entity\Selection
      */
     public function findSelectionById($id)
     {
-        return $this->getEntityManager()->getRepository(Selection::class)->find($id);
+        return $this->getEntityManager()->getRepository(Entity\Selection::class)->find($id);
     }
 
     /**
-     * @param Selection $selection
+     * @param Entity\Selection $selection
      *
      * @return bool
      */
-    public function isSql(Selection $selection)
+    public function isSql(Entity\Selection $selection)
     {
         return !is_null($selection->getSql());
     }
 
     /**
-     * @param Selection $selection
+     * @param Entity\Selection $selection
      *
      * @return int
      */
-    public function getAmountOfContacts(Selection $selection)
+    public function getAmountOfContacts(Entity\Selection $selection)
     {
         try {
             return sizeof($this->getContactService()->findContactsInSelection($selection));
@@ -67,40 +60,34 @@ class SelectionService extends ServiceAbstract
      */
     public function findTags()
     {
-        return $this->getEntityManager()->getRepository(Selection::class)->findTags();
-    }
+        /** @var Repository\Selection $repository */
+        $repository = $this->getEntityManager()->getRepository(Entity\Selection::class);
 
-    /**
-     * @param null $query
-     *
-     * @return QueryBuilder
-     */
-    public function searchSelection($query = null)
-    {
-        return $this->getEntityManager()->getRepository(Selection::class)->searchSelections($query);
+        return $repository->findTags();
     }
 
     /**
      * Selections can be fixed (via the selection_contact) or dynamic (via de SQL).
      *
-     * @param Contact $contact
+     * @param Entity\Contact $contact
      *
-     * @return Selection[]
+     * @return Entity\Selection[]
      */
-    public function findSelectionsByContact(Contact $contact)
+    public function findSelectionsByContact(Entity\Contact $contact)
     {
-        $selections = $this->getEntityManager()->getRepository(Selection::class)
-            ->findFixedSelectionsByContact($contact);
+        /** @var Repository\Selection $repository */
+        $repository = $this->getEntityManager()->getRepository(Entity\Selection::class);
+
+        $selections = $repository->findFixedSelectionsByContact($contact);
 
         /**
-         * @var $selection Selection
+         * @var $selection Entity\Selection
          */
-        foreach ($this->findAll(Selection::class) as $selection) {
+        foreach ($this->findAll(Entity\Selection::class) as $selection) {
             /**
              * Skip the deleted selections and the ones the user is in
              */
-            if (is_null($selection->getDateDeleted()) && !is_null($selection->getSql())
-                && $this->getContactService()->contactInSelection($contact, $selection)
+            if (!is_null($selection->getSql()) && $this->getContactService()->contactInSelection($contact, $selection)
             ) {
                 $selections[] = $selection;
             }
@@ -116,8 +103,8 @@ class SelectionService extends ServiceAbstract
     }
 
     /**
-     * @param Selection $selection
-     * @param array     $data
+     * @param Entity\Selection $selection
+     * @param array            $data
      *
      * array (size=5)
      * 'type' => string '2' (length=1)
@@ -127,12 +114,12 @@ class SelectionService extends ServiceAbstract
      *
      *
      */
-    public function updateSelectionContacts(Selection $selection, array $data)
+    public function updateSelectionContacts(Entity\Selection $selection, array $data)
     {
         /**
          * First update the selection based on the type
          */
-        if ((int)$data['type'] === Selection::TYPE_FIXED) {
+        if ((int)$data['type'] === Entity\Selection::TYPE_FIXED) {
             //remove the query
             if (!is_null($sql = $selection->getSql())) {
                 $this->removeEntity($sql);
@@ -144,7 +131,7 @@ class SelectionService extends ServiceAbstract
                     $contact = $this->getContactService()->findContactById($contactId);
 
                     if (!$contact->isEmpty() && !$this->getContactService()->contactInSelection($contact, $selection)) {
-                        $selectionContact = new SelectionContact();
+                        $selectionContact = new Entity\SelectionContact();
                         $selectionContact->setContact($contact);
                         $selectionContact->setSelection($selection);
                         $this->newEntity($selectionContact);
@@ -165,7 +152,7 @@ class SelectionService extends ServiceAbstract
         } else {
             $selectionSql = $selection->getSql();
             if (is_null($selectionSql)) {
-                $selectionSql = new SelectionSql();
+                $selectionSql = new Entity\SelectionSql();
                 $selectionSql->setSelection($selection);
             }
             $selectionSql->setQuery($data['sql']);
