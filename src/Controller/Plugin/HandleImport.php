@@ -236,7 +236,7 @@ class HandleImport extends AbstractPlugin
                 $organisation->setCountry($country);
 
                 //Add the type
-                $organisationType = $this->getOrganisationService()->findEntityById('type', Type::TYPE_UNKNOWN);
+                $organisationType = $this->getOrganisationService()->findEntityById(Type::class, Type::TYPE_UNKNOWN);
                 $organisation->setType($organisationType);
 
                 //Add the domain
@@ -390,6 +390,8 @@ class HandleImport extends AbstractPlugin
      */
     private function setData($data)
     {
+        $data = utf8_encode($data);
+        
         //Explode first on the \n to have the different rows
         $data = explode("\n", $data);
 
