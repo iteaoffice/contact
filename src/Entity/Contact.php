@@ -613,9 +613,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $projectReviewContact;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Review\VersionReview", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Version\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Review\VersionReview[]|Collections\ArrayCollection
+     * @var \Project\Entity\Version\Review[]|Collections\ArrayCollection
      */
     private $projectVersionReview;
     /**
