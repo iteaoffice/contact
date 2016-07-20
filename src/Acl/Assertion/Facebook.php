@@ -52,6 +52,7 @@ class Facebook extends AssertionAbstract
         }
 
         switch ($this->getPrivilege()) {
+            case 'facebook':
             case 'view':
                 if ($facebook->getPublic() === FacebookEntity::IS_PUBLIC) {
                     return true;

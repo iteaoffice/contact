@@ -30,7 +30,7 @@ class ContactNavigationService extends NavigationServiceAbstract
         /*
          * Add a route for the facebook
          */
-        if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'community') !== false) {
+        if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'community') === 0) {
             $this->includeFacebooksInNavigation();
         }
     }

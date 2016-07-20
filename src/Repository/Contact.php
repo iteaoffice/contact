@@ -195,14 +195,14 @@ class Contact extends EntityRepository
     public function findContactByEmail($email, $onlyMain)
     {
         $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('c');
-        $queryBuilder->from(Entity\Contact::class, 'c');
-        $queryBuilder->orWhere('c.email = ?1');
+        $queryBuilder->select('contact_entity_contact');
+        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
+        $queryBuilder->orWhere('contact_entity_contact.email = ?1');
         $queryBuilder->setParameter(1, $email);
 
         if (!$onlyMain) {
-            $queryBuilder->leftJoin('c.emailAddress', 'e');
-            $queryBuilder->orWhere('e.email = ?2');
+            $queryBuilder->leftJoin('contact_entity_contact.emailAddress', 'contact_entity_email');
+            $queryBuilder->orWhere('contact_entity_email.email = ?2');
             $queryBuilder->setParameter(2, $email);
         }
 

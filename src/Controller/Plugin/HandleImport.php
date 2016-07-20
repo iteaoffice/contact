@@ -391,7 +391,7 @@ class HandleImport extends AbstractPlugin
     private function setData($data)
     {
         $data = utf8_encode($data);
-        
+
         //Explode first on the \n to have the different rows
         $data = explode("\n", $data);
 

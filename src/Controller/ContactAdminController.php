@@ -60,7 +60,7 @@ class ContactAdminController extends ContactAbstractController
     }
 
     /**
-     * @return ViewModel
+     * @return array|ViewModel
      */
     public function viewAction()
     {
@@ -130,7 +130,7 @@ class ContactAdminController extends ContactAbstractController
     }
 
     /**
-     * @return ViewModel
+     * @return array|\Zend\Http\Response|ViewModel
      */
     public function editAction()
     {
@@ -233,7 +233,7 @@ class ContactAdminController extends ContactAbstractController
     }
 
     /**
-     * @return ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function newAction()
     {
@@ -244,7 +244,7 @@ class ContactAdminController extends ContactAbstractController
         $form = $this->getFormService()->prepare($contact, $contact, $data);
 
         //Disable the inarray validator for organisations
-        $form->get($contact->get("underscore_entity_name"))->get('organisation')->setDisableInArrayValidator(true);
+        $form->get('contact_entity_contact')->get('organisation')->setDisableInArrayValidator(true);
 
         /** Show or hide buttons based on the status of a contact */
 
@@ -261,21 +261,24 @@ class ContactAdminController extends ContactAbstractController
 
             /** Handle the form */
             if ($form->isValid()) {
+
                 /**
                  * @var $contact Contact
                  */
                 $contact = $form->getData();
                 $contact = $this->getContactService()->updateEntity($contact);
 
-                $contactOrganisation = new ContactOrganisation();
-                $contactOrganisation->setContact($contact);
+                if (isset($data['contact_entity_contact']['organisation'])) {
+                    $contactOrganisation = new ContactOrganisation();
+                    $contactOrganisation->setContact($contact);
 
-                $contactOrganisation->setBranch(strlen($data['contact']['branch']) === 0 ? null
-                    : $data['contact']['branch']);
-                $contactOrganisation->setOrganisation($this->getOrganisationService()
-                    ->findOrganisationById($data['contact']['organisation']));
+                    $contactOrganisation->setBranch(strlen($data['contact_entity_contact']['branch']) === 0 ? null
+                        : $data['contact_entity_contact']['branch']);
+                    $contactOrganisation->setOrganisation($this->getOrganisationService()
+                        ->findOrganisationById($data['contact_entity_contact']['organisation']));
 
-                $this->getContactService()->updateEntity($contactOrganisation);
+                    $this->getContactService()->updateEntity($contactOrganisation);
+                }
 
                 return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }
@@ -291,6 +294,8 @@ class ContactAdminController extends ContactAbstractController
      */
     public function importAction()
     {
+        set_time_limit(0);
+
         $data = array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()

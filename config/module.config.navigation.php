@@ -37,14 +37,14 @@ return [
                                 'label' => _("txt-subscribe"),
                                 'route' => 'community/mailing/subscribe',
                             ],
-                            'manage-subscriptions' => [
+                            'manage-subscriptions'        => [
                                 'label' => _("txt-manage-subscriptions"),
                                 'route' => 'community/mailing/manage-subscriptions',
                             ],
 
-                        ]
+                        ],
                     ],
-                ]
+                ],
 
             ],
             'idea'    => [
@@ -59,9 +59,9 @@ return [
                                 'route' => 'community/contact/profile/contact',
 
                             ],
-                        ]
+                        ],
 
-                    ]
+                    ],
                 ],
             ],
         ],
@@ -73,7 +73,7 @@ return [
                 'order'    => 10,
                 'resource' => 'zfcadmin',
                 'pages'    => [
-                    'contacts'   => [
+                    'contacts'    => [
                         'label' => _("txt-nav-contact-list"),
                         'order' => 10,
                         'route' => 'zfcadmin/contact-admin/list',
@@ -84,11 +84,11 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Contact::class
+                                        'id' => \Contact\Entity\Contact::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\ContactLabel::class
-                                    ]
+                                        Contact\Navigation\Invokable\ContactLabel::class,
+                                    ],
                                 ],
                                 'pages'   => [
                                     'edit-contact'        => [
@@ -97,7 +97,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                         ],
                                     ],
@@ -107,7 +107,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                         ],
                                     ],
@@ -117,7 +117,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                         ],
                                     ],
@@ -127,11 +127,11 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Address::class
+                                                'id' => \Contact\Entity\Address::class,
                                             ],
                                             'invokables' => [
-                                                Contact\Navigation\Invokable\AddressLabel::class
-                                            ]
+                                                Contact\Navigation\Invokable\AddressLabel::class,
+                                            ],
                                         ],
                                     ],
                                     'new-address'         => [
@@ -140,11 +140,11 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                             'routeParam' => [
-                                                'id' => 'contact'
-                                            ]
+                                                'id' => 'contact',
+                                            ],
                                         ],
                                     ],
                                     'edit-phone'          => [
@@ -153,11 +153,11 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Phone::class
+                                                'id' => \Contact\Entity\Phone::class,
                                             ],
                                             'invokables' => [
-                                                Contact\Navigation\Invokable\PhoneLabel::class
-                                            ]
+                                                Contact\Navigation\Invokable\PhoneLabel::class,
+                                            ],
                                         ],
                                     ],
                                     'new-phone'           => [
@@ -166,19 +166,27 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                             'routeParam' => [
-                                                'id' => 'contact'
-                                            ]
+                                                'id' => 'contact',
+                                            ],
                                         ],
                                     ],
-                                ]
+                                ],
                             ],
-
-                        ]
+                        ],
                     ],
-                    'selections' => [
+                    'new-contact' => [
+                        'label' => _('txt-new-contact'),
+                        'route' => 'zfcadmin/contact-admin/new',
+                    ],
+                    'import'      => [
+                        'label' => _("txt-nav-contact-import"),
+                        'order' => 50,
+                        'route' => 'zfcadmin/contact-admin/import',
+                    ],
+                    'selections'  => [
                         'label' => _("txt-nav-selection-list"),
                         'order' => 20,
                         'route' => 'zfcadmin/selection-manager/list',
@@ -189,11 +197,11 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Selection::class
+                                        'id' => \Contact\Entity\Selection::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\SelectionLabel::class
-                                    ]
+                                        Contact\Navigation\Invokable\SelectionLabel::class,
+                                    ],
                                 ],
                                 'pages'   => [
                                     'edit-selection' => [
@@ -202,7 +210,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Selection::class
+                                                'id' => \Contact\Entity\Selection::class,
                                             ],
                                         ],
                                     ],
@@ -212,19 +220,19 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Selection::class
+                                                'id' => \Contact\Entity\Selection::class,
                                             ],
                                         ],
                                     ],
-                                ]
+                                ],
                             ],
                             'edit-contacts' => [
                                 'label' => _('txt-new-selection'),
                                 'route' => 'zfcadmin/selection-manager/new',
                             ],
-                        ]
+                        ],
                     ],
-                    'facebook'   => [
+                    'facebook'    => [
                         'label' => _("txt-nav-facebook-list"),
                         'route' => 'zfcadmin/facebook-manager/list',
                         'order' => 40,
@@ -235,11 +243,11 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Facebook::class
+                                        'id' => \Contact\Entity\Facebook::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\FacebookLabel::class
-                                    ]
+                                        Contact\Navigation\Invokable\FacebookLabel::class,
+                                    ],
                                 ],
                                 'pages'   => [
                                     'edit-facebook' => [
@@ -248,7 +256,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Facebook::class
+                                                'id' => \Contact\Entity\Facebook::class,
                                             ],
                                         ],
                                     ],
@@ -256,11 +264,7 @@ return [
                             ],
                         ],
                     ],
-                    'import'     => [
-                        'label' => _("txt-nav-contact-import"),
-                        'order' => 50,
-                        'route' => 'zfcadmin/contact-admin/import',
-                    ],
+
                 ],
             ],
             'management' => [
@@ -270,8 +274,8 @@ return [
                         'route' => 'zfcadmin/permit-manager/entity/list',
                     ],
 
-                ]
-            ]
+                ],
+            ],
         ],
     ],
 ];

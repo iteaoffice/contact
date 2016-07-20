@@ -185,6 +185,13 @@ class Selection extends EntityAbstract
      */
     private $meetingOptionCost;
     /**
+     * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Meeting", cascade={"persist"}, mappedBy="selection")
+     * @Annotation\Exclude()
+     *
+     * @var \Event\Entity\Meeting\Meeting[]|Collections\ArrayCollection
+     */
+    private $meeting;
+    /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Cost", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
@@ -204,15 +211,16 @@ class Selection extends EntityAbstract
      */
     public function __construct()
     {
-        $this->private = self::NOT_PRIVATE;
+        $this->private  = self::NOT_PRIVATE;
         $this->personal = self::NOT_PERSONAL;
 
-        $this->selectionContact = new Collections\ArrayCollection();
-        $this->mailingList = new Collections\ArrayCollection();
-        $this->mailing = new Collections\ArrayCollection();
+        $this->selectionContact  = new Collections\ArrayCollection();
+        $this->mailingList       = new Collections\ArrayCollection();
+        $this->mailing           = new Collections\ArrayCollection();
+        $this->meeting           = new Collections\ArrayCollection();
         $this->meetingOptionCost = new Collections\ArrayCollection();
-        $this->meetingCost = new Collections\ArrayCollection();
-        $this->access = new Collections\ArrayCollection();
+        $this->meetingCost       = new Collections\ArrayCollection();
+        $this->access            = new Collections\ArrayCollection();
     }
 
     /**
@@ -271,7 +279,9 @@ class Selection extends EntityAbstract
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new \Exception("Setting an inputFilter is currently not supported");
+        throw new \Exception(
+            "Setting an inputFilter is currently not supported"
+        );
     }
 
     /**
@@ -279,51 +289,71 @@ class Selection extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-            $inputFilter->add($factory->createInput([
-                'name'       => 'selection',
-                'required'   => true,
-                'filters'    => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-                'validators' => [
+            $factory     = new InputFactory();
+            $inputFilter->add(
+                $factory->createInput(
                     [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 80,
+                        'name'       => 'selection',
+                        'required'   => true,
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
                         ],
-                    ],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'note',
-                'required' => false,
-                'filters'  => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'tag',
-                'required' => false,
-                'filters'  => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'personal',
-                'required' => true,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'private',
-                'required' => true,
-            ]));
+                        'validators' => [
+                            [
+                                'name'    => 'StringLength',
+                                'options' => [
+                                    'encoding' => 'UTF-8',
+                                    'min'      => 1,
+                                    'max'      => 80,
+                                ],
+                            ],
+                        ],
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'note',
+                        'required' => false,
+                        'filters'  => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'tag',
+                        'required' => false,
+                        'filters'  => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'personal',
+                        'required' => true,
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'private',
+                        'required' => true,
+                    ]
+                )
+            );
             $this->inputFilter = $inputFilter;
         }
 
@@ -559,6 +589,7 @@ class Selection extends EntityAbstract
 
     /**
      * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingOptionCost
+     *
      * @return Selection
      */
     public function setMeetingOptionCost($meetingOptionCost)
@@ -594,11 +625,32 @@ class Selection extends EntityAbstract
 
     /**
      * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingCost
+     *
      * @return Selection
      */
     public function setMeetingCost($meetingCost)
     {
         $this->meetingCost = $meetingCost;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Meeting\Meeting[]
+     */
+    public function getMeeting()
+    {
+        return $this->meeting;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Meeting\Meeting[] $meeting
+     *
+     * @return Selection
+     */
+    public function setMeeting($meeting)
+    {
+        $this->meeting = $meeting;
 
         return $this;
     }
