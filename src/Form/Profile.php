@@ -231,7 +231,6 @@ class Profile extends Form
                         } else {
                             return sprintf("%s", $organisation->getOrganisation());
                         }
-
                     },
                 ],
                 'attributes' => [
