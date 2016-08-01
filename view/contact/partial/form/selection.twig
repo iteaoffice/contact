@@ -5,6 +5,7 @@
 
 {% set selection = form.get('contact_entity_selection') %}
 
+{{ ztbformelement(selection.get('id')) }}
 {{ ztbformelement(selection.get('selection')) }}
 {{ ztbformelement(selection.get('tag')) }}
 {{ ztbformelement(selection.get('note')) }}

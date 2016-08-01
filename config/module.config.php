@@ -103,6 +103,7 @@ $config = [
             Options\ModuleOptions::class                            => Factory\ModuleOptionsFactory::class,
             InputFilter\FacebookFilter::class                       => Factory\InputFilterFactory::class,
             InputFilter\ContactFilter::class                        => Factory\InputFilterFactory::class,
+            InputFilter\SelectionFilter::class                      => Factory\InputFilterFactory::class,
             Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
             Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
             Acl\Assertion\Address::class                            => Acl\Factory\AssertionFactory::class,

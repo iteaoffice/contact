@@ -64,6 +64,24 @@ class CreateObject extends Form
 
         $this->add([
             'type'       => 'Zend\Form\Element\Submit',
+            'name'       => 'deactivate',
+            'attributes' => [
+                'class' => "btn btn-danger",
+                'value' => _("txt-deactivate"),
+            ],
+        ]);
+
+        $this->add([
+            'type'       => 'Zend\Form\Element\Submit',
+            'name'       => 'reactivate',
+            'attributes' => [
+                'class' => "btn btn-success",
+                'value' => _("txt-reactivate"),
+            ],
+        ]);
+
+        $this->add([
+            'type'       => 'Zend\Form\Element\Submit',
             'name'       => 'submit',
             'attributes' => [
                 'class' => "btn btn-primary",
