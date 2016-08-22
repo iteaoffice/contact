@@ -36,7 +36,6 @@ return [
                     ],
                 ],
             ],
-
             'community' => [
                 'child_routes' => [
                     'contact' => [
@@ -55,14 +54,10 @@ return [
                             'search'              => [
                                 'type'    => 'Segment',
                                 'options' => [
-                                    'route'    => '/search.html',
+                                    'route'    => '/search[/page-:page].html',
                                     'defaults' => [
                                         'action' => 'search',
                                     ],
-                                    'query'    => [
-                                        'search' => null,
-                                        'page'   => null,
-                                    ]
                                 ],
                             ],
                             'signature'           => [

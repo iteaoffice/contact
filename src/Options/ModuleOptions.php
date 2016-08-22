@@ -12,8 +12,7 @@ namespace Contact\Options;
 
 use Zend\Stdlib\AbstractOptions;
 
-class ModuleOptions extends AbstractOptions implements
-    CommunityOptionsInterface
+class ModuleOptions extends AbstractOptions implements CommunityOptionsInterface
 {
     /**
      * Turn off strict options mode.

@@ -101,7 +101,8 @@ class SelectionManagerController extends ContactAbstractController
             [
                 'type' => $this->getSelectionService()->isSql($selection) ? Selection::TYPE_SQL : Selection::TYPE_FIXED,
                 'sql'  => $this->getSelectionService()->isSql($selection) ? $selection->getSql()->getQuery() : null,
-            ], $this->getRequest()->getPost()->toArray()
+            ],
+            $this->getRequest()->getPost()->toArray()
         );
 
 
@@ -147,16 +148,16 @@ class SelectionManagerController extends ContactAbstractController
 
         $form = $this->getFormService()->prepare($selection, $selection, $data);
 
-        if ( ! is_null($selection->getContact())) {
+        if (! is_null($selection->getContact())) {
             $form->get($selection->get('underscore_entity_name'))->get('contact')->injectContact(
                 $selection->getContact()
             );
         }
 
-        if ( ! $selection->getMailing()->isEmpty()) {
+        if (! $selection->getMailing()->isEmpty()) {
             $form->remove('delete');
         }
-        if ( ! $selection->getAccess()->isEmpty()) {
+        if (! $selection->getAccess()->isEmpty()) {
             $form->remove('delete');
         }
 
@@ -294,7 +295,8 @@ class SelectionManagerController extends ContactAbstractController
         ob_start();
 
         fputcsv(
-            $fh, [
+            $fh,
+            [
                 'Email',
                 'Firstname',
                 'Lastname',
@@ -305,7 +307,8 @@ class SelectionManagerController extends ContactAbstractController
 
         foreach ($this->getContactService()->findContactsInSelection($selection, true) as $contact) {
             fputcsv(
-                $fh, [
+                $fh,
+                [
                     $contact['email'],
                     $contact['firstName'],
                     trim(sprintf("%s %s", $contact['middleName'], $contact['lastName'])),

@@ -34,10 +34,11 @@ class OptIn extends EntityAbstract
     /**
      * @var array
      */
-    protected static $autoSubscribeTemplates = [
-        self::AUTO_SUBSCRIBE    => "txt-auto-subscribe",
-        self::NO_AUTO_SUBSCRIBE => "txt-no-auto-subscribe",
-    ];
+    protected static $autoSubscribeTemplates
+        = [
+            self::AUTO_SUBSCRIBE    => "txt-auto-subscribe",
+            self::NO_AUTO_SUBSCRIBE => "txt-no-auto-subscribe",
+        ];
 
     /**
      * @ORM\Column(name="optin_id", length=10, type="integer", nullable=false)
@@ -90,8 +91,8 @@ class OptIn extends EntityAbstract
      */
     public function __construct()
     {
-        $this->contact = new Collections\ArrayCollection();
-        $this->mailing = new Collections\ArrayCollection();
+        $this->contact       = new Collections\ArrayCollection();
+        $this->mailing       = new Collections\ArrayCollection();
         $this->autoSubscribe = self::AUTO_SUBSCRIBE;
     }
 
@@ -127,56 +128,6 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (!$this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'optIn',
-                        'required' => true,
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'description',
-                        'required' => true,
-                    ]
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'     => 'autoSubscribe',
-                        'required' => true,
-                    ]
-                )
-            );
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    /**
      * @return array
      */
     public static function getAutoSubscribeTemplates()
@@ -192,7 +143,6 @@ class OptIn extends EntityAbstract
     public function addContact(Collections\Collection $collection)
     {
         foreach ($collection as $singleContact) {
-            $singleContact->optIn = $this;
             $this->contact->add($singleContact);
         }
     }
@@ -273,6 +223,7 @@ class OptIn extends EntityAbstract
 
     /**
      * @param bool $textual
+     *
      * @return int|string
      */
     public function getAutoSubscribe($textual = false)
@@ -280,6 +231,7 @@ class OptIn extends EntityAbstract
         if ($textual) {
             return self::$autoSubscribeTemplates[$this->autoSubscribe];
         }
+
         return $this->autoSubscribe;
     }
 

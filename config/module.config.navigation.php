@@ -177,10 +177,6 @@ return [
                             ],
                         ],
                     ],
-                    'new-contact' => [
-                        'label' => _('txt-new-contact'),
-                        'route' => 'zfcadmin/contact-admin/new',
-                    ],
                     'import'      => [
                         'label' => _("txt-nav-contact-import"),
                         'order' => 50,

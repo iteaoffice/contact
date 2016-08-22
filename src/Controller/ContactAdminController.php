@@ -36,7 +36,7 @@ class ContactAdminController extends ContactAbstractController
      */
     public function listAction()
     {
-        $page = $this->params()->fromRoute('page', 1);
+        $page         = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
         $contactQuery = $this->getContactService()->findEntitiesFiltered(Contact::class, $filterPlugin->getFilter());
 
@@ -49,14 +49,16 @@ class ContactAdminController extends ContactAbstractController
 
         $form->setData(['filter' => $filterPlugin->getFilter()]);
 
-        return new ViewModel([
-            'paginator'      => $paginator,
-            'form'           => $form,
-            'encodedFilter'  => urlencode($filterPlugin->getHash()),
-            'order'          => $filterPlugin->getOrder(),
-            'direction'      => $filterPlugin->getDirection(),
-            'projectService' => $this->getProjectService(),
-        ]);
+        return new ViewModel(
+            [
+                'paginator'      => $paginator,
+                'form'           => $form,
+                'encodedFilter'  => urlencode($filterPlugin->getHash()),
+                'order'          => $filterPlugin->getOrder(),
+                'direction'      => $filterPlugin->getDirection(),
+                'projectService' => $this->getProjectService(),
+            ]
+        );
     }
 
     /**
@@ -64,25 +66,27 @@ class ContactAdminController extends ContactAbstractController
      */
     public function viewAction()
     {
-        $contact = $this->getContactService()->findContactById($this->params('id'));
+        $contact    = $this->getContactService()->findContactById($this->params('id'));
         $selections = $this->getSelectionService()->findSelectionsByContact($contact);
-        $optIn = $this->getContactService()->findAll(OptIn::class);
+        $optIn      = $this->getContactService()->findAll(OptIn::class);
 
         if (is_null($contact)) {
             return $this->notFoundAction();
         }
 
-        return new ViewModel([
-            'contact'            => $contact,
-            'contactService'     => $this->getContactService(),
-            'selections'         => $selections,
-            'projects'           => $this->getProjectService()->findProjectParticipationByContact($contact),
-            'projectService'     => $this->getProjectService(),
-            'optIn'              => $optIn,
-            'callService'        => $this->getCallService(),
-            'registationService' => $this->getRegistrationService(),
-            'ideaService'        => $this->getIdeaService(),
-        ]);
+        return new ViewModel(
+            [
+                'contact'            => $contact,
+                'contactService'     => $this->getContactService(),
+                'selections'         => $selections,
+                'projects'           => $this->getProjectService()->findProjectParticipationByContact($contact),
+                'projectService'     => $this->getProjectService(),
+                'optIn'              => $optIn,
+                'callService'        => $this->getCallService(),
+                'registationService' => $this->getRegistrationService(),
+                'ideaService'        => $this->getIdeaService(),
+            ]
+        );
     }
 
     /***
@@ -94,9 +98,11 @@ class ContactAdminController extends ContactAbstractController
 
         $this->getAdminService()->findPermitContactByContact($contact);
 
-        return new ViewModel([
-            'contact' => $contact,
-        ]);
+        return new ViewModel(
+            [
+                'contact' => $contact,
+            ]
+        );
     }
 
     /**
@@ -105,7 +111,7 @@ class ContactAdminController extends ContactAbstractController
     public function impersonateAction()
     {
         $contact = $this->getContactService()->findContactById($this->params('id'));
-        $form = new Impersonate($this->getEntityManager());
+        $form    = new Impersonate($this->getEntityManager());
 
         $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
 
@@ -116,17 +122,19 @@ class ContactAdminController extends ContactAbstractController
 
             /** @var Target $target */
             $target = $this->getDeeplinkService()->findEntityById(Target::class, $data['target']);
-            $key = (!empty($data['key']) ? $data['key'] : null);
+            $key    = (! empty($data['key']) ? $data['key'] : null);
             //Create a deeplink for the user which redirects to the profile-page
             $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact, null, $key);
         }
 
-        return new ViewModel([
-            'deeplink'       => $deeplink,
-            'contact'        => $contact,
-            'contactService' => $this->getContactService(),
-            'form'           => $form,
-        ]);
+        return new ViewModel(
+            [
+                'deeplink'       => $deeplink,
+                'contact'        => $contact,
+                'contactService' => $this->getContactService(),
+                'form'           => $form,
+            ]
+        );
     }
 
     /**
@@ -143,12 +151,15 @@ class ContactAdminController extends ContactAbstractController
 
         //Get contacts in an organisation
         if ($this->getContactService()->hasOrganisation($contact)) {
-            $data = array_merge([
-                'contact' => [
-                    'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
-                    'branch'       => $contact->getContactOrganisation()->getBranch(),
+            $data = array_merge(
+                [
+                    'contact' => [
+                        'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
+                        'branch'       => $contact->getContactOrganisation()->getBranch(),
+                    ],
                 ],
-            ], $this->getRequest()->getPost()->toArray());
+                $this->getRequest()->getPost()->toArray()
+            );
 
             $form = $this->getFormService()->prepare($contact, $contact, $data);
             $form->get('contact_entity_contact')->get("organisation")
@@ -176,6 +187,8 @@ class ContactAdminController extends ContactAbstractController
                 $contact->setDateEnd(new \DateTime());
                 $this->getContactService()->updateEntity($contact);
 
+                $this->getContactSearchService()->deleteDocument($contact);
+
                 return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }
 
@@ -186,6 +199,8 @@ class ContactAdminController extends ContactAbstractController
 
                 $contact->setDateEnd(null);
                 $this->getContactService()->updateEntity($contact);
+
+                $this->getContactSearchService()->updateDocument($contact);
 
                 return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
             }
@@ -213,10 +228,14 @@ class ContactAdminController extends ContactAbstractController
                         $contactOrganisation = $contact->getContactOrganisation();
                     }
 
-                    $contactOrganisation->setBranch(strlen($data['contact_entity_contact']['branch']) === 0 ? null
-                        : $data['contact_entity_contact']['branch']);
-                    $contactOrganisation->setOrganisation($this->getOrganisationService()
-                        ->findOrganisationById($data['contact_entity_contact']['organisation']));
+                    $contactOrganisation->setBranch(
+                        strlen($data['contact_entity_contact']['branch']) === 0 ? null
+                            : $data['contact_entity_contact']['branch']
+                    );
+                    $contactOrganisation->setOrganisation(
+                        $this->getOrganisationService()
+                            ->findOrganisationById($data['contact_entity_contact']['organisation'])
+                    );
 
                     $this->getContactService()->updateEntity($contactOrganisation);
                 }
@@ -225,11 +244,13 @@ class ContactAdminController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'contactService' => $this->getContactService(),
-            'contact'        => $contact,
-            'form'           => $form,
-        ]);
+        return new ViewModel(
+            [
+                'contactService' => $this->getContactService(),
+                'contact'        => $contact,
+                'form'           => $form,
+            ]
+        );
     }
 
     /**
@@ -272,10 +293,14 @@ class ContactAdminController extends ContactAbstractController
                     $contactOrganisation = new ContactOrganisation();
                     $contactOrganisation->setContact($contact);
 
-                    $contactOrganisation->setBranch(strlen($data['contact_entity_contact']['branch']) === 0 ? null
-                        : $data['contact_entity_contact']['branch']);
-                    $contactOrganisation->setOrganisation($this->getOrganisationService()
-                        ->findOrganisationById($data['contact_entity_contact']['organisation']));
+                    $contactOrganisation->setBranch(
+                        strlen($data['contact_entity_contact']['branch']) === 0 ? null
+                            : $data['contact_entity_contact']['branch']
+                    );
+                    $contactOrganisation->setOrganisation(
+                        $this->getOrganisationService()
+                            ->findOrganisationById($data['contact_entity_contact']['organisation'])
+                    );
 
                     $this->getContactService()->updateEntity($contactOrganisation);
                 }
@@ -284,9 +309,11 @@ class ContactAdminController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'form' => $form,
-        ]);
+        return new ViewModel(
+            [
+                'form' => $form,
+            ]
+        );
     }
 
     /**
@@ -311,7 +338,7 @@ class ContactAdminController extends ContactAbstractController
             if (isset($data['upload']) && $form->isValid()) {
                 $fileData = file_get_contents($data['file']['tmp_name'], FILE_TEXT);
 
-                $importSession->active = true;
+                $importSession->active   = true;
                 $importSession->fileData = $fileData;
 
                 $handleImport = $this->handleImport(
@@ -346,12 +373,14 @@ class ContactAdminController extends ContactAbstractController
 
         $results = [];
         foreach ($this->getContactService()->searchContacts($search) as $result) {
-            $text = trim(sprintf(
-                "%s, %s (%s)",
-                trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
-                $result['firstName'],
-                $result['email']
-            ));
+            $text = trim(
+                sprintf(
+                    "%s, %s (%s)",
+                    trim(sprintf("%s %s", $result['middleName'], $result['lastName'])),
+                    $result['firstName'],
+                    $result['email']
+                )
+            );
 
             /*
              * Do a fall-back to the email when the name is empty
