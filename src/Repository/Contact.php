@@ -646,15 +646,15 @@ class Contact extends EntityRepository
     {
         //Normalize the array to default values
         foreach ($contacts as $k => $contact) {
-            $contact['id'] = $contact['c_id'];
+            $contact['id'] = $contact['contact_entity_contact_id'];
             unset($contact['c_id']);
-            $contact['email'] = $contact['c_email'];
+            $contact['email'] = $contact['contact_entity_contact_email'];
             unset($contact['c_email']);
-            $contact['firstName'] = $contact['c_firstName'];
+            $contact['firstName'] = $contact['contact_entity_contact_firstName'];
             unset($contact['c_firstName']);
-            $contact['middleName'] = $contact['c_middleName'];
+            $contact['middleName'] = $contact['contact_entity_contact_middleName'];
             unset($contact['c_middleName']);
-            $contact['lastName'] = $contact['c_lastName'];
+            $contact['lastName'] = $contact['contact_entity_contact_lastName'];
             unset($contact['c_lastName']);
             $contact['fullname']     = sprintf(
                 "%s %s",
