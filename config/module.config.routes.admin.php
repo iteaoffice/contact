@@ -36,6 +36,16 @@ return [
                                     ],
                                 ],
                             ],
+                            'export'            => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/export[/q-:encodedFilter].csv',
+                                    'defaults' => [
+                                        'action'    => 'export',
+                                        'privilege' => 'export',
+                                    ],
+                                ],
+                            ],
                             'new'         => [
                                 'type'    => 'Literal',
                                 'options' => [

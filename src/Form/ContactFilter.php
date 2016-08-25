@@ -13,6 +13,7 @@ namespace Contact\Form;
 
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
+use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
@@ -66,13 +67,20 @@ class ContactFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'    => EntityMultiCheckbox::class,
-                'name'    => 'title',
+                'type'    => EntitySelect::class,
+                'name'    => 'country',
                 'options' => [
-                    'target_class'   => Entity\Title::class,
+                    'target_class'   => Entity\Country::class,
                     'inline'         => true,
                     'object_manager' => $entityManager,
-                    'label'          => _("txt-title"),
+                    'label'          => _("txt-country"),
+                    'find_method'    => [
+                        'name'   => 'findForForm',
+                        'params' => [
+                            'criteria' => [],
+                            'orderBy'  => ['country' => 'ASC'],
+                        ],
+                    ],
                 ],
             ]
         );
@@ -84,8 +92,9 @@ class ContactFilter extends Form
                 'options' => [
                     'value_options' => [
                         'hasOrganisation'    => _("txt-has-organisation"),
+                        'hasNoOrganisation'  => _("txt-has-no-organisation"),
                         'includeDeactivated' => _("txt-include-deactivated"),
-                        'onlyDeactivated' => _("txt-only-deactivated"),
+                        'onlyDeactivated'    => _("txt-only-deactivated"),
                     ],
                     'inline'        => true,
                     'label'         => _("txt-organisation"),

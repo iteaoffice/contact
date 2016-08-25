@@ -45,7 +45,7 @@ class Contact extends EntityRepository
         /*
          * Only add a limit when asked
          */
-        if ( ! is_null($limit)) {
+        if (! is_null($limit)) {
             $qb->setMaxResults($limit);
         }
 
@@ -89,14 +89,15 @@ class Contact extends EntityRepository
             }
         }
 
+
         /** Only when the filter is turned on, omit this extra rule */
-        if ( ! (array_key_exists('options', $filter) && in_array('includeDeactivated', $filter['options']))
+        if (! (array_key_exists('options', $filter) && in_array('includeDeactivated', $filter['options']))
             && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options']))
         ) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('content_entity_contact.dateEnd'));
         }
 
-        if ( ! isset($filter['options'])) {
+        if (! isset($filter['options'])) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('content_entity_contact.dateEnd'));
         }
 
@@ -108,11 +109,22 @@ class Contact extends EntityRepository
             );
         }
 
-        if (array_key_exists('title', $filter)) {
-            $queryBuilder->join('content_entity_contact.title', 'general_entity_title');
+        if (array_key_exists('country', $filter)) {
+            $queryBuilder->innerJoin(
+                'content_entity_contact.contactOrganisation',
+                'contact_entity_contact_organisation_for_country'
+            );
+            $queryBuilder->innerJoin(
+                'contact_entity_contact_organisation_for_country.organisation',
+                'contact_entity_contact_organisation_for_country_organisation'
+            );
+            $queryBuilder->innerJoin(
+                'contact_entity_contact_organisation_for_country_organisation.country',
+                'contact_entity_contact_organisation_for_country_organisation_country'
+            );
             $queryBuilder->andWhere(
                 $queryBuilder->expr()
-                    ->in('general_entity_title.id', implode($filter['title'], ', '))
+                    ->in('contact_entity_contact_organisation_for_country_organisation_country.id', $filter['country'])
             );
         }
 
@@ -225,7 +237,7 @@ class Contact extends EntityRepository
         $queryBuilder->orWhere('contact_entity_contact.email = ?1');
         $queryBuilder->setParameter(1, $email);
 
-        if ( ! $onlyMain) {
+        if (! $onlyMain) {
             $queryBuilder->leftJoin('contact_entity_contact.emailAddress', 'contact_entity_email');
             $queryBuilder->orWhere('contact_entity_email.email = ?2');
             $queryBuilder->setParameter(2, $email);

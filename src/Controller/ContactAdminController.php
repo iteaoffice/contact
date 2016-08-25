@@ -62,6 +62,69 @@ class ContactAdminController extends ContactAbstractController
     }
 
     /**
+     * @return array|\Zend\Stdlib\ResponseInterface
+     */
+    public function exportAction()
+    {
+        $filterPlugin = $this->getContactFilter();
+
+        $contactQuery = $this->getContactService()->findEntitiesFiltered(Contact::class, $filterPlugin->getFilter());
+
+        /** @var Contact[] $contacts */
+        $contacts = $contactQuery->getResult();
+
+        // Open the output stream
+        $fh = fopen('php://output', 'w');
+
+        ob_start();
+
+        fputcsv(
+            $fh,
+            [
+                'Email',
+                'Firstname',
+                'Lastname',
+                'Organisation',
+                'Country',
+            ]
+        );
+
+        foreach ($contacts as $contact) {
+            fputcsv(
+                $fh,
+                [
+                    $contact->getEmail(),
+                    $contact->getFirstName(),
+                    trim(sprintf("%s %s", $contact->getMiddleName(), $contact->getLastName())),
+                    ! is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()->getOrganisation(
+                    ) : '',
+                    ! is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()->getOrganisation(
+                    )->getCountry() : '',
+                ]
+            );
+        }
+
+        $string = ob_get_clean();
+
+        //To be able to open the file correctly in Excel, we need to convert it to UTF-16LE
+        $string = mb_convert_encoding($string, 'UTF-16LE', 'UTF8');
+
+        $response = $this->getResponse();
+        $headers  = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'text/csv');
+        $headers->addHeaderLine(
+            'Content-Disposition',
+            "attachment; filename=\"contact.csv\""
+        );
+        $headers->addHeaderLine('Accept-Ranges', 'bytes');
+        $headers->addHeaderLine('Content-Length', strlen($string));
+
+        $response->setContent($string);
+
+        return $response;
+    }
+
+    /**
      * @return array|ViewModel
      */
     public function viewAction()

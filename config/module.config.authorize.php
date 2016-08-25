@@ -105,6 +105,11 @@ return [
                     'assertion' => ContactAssertion::class
                 ],
                 [
+                    'route'     => 'zfcadmin/contact-admin/export',
+                    'roles'     => [Access::ACCESS_OFFICE],
+                    'assertion' => ContactAssertion::class
+                ],
+                [
                     'route'     => 'zfcadmin/contact-admin/edit',
                     'roles'     => [Access::ACCESS_OFFICE],
                     'assertion' => ContactAssertion::class
