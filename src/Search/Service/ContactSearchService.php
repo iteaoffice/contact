@@ -121,7 +121,7 @@ class ContactSearchService extends AbstractSearchService
      *
      * @return ContactSearchService
      */
-    public function setSearch($searchTerm, $order = 'lastname', $direction = Query::SORT_ASC)
+    public function setSearch($searchTerm, $order = '', $direction = Query::SORT_ASC)
     {
         $this->setQuery($this->getSolrClient()->createSelect());
         $this->getQuery()->setQuery(str_replace('%s', $searchTerm, implode(' ' . Query::QUERY_OPERATOR_OR . ' ', [
@@ -131,8 +131,17 @@ class ContactSearchService extends AbstractSearchService
             'profile:*%s*',
             'country:*%s*',
         ])));
+        $hasTerm = !in_array($searchTerm, ['*','']);
+        $hasSort = ($order !== '');
 
-        $this->getQuery()->addSort($order, $direction);
+        if ($hasSort) {
+            $this->getQuery()->addSort($order, $direction);
+        }
+        if($hasTerm){
+            $this->getQuery()->addSort('score', Query::SORT_DESC);
+        } else {
+            $this->getQuery()->addSort('lastname', Query::SORT_ASC);
+        }
 
         $facetSet = $this->getQuery()->getFacetSet();
         $facetSet->createFacetField('organisation_type')->setField('organisation_type')->setMinCount(0)

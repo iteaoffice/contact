@@ -105,7 +105,6 @@ $config = [
             InputFilter\ContactFilter::class                        => Factory\InputFilterFactory::class,
             InputFilter\SelectionFilter::class                      => Factory\InputFilterFactory::class,
             Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
-            Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
             Acl\Assertion\Address::class                            => Acl\Factory\AssertionFactory::class,
             Acl\Assertion\Contact::class                            => Acl\Factory\AssertionFactory::class,
             Acl\Assertion\Facebook::class                           => Acl\Factory\AssertionFactory::class,
