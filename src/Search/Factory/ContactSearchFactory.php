@@ -12,11 +12,12 @@
  *
  * @link        http://github.com/iteaoffice/main for the canonical source repository
  */
+
 namespace Contact\Search\Factory;
 
 use Contact\Search\Service\ContactSearchService;
 use Contact\Service\ContactService;
-use Project\Search\Service\DescriptionSearchService;
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -25,22 +26,39 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  *
  * @package Contact\Search\Factory
  */
-class ContactSearchFactory implements FactoryInterface
+final class ContactSearchFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * Create an instance of the requested class name.
      *
-     * @return DescriptionSearchService
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param null|array         $options
+     *
+     * @return ContactSearchService
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $searchService = new ContactSearchService();
-        $searchService->setServiceLocator($serviceLocator);
+        /** @var ContactSearchService $searchService */
+        $searchService = new $requestedName($options);
+        $searchService->setServiceLocator($container);
 
         /** @var ContactService $contactService */
-        $contactService = $serviceLocator->get(ContactService::class);
+        $contactService = $container->get(ContactService::class);
         $searchService->setContactService($contactService);
 
         return $searchService;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param string                  $canonicalName
+     * @param string                  $requestedName
+     *
+     * @return ContactSearchService
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
+    {
+        return $this($serviceLocator, $requestedName);
     }
 }
