@@ -131,13 +131,13 @@ class ContactSearchService extends AbstractSearchService
             'profile:*%s*',
             'country:*%s*',
         ])));
-        $hasTerm = !in_array($searchTerm, ['*','']);
+        $hasTerm = !in_array($searchTerm, ['*', '']);
         $hasSort = ($order !== '');
 
         if ($hasSort) {
             $this->getQuery()->addSort($order, $direction);
         }
-        if($hasTerm){
+        if ($hasTerm) {
             $this->getQuery()->addSort('score', Query::SORT_DESC);
         } else {
             $this->getQuery()->addSort('lastname', Query::SORT_ASC);

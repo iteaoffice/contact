@@ -9,7 +9,6 @@ return array(
     'Contact\Options\ModuleOptions'                                => __DIR__ . '/src/Options/ModuleOptions.php',
     'Contact\Search\Factory\ContactSearchFactory'                  => __DIR__ . '/src/Search/Factory/ContactSearchFactory.php',
     'Contact\Search\Service\ContactSearchService'                  => __DIR__ . '/src/Search/Service/ContactSearchService.php',
-    'Contact\Search\ContactSearchService'                          => __DIR__ . '/src/Search/ContactSearchService.php',
     'Contact\Module'                                               => __DIR__ . '/src/Module.php',
     'Contact\Provider\Identity\AuthenticationIdentityProvider'     => __DIR__ . '/src/Provider/Identity/AuthenticationIdentityProvider.php',
     'Contact\Hydrator\Profile'                                     => __DIR__ . '/src/Hydrator/Profile.php',

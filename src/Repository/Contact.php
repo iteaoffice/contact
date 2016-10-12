@@ -66,8 +66,7 @@ class Contact extends EntityRepository
         if (array_key_exists('search', $filter)) {
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()
-                        ->like('content_entity_contact.firstName', ':like'),
+                    $queryBuilder->expr()->like('content_entity_contact.firstName', ':like'),
                     $queryBuilder->expr()->like('content_entity_contact.middleName', ':like'),
                     $queryBuilder->expr()->like('content_entity_contact.lastName', ':like'),
                     $queryBuilder->expr()->like('content_entity_contact.email', ':like')
@@ -109,7 +108,10 @@ class Contact extends EntityRepository
             );
         }
 
-        if (array_key_exists('country', $filter)) {
+
+        if (array_key_exists('country', $filter) && ! empty($filter['country'])
+
+        ) {
             $queryBuilder->innerJoin(
                 'content_entity_contact.contactOrganisation',
                 'contact_entity_contact_organisation_for_country'

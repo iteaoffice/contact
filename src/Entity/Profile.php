@@ -61,29 +61,31 @@ class Profile extends EntityAbstract
      *
      * @var array
      */
-    protected $hideForOthersTemplates = array(
-        self::NOT_HIDE_FOR_OTHERS => 'txt-not-hide-for-others',
-        self::HIDE_FOR_OTHERS     => 'txt-hide-for-others',
-    );
+    protected $hideForOthersTemplates
+        = array(
+            self::NOT_HIDE_FOR_OTHERS => 'txt-not-hide-for-others',
+            self::HIDE_FOR_OTHERS     => 'txt-hide-for-others',
+        );
     /**
      * Textual versions of the hideForOthers.
      *
      * @var array
      */
-    protected $hidePhotoTemplates = array(
-        self::NOT_HIDE_PHOTO => 'txt-not-hide-photo',
-        self::HIDE_PHOTO     => 'txt-hide-photo',
-    );
+    protected $hidePhotoTemplates
+        = array(
+            self::NOT_HIDE_PHOTO => 'txt-not-hide-photo',
+            self::HIDE_PHOTO     => 'txt-hide-photo',
+        );
     /**
      * Textual versions of the visibility.
      *
      * @var array
      */
-    protected $visibleTemplates = array(
-        self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
-        self::VISIBLE_COMMUNITY => 'txt-visibility-community',
-        self::VISIBLE_PUBLIC    => 'txt-visibility-public',
-    );
+    protected $visibleTemplates
+        = array(
+            self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
+            self::VISIBLE_COMMUNITY => 'txt-visibility-community',
+        );
     /**
      * @ORM\Column(name="profile_id", length=10, type="integer", nullable=false)
      * @ORM\Id
@@ -216,7 +218,7 @@ class Profile extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
             $inputFilter->add(
@@ -234,24 +236,24 @@ class Profile extends EntityAbstract
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'       => 'hideForOthers',
-                        'required'   => false,
+                        'name'     => 'hideForOthers',
+                        'required' => false,
                     )
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'       => 'hidePhoto',
-                        'required'   => false,
+                        'name'     => 'hidePhoto',
+                        'required' => false,
                     )
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
                     array(
-                        'name'       => 'visible',
-                        'required'   => true,
+                        'name'     => 'visible',
+                        'required' => true,
                     )
                 )
             );
