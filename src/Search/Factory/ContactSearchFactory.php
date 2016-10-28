@@ -12,35 +12,30 @@
  *
  * @link        http://github.com/iteaoffice/main for the canonical source repository
  */
-
 namespace Contact\Search\Factory;
 
 use Contact\Search\Service\ContactSearchService;
 use Contact\Service\ContactService;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Class ContactSearchFactory
  *
  * @package Contact\Search\Factory
  */
-final class ContactSearchFactory implements FactoryInterface
+class ContactSearchFactory implements FactoryInterface
 {
     /**
-     * Create an instance of the requested class name.
-     *
      * @param ContainerInterface $container
      * @param string             $requestedName
-     * @param null|array         $options
+     * @param array|null|null    $options
      *
-     * @return ContactSearchService
+     * @return mixed
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var ContactSearchService $searchService */
-        $searchService = new $requestedName($options);
+        $searchService = new ContactSearchService();
         $searchService->setServiceLocator($container);
 
         /** @var ContactService $contactService */
@@ -48,17 +43,5 @@ final class ContactSearchFactory implements FactoryInterface
         $searchService->setContactService($contactService);
 
         return $searchService;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return ContactSearchService
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
-    {
-        return $this($serviceLocator, $requestedName);
     }
 }

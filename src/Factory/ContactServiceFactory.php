@@ -24,8 +24,7 @@ use General\Service\GeneralService;
 use Interop\Container\ContainerInterface;
 use Organisation\Service\OrganisationService;
 use Project\Service\ProjectService;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use ZfcUser\Options\UserServiceOptionsInterface;
 
 /**
@@ -40,11 +39,12 @@ final class ContactServiceFactory implements FactoryInterface
      * @param string             $requestedName
      * @param array|null         $options
      *
-     * @return AddressService
+     * @return ContactService
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ContactService
     {
-        $contactService = new ContactService();
+        /** @var ContactService $contactService */
+        $contactService = new $requestedName($options);
         $contactService->setServiceLocator($container);
 
         /** @var EntityManager $entityManager */
@@ -84,17 +84,5 @@ final class ContactServiceFactory implements FactoryInterface
         $contactService->setZfcUserOptions($zfcModuleOptions);
 
         return $contactService;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return ContactService
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
-    {
-        return $this($serviceLocator, $requestedName);
     }
 }

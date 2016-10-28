@@ -24,7 +24,7 @@ use Zend\InputFilter\InputFilterInterface;
  * @ORM\Table(name="selection")
  * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
  * @Gedmo\SoftDeleteable(fieldName="dateDeleted")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_selection")
  *
  * @category    Contact

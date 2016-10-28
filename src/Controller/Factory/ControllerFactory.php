@@ -26,14 +26,14 @@ use Event\Service\RegistrationService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use Interop\Container\ContainerInterface;
-use Organisation\Controller\OrganisationAbstractController;
 use Organisation\Service\OrganisationService;
+use Program\Options\ModuleOptions;
 use Program\Service\CallService;
 use Project\Service\IdeaService;
 use Project\Service\ProjectService;
 use Zend\Mvc\Controller\ControllerManager;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\View\HelperPluginManager;
 
 /**
  * Class ControllerFactory
@@ -47,84 +47,77 @@ final class ControllerFactory implements FactoryInterface
      * @param string                               $requestedName
      * @param array|null                           $options
      *
-     * @return mixed
+     * @return ContactAbstractController
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
-    {
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null
+    ): ContactAbstractController {
         /** @var ContactAbstractController $controller */
         $controller = new $requestedName($options);
 
-        $serviceManager = $container->getServiceLocator();
-
         /** @var ContactService $contactService */
-        $contactService = $serviceManager->get(ContactService::class);
+        $contactService = $container->get(ContactService::class);
         $controller->setContactService($contactService);
 
         /** @var FormService $formService */
-        $formService = $serviceManager->get(FormService::class);
+        $formService = $container->get(FormService::class);
         $controller->setFormService($formService);
 
         /** @var SelectionService $selectionService */
-        $selectionService = $serviceManager->get(SelectionService::class);
+        $selectionService = $container->get(SelectionService::class);
         $controller->setSelectionService($selectionService);
 
         /** @var EntityManager $entityManager */
-        $entityManager = $serviceManager->get(EntityManager::class);
+        $entityManager = $container->get(EntityManager::class);
         $controller->setEntityManager($entityManager);
 
         /** @var AdminService $adminService */
-        $adminService = $serviceManager->get(AdminService::class);
+        $adminService = $container->get(AdminService::class);
         $controller->setAdminService($adminService);
 
         /** @var DeeplinkService $deeplinkService */
-        $deeplinkService = $serviceManager->get(DeeplinkService::class);
+        $deeplinkService = $container->get(DeeplinkService::class);
         $controller->setDeeplinkService($deeplinkService);
 
         /** @var GeneralService $generalService */
-        $generalService = $serviceManager->get(GeneralService::class);
+        $generalService = $container->get(GeneralService::class);
         $controller->setGeneralService($generalService);
 
         /** @var ContactSearchService $contactSearchService */
-        $contactSearchService = $serviceManager->get(ContactSearchService::class);
+        $contactSearchService = $container->get(ContactSearchService::class);
         $controller->setContactSearchService($contactSearchService);
 
         /** @var EmailService $emailService */
-        $emailService = $serviceManager->get(EmailService::class);
+        $emailService = $container->get(EmailService::class);
         $controller->setEmailService($emailService);
 
         /** @var ProjectService $projectService */
-        $projectService = $serviceManager->get(ProjectService::class);
+        $projectService = $container->get(ProjectService::class);
         $controller->setProjectService($projectService);
 
         /** @var OrganisationService $organisationService */
-        $organisationService = $serviceManager->get(OrganisationService::class);
+        $organisationService = $container->get(OrganisationService::class);
         $controller->setOrganisationService($organisationService);
 
         /** @var CallService $callService */
-        $callService = $serviceManager->get(CallService::class);
+        $callService = $container->get(CallService::class);
         $controller->setCallService($callService);
 
         /** @var IdeaService $ideaService */
-        $ideaService = $serviceManager->get(IdeaService::class);
+        $ideaService = $container->get(IdeaService::class);
         $controller->setIdeaService($ideaService);
 
         /** @var RegistrationService $registrationService */
-        $registrationService = $serviceManager->get(RegistrationService::class);
+        $registrationService = $container->get(RegistrationService::class);
         $controller->setRegistrationService($registrationService);
 
+        /** @var ModuleOptions $moduleOptions */
+        $moduleOptions = $container->get(ModuleOptions::class);
+        $controller->setProgramModuleOptions($moduleOptions);
+
+        /** @var HelperPluginManager $viewHelperManager */
+        $viewHelperManager = $container->get('ViewHelperManager');
+        $controller->setViewHelperManager($viewHelperManager);
 
         return $controller;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $container
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return OrganisationAbstractController
-     */
-    public function createService(ServiceLocatorInterface $container, $canonicalName = null, $requestedName = null)
-    {
-        return $this($container, $requestedName);
     }
 }

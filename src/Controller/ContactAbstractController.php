@@ -23,11 +23,14 @@ use Event\Service\RegistrationService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
+use Program\Options\ModuleOptions;
 use Program\Service\CallService;
 use Project\Service\IdeaService;
 use Project\Service\ProjectService;
+use Zend\I18n\View\Helper\Translate;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Zend\View\HelperPluginManager;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
@@ -97,6 +100,14 @@ abstract class ContactAbstractController extends AbstractActionController
      * @var ContactSearchService
      */
     protected $contactSearchService;
+    /**
+     * @var ModuleOptions;
+     */
+    protected $programModuleOptions;
+    /**
+     * @var HelperPluginManager
+     */
+    protected $viewHelperManager;
 
     /**
      * Gateway to the Contact Service.
@@ -243,6 +254,26 @@ abstract class ContactAbstractController extends AbstractActionController
     }
 
     /**
+     * @return HelperPluginManager
+     */
+    public function getViewHelperManager(): HelperPluginManager
+    {
+        return $this->viewHelperManager;
+    }
+
+    /**
+     * @param HelperPluginManager $viewHelperManager
+     *
+     * @return ContactAbstractController
+     */
+    public function setViewHelperManager(HelperPluginManager $viewHelperManager): ContactAbstractController
+    {
+        $this->viewHelperManager = $viewHelperManager;
+
+        return $this;
+    }
+
+    /**
      * Proxy for the flash messenger helper to have the string translated earlier.
      *
      * @param $string
@@ -251,10 +282,10 @@ abstract class ContactAbstractController extends AbstractActionController
      */
     protected function translate($string)
     {
-        /*
-         * @var Translate
+        /**
+         * @var Translate $translate
          */
-        $translate = $this->getPluginManager()->getServiceLocator()->get('ViewHelperManager')->get('translate');
+        $translate = $this->getViewHelperManager()->get('translate');
 
         return $translate($string);
     }
@@ -395,6 +426,26 @@ abstract class ContactAbstractController extends AbstractActionController
     public function setIdeaService($ideaService)
     {
         $this->ideaService = $ideaService;
+
+        return $this;
+    }
+
+    /**
+     * @return ModuleOptions
+     */
+    public function getProgramModuleOptions(): ModuleOptions
+    {
+        return $this->programModuleOptions;
+    }
+
+    /**
+     * @param ModuleOptions $programModuleOptions
+     *
+     * @return ContactAbstractController
+     */
+    public function setProgramModuleOptions(ModuleOptions $programModuleOptions): ContactAbstractController
+    {
+        $this->programModuleOptions = $programModuleOptions;
 
         return $this;
     }

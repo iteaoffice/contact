@@ -12,43 +12,46 @@ namespace Contact\Navigation\Factory;
 
 use Contact\Navigation\Service\ContactNavigationService;
 use Contact\Service\ContactService;
+use Interop\Container\ContainerInterface;
 use Zend\Navigation\Navigation;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * NodeService.
  *
  * this is a wrapper for node entity related services
  */
-class ContactNavigationServiceFactory implements FactoryInterface
+final class ContactNavigationServiceFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
      *
      * @return ContactNavigationService
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null
+    ): ContactNavigationService {
         $contactNavigationService = new ContactNavigationService();
 
-        $contactNavigationService->setTranslator($serviceLocator->get('viewhelpermanager')->get('translate'));
         /**
          * @var $contactService ContactService
          */
-        $contactService = $serviceLocator->get(ContactService::class);
+        $contactService = $container->get(ContactService::class);
         $contactNavigationService->setContactService($contactService);
-        $application = $serviceLocator->get('application');
+        $application = $container->get('application');
         $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());
         $contactNavigationService->setRouter($application->getMvcEvent()->getRouter());
 
-        if ($serviceLocator->get('Application\Authentication\Service')->hasIdentity()) {
-            $contactNavigationService->setContact($serviceLocator->get('Application\Authentication\Service')
-                ->getIdentity());
+        if ($container->get('Application\Authentication\Service')->hasIdentity()) {
+            $contactNavigationService->setContact(
+                $container->get('Application\Authentication\Service')
+                    ->getIdentity()
+            );
         }
 
         /* @var $navigation Navigation */
-        $navigation = $serviceLocator->get('navigation');
+        $navigation = $container->get('Zend\Navigation\Community');
         $contactNavigationService->setNavigation($navigation);
 
         return $contactNavigationService;

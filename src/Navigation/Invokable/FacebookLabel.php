@@ -38,9 +38,13 @@ class FacebookLabel extends AbstractNavigationInvokable
             /** @var Facebook $facebook */
             $facebook = $this->getEntities()->get(Facebook::class);
 
-            $page->setParams(array_merge($page->getParams(), [
-                'id' => $facebook->getId(),
-            ]));
+            $page->setParams(
+                array_merge(
+                    $page->getParams(), [
+                    'id' => $facebook->getId(),
+                ]
+                )
+            );
             $label = (string)$facebook->getFacebook();
         } else {
             $label = $this->translate('txt-nav-facebook');

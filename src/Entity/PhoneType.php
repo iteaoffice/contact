@@ -22,7 +22,7 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @ORM\Table(name="phone_type")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("phone_type")
  *
  * @category    Contact

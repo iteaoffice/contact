@@ -17,7 +17,7 @@ return [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [
-                    'route'    => '/assets/' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test'),
+                    'route'    => '/assets/' . (defined("ITEAOFFICE_HOST") ? ITEAOFFICE_HOST : 'test'),
                     'defaults' => [
                         'controller' => Controller\ContactController::class,
                     ],

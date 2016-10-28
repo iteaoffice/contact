@@ -54,7 +54,8 @@
             <div class="col-sm-9">
                 <select class="form-control" name="contact_organisation[branch]">
                     {% for key, branch in branches %}
-                        <option value="{{ key }}">{{ branch }}</option>
+                        <option value="{{ key }}"
+                                {% if contact.contactOrganisation.branch == key %}selected="selected"{% endif %}>{{ branch }}</option>
                     {% endfor %}
                 </select>
 
@@ -67,6 +68,7 @@
     <div id="organisation_country"
          {% if hasOrganisations %}class="hidden"{% endif %}>
         {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
+        {{ ztbformelement(form.get('contact_organisation').get('type')) }}
         {{ ztbformelement(form.get('contact_organisation').get('country')) }}
     </div>
 
@@ -121,9 +123,6 @@
                          * Use the branch val on form change, and take the current branch in any other case
                          */
                         var branchValue = '{{ contact.contactOrganisation.branch|raw }}';
-                        if (branchSelect.val() != null) {
-                            branchValue = branchSelect.val()
-                        }
 
                         branchSelect.find('option').remove();
 

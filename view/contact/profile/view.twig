@@ -5,8 +5,10 @@
 
 <ul id="tab" class="nav nav-tabs">
     <li class="active"><a href="#profile" data-toggle="tab">{{ translate("txt-profile")|capitalize }}</a></li>
-    <li><a href="#organisation" data-toggle="tab">{{ translate("txt-organisation")|capitalize }} {% if not contact.contactOrganisation %}<i class="error fa fa-exclamation-triangle" aria-hidden="true"></i>
-        {% endif %}</a></li>
+    <li><a href="#organisation"
+           data-toggle="tab">{{ translate("txt-organisation")|capitalize }} {% if not contact.contactOrganisation %}<i
+                    class="error fa fa-exclamation-triangle" aria-hidden="true"></i>
+            {% endif %}</a></li>
     <li><a href="#event" data-toggle="tab">{{ translate("txt-events")|capitalize }}</a></li>
     <li><a href="#updates" data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
     {% if isAllowed('route/zfcadmin/index') %}
@@ -48,7 +50,13 @@
 
 
         {% if hasNda %}
-            {{ ndaLink(null,'upload', 'button') }}
+            {% if not isAllowed('route/community/program/nda/upload','upload') %}
+                <button class="btn btn-primary"
+                        disabled><i class="fa fa-upload"></i> {{ translate("txt-upload-of-nda-not-possible-without-organisation") }}</button>
+            {% else %}
+                {{ ndaLink(null,'upload', 'button') }}
+            {% endif %}
+
         {% endif %}
     </div>
 

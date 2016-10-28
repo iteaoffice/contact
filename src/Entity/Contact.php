@@ -22,7 +22,7 @@ use ZfcUser\Entity\UserInterface;
  *
  * @ORM\Table(name="contact")
  * @ORM\Entity(repositoryClass="Contact\Repository\Contact")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_contact")
  *
  * @category    Contact

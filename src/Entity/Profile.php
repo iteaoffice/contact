@@ -21,7 +21,7 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @ORM\Table(name="contact_profile")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_profile")
  *
  * @category    Contact
@@ -52,10 +52,6 @@ class Profile extends EntityAbstract
      * Constant for visible = 1 (community).
      */
     const VISIBLE_COMMUNITY = 1;
-    /**
-     * Constant for visible = 1 (public).
-     */
-    const VISIBLE_PUBLIC = 2;
     /**
      * Textual versions of the hideForOthers.
      *
@@ -199,89 +195,6 @@ class Profile extends EntityAbstract
     public function getVisibleTemplates()
     {
         return $this->visibleTemplates;
-    }
-
-    /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (! $this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'description',
-                        'required' => false,
-                        'filters'  => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                    )
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'hideForOthers',
-                        'required' => false,
-                    )
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'hidePhoto',
-                        'required' => false,
-                    )
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'visible',
-                        'required' => true,
-                    )
-                )
-            );
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    /**
-     * Needed for the hydration of form elements.
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return array(
-            'contact'       => $this->contact,
-            'description'   => $this->description,
-            'hideForOthers' => $this->hideForOthers,
-            'hidePhoto'     => $this->hidePhoto,
-            'visible'       => $this->visible,
-        );
-    }
-
-    public function populate()
-    {
-        return $this->getArrayCopy();
     }
 
     /**

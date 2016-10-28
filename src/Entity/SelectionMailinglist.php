@@ -18,7 +18,7 @@ use Zend\Form\Annotation;
  *
  * @ORM\Table(name="selection_mailinglist")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_organisation")
  *
  * @category    Contact

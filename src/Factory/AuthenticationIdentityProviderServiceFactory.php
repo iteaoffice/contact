@@ -13,13 +13,12 @@ namespace Contact\Factory;
 use Admin\Service\AdminService;
 use Contact\Provider\Identity\AuthenticationIdentityProvider;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * Simple authentication provider factory.
+ * Class AuthenticationIdentityProviderServiceFactory
  *
- * @author Ingo Walz <ingo.walz@googlemail.com>
+ * @package Contact\Factory
  */
 final class AuthenticationIdentityProviderServiceFactory implements FactoryInterface
 {
@@ -30,30 +29,18 @@ final class AuthenticationIdentityProviderServiceFactory implements FactoryInter
      *
      * @return AuthenticationIdentityProvider
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
-    {
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null
+    ): AuthenticationIdentityProvider {
         $user = $container->get('zfcuser_user_service');
 
         /** @var AdminService $adminService */
         $adminService = $container->get(AdminService::class);
         /** @var AuthenticationIdentityProvider $simpleIdentityProvider */
         $simpleIdentityProvider = new $requestedName($user->getAuthService(), $adminService, $options);
-        $config = $container->get('BjyAuthorize\Config');
+        $config                 = $container->get('BjyAuthorize\Config');
         $simpleIdentityProvider->setDefaultRole($config['default_role']);
         $simpleIdentityProvider->setAuthenticatedRole($config['authenticated_role']);
 
         return $simpleIdentityProvider;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return AuthenticationIdentityProvider
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
-    {
-        return $this($serviceLocator, $requestedName);
     }
 }

@@ -33,6 +33,7 @@ use General\Entity\Title;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Type;
 use Organisation\Entity\Web;
+use Organisation\Service\OrganisationService;
 use Project\Entity\Project;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Validator\EmailAddress;
@@ -211,7 +212,7 @@ class ContactService extends ServiceAbstract
             return '';
         }
 
-        if (!is_null($contact->getTitle()->getAttention())) {
+        if ( ! is_null($contact->getTitle()->getAttention())) {
             return $contact->getTitle()->getAttention();
         } elseif ((int)$contact->getGender()->getId() !== 0) {
             return $contact->getGender()->getAttention();
@@ -229,12 +230,14 @@ class ContactService extends ServiceAbstract
      */
     public function parseOrganisation(Contact $contact)
     {
-        if (!$this->hasOrganisation($contact)) {
+        if ( ! $this->hasOrganisation($contact)) {
             return null;
         }
 
-        return $this->getOrganisationService()->parseOrganisationWithBranch($contact->getContactOrganisation()
-            ->getBranch(), $contact->getContactOrganisation()->getOrganisation());
+        return $this->getOrganisationService()->parseOrganisationWithBranch(
+            $contact->getContactOrganisation()
+                ->getBranch(), $contact->getContactOrganisation()->getOrganisation()
+        );
     }
 
     /**
@@ -246,7 +249,7 @@ class ContactService extends ServiceAbstract
      */
     public function hasOrganisation(Contact $contact)
     {
-        return !is_null($contact->getContactOrganisation());
+        return ! is_null($contact->getContactOrganisation());
     }
 
     /**
@@ -256,7 +259,7 @@ class ContactService extends ServiceAbstract
      */
     public function isFunder(Contact $contact)
     {
-        return !is_null($contact->getFunder());
+        return ! is_null($contact->getFunder());
     }
 
     /**
@@ -278,7 +281,7 @@ class ContactService extends ServiceAbstract
      */
     public function parseCountry(Contact $contact)
     {
-        if (!$this->hasOrganisation($contact)) {
+        if ( ! $this->hasOrganisation($contact)) {
             return null;
         }
 
@@ -384,14 +387,16 @@ class ContactService extends ServiceAbstract
      */
     private function getPhoneByContactAndType(Contact $contact, $type)
     {
-        if (!in_array($type, PhoneType::getPhoneTypes())) {
+        if ( ! in_array($type, PhoneType::getPhoneTypes())) {
             throw new \InvalidArgumentException(sprintf("A invalid phone type chosen"));
         }
 
-        return $this->getEntityManager()->getRepository(Phone::class)->findOneBy([
-            'contact' => $contact,
-            'type'    => $type,
-        ]);
+        return $this->getEntityManager()->getRepository(Phone::class)->findOneBy(
+            [
+                'contact' => $contact,
+                'type'    => $type,
+            ]
+        );
     }
 
     /**
@@ -436,8 +441,10 @@ class ContactService extends ServiceAbstract
         /*
          * Include all the optIns
          */
-        $contact->setOptIn($this->getEntityManager()->getRepository('Contact\Entity\OptIn')
-            ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE]));
+        $contact->setOptIn(
+            $this->getEntityManager()->getRepository('Contact\Entity\OptIn')
+                ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
+        );
         /**
          * @var $contact Contact
          */
@@ -446,7 +453,7 @@ class ContactService extends ServiceAbstract
         $target = $this->getDeeplinkService()->createTargetFromRoute('community/contact/profile/view');
         //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact);
-        $email = $this->getEmailService()->create();
+        $email    = $this->getEmailService()->create();
         $this->getEmailService()->setTemplate("/auth/register:mail");
         $email->setDisplayName($contact->getDisplayName());
         $email->addTo($emailAddress);
@@ -470,10 +477,12 @@ class ContactService extends ServiceAbstract
         //Create the account
         $contact = $this->findContactByEmail($emailAddress, true);
         if (is_null($contact)) {
-            throw new \InvalidArgumentException(sprintf(
-                "The contact with emailAddress %s cannot be found",
-                $emailAddress
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "The contact with emailAddress %s cannot be found",
+                    $emailAddress
+                )
+            );
         }
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('community/contact/change-password');
@@ -513,9 +522,11 @@ class ContactService extends ServiceAbstract
      */
     public function findSelectionByName($name)
     {
-        return $this->getEntityManager()->getRepository(Selection::class)->findOneBy([
-            'selection' => $name,
-        ]);
+        return $this->getEntityManager()->getRepository(Selection::class)->findOneBy(
+            [
+                'selection' => $name,
+            ]
+        );
     }
 
 
@@ -560,11 +571,11 @@ class ContactService extends ServiceAbstract
      */
     public function contactInSelection(Contact $contact, $selections)
     {
-        if (!is_array($selections) && !$selections instanceof PersistentCollection) {
+        if ( ! is_array($selections) && ! $selections instanceof PersistentCollection) {
             $selections = [$selections];
         }
         foreach ($selections as $selection) {
-            if (!$selection instanceof Selection) {
+            if ( ! $selection instanceof Selection) {
                 throw new \InvalidArgumentException("Selection should be instance of Selection");
             }
             if (is_null($selection->getId())) {
@@ -589,7 +600,7 @@ class ContactService extends ServiceAbstract
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
 
-        if (!is_null($selection->getSql())) {
+        if ( ! is_null($selection->getSql())) {
             try {
                 //We have a dynamic query, check if the contact is in the selection
                 return $repository->isContactInSelectionSQL($contact, $selection->getSql());
@@ -601,14 +612,16 @@ class ContactService extends ServiceAbstract
          * The selection contains contacts, do an extra query to find the contact
          */
         if (sizeof($selection->getSelectionContact()) > 0) {
-            $findContact = $this->getEntityManager()->getRepository(SelectionContact::class)->findOneBy([
-                'contact'   => $contact,
-                'selection' => $selection,
-            ]);
+            $findContact = $this->getEntityManager()->getRepository(SelectionContact::class)->findOneBy(
+                [
+                    'contact'   => $contact,
+                    'selection' => $selection,
+                ]
+            );
             /*
              * Return true when we found a contact
              */
-            if (!is_null($findContact)) {
+            if ( ! is_null($findContact)) {
                 return true;
             }
         }
@@ -736,7 +749,7 @@ class ContactService extends ServiceAbstract
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
-        if (!is_null($selection->getSql())) {
+        if ( ! is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             return $repository->findContactsBySelectionSQL($selection->getSql(), $toArray);
         } else {
@@ -757,7 +770,7 @@ class ContactService extends ServiceAbstract
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
-        if (!is_null($selection->getSql())) {
+        if ( ! is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             $contacts = $repository->findContactsBySelectionSQL($selection->getSql(), true);
         } else {
@@ -804,12 +817,12 @@ class ContactService extends ServiceAbstract
         foreach ($repository->findContactsInFacebook($facebook) as $contact) {
             $singleContact = [];
 
-            $singleContact['contact'] = $contact;
-            $singleContact['title'] = $this->facebookTitleParser($facebook->getTitle(), $contact);
+            $singleContact['contact']  = $contact;
+            $singleContact['title']    = $this->facebookTitleParser($facebook->getTitle(), $contact);
             $singleContact['subTitle'] = $this->facebookTitleParser($facebook->getSubtitle(), $contact);
-            $singleContact['email'] = $contact->getEmail();
-            $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
-            $singleContact['mobile'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
+            $singleContact['email']    = $contact->getEmail();
+            $singleContact['phone']    = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
+            $singleContact['mobile']   = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
 
             $contacts[] = $singleContact;
         }
@@ -927,7 +940,7 @@ class ContactService extends ServiceAbstract
                 ->findOrganisationById($contactOrganisation['organisation_id']);
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
-            if (!empty($contactOrganisation['branch'])) {
+            if ( ! empty($contactOrganisation['branch'])) {
                 $currentContactOrganisation->setBranch($contactOrganisation['branch']);
             } else {
                 $currentContactOrganisation->setBranch(null);
@@ -948,83 +961,60 @@ class ContactService extends ServiceAbstract
             /*
              * Look for the organisation based on the name (without branch) and country + email
              */
-            $organisation = $this->getOrganisationService()
+            $organisations = $this->getOrganisationService()
                 ->findOrganisationByNameCountryAndEmailAddress(
                     $contactOrganisation['organisation'],
                     $country,
                     $contact->getEmail()
                 );
-            $organisationFound = false;
-            /*
-             * We did not find an organisation, so we need to create it
-             */
-            if (sizeof($organisation) === 0) {
-                $organisation = new Organisation();
-                $organisation->setOrganisation($contactOrganisation['organisation']);
-                $organisation->setCountry($country);
-                $organisation->setType($this->organisationService->findEntityById(
-                    Type::class,
-                    Type::TYPE_UNKNOWN
-                )); //Unknown
-                /*
-                 * Add the domain in the saved domains for this new company
-                 * Use the ZF2 EmailAddress validator to strip the hostname out of the EmailAddress
-                 */
-                $validateEmail = new EmailAddress();
-                $validateEmail->isValid($contact->getEmail());
-                $organisationWeb = new Web();
-                $organisationWeb->setOrganisation($organisation);
-                $organisationWeb->setWeb($validateEmail->hostname);
-                $organisationWeb->setMain(Web::MAIN);
 
-                //Skip hostnames like yahoo, gmail and hotmail, outlook
-                if (!in_array($organisation->getWeb(), ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com'])) {
-                    $this->getOrganisationService()->newEntity($organisationWeb);
-                }
 
-                $currentContactOrganisation->setOrganisation($organisation);
-            } else {
-                $foundOrganisation = null;
-                /*
-                 * Go over the found organisation to match the branching
-                 */
-                foreach ($organisation as $foundOrganisation) {
-                    /*
-                     * Stop when we have found an exact match and reset the branch if set
-                     */
-                    if ($foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
-                        && $country->getId() === $foundOrganisation->getCountry()->getId()
-                    ) {
-                        $currentContactOrganisation->setOrganisation($foundOrganisation);
-                        $currentContactOrganisation->setBranch(null);
-                        break;
-                    }
-                    if (!$organisationFound) {
-                        //Create only a branch when the name is found and the given names do not match in length
-                        if (strlen($foundOrganisation->getOrganisation())
-                            < (strlen($contactOrganisation['organisation'])
-                                - strlen($currentContactOrganisation->getBranch()))
-                        ) {
-                            $currentContactOrganisation->setBranch(str_replace(
-                                $contactOrganisation['organisation'],
-                                '~',
-                                $foundOrganisation->getOrganisation()
-                            ));
-                        } else {
-                            //Reset the branch otherwise
-                            $currentContactOrganisation->setBranch(null);
-                        }
-                        /*
-                         * We have found a match of the organisation in the string and
-                         */
-                        $organisationFound = true;
-                    }
+            $organisation = false;
+
+            //First go over the organisations and try to see if we can find one with the same name and stop if we find one
+            foreach ($organisations as $foundOrganisation) {
+                if ( ! $organisation //Continue until the organisation is found
+                    && $foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
+                ) {
+                    $organisation = $foundOrganisation;
                 }
-                $currentContactOrganisation->setOrganisation($foundOrganisation);
             }
+
+            //We have not found an organisation with an exact match so we will now try to see if we find one
+            //With a almost perfect match and use that. We want to see if we can find the company name _in_ the given name
+            foreach ($organisations as $foundOrganisation) {
+                if (
+                    ! $organisation //Continue until the organisation is found
+                    && strpos($contactOrganisation['organisation'], $foundOrganisation->getOrganisation()) !== false
+                ) {
+                    $organisation = $foundOrganisation;
+                }
+            }
+
+            //If the organisation is still not found, create a new one
+            if ( ! $organisation) {
+                $organisation = $this->getOrganisationService()->createOrganisationFromNameCountryTypeAndEmail(
+                    $contactOrganisation['organisation'], $country, (int)$contactOrganisation['type'],
+                    $contact->getEmail()
+                );
+            }
+
+            if ( ! $organisation) {
+                throw new \Exception("Update of profile failed, the organisation cannot be found");
+            }
+
+            $currentContactOrganisation->setOrganisation($organisation);
+            $currentContactOrganisation->setBranch(
+                OrganisationService::determineBranch(
+                    $contactOrganisation['organisation'], $organisation->getOrganisation()
+                )
+            );
         }
+
+        //Update the entity
         $this->updateEntity($currentContactOrganisation);
     }
+
 
     /**
      * @param int     $optInId
@@ -1036,7 +1026,7 @@ class ContactService extends ServiceAbstract
         $enable,
         Contact $contact
     ) {
-        $optIn = $this->findEntityById(OptIn::class, $optInId);
+        $optIn      = $this->findEntityById(OptIn::class, $optInId);
         $collection = new ArrayCollection();
         $collection->add($optIn);
         if ($enable) {
@@ -1116,41 +1106,41 @@ class ContactService extends ServiceAbstract
     public function getProfileInCompleteness(Contact $contact)
     {
         $inCompleteness = [];
-        $totalWeight = 0;
+        $totalWeight    = 0;
         $totalWeight += 10;
         if (is_null($contact->getFirstName())) {
             $inCompleteness['firstName']['message'] = _("txt-first-name-is-missing");
-            $inCompleteness['firstName']['weight'] = 10;
+            $inCompleteness['firstName']['weight']  = 10;
         }
         $totalWeight += 10;
         if (is_null($contact->getLastName())) {
             $inCompleteness['lastName']['message'] = _("txt-last-name-is-missing");
-            $inCompleteness['lastName']['weight'] = 10;
+            $inCompleteness['lastName']['weight']  = 10;
         }
         $totalWeight += 10;
         if (sizeof($contact->getPhone()) === 0) {
             $inCompleteness['phone']['message'] = _("txt-no-telephone-number-known");
-            $inCompleteness['phone']['weight'] = 10;
+            $inCompleteness['phone']['weight']  = 10;
         }
         $totalWeight += 10;
         if (sizeof($contact->getAddress()) === 0) {
             $inCompleteness['address']['message'] = _("txt-no-address-known");
-            $inCompleteness['address']['weight'] = 10;
+            $inCompleteness['address']['weight']  = 10;
         }
         $totalWeight += 10;
         if (sizeof($contact->getPhoto()) === 0) {
             $inCompleteness['photo']['message'] = _("txt-no-profile-photo-given");
-            $inCompleteness['photo']['weight'] = 10;
+            $inCompleteness['photo']['weight']  = 10;
         }
         $totalWeight += 10;
         if (is_null($contact->getSaltedPassword())) {
             $inCompleteness['password']['message'] = _("txt-no-password-given");
-            $inCompleteness['password']['weight'] = 10;
+            $inCompleteness['password']['weight']  = 10;
         }
         $totalWeight += 20;
         if (is_null($contact->getContactOrganisation()) === 0) {
             $inCompleteness['organisation']['message'] = _("txt-no-organisation-known");
-            $inCompleteness['organisation']['weight'] = 20;
+            $inCompleteness['organisation']['weight']  = 20;
         }
         /*
          * Determine the total weight
@@ -1177,20 +1167,21 @@ class ContactService extends ServiceAbstract
      */
     public function findContactsInAffiliation(Affiliation $affiliation)
     {
-        $contacts = [];
+        $contacts    = [];
         $contactRole = [];
 
         /*
          * Add the technical contact
          */
-        $contacts[$affiliation->getContact()->getId()] = $affiliation->getContact();
+        $contacts[$affiliation->getContact()->getId()]      = $affiliation->getContact();
         $contactRole[$affiliation->getContact()->getId()][] = 'Technical Contact';
 
         /*
          * Add the financial contact
          */
-        if (!is_null($affiliation->getFinancial())) {
-            $contacts[$affiliation->getFinancial()->getContact()->getId()] = $affiliation->getFinancial()->getContact();
+        if ( ! is_null($affiliation->getFinancial())) {
+            $contacts[$affiliation->getFinancial()->getContact()->getId()]      = $affiliation->getFinancial()
+                ->getContact();
             $contactRole[$affiliation->getFinancial()->getContact()->getId()][] = 'Financial Contact';
         }
 
@@ -1201,7 +1192,7 @@ class ContactService extends ServiceAbstract
             /*
              * Add the associates
              */
-            $contacts[$associate->getId()] = $associate;
+            $contacts[$associate->getId()]      = $associate;
             $contactRole[$associate->getId()][] = 'Associate';
         }
 
@@ -1212,11 +1203,11 @@ class ContactService extends ServiceAbstract
             /*
              * Add the work package leaders
              */
-            if (!is_null($workpackage->getContact()->getContactOrganisation())
+            if ( ! is_null($workpackage->getContact()->getContactOrganisation())
                 && $workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId()
                 === $affiliation->getOrganisation()->getId()
             ) {
-                $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();
+                $contacts[$workpackage->getContact()->getId()]      = $workpackage->getContact();
                 $contactRole[$workpackage->getContact()->getId()][] = 'Workpackage leader';
             }
         }

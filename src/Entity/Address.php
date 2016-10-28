@@ -22,7 +22,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  *
  * @ORM\Table(name="contact_address")
  * @ORM\Entity(repositoryClass="Contact\Repository\Address")
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_address")
  *
  * @category    Contact

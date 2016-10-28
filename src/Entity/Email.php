@@ -24,7 +24,7 @@ use Zend\Validator\EmailAddress;
  *
  * @ORM\Table(name="contact_email")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_cv")
  *
  * @category    Contact

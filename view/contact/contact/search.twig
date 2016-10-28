@@ -47,7 +47,7 @@
                         </div>
                         <div class="contact-box-image">
                             {% if result.fields.photo_url|length == 0 %}
-                                <img src="assets/{{ constant("DEBRANOVA_HOST") }}/style/image/anonymous.jpg"
+                                <img src="assets/{{ constant("ITEAOFFICE_HOST") }}/style/image/anonymous.jpg"
                                      class="img-responsive">
                             {% else %}
                                 <img class="img-responsive" src="{{ result.fields.photo_url }}">
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                {% if loop.index is divisibleby(4) %}
+                {% if loop.index is divisible by(4) %}
                     </div>
                     <div class="row">
                 {% endif %}

@@ -17,8 +17,7 @@ namespace Contact\Factory;
 use Contact\Service\FormService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Class FormServiceFactory
@@ -34,7 +33,7 @@ final class FormServiceFactory implements FactoryInterface
      *
      * @return FormService
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): FormService
     {
         /** @var FormService $formService */
         $formService = new $requestedName();
@@ -44,17 +43,5 @@ final class FormServiceFactory implements FactoryInterface
         $formService->setEntityManager($entityManager);
 
         return $formService;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return FormService
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
-    {
-        return $this($serviceLocator, $requestedName);
     }
 }

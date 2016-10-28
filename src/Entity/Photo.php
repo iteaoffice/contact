@@ -24,7 +24,7 @@ use Zend\InputFilter\InputFilterInterface;
  * @ORM\Table(name="contact_photo")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_photo")
  *
  * @category    Contact
@@ -210,7 +210,7 @@ class Photo extends EntityAbstract
     public function getCacheFileName()
     {
         $cacheDir = __DIR__.'/../../../../../public'.DIRECTORY_SEPARATOR.'assets'.
-            DIRECTORY_SEPARATOR.DEBRANOVA_HOST.DIRECTORY_SEPARATOR.'contact-photo';
+            DIRECTORY_SEPARATOR.ITEAOFFICE_HOST.DIRECTORY_SEPARATOR.'contact-photo';
 
         return $cacheDir.DIRECTORY_SEPARATOR
         .$this->getId().'-'

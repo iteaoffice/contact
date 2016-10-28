@@ -18,8 +18,7 @@ use Contact\Service\ContactService;
 use Contact\Service\SelectionService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Class SelectionServiceFactory
@@ -35,7 +34,7 @@ final class SelectionServiceFactory implements FactoryInterface
      *
      * @return SelectionService
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): SelectionService
     {
         /** @var SelectionService $selectionService */
         $selectionService = new $requestedName($options);
@@ -50,17 +49,5 @@ final class SelectionServiceFactory implements FactoryInterface
         $selectionService->setContactService($contactService);
 
         return $selectionService;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return SelectionService
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
-    {
-        return $this($serviceLocator, $requestedName);
     }
 }

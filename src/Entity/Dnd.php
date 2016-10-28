@@ -19,7 +19,7 @@ use Zend\Form\Annotation;
  *
  * @ORM\Table(name="contact_dnd")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_dnd")
  *
  * @category    Contact

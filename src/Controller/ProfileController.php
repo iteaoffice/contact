@@ -37,7 +37,7 @@ class ProfileController extends ContactAbstractController
             'optIns'         => $this->getContactService()->findAll(OptIn::class),
             'callService'    => $this->getCallService(),
             'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
-            'hasNda'         => $this->getPluginManager()->getServiceLocator()->get(ModuleOptions::class)->getHasNda(),
+            'hasNda'         => $this->getProgramModuleOptions()->getHasNda(),
         ]);
     }
 

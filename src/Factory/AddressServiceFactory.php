@@ -17,7 +17,7 @@ namespace Contact\Factory;
 use Contact\Service\AddressService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -34,7 +34,7 @@ final class AddressServiceFactory implements FactoryInterface
      *
      * @return AddressService
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): AddressService
     {
         /** @var AddressService $addressService */
         $addressService = new $requestedName($options);
@@ -45,17 +45,5 @@ final class AddressServiceFactory implements FactoryInterface
         $addressService->setEntityManager($entityManager);
 
         return $addressService;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return AddressService
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
-    {
-        return $this($serviceLocator, $requestedName);
     }
 }

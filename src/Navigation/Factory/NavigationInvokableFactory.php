@@ -17,7 +17,7 @@ namespace Contact\Navigation\Factory;
 
 use Admin\Navigation\Invokable\AbstractNavigationInvokable;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -34,21 +34,9 @@ final class NavigationInvokableFactory implements FactoryInterface
      *
      * @return AbstractNavigationInvokable
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
-    {
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null
+    ): AbstractNavigationInvokable {
         /** @var $invokable AbstractNavigationInvokable */
         return new $requestedName($container, $options);
-    }
-
-    /**
-     * @param ServiceLocatorInterface $container
-     * @param string                  $canonicalName
-     * @param string                  $requestedName
-     *
-     * @return AbstractNavigationInvokable
-     */
-    public function createService(ServiceLocatorInterface $container, $canonicalName = null, $requestedName = null)
-    {
-        return $this($container, $requestedName);
     }
 }
