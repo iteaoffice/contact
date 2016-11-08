@@ -31,7 +31,8 @@ final class ContactNavigationServiceFactory implements FactoryInterface
      * @return ContactNavigationService
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null
-    ): ContactNavigationService {
+    ): ContactNavigationService
+    {
         $contactNavigationService = new ContactNavigationService();
 
         /**

@@ -34,52 +34,60 @@ class ContactFilter extends InputFilter
     public function __construct(EntityManager $entityManager)
     {
         $inputFilter = new InputFilter();
-        $inputFilter->add([
-            'name'       => 'email',
-            'required'   => true,
-            'validators' => [
-                [
-                    'name' => 'Emailaddress',
-                ],
-                [
-                    'name'    => Validator\UniqueObject::class,
-                    'options' => [
-                        'object_repository' => $entityManager->getRepository(Contact::class),
-                        'object_manager'    => $entityManager,
-                        'use_context'       => true,
-                        'fields'            => 'email',
+        $inputFilter->add(
+            [
+                'name'       => 'email',
+                'required'   => true,
+                'validators' => [
+                    [
+                        'name' => 'Emailaddress',
+                    ],
+                    [
+                        'name'    => Validator\UniqueObject::class,
+                        'options' => [
+                            'object_repository' => $entityManager->getRepository(Contact::class),
+                            'object_manager'    => $entityManager,
+                            'use_context'       => true,
+                            'fields'            => 'email',
+                        ],
                     ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
-        $inputFilter->add([
-            'name'     => 'dateOfBirth',
-            'required' => false,
-        ]);
+        $inputFilter->add(
+            [
+                'name'     => 'dateOfBirth',
+                'required' => false,
+            ]
+        );
 
-        $inputFilter->add([
-            'name'     => 'access',
-            'required' => false,
-        ]);
+        $inputFilter->add(
+            [
+                'name'     => 'access',
+                'required' => false,
+            ]
+        );
 
 
-        $inputFilter->add([
-            'name'       => 'organisation',
-            'required'   => false,
-            'validators' => [
-                [
-                    'name'    => Validator\ObjectExists::class,
-                    'options' => [
-                        'object_repository' => $entityManager->getRepository(Organisation::class),
-                        'object_manager'    => $entityManager,
-                        'use_context'       => true,
-                        'fields'            => 'id',
+        $inputFilter->add(
+            [
+                'name'       => 'organisation',
+                'required'   => false,
+                'validators' => [
+                    [
+                        'name'    => Validator\ObjectExists::class,
+                        'options' => [
+                            'object_repository' => $entityManager->getRepository(Organisation::class),
+                            'object_manager'    => $entityManager,
+                            'use_context'       => true,
+                            'fields'            => 'id',
+                        ],
                     ],
                 ],
-            ],
 
-        ]);
+            ]
+        );
 
         $this->add($inputFilter, 'contact_entity_contact');
     }

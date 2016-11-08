@@ -840,100 +840,100 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     public function __construct()
     {
-        $this->project = new Collections\ArrayCollection();
-        $this->projectVersion = new Collections\ArrayCollection();
-        $this->projectDescription = new Collections\ArrayCollection();
-        $this->projectDocument = new Collections\ArrayCollection();
-        $this->web = new Collections\ArrayCollection();
-        $this->roadmapLog = new Collections\ArrayCollection();
-        $this->address = new Collections\ArrayCollection();
-        $this->phone = new Collections\ArrayCollection();
-        $this->emailAddress = new Collections\ArrayCollection();
-        $this->access = new Collections\ArrayCollection();
-        $this->optIn = new Collections\ArrayCollection();
-        $this->domain = new Collections\ArrayCollection();
-        $this->technology = new Collections\ArrayCollection();
-        $this->dnd = new Collections\ArrayCollection();
-        $this->nda = new Collections\ArrayCollection();
-        $this->programDoa = new Collections\ArrayCollection();
-        $this->domain = new Collections\ArrayCollection();
-        $this->technology = new Collections\ArrayCollection();
-        $this->openId = new Collections\ArrayCollection();
-        $this->rationale = new Collections\ArrayCollection();
-        $this->organisationLog = new Collections\ArrayCollection();
-        $this->affiliationLog = new Collections\ArrayCollection();
-        $this->affiliationDescription = new Collections\ArrayCollection();
-        $this->projectLog = new Collections\ArrayCollection();
-        $this->affiliation = new Collections\ArrayCollection();
-        $this->partner = new Collections\ArrayCollection();
-        $this->partnerFinancial = new Collections\ArrayCollection();
-        $this->partnerAffiliationLog = new Collections\ArrayCollection();
-        $this->partnerAffiliation = new Collections\ArrayCollection();
-        $this->partnerOrganisation = new Collections\ArrayCollection();
-        $this->financial = new Collections\ArrayCollection();
-        $this->invoice = new Collections\ArrayCollection();
-        $this->publication = new Collections\ArrayCollection();
-        $this->publicationDownload = new Collections\ArrayCollection();
-        $this->photo = new Collections\ArrayCollection();
-        $this->associate = new Collections\ArrayCollection();
-        $this->deeplinkContact = new Collections\ArrayCollection();
-        $this->community = new Collections\ArrayCollection();
-        $this->registration = new Collections\ArrayCollection();
-        $this->badge = new Collections\ArrayCollection();
-        $this->badgeContact = new Collections\ArrayCollection();
-        $this->boothFinancial = new Collections\ArrayCollection();
-        $this->selection = new Collections\ArrayCollection();
-        $this->selectionContact = new Collections\ArrayCollection();
-        $this->mailingContact = new Collections\ArrayCollection();
-        $this->mailing = new Collections\ArrayCollection();
-        $this->result = new Collections\ArrayCollection();
-        $this->workpackage = new Collections\ArrayCollection();
-        $this->workpackageDocument = new Collections\ArrayCollection();
-        $this->idea = new Collections\ArrayCollection();
-        $this->favouriteIdea = new Collections\ArrayCollection();
-        $this->ideaMessage = new Collections\ArrayCollection();
-        $this->ideaPartner = new Collections\ArrayCollection();
-        $this->ideaMessageBoard = new Collections\ArrayCollection();
-        $this->blog = new Collections\ArrayCollection();
-        $this->blogMessage = new Collections\ArrayCollection();
-        $this->evaluation = new Collections\ArrayCollection();
-        $this->calendarContact = new Collections\ArrayCollection();
-        $this->calendarDocument = new Collections\ArrayCollection();
-        $this->calendar = new Collections\ArrayCollection();
-        $this->scheduleContact = new Collections\ArrayCollection();
-        $this->projectReview = new Collections\ArrayCollection();
-        $this->projectVersionReview = new Collections\ArrayCollection();
-        $this->projectReport = new Collections\ArrayCollection();
-        $this->projectReportItem = new Collections\ArrayCollection();
+        $this->project                             = new Collections\ArrayCollection();
+        $this->projectVersion                      = new Collections\ArrayCollection();
+        $this->projectDescription                  = new Collections\ArrayCollection();
+        $this->projectDocument                     = new Collections\ArrayCollection();
+        $this->web                                 = new Collections\ArrayCollection();
+        $this->roadmapLog                          = new Collections\ArrayCollection();
+        $this->address                             = new Collections\ArrayCollection();
+        $this->phone                               = new Collections\ArrayCollection();
+        $this->emailAddress                        = new Collections\ArrayCollection();
+        $this->access                              = new Collections\ArrayCollection();
+        $this->optIn                               = new Collections\ArrayCollection();
+        $this->domain                              = new Collections\ArrayCollection();
+        $this->technology                          = new Collections\ArrayCollection();
+        $this->dnd                                 = new Collections\ArrayCollection();
+        $this->nda                                 = new Collections\ArrayCollection();
+        $this->programDoa                          = new Collections\ArrayCollection();
+        $this->domain                              = new Collections\ArrayCollection();
+        $this->technology                          = new Collections\ArrayCollection();
+        $this->openId                              = new Collections\ArrayCollection();
+        $this->rationale                           = new Collections\ArrayCollection();
+        $this->organisationLog                     = new Collections\ArrayCollection();
+        $this->affiliationLog                      = new Collections\ArrayCollection();
+        $this->affiliationDescription              = new Collections\ArrayCollection();
+        $this->projectLog                          = new Collections\ArrayCollection();
+        $this->affiliation                         = new Collections\ArrayCollection();
+        $this->partner                             = new Collections\ArrayCollection();
+        $this->partnerFinancial                    = new Collections\ArrayCollection();
+        $this->partnerAffiliationLog               = new Collections\ArrayCollection();
+        $this->partnerAffiliation                  = new Collections\ArrayCollection();
+        $this->partnerOrganisation                 = new Collections\ArrayCollection();
+        $this->financial                           = new Collections\ArrayCollection();
+        $this->invoice                             = new Collections\ArrayCollection();
+        $this->publication                         = new Collections\ArrayCollection();
+        $this->publicationDownload                 = new Collections\ArrayCollection();
+        $this->photo                               = new Collections\ArrayCollection();
+        $this->associate                           = new Collections\ArrayCollection();
+        $this->deeplinkContact                     = new Collections\ArrayCollection();
+        $this->community                           = new Collections\ArrayCollection();
+        $this->registration                        = new Collections\ArrayCollection();
+        $this->badge                               = new Collections\ArrayCollection();
+        $this->badgeContact                        = new Collections\ArrayCollection();
+        $this->boothFinancial                      = new Collections\ArrayCollection();
+        $this->selection                           = new Collections\ArrayCollection();
+        $this->selectionContact                    = new Collections\ArrayCollection();
+        $this->mailingContact                      = new Collections\ArrayCollection();
+        $this->mailing                             = new Collections\ArrayCollection();
+        $this->result                              = new Collections\ArrayCollection();
+        $this->workpackage                         = new Collections\ArrayCollection();
+        $this->workpackageDocument                 = new Collections\ArrayCollection();
+        $this->idea                                = new Collections\ArrayCollection();
+        $this->favouriteIdea                       = new Collections\ArrayCollection();
+        $this->ideaMessage                         = new Collections\ArrayCollection();
+        $this->ideaPartner                         = new Collections\ArrayCollection();
+        $this->ideaMessageBoard                    = new Collections\ArrayCollection();
+        $this->blog                                = new Collections\ArrayCollection();
+        $this->blogMessage                         = new Collections\ArrayCollection();
+        $this->evaluation                          = new Collections\ArrayCollection();
+        $this->calendarContact                     = new Collections\ArrayCollection();
+        $this->calendarDocument                    = new Collections\ArrayCollection();
+        $this->calendar                            = new Collections\ArrayCollection();
+        $this->scheduleContact                     = new Collections\ArrayCollection();
+        $this->projectReview                       = new Collections\ArrayCollection();
+        $this->projectVersionReview                = new Collections\ArrayCollection();
+        $this->projectReport                       = new Collections\ArrayCollection();
+        $this->projectReportItem                   = new Collections\ArrayCollection();
         $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
-        $this->projectCalendarReview = new Collections\ArrayCollection();
-        $this->projectReportReview = new Collections\ArrayCollection();
-        $this->invite = new Collections\ArrayCollection();
-        $this->inviteContact = new Collections\ArrayCollection();
-        $this->loi = new Collections\ArrayCollection();
-        $this->affiliationDoa = new Collections\ArrayCollection();
-        $this->permitContact = new Collections\ArrayCollection();
-        $this->session = new Collections\ArrayCollection();
-        $this->voter = new Collections\ArrayCollection();
-        $this->tour = new Collections\ArrayCollection();
-        $this->projectBooth = new Collections\ArrayCollection();
-        $this->organisationBooth = new Collections\ArrayCollection();
-        $this->tourContact = new Collections\ArrayCollection();
-        $this->doaReminderReceiver = new Collections\ArrayCollection();
-        $this->doaReminderSender = new Collections\ArrayCollection();
-        $this->loiReminderReceiver = new Collections\ArrayCollection();
-        $this->loiReminderSender = new Collections\ArrayCollection();
-        $this->journalEntry = new Collections\ArrayCollection();
-        $this->journal = new Collections\ArrayCollection();
-        $this->organisationJournal = new Collections\ArrayCollection();
-        $this->invoiceLog = new Collections\ArrayCollection();
-        $this->reminder = new Collections\ArrayCollection();
-        $this->achievement = new Collections\ArrayCollection();
-        $this->changerequestProcess = new  Collections\ArrayCollection();
-        $this->changerequestCostChange = new  Collections\ArrayCollection();
-        $this->changerequestCountry = new  Collections\ArrayCollection();
-        $this->versionContact = new  Collections\ArrayCollection();
-        $this->workpackageContact = new  Collections\ArrayCollection();
+        $this->projectCalendarReview               = new Collections\ArrayCollection();
+        $this->projectReportReview                 = new Collections\ArrayCollection();
+        $this->invite                              = new Collections\ArrayCollection();
+        $this->inviteContact                       = new Collections\ArrayCollection();
+        $this->loi                                 = new Collections\ArrayCollection();
+        $this->affiliationDoa                      = new Collections\ArrayCollection();
+        $this->permitContact                       = new Collections\ArrayCollection();
+        $this->session                             = new Collections\ArrayCollection();
+        $this->voter                               = new Collections\ArrayCollection();
+        $this->tour                                = new Collections\ArrayCollection();
+        $this->projectBooth                        = new Collections\ArrayCollection();
+        $this->organisationBooth                   = new Collections\ArrayCollection();
+        $this->tourContact                         = new Collections\ArrayCollection();
+        $this->doaReminderReceiver                 = new Collections\ArrayCollection();
+        $this->doaReminderSender                   = new Collections\ArrayCollection();
+        $this->loiReminderReceiver                 = new Collections\ArrayCollection();
+        $this->loiReminderSender                   = new Collections\ArrayCollection();
+        $this->journalEntry                        = new Collections\ArrayCollection();
+        $this->journal                             = new Collections\ArrayCollection();
+        $this->organisationJournal                 = new Collections\ArrayCollection();
+        $this->invoiceLog                          = new Collections\ArrayCollection();
+        $this->reminder                            = new Collections\ArrayCollection();
+        $this->achievement                         = new Collections\ArrayCollection();
+        $this->changerequestProcess                = new  Collections\ArrayCollection();
+        $this->changerequestCostChange             = new  Collections\ArrayCollection();
+        $this->changerequestCountry                = new  Collections\ArrayCollection();
+        $this->versionContact                      = new  Collections\ArrayCollection();
+        $this->workpackageContact                  = new  Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -995,6 +995,18 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function parseFullName()
     {
         return $this->getDisplayName();
+    }
+
+    /**
+     * Get displayName, or the emailaddress
+     *
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        $name = sprintf("%s %s", $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
+
+        return ! empty(trim($name)) ? $name : $this->email;
     }
 
     /**
@@ -1160,6 +1172,14 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
+     * @return \datetime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
      * @param \datetime $dateCreated
      */
     public function setDateCreated($dateCreated)
@@ -1168,11 +1188,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \datetime
+     * @return \DateTime
      */
-    public function getDateCreated()
+    public function getDateEnd()
     {
-        return $this->dateCreated;
+        return $this->dateEnd;
     }
 
     /**
@@ -1186,9 +1206,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return \DateTime
      */
-    public function getDateEnd()
+    public function getDateOfBirth()
     {
-        return $this->dateEnd;
+        return $this->dateOfBirth;
     }
 
     /**
@@ -1200,11 +1220,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getDateOfBirth()
+    public function getEmail()
     {
-        return $this->dateOfBirth;
+        return $this->email;
     }
 
     /**
@@ -1222,9 +1242,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return string
      */
-    public function getEmail()
+    public function getFirstName()
     {
-        return $this->email;
+        return $this->firstName;
     }
 
     /**
@@ -1237,14 +1257,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->firstName = $firstName;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
     }
 
     /**
@@ -1267,6 +1279,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @param  int $id
@@ -1279,11 +1298,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId()
+    public function getLastName()
     {
-        return $this->id;
+        return $this->lastName;
     }
 
     /**
@@ -1295,11 +1314,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return string
+     * @return \datetime
      */
-    public function getLastName()
+    public function getLastUpdate()
     {
-        return $this->lastName;
+        return $this->lastUpdate;
     }
 
     /**
@@ -1311,11 +1330,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \datetime
+     * @return int
      */
-    public function getLastUpdate()
+    public function getMessenger()
     {
-        return $this->lastUpdate;
+        return $this->messenger;
     }
 
     /**
@@ -1327,11 +1346,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getMessenger()
+    public function getMiddleName()
     {
-        return $this->messenger;
+        return $this->middleName;
     }
 
     /**
@@ -1345,9 +1364,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return string
      */
-    public function getMiddleName()
+    public function getPassword()
     {
-        return $this->middleName;
+        return $this->password;
     }
 
     /**
@@ -1365,9 +1384,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return string
      */
-    public function getPassword()
+    public function getSaltedPassword()
     {
-        return $this->password;
+        return $this->saltedPassword;
     }
 
     /**
@@ -1381,9 +1400,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return string
      */
-    public function getSaltedPassword()
+    public function getPosition()
     {
-        return $this->saltedPassword;
+        return $this->position;
     }
 
     /**
@@ -1392,14 +1411,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setPosition($position)
     {
         $this->position = $position;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPosition()
-    {
-        return $this->position;
     }
 
     /**
@@ -1421,7 +1432,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
 
         return $this;
     }
-
 
     /**
      * @param  int $state
@@ -1468,18 +1478,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return string
      */
-    public function getDisplayName()
-    {
-        $name = sprintf("%s %s", $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
-
-        return !empty(trim($name)) ? $name : $this->email;
-    }
-
-    /**
-     * Get displayName, or the emailaddress
-     *
-     * @return string
-     */
     public function getShortName()
     {
         $name = sprintf(
@@ -1488,7 +1486,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     /**
@@ -1500,7 +1498,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $name = sprintf("%s, %s", trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     /**
@@ -2738,6 +2736,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
 
     /**
      * @param \Project\Entity\Review\Contact $projectReviewContact
+     *
      * @return Contact
      */
     public function setProjectReviewContact($projectReviewContact)
@@ -2817,6 +2816,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
 
     /**
      * @param Collections\ArrayCollection|\Project\Entity\Report\Review[] $projectReportReview
+     *
      * @return Contact
      */
     public function setProjectReportReview($projectReportReview)
@@ -3407,6 +3407,14 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
+     * @return Collections\ArrayCollection|\Partner\Entity\Financial[] $partnerFinancial
+     */
+    public function getPartnerFinancial()
+    {
+        return $this->partnerFinancial;
+    }
+
+    /**
      * @param  Collections\ArrayCollection|\Partner\Entity\Financial[] $partnerFinancial
      *
      * @return Contact
@@ -3416,14 +3424,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->partnerFinancial = $partnerFinancial;
 
         return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Partner\Entity\Financial[] $partnerFinancial
-     */
-    public function getPartnerFinancial()
-    {
-        return $this->partnerFinancial;
     }
 
     /**
@@ -3612,6 +3612,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
 
     /**
      * @param Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[] $projectReportWorkpackageDescription
+     *
      * @return Contact
      */
     public function setProjectReportWorkpackageDescription($projectReportWorkpackageDescription)

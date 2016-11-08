@@ -54,7 +54,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      */
     public function getIdentityRoles()
     {
-        if (!$identity = $this->authService->getIdentity()) {
+        if (! $identity = $this->authService->getIdentity()) {
             return [$this->defaultRole];
         }
         if ($identity instanceof RoleInterface) {

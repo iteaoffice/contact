@@ -36,9 +36,14 @@ class SelectionLabel extends AbstractNavigationInvokable
             /** @var Selection $selection */
             $selection = $this->getEntities()->get(Selection::class);
 
-            $page->setParams(array_merge($page->getParams(), [
-                'id' => $selection->getId(),
-            ]));
+            $page->setParams(
+                array_merge(
+                    $page->getParams(),
+                    [
+                    'id' => $selection->getId(),
+                    ]
+                )
+            );
             $label = (string)$selection->getSelection();
         } else {
             $label = $this->translate('txt-nav-selection');

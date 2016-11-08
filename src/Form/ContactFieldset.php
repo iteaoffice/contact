@@ -49,16 +49,26 @@ class ContactFieldset extends Fieldset
              * Go over each element to add the objectManager to the EntitySelect
              */
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
-                $element->setOptions(array_merge_recursive($element->getOptions(), [
-                    'object_manager' => $entityManager,
-                ]));
+                $element->setOptions(
+                    array_merge_recursive(
+                        $element->getOptions(),
+                        [
+                        'object_manager' => $entityManager,
+                        ]
+                    )
+                );
             }
             if ($element instanceof Radio) {
-                $attributes = $element->getAttributes();
+                $attributes        = $element->getAttributes();
                 $valueOptionsArray = 'get' . ucfirst($attributes['array']);
-                $element->setOptions(array_merge_recursive($element->getOptions(), [
-                    'value_options' => $object->$valueOptionsArray(),
-                ]));
+                $element->setOptions(
+                    array_merge_recursive(
+                        $element->getOptions(),
+                        [
+                        'value_options' => $object->$valueOptionsArray(),
+                        ]
+                    )
+                );
             }
             //Add only when a type is provided
             if (array_key_exists('type', $element->getAttributes())) {
@@ -66,22 +76,26 @@ class ContactFieldset extends Fieldset
             }
         }
 
-        $this->add([
-            'type'    => '\Organisation\Form\Element\Organisation',
-            'name'    => 'organisation',
-            'options' => [
-                "label"      => _("txt-organisation"),
-                "help-block" => _("txt-organisation-help-block"),
-            ],
-        ]);
+        $this->add(
+            [
+                'type'    => '\Organisation\Form\Element\Organisation',
+                'name'    => 'organisation',
+                'options' => [
+                    "label"      => _("txt-organisation"),
+                    "help-block" => _("txt-organisation-help-block"),
+                ],
+            ]
+        );
 
-        $this->add([
-            'type'    => '\Zend\Form\Element\Text',
-            'name'    => 'branch',
-            'options' => [
-                "label"      => _("txt-branch"),
-                "help-block" => _("txt-branch-help-block"),
-            ],
-        ]);
+        $this->add(
+            [
+                'type'    => '\Zend\Form\Element\Text',
+                'name'    => 'branch',
+                'options' => [
+                    "label"      => _("txt-branch"),
+                    "help-block" => _("txt-branch-help-block"),
+                ],
+            ]
+        );
     }
 }

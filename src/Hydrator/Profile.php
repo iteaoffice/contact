@@ -57,17 +57,17 @@ class Profile extends DoctrineObject
          * to pre-fill the values
          */
         $organisationService = new OrganisationService();
-        if ( ! is_null($contact->getContactOrganisation())) {
+        if (! is_null($contact->getContactOrganisation())) {
             $values['contact_organisation']['organisation_id'] = $contact->getContactOrganisation()->getOrganisation()
                 ->getId();
             $values['contact_organisation']['organisation']
                                                                = $organisationService->parseOrganisationWithBranch(
-                $contact->getContactOrganisation()->getBranch(),
-                $contact->getContactOrganisation()->getOrganisation()
-            );
+                                                                   $contact->getContactOrganisation()->getBranch(),
+                                                                   $contact->getContactOrganisation()->getOrganisation()
+                                                               );
             $values['contact_organisation']['type']            = $contact->getContactOrganisation()->getOrganisation()
                 ->getType()->getId();
-            if ( ! is_null($contact->getContactOrganisation())) {
+            if (! is_null($contact->getContactOrganisation())) {
                 $values['contact_organisation']['country'] = $contact->getContactOrganisation()->getOrganisation()
                     ->getCountry()->getId();
             }
@@ -113,7 +113,7 @@ class Profile extends DoctrineObject
             //Reset the array
             $contact->getPhone()->clear();
             foreach ($phoneData as $phoneTypeId => $phoneElement) {
-                if ( ! empty($phoneElement['phone'])) {
+                if (! empty($phoneElement['phone'])) {
                     $phone = new Phone();
                     /** @var PhoneType $phoneType */
                     $phoneType = $this->objectManager->getRepository(PhoneType::class)->find($phoneTypeId);
@@ -124,11 +124,12 @@ class Profile extends DoctrineObject
                 }
             }
             foreach ($currentPhoneNumbers as $phone) {
-                if ( ! in_array(
-                    $phone->getType()->getId(), [
-                    PhoneType::PHONE_TYPE_MOBILE,
-                    PhoneType::PHONE_TYPE_DIRECT,
-                ]
+                if (! in_array(
+                    $phone->getType()->getId(),
+                    [
+                        PhoneType::PHONE_TYPE_MOBILE,
+                        PhoneType::PHONE_TYPE_DIRECT,
+                    ]
                 )
                 ) {
                     $contact->getPhone()->add($phone);
@@ -141,7 +142,7 @@ class Profile extends DoctrineObject
              */
             $contact->getAddress()->clear();
             if (array_key_exists('address', $addressInfo)) {
-                if ( ! empty($addressInfo['address'])) {
+                if (! empty($addressInfo['address'])) {
                     $address = new Address();
                     /** @var AddressType $addressType */
                     $addressType = $this->objectManager->getRepository(AddressType::class)
@@ -158,7 +159,7 @@ class Profile extends DoctrineObject
                 }
             }
             foreach ($currentAddress as $address) {
-                if ( ! in_array($address->getType()->getId(), [AddressType::ADDRESS_TYPE_MAIL])) {
+                if (! in_array($address->getType()->getId(), [AddressType::ADDRESS_TYPE_MAIL])) {
                     $contact->getAddress()->add($address);
                 }
             }

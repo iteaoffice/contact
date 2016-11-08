@@ -20,7 +20,6 @@ use Interop\Container\ContainerInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-
 /**
  * Class InputFilterFactory
  *

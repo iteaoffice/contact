@@ -58,16 +58,18 @@ class Import extends Form implements InputFilterProviderInterface
         }
 
         asort($selections);
-        $this->add([
-            'type'    => '\Zend\Form\Element\Select',
-            'name'    => 'selection_id',
-            'options' => [
-                "value_options" => $selections,
-                'empty_option'  => '-- Append to existing selection',
-                "label"         => "txt-append-to-selection",
-                "help-block"    => _("txt-contact-import-append-to-selection-name-help-block"),
-            ],
-        ]);
+        $this->add(
+            [
+                'type'    => '\Zend\Form\Element\Select',
+                'name'    => 'selection_id',
+                'options' => [
+                    "value_options" => $selections,
+                    'empty_option'  => '-- Append to existing selection',
+                    "label"         => "txt-append-to-selection",
+                    "help-block"    => _("txt-contact-import-append-to-selection-name-help-block"),
+                ],
+            ]
+        );
 
         $optins = [];
         foreach ($contactService->findAll(OptIn::class) as $optin) {
@@ -77,48 +79,58 @@ class Import extends Form implements InputFilterProviderInterface
 
         asort($optins);
 
-        $this->add([
-            'type'    => '\Zend\Form\Element\MultiCheckbox',
-            'name'    => 'optIn',
-            'options' => [
-                "value_options" => $optins,
-                "label"         => "txt-select-opt-in",
-                "help-block"    => _("txt-contact-import-select-opt-in-help-block"),
-            ],
-        ]);
+        $this->add(
+            [
+                'type'    => '\Zend\Form\Element\MultiCheckbox',
+                'name'    => 'optIn',
+                'options' => [
+                    "value_options" => $optins,
+                    "label"         => "txt-select-opt-in",
+                    "help-block"    => _("txt-contact-import-select-opt-in-help-block"),
+                ],
+            ]
+        );
 
-        $this->add([
-            'type'    => '\Zend\Form\Element\Text',
-            'name'    => 'selection',
-            'options' => [
-                "label"      => "txt-selection",
-                "help-block" => _("txt-contact-import-selection-name-help-block"),
-            ],
-        ]);
-        $this->add([
-            'type'    => '\Zend\Form\Element\File',
-            'name'    => 'file',
-            'options' => [
-                "label"      => "txt-file",
-                "help-block" => _("txt-contact-import-file-requirements"),
-            ],
-        ]);
-        $this->add([
-            'type'       => 'Zend\Form\Element\Submit',
-            'name'       => 'upload',
-            'attributes' => [
-                'class' => "btn btn-primary",
-                'value' => _("txt-verify-data"),
-            ],
-        ]);
-        $this->add([
-            'type'       => 'Zend\Form\Element\Submit',
-            'name'       => 'import',
-            'attributes' => [
-                'class' => "btn btn-primary",
-                'value' => _("txt-import"),
-            ],
-        ]);
+        $this->add(
+            [
+                'type'    => '\Zend\Form\Element\Text',
+                'name'    => 'selection',
+                'options' => [
+                    "label"      => "txt-selection",
+                    "help-block" => _("txt-contact-import-selection-name-help-block"),
+                ],
+            ]
+        );
+        $this->add(
+            [
+                'type'    => '\Zend\Form\Element\File',
+                'name'    => 'file',
+                'options' => [
+                    "label"      => "txt-file",
+                    "help-block" => _("txt-contact-import-file-requirements"),
+                ],
+            ]
+        );
+        $this->add(
+            [
+                'type'       => 'Zend\Form\Element\Submit',
+                'name'       => 'upload',
+                'attributes' => [
+                    'class' => "btn btn-primary",
+                    'value' => _("txt-verify-data"),
+                ],
+            ]
+        );
+        $this->add(
+            [
+                'type'       => 'Zend\Form\Element\Submit',
+                'name'       => 'import',
+                'attributes' => [
+                    'class' => "btn btn-primary",
+                    'value' => _("txt-import"),
+                ],
+            ]
+        );
     }
 
     /**
@@ -133,13 +145,17 @@ class Import extends Form implements InputFilterProviderInterface
             'file'         => [
                 'required'   => true,
                 'validators' => [
-                    new Size([
-                        'min' => '1kB',
-                        'max' => '8MB',
-                    ]),
-                    new MimeType([
-                        'text/plain',
-                    ]),
+                    new Size(
+                        [
+                            'min' => '1kB',
+                            'max' => '8MB',
+                        ]
+                    ),
+                    new MimeType(
+                        [
+                            'text/plain',
+                        ]
+                    ),
                 ],
             ],
             'selection_id' => [

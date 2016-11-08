@@ -222,7 +222,7 @@ abstract class LinkAbstract extends AbstractViewHelper
 
                 return;
             default:
-                if ( ! array_key_exists($this->getShow(), $this->showOptions)) {
+                if (! array_key_exists($this->getShow(), $this->showOptions)) {
                     throw new \InvalidArgumentException(
                         sprintf(
                             "The option \"%s\" should be available in the showOptions array, only \"%s\" are available",
@@ -275,28 +275,11 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function addLinkContent($linkContent)
     {
-        if ( ! is_array($linkContent)) {
+        if (! is_array($linkContent)) {
             $linkContent = [$linkContent];
         }
         foreach ($linkContent as $content) {
             $this->linkContent[] = $content;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $classes
-     *
-     * @return $this
-     */
-    public function addClasses($classes)
-    {
-        if ( ! is_array($classes)) {
-            $classes = [$classes];
-        }
-        foreach ($classes as $class) {
-            $this->classes[] = $class;
         }
 
         return $this;
@@ -319,6 +302,23 @@ abstract class LinkAbstract extends AbstractViewHelper
     }
 
     /**
+     * @param string $classes
+     *
+     * @return $this
+     */
+    public function addClasses($classes)
+    {
+        if (! is_array($classes)) {
+            $classes = [$classes];
+        }
+        foreach ($classes as $class) {
+            $this->classes[] = $class;
+        }
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getAlternativeShow()
@@ -332,6 +332,26 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function setAlternativeShow($alternativeShow)
     {
         $this->alternativeShow = $alternativeShow;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFragment()
+    {
+        return $this->fragment;
+    }
+
+    /**
+     * @param array $fragment
+     *
+     * @return LinkAbstract
+     */
+    public function setFragment($fragment)
+    {
+        $this->fragment = $fragment;
+
+        return $this;
     }
 
     /**
@@ -360,11 +380,11 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function hasAccess(EntityAbstract $entity, $assertion, $action)
     {
         $assertion = $this->getAssertion($assertion);
-        if ( ! is_null($entity) && ! $this->getAuthorizeService()->getAcl()->hasResource($entity)) {
+        if (! is_null($entity) && ! $this->getAuthorizeService()->getAcl()->hasResource($entity)) {
             $this->getAuthorizeService()->getAcl()->addResource($entity);
             $this->getAuthorizeService()->getAcl()->allow([], $entity, [], $assertion);
         }
-        if ( ! $this->isAllowed($entity, $action)) {
+        if (! $this->isAllowed($entity, $action)) {
             return false;
         }
 
@@ -414,10 +434,10 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
-        if ( ! $allowNull && is_null($value)) {
+        if (! $allowNull && is_null($value)) {
             throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
         }
-        if ( ! is_null($value)) {
+        if (! is_null($value)) {
             $this->routerParams[$key] = $value;
         }
     }
@@ -431,10 +451,10 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function addQueryParam($key, $value, $allowNull = true)
     {
-        if ( ! $allowNull && is_null($value)) {
+        if (! $allowNull && is_null($value)) {
             throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
         }
-        if ( ! is_null($value)) {
+        if (! is_null($value)) {
             $this->queryParams[$key] = $value;
         }
     }
@@ -619,26 +639,6 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function setSelection($selection)
     {
         $this->selection = $selection;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFragment()
-    {
-        return $this->fragment;
-    }
-
-    /**
-     * @param array $fragment
-     *
-     * @return LinkAbstract
-     */
-    public function setFragment($fragment)
-    {
-        $this->fragment = $fragment;
 
         return $this;
     }

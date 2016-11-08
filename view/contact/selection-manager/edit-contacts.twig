@@ -33,9 +33,12 @@
             <table class="table table-hover table-striped" id="inselection"></table>
 
 
-            <input type="button" class="btn btn-info" onclick="Selection.SelectAll()" value="{{ translate("txt-select-all") }}">
-            <input type="button" class="btn btn-warning" onclick="Selection.Remove()" value="{{ translate("txt-remove") }}">
-            <input type="button" class="btn btn-danger" onclick="Selection.Reset()" value="{{ translate("txt-reset") }}">
+            <input type="button" class="btn btn-info" onclick="Selection.SelectAll()"
+                   value="{{ translate("txt-select-all") }}">
+            <input type="button" class="btn btn-warning" onclick="Selection.Remove()"
+                   value="{{ translate("txt-remove") }}">
+            <input type="button" class="btn btn-danger" onclick="Selection.Reset()"
+                   value="{{ translate("txt-reset") }}">
         </div>
 
         <div class="col-md-6">
@@ -44,7 +47,8 @@
             <div class="input-group">
                 {{ formelement(form.get('selection'),"%s%s%s") }}
                 <span class="input-group-btn">
-        <input type="button" class="btn btn-primary" onclick="selectionSearch(document.getElementById('selection').value)"
+        <input type="button" class="btn btn-primary"
+               onclick="selectionSearch(document.getElementById('selection').value)"
                value="GET">
       </span>
             </div>
@@ -52,7 +56,7 @@
 
             <div class="input-group">
                 <input type="text" id="searchstring" class="form-control">
-            <span class="input-group-btn">
+                <span class="input-group-btn">
         <input type="button" class="btn btn-primary" onclick="wildSearch(document.getElementById('searchstring').value)"
                value="GET">
       </span>
@@ -63,8 +67,10 @@
             <table class="table table-hover table-striped" id="contacts"></table>
 
 
-            <input type="button" class="btn btn-info" onclick="Contacts.SelectAll()" value="{{ translate("txt-select-all") }}">
-            <input type="button" class="btn btn-success" onclick="Contacts.MoveTo(Selection)" value="{{ translate("txt-add") }}">
+            <input type="button" class="btn btn-info" onclick="Contacts.SelectAll()"
+                   value="{{ translate("txt-select-all") }}">
+            <input type="button" class="btn btn-success" onclick="Contacts.MoveTo(Selection)"
+                   value="{{ translate("txt-add") }}">
         </div>
     </div>
 </div>
@@ -155,12 +161,12 @@
                     item = this.items[i];
 
                     out += '<tr class="' + (item.selected ? 'success' : '') + (item.removed ? 'danger' : '') + '" ' +
-                            '    id="item' + i + '" ' +
-                            '    onclick="' + this.oName + '.Select(' + i + ')" ' +
-                            '    >' +
-                            '<td>' + (item.added ? '*' : '') + item.displayName + '</td>' +
-                            '<td>' + item.org + '</td>' +
-                            '</tr>';
+                        '    id="item' + i + '" ' +
+                        '    onclick="' + this.oName + '.Select(' + i + ')" ' +
+                        '    >' +
+                        '<td>' + (item.added ? '*' : '') + item.displayName + '</td>' +
+                        '<td>' + item.org + '</td>' +
+                        '</tr>';
                 }
             }
             document.getElementById(this.RenderBox).innerHTML = out;
@@ -280,10 +286,10 @@
         {
             {% for selectionContact in selection.selectionContact %}
             Selection.Add(
-                    "{{ selectionContact.contact.id }}",
-                    "{{ selectionContact.contact.displayName }}",
-                    "{{ selectionContact.contact.email }}",
-                    "{{ selectionContact.contact.contactOrganisation.organisation }}", false, false
+                "{{ selectionContact.contact.id }}",
+                "{{ selectionContact.contact.displayName }}",
+                "{{ selectionContact.contact.email }}",
+                "{{ selectionContact.contact.contactOrganisation.organisation }}", false, false
             );
             {% endfor %}
         }
@@ -323,10 +329,10 @@
                 Contacts.items.length = 0;
                 for (var i = 0; i < result.length; i++) {
                     Contacts.Add(
-                            result[i].id,
-                            result[i].name,
-                            result[i].email,
-                            result[i].organisation
+                        result[i].id,
+                        result[i].name,
+                        result[i].email,
+                        result[i].organisation
                     );
                 }
                 Contacts.Render();
@@ -351,10 +357,10 @@
                 Contacts.items.length = 0;
                 for (var i = 0; i < result.length; i++) {
                     Contacts.Add(
-                            result[i].id,
-                            result[i].name,
-                            result[i].email,
-                            result[i].organisation
+                        result[i].id,
+                        result[i].name,
+                        result[i].email,
+                        result[i].organisation
                     );
                 }
                 Contacts.Render();

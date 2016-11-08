@@ -24,10 +24,10 @@ class Phone extends AssertionAbstract
      * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
      * privileges, respectively.
      *
-     * @param Acl $acl
-     * @param RoleInterface $role
+     * @param Acl               $acl
+     * @param RoleInterface     $role
      * @param ResourceInterface $phone
-     * @param string $privilege
+     * @param string            $privilege
      *
      * @return bool
      */

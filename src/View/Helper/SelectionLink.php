@@ -47,15 +47,17 @@ class SelectionLink extends LinkAbstract
         /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
-        if (!is_null($alternativeShow)) {
+        if (! is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($page);
         }
 
-        $this->setShowOptions([
-            'name' => $this->getSelection()->getSelection(),
-        ]);
+        $this->setShowOptions(
+            [
+                'name' => $this->getSelection()->getSelection(),
+            ]
+        );
         $this->addRouterParam('page', $page);
 
         $this->addRouterParam('id', $this->getSelection()->getId());
@@ -86,38 +88,48 @@ class SelectionLink extends LinkAbstract
                 break;
             case 'edit':
                 $this->setRouter('zfcadmin/selection-manager/edit');
-                $this->setText(sprintf(
-                    $this->translate('txt-edit-selection-%s'),
-                    $this->getSelection()->getSelection()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate('txt-edit-selection-%s'),
+                        $this->getSelection()->getSelection()
+                    )
+                );
                 break;
             case 'edit-contacts':
                 $this->setRouter('zfcadmin/selection-manager/edit-contacts');
-                $this->setText(sprintf(
-                    $this->translate('txt-edit-contacts-selection-%s'),
-                    $this->getSelection()->getSelection()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate('txt-edit-contacts-selection-%s'),
+                        $this->getSelection()->getSelection()
+                    )
+                );
                 break;
             case 'export-csv':
                 $this->setRouter('zfcadmin/selection-manager/export/csv');
-                $this->setText(sprintf(
-                    $this->translate('txt-export-selection-to-%s-csv'),
-                    $this->getSelection()->getSelection()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate('txt-export-selection-to-%s-csv'),
+                        $this->getSelection()->getSelection()
+                    )
+                );
                 break;
             case 'export-excel':
                 $this->setRouter('zfcadmin/selection-manager/export/excel');
-                $this->setText(sprintf(
-                    $this->translate('txt-export-selection-to-%s-excel'),
-                    $this->getSelection()->getSelection()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate('txt-export-selection-to-%s-excel'),
+                        $this->getSelection()->getSelection()
+                    )
+                );
                 break;
             case 'view':
                 $this->setRouter('zfcadmin/selection-manager/view');
-                $this->setText(sprintf(
-                    $this->translate('txt-view-selection-%s'),
-                    $this->getSelection()->getSelection()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate('txt-view-selection-%s'),
+                        $this->getSelection()->getSelection()
+                    )
+                );
                 break;
             default:
                 throw new \Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));

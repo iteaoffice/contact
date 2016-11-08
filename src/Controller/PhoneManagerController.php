@@ -41,7 +41,7 @@ class PhoneManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $phone Phone
                  */
@@ -54,11 +54,13 @@ class PhoneManagerController extends ContactAbstractController
                 ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'phone']);
         }
 
-        return new ViewModel([
-            'form'    => $form,
-            'contact' => $contact,
+        return new ViewModel(
+            [
+                'form'    => $form,
+                'contact' => $contact,
 
-        ]);
+            ]
+        );
     }
 
     /**
@@ -72,8 +74,8 @@ class PhoneManagerController extends ContactAbstractController
          * @var $phone Phone
          */
         $phone = $this->getContactService()->findEntityById(Phone::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($phone, $phone, $data);
+        $data  = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $form  = $this->getFormService()->prepare($phone, $phone, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
@@ -92,7 +94,7 @@ class PhoneManagerController extends ContactAbstractController
                     );
             }
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var Phone $phone
                  */
@@ -107,10 +109,12 @@ class PhoneManagerController extends ContactAbstractController
             );
         }
 
-        return new ViewModel([
-            'form'    => $form,
-            'contact' => $phone->getContact()
+        return new ViewModel(
+            [
+                'form'    => $form,
+                'contact' => $phone->getContact(),
 
-        ]);
+            ]
+        );
     }
 }

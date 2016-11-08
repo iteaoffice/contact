@@ -22,10 +22,10 @@ use Zend\InputFilter\InputFilterInterface;
  */
 class AddressTypeSort extends EntityAbstract
 {
-    const ADDRESS_TYPE_MAIL      = 1;
-    const ADDRESS_TYPE_VISIT     = 2;
+    const ADDRESS_TYPE_MAIL = 1;
+    const ADDRESS_TYPE_VISIT = 2;
     const ADDRESS_TYPE_FINANCIAL = 3;
-    const ADDRESS_TYPE_HOME      = 4;
+    const ADDRESS_TYPE_HOME = 4;
     /**
      * @ORM\Column(name="type_id", length=10, type="integer", nullable=false)
      * @ORM\Id
@@ -109,6 +109,11 @@ class AddressTypeSort extends EntityAbstract
         return new InputFilter();
     }
 
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
     /**
      * Needed for the hydration of form elements.
      *
@@ -121,9 +126,12 @@ class AddressTypeSort extends EntityAbstract
         );
     }
 
-    public function populate()
+    /**
+     * @return int
+     */
+    public function getId()
     {
-        return $this->getArrayCopy();
+        return $this->id;
     }
 
     /**
@@ -135,11 +143,11 @@ class AddressTypeSort extends EntityAbstract
     }
 
     /**
-     * @return int
+     * @return \Contact\Entity\AddressType
      */
-    public function getId()
+    public function getMainType()
     {
-        return $this->id;
+        return $this->mainType;
     }
 
     /**
@@ -151,11 +159,11 @@ class AddressTypeSort extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\AddressType
+     * @return string
      */
-    public function getMainType()
+    public function getSort()
     {
-        return $this->mainType;
+        return $this->sort;
     }
 
     /**
@@ -167,11 +175,11 @@ class AddressTypeSort extends EntityAbstract
     }
 
     /**
-     * @return string
+     * @return \Contact\Entity\AddressType
      */
-    public function getSort()
+    public function getSubType()
     {
-        return $this->sort;
+        return $this->subType;
     }
 
     /**
@@ -180,13 +188,5 @@ class AddressTypeSort extends EntityAbstract
     public function setSubType($subType)
     {
         $this->subType = $subType;
-    }
-
-    /**
-     * @return \Contact\Entity\AddressType
-     */
-    public function getSubType()
-    {
-        return $this->subType;
     }
 }

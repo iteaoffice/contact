@@ -25,7 +25,7 @@
                         <i class="fa fa-envelope-o"></i>&nbsp;<a
                             href="mailto:{{ contact.email }}">{{ contact.email }}</a><br>
                     {% endif %}
-                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER")%}
+                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER") %}
                         {% if contactInFacebook and contact.mobile|length > 0 %}
                             <i class="fa fa-mobile"></i>&nbsp;{{ contact.mobile }}
                         {% elseif contact.phone|length > 0 %}

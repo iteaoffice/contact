@@ -15,7 +15,6 @@ use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
-use Program\Options\ModuleOptions;
 use Zend\Validator\File\ImageSize;
 use Zend\View\Model\ViewModel;
 
@@ -31,14 +30,16 @@ class ProfileController extends ContactAbstractController
      */
     public function viewAction()
     {
-        return new ViewModel([
-            'contactService' => $this->getContactService(),
-            'contact'        => $this->zfcUserAuthentication()->getIdentity(),
-            'optIns'         => $this->getContactService()->findAll(OptIn::class),
-            'callService'    => $this->getCallService(),
-            'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
-            'hasNda'         => $this->getProgramModuleOptions()->getHasNda(),
-        ]);
+        return new ViewModel(
+            [
+                'contactService' => $this->getContactService(),
+                'contact'        => $this->zfcUserAuthentication()->getIdentity(),
+                'optIns'         => $this->getContactService()->findAll(OptIn::class),
+                'callService'    => $this->getCallService(),
+                'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
+                'hasNda'         => $this->getProgramModuleOptions()->getHasNda(),
+            ]
+        );
     }
 
     /**
@@ -52,10 +53,12 @@ class ProfileController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        return new ViewModel([
-            'contactService' => $this->getContactService(),
-            'contact'        => $contact,
-        ]);
+        return new ViewModel(
+            [
+                'contactService' => $this->getContactService(),
+                'contact'        => $contact,
+            ]
+        );
     }
 
     /**
@@ -73,8 +76,10 @@ class ProfileController extends ContactAbstractController
 
         $branches = [];
         if ($this->getContactService()->hasOrganisation($contact)) {
-            $branches = $this->getOrganisationService()->findBranchesByOrganisation($contact->getContactOrganisation()
-                ->getOrganisation());
+            $branches = $this->getOrganisationService()->findBranchesByOrganisation(
+                $contact->getContactOrganisation()
+                    ->getOrganisation()
+            );
         }
 
         $data = array_merge_recursive(
@@ -89,7 +94,7 @@ class ProfileController extends ContactAbstractController
          * When the organisation name is typed, we force the value to zero
          */
 
-        if (!isset($data['contact_organisation']['organisation_id'])) {
+        if (! isset($data['contact_organisation']['organisation_id'])) {
             $form->getInputFilter()->get('contact_organisation')->remove('organisation_id');
         }
 
@@ -102,12 +107,12 @@ class ProfileController extends ContactAbstractController
 
             if ($form->isValid()) {
                 /** @var Contact $contact */
-                $contact = $form->getData();
+                $contact  = $form->getData();
                 $fileData = $this->params()->fromFiles();
-                if (!empty($fileData['file']['name'])) {
+                if (! empty($fileData['file']['name'])) {
                     /** @var Photo $photo */
                     $photo = $contact->getPhoto()->first();
-                    if (!$photo) {
+                    if (! $photo) {
                         //Create a photo element
                         $photo = new Photo();
                     }
@@ -118,8 +123,10 @@ class ProfileController extends ContactAbstractController
                     $imageSizeValidator->isValid($fileData['file']);
                     $photo->setWidth($imageSizeValidator->width);
                     $photo->setHeight($imageSizeValidator->height);
-                    $photo->setContentType($this->getGeneralService()
-                        ->findContentTypeByContentTypeName($fileData['file']['type']));
+                    $photo->setContentType(
+                        $this->getGeneralService()
+                            ->findContentTypeByContentTypeName($fileData['file']['type'])
+                    );
                     $this->getContactService()->updateEntity($photo);
                 }
                 /*
@@ -146,13 +153,15 @@ class ProfileController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'form'             => $form,
-            'branches'         => $branches,
-            'contactService'   => $this->getContactService(),
-            'contact'          => $contact,
-            'hasOrganisations' => sizeof($organisations) > 1, ///We need to exclude the none of the above :)
-            'fullVersion'      => true,
-        ]);
+        return new ViewModel(
+            [
+                'form'             => $form,
+                'branches'         => $branches,
+                'contactService'   => $this->getContactService(),
+                'contact'          => $contact,
+                'hasOrganisations' => sizeof($organisations) > 1, ///We need to exclude the none of the above :)
+                'fullVersion'      => true,
+            ]
+        );
     }
 }

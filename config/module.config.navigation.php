@@ -73,7 +73,7 @@ return [
                 'order'    => 10,
                 'resource' => 'zfcadmin',
                 'pages'    => [
-                    'contacts'    => [
+                    'contacts'   => [
                         'label' => _("txt-nav-contact-list"),
                         'order' => 10,
                         'route' => 'zfcadmin/contact-admin/list',
@@ -177,12 +177,12 @@ return [
                             ],
                         ],
                     ],
-                    'import'      => [
+                    'import'     => [
                         'label' => _("txt-nav-contact-import"),
                         'order' => 50,
                         'route' => 'zfcadmin/contact-admin/import',
                     ],
-                    'selections'  => [
+                    'selections' => [
                         'label' => _("txt-nav-selection-list"),
                         'order' => 20,
                         'route' => 'zfcadmin/selection-manager/list',
@@ -228,7 +228,7 @@ return [
                             ],
                         ],
                     ],
-                    'facebook'    => [
+                    'facebook'   => [
                         'label' => _("txt-nav-facebook-list"),
                         'route' => 'zfcadmin/facebook-manager/list',
                         'order' => 40,

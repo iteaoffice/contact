@@ -40,41 +40,69 @@ class GetFilter extends AbstractPlugin
     {
         $encodedFilter = urldecode($this->getRouteMatch()->getParam('encodedFilter'));
 
-        $order = $this->getRequest()->getQuery('order');
+        $order     = $this->getRequest()->getQuery('order');
         $direction = $this->getRequest()->getQuery('direction');
 
         //Take the filter from the URL
         $filter = unserialize(base64_decode($encodedFilter));
 
         //If the form is submitted, refresh the URL
-        if ($this->getRequest()->isGet() && !is_null($this->getRequest()->getQuery('submit'))) {
+        if ($this->getRequest()->isGet() && ! is_null($this->getRequest()->getQuery('submit'))) {
             $filter = $this->getRequest()->getQuery()->toArray()['filter'];
         }
 
         //Create a new filter if not set already
-        if (!$filter) {
+        if (! $filter) {
             $filter = [];
         }
 
         //Add a default order and direction if not known in the filter
-        if (!isset($filter['order'])) {
-            $filter['order'] = 'dateCreated';
+        if (! isset($filter['order'])) {
+            $filter['order']     = 'dateCreated';
             $filter['direction'] = 'desc';
         }
 
         //Overrule the order if set in the query
-        if (!is_null($order)) {
+        if (! is_null($order)) {
             $filter['order'] = $order;
         }
 
         //Overrule the direction if set in the query
-        if (!is_null($direction)) {
+        if (! is_null($direction)) {
             $filter['direction'] = $direction;
         }
 
         $this->filter = $filter;
 
         return $this;
+    }
+
+    /**
+     * @return RouteMatch
+     */
+    public function getRouteMatch()
+    {
+        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRouteMatch();
+    }
+
+    /**
+     * Get service locator.
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceManager;
+    }
+
+    /**
+     * Proxy to the original request object to handle form
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRequest();
     }
 
     /**
@@ -114,24 +142,6 @@ class GetFilter extends AbstractPlugin
     }
 
     /**
-     * @return RouteMatch
-     */
-    public function getRouteMatch()
-    {
-        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRouteMatch();
-    }
-
-    /**
-     * Proxy to the original request object to handle form
-     *
-     * @return Request
-     */
-    public function getRequest()
-    {
-        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRequest();
-    }
-
-    /**
      * Set service locator.
      *
      * @param ServiceLocatorInterface $serviceLocator
@@ -139,15 +149,5 @@ class GetFilter extends AbstractPlugin
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
         $this->serviceManager = $serviceLocator;
-    }
-
-    /**
-     * Get service locator.
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceManager;
     }
 }

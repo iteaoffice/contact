@@ -46,6 +46,7 @@ interface CommunityOptionsInterface
 
     /**
      * @param $facebookTemplate
+     *
      * @return mixed
      */
     public function setFacebookTemplate($facebookTemplate);

@@ -41,7 +41,7 @@ class NoteManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $note Note
                  */
@@ -54,11 +54,13 @@ class NoteManagerController extends ContactAbstractController
                 ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'general']);
         }
 
-        return new ViewModel([
-            'form'    => $form,
-            'contact' => $contact,
+        return new ViewModel(
+            [
+                'form'    => $form,
+                'contact' => $contact,
 
-        ]);
+            ]
+        );
     }
 
     /**
@@ -92,7 +94,7 @@ class NoteManagerController extends ContactAbstractController
             }
 
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var Note $note
                  */
@@ -107,10 +109,12 @@ class NoteManagerController extends ContactAbstractController
             );
         }
 
-        return new ViewModel([
-            'form'    => $form,
-            'contact' => $note->getContact()
+        return new ViewModel(
+            [
+                'form'    => $form,
+                'contact' => $note->getContact(),
 
-        ]);
+            ]
+        );
     }
 }

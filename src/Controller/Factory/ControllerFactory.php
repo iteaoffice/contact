@@ -50,7 +50,8 @@ final class ControllerFactory implements FactoryInterface
      * @return ContactAbstractController
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null
-    ): ContactAbstractController {
+    ): ContactAbstractController
+    {
         /** @var ContactAbstractController $controller */
         $controller = new $requestedName($options);
 

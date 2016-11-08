@@ -26,7 +26,8 @@ class Search extends Form
         $this->setAttribute('method', 'get');
         $this->setAttribute('action', '');
         $this->setAttribute('class', 'form-horizontal');
-        $this->add([
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'q',
                 'attributes' => [
@@ -35,14 +36,17 @@ class Search extends Form
                     'id'          => "search",
                     'placeholder' => _("txt-site-search"),
                 ],
-            ]);
-        $this->add([
+            ]
+        );
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'submit',
                 'attributes' => [
                     'class' => "btn btn-primary",
                     'value' => _("txt-submit"),
                 ],
-            ]);
+            ]
+        );
     }
 }

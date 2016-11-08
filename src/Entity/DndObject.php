@@ -47,14 +47,6 @@ class DndObject //extends EntityAbstract implements ResourceInterface
     private $dnd;
 
     /**
-     * @param \Contact\Entity\Dnd $dnd
-     */
-    public function setDnd($dnd)
-    {
-        $this->dnd = $dnd;
-    }
-
-    /**
      * @return \Contact\Entity\Dnd
      */
     public function getDnd()
@@ -63,11 +55,11 @@ class DndObject //extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param int $id
+     * @param \Contact\Entity\Dnd $dnd
      */
-    public function setId($id)
+    public function setDnd($dnd)
     {
-        $this->id = $id;
+        $this->dnd = $dnd;
     }
 
     /**
@@ -79,11 +71,11 @@ class DndObject //extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param string $object
+     * @param int $id
      */
-    public function setObject($object)
+    public function setId($id)
     {
-        $this->object = $object;
+        $this->id = $id;
     }
 
     /**
@@ -92,5 +84,13 @@ class DndObject //extends EntityAbstract implements ResourceInterface
     public function getObject()
     {
         return $this->object;
+    }
+
+    /**
+     * @param string $object
+     */
+    public function setObject($object)
+    {
+        $this->object = $object;
     }
 }

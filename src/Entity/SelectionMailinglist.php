@@ -38,10 +38,11 @@ class SelectionMailinglist
      *
      * @var array
      */
-    protected $privateTemplates = array(
-        self::NOT_MAIN => 'txt-not-main',
-        self::MAIN     => 'txt-main',
-    );
+    protected $privateTemplates
+        = array(
+            self::NOT_MAIN => 'txt-not-main',
+            self::MAIN     => 'txt-main',
+        );
     /**
      * @var integer
      *
@@ -87,6 +88,14 @@ class SelectionMailinglist
     }
 
     /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
      * @param string $alias
      */
     public function setAlias($alias)
@@ -95,11 +104,11 @@ class SelectionMailinglist
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getAlias()
+    public function getId()
     {
-        return $this->alias;
+        return $this->id;
     }
 
     /**
@@ -113,9 +122,9 @@ class SelectionMailinglist
     /**
      * @return int
      */
-    public function getId()
+    public function getMain()
     {
-        return $this->id;
+        return $this->main;
     }
 
     /**
@@ -127,11 +136,11 @@ class SelectionMailinglist
     }
 
     /**
-     * @return int
+     * @return \Contact\Entity\Selection
      */
-    public function getMain()
+    public function getSelection()
     {
-        return $this->main;
+        return $this->selection;
     }
 
     /**
@@ -140,13 +149,5 @@ class SelectionMailinglist
     public function setSelection($selection)
     {
         $this->selection = $selection;
-    }
-
-    /**
-     * @return \Contact\Entity\Selection
-     */
-    public function getSelection()
-    {
-        return $this->selection;
     }
 }

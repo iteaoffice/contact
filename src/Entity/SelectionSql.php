@@ -97,14 +97,6 @@ class SelectionSql extends EntityAbstract
     }
 
     /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return int
      */
     public function getId()
@@ -113,11 +105,11 @@ class SelectionSql extends EntityAbstract
     }
 
     /**
-     * @param string $query
+     * @param int $id
      */
-    public function setQuery($query)
+    public function setId($id)
     {
-        $this->query = $query;
+        $this->id = $id;
     }
 
     /**
@@ -129,11 +121,11 @@ class SelectionSql extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Selection $selection
+     * @param string $query
      */
-    public function setSelection($selection)
+    public function setQuery($query)
     {
-        $this->selection = $selection;
+        $this->query = $query;
     }
 
     /**
@@ -142,5 +134,13 @@ class SelectionSql extends EntityAbstract
     public function getSelection()
     {
         return $this->selection;
+    }
+
+    /**
+     * @param \Contact\Entity\Selection $selection
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
     }
 }

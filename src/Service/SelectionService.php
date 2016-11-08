@@ -12,10 +12,10 @@ namespace Contact\Service;
 
 use Contact\Entity;
 use Contact\Repository;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class SelectionService
+ *
  * @package Contact\Service
  */
 class SelectionService extends ServiceAbstract
@@ -38,7 +38,7 @@ class SelectionService extends ServiceAbstract
      */
     public function isSql(Entity\Selection $selection)
     {
-        return !is_null($selection->getSql());
+        return ! is_null($selection->getSql());
     }
 
     /**
@@ -50,7 +50,7 @@ class SelectionService extends ServiceAbstract
     {
         try {
             return sizeof($this->getContactService()->findContactsInSelection($selection));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }
@@ -87,7 +87,7 @@ class SelectionService extends ServiceAbstract
             /**
              * Skip the deleted selections and the ones the user is in
              */
-            if (!is_null($selection->getSql()) && $this->getContactService()->contactInSelection($contact, $selection)
+            if (! is_null($selection->getSql()) && $this->getContactService()->contactInSelection($contact, $selection)
             ) {
                 $selections[] = $selection;
             }
@@ -121,16 +121,21 @@ class SelectionService extends ServiceAbstract
          */
         if ((int)$data['type'] === Entity\Selection::TYPE_FIXED) {
             //remove the query
-            if (!is_null($sql = $selection->getSql())) {
+            if (! is_null($sql = $selection->getSql())) {
                 $this->removeEntity($sql);
             }
 
             //Update the contacts
-            if (!empty($data['added'])) {
+            if (! empty($data['added'])) {
                 foreach (explode(',', $data['added']) as $contactId) {
                     $contact = $this->getContactService()->findContactById($contactId);
 
-                    if (!$contact->isEmpty() && !$this->getContactService()->contactInSelection($contact, $selection)) {
+                    if (! $contact->isEmpty()
+                        && ! $this->getContactService()->contactInSelection(
+                            $contact,
+                            $selection
+                        )
+                    ) {
                         $selectionContact = new Entity\SelectionContact();
                         $selectionContact->setContact($contact);
                         $selectionContact->setSelection($selection);
@@ -140,7 +145,7 @@ class SelectionService extends ServiceAbstract
             }
 
             //Update the contacts
-            if (!empty($data['removed'])) {
+            if (! empty($data['removed'])) {
                 foreach (explode(',', $data['removed']) as $contactId) {
                     foreach ($selection->getSelectionContact() as $selectionContact) {
                         if ($selectionContact->getContact()->getId() === (int)$contactId) {

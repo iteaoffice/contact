@@ -105,7 +105,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      */
     public function getResourceId()
     {
-        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
 
     /**
@@ -133,7 +133,7 @@ class Cv extends EntityAbstract implements ResourceInterface
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
             $inputFilter->add(
@@ -151,6 +151,16 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * Function needed for the population of forms.
+     *
+     * @return array
+     */
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
      * Needed for the hydration of form elements.
      *
      * @return array
@@ -163,13 +173,11 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Function needed for the population of forms.
-     *
-     * @return array
+     * @return \Contact\Entity\Contact
      */
-    public function populate()
+    public function getContact()
     {
-        return $this->getArrayCopy();
+        return $this->contact;
     }
 
     /**
@@ -181,11 +189,11 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return resource
      */
-    public function getContact()
+    public function getCv()
     {
-        return $this->contact;
+        return $this->cv;
     }
 
     /**
@@ -197,11 +205,11 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return resource
+     * @return \DateTime
      */
-    public function getCv()
+    public function getDateCreated()
     {
-        return $this->cv;
+        return $this->dateCreated;
     }
 
     /**
@@ -215,9 +223,9 @@ class Cv extends EntityAbstract implements ResourceInterface
     /**
      * @return \DateTime
      */
-    public function getDateCreated()
+    public function getDateUpdated()
     {
-        return $this->dateCreated;
+        return $this->dateUpdated;
     }
 
     /**
@@ -229,11 +237,11 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
-    public function getDateUpdated()
+    public function getId()
     {
-        return $this->dateUpdated;
+        return $this->id;
     }
 
     /**
@@ -242,13 +250,5 @@ class Cv extends EntityAbstract implements ResourceInterface
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 }

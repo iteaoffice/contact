@@ -56,6 +56,14 @@ class PhoneType extends EntityAbstract
     private $phone;
 
     /**
+     * Class constructor.
+     */
+    public function __construct()
+    {
+        $this->address = new Collections\ArrayCollection();
+    }
+
+    /**
      * Static array for phone types to enable validation based on types.
      *
      * @return array
@@ -68,14 +76,6 @@ class PhoneType extends EntityAbstract
             self::PHONE_TYPE_FAX,
             self::PHONE_TYPE_HOME,
         ];
-    }
-
-    /**
-     * Class constructor.
-     */
-    public function __construct()
-    {
-        $this->address = new Collections\ArrayCollection();
     }
 
     /**
@@ -118,9 +118,9 @@ class PhoneType extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
+            $factory     = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
                     [
@@ -149,6 +149,11 @@ class PhoneType extends EntityAbstract
         return $this->inputFilter;
     }
 
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
     /**
      * Needed for the hydration of form elements.
      *
@@ -161,25 +166,12 @@ class PhoneType extends EntityAbstract
         ];
     }
 
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
     /**
      * @return string
      */
     public function __toString()
     {
-        return (string) $this->type;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+        return (string)$this->type;
     }
 
     /**
@@ -191,11 +183,11 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * @param string $type
+     * @param int $id
      */
-    public function setType($type)
+    public function setId($id)
     {
-        $this->type = $type;
+        $this->id = $id;
     }
 
     /**
@@ -207,11 +199,11 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Phone[] $phone
+     * @param string $type
      */
-    public function setPhone($phone)
+    public function setType($type)
     {
-        $this->phone = $phone;
+        $this->type = $type;
     }
 
     /**
@@ -220,5 +212,13 @@ class PhoneType extends EntityAbstract
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * @param \Contact\Entity\Phone[] $phone
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
     }
 }

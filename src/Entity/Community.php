@@ -91,6 +91,7 @@ class Community extends EntityAbstract
     }
 
     /** Set input filter
+     *
      * @param InputFilterInterface $inputFilter
      *
      * @throws \Exception
@@ -105,7 +106,7 @@ class Community extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
             $inputFilter->add(
@@ -134,6 +135,11 @@ class Community extends EntityAbstract
         return $this->inputFilter;
     }
 
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
     /**
      * Needed for the hydration of form elements.
      *
@@ -148,9 +154,12 @@ class Community extends EntityAbstract
         );
     }
 
-    public function populate()
+    /**
+     * @return string
+     */
+    public function getCommunity()
     {
-        return $this->getArrayCopy();
+        return $this->community;
     }
 
     /**
@@ -162,11 +171,11 @@ class Community extends EntityAbstract
     }
 
     /**
-     * @return string
+     * @return \Contact\Entity\Contact
      */
-    public function getCommunity()
+    public function getContact()
     {
-        return $this->community;
+        return $this->contact;
     }
 
     /**
@@ -178,11 +187,11 @@ class Community extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return int
      */
-    public function getContact()
+    public function getId()
     {
-        return $this->contact;
+        return $this->id;
     }
 
     /**
@@ -194,11 +203,11 @@ class Community extends EntityAbstract
     }
 
     /**
-     * @return int
+     * @return \General\Entity\CommunityType
      */
-    public function getId()
+    public function getType()
     {
-        return $this->id;
+        return $this->type;
     }
 
     /**
@@ -207,13 +216,5 @@ class Community extends EntityAbstract
     public function setType($type)
     {
         $this->type = $type;
-    }
-
-    /**
-     * @return \General\Entity\CommunityType
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 }

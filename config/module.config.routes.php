@@ -13,7 +13,7 @@ use Contact\Controller;
 return [
     'router' => [
         'routes' => [
-            'assets' => [
+            'assets'    => [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [

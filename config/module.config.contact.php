@@ -13,13 +13,13 @@ $settings = [
         ],
         'plugins' => [
             'serializer',
-        ]
+        ],
     ],
-    'cache_key'     => 'contact-cache-' . (defined("ITEAOFFICE_HOST") ? ITEAOFFICE_HOST : 'test')
+    'cache_key'     => 'contact-cache-' . (defined("ITEAOFFICE_HOST") ? ITEAOFFICE_HOST : 'test'),
 ];
 /**
  * You do not need to edit below this line
  */
 return [
-    'contact-config' => $settings
+    'contact-config' => $settings,
 ];

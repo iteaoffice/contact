@@ -41,9 +41,14 @@ class AddressLabel extends AbstractNavigationInvokable
 
             $this->getEntities()->set(Contact::class, $address->getContact());
 
-            $page->setParams(array_merge($page->getParams(), [
-                'id' => $address->getId(),
-            ]));
+            $page->setParams(
+                array_merge(
+                    $page->getParams(),
+                    [
+                    'id' => $address->getId(),
+                    ]
+                )
+            );
             $label = sprintf(
                 "%s %s, %s (%s)",
                 $address->getAddress(),

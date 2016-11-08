@@ -104,7 +104,7 @@ class OpenId extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
             $inputFilter->add(
@@ -122,6 +122,16 @@ class OpenId extends EntityAbstract
     }
 
     /**
+     * Function needed for the population of forms.
+     *
+     * @return array
+     */
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
      * Needed for the hydration of form elements.
      *
      * @return array
@@ -135,13 +145,11 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * Function needed for the population of forms.
-     *
-     * @return array
+     * @return \Contact\Entity\Contact
      */
-    public function populate()
+    public function getContact()
     {
-        return $this->getArrayCopy();
+        return $this->contact;
     }
 
     /**
@@ -153,11 +161,11 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return int
      */
-    public function getContact()
+    public function getId()
     {
-        return $this->contact;
+        return $this->id;
     }
 
     /**
@@ -169,11 +177,11 @@ class OpenId extends EntityAbstract
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId()
+    public function getIdentity()
     {
-        return $this->id;
+        return $this->identity;
     }
 
     /**
@@ -182,13 +190,5 @@ class OpenId extends EntityAbstract
     public function setIdentity($identity)
     {
         $this->identity = $identity;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdentity()
-    {
-        return $this->identity;
     }
 }

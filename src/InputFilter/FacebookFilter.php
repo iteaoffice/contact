@@ -16,7 +16,6 @@
 namespace Contact\InputFilter;
 
 use Doctrine\ORM\EntityManager;
-use DoctrineModule\Validator;
 use Zend\InputFilter\InputFilter;
 
 /**
@@ -37,32 +36,38 @@ class FacebookFilter extends InputFilter
     public function __construct(EntityManager $entityManager)
     {
         $inputFilter = new InputFilter();
-        $inputFilter->add([
-            'name'       => 'facebook',
-            'required'   => true,
-            'filters'    => [
-                ['name' => 'StripTags'],
-                ['name' => 'StringTrim'],
-            ],
-            'validators' => [
-                [
-                    'name'    => 'StringLength',
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'min'      => 1,
-                        'max'      => 80,
+        $inputFilter->add(
+            [
+                'name'       => 'facebook',
+                'required'   => true,
+                'filters'    => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 80,
+                        ],
                     ],
                 ],
-            ],
-        ]);
-        $inputFilter->add([
-            'name'     => 'public',
-            'required' => true,
-        ]);
-        $inputFilter->add([
-            'name'     => 'canSendMessage',
-            'required' => true,
-        ]);
+            ]
+        );
+        $inputFilter->add(
+            [
+                'name'     => 'public',
+                'required' => true,
+            ]
+        );
+        $inputFilter->add(
+            [
+                'name'     => 'canSendMessage',
+                'required' => true,
+            ]
+        );
 
         $this->add($inputFilter, 'contact_entity_facebook');
     }

@@ -34,12 +34,17 @@ class FacebookController extends ContactAbstractController
          * @var Facebook $facebook
          */
         $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
-        $view = new ViewModel([
-            'facebook'          => $facebook,
-            'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
-            'contactInFacebook' => $this->getContactService()->isContactInFacebook($this->zfcUserAuthentication()
-                ->getIdentity(), $facebook),
-        ]);
+        $view     = new ViewModel(
+            [
+                'facebook'          => $facebook,
+                'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
+                'contactInFacebook' => $this->getContactService()->isContactInFacebook(
+                    $this->zfcUserAuthentication()
+                        ->getIdentity(),
+                    $facebook
+                ),
+            ]
+        );
         $view->setTemplate($this->getContactService()->getFacebookTemplate());
 
         return $view;
@@ -87,11 +92,13 @@ class FacebookController extends ContactAbstractController
                     $email->addTo($contact['contact']);
                 }
 
-                $email->setSubject(sprintf(
-                    '[%s] Message received from %s',
-                    $facebook->getFacebook(),
-                    $this->zfcUserAuthentication()->getIdentity()->getDisplayName()
-                ));
+                $email->setSubject(
+                    sprintf(
+                        '[%s] Message received from %s',
+                        $facebook->getFacebook(),
+                        $this->zfcUserAuthentication()->getIdentity()->getDisplayName()
+                    )
+                );
 
                 $email->setHtmlLayoutName('signature_twig');
                 $email->setMessage(nl2br($form->getData()['message']));
@@ -99,19 +106,23 @@ class FacebookController extends ContactAbstractController
                 $this->getEmailService()->send();
 
                 $this->flashMessenger()
-                    ->addSuccessMessage(sprintf(
-                        $this->translate("txt-message-to-attendees-for-%s-has-been-sent"),
-                        $facebook->getFacebook()
-                    ));
+                    ->addSuccessMessage(
+                        sprintf(
+                            $this->translate("txt-message-to-attendees-for-%s-has-been-sent"),
+                            $facebook->getFacebook()
+                        )
+                    );
 
                 return $this->redirect()->toRoute('community/contact/facebook/facebook', ['id' => $facebook->getId()]);
             }
         }
 
-        return new ViewModel([
-            'form'     => $form,
-            'facebook' => $facebook,
-            'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
-        ]);
+        return new ViewModel(
+            [
+                'form'     => $form,
+                'facebook' => $facebook,
+                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
+            ]
+        );
     }
 }

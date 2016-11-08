@@ -41,7 +41,7 @@ class AddressManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $address Address
                  */
@@ -54,11 +54,13 @@ class AddressManagerController extends ContactAbstractController
                 ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'address']);
         }
 
-        return new ViewModel([
-            'form'    => $form,
-            'contact' => $contact,
+        return new ViewModel(
+            [
+                'form'    => $form,
+                'contact' => $contact,
 
-        ]);
+            ]
+        );
     }
 
     /**
@@ -72,8 +74,8 @@ class AddressManagerController extends ContactAbstractController
          * @var $address Address
          */
         $address = $this->getContactService()->findEntityById(Address::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($address, $address, $data);
+        $data    = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $form    = $this->getFormService()->prepare($address, $address, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
@@ -92,7 +94,7 @@ class AddressManagerController extends ContactAbstractController
                     );
             }
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /*
                 * @var Address
                 */
@@ -107,9 +109,11 @@ class AddressManagerController extends ContactAbstractController
             );
         }
 
-        return new ViewModel([
-            'form'    => $form,
-            'contact' => $address->getContact(),
-        ]);
+        return new ViewModel(
+            [
+                'form'    => $form,
+                'contact' => $address->getContact(),
+            ]
+        );
     }
 }

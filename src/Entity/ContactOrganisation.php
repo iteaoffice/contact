@@ -86,6 +86,7 @@ class ContactOrganisation extends EntityAbstract
     }
 
     /** Set input filter
+     *
      * @param InputFilterInterface $inputFilter
      *
      * @throws \Exception
@@ -100,9 +101,9 @@ class ContactOrganisation extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
+            $factory     = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
                     [
@@ -121,6 +122,11 @@ class ContactOrganisation extends EntityAbstract
         return $this->inputFilter;
     }
 
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
     /**
      * Needed for the hydration of form elements.
      *
@@ -135,9 +141,12 @@ class ContactOrganisation extends EntityAbstract
         ];
     }
 
-    public function populate()
+    /**
+     * @return string
+     */
+    public function getBranch()
     {
-        return $this->getArrayCopy();
+        return $this->branch;
     }
 
     /**
@@ -149,11 +158,11 @@ class ContactOrganisation extends EntityAbstract
     }
 
     /**
-     * @return string
+     * @return \Contact\Entity\Contact
      */
-    public function getBranch()
+    public function getContact()
     {
-        return $this->branch;
+        return $this->contact;
     }
 
     /**
@@ -165,11 +174,11 @@ class ContactOrganisation extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return int
      */
-    public function getContact()
+    public function getId()
     {
-        return $this->contact;
+        return $this->id;
     }
 
     /**
@@ -181,11 +190,11 @@ class ContactOrganisation extends EntityAbstract
     }
 
     /**
-     * @return int
+     * @return \Organisation\Entity\Organisation
      */
-    public function getId()
+    public function getOrganisation()
     {
-        return $this->id;
+        return $this->organisation;
     }
 
     /**
@@ -194,13 +203,5 @@ class ContactOrganisation extends EntityAbstract
     public function setOrganisation($organisation)
     {
         $this->organisation = $organisation;
-    }
-
-    /**
-     * @return \Organisation\Entity\Organisation
-     */
-    public function getOrganisation()
-    {
-        return $this->organisation;
     }
 }

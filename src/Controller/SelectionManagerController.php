@@ -71,7 +71,7 @@ class SelectionManagerController extends ContactAbstractController
         try {
             $contacts = $this->getContactService()->findContactsInSelectionAsArray($selection);
             $error    = false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $contacts = [];
             $error    = $e->getMessage();
         }

@@ -104,6 +104,22 @@ class Note extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+    }
+
+    /**
      * Returns the string identifier of the Resource.
      *
      * @return string
@@ -112,7 +128,6 @@ class Note extends EntityAbstract implements ResourceInterface
     {
         return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
-
 
     /**
      * Set input filter.
@@ -131,9 +146,9 @@ class Note extends EntityAbstract implements ResourceInterface
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
+            $factory     = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
                     [
@@ -174,15 +189,6 @@ class Note extends EntityAbstract implements ResourceInterface
         return $this->inputFilter;
     }
 
-
-    /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
     /**
      * @return \Contact\Entity\Contact
      */
@@ -192,11 +198,11 @@ class Note extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param \DateTime $dateCreated
+     * @param \Contact\Entity\Contact $contact
      */
-    public function setDateCreated($dateCreated)
+    public function setContact($contact)
     {
-        $this->dateCreated = $dateCreated;
+        $this->contact = $contact;
     }
 
     /**
@@ -208,11 +214,11 @@ class Note extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param int $id
+     * @param \DateTime $dateCreated
      */
-    public function setId($id)
+    public function setDateCreated($dateCreated)
     {
-        $this->id = $id;
+        $this->dateCreated = $dateCreated;
     }
 
     /**
@@ -224,27 +230,11 @@ class Note extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param string $note
+     * @param int $id
      */
-    public function setNote($note)
+    public function setId($id)
     {
-        $this->note = $note;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNote()
-    {
-        return $this->note;
-    }
-
-    /**
-     * @param string $source
-     */
-    public function setSource($source)
-    {
-        $this->source = $source;
+        $this->id = $id;
     }
 
     /**
@@ -253,5 +243,13 @@ class Note extends EntityAbstract implements ResourceInterface
     public function getSource()
     {
         return $this->source;
+    }
+
+    /**
+     * @param string $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
     }
 }

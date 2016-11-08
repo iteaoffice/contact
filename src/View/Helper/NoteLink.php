@@ -40,13 +40,15 @@ class NoteLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (!$this->hasAccess($this->getNote(), NoteAssertion::class, $this->getAction())) {
+        if (! $this->hasAccess($this->getNote(), NoteAssertion::class, $this->getAction())) {
             return '';
         }
 
-        $this->setShowOptions([
+        $this->setShowOptions(
+            [
                 'name' => $this->getNote()->getNote(),
-            ]);
+            ]
+        );
         $this->addRouterParam('id', $this->getNote()->getId());
         $this->addRouterParam('contact', $this->getContact()->getId());
 

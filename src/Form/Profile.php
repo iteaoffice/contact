@@ -12,7 +12,6 @@ namespace Contact\Form;
 
 use Contact\Entity\Contact;
 use Contact\Entity\PhoneType;
-use Contact\Entity\Photo;
 use Contact\Entity\Profile as ProfileEntity;
 use Contact\Hydrator\Profile as ProfileHydrator;
 use Contact\Service\ContactService;
@@ -246,7 +245,7 @@ class Profile extends Form
                         ],
                     ],
                     'label_generator'           => function (Organisation $organisation) {
-                        if ( ! is_null($organisation->getCountry())) {
+                        if (! is_null($organisation->getCountry())) {
                             return sprintf(
                                 "%s (%s) [VAT: %s]",
                                 $organisation->getOrganisation(),

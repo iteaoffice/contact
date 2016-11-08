@@ -23,9 +23,11 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function listAction()
     {
-        return new ViewModel([
-            'facebook' => $this->getContactService()->findAll(Facebook::class),
-        ]);
+        return new ViewModel(
+            [
+                'facebook' => $this->getContactService()->findAll(Facebook::class),
+            ]
+        );
     }
 
     /**
@@ -38,10 +40,12 @@ class FacebookManagerController extends ContactAbstractController
          */
         $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
 
-        return new ViewModel([
-            'facebook' => $facebook,
-            'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
-        ]);
+        return new ViewModel(
+            [
+                'facebook' => $facebook,
+                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
+            ]
+        );
     }
 
     /**
@@ -79,8 +83,8 @@ class FacebookManagerController extends ContactAbstractController
          * @var $facebook Facebook
          */
         $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($facebook, $facebook, $data);
+        $data     = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $form     = $this->getFormService()->prepare($facebook, $facebook, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             if (isset($data['delete'])) {
@@ -96,7 +100,7 @@ class FacebookManagerController extends ContactAbstractController
                 return $this->redirect()->toRoute('zfcadmin/facebook-manager/list');
             }
 
-            if (!isset($data['cancel'])) {
+            if (! isset($data['cancel'])) {
                 $facebook = $this->getContactService()->updateEntity($facebook);
             }
 

@@ -138,6 +138,22 @@ class Address extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
      * Returns the string identifier of the Resource.
      *
      * @return string
@@ -146,7 +162,6 @@ class Address extends EntityAbstract implements ResourceInterface
     {
         return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
-
 
     /**
      * Set input filter.
@@ -165,100 +180,95 @@ class Address extends EntityAbstract implements ResourceInterface
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-            $inputFilter->add($factory->createInput([
-                'name'       => 'address',
-                'required'   => true,
-                'filters'    => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-                'validators' => [
+            $factory     = new InputFactory();
+            $inputFilter->add(
+                $factory->createInput(
                     [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 80,
+                        'name'       => 'address',
+                        'required'   => true,
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
                         ],
-                    ],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'       => 'city',
-                'required'   => true,
-                'filters'    => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-                'validators' => [
+                        'validators' => [
+                            [
+                                'name'    => 'StringLength',
+                                'options' => [
+                                    'encoding' => 'UTF-8',
+                                    'min'      => 1,
+                                    'max'      => 80,
+                                ],
+                            ],
+                        ],
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
                     [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 40,
+                        'name'       => 'city',
+                        'required'   => true,
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
                         ],
-                    ],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'       => 'zipCode',
-                'required'   => true,
-                'filters'    => [
-                    ['name' => 'StripTags'],
-                    ['name' => 'StringTrim'],
-                ],
-                'validators' => [
+                        'validators' => [
+                            [
+                                'name'    => 'StringLength',
+                                'options' => [
+                                    'encoding' => 'UTF-8',
+                                    'min'      => 1,
+                                    'max'      => 40,
+                                ],
+                            ],
+                        ],
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
                     [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 20,
+                        'name'       => 'zipCode',
+                        'required'   => true,
+                        'filters'    => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
                         ],
-                    ],
-                ],
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'type',
-                'required' => true,
-            ]));
-            $inputFilter->add($factory->createInput([
-                'name'     => 'country',
-                'required' => true,
-            ]));
+                        'validators' => [
+                            [
+                                'name'    => 'StringLength',
+                                'options' => [
+                                    'encoding' => 'UTF-8',
+                                    'min'      => 1,
+                                    'max'      => 20,
+                                ],
+                            ],
+                        ],
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'type',
+                        'required' => true,
+                    ]
+                )
+            );
+            $inputFilter->add(
+                $factory->createInput(
+                    [
+                        'name'     => 'country',
+                        'required' => true,
+                    ]
+                )
+            );
             $this->inputFilter = $inputFilter;
         }
 
         return $this->inputFilter;
-    }
-
-
-    /**
-     * @param string $address
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * @param string $city
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
     }
 
     /**
@@ -270,11 +280,11 @@ class Address extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param string $city
      */
-    public function setContact($contact)
+    public function setCity($city)
     {
-        $this->contact = $contact;
+        $this->city = $city;
     }
 
     /**
@@ -286,11 +296,11 @@ class Address extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param \General\Entity\Country $country
+     * @param \Contact\Entity\Contact $contact
      */
-    public function setCountry($country)
+    public function setContact($contact)
     {
-        $this->country = $country;
+        $this->contact = $contact;
     }
 
     /**
@@ -302,11 +312,11 @@ class Address extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param int $id
+     * @param \General\Entity\Country $country
      */
-    public function setId($id)
+    public function setCountry($country)
     {
-        $this->id = $id;
+        $this->country = $country;
     }
 
     /**
@@ -318,11 +328,11 @@ class Address extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param AddressType $type
+     * @param int $id
      */
-    public function setType($type)
+    public function setId($id)
     {
-        $this->type = $type;
+        $this->id = $id;
     }
 
     /**
@@ -334,11 +344,11 @@ class Address extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param string $zipCode
+     * @param AddressType $type
      */
-    public function setZipCode($zipCode)
+    public function setType($type)
     {
-        $this->zipCode = $zipCode;
+        $this->type = $type;
     }
 
     /**
@@ -347,5 +357,13 @@ class Address extends EntityAbstract implements ResourceInterface
     public function getZipCode()
     {
         return $this->zipCode;
+    }
+
+    /**
+     * @param string $zipCode
+     */
+    public function setZipCode($zipCode)
+    {
+        $this->zipCode = $zipCode;
     }
 }

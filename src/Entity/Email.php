@@ -106,7 +106,7 @@ class Email extends EntityAbstract implements ResourceInterface
      */
     public function getResourceId()
     {
-        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
 
     /**
@@ -126,7 +126,7 @@ class Email extends EntityAbstract implements ResourceInterface
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
             $inputFilter->add(
@@ -145,6 +145,16 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * Function needed for the population of forms.
+     *
+     * @return array
+     */
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
      * Needed for the hydration of form elements.
      *
      * @return array
@@ -157,13 +167,11 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Function needed for the population of forms.
-     *
-     * @return array
+     * @return \Contact\Entity\Contact
      */
-    public function populate()
+    public function getContact()
     {
-        return $this->getArrayCopy();
+        return $this->contact;
     }
 
     /**
@@ -175,11 +183,11 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return \DateTime
      */
-    public function getContact()
+    public function getDateCreated()
     {
-        return $this->contact;
+        return $this->dateCreated;
     }
 
     /**
@@ -193,9 +201,9 @@ class Email extends EntityAbstract implements ResourceInterface
     /**
      * @return \DateTime
      */
-    public function getDateCreated()
+    public function getDateUpdated()
     {
-        return $this->dateCreated;
+        return $this->dateUpdated;
     }
 
     /**
@@ -207,11 +215,11 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getDateUpdated()
+    public function getEmail()
     {
-        return $this->dateUpdated;
+        return $this->email;
     }
 
     /**
@@ -223,11 +231,11 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getEmail()
+    public function getId()
     {
-        return $this->email;
+        return $this->id;
     }
 
     /**
@@ -236,13 +244,5 @@ class Email extends EntityAbstract implements ResourceInterface
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 }

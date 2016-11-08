@@ -64,7 +64,7 @@ class ContactHandler extends AbstractViewHelper
              */
             switch ($param->getParameter()->getParam()) {
                 case 'optin':
-                    if (!is_null($optInId = $param->getParameterId())) {
+                    if (! is_null($optInId = $param->getParameterId())) {
                         /** @var OptIn $optIn */
                         $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
                         $this->setOptIn($optIn);
@@ -91,21 +91,14 @@ class ContactHandler extends AbstractViewHelper
      */
     public function parseOptInButton(OptIn $optIn)
     {
-        return $this->getRenderer()->render('contact/partial/optin-button', [
+        return $this->getRenderer()->render(
+            'contact/partial/optin-button',
+            [
             'includeAngularApp' => true,
             'optIn'             => $optIn,
             'hasIdentity'       => $this->getServiceManager()->get('Application\Authentication\Service')->hasIdentity(),
-        ]);
-    }
-
-    /**
-     * Proxy to the original request object to handle form.
-     *
-     * @return Request
-     */
-    public function getRequest()
-    {
-        return $this->getServiceManager()->get('application')->getMvcEvent()->getRequest();
+            ]
+        );
     }
 
     /**
@@ -122,5 +115,15 @@ class ContactHandler extends AbstractViewHelper
     public function setOptIn($optIn)
     {
         $this->optIn = $optIn;
+    }
+
+    /**
+     * Proxy to the original request object to handle form.
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->getServiceManager()->get('application')->getMvcEvent()->getRequest();
     }
 }

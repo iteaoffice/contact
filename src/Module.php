@@ -59,8 +59,11 @@ class Module implements Feature\AutoloaderProviderInterface, Feature\ConfigProvi
         $app = $e->getParam('application');
         /** @var EventManager $em */
         $em = $app->getEventManager();
-        $em->attach(MvcEvent::EVENT_DISPATCH, function (MvcEvent $event) {
-            $event->getApplication()->getServiceManager()->get(ContactNavigationService::class)->update();
-        });
+        $em->attach(
+            MvcEvent::EVENT_DISPATCH,
+            function (MvcEvent $event) {
+                $event->getApplication()->getServiceManager()->get(ContactNavigationService::class)->update();
+            }
+        );
     }
 }

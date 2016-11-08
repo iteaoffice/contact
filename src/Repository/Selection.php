@@ -16,6 +16,7 @@ use Doctrine\ORM\Query;
 
 /**
  * Class Selection
+ *
  * @package Contact\Repository
  */
 class Selection extends EntityRepository
@@ -32,13 +33,15 @@ class Selection extends EntityRepository
         $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
 
         if (array_key_exists('search', $filter)) {
-            $queryBuilder->andWhere($queryBuilder->expr()->orX(
-                $queryBuilder->expr()->like(
-                    'contact_entity_selection.selection',
-                    ':like'
-                ),
-                $queryBuilder->expr()->like('contact_entity_selection.tag', ':like')
-            ));
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->like(
+                        'contact_entity_selection.selection',
+                        ':like'
+                    ),
+                    $queryBuilder->expr()->like('contact_entity_selection.tag', ':like')
+                )
+            );
 
 
             $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
@@ -52,7 +55,7 @@ class Selection extends EntityRepository
             $queryBuilder->andWhere($queryBuilder->expr()->in('contact_entity_selection.tag', $filter['tags']));
         }
 
-        if (!array_key_exists('includeDeleted', $filter)) {
+        if (! array_key_exists('includeDeleted', $filter)) {
             //Do not show the deleted ones
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
         }

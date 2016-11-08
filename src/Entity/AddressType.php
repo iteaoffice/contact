@@ -124,9 +124,9 @@ class AddressType extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
+            $factory     = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
                     [
@@ -155,6 +155,11 @@ class AddressType extends EntityAbstract
         return $this->inputFilter;
     }
 
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
     /**
      * Needed for the hydration of form elements.
      *
@@ -167,9 +172,12 @@ class AddressType extends EntityAbstract
         ];
     }
 
-    public function populate()
+    /**
+     * @return int
+     */
+    public function getId()
     {
-        return $this->getArrayCopy();
+        return $this->id;
     }
 
     /**
@@ -181,11 +189,11 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * @return int
+     * @return \Contact\Entity\Address[]
      */
-    public function getId()
+    public function getAddress()
     {
-        return $this->id;
+        return $this->address;
     }
 
     /**
@@ -197,11 +205,11 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\Address[]
+     * @return string
      */
-    public function getAddress()
+    public function getType()
     {
-        return $this->address;
+        return $this->type;
     }
 
     /**
@@ -213,11 +221,11 @@ class AddressType extends EntityAbstract
     }
 
     /**
-     * @return string
+     * @return \Contact\Entity\AddressTypeSort[]
      */
-    public function getType()
+    public function getSort()
     {
-        return $this->type;
+        return $this->sort;
     }
 
     /**
@@ -231,9 +239,9 @@ class AddressType extends EntityAbstract
     /**
      * @return \Contact\Entity\AddressTypeSort[]
      */
-    public function getSort()
+    public function getSubSort()
     {
-        return $this->sort;
+        return $this->subSort;
     }
 
     /**
@@ -242,13 +250,5 @@ class AddressType extends EntityAbstract
     public function setSubSort($subSort)
     {
         $this->subSort = $subSort;
-    }
-
-    /**
-     * @return \Contact\Entity\AddressTypeSort[]
-     */
-    public function getSubSort()
-    {
-        return $this->subSort;
     }
 }

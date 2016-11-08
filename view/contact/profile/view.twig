@@ -52,7 +52,9 @@
         {% if hasNda %}
             {% if not isAllowed('route/community/program/nda/upload','upload') %}
                 <button class="btn btn-primary"
-                        disabled><i class="fa fa-upload"></i> {{ translate("txt-upload-of-nda-not-possible-without-organisation") }}</button>
+                        disabled><i
+                            class="fa fa-upload"></i> {{ translate("txt-upload-of-nda-not-possible-without-organisation") }}
+                </button>
             {% else %}
                 {{ ndaLink(null,'upload', 'button') }}
             {% endif %}

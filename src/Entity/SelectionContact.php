@@ -107,14 +107,6 @@ class SelectionContact extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
      * @return \Contact\Entity\Contact
      */
     public function getContact()
@@ -123,11 +115,11 @@ class SelectionContact extends EntityAbstract
     }
 
     /**
-     * @param \DateTime $dateCreated
+     * @param \Contact\Entity\Contact $contact
      */
-    public function setDateCreated($dateCreated)
+    public function setContact($contact)
     {
-        $this->dateCreated = $dateCreated;
+        $this->contact = $contact;
     }
 
     /**
@@ -139,11 +131,11 @@ class SelectionContact extends EntityAbstract
     }
 
     /**
-     * @param int $id
+     * @param \DateTime $dateCreated
      */
-    public function setId($id)
+    public function setDateCreated($dateCreated)
     {
-        $this->id = $id;
+        $this->dateCreated = $dateCreated;
     }
 
     /**
@@ -155,11 +147,11 @@ class SelectionContact extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Selection $selection
+     * @param int $id
      */
-    public function setSelection($selection)
+    public function setId($id)
     {
-        $this->selection = $selection;
+        $this->id = $id;
     }
 
     /**
@@ -168,5 +160,13 @@ class SelectionContact extends EntityAbstract
     public function getSelection()
     {
         return $this->selection;
+    }
+
+    /**
+     * @param \Contact\Entity\Selection $selection
+     */
+    public function setSelection($selection)
+    {
+        $this->selection = $selection;
     }
 }

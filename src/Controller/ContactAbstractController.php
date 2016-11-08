@@ -254,43 +254,6 @@ abstract class ContactAbstractController extends AbstractActionController
     }
 
     /**
-     * @return HelperPluginManager
-     */
-    public function getViewHelperManager(): HelperPluginManager
-    {
-        return $this->viewHelperManager;
-    }
-
-    /**
-     * @param HelperPluginManager $viewHelperManager
-     *
-     * @return ContactAbstractController
-     */
-    public function setViewHelperManager(HelperPluginManager $viewHelperManager): ContactAbstractController
-    {
-        $this->viewHelperManager = $viewHelperManager;
-
-        return $this;
-    }
-
-    /**
-     * Proxy for the flash messenger helper to have the string translated earlier.
-     *
-     * @param $string
-     *
-     * @return string
-     */
-    protected function translate($string)
-    {
-        /**
-         * @var Translate $translate
-         */
-        $translate = $this->getViewHelperManager()->get('translate');
-
-        return $translate($string);
-    }
-
-    /**
      * @return OrganisationService
      */
     public function getOrganisationService()
@@ -446,6 +409,43 @@ abstract class ContactAbstractController extends AbstractActionController
     public function setProgramModuleOptions(ModuleOptions $programModuleOptions): ContactAbstractController
     {
         $this->programModuleOptions = $programModuleOptions;
+
+        return $this;
+    }
+
+    /**
+     * Proxy for the flash messenger helper to have the string translated earlier.
+     *
+     * @param $string
+     *
+     * @return string
+     */
+    protected function translate($string)
+    {
+        /**
+         * @var Translate $translate
+         */
+        $translate = $this->getViewHelperManager()->get('translate');
+
+        return $translate($string);
+    }
+
+    /**
+     * @return HelperPluginManager
+     */
+    public function getViewHelperManager(): HelperPluginManager
+    {
+        return $this->viewHelperManager;
+    }
+
+    /**
+     * @param HelperPluginManager $viewHelperManager
+     *
+     * @return ContactAbstractController
+     */
+    public function setViewHelperManager(HelperPluginManager $viewHelperManager): ContactAbstractController
+    {
+        $this->viewHelperManager = $viewHelperManager;
 
         return $this;
     }

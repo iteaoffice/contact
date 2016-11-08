@@ -13,9 +13,6 @@ namespace Contact\Entity;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Optin.
@@ -97,6 +94,14 @@ class OptIn extends EntityAbstract
     }
 
     /**
+     * @return array
+     */
+    public static function getAutoSubscribeTemplates()
+    {
+        return self::$autoSubscribeTemplates;
+    }
+
+    /**
      * Magic Getter.
      *
      * @param $property
@@ -128,14 +133,6 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @return array
-     */
-    public static function getAutoSubscribeTemplates()
-    {
-        return self::$autoSubscribeTemplates;
-    }
-
-    /**
      * New function needed to make the hydrator happy.
      *
      * @param Collections\Collection $collection
@@ -158,14 +155,6 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Contact[] $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
      * @return \Contact\Entity\Contact[]
      */
     public function getContact()
@@ -174,11 +163,11 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @param string $description
+     * @param \Contact\Entity\Contact[] $contact
      */
-    public function setDescription($description)
+    public function setContact($contact)
     {
-        $this->description = $description;
+        $this->contact = $contact;
     }
 
     /**
@@ -190,11 +179,11 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @param int $id
+     * @param string $description
      */
-    public function setId($id)
+    public function setDescription($description)
     {
-        $this->id = $id;
+        $this->description = $description;
     }
 
     /**
@@ -206,11 +195,11 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @param string $optIn
+     * @param int $id
      */
-    public function setOptIn($optIn)
+    public function setId($id)
     {
-        $this->optIn = $optIn;
+        $this->id = $id;
     }
 
     /**
@@ -219,6 +208,14 @@ class OptIn extends EntityAbstract
     public function getOptIn()
     {
         return $this->optIn;
+    }
+
+    /**
+     * @param string $optIn
+     */
+    public function setOptIn($optIn)
+    {
+        $this->optIn = $optIn;
     }
 
     /**

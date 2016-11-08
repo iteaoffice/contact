@@ -32,7 +32,29 @@ class Facebook extends EntityAbstract implements ResourceInterface
     const DISPLAY_COUNTRY = 3;
     const DISPLAY_POSITION = 4;
     const DISPLAY_PROJECTS = 5;
-
+    const SHOW_EMAIL_NO = 1;
+    const SHOW_EMAIL_MEMBER = 2;
+    const SHOW_EMAIL_ALL = 3;
+    const SHOW_PHONE_NO = 1;
+    const SHOW_PHONE_MEMBER = 2;
+    const SHOW_PHONE_ALL = 3;
+    const SHOW_MOBILE_PHONE_MEMBER = 4;
+    /**
+     * Constant for public = 0 (not public).
+     */
+    const CAN_NOT_SEND_MESSAGE = 0;
+    /**
+     * Constant for public = 1 (hidden).
+     */
+    const CAN_SEND_MESSAGE = 1;
+    /**
+     * Constant for public = 0 (not public).
+     */
+    const NOT_PUBLIC = 0;
+    /**
+     * Constant for public = 1 (hidden).
+     */
+    const IS_PUBLIC = 1;
     /**
      * Textual versions of the display.
      *
@@ -46,11 +68,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
             self::DISPLAY_POSITION     => 'txt-position',
             self::DISPLAY_PROJECTS     => 'txt-projects',
         ];
-
-    const SHOW_EMAIL_NO = 1;
-    const SHOW_EMAIL_MEMBER = 2;
-    const SHOW_EMAIL_ALL = 3;
-
     /**
      * Textual versions of the display.
      *
@@ -62,12 +79,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
             self::SHOW_EMAIL_MEMBER => 'txt-show-email-to-members',
             self::SHOW_EMAIL_ALL    => 'txt-show-email-to-all',
         ];
-
-    const SHOW_PHONE_NO = 1;
-    const SHOW_PHONE_MEMBER = 2;
-    const SHOW_PHONE_ALL = 3;
-    const SHOW_MOBILE_PHONE_MEMBER = 4;
-
     /**
      * Textual versions of the display.
      *
@@ -80,16 +91,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
             self::SHOW_MOBILE_PHONE_MEMBER => 'txt-show-mobile-phone-to-members',
             self::SHOW_PHONE_ALL           => 'txt-show-phone-to-all',
         ];
-
-    /**
-     * Constant for public = 0 (not public).
-     */
-    const CAN_NOT_SEND_MESSAGE = 0;
-    /**
-     * Constant for public = 1 (hidden).
-     */
-    const CAN_SEND_MESSAGE = 1;
-
     /**
      * Textual versions of the hideForOthers.
      *
@@ -100,16 +101,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
             self::CAN_NOT_SEND_MESSAGE => 'txt-cannot-send-message',
             self::CAN_SEND_MESSAGE     => 'txt-can-send-message',
         ];
-
-    /**
-     * Constant for public = 0 (not public).
-     */
-    const NOT_PUBLIC = 0;
-    /**
-     * Constant for public = 1 (hidden).
-     */
-    const IS_PUBLIC = 1;
-
     /**
      * Textual versions of the hideForOthers.
      *
@@ -279,37 +270,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string)$this->facebook;
-    }
-
-    /**
      * @return array
      */
     public static function getDisplayTemplates()
@@ -347,6 +307,37 @@ class Facebook extends EntityAbstract implements ResourceInterface
     public static function getPublicTemplates()
     {
         return self::$publicTemplates;
+    }
+
+    /**
+     * Magic Getter.
+     *
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        return $this->$property;
+    }
+
+    /**
+     * Magic Setter.
+     *
+     * @param $property
+     * @param $value
+     */
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->facebook;
     }
 
     /**
@@ -528,11 +519,11 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param int $canSendMessage
+     * @param string $subtitle
      */
-    public function setCanSendMessage($canSendMessage)
+    public function setSubtitle($subtitle)
     {
-        $this->canSendMessage = $canSendMessage;
+        $this->subtitle = $subtitle;
     }
 
     /**
@@ -550,11 +541,11 @@ class Facebook extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @param string $subtitle
+     * @param int $canSendMessage
      */
-    public function setSubtitle($subtitle)
+    public function setCanSendMessage($canSendMessage)
     {
-        $this->subtitle = $subtitle;
+        $this->canSendMessage = $canSendMessage;
     }
 
     /**

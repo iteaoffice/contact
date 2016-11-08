@@ -48,7 +48,7 @@ class ContactProfileFieldset extends Fieldset
             }
             if ($element instanceof Radio) {
                 $attributes        = $element->getAttributes();
-                $valueOptionsArray = 'get'.ucfirst($attributes['array']);
+                $valueOptionsArray = 'get' . ucfirst($attributes['array']);
                 $element->setOptions(
                     array(
                         'value_options' => $object->$valueOptionsArray(),

@@ -36,7 +36,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'export'            => [
+                            'export'      => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/export[/q-:encodedFilter].csv',
@@ -135,7 +135,7 @@ return [
                                 'query'    => [
                                     'search' => null,
                                     'page'   => null,
-                                ]
+                                ],
                             ],
                             'new'           => [
                                 'type'    => 'Literal',
@@ -233,7 +233,7 @@ return [
                                     'defaults' => [
                                         'action' => 'list',
                                     ],
-                                ]
+                                ],
                             ],
                             'new'  => [
                                 'type'     => 'Literal',
@@ -365,6 +365,6 @@ return [
                     ],
                 ],
             ],
-        ]
-    ]
+        ],
+    ],
 ];

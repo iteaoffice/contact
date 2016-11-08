@@ -8,12 +8,12 @@
  * @copyright Copyright (c) 2004-2015 ITEA Office (http://itea3.org)
  */
 
-namespace Contact\Search\Service;
+namespace Contact\Search;
 
 use Contact\Entity\Contact;
-use Contact\Entity\Photo;
 use Contact\Entity\Profile;
 use Contact\Service\ContactService;
+use Contact\Service\ContactServiceAwareInterface;
 use Search\Service\AbstractSearchService;
 use Solarium\QueryType\Select\Query\Query;
 
@@ -71,7 +71,6 @@ class ContactSearchService extends AbstractSearchService
             if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
                 && ($contact->getPhoto()->count() > 0)
             ) {
-                /** @var Photo $photo */
                 $photo                      = $contact->getPhoto()->first();
                 $contactDocument->photo_url = $this->getServiceLocator()->get('ViewHelperManager')->get('url')
                     ->__invoke(
@@ -145,7 +144,7 @@ class ContactSearchService extends AbstractSearchService
      *
      * @return ContactSearchService
      */
-    public function setSearch($searchTerm, $order = '', $direction = Query::SORT_ASC)
+    public function setSearch($searchTerm, $order = 'lastname', $direction = Query::SORT_ASC)
     {
         $this->setQuery($this->getSolrClient()->createSelect());
         $this->getQuery()->setQuery(
@@ -164,17 +163,8 @@ class ContactSearchService extends AbstractSearchService
                 )
             )
         );
-        $hasTerm = ! in_array($searchTerm, ['*', '']);
-        $hasSort = ($order !== '');
 
-        if ($hasSort) {
-            $this->getQuery()->addSort($order, $direction);
-        }
-        if ($hasTerm) {
-            $this->getQuery()->addSort('score', Query::SORT_DESC);
-        } else {
-            $this->getQuery()->addSort('lastname', Query::SORT_ASC);
-        }
+        $this->getQuery()->addSort($order, $direction);
 
         $facetSet = $this->getQuery()->getFacetSet();
         $facetSet->createFacetField('organisation_type')->setField('organisation_type')->setMinCount(0)

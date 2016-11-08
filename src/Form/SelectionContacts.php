@@ -44,51 +44,60 @@ class SelectionContacts extends Form
 
         asort($selections);
 
-        $this->add([
-            'type'       => 'Zend\Form\Element\Select',
-            'name'       => 'selection',
-            'options'    => [
-                'inline'        => true,
-                'value_options' => $selections
-            ],
-            'attributes' => [
-                'id'    => 'selection',
-                'class' => 'form-control',
-            ],
-        ]);
+        $this->add(
+            [
+                'type'       => 'Zend\Form\Element\Select',
+                'name'       => 'selection',
+                'options'    => [
+                    'inline'        => true,
+                    'value_options' => $selections,
+                ],
+                'attributes' => [
+                    'id'    => 'selection',
+                    'class' => 'form-control',
+                ],
+            ]
+        );
 
-        $this->add([
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Hidden',
                 'name'       => 'added',
                 'attributes' => [
                     'id' => 'added',
                 ],
-            ]);
+            ]
+        );
 
-        $this->add([
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Hidden',
                 'name'       => 'removed',
                 'attributes' => [
                     'id' => 'removed',
                 ],
-            ]);
+            ]
+        );
 
 
-        $this->add([
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Radio',
                 'name'       => 'type',
                 'options'    => [
                     'value_options' => [
                         Selection::TYPE_SQL   => 'SQL',
-                        Selection::TYPE_FIXED => 'Fixed selection'
+                        Selection::TYPE_FIXED => 'Fixed selection',
                     ],
                 ],
                 'attributes' => [
                     'label' => _("txt-selection-type"),
                 ],
-            ]);
+            ]
+        );
 
-        $this->add([
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Textarea',
                 'name'       => 'sql',
                 'options'    => [
@@ -96,12 +105,14 @@ class SelectionContacts extends Form
                 ],
                 'attributes' => [
                     'label' => _("txt-sql-query"),
-                    'rows'  => 20
+                    'rows'  => 20,
                 ],
-            ]);
+            ]
+        );
 
 
-        $this->add([
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'submit',
                 'attributes' => [
@@ -109,9 +120,11 @@ class SelectionContacts extends Form
                     'class' => 'btn btn-primary',
                     'value' => _('txt-submit'),
                 ],
-            ]);
+            ]
+        );
 
-        $this->add([
+        $this->add(
+            [
                 'type'       => 'Zend\Form\Element\Submit',
                 'name'       => 'cancel',
                 'attributes' => [
@@ -119,6 +132,7 @@ class SelectionContacts extends Form
                     'class' => 'btn btn-warning',
                     'value' => _('txt-cancel'),
                 ],
-            ]);
+            ]
+        );
     }
 }

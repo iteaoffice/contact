@@ -12,9 +12,6 @@ namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Profile.
@@ -142,6 +139,15 @@ class Profile extends EntityAbstract
     private $contact;
 
     /**
+     * Default value when a new profile is created.
+     */
+    public function __construct()
+    {
+        $this->hideForOthers = self::NOT_HIDE_FOR_OTHERS;
+        $this->hidePhoto     = self::NOT_HIDE_PHOTO;
+    }
+
+    /**
      * Magic Getter.
      *
      * @param $property
@@ -151,15 +157,6 @@ class Profile extends EntityAbstract
     public function __get($property)
     {
         return $this->$property;
-    }
-
-    /**
-     * Default value when a new profile is created.
-     */
-    public function __construct()
-    {
-        $this->hideForOthers = self::NOT_HIDE_FOR_OTHERS;
-        $this->hidePhoto     = self::NOT_HIDE_PHOTO;
     }
 
     /**
@@ -198,14 +195,6 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
      * @return \Contact\Entity\Contact
      */
     public function getContact()
@@ -214,11 +203,11 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * @param string $description
+     * @param \Contact\Entity\Contact $contact
      */
-    public function setDescription($description)
+    public function setContact($contact)
     {
-        $this->description = $description;
+        $this->contact = $contact;
     }
 
     /**
@@ -230,11 +219,11 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * @param int $hideForOthers
+     * @param string $description
      */
-    public function setHideForOthers($hideForOthers)
+    public function setDescription($description)
     {
-        $this->hideForOthers = $hideForOthers;
+        $this->description = $description;
     }
 
     /**
@@ -252,11 +241,11 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * @param int $hidePhoto
+     * @param int $hideForOthers
      */
-    public function setHidePhoto($hidePhoto)
+    public function setHideForOthers($hideForOthers)
     {
-        $this->hidePhoto = $hidePhoto;
+        $this->hideForOthers = $hideForOthers;
     }
 
     /**
@@ -274,11 +263,11 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * @param int $id
+     * @param int $hidePhoto
      */
-    public function setId($id)
+    public function setHidePhoto($hidePhoto)
     {
-        $this->id = $id;
+        $this->hidePhoto = $hidePhoto;
     }
 
     /**
@@ -290,11 +279,11 @@ class Profile extends EntityAbstract
     }
 
     /**
-     * @param int $visible
+     * @param int $id
      */
-    public function setVisible($visible)
+    public function setId($id)
     {
-        $this->visible = $visible;
+        $this->id = $id;
     }
 
     /**
@@ -309,5 +298,13 @@ class Profile extends EntityAbstract
         }
 
         return $this->visible;
+    }
+
+    /**
+     * @param int $visible
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
     }
 }

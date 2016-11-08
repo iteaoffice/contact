@@ -31,12 +31,9 @@ use General\Entity\Country;
 use General\Entity\Gender;
 use General\Entity\Title;
 use Organisation\Entity\Organisation;
-use Organisation\Entity\Type;
-use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
 use Project\Entity\Project;
 use Zend\Crypt\Password\Bcrypt;
-use Zend\Validator\EmailAddress;
 
 /**
  * ContactService.
@@ -212,7 +209,7 @@ class ContactService extends ServiceAbstract
             return '';
         }
 
-        if ( ! is_null($contact->getTitle()->getAttention())) {
+        if (! is_null($contact->getTitle()->getAttention())) {
             return $contact->getTitle()->getAttention();
         } elseif ((int)$contact->getGender()->getId() !== 0) {
             return $contact->getGender()->getAttention();
@@ -230,13 +227,14 @@ class ContactService extends ServiceAbstract
      */
     public function parseOrganisation(Contact $contact)
     {
-        if ( ! $this->hasOrganisation($contact)) {
+        if (! $this->hasOrganisation($contact)) {
             return null;
         }
 
         return $this->getOrganisationService()->parseOrganisationWithBranch(
             $contact->getContactOrganisation()
-                ->getBranch(), $contact->getContactOrganisation()->getOrganisation()
+                ->getBranch(),
+            $contact->getContactOrganisation()->getOrganisation()
         );
     }
 
@@ -281,7 +279,7 @@ class ContactService extends ServiceAbstract
      */
     public function parseCountry(Contact $contact)
     {
-        if ( ! $this->hasOrganisation($contact)) {
+        if (! $this->hasOrganisation($contact)) {
             return null;
         }
 
@@ -387,7 +385,7 @@ class ContactService extends ServiceAbstract
      */
     private function getPhoneByContactAndType(Contact $contact, $type)
     {
-        if ( ! in_array($type, PhoneType::getPhoneTypes())) {
+        if (! in_array($type, PhoneType::getPhoneTypes())) {
             throw new \InvalidArgumentException(sprintf("A invalid phone type chosen"));
         }
 
@@ -571,11 +569,11 @@ class ContactService extends ServiceAbstract
      */
     public function contactInSelection(Contact $contact, $selections)
     {
-        if ( ! is_array($selections) && ! $selections instanceof PersistentCollection) {
+        if (! is_array($selections) && ! $selections instanceof PersistentCollection) {
             $selections = [$selections];
         }
         foreach ($selections as $selection) {
-            if ( ! $selection instanceof Selection) {
+            if (! $selection instanceof Selection) {
                 throw new \InvalidArgumentException("Selection should be instance of Selection");
             }
             if (is_null($selection->getId())) {
@@ -600,11 +598,11 @@ class ContactService extends ServiceAbstract
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
 
-        if ( ! is_null($selection->getSql())) {
+        if (! is_null($selection->getSql())) {
             try {
                 //We have a dynamic query, check if the contact is in the selection
                 return $repository->isContactInSelectionSQL($contact, $selection->getSql());
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 print sprintf("Selection %s is giving troubles ()", $selection->getId(), $e->getMessage());
             }
         }
@@ -621,7 +619,7 @@ class ContactService extends ServiceAbstract
             /*
              * Return true when we found a contact
              */
-            if ( ! is_null($findContact)) {
+            if (! is_null($findContact)) {
                 return true;
             }
         }
@@ -749,7 +747,7 @@ class ContactService extends ServiceAbstract
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
-        if ( ! is_null($selection->getSql())) {
+        if (! is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             return $repository->findContactsBySelectionSQL($selection->getSql(), $toArray);
         } else {
@@ -770,7 +768,7 @@ class ContactService extends ServiceAbstract
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
-        if ( ! is_null($selection->getSql())) {
+        if (! is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             $contacts = $repository->findContactsBySelectionSQL($selection->getSql(), true);
         } else {
@@ -940,7 +938,7 @@ class ContactService extends ServiceAbstract
                 ->findOrganisationById($contactOrganisation['organisation_id']);
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
-            if ( ! empty($contactOrganisation['branch'])) {
+            if (! empty($contactOrganisation['branch'])) {
                 $currentContactOrganisation->setBranch($contactOrganisation['branch']);
             } else {
                 $currentContactOrganisation->setBranch(null);
@@ -973,7 +971,7 @@ class ContactService extends ServiceAbstract
 
             //First go over the organisations and try to see if we can find one with the same name and stop if we find one
             foreach ($organisations as $foundOrganisation) {
-                if ( ! $organisation //Continue until the organisation is found
+                if (! $organisation //Continue until the organisation is found
                     && $foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
                 ) {
                     $organisation = $foundOrganisation;
@@ -983,8 +981,7 @@ class ContactService extends ServiceAbstract
             //We have not found an organisation with an exact match so we will now try to see if we find one
             //With a almost perfect match and use that. We want to see if we can find the company name _in_ the given name
             foreach ($organisations as $foundOrganisation) {
-                if (
-                    ! $organisation //Continue until the organisation is found
+                if (! $organisation //Continue until the organisation is found
                     && strpos($contactOrganisation['organisation'], $foundOrganisation->getOrganisation()) !== false
                 ) {
                     $organisation = $foundOrganisation;
@@ -992,21 +989,24 @@ class ContactService extends ServiceAbstract
             }
 
             //If the organisation is still not found, create a new one
-            if ( ! $organisation) {
+            if (! $organisation) {
                 $organisation = $this->getOrganisationService()->createOrganisationFromNameCountryTypeAndEmail(
-                    $contactOrganisation['organisation'], $country, (int)$contactOrganisation['type'],
+                    $contactOrganisation['organisation'],
+                    $country,
+                    (int)$contactOrganisation['type'],
                     $contact->getEmail()
                 );
             }
 
-            if ( ! $organisation) {
+            if (! $organisation) {
                 throw new \Exception("Update of profile failed, the organisation cannot be found");
             }
 
             $currentContactOrganisation->setOrganisation($organisation);
             $currentContactOrganisation->setBranch(
                 OrganisationService::determineBranch(
-                    $contactOrganisation['organisation'], $organisation->getOrganisation()
+                    $contactOrganisation['organisation'],
+                    $organisation->getOrganisation()
                 )
             );
         }
@@ -1179,7 +1179,7 @@ class ContactService extends ServiceAbstract
         /*
          * Add the financial contact
          */
-        if ( ! is_null($affiliation->getFinancial())) {
+        if (! is_null($affiliation->getFinancial())) {
             $contacts[$affiliation->getFinancial()->getContact()->getId()]      = $affiliation->getFinancial()
                 ->getContact();
             $contactRole[$affiliation->getFinancial()->getContact()->getId()][] = 'Financial Contact';
@@ -1203,7 +1203,7 @@ class ContactService extends ServiceAbstract
             /*
              * Add the work package leaders
              */
-            if ( ! is_null($workpackage->getContact()->getContactOrganisation())
+            if (! is_null($workpackage->getContact()->getContactOrganisation())
                 && $workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId()
                 === $affiliation->getOrganisation()->getId()
             ) {

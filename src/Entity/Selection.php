@@ -14,9 +14,6 @@ use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Entity for the Selection.
@@ -225,6 +222,22 @@ class Selection extends EntityAbstract
     }
 
     /**
+     * @return array
+     */
+    public static function getPersonalTemplates()
+    {
+        return self::$personalTemplates;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPrivateTemplates()
+    {
+        return self::$privateTemplates;
+    }
+
+    /**
      * Magic Getter.
      *
      * @param $property
@@ -256,19 +269,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return array
+     * @return \Contact\Entity\Contact
      */
-    public static function getPersonalTemplates()
+    public function getContact()
     {
-        return self::$personalTemplates;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getPrivateTemplates()
-    {
-        return self::$privateTemplates;
+        return $this->contact;
     }
 
     /**
@@ -280,11 +285,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return \DateTime
      */
-    public function getContact()
+    public function getDateCreated()
     {
-        return $this->contact;
+        return $this->dateCreated;
     }
 
     /**
@@ -298,9 +303,9 @@ class Selection extends EntityAbstract
     /**
      * @return \DateTime
      */
-    public function getDateCreated()
+    public function getDateDeleted()
     {
-        return $this->dateCreated;
+        return $this->dateDeleted;
     }
 
     /**
@@ -312,11 +317,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
-    public function getDateDeleted()
+    public function getId()
     {
-        return $this->dateDeleted;
+        return $this->id;
     }
 
     /**
@@ -328,22 +333,6 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $note
-     */
-    public function setNote($note)
-    {
-        $this->note = $note;
-    }
-
-    /**
      * @return string
      */
     public function getNote()
@@ -352,11 +341,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param int $personal
+     * @param string $note
      */
-    public function setPersonal($personal)
+    public function setNote($note)
     {
-        $this->personal = $personal;
+        $this->note = $note;
     }
 
     /**
@@ -372,11 +361,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param int $private
+     * @param int $personal
      */
-    public function setPrivate($private)
+    public function setPersonal($personal)
     {
-        $this->private = $private;
+        $this->personal = $personal;
     }
 
     /**
@@ -394,11 +383,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param string $selection
+     * @param int $private
      */
-    public function setSelection($selection)
+    public function setPrivate($private)
     {
-        $this->selection = $selection;
+        $this->private = $private;
     }
 
     /**
@@ -410,11 +399,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param string $tag
+     * @param string $selection
      */
-    public function setTag($tag)
+    public function setSelection($selection)
     {
-        $this->tag = $tag;
+        $this->selection = $selection;
     }
 
     /**
@@ -426,11 +415,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\SelectionContact[]|Collections\ArrayCollection $selectionContact
+     * @param string $tag
      */
-    public function setSelectionContact($selectionContact)
+    public function setTag($tag)
     {
-        $this->selectionContact = $selectionContact;
+        $this->tag = $tag;
     }
 
     /**
@@ -442,11 +431,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection $mailingList
+     * @param \Contact\Entity\SelectionContact[]|Collections\ArrayCollection $selectionContact
      */
-    public function setMailingList($mailingList)
+    public function setSelectionContact($selectionContact)
     {
-        $this->mailingList = $mailingList;
+        $this->selectionContact = $selectionContact;
     }
 
     /**
@@ -458,11 +447,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\SelectionSql $sql
+     * @param \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection $mailingList
      */
-    public function setSql($sql)
+    public function setMailingList($mailingList)
     {
-        $this->sql = $sql;
+        $this->mailingList = $mailingList;
     }
 
     /**
@@ -474,11 +463,11 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Mailing\Entity\Mailing[]|Collections\ArrayCollection $mailing
+     * @param \Contact\Entity\SelectionSql $sql
      */
-    public function setMailing($mailing)
+    public function setSql($sql)
     {
-        $this->mailing = $mailing;
+        $this->sql = $sql;
     }
 
     /**
@@ -487,6 +476,14 @@ class Selection extends EntityAbstract
     public function getMailing()
     {
         return $this->mailing;
+    }
+
+    /**
+     * @param \Mailing\Entity\Mailing[]|Collections\ArrayCollection $mailing
+     */
+    public function setMailing($mailing)
+    {
+        $this->mailing = $mailing;
     }
 
     /**
@@ -510,19 +507,19 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
-     */
-    public function setAccess($access)
-    {
-        $this->access = $access;
-    }
-
-    /**
      * @return \Admin\Entity\Access[]|Collections\ArrayCollection
      */
     public function getAccess()
     {
         return $this->access;
+    }
+
+    /**
+     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
+     */
+    public function setAccess($access)
+    {
+        $this->access = $access;
     }
 
     /**

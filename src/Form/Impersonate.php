@@ -20,6 +20,7 @@ class Impersonate extends Form
 {
     /**
      * Impersonate constructor.
+     *
      * @param EntityManager $entityManager
      */
     public function __construct(EntityManager $entityManager)

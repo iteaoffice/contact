@@ -23,9 +23,10 @@ class AddressLink extends LinkAbstract
 {
     /**
      * @param Address|null $address
-     * @param string $action
-     * @param string $show
+     * @param string       $action
+     * @param string       $show
      * @param Contact|null $contact
+     *
      * @return string
      */
     public function __invoke(
@@ -39,7 +40,7 @@ class AddressLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (!$this->hasAccess(
+        if (! $this->hasAccess(
             $this->getAddress(),
             AddressAssertion::class,
             $this->getAction()

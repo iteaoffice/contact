@@ -38,9 +38,14 @@ class ContactLabel extends AbstractNavigationInvokable
             /** @var Contact $contact */
             $contact = $this->getEntities()->get(Contact::class);
 
-            $page->setParams(array_merge($page->getParams(), [
-                'id' => $contact->getId(),
-            ]));
+            $page->setParams(
+                array_merge(
+                    $page->getParams(),
+                    [
+                    'id' => $contact->getId(),
+                    ]
+                )
+            );
             $label = (string)$contact->getDisplayName();
         } else {
             $label = $this->translate('txt-nav-contact');

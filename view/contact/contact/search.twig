@@ -34,7 +34,7 @@
 
             {% for result in paginator.getCurrentItems() %}
 
-                {% set contact = CreateContactFromArray(
+                {% set contact = createContactFromArray(
                 {'id': result.fields.contact_id }
                 ) %}
 

@@ -27,6 +27,7 @@ class SelectionFilter extends Form
 {
     /**
      * SelectionFilter constructor.
+     *
      * @param SelectionService $selectionService
      */
     public function __construct(SelectionService $selectionService)
@@ -48,21 +49,23 @@ class SelectionFilter extends Form
             ]
         );
 
-        $filterFieldset->add([
-            'type'       => 'Zend\Form\Element\MultiCheckbox',
-            'name'       => 'includeDeleted',
-            'options'    => [
-                'value_options' => [1 => _("txt-include-deleted")],
-                'inline'        => true,
-            ],
-            'attributes' => [
-                'label' => _("txt-include-deleted"),
-            ],
-        ]);
+        $filterFieldset->add(
+            [
+                'type'       => 'Zend\Form\Element\MultiCheckbox',
+                'name'       => 'includeDeleted',
+                'options'    => [
+                    'value_options' => [1 => _("txt-include-deleted")],
+                    'inline'        => true,
+                ],
+                'attributes' => [
+                    'label' => _("txt-include-deleted"),
+                ],
+            ]
+        );
 
         $tags = [];
         foreach ($selectionService->findTags() as $tag) {
-            if (!empty($tag['tag'])) {
+            if (! empty($tag['tag'])) {
                 $tags[$tag['tag']] = $tag['tag'];
             }
         }
@@ -73,7 +76,7 @@ class SelectionFilter extends Form
                 'name'       => 'tags',
                 'options'    => [
                     'value_options' => $tags,
-                    'inline'        => true
+                    'inline'        => true,
                 ],
                 'attributes' => [
                     'label' => _("txt-filter-on-tags"),

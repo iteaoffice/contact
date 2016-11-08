@@ -24,45 +24,49 @@ class PasswordFilter extends InputFilter
      */
     public function __construct()
     {
-        $this->add([
-            'name'       => 'password',
-            'required'   => true,
-            'filters'    => [
-                [
-                    'name' => 'StringTrim',
-                ],
-            ],
-            'validators' => [
-                [
-                    'name'    => 'StringLength',
-                    'options' => [
-                        'min' => 6,
+        $this->add(
+            [
+                'name'       => 'password',
+                'required'   => true,
+                'filters'    => [
+                    [
+                        'name' => 'StringTrim',
                     ],
                 ],
-            ],
-        ]);
-        $this->add([
-            'name'       => 'passwordVerify',
-            'required'   => true,
-            'filters'    => [
-                [
-                    'name' => 'StringTrim',
-                ],
-            ],
-            'validators' => [
-                [
-                    'name'    => 'StringLength',
-                    'options' => [
-                        'min' => 6,
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 6,
+                        ],
                     ],
                 ],
-                [
-                    'name'    => 'Identical',
-                    'options' => [
-                        'token' => 'password',
+            ]
+        );
+        $this->add(
+            [
+                'name'       => 'passwordVerify',
+                'required'   => true,
+                'filters'    => [
+                    [
+                        'name' => 'StringTrim',
                     ],
                 ],
-            ],
-        ]);
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 6,
+                        ],
+                    ],
+                    [
+                        'name'    => 'Identical',
+                        'options' => [
+                            'token' => 'password',
+                        ],
+                    ],
+                ],
+            ]
+        );
     }
 }

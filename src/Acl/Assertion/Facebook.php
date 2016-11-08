@@ -44,7 +44,7 @@ class Facebook extends AssertionAbstract
         $this->setPrivilege($privilege);
         $id = $this->getId();
 
-        if (!$facebook instanceof FacebookEntity && !is_null($id)) {
+        if (! $facebook instanceof FacebookEntity && ! is_null($id)) {
             /*
              * @var FacebookEntity
              */
@@ -61,7 +61,7 @@ class Facebook extends AssertionAbstract
                 return $this->rolesHaveAccess($facebook->getAccess()->toArray());
             case 'send-message':
                 return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
-                && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
+                    && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
             default:
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }

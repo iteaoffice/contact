@@ -10,9 +10,6 @@
 
 namespace Contact\Version;
 
-use Zend\Http;
-use Zend\Json\Json;
-
 /**
  * Class to store and retrieve the version of Contact module.
  */

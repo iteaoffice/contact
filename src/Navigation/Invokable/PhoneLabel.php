@@ -41,9 +41,14 @@ class PhoneLabel extends AbstractNavigationInvokable
 
             $this->getEntities()->set(Contact::class, $phone->getContact());
 
-            $page->setParams(array_merge($page->getParams(), [
-                'id' => $phone->getId(),
-            ]));
+            $page->setParams(
+                array_merge(
+                    $page->getParams(),
+                    [
+                    'id' => $phone->getId(),
+                    ]
+                )
+            );
             $label = sprintf(
                 $this->translate("txt-%s-phone-of-%s"),
                 $phone->getType(),

@@ -87,7 +87,7 @@ class Web extends EntityAbstract implements ResourceInterface
      */
     public function getResourceId()
     {
-        return __NAMESPACE__.':'.__CLASS__.':'.$this->id;
+        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
     }
 
     /**
@@ -107,7 +107,7 @@ class Web extends EntityAbstract implements ResourceInterface
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory     = new InputFactory();
             $inputFilter->add(
@@ -125,6 +125,16 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * Function needed for the population of forms.
+     *
+     * @return array
+     */
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
      * Needed for the hydration of form elements.
      *
      * @return array
@@ -137,13 +147,11 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Function needed for the population of forms.
-     *
-     * @return array
+     * @return \Contact\Entity\Contact
      */
-    public function populate()
+    public function getContact()
     {
-        return $this->getArrayCopy();
+        return $this->contact;
     }
 
     /**
@@ -155,11 +163,11 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return int
      */
-    public function getContact()
+    public function getId()
     {
-        return $this->contact;
+        return $this->id;
     }
 
     /**
@@ -171,11 +179,11 @@ class Web extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId()
+    public function getWeb()
     {
-        return $this->id;
+        return $this->web;
     }
 
     /**
@@ -184,13 +192,5 @@ class Web extends EntityAbstract implements ResourceInterface
     public function setWeb($web)
     {
         $this->web = $web;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWeb()
-    {
-        return $this->web;
     }
 }

@@ -38,7 +38,7 @@ class ContactPhoto extends ImageAbstract
         if (is_null($contact->getPhoto())) {
             return sprintf(
                 '<img src="assets/' . ITEAOFFICE_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
-                !($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
+                ! ($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
                 is_null($height) ?: 'height="' . $height . '"'
             );
         }
@@ -48,7 +48,7 @@ class ContactPhoto extends ImageAbstract
          */
         $photo = $contact->getPhoto()->first();
 
-        if (null !== $classes && !is_array($classes)) {
+        if (null !== $classes && ! is_array($classes)) {
             $classes = [$classes];
         } elseif (null === $classes) {
             $classes = [];
@@ -62,10 +62,10 @@ class ContactPhoto extends ImageAbstract
         /*
          * Return an empty photo when there is no, or only a empty object
          */
-        if (!$photo || is_null($photo->getId())) {
+        if (! $photo || is_null($photo->getId())) {
             return sprintf(
                 '<img src="assets/' . ITEAOFFICE_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
-                !($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
+                ! ($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
                 is_null($height) ?: 'height="' . $height . '"'
             );
         }

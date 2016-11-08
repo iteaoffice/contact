@@ -133,9 +133,9 @@ class Phone extends EntityAbstract implements ResourceInterface
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory = new InputFactory();
+            $factory     = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
                     [
@@ -181,6 +181,14 @@ class Phone extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @return array
+     */
+    public function populate()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
      * Needed for the hydration of form elements.
      *
      * @return array
@@ -194,11 +202,11 @@ class Phone extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return array
+     * @return \Contact\Entity\Contact
      */
-    public function populate()
+    public function getContact()
     {
-        return $this->getArrayCopy();
+        return $this->contact;
     }
 
     /**
@@ -210,11 +218,11 @@ class Phone extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return int
      */
-    public function getContact()
+    public function getId()
     {
-        return $this->contact;
+        return $this->id;
     }
 
     /**
@@ -226,11 +234,11 @@ class Phone extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId()
+    public function getPhone()
     {
-        return $this->id;
+        return $this->phone;
     }
 
     /**
@@ -242,11 +250,11 @@ class Phone extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * @return string
+     * @return \Contact\Entity\PhoneType
      */
-    public function getPhone()
+    public function getType()
     {
-        return $this->phone;
+        return $this->type;
     }
 
     /**
@@ -255,13 +263,5 @@ class Phone extends EntityAbstract implements ResourceInterface
     public function setType($type)
     {
         $this->type = $type;
-    }
-
-    /**
-     * @return \Contact\Entity\PhoneType
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 }

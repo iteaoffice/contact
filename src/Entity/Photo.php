@@ -96,17 +96,6 @@ class Photo extends EntityAbstract
     private $contact;
 
     /**
-     * Although an alternative does not have a clear hash, we can create one based on the id;
-     * Don't use the elements from underlying objects since this gives confusion.
-     *
-     * @return string
-     */
-    public function getHash()
-    {
-        return hash('sha512', $this->id.self::HASH_KEY);
-    }
-
-    /**
      * Class constructor.
      */
     public function __construct()
@@ -142,7 +131,7 @@ class Photo extends EntityAbstract
      */
     public function __toString()
     {
-        return (string) $this->phone;
+        return (string)$this->phone;
     }
 
     /**
@@ -162,9 +151,9 @@ class Photo extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (!$this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
-            $fileUpload = new FileInput('file');
+            $fileUpload  = new FileInput('file');
             $fileUpload->setRequired(false);
             $fileUpload->getValidatorChain()->attachByName(
                 'File\Extension',
@@ -202,23 +191,6 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Get the corresponding fileName of a file if it was cached
-     * Use a dash (-) to make the distinction between the format to avoid the need of an extra folder.
-     *
-     * @return string
-     */
-    public function getCacheFileName()
-    {
-        $cacheDir = __DIR__.'/../../../../../public'.DIRECTORY_SEPARATOR.'assets'.
-            DIRECTORY_SEPARATOR.ITEAOFFICE_HOST.DIRECTORY_SEPARATOR.'contact-photo';
-
-        return $cacheDir.DIRECTORY_SEPARATOR
-        .$this->getId().'-'
-        .$this->getHash().'.'
-        .$this->getContentType()->getExtension();
-    }
-
-    /**
      * Remove all the cached images of a user.
      *
      * @ORM\PreUpdate
@@ -231,67 +203,28 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * Get the corresponding fileName of a file if it was cached
+     * Use a dash (-) to make the distinction between the format to avoid the need of an extra folder.
+     *
+     * @return string
      */
-    public function setContact($contact)
+    public function getCacheFileName()
     {
-        $this->contact = $contact;
-    }
+        $cacheDir = __DIR__ . '/../../../../../public' . DIRECTORY_SEPARATOR . 'assets' .
+            DIRECTORY_SEPARATOR . ITEAOFFICE_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
 
-    /**
-     * @return \Contact\Entity\Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param ContentType $contentType
-     */
-    public function setContentType($contentType)
-    {
-        $this->contentType = $contentType;
-    }
-
-    /**
-     * @return ContentType
-     */
-    public function getContentType()
-    {
-        return $this->contentType;
-    }
-
-    /**
-     * @param \DateTime $dateUpdated
-     */
-    public function setDateUpdated($dateUpdated)
-    {
-        $this->dateUpdated = $dateUpdated;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->dateUpdated;
-    }
-
-    /**
-     * @param int $height
-     */
-    public function setHeight($height)
-    {
-        $this->height = $height;
+        return $cacheDir . DIRECTORY_SEPARATOR
+            . $this->getId() . '-'
+            . $this->getHash() . '.'
+            . $this->getContentType()->getExtension();
     }
 
     /**
      * @return int
      */
-    public function getHeight()
+    public function getId()
     {
-        return $this->height;
+        return $this->id;
     }
 
     /**
@@ -303,11 +236,86 @@ class Photo extends EntityAbstract
     }
 
     /**
+     * Although an alternative does not have a clear hash, we can create one based on the id;
+     * Don't use the elements from underlying objects since this gives confusion.
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return hash('sha512', $this->id . self::HASH_KEY);
+    }
+
+    /**
+     * @return ContentType
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
+    /**
+     * @param ContentType $contentType
+     */
+    public function setContentType($contentType)
+    {
+        $this->contentType = $contentType;
+    }
+
+    /**
+     * @return \Contact\Entity\Contact
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param \Contact\Entity\Contact $contact
+     */
+    public function setContact($contact)
+    {
+        $this->contact = $contact;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->dateUpdated;
+    }
+
+    /**
+     * @param \DateTime $dateUpdated
+     */
+    public function setDateUpdated($dateUpdated)
+    {
+        $this->dateUpdated = $dateUpdated;
+    }
+
+    /**
      * @return int
      */
-    public function getId()
+    public function getHeight()
     {
-        return $this->id;
+        return $this->height;
+    }
+
+    /**
+     * @param int $height
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+    }
+
+    /**
+     * @return resource
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
     }
 
     /**
@@ -321,9 +329,9 @@ class Photo extends EntityAbstract
     /**
      * @return resource
      */
-    public function getPhoto()
+    public function getThumb()
     {
-        return $this->photo;
+        return $this->thumb;
     }
 
     /**
@@ -335,11 +343,11 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * @return resource
+     * @return int
      */
-    public function getThumb()
+    public function getWidth()
     {
-        return $this->thumb;
+        return $this->width;
     }
 
     /**
@@ -348,13 +356,5 @@ class Photo extends EntityAbstract
     public function setWidth($width)
     {
         $this->width = $width;
-    }
-
-    /**
-     * @return int
-     */
-    public function getWidth()
-    {
-        return $this->width;
     }
 }

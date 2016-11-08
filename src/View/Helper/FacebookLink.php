@@ -49,25 +49,47 @@ class FacebookLink extends LinkAbstract
         $this->setShow($show);
         $this->setPage($page);
 
-        if (!$this->hasAccess($this->getFacebook(), FacebookAssertion::class, $this->getAction())) {
+        if (! $this->hasAccess($this->getFacebook(), FacebookAssertion::class, $this->getAction())) {
             return '';
         }
 
         /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
-        if (!is_null($alternativeShow)) {
+        if (! is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($page);
         }
 
-        $this->setShowOptions([
+        $this->setShowOptions(
+            [
                 'name' => $this->getFacebook()->getFacebook(),
-            ]);
+            ]
+        );
         $this->addRouterParam('id', $this->getFacebook()->getId());
 
         return $this->createLink();
+    }
+
+    /**
+     * @return Facebook
+     */
+    public function getFacebook()
+    {
+        if (is_null($this->facebook)) {
+            $this->facebook = new Facebook();
+        }
+
+        return $this->facebook;
+    }
+
+    /**
+     * @param Facebook $facebook
+     */
+    public function setFacebook($facebook)
+    {
+        $this->facebook = $facebook;
     }
 
     /**
@@ -101,10 +123,12 @@ class FacebookLink extends LinkAbstract
                 break;
             case 'send-message':
                 $this->setRouter('community/contact/facebook/send-message');
-                $this->setText(sprintf(
-                    $this->translate("txt-send-message-to-%s"),
-                    $this->getFacebook()->getFacebook()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-send-message-to-%s"),
+                        $this->getFacebook()->getFacebook()
+                    )
+                );
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/facebook-manager/view');
@@ -113,25 +137,5 @@ class FacebookLink extends LinkAbstract
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
-    }
-
-    /**
-     * @return Facebook
-     */
-    public function getFacebook()
-    {
-        if (is_null($this->facebook)) {
-            $this->facebook = new Facebook();
-        }
-
-        return $this->facebook;
-    }
-
-    /**
-     * @param Facebook $facebook
-     */
-    public function setFacebook($facebook)
-    {
-        $this->facebook = $facebook;
     }
 }

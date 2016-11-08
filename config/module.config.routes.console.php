@@ -19,20 +19,20 @@ return [
                         'route'    => 'partner-search update',
                         'defaults' => [
                             'controller' => ConsoleController::class,
-                            'action'     => 'partner-search-update'
-                        ]
-                    ]
+                            'action'     => 'partner-search-update',
+                        ],
+                    ],
                 ],
                 'cli-partner-search-reset'  => [
                     'options' => [
                         'route'    => 'partner-search reset',
                         'defaults' => [
                             'controller' => ConsoleController::class,
-                            'action'     => 'partner-search-reset'
-                        ]
-                    ]
+                            'action'     => 'partner-search-reset',
+                        ],
+                    ],
                 ],
-            ]
-        ]
+            ],
+        ],
     ],
 ];

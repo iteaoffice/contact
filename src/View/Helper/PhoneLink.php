@@ -40,13 +40,15 @@ class PhoneLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (!$this->hasAccess($this->getPhone(), PhoneAssertion::class, $this->getAction())) {
+        if (! $this->hasAccess($this->getPhone(), PhoneAssertion::class, $this->getAction())) {
             return '';
         }
 
-        $this->setShowOptions([
+        $this->setShowOptions(
+            [
                 'name' => $this->getPhone()->getPhone(),
-            ]);
+            ]
+        );
         $this->addRouterParam('id', $this->getPhone()->getId());
         $this->addRouterParam('contact', $this->getContact()->getId());
 

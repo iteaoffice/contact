@@ -48,28 +48,30 @@ class ContactLink extends LinkAbstract
         /*
          * If the alternativeShow is not null, use it an otherwise take the hash
          */
-        if (!is_null($alternativeShow)) {
+        if (! is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($hash);
         }
 
-        if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
+        if (! $this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
             return '';
         }
-        $this->setShowOptions([
-            'email'           => $this->getContact()->getEmail(),
-            'paginator'       => $this->getAlternativeShow(),
-            'alternativeShow' => $this->getAlternativeShow(),
-            'firstname'       => $this->getContact()->getFirstName(),
-            'initials'        => sprintf(
-                "%s%s%s",
-                substr($this->getContact()->getFirstName(), 0, 1),
-                substr($this->getContact()->getMiddleName(), 0, 1),
-                substr($this->getContact()->getLastName(), 0, 1)
-            ),
-            'name'            => $this->getContact()->getDisplayName(),
-        ]);
+        $this->setShowOptions(
+            [
+                'email'           => $this->getContact()->getEmail(),
+                'paginator'       => $this->getAlternativeShow(),
+                'alternativeShow' => $this->getAlternativeShow(),
+                'firstname'       => $this->getContact()->getFirstName(),
+                'initials'        => sprintf(
+                    "%s%s%s",
+                    substr($this->getContact()->getFirstName(), 0, 1),
+                    substr($this->getContact()->getMiddleName(), 0, 1),
+                    substr($this->getContact()->getLastName(), 0, 1)
+                ),
+                'name'            => $this->getContact()->getDisplayName(),
+            ]
+        );
         $this->addRouterParam('hash', $hash);
         $this->addRouterParam('id', $this->getContact()->getId());
 
@@ -96,24 +98,30 @@ class ContactLink extends LinkAbstract
                 break;
             case 'edit-admin':
                 $this->setRouter('zfcadmin/contact-admin/edit');
-                $this->setText(sprintf(
-                    $this->translate("txt-edit-contact-in-admin-%s"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-edit-contact-in-admin-%s"),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
             case 'profile':
                 $this->setRouter('community/contact/profile/view');
-                $this->setText(sprintf(
-                    $this->translate("txt-view-profile-of-contact-%s"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-view-profile-of-contact-%s"),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
             case 'profile-contact':
                 $this->setRouter('community/contact/profile/contact');
-                $this->setText(sprintf(
-                    $this->translate("txt-view-profile-of-contact-%s"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-view-profile-of-contact-%s"),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
             case 'signature':
                 $this->setRouter('community/contact/signature');
@@ -121,24 +129,30 @@ class ContactLink extends LinkAbstract
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-admin/view');
-                $this->setText(sprintf(
-                    $this->translate("txt-view-contact-in-admin-%s"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-view-contact-in-admin-%s"),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
             case 'impersonate':
                 $this->setRouter('zfcadmin/contact-admin/impersonate');
-                $this->setText(sprintf(
-                    $this->translate("txt-impersonate-contact-%s"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-impersonate-contact-%s"),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
             case 'permit':
                 $this->setRouter('zfcadmin/contact-admin/permit');
-                $this->setText(sprintf(
-                    $this->translate("txt-permit-of-contact-%s"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-permit-of-contact-%s"),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
             case 'edit-profile':
                 $this->setRouter('community/contact/profile/edit');

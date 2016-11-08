@@ -33,9 +33,19 @@ class ModuleOptions extends AbstractOptions implements CommunityOptionsInterface
 
     /**
      * Template for rendering of the facebook
+     *
      * @var string
-      */
+     */
     protected $facebookTemplate = 'contact/facebook/facebook';
+
+    /**
+     * @return bool
+     */
+    public function getCommunityViaMembers()
+    {
+        return $this->communityViaMembers;
+    }
+
     /**
      * @param bool $communityViaMembers
      *
@@ -51,9 +61,9 @@ class ModuleOptions extends AbstractOptions implements CommunityOptionsInterface
     /**
      * @return bool
      */
-    public function getCommunityViaMembers()
+    public function getCommunityViaProjectParticipation()
     {
-        return $this->communityViaMembers;
+        return $this->communityViaProjectParticipation;
     }
 
     /**
@@ -69,11 +79,11 @@ class ModuleOptions extends AbstractOptions implements CommunityOptionsInterface
     }
 
     /**
-     * @return bool
+     * @return mixed
      */
-    public function getCommunityViaProjectParticipation()
+    public function getFacebookTemplate()
     {
-        return $this->communityViaProjectParticipation;
+        return $this->facebookTemplate;
     }
 
     /**
@@ -82,13 +92,5 @@ class ModuleOptions extends AbstractOptions implements CommunityOptionsInterface
     public function setFacebookTemplate($facebookTemplate)
     {
         $this->facebookTemplate = $facebookTemplate;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFacebookTemplate()
-    {
-        return $this->facebookTemplate;
     }
 }
