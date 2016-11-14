@@ -10,8 +10,12 @@
 namespace ContactTest\Service;
 
 use Contact\Service\ContactService;
-use ContactTest\Bootstrap;
 
+/**
+ * Class ContactServiceTest
+ *
+ * @package ContactTest\Service
+ */
 class ContactServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -27,20 +31,9 @@ class ContactServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected $contactService;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        $this->serviceManager = Bootstrap::getServiceManager();
-
-        $this->contactService = new ContactService();
-        $this->contactService->setServiceLocator($this->serviceManager);
-    }
-
     public function testCanInstantiate()
     {
-        $this->assertInstanceOf(ContactService::class, $this->contactService);
+        $this->assertInstanceOf(ContactService::class, new ContactService());
     }
 
 

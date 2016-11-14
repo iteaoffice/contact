@@ -24,8 +24,8 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": ">=5.6",
-    "zendframework/zendframework": "~2.5 || ~3.0"
+    "php": "^7",
+    "zendframework/zendframework": "~3.0"
   },
   "require-dev": {
     "phpunit/phpunit": "@stable",
