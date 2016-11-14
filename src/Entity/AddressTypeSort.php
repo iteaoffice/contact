@@ -27,7 +27,7 @@ class AddressTypeSort extends EntityAbstract
     const ADDRESS_TYPE_FINANCIAL = 3;
     const ADDRESS_TYPE_HOME = 4;
     /**
-     * @ORM\Column(name="type_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="sort_id", length=10, type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

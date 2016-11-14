@@ -40,7 +40,7 @@ class ContactFilter extends InputFilter
                 'required'   => true,
                 'validators' => [
                     [
-                        'name' => 'Emailaddress',
+                        'name' => 'EmailAddress',
                     ],
                     [
                         'name'    => Validator\UniqueObject::class,

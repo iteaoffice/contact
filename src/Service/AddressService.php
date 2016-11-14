@@ -46,6 +46,9 @@ class AddressService extends ServiceAbstract
      */
     public function findAddressByContactAndType(Contact $contact, AddressType $type)
     {
-        return $this->getEntityManager()->getRepository(Address::class)->findAddressByContactAndType($contact, $type);
+        /** @var \Contact\Repository\Address $repository */
+        $repository = $this->getEntityManager()->getRepository(Address::class);
+
+        return $repository->findAddressByContactAndType($contact, $type);
     }
 }

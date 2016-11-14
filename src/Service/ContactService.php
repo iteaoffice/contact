@@ -676,6 +676,13 @@ class ContactService extends ServiceAbstract
             $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();
         }
 
+        /*
+         * Add the country coordinators
+         */
+        foreach ($project->getRationale() as $rationale) {
+            $contacts[$rationale->getContact()->getId()] = $rationale->getContact();
+        }
+
         return $contacts;
     }
 
