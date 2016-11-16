@@ -17,6 +17,7 @@ use Zend\Form\Annotation;
 use Zend\InputFilter\FileInput;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Validator\File;
 
 /**
  * Domain.
@@ -151,18 +152,18 @@ class Photo extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (! $this->inputFilter) {
+        if ( ! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $fileUpload  = new FileInput('file');
             $fileUpload->setRequired(false);
             $fileUpload->getValidatorChain()->attachByName(
-                'File\Extension',
+                File\Extension::class,
                 [
                     'extension' => ['jpg', 'jpeg', 'png'],
                 ]
             );
             $fileUpload->getValidatorChain()->attachByName(
-                'File\MimeType',
+                File\MimeType::class,
                 [
                     'image/jpeg',
                     'image/jpg',
@@ -170,14 +171,14 @@ class Photo extends EntityAbstract
                 ]
             );
             $fileUpload->getValidatorChain()->attachByName(
-                'File\Size',
+                File\Size::class,
                 [
                     'min' => '20kB',
                     'max' => '4MB',
                 ]
             );
             $fileUpload->getValidatorChain()->attachByName(
-                'File\ImageSize',
+                File\ImageSize::class,
                 [
                     'minWidth'  => 100,
                     'minHeight' => 100,
