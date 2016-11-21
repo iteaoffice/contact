@@ -152,7 +152,7 @@ class Photo extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if ( ! $this->inputFilter) {
+        if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             $fileUpload  = new FileInput('file');
             $fileUpload->setRequired(false);
