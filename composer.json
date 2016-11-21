@@ -28,7 +28,8 @@
     "zendframework/zendframework": "~3.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "@stable",
+    "phpunit/phpunit": "5.7.x",
+    "doctrine/doctrine-orm-module": "~1.1",
     "pdepend/pdepend": "@stable",
     "phpmd/phpmd": "@stable",
     "sebastian/phpcpd": "@stable",
