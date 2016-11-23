@@ -59,7 +59,6 @@ return array(
     'Contact\Service\SelectionService'                             => __DIR__ . '//src/Service/SelectionService.php',
     'Contact\Search\Factory\ContactSearchFactory'                  => __DIR__ . '//src/Search/Factory/ContactSearchFactory.php',
     'Contact\Search\Service\ContactSearchService'                  => __DIR__ . '//src/Search/Service/ContactSearchService.php',
-    'Contact\Search\ContactSearchService'                          => __DIR__ . '//src/Search/ContactSearchService.php',
     'Contact\InputFilter\FacebookFilter'                           => __DIR__ . '//src/InputFilter/FacebookFilter.php',
     'Contact\InputFilter\SelectionFilter'                          => __DIR__ . '//src/InputFilter/SelectionFilter.php',
     'Contact\InputFilter\PasswordFilter'                           => __DIR__ . '//src/InputFilter/PasswordFilter.php',

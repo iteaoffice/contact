@@ -201,9 +201,9 @@ class Profile extends Form
         );
         $addressFieldSet->add(
             [
-                'type'       => EntitySelect::class,
-                'name'       => 'country',
-                'options'    => [
+                'type'    => EntitySelect::class,
+                'name'    => 'country',
+                'options' => [
                     'label'          => _("txt-country"),
                     'object_manager' => $entityManager,
                     'target_class'   => Country::class,
@@ -214,9 +214,6 @@ class Profile extends Form
                             'orderBy'  => [],
                         ],
                     ],
-                ],
-                'attributes' => [
-                    'required' => true,
                 ],
             ]
         );
@@ -282,9 +279,9 @@ class Profile extends Form
         );
         $contactOrganisationFieldSet->add(
             [
-                'type'       => EntitySelect::class,
-                'name'       => 'type',
-                'options'    => [
+                'type'    => EntitySelect::class,
+                'name'    => 'type',
+                'options' => [
                     'label'          => _("txt-organisation-type"),
                     'object_manager' => $entityManager,
                     'target_class'   => Type::class,
@@ -296,16 +293,13 @@ class Profile extends Form
                         ],
                     ],
                 ],
-                'attributes' => [
-                    'required' => true,
-                ],
             ]
         );
         $contactOrganisationFieldSet->add(
             [
-                'type'       => EntitySelect::class,
-                'name'       => 'country',
-                'options'    => [
+                'type'    => EntitySelect::class,
+                'name'    => 'country',
+                'options' => [
                     'label'          => _("txt-country"),
                     'object_manager' => $entityManager,
                     'target_class'   => Country::class,
@@ -316,9 +310,6 @@ class Profile extends Form
                             'orderBy'  => [],
                         ],
                     ],
-                ],
-                'attributes' => [
-                    'required' => true,
                 ],
             ]
         );

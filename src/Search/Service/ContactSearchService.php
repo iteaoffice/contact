@@ -77,9 +77,9 @@ class ContactSearchService extends AbstractSearchService
                     ->__invoke(
                         'assets/contact-photo',
                         [
-                        'hash' => $photo->getHash(),
-                        'ext'  => $photo->getContentType()->getExtension(),
-                        'id'   => $photo->getId(),
+                            'hash' => $photo->getHash(),
+                            'ext'  => $photo->getContentType()->getExtension(),
+                            'id'   => $photo->getId(),
                         ]
                     );
             }
@@ -148,22 +148,20 @@ class ContactSearchService extends AbstractSearchService
     public function setSearch($searchTerm, $order = '', $direction = Query::SORT_ASC)
     {
         $this->setQuery($this->getSolrClient()->createSelect());
+
         $this->getQuery()->setQuery(
-            str_replace(
-                '%s',
+            static::parseQuery(
                 $searchTerm,
-                implode(
-                    ' ' . Query::QUERY_OPERATOR_OR . ' ',
-                    [
-                    'fullname:*%s*',
-                    'position:*%s*',
-                    'organisation:*%s',
-                    'profile:*%s*',
-                    'country:*%s*',
-                    ]
-                )
+                [
+                    'fullname',
+                    'position',
+                    'organisation',
+                    'profile',
+                    'country',
+                ]
             )
         );
+
         $hasTerm = ! in_array($searchTerm, ['*', '']);
         $hasSort = ($order !== '');
 
