@@ -94,6 +94,7 @@ class ProfileController extends ContactAbstractController
          * When the organisation name is typed, we force the value to zero
          */
 
+        $form->getInputFilter()->get('address')->remove('country');
         if (! isset($data['contact_organisation']['organisation_id'])) {
             $form->getInputFilter()->get('contact_organisation')->remove('organisation_id');
         }
@@ -147,9 +148,11 @@ class ProfileController extends ContactAbstractController
                  */
                 $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(_("txt-profile-has-successfully-been-updated"));
+                    ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
+            } else {
+                var_dump($form->getInputFilter()->getMessages());
             }
         }
 
