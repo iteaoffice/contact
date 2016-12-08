@@ -327,7 +327,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
+            if (count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
             /*
@@ -343,7 +343,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
+            if (count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
             /*
@@ -361,7 +361,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (sizeof($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
+            if (count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -583,7 +583,7 @@ class Contact extends EntityRepository
             $resultSetMap
         );
 
-        return sizeof($query->getResult()) > 0;
+        return count($query->getResult()) > 0;
     }
 
     /**

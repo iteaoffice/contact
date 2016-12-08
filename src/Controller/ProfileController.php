@@ -78,7 +78,7 @@ class ProfileController extends ContactAbstractController
         if ($this->getContactService()->hasOrganisation($contact)) {
             $branches = $this->getOrganisationService()->findBranchesByOrganisation(
                 $contact->getContactOrganisation()
-                    ->getOrganisation()
+                        ->getOrganisation()
             );
         }
 
@@ -126,7 +126,7 @@ class ProfileController extends ContactAbstractController
                     $photo->setHeight($imageSizeValidator->height);
                     $photo->setContentType(
                         $this->getGeneralService()
-                            ->findContentTypeByContentTypeName($fileData['file']['type'])
+                             ->findContentTypeByContentTypeName($fileData['file']['type'])
                     );
                     $this->getContactService()->updateEntity($photo);
                 }
@@ -148,11 +148,9 @@ class ProfileController extends ContactAbstractController
                  */
                 $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
+                     ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
-            } else {
-                var_dump($form->getInputFilter()->getMessages());
             }
         }
 
@@ -162,7 +160,7 @@ class ProfileController extends ContactAbstractController
                 'branches'         => $branches,
                 'contactService'   => $this->getContactService(),
                 'contact'          => $contact,
-                'hasOrganisations' => sizeof($organisations) > 1, ///We need to exclude the none of the above :)
+                'hasOrganisations' => count($organisations) > 1, ///We need to exclude the none of the above :)
                 'fullVersion'      => true,
             ]
         );

@@ -609,7 +609,7 @@ class ContactService extends ServiceAbstract
         /*
          * The selection contains contacts, do an extra query to find the contact
          */
-        if (sizeof($selection->getSelectionContact()) > 0) {
+        if (count($selection->getSelectionContact()) > 0) {
             $findContact = $this->getEntityManager()->getRepository(SelectionContact::class)->findOneBy(
                 [
                     'contact'   => $contact,
@@ -1125,17 +1125,17 @@ class ContactService extends ServiceAbstract
             $inCompleteness['lastName']['weight']  = 10;
         }
         $totalWeight += 10;
-        if (sizeof($contact->getPhone()) === 0) {
+        if (count($contact->getPhone()) === 0) {
             $inCompleteness['phone']['message'] = _("txt-no-telephone-number-known");
             $inCompleteness['phone']['weight']  = 10;
         }
         $totalWeight += 10;
-        if (sizeof($contact->getAddress()) === 0) {
+        if (count($contact->getAddress()) === 0) {
             $inCompleteness['address']['message'] = _("txt-no-address-known");
             $inCompleteness['address']['weight']  = 10;
         }
         $totalWeight += 10;
-        if (sizeof($contact->getPhoto()) === 0) {
+        if (count($contact->getPhoto()) === 0) {
             $inCompleteness['photo']['message'] = _("txt-no-profile-photo-given");
             $inCompleteness['photo']['weight']  = 10;
         }

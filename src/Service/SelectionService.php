@@ -49,7 +49,7 @@ class SelectionService extends ServiceAbstract
     public function getAmountOfContacts(Entity\Selection $selection)
     {
         try {
-            return sizeof($this->getContactService()->findContactsInSelection($selection));
+            return count($this->getContactService()->findContactsInSelection($selection));
         } catch (\Throwable $e) {
             return null;
         }

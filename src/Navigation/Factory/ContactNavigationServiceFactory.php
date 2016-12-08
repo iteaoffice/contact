@@ -53,6 +53,10 @@ final class ContactNavigationServiceFactory implements FactoryInterface
 
         /* @var $navigation Navigation */
         $navigation = $container->get('Zend\Navigation\Community');
+        //This is a nastry trick, but currently I do not have a better solution
+        if (defined("ITEAOFFICE_HOST") && ITEAOFFICE_HOST === 'aeneas') {
+            $navigation = $container->get('Zend\Navigation\Project-community');
+        }
         $contactNavigationService->setNavigation($navigation);
 
         return $contactNavigationService;

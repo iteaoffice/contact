@@ -78,6 +78,6 @@ class Facebook extends EntityRepository
          * Use a simple array hydration to avoid a complex mapping of objects
          */
 
-        return sizeof($query->getResult(AbstractQuery::HYDRATE_ARRAY)) > 0;
+        return count($query->getResult(AbstractQuery::HYDRATE_ARRAY)) > 0;
     }
 }

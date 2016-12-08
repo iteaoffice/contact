@@ -236,7 +236,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      */
     private $showPhone;
     /**
-     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", inversedBy="article", inversedBy="facebook")
+     * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", inversedBy="facebook")
      * @ORM\OrderBy({"access"="ASC"})
      * @ORM\JoinTable(name="facebook_access",
      *            joinColumns={@ORM\JoinColumn(name="facebook_id", referencedColumnName="facebook_id")},

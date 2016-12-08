@@ -112,7 +112,7 @@ class HandleImport extends AbstractPlugin
         if (! $this->hasErrors()) {
             $this->prepareContent();
 
-            if (sizeof($import) > 0) {
+            if (count($import) > 0) {
                 $this->importContacts($import);
             }
         }
@@ -147,11 +147,11 @@ class HandleImport extends AbstractPlugin
         /*
          * Go over the rest of the data and add the rows to the array
          */
-        $amount = sizeof($data);
+        $amount = count($data);
         for ($i = 1; $i < $amount; $i++) {
             $row = explode($this->delimiter, $data[$i]);
 
-            if (sizeof($row) === sizeof($this->header)) {
+            if (count($row) === count($this->header)) {
                 //Trim all the elements
                 $row = array_map('trim', $row);
 
@@ -160,8 +160,8 @@ class HandleImport extends AbstractPlugin
                 $this->warnings[] = sprintf(
                     "Row %s has been skipped, does not contain %s elements but %s",
                     $i + 1,
-                    sizeof($this->header),
-                    sizeof($row)
+                    count($this->header),
+                    count($row)
                 );
             }
         }
@@ -343,7 +343,7 @@ class HandleImport extends AbstractPlugin
      */
     public function hasErrors()
     {
-        return sizeof($this->errors) > 0;
+        return count($this->errors) > 0;
     }
 
     /**
@@ -573,7 +573,7 @@ class HandleImport extends AbstractPlugin
      */
     public function hasWarnings()
     {
-        return sizeof($this->warnings) > 0;
+        return count($this->warnings) > 0;
     }
 
     /**

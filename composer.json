@@ -13,7 +13,7 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "http://packages.itea3.eu"
+      "url": "https://packages.itea3.eu"
     }
   ],
   "authors": [
@@ -43,9 +43,6 @@
       "Contact\\": "src/",
       "ContactTest\\": "tests/"
     }
-  },
-  "config": {
-    "secure-http": false
   },
   "extra": {
     "branch-alias": {
