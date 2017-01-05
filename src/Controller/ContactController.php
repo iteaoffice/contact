@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -74,9 +74,9 @@ class ContactController extends ContactAbstractController
 
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
-            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")->addHeaderLine("Pragma: public")
-            ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string)strlen($file));
+                 ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")->addHeaderLine("Pragma: public")
+                 ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
+                 ->addHeaderLine('Content-Length: ' . (string)strlen($file));
         $response->setContent($file);
 
         return $response;
@@ -98,7 +98,10 @@ class ContactController extends ContactAbstractController
             return new JsonModel(
                 [
                     'enable' => $this->getContactService()
-                        ->hasOptInEnabledByContact($optInId, $this->zfcUserAuthentication()->getIdentity()),
+                                     ->hasOptInEnabledByContact(
+                                         $optInId,
+                                         $this->zfcUserAuthentication()->getIdentity()
+                                     ),
                     'id'     => $optInId,
                 ]
             );
@@ -108,7 +111,7 @@ class ContactController extends ContactAbstractController
         $enable = ($enable === 'true');
 
         $this->getContactService()
-            ->updateOptInForContact($optInId, $enable, $this->zfcUserAuthentication()->getIdentity());
+             ->updateOptInForContact($optInId, $enable, $this->zfcUserAuthentication()->getIdentity());
 
         return new JsonModel(
             [
@@ -147,10 +150,10 @@ class ContactController extends ContactAbstractController
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
             if ($this->getContactService()
-                ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity())
+                     ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity())
             ) {
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage($this->translate("txt-password-successfully-been-updated"));
+                     ->addMessage($this->translate("txt-password-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
             }
@@ -176,11 +179,11 @@ class ContactController extends ContactAbstractController
         switch ($typeId) {
             case AddressType::ADDRESS_TYPE_FINANCIAL:
                 $address = $this->getContactService()
-                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
+                                ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
                 break;
             case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
                 $address = $this->getContactService()
-                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+                                ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
                 break;
             default:
                 return $this->notFoundAction();

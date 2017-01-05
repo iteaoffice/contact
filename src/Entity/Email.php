@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Entity;
@@ -13,11 +13,7 @@ namespace Contact\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
-use Zend\Validator\EmailAddress;
 
 /**
  * ContactEmail.
@@ -49,22 +45,6 @@ class Email extends EntityAbstract implements ResourceInterface
      * @var string
      */
     private $email;
-    /**
-     * @ORM\Column(name="date_created", type="datetime", nullable=false)
-     * @Gedmo\Timestampable(on="update")
-     * @Annotation\Exclude()
-     *
-     * @var \DateTime
-     */
-    private $dateCreated;
-    /**
-     * @ORM\Column(name="date_updated", type="datetime", nullable=false)
-     * @Gedmo\Timestampable(on="update")
-     * @Annotation\Exclude()
-     *
-     * @var \DateTime
-     */
-    private $dateUpdated;
     /**
      * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="emailAddress")
      * @ORM\JoinColumns({
@@ -100,71 +80,15 @@ class Email extends EntityAbstract implements ResourceInterface
     }
 
     /**
-     * Returns the string identifier of the Resource.
+     * @param $property
      *
-     * @return string
+     * @return bool
      */
-    public function getResourceId()
+    public function __isset($property)
     {
-        return __NAMESPACE__ . ':' . __CLASS__ . ':' . $this->id;
+        return isset($this->$property);
     }
 
-    /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (! $this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'      => 'email',
-                        'required'  => true,
-                        'validator' => new EmailAddress(),
-                    )
-                )
-            );
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    /**
-     * Function needed for the population of forms.
-     *
-     * @return array
-     */
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
-    /**
-     * Needed for the hydration of form elements.
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return array(
-            'contact' => $this->contact,
-        );
-    }
 
     /**
      * @return \Contact\Entity\Contact
@@ -180,38 +104,6 @@ class Email extends EntityAbstract implements ResourceInterface
     public function setContact($contact)
     {
         $this->contact = $contact;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param \DateTime $dateCreated
-     */
-    public function setDateCreated($dateCreated)
-    {
-        $this->dateCreated = $dateCreated;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->dateUpdated;
-    }
-
-    /**
-     * @param \DateTime $dateUpdated
-     */
-    public function setDateUpdated($dateUpdated)
-    {
-        $this->dateUpdated = $dateUpdated;
     }
 
     /**

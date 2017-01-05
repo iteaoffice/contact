@@ -1,13 +1,13 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   2004-2016 ITEA Office
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        http://github.com/iteaoffice/project for the canonical source repository
@@ -53,7 +53,7 @@ class ContactFieldset extends Fieldset
                     array_merge_recursive(
                         $element->getOptions(),
                         [
-                        'object_manager' => $entityManager,
+                            'object_manager' => $entityManager,
                         ]
                     )
                 );
@@ -65,7 +65,7 @@ class ContactFieldset extends Fieldset
                     array_merge_recursive(
                         $element->getOptions(),
                         [
-                        'value_options' => $object->$valueOptionsArray(),
+                            'value_options' => $object->$valueOptionsArray(),
                         ]
                     )
                 );

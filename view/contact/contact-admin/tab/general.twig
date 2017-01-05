@@ -13,13 +13,14 @@
     <dd>{{ contact.email }} <a href="mailto:{{ contact.email }}"><i
                     class="fa fa-envelope-o"></i></a></dd>
 
-    {% if contact.email.count() > 0 %}
-        <dt>{{ translate("txt-alternative-email") }}</dt>
-        {% for email in contact.email %}
-            <dd>{{ email.email }} <a href="mailto:{{ email.email }}"><i
-                            class="fa fa-envelope-o"></i></a></dd>
-        {% endfor %}
-    {% endif %}
+
+    {% for email in contact.emailAddress if email.email != contact.email %}
+        {% if loop.first %}
+            <dt>{{ translate("txt-alternative-email") }}</dt>
+        {% endif %}
+        <dd>{{ email.email }} <a href="mailto:{{ email.email }}"><i
+                        class="fa fa-envelope-o"></i></a></dd>
+    {% endfor %}
 
     <dt>{{ translate("txt-organisation") }}</dt>
     {% if contactService.hasOrganisation(contact) %}
@@ -30,6 +31,15 @@
     {% else %}
         <dd>{{ translate("txt-no-organisation-provided") }}</dd>
     {% endif %}
+
+    <dt>{{ translate("txt-profile-visibility") }}</dt>
+    {% if contact.profile.visible is not null %}
+        <dd>{{ translate(contact.profile.visible(true)) }}</dd>
+    {% else %}
+        <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
+    {% endif %}
+    <dt>{{ translate("txt-expertise") }}</dt>
+    <dd>{{ contact.profile.description }}</dd>
 
     <dt>{{ translate("txt-department") }}</dt>
     <dd>{{ contact.department|default(translate("txt-unknown")) }}</dd>

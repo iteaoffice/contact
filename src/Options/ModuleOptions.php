@@ -1,12 +1,12 @@
 <?php
 
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 namespace Contact\Options;
 
@@ -79,18 +79,22 @@ class ModuleOptions extends AbstractOptions implements CommunityOptionsInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getFacebookTemplate()
+    public function getFacebookTemplate(): string
     {
         return $this->facebookTemplate;
     }
 
     /**
-     * @param $facebookTemplate
+     * @param string $facebookTemplate
+     *
+     * @return $this
      */
-    public function setFacebookTemplate($facebookTemplate)
+    public function setFacebookTemplate(string $facebookTemplate)
     {
         $this->facebookTemplate = $facebookTemplate;
+
+        return $this;
     }
 }

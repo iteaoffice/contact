@@ -1,11 +1,11 @@
 <?php
 /**
- * Debranova copyright message placeholder
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  * @package     Entity
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 namespace Contact\Entity;
 
@@ -302,6 +302,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $programDoa;
     /**
+     * @ORM\OneToMany(targetEntity="\Organisation\Entity\Parent\Doa", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Organisation\Entity\Parent\Doa[]|Collections\ArrayCollection
+     */
+    private $parentDoa;
+    /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\OpenId", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\OpenId|Collections\ArrayCollection
@@ -395,32 +401,55 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $invoice;
     /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\OParent", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Organisation\Entity\OParent[]|Collections\ArrayCollection
+     */
+    private $parent;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\Parent\Financial", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude();
+     * @var \Organisation\Entity\Parent\Financial[]|Collections\ArrayCollection
+     */
+    private $parentFinancial;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\Parent\Organisation", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Organisation\Entity\Parent\Organisation[]|Collections\ArrayCollection
+     */
+    private $parentOrganisation;
+    /**
      * @ORM\OneToMany(targetEntity="Partner\Entity\Partner", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
+     * @deprecated
      * @var \Partner\Entity\Partner[]|Collections\ArrayCollection
      */
     private $partner;
     /**
      * @ORM\OneToMany(targetEntity="Partner\Entity\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude();
+     * @deprecated
      * @var \Partner\Entity\Financial[]|Collections\ArrayCollection
      */
     private $partnerFinancial;
     /**
      * @ORM\OneToMany(targetEntity="Partner\Entity\Organisation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
+     * @deprecated
      * @var \Partner\Entity\Organisation[]|Collections\ArrayCollection
      */
     private $partnerOrganisation;
     /**
      * @ORM\OneToMany(targetEntity="Partner\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
+     * @deprecated
      * @var \Partner\Entity\Affiliation[]|Collections\ArrayCollection
      */
     private $partnerAffiliation;
     /**
      * @ORM\OneToMany(targetEntity="Partner\Entity\Affiliation\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
+     * @deprecated
      * @var \Partner\Entity\Affiliation\Log[]|Collections\ArrayCollection
      */
     private $partnerAffiliationLog;
@@ -545,6 +574,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
+    /**
+     * @ORM\OneToMany(targetEntity="General\Entity\EmailMessage", mappedBy="contact", cascade={"persist","remove"})
+     * @Annotation\Exclude()
+     */
+    private $emailMessage;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -865,6 +899,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->affiliationDescription              = new Collections\ArrayCollection();
         $this->projectLog                          = new Collections\ArrayCollection();
         $this->affiliation                         = new Collections\ArrayCollection();
+        $this->parent                              = new Collections\ArrayCollection();
+        $this->parentFinancial                     = new Collections\ArrayCollection();
+        $this->parentOrganisation                  = new Collections\ArrayCollection();
         $this->partner                             = new Collections\ArrayCollection();
         $this->partnerFinancial                    = new Collections\ArrayCollection();
         $this->partnerAffiliationLog               = new Collections\ArrayCollection();
@@ -886,6 +923,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->selectionContact                    = new Collections\ArrayCollection();
         $this->mailingContact                      = new Collections\ArrayCollection();
         $this->mailing                             = new Collections\ArrayCollection();
+        $this->emailMessage                        = new Collections\ArrayCollection();
         $this->result                              = new Collections\ArrayCollection();
         $this->workpackage                         = new Collections\ArrayCollection();
         $this->workpackageDocument                 = new Collections\ArrayCollection();
@@ -912,6 +950,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->inviteContact                       = new Collections\ArrayCollection();
         $this->loi                                 = new Collections\ArrayCollection();
         $this->affiliationDoa                      = new Collections\ArrayCollection();
+        $this->parentDoa                           = new Collections\ArrayCollection();
         $this->permitContact                       = new Collections\ArrayCollection();
         $this->session                             = new Collections\ArrayCollection();
         $this->voter                               = new Collections\ArrayCollection();
@@ -946,7 +985,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return string
      */
-    public function parseHash()
+    public function parseHash(): string
     {
         return hash('sha1', $this->id . self::HASH_KEY);
     }
@@ -977,12 +1016,22 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
+     * @param $property
+     *
+     * @return bool
+     */
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
+
+    /**
      * toString returns the id (for form population)
      * Revert to the contactService to have the full parsed name
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->id;
     }
@@ -992,7 +1041,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return string
      */
-    public function parseFullName()
+    public function parseFullName(): string
     {
         return $this->getDisplayName();
     }
@@ -2167,7 +2216,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * Find the photo. We need to apply a trick here since the photo has a 1:n relation in the entities to avoid
      * the eager loading of the BLOB but we know that we only have 1 photo
      *
-     * @return \Contact\Entity\Photo|Collections\ArrayCollection
+     * @return \Contact\Entity\Photo[]|Collections\ArrayCollection
      */
     public function getPhoto()
     {
@@ -2747,7 +2796,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Review\VersionReview
+     * @return Collections\ArrayCollection|\Project\Entity\Review\Review
      */
     public function getProjectVersionReview()
     {
@@ -2755,7 +2804,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Review\VersionReview $projectVersionReview
+     * @param  Collections\ArrayCollection|\Project\Entity\Review\Review $projectVersionReview
      *
      * @return Contact
      */
@@ -3618,6 +3667,86 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setProjectReportWorkpackageDescription($projectReportWorkpackageDescription)
     {
         $this->projectReportWorkpackageDescription = $projectReportWorkpackageDescription;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]
+     */
+    public function getParentDoa()
+    {
+        return $this->parentDoa;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[] $parentDoa
+     *
+     * @return Contact
+     */
+    public function setParentDoa($parentDoa)
+    {
+        $this->parentDoa = $parentDoa;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Organisation\Entity\OParent[]
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Organisation\Entity\OParent[] $parent
+     *
+     * @return Contact
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Financial[]
+     */
+    public function getParentFinancial()
+    {
+        return $this->parentFinancial;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Financial[] $parentFinancial
+     *
+     * @return Contact
+     */
+    public function setParentFinancial($parentFinancial)
+    {
+        $this->parentFinancial = $parentFinancial;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Organisation[]
+     */
+    public function getParentOrganisation()
+    {
+        return $this->parentOrganisation;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Organisation[] $parentOrganisation
+     *
+     * @return Contact
+     */
+    public function setParentOrganisation($parentOrganisation)
+    {
+        $this->parentOrganisation = $parentOrganisation;
 
         return $this;
     }

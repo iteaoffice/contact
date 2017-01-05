@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (contact_entity_contact) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (contact_entity_contact) Copyright (c) 2004-2017 ITEA Office (https://itea3.org) (https://itea3.org)
  */
 
 namespace Contact\Repository;
@@ -91,7 +91,7 @@ class Contact extends EntityRepository
 
         /** Only when the filter is turned on, omit this extra rule */
         if (! (array_key_exists('options', $filter) && in_array('includeDeactivated', $filter['options']))
-            && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options']))
+             && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options']))
         ) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('content_entity_contact.dateEnd'));
         }
@@ -104,7 +104,7 @@ class Contact extends EntityRepository
             $queryBuilder->join('content_entity_contact.gender', 'general_entity_gender');
             $queryBuilder->andWhere(
                 $queryBuilder->expr()
-                    ->in('general_entity_gender.id', implode($filter['gender'], ', '))
+                             ->in('general_entity_gender.id', implode($filter['gender'], ', '))
             );
         }
 
@@ -126,7 +126,10 @@ class Contact extends EntityRepository
             );
             $queryBuilder->andWhere(
                 $queryBuilder->expr()
-                    ->in('contact_entity_contact_organisation_for_country_organisation_country.id', $filter['country'])
+                             ->in(
+                                 'contact_entity_contact_organisation_for_country_organisation_country.id',
+                                 $filter['country']
+                             )
             );
         }
 
@@ -496,14 +499,14 @@ class Contact extends EntityRepository
         }
 
         $query = $this->getEntityManager()
-            ->createNativeQuery(
-                sprintf(
-                    "SELECT contact_id, email, firstname, middlename, lastname, position FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ",
-                    $queryInString,
-                    $orderBy
-                ),
-                $resultSetMap
-            );
+                      ->createNativeQuery(
+                          sprintf(
+                              "SELECT contact_id, email, firstname, middlename, lastname, position FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ",
+                              $queryInString,
+                              $orderBy
+                          ),
+                          $resultSetMap
+                      );
 
         return $query->getResult();
     }
@@ -533,9 +536,9 @@ class Contact extends EntityRepository
 
         if ($toArray) {
             return $this->reIndexContactArray($qb->getQuery()->getResult(AbstractQuery::HYDRATE_SCALAR));
-        } else {
-            return $qb->getQuery()->getResult();
         }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -556,9 +559,9 @@ class Contact extends EntityRepository
 
         if ($toArray) {
             return $qb->getQuery()->getArrayResult();
-        } else {
-            return $qb->getQuery()->getResult();
         }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -598,8 +601,14 @@ class Contact extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(
-            ['contact_entity_contact.id', 'contact_entity_contact.firstName', 'contact_entity_contact.middleName',
-             'contact_entity_contact.lastName', 'contact_entity_contact.email', 'o.organisation']
+            [
+                'contact_entity_contact.id',
+                'contact_entity_contact.firstName',
+                'contact_entity_contact.middleName',
+                'contact_entity_contact.lastName',
+                'contact_entity_contact.email',
+                'o.organisation',
+            ]
         );
         $qb->from(Entity\Contact::class, 'contact_entity_contact');
         $qb->leftJoin('contact_entity_contact.contactOrganisation', 'co');
@@ -610,14 +619,14 @@ class Contact extends EntityRepository
             $qb->expr()->orX(
                 $qb->expr()->like(
                     $qb->expr()
-                        ->concat(
-                            'contact_entity_contact.firstName',
-                            $qb->expr()
-                                ->concat(
-                                    $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.middleName'),
-                                    $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.lastName')
-                                )
-                        ),
+                       ->concat(
+                           'contact_entity_contact.firstName',
+                           $qb->expr()
+                              ->concat(
+                                  $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.middleName'),
+                                  $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.lastName')
+                              )
+                       ),
                     $qb->expr()->literal("%" . $searchItem . "%")
                 ),
                 $qb->expr()->like('contact_entity_contact.email', $qb->expr()->literal("%" . $searchItem . "%"))
@@ -634,7 +643,7 @@ class Contact extends EntityRepository
     /**
      * @param Organisation $organisation
      *
-     * @return Contact[]
+     * @return Entity\Contact[]
      */
     public function findContactsInOrganisation(Organisation $organisation)
     {
@@ -679,7 +688,10 @@ class Contact extends EntityRepository
         //Remove all the contacts which are already in the project as associate or otherwise affected
         $findContactByProjectIdQueryBuilder->andWhere(
             $findContactByProjectIdQueryBuilder->expr()
-                ->notIn('contact_entity_contact', $findReviewContactByProjectQueryBuilder->getDQL())
+                                               ->notIn(
+                                                   'contact_entity_contact',
+                                                   $findReviewContactByProjectQueryBuilder->getDQL()
+                                               )
         );
 
         $findContactByProjectIdQueryBuilder->setParameter(1, $calendar->getProjectCalendar()->getProject()->getId());

@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Facebook
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -95,7 +95,7 @@ class FacebookManagerController extends ContactAbstractController
 
                 $this->getContactService()->removeEntity($facebook);
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(sprintf($this->translate("txt-facebook-has-successfully-been-deleted")));
+                     ->addMessage(sprintf($this->translate("txt-facebook-has-successfully-been-deleted")));
 
                 return $this->redirect()->toRoute('zfcadmin/facebook-manager/list');
             }

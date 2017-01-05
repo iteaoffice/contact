@@ -47,7 +47,7 @@
                 {% for contact in paginator.getCurrentItems() %}
                     <tr {% if contact.dateEnd %}class="danger"{% endif %}>
                         <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
-                        <td><a href="maito:{{ contact.email }}" title="{{ contact.email }}"><i
+                        <td><a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
                                         class="fa fa-envelope-o"></i> </a></td>
                         <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
                         <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>

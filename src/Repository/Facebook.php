@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Repository;
@@ -29,14 +29,14 @@ class Facebook extends EntityRepository
     {
         //Select projects based on a type
         $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('f');
-        $queryBuilder->from('Contact\Entity\Facebook', 'f');
-        $queryBuilder->leftJoin('f.access', 'a');
+        $queryBuilder->select('contact_entity_facebook');
+        $queryBuilder->from(Entity\Facebook::class, 'contact_entity_facebook');
+        $queryBuilder->leftJoin('contact_entity_facebook.access', 'admin_entity_access');
 
         $queryBuilder->andWhere(
             $queryBuilder->expr()->orX(
-                $queryBuilder->expr()->in('a.access', $contact->getRoles()),
-                $queryBuilder->expr()->in('f.public', [Entity\Facebook::IS_PUBLIC])
+                $queryBuilder->expr()->in('admin_entity_access.access', $contact->getRoles()),
+                $queryBuilder->expr()->in('contact_entity_facebook.public', [Entity\Facebook::IS_PUBLIC])
             )
         );
 
@@ -49,17 +49,17 @@ class Facebook extends EntityRepository
      *
      * @return bool
      */
-    public function isContactInFacebook(Entity\Contact $contact, Entity\Facebook $facebook)
+    public function isContactInFacebook(Entity\Contact $contact, Entity\Facebook $facebook): bool
     {
         $resultSetMap = new ResultSetMapping();
-        $resultSetMap->addEntityResult('Contact\Entity\Contact', 'c');
+        $resultSetMap->addEntityResult(Entity\Contact::class, 'contact_entity_contact');
         /*
          * Don't map the contact_id because that will overwrite the existing contact object leaving an empty one
          */
-        $resultSetMap->addFieldResult('c', 'email', 'email');
+        $resultSetMap->addFieldResult('contact_entity_contact', 'email', 'email');
 
         $queryInString = sprintf(
-            "SELECT %s FROM %s WHERE %s",
+            'SELECT %s FROM %s WHERE %s',
             $facebook->getContactKey(),
             $facebook->getFromClause(),
             $facebook->getWhereClause()
@@ -67,7 +67,7 @@ class Facebook extends EntityRepository
 
         $query = $this->getEntityManager()->createNativeQuery(
             sprintf(
-                "SELECT email FROM contact WHERE contact_id = %s AND contact_id IN (%s) AND date_end IS NULL",
+                'SELECT email FROM contact WHERE contact_id = %s AND contact_id IN (%s) AND date_end IS NULL',
                 $contact->getId(),
                 $queryInString
             ),

@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Acl\Assertion;
@@ -61,7 +61,7 @@ class Facebook extends AssertionAbstract
                 return $this->rolesHaveAccess($facebook->getAccess()->toArray());
             case 'send-message':
                 return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
-                    && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
+                       && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
             default:
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }

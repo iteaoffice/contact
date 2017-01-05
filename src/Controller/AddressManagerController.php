@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Address
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -51,7 +51,11 @@ class AddressManagerController extends ContactAbstractController
             }
 
             return $this->redirect()
-                ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'address']);
+                        ->toRoute(
+                            'zfcadmin/contact-admin/view',
+                            ['id' => $contact->getId()],
+                            ['fragment' => 'address']
+                        );
         }
 
         return new ViewModel(
@@ -84,14 +88,14 @@ class AddressManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->getContactService()->removeEntity($address);
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(sprintf($this->translate("txt-address-has-successfully-been-deleted")));
+                     ->addMessage(sprintf($this->translate("txt-address-has-successfully-been-deleted")));
 
                 return $this->redirect()
-                    ->toRoute(
-                        'zfcadmin/contact-admin/view',
-                        ['id' => $address->getContact()->getId()],
-                        ['fragment' => 'address']
-                    );
+                            ->toRoute(
+                                'zfcadmin/contact-admin/view',
+                                ['id' => $address->getContact()->getId()],
+                                ['fragment' => 'address']
+                            );
             }
 
             if (! isset($data['cancel']) && $form->isValid()) {

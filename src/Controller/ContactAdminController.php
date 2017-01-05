@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -74,7 +74,7 @@ class ContactAdminController extends ContactAbstractController
         $contacts = $contactQuery->getResult();
 
         // Open the output stream
-        $fh = fopen('php://output', 'w');
+        $fh = fopen('php://output', 'wb');
 
         ob_start();
 
@@ -96,10 +96,10 @@ class ContactAdminController extends ContactAbstractController
                     $contact->getEmail(),
                     $contact->getFirstName(),
                     trim(sprintf("%s %s", $contact->getMiddleName(), $contact->getLastName())),
-                    ! is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()->getOrganisation(
-                    ) : '',
-                    ! is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()->getOrganisation(
-                    )->getCountry() : '',
+                    ! is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()
+                                                                            ->getOrganisation() : '',
+                    ! is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()
+                                                                            ->getOrganisation()->getCountry() : '',
                 ]
             );
         }
@@ -226,7 +226,7 @@ class ContactAdminController extends ContactAbstractController
 
             $form = $this->getFormService()->prepare($contact, $contact, $data);
             $form->get('contact_entity_contact')->get("organisation")
-                ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
+                 ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
             $data = array_merge($this->getRequest()->getPost()->toArray());
             $form = $this->getFormService()->prepare($contact, $contact, $data);
@@ -245,7 +245,7 @@ class ContactAdminController extends ContactAbstractController
             /** Deactivate a contact */
             if (isset($data['deactivate'])) {
                 $this->flashMessenger()
-                    ->addSuccessMessage(sprintf($this->translate("txt-contact-%s-has-been-deactivated"), $contact));
+                     ->addSuccessMessage(sprintf($this->translate("txt-contact-%s-has-been-deactivated"), $contact));
 
                 $contact->setDateEnd(new \DateTime());
                 $this->getContactService()->updateEntity($contact);
@@ -258,7 +258,7 @@ class ContactAdminController extends ContactAbstractController
             /** Reactivate a contact */
             if (isset($data['reactivate'])) {
                 $this->flashMessenger()
-                    ->addSuccessMessage(sprintf($this->translate("txt-contact-%s-has-been-reactivated"), $contact));
+                     ->addSuccessMessage(sprintf($this->translate("txt-contact-%s-has-been-reactivated"), $contact));
 
                 $contact->setDateEnd(null);
                 $this->getContactService()->updateEntity($contact);
@@ -279,6 +279,11 @@ class ContactAdminController extends ContactAbstractController
                  * @var $contact Contact
                  */
                 $contact = $form->getData();
+
+                if (isset($data['contact_entity_contact']['access'])) {
+                    $contact->setAccess(null);
+                }
+
                 $contact = $this->getContactService()->updateEntity($contact);
 
                 /** Update the organisation if there is any */
@@ -292,12 +297,12 @@ class ContactAdminController extends ContactAbstractController
                     }
 
                     $contactOrganisation->setBranch(
-                        strlen($data['contact_entity_contact']['branch']) === 0 ? null
+                        empty($data['contact_entity_contact']['branch']) ? null
                             : $data['contact_entity_contact']['branch']
                     );
                     $contactOrganisation->setOrganisation(
                         $this->getOrganisationService()
-                            ->findOrganisationById($data['contact_entity_contact']['organisation'])
+                             ->findOrganisationById($data['contact_entity_contact']['organisation'])
                     );
 
                     $this->getContactService()->updateEntity($contactOrganisation);
@@ -362,7 +367,7 @@ class ContactAdminController extends ContactAbstractController
                     );
                     $contactOrganisation->setOrganisation(
                         $this->getOrganisationService()
-                            ->findOrganisationById($data['contact_entity_contact']['organisation'])
+                             ->findOrganisationById($data['contact_entity_contact']['organisation'])
                     );
 
                     $this->getContactService()->updateEntity($contactOrganisation);
@@ -413,7 +418,7 @@ class ContactAdminController extends ContactAbstractController
                 );
             }
 
-            if (isset($data['import']) && $importSession->active && isset($data['key'])) {
+            if (isset($data['import'], $data['key']) && $importSession->active) {
                 $handleImport = $this->handleImport(
                     $importSession->fileData,
                     $data['key'],
@@ -448,7 +453,7 @@ class ContactAdminController extends ContactAbstractController
             /*
              * Do a fall-back to the email when the name is empty
              */
-            if (strlen($text) === 0) {
+            if (empty($text)) {
                 $text = $result['email'];
             }
 

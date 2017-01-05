@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Entity;
@@ -212,12 +212,12 @@ class Photo extends EntityAbstract
     public function getCacheFileName()
     {
         $cacheDir = __DIR__ . '/../../../../../public' . DIRECTORY_SEPARATOR . 'assets' .
-            DIRECTORY_SEPARATOR . ITEAOFFICE_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
+                    DIRECTORY_SEPARATOR . ITEAOFFICE_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
 
         return $cacheDir . DIRECTORY_SEPARATOR
-            . $this->getId() . '-'
-            . $this->getHash() . '.'
-            . $this->getContentType()->getExtension();
+               . $this->getId() . '-'
+               . $this->getHash() . '.'
+               . $this->getContentType()->getExtension();
     }
 
     /**

@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Navigation\Service;
@@ -56,7 +56,7 @@ class ContactNavigationService extends NavigationServiceAbstract
                     'label'  => $facebook->getFacebook(),
                     'route'  => 'community/contact/facebook/facebook',
                     'active' => strtolower($this->getRouteMatch()->getParam('namespace')) === 'contact'
-                        && intval($this->getRouteMatch()->getParam('id')) === $facebook->getId(),
+                                && intval($this->getRouteMatch()->getParam('id')) === $facebook->getId(),
                     'router' => $this->getRouter(),
                     'params' => [
                         'id' => $facebook->getId(),

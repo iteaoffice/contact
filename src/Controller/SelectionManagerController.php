@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Selection
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2014 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -170,12 +170,12 @@ class SelectionManagerController extends ContactAbstractController
                 $this->getSelectionService()->removeEntity($selection);
 
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(
-                        sprintf(
-                            $this->translate("txt-selection-%s-has-successfully-been-removed"),
-                            $selection->getSelection()
-                        )
-                    );
+                     ->addMessage(
+                         sprintf(
+                             $this->translate("txt-selection-%s-has-successfully-been-removed"),
+                             $selection->getSelection()
+                         )
+                     );
 
                 return $this->redirect()->toRoute('zfcadmin/selection-manager/list');
             }
@@ -217,7 +217,7 @@ class SelectionManagerController extends ContactAbstractController
 
         $form->get('contact_entity_selection')->get('contact')->injectContact(
             $this->zfcUserAuthentication()
-                ->getIdentity()
+                 ->getIdentity()
         );
 
         if ($this->getRequest()->isPost()) {

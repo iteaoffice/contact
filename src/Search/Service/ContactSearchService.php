@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category  Search
  *
  * @author    Bart van Eijck <bart.van.eijck@itea3.org>
- * @copyright Copyright (c) 2004-2015 ITEA Office (http://itea3.org)
+ * @copyright Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Search\Service;
@@ -74,23 +74,23 @@ class ContactSearchService extends AbstractSearchService
                 /** @var Photo $photo */
                 $photo                      = $contact->getPhoto()->first();
                 $contactDocument->photo_url = $this->getServiceLocator()->get('ViewHelperManager')->get('url')
-                    ->__invoke(
-                        'assets/contact-photo',
-                        [
-                            'hash' => $photo->getHash(),
-                            'ext'  => $photo->getContentType()->getExtension(),
-                            'id'   => $photo->getId(),
-                        ]
-                    );
+                                                   ->__invoke(
+                                                       'assets/contact-photo',
+                                                       [
+                                                           'hash' => $photo->getHash(),
+                                                           'ext'  => $photo->getContentType()->getExtension(),
+                                                           'id'   => $photo->getId(),
+                                                       ]
+                                                   );
             }
         }
 
         if (! is_null($contact->getContactOrganisation())) {
             $contactDocument->organisation      = $contact->getContactOrganisation()->getOrganisation()
-                ->getOrganisation();
+                                                          ->getOrganisation();
             $contactDocument->organisation_type = $contact->getContactOrganisation()->getOrganisation()->getType();
             $contactDocument->country           = $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                ->getCountry();
+                                                          ->getCountry();
         }
 
         if (! is_null($contact->getCv())) {
@@ -176,7 +176,7 @@ class ContactSearchService extends AbstractSearchService
 
         $facetSet = $this->getQuery()->getFacetSet();
         $facetSet->createFacetField('organisation_type')->setField('organisation_type')->setMinCount(0)
-            ->setExcludes(['organisation_type']);
+                 ->setExcludes(['organisation_type']);
         if (('*' !== $searchTerm) && (strlen($searchTerm) > 2)) {
             $facetSet->createFacetField('organisation')->setField('organisation')->setMinCount(1);
         }

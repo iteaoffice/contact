@@ -43,7 +43,10 @@
                     <i class="fa fa-trash"
                        title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(mailingContact.mailing.dateDeleted|date("d-m-Y")) }}"></i>
                 {% endif %}</td>
-            <td>{{ mailingLink(mailingContact.mailing,'view','name') }}</td>
+            <td>
+                {{ mailingLink(mailingContact.mailing,'view','name') }}
+                {{ mailingContactLink(mailingContact,'view','icon') }}
+            </td>
             <td>
                 <span title="{{ mailingContact.mailing.mailSubject }}">{{ mailingContact.mailing.mailSubject|truncate(25, false, "...") }}</span>
             </td>

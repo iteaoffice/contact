@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Hydrator;
@@ -59,17 +59,17 @@ class Profile extends DoctrineObject
         $organisationService = new OrganisationService();
         if (! is_null($contact->getContactOrganisation())) {
             $values['contact_organisation']['organisation_id'] = $contact->getContactOrganisation()->getOrganisation()
-                ->getId();
+                                                                         ->getId();
             $values['contact_organisation']['organisation']
                                                                = $organisationService->parseOrganisationWithBranch(
                                                                    $contact->getContactOrganisation()->getBranch(),
                                                                    $contact->getContactOrganisation()->getOrganisation()
                                                                );
             $values['contact_organisation']['type']            = $contact->getContactOrganisation()->getOrganisation()
-                ->getType()->getId();
+                                                                         ->getType()->getId();
             if (! is_null($contact->getContactOrganisation())) {
                 $values['contact_organisation']['country'] = $contact->getContactOrganisation()->getOrganisation()
-                    ->getCountry()->getId();
+                                                                     ->getCountry()->getId();
             }
         }
 
@@ -146,7 +146,7 @@ class Profile extends DoctrineObject
                     $address = new Address();
                     /** @var AddressType $addressType */
                     $addressType = $this->objectManager->getRepository(AddressType::class)
-                        ->find(AddressType::ADDRESS_TYPE_MAIL);
+                                                       ->find(AddressType::ADDRESS_TYPE_MAIL);
                     $address->setType($addressType);
                     $address->setAddress($addressInfo['address']);
                     $address->setZipCode($addressInfo['zipCode']);

@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller\Plugin;
@@ -210,7 +210,7 @@ class HandleImport extends AbstractPlugin
              */
             if (! empty($this->headerKeys['organisation_id'])) {
                 $organisation = $this->getOrganisationService()
-                    ->findOrganisationById($this->headerKeys['organisation_id']);
+                                     ->findOrganisationById($this->headerKeys['organisation_id']);
                 if (is_null($organisation)) {
                     $this->errors[] = sprintf(
                         "Organisation with ID (%s) in row %s cannot be found",
@@ -299,7 +299,7 @@ class HandleImport extends AbstractPlugin
             $selection->setSelection($selectionName);
             $selection->setContact(
                 $this->getServiceLocator()->get('Application\Authentication\Service')
-                    ->getIdentity()
+                     ->getIdentity()
             );
 
             $this->getContactService()->newEntity($selection);
@@ -449,12 +449,12 @@ class HandleImport extends AbstractPlugin
                 && ! empty($content[$this->headerKeys['organisation_id']])
             ) {
                 $organisation = $this->getOrganisationService()
-                    ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
+                                     ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
             }
 
             if (is_null($organisation) && ! is_null($country) && ! is_null($organisationName)) {
                 $organisation = $this->getOrganisationService()
-                    ->findOrganisationByNameCountry($organisationName, $country);
+                                     ->findOrganisationByNameCountry($organisationName, $country);
             }
 
             //If the organisation does not exist, create it

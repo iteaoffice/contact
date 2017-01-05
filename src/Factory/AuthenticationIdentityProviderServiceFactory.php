@@ -29,9 +29,11 @@ final class AuthenticationIdentityProviderServiceFactory implements FactoryInter
      *
      * @return AuthenticationIdentityProvider
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null
-    ): AuthenticationIdentityProvider
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ): AuthenticationIdentityProvider {
         $user = $container->get('zfcuser_user_service');
 
         /** @var AdminService $adminService */

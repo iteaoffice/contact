@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Calecontactr
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Navigation\Factory;
@@ -30,9 +30,11 @@ final class ContactNavigationServiceFactory implements FactoryInterface
      *
      * @return ContactNavigationService
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null
-    ): ContactNavigationService
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ): ContactNavigationService {
         $contactNavigationService = new ContactNavigationService();
 
         /**
@@ -47,7 +49,7 @@ final class ContactNavigationServiceFactory implements FactoryInterface
         if ($container->get('Application\Authentication\Service')->hasIdentity()) {
             $contactNavigationService->setContact(
                 $container->get('Application\Authentication\Service')
-                    ->getIdentity()
+                          ->getIdentity()
             );
         }
 

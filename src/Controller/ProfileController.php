@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -43,7 +43,7 @@ class ProfileController extends ContactAbstractController
     }
 
     /**
-     * @return ViewModel
+     * @return array|ViewModel
      */
     public function contactAction()
     {
@@ -62,9 +62,7 @@ class ProfileController extends ContactAbstractController
     }
 
     /**
-     * Edit the profile of the person.
-     *
-     * @return ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function editAction()
     {
@@ -90,12 +88,13 @@ class ProfileController extends ContactAbstractController
         $form = new Profile($this->getEntityManager(), $this->getContactService(), $contact);
         $form->bind($contact);
 
-        /**
-         * When the organisation name is typed, we force the value to zero
-         */
-
         $form->getInputFilter()->get('address')->remove('country');
-        if (! isset($data['contact_organisation']['organisation_id'])) {
+        //When we have a valid organisation_id, we do not need the country
+        if (isset($data['contact_organisation']['organisation_id'])
+            && $data['contact_organisation']['organisation_id'] !== '0'
+        ) {
+            $form->getInputFilter()->get('contact_organisation')->remove('country');
+        } else {
             $form->getInputFilter()->get('contact_organisation')->remove('organisation_id');
         }
 

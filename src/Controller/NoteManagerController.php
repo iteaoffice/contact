@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Note
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Controller;
@@ -51,7 +51,11 @@ class NoteManagerController extends ContactAbstractController
             }
 
             return $this->redirect()
-                ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'general']);
+                        ->toRoute(
+                            'zfcadmin/contact-admin/view',
+                            ['id' => $contact->getId()],
+                            ['fragment' => 'general']
+                        );
         }
 
         return new ViewModel(
@@ -84,7 +88,7 @@ class NoteManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->getContactService()->removeEntity($note);
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(sprintf($this->translate("txt-note-has-successfully-been-deleted")));
+                     ->addMessage(sprintf($this->translate("txt-note-has-successfully-been-deleted")));
 
                 return $this->redirect()->toRoute(
                     'zfcadmin/contact-admin/view',

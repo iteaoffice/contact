@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA Office copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Service;
@@ -131,10 +131,10 @@ class SelectionService extends ServiceAbstract
                     $contact = $this->getContactService()->findContactById($contactId);
 
                     if (! $contact->isEmpty()
-                        && ! $this->getContactService()->contactInSelection(
-                            $contact,
-                            $selection
-                        )
+                         && ! $this->getContactService()->contactInSelection(
+                             $contact,
+                             $selection
+                         )
                     ) {
                         $selectionContact = new Entity\SelectionContact();
                         $selectionContact->setContact($contact);

@@ -1,11 +1,11 @@
 <?php
 /**
- * Jield webdev copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
- * @author      Johan van der Heide <info@jield.nl>
- * @copyright   Copyright (c) 2015 Jield (http://jield.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\InputFilter;
@@ -17,12 +17,12 @@ use Organisation\Entity\Organisation;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Jield webdev copyright message placeholder.
+ * ITEA Office all rights reserved
  *
  * @category    Contact
  *
- * @author      Johan van der Heide <info@jield.nl>
- * @copyright   Copyright (c) 2015 Jield (http://jield.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 class ContactFilter extends InputFilter
 {
