@@ -232,8 +232,7 @@ class ContactService extends ServiceAbstract
         }
 
         return $this->getOrganisationService()->parseOrganisationWithBranch(
-            $contact->getContactOrganisation()
-                    ->getBranch(),
+            $contact->getContactOrganisation()->getBranch(),
             $contact->getContactOrganisation()->getOrganisation()
         );
     }
@@ -1114,7 +1113,7 @@ class ContactService extends ServiceAbstract
     {
         $inCompleteness = [];
         $totalWeight    = 0;
-        $totalWeight += 10;
+        $totalWeight    += 10;
         if (is_null($contact->getFirstName())) {
             $inCompleteness['firstName']['message'] = _("txt-first-name-is-missing");
             $inCompleteness['firstName']['weight']  = 10;
@@ -1158,7 +1157,7 @@ class ContactService extends ServiceAbstract
          */
         foreach ($inCompleteness as &$itemPerType) {
             $itemPerType['weight'] = ($itemPerType['weight'] / $totalWeight * 100);
-            $incompletenessWeight += $itemPerType['weight'];
+            $incompletenessWeight  += $itemPerType['weight'];
         }
 
         return [

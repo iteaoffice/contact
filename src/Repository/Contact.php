@@ -91,7 +91,7 @@ class Contact extends EntityRepository
 
         /** Only when the filter is turned on, omit this extra rule */
         if (! (array_key_exists('options', $filter) && in_array('includeDeactivated', $filter['options']))
-             && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options']))
+             && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options'], true))
         ) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('content_entity_contact.dateEnd'));
         }
@@ -104,7 +104,7 @@ class Contact extends EntityRepository
             $queryBuilder->join('content_entity_contact.gender', 'general_entity_gender');
             $queryBuilder->andWhere(
                 $queryBuilder->expr()
-                             ->in('general_entity_gender.id', implode($filter['gender'], ', '))
+                             ->in('general_entity_gender.id', $filter['gender'])
             );
         }
 
