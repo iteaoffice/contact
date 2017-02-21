@@ -30,7 +30,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 class Address extends EntityAbstract implements ResourceInterface
 {
     /**
-     * @ORM\Column(name="address_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="address_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
@@ -55,7 +55,7 @@ class Address extends EntityAbstract implements ResourceInterface
      */
     private $zipCode;
     /**
-     * @ORM\Column(name="city", type="string", length=40, nullable=true)
+     * @ORM\Column(name="city", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-city"})
      *

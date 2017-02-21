@@ -28,7 +28,7 @@ use Zend\InputFilter\InputFilterInterface;
 class SelectionSql extends EntityAbstract
 {
     /**
-     * @ORM\Column(name="sql_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="sql_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

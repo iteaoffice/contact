@@ -30,7 +30,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 class Web extends EntityAbstract implements ResourceInterface
 {
     /**
-     * @ORM\Column(name="web_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="web_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()

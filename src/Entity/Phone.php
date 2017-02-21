@@ -30,7 +30,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 class Phone extends EntityAbstract implements ResourceInterface
 {
     /**
-     * @ORM\Column(name="phone_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="phone_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
@@ -39,7 +39,7 @@ class Phone extends EntityAbstract implements ResourceInterface
      */
     private $id;
     /**
-     * @ORM\Column(name="phone", type="string", length=40, nullable=false)
+     * @ORM\Column(name="phone", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-phone-number"})
      *

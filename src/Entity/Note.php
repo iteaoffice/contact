@@ -32,7 +32,7 @@ class Note extends EntityAbstract implements ResourceInterface
     const SOURCE_SIGNATURE = 'signature';
 
     /**
-     * @ORM\Column(name="note_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="note_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

@@ -130,7 +130,7 @@ class HandleImport extends AbstractPlugin
         $data = utf8_encode($data);
 
         //Explode first on the \n to have the different rows
-        $data = explode("\n", $data);
+        $data = explode(PHP_EOL, $data);
 
         /*
          * Correct first the delimiter, normally a ; but it can be a ;
@@ -178,7 +178,7 @@ class HandleImport extends AbstractPlugin
          * Go over all elements and check if the required elements are present
          */
         foreach ($minimalRequiredElements as $element) {
-            if (! in_array($element, $this->header)) {
+            if (! in_array(strtolower($element), $this->header, true)) {
                 $this->errors[] = sprintf("Element %s is missing in the file", $element);
             }
         }

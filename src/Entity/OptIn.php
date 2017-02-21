@@ -38,7 +38,7 @@ class OptIn extends EntityAbstract
         ];
 
     /**
-     * @ORM\Column(name="optin_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="optin_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -46,7 +46,7 @@ class OptIn extends EntityAbstract
      */
     private $id;
     /**
-     * @ORM\Column(name="optin", type="string", length=40, nullable=false)
+     * @ORM\Column(name="optin", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-opt-in"})
      * @Annotation\Attributes({"class":"span3"})
@@ -55,7 +55,7 @@ class OptIn extends EntityAbstract
      */
     private $optIn;
     /**
-     * @ORM\Column(name="auto_subscribe", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="auto_subscribe", type="integer", nullable=false)
      *
      * @var integer
      */

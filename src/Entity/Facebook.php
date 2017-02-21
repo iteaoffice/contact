@@ -112,7 +112,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
             self::IS_PUBLIC  => 'txt-public',
         ];
     /**
-     * @ORM\Column(name="facebook_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="facebook_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

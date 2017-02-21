@@ -70,7 +70,7 @@ class Selection extends EntityAbstract
             self::IS_PRIVATE  => 'txt-private',
         ];
     /**
-     * @ORM\Column(name="selection_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="selection_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
@@ -110,7 +110,7 @@ class Selection extends EntityAbstract
      */
     private $dateDeleted;
     /**
-     * @ORM\Column(name="note", type="string", length=40, nullable=true)
+     * @ORM\Column(name="note", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-note"})
      *

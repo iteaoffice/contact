@@ -224,12 +224,12 @@ class ContactAdminController extends ContactAbstractController
                 $this->getRequest()->getPost()->toArray()
             );
 
-            $form = $this->getFormService()->prepare($contact, $contact, $data);
+            $form = $this->getFormService()->prepare(Contact::class, $contact, $data);
             $form->get('contact_entity_contact')->get("organisation")
                  ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
             $data = array_merge($this->getRequest()->getPost()->toArray());
-            $form = $this->getFormService()->prepare($contact, $contact, $data);
+            $form = $this->getFormService()->prepare(Contact::class, $contact, $data);
         }
 
         /** Show or hide buttons based on the status of a contact */
@@ -280,11 +280,15 @@ class ContactAdminController extends ContactAbstractController
                  */
                 $contact = $form->getData();
 
-                if (isset($data['contact_entity_contact']['access'])) {
+                if (! isset($data['contact_entity_contact']['access'])) {
                     $contact->setAccess(null);
                 }
 
                 $contact = $this->getContactService()->updateEntity($contact);
+
+                //Reset the roles of this contact
+                $this->getAdminService()->refreshAccessRolesByContact($contact);
+                $this->getAdminService()->resetCachedAccessRolesByContact($contact);
 
                 /** Update the organisation if there is any */
                 if (isset($data['contact_entity_contact']['organisation'])) {

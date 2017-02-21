@@ -47,7 +47,7 @@
     <dd>{{ contact.position }}</dd>
     <dt>{{ translate("txt-access") }}</dt>
     {% for access in contact.access %}
-        <dd>{{ accessLink(access,'view','name') }}</dd>
+        <dd>{{ accessLink(access,'view','name') }} {% if not access.selection.isEmpty() %}*{% endif %}</dd>
     {% else %}
         <dd>{{ translate("txt-no-access-defined") }}</dd>
     {% endfor %}

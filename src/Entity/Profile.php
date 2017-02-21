@@ -80,7 +80,7 @@ class Profile extends EntityAbstract
             self::VISIBLE_COMMUNITY => 'txt-visibility-community',
         );
     /**
-     * @ORM\Column(name="profile_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="profile_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()

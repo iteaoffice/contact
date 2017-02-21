@@ -29,7 +29,7 @@ use Zend\InputFilter\InputFilterInterface;
 class Community extends EntityAbstract
 {
     /**
-     * @ORM\Column(name="community_id", length=10, type="integer", nullable=false)
+     * @ORM\Column(name="community_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -37,7 +37,7 @@ class Community extends EntityAbstract
      */
     private $id;
     /**
-     * @ORM\Column(name="community", type="string", length=40, nullable=false)
+     * @ORM\Column(name="community", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-community"})
      *
