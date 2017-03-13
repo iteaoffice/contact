@@ -7,6 +7,7 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
+
 namespace Contact;
 
 use Contact\Acl;
@@ -104,6 +105,7 @@ $config = [
             InputFilter\ContactFilter::class                        => Factory\InputFilterFactory::class,
             InputFilter\SelectionFilter::class                      => Factory\InputFilterFactory::class,
             Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
+            Search\Service\ProfileSearchService::class              => Search\Factory\ProfileSearchFactory::class,
             Acl\Assertion\Address::class                            => Acl\Factory\AssertionFactory::class,
             Acl\Assertion\Contact::class                            => Acl\Factory\AssertionFactory::class,
             Acl\Assertion\Facebook::class                           => Acl\Factory\AssertionFactory::class,

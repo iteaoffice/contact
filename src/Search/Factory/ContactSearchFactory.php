@@ -12,6 +12,7 @@
  *
  * @link        http://github.com/iteaoffice/main for the canonical source repository
  */
+
 namespace Contact\Search\Factory;
 
 use Contact\Search\Service\ContactSearchService;
@@ -28,14 +29,15 @@ class ContactSearchFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param array|null|null    $options
+     * @param string $requestedName
+     * @param array|null|null $options
      *
-     * @return mixed
+     * @return ContactSearchService
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ContactSearchService
     {
-        $searchService = new ContactSearchService();
+        /** @var ContactSearchService $searchService */
+        $searchService = new $requestedName($options);
         $searchService->setServiceLocator($container);
 
         /** @var ContactService $contactService */

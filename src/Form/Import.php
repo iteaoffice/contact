@@ -147,7 +147,7 @@ class Import extends Form implements InputFilterProviderInterface
                 'validators' => [
                     new Size(
                         [
-                            'min' => '1kB',
+                            'min' => '0kB',
                             'max' => '8MB',
                         ]
                     ),

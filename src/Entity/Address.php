@@ -39,7 +39,7 @@ class Address extends EntityAbstract implements ResourceInterface
      */
     private $id;
     /**
-     * @ORM\Column(name="address", type="string", length=80, nullable=true)
+     * @ORM\Column(name="address", type="string", length=255, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-address"})
      *
@@ -130,9 +130,19 @@ class Address extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @param $property
+     * @return bool
+     *
+     */
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
+
+    /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->getAddress();
     }
@@ -180,9 +190,9 @@ class Address extends EntityAbstract implements ResourceInterface
      */
     public function getInputFilter()
     {
-        if (! $this->inputFilter) {
+        if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
                     [

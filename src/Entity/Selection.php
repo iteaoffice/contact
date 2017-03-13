@@ -103,7 +103,7 @@ class Selection extends EntityAbstract
      */
     private $dateCreated;
     /**
-     * @ORM\Column(name="date_deleted", type="datetime", nullable=false)
+     * @ORM\Column(name="date_deleted", type="datetime", nullable=true)
      * @Annotation\Exclude()
      *
      * @var \DateTime

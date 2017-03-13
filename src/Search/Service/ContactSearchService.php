@@ -22,7 +22,10 @@ use Solarium\QueryType\Select\Query\Query;
  */
 class ContactSearchService extends AbstractSearchService
 {
-    const SOLR_CONNECTION = 'contact';
+    /**
+     *
+     */
+    const SOLR_CONNECTION = 'contact_contact';
 
     /**
      * The contact service
@@ -32,73 +35,71 @@ class ContactSearchService extends AbstractSearchService
     protected $contactService;
 
     /**
-     * Update or insert a contact document
-     *
      * @param Contact $contact
-     *
-     * <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-     * <field name="contact_id" type="int" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="fullname" type="text_general" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="lastname" type="string" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="position" type="text_en_splitting" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="type" type="string" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="photo_url" type="string" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="organisation" type="string" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="organisation_type" type="string" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="country" type="string" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="profile" type="text_en_splitting" indexed="true" stored="true" omitNorms="true"/>
-     * <field name="cv" type="text_en_splitting" indexed="true" stored="true" omitNorms="true"/>
-     *
-     * @return \Solarium\Core\Query\Result\ResultInterface
-     * @throws \Solarium\Exception\HttpException
+     * @return \Solarium\QueryType\Update\Result
      */
     public function updateDocument($contact)
     {
         // Get an update query instance
         $update = $this->getSolrClient()->createUpdate();
 
-        $contactDocument             = $update->createDocument();
-        $contactDocument->id         = $contact->getResourceId();
+        $contactDocument = $update->createDocument();
+        $contactDocument->id = $contact->getResourceId();
         $contactDocument->contact_id = $contact->getId();
-        $contactDocument->type       = 'contact';
-        $contactDocument->fullname   = $contact->getDisplayName();
-        $contactDocument->lastname   = $contact->getLastName();
-        $contactDocument->position   = $contact->getPosition();
+        $contactDocument->contact_hash = $contact->parseHash();
 
-        if (! is_null($contact->getProfile())) {
+        $contactDocument->fullname = $contact->getDisplayName();
+        $contactDocument->fullname_search = $contact->getDisplayName();
+        $contactDocument->fullname_sort = $contact->getDisplayName();
+
+        $contactDocument->lastname = $contact->getLastName();
+        $contactDocument->lastname_search = $contact->getLastName();
+        $contactDocument->lastname_sort = $contact->getLastName();
+
+        $contactDocument->position = $contact->getPosition();
+        $contactDocument->position_search = $contact->getPosition();
+        $contactDocument->position_sort = $contact->getPosition();
+
+        if (!is_null($contact->getProfile())) {
             $contactDocument->profile = str_replace(PHP_EOL, '', strip_tags($contact->getProfile()->getDescription()));
 
             if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
                 && ($contact->getPhoto()->count() > 0)
             ) {
                 /** @var Photo $photo */
-                $photo                      = $contact->getPhoto()->first();
-                $contactDocument->photo_url = $this->getServiceLocator()->get('ViewHelperManager')->get('url')
-                                                   ->__invoke(
-                                                       'assets/contact-photo',
-                                                       [
-                                                           'hash' => $photo->getHash(),
-                                                           'ext'  => $photo->getContentType()->getExtension(),
-                                                           'id'   => $photo->getId(),
-                                                       ]
-                                                   );
+                $photo = $contact->getPhoto()->first();
+                $contactDocument->photo_url = ($this->getServiceLocator()->get('ViewHelperManager')->get('url'))(
+                    'assets/contact-photo',
+                    [
+                        'hash' => $photo->getHash(),
+                        'ext'  => $photo->getContentType()->getExtension(),
+                        'id'   => $photo->getId(),
+                    ]
+                );
             }
         }
 
-        if (! is_null($contact->getContactOrganisation())) {
-            $contactDocument->organisation      = $contact->getContactOrganisation()->getOrganisation()
-                                                          ->getOrganisation();
+        if (!is_null($contact->getContactOrganisation())) {
+            $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
+            $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
+            $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
             $contactDocument->organisation_type = $contact->getContactOrganisation()->getOrganisation()->getType();
-            $contactDocument->country           = $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                                                          ->getCountry();
+            $contactDocument->organisation_type_sort = $contact->getContactOrganisation()->getOrganisation()->getType();
+            $contactDocument->organisation_type_search = $contact->getContactOrganisation()->getOrganisation()->getType();
+            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
+            $contactDocument->country_sort = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
+            $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
         }
 
-        if (! is_null($contact->getCv())) {
-            $contactDocument->cv = str_replace(
+        if (!is_null($contact->getCv())) {
+            $cv = str_replace(
                 PHP_EOL,
                 '',
                 strip_tags(stream_get_contents($contact->getCv()->getCv()))
             );
+
+            $contactDocument->cv = $cv;
+            $contactDocument->cv_search = $cv;
         }
 
         $update->addDocument($contactDocument);
@@ -114,8 +115,57 @@ class ContactSearchService extends AbstractSearchService
      */
     public function updateIndex($clear = false)
     {
-        $contacts = $this->getContactService()->findContactsWithActiveProfile(true);
+        $contacts = $this->getContactService()->findAll(Contact::class);
         $this->updateIndexWithCollection($contacts, $clear);
+    }
+
+    /**
+     * @param string $searchTerm
+     * @param string $order
+     * @param string $direction
+     *
+     * @return ContactSearchService
+     */
+    public function setSearch($searchTerm, $order = '', $direction = Query::SORT_ASC): ContactSearchService
+    {
+        $this->setQuery($this->getSolrClient()->createSelect());
+
+        $this->getQuery()->setQuery(
+            static::parseQuery(
+                $searchTerm,
+                [
+                    'fullname_search',
+                    'position_search',
+                    'profile_search',
+                    'organisation_search',
+                    'organisation_type_search',
+                    'country_search',
+                    'cv_search',
+                ]
+            )
+        );
+
+        $hasTerm = !in_array($searchTerm, ['*', '']);
+        $hasSort = ($order !== '');
+
+        if ($hasSort) {
+            $this->getQuery()->addSort($order, $direction);
+        }
+        if ($hasTerm) {
+            $this->getQuery()->addSort('score', Query::SORT_DESC);
+        } else {
+            $this->getQuery()->addSort('lastname_sort', Query::SORT_ASC);
+        }
+
+        $facetSet = $this->getQuery()->getFacetSet();
+        $facetSet->createFacetField('organisation_type')->setField('organisation_type')->setMinCount(0)
+            ->setExcludes(['organisation_type']);
+        if (('*' !== $searchTerm) && (strlen($searchTerm) > 2)) {
+            $facetSet->createFacetField('organisation')->setField('organisation')->setMinCount(1);
+        }
+        $facetSet->createFacetField('country')->setField('country')->setMinCount(1)->setExcludes(['country']);
+
+        return $this;
     }
 
     /**
@@ -131,57 +181,11 @@ class ContactSearchService extends AbstractSearchService
      *
      * @return ContactSearchService
      */
-    public function setContactService(ContactService $contactService)
+    public function setContactService(ContactService $contactService): ContactSearchService
     {
         $this->contactService = $contactService;
 
         return $this;
     }
 
-    /**
-     * @param string $searchTerm
-     * @param string $order
-     * @param string $direction
-     *
-     * @return ContactSearchService
-     */
-    public function setSearch($searchTerm, $order = '', $direction = Query::SORT_ASC)
-    {
-        $this->setQuery($this->getSolrClient()->createSelect());
-
-        $this->getQuery()->setQuery(
-            static::parseQuery(
-                $searchTerm,
-                [
-                    'fullname',
-                    'position',
-                    'organisation',
-                    'profile',
-                    'country',
-                ]
-            )
-        );
-
-        $hasTerm = ! in_array($searchTerm, ['*', '']);
-        $hasSort = ($order !== '');
-
-        if ($hasSort) {
-            $this->getQuery()->addSort($order, $direction);
-        }
-        if ($hasTerm) {
-            $this->getQuery()->addSort('score', Query::SORT_DESC);
-        } else {
-            $this->getQuery()->addSort('lastname', Query::SORT_ASC);
-        }
-
-        $facetSet = $this->getQuery()->getFacetSet();
-        $facetSet->createFacetField('organisation_type')->setField('organisation_type')->setMinCount(0)
-                 ->setExcludes(['organisation_type']);
-        if (('*' !== $searchTerm) && (strlen($searchTerm) > 2)) {
-            $facetSet->createFacetField('organisation')->setField('organisation')->setMinCount(1);
-        }
-        $facetSet->createFacetField('country')->setField('country')->setMinCount(1)->setExcludes(['country']);
-
-        return $this;
-    }
 }
