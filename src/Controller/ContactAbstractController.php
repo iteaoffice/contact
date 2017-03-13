@@ -14,6 +14,7 @@ use Admin\Service\AdminService;
 use BjyAuthorize\Controller\Plugin\IsAllowed;
 use Contact\Controller\Plugin;
 use Contact\Search\Service\ContactSearchService;
+use Contact\Search\Service\ProfileSearchService;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Contact\Service\SelectionService;
@@ -100,6 +101,10 @@ abstract class ContactAbstractController extends AbstractActionController
      * @var ContactSearchService
      */
     protected $contactSearchService;
+    /**
+     * @var ProfileSearchService
+     */
+    protected $profileSearchService;
     /**
      * @var ModuleOptions;
      */
@@ -446,6 +451,25 @@ abstract class ContactAbstractController extends AbstractActionController
     public function setViewHelperManager(HelperPluginManager $viewHelperManager): ContactAbstractController
     {
         $this->viewHelperManager = $viewHelperManager;
+
+        return $this;
+    }
+
+    /**
+     * @return ProfileSearchService
+     */
+    public function getProfileSearchService(): ProfileSearchService
+    {
+        return $this->profileSearchService;
+    }
+
+    /**
+     * @param ProfileSearchService $profileSearchService
+     * @return ContactAbstractController
+     */
+    public function setProfileSearchService(ProfileSearchService $profileSearchService): ContactAbstractController
+    {
+        $this->profileSearchService = $profileSearchService;
 
         return $this;
     }

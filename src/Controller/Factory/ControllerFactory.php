@@ -12,11 +12,13 @@
  *
  * @link        http://github.com/iteaoffice/contact for the canonical source repository
  */
+
 namespace Contact\Controller\Factory;
 
 use Admin\Service\AdminService;
 use Contact\Controller\ContactAbstractController;
 use Contact\Search\Service\ContactSearchService;
+use Contact\Search\Service\ProfileSearchService;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Contact\Service\SelectionService;
@@ -44,8 +46,8 @@ final class ControllerFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface|ControllerManager $container
-     * @param string                               $requestedName
-     * @param array|null                           $options
+     * @param string $requestedName
+     * @param array|null $options
      *
      * @return ContactAbstractController
      */
@@ -88,6 +90,10 @@ final class ControllerFactory implements FactoryInterface
         /** @var ContactSearchService $contactSearchService */
         $contactSearchService = $container->get(ContactSearchService::class);
         $controller->setContactSearchService($contactSearchService);
+
+        /** @var ProfileSearchService $profileSearchService */
+        $profileSearchService = $container->get(ProfileSearchService::class);
+        $controller->setProfileSearchService($profileSearchService);
 
         /** @var EmailService $emailService */
         $emailService = $container->get(EmailService::class);

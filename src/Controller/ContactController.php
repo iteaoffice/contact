@@ -208,7 +208,7 @@ class ContactController extends ContactAbstractController
      */
     public function searchAction()
     {
-        $searchService = $this->getContactSearchService();
+        $searchService = $this->getProfileSearchService();
         $page          = $this->params('page', 1);
 
         $form = new SearchResult();
