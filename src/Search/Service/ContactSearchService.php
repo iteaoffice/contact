@@ -187,5 +187,4 @@ class ContactSearchService extends AbstractSearchService
 
         return $this;
     }
-
 }

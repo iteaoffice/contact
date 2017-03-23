@@ -62,10 +62,16 @@ class ProfileSearchService extends AbstractSearchService
 
         if (!is_null($contact->getProfile())) {
             $contactDocument->profile = str_replace(PHP_EOL, '', strip_tags($contact->getProfile()->getDescription()));
-            $contactDocument->profile_sort = str_replace(PHP_EOL, '',
-                strip_tags($contact->getProfile()->getDescription()));
-            $contactDocument->profile_search = str_replace(PHP_EOL, '',
-                strip_tags($contact->getProfile()->getDescription()));
+            $contactDocument->profile_sort = str_replace(
+                PHP_EOL,
+                '',
+                strip_tags($contact->getProfile()->getDescription())
+            );
+            $contactDocument->profile_search = str_replace(
+                PHP_EOL,
+                '',
+                strip_tags($contact->getProfile()->getDescription())
+            );
 
             if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
                 && ($contact->getPhoto()->count() > 0)
@@ -191,5 +197,4 @@ class ProfileSearchService extends AbstractSearchService
 
         return $this;
     }
-
 }

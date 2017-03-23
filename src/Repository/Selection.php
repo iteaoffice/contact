@@ -26,7 +26,7 @@ class Selection extends EntityRepository
      *
      * @return Query
      */
-    public function findFiltered(array $filter)
+    public function findFiltered(array $filter): Query
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_selection');
@@ -55,13 +55,13 @@ class Selection extends EntityRepository
             $queryBuilder->andWhere($queryBuilder->expr()->in('contact_entity_selection.tag', $filter['tags']));
         }
 
-        if (! array_key_exists('includeDeleted', $filter)) {
+        if (!array_key_exists('includeDeleted', $filter)) {
             //Do not show the deleted ones
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
         }
 
         $direction = 'ASC';
-        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'])) {
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
             $direction = strtoupper($filter['direction']);
         }
 
@@ -87,14 +87,14 @@ class Selection extends EntityRepository
     }
 
     /**
-     * @return array
+     * @return iterable
      */
-    public function findTags()
+    public function findTags(): iterable
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_selection.tag');
         $queryBuilder->distinct();
-        $queryBuilder->from("Contact\Entity\Selection", 'contact_entity_selection');
+        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
         $queryBuilder->orderBy('contact_entity_selection.tag', 'ASC');
 
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
@@ -109,7 +109,7 @@ class Selection extends EntityRepository
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_selection');
-        $queryBuilder->from("Contact\Entity\Selection", 'contact_entity_selection');
+        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
         $queryBuilder->orderBy('contact_entity_selection.selection', 'ASC');
 
         $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
