@@ -39,20 +39,14 @@ abstract class ImageAbstract extends AbstractViewHelper
      */
     protected $classes = [];
     /**
-     * @var int
-     */
-    protected $height;
-    /**
      * @var bool
      */
     protected $lightBox = false;
 
     /**
-     * This function produces the link in the end.
-     *
      * @return string
      */
-    public function createImageUrl()
+    public function createImageUrl(): string
     {
         /**
          * @var Url $url
@@ -63,27 +57,20 @@ abstract class ImageAbstract extends AbstractViewHelper
          */
         $config = $this->getServiceManager()->get('Config');
 
-        $cdn = null;
-        if (isset($config['cdn']) && $config['cdn']['enable']) {
-            $cdn = $config['cdn']['address'];
-        }
-
-        $imageUrl = '<img src="%s%s" id="%s" class="%s" %s>';
+        $imageUrl = '<img src="%s" id="%s" class="%s">';
 
         $image = sprintf(
             $imageUrl,
-            $cdn,
             $url($this->router, $this->routerParams),
             $this->imageId,
-            implode(' ', $this->classes),
-            is_null($this->height) ? null : ' height="' . $this->height . 'px"'
+            implode(' ', $this->classes)
         );
 
-        if (! $this->lightBox) {
+        if (!$this->lightBox) {
             return $image;
-        } else {
-            return '<a href="' . $url($this->router, $this->routerParams) . '" data-lightbox="itea">' . $image . '</a>';
         }
+
+        return '<a href="' . $url($this->router, $this->routerParams) . '" data-lightbox="itea">' . $image . '</a>';
     }
 
     /**
@@ -91,14 +78,14 @@ abstract class ImageAbstract extends AbstractViewHelper
      *
      * @param string $key
      * @param        $value
-     * @param bool   $allowNull
+     * @param bool $allowNull
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
-        if (! $allowNull && is_null($value)) {
+        if (!$allowNull && is_null($value)) {
             throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
         }
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             $this->routerParams[$key] = $value;
         }
     }
@@ -150,10 +137,10 @@ abstract class ImageAbstract extends AbstractViewHelper
      */
     public function addClasses($classes)
     {
-        if (! is_array($classes)) {
+        if (!is_array($classes)) {
             $classes = [$classes];
         }
-        foreach ($classes as $class) {
+        foreach ((array)$classes as $class) {
             $this->classes[] = $class;
         }
 
@@ -166,22 +153,6 @@ abstract class ImageAbstract extends AbstractViewHelper
     public function setLightBox($lightBox)
     {
         $this->lightBox = $lightBox;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
-    /**
-     * @param int $height
-     */
-    public function setHeight($height)
-    {
-        $this->height = $height;
     }
 
     /**

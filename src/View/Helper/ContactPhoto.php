@@ -15,31 +15,29 @@ use Contact\Entity\Contact;
 use Contact\Entity\Photo;
 
 /**
- * Create a link to an project.
- *
- * @category    Contact
+ * Class ContactPhoto
+ * @package Contact\View\Helper
  */
 class ContactPhoto extends ImageAbstract
 {
     /**
      * @param Contact $contact
-     * @param null    $height
-     * @param bool    $responsive
-     * @param null    $classes
-     *
+     * @param null $width
+     * @param bool $responsive
+     * @param array $classes
      * @return string
      */
     public function __invoke(
         Contact $contact,
-        $height = null,
+        $width = null,
         $responsive = true,
-        $classes = null
-    ) {
-        if (is_null($contact->getPhoto())) {
+        $classes = []
+    ): string {
+        if ($contact->getPhoto()->isEmpty()) {
             return sprintf(
                 '<img src="assets/' . ITEAOFFICE_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
-                ! ($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
-                is_null($height) ?: 'height="' . $height . '"'
+                !($responsive && is_null($width)) ?: implode(' ', ['img-responsive']),
+                is_null($width) ?: 'width="' . $width . '"'
             );
         }
 
@@ -48,7 +46,7 @@ class ContactPhoto extends ImageAbstract
          */
         $photo = $contact->getPhoto()->first();
 
-        if (null !== $classes && ! is_array($classes)) {
+        if (null !== $classes && !is_array($classes)) {
             $classes = [$classes];
         } elseif (null === $classes) {
             $classes = [];
@@ -59,24 +57,15 @@ class ContactPhoto extends ImageAbstract
         }
 
         $this->setClasses($classes);
-        /*
-         * Return an empty photo when there is no, or only a empty object
-         */
-        if (! $photo || is_null($photo->getId())) {
-            return sprintf(
-                '<img src="assets/' . ITEAOFFICE_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
-                ! ($responsive && is_null($height)) ?: implode(' ', ['img-responsive']),
-                is_null($height) ?: 'height="' . $height . '"'
-            );
-        }
-
         $this->setRouter('assets/contact-photo');
 
         $this->addRouterParam('hash', $photo->getHash());
         $this->addRouterParam('ext', $photo->getContentType()->getExtension());
         $this->addRouterParam('id', $photo->getId());
 
-        $this->setHeight($height);
+        if (!is_null($width)) {
+            $this->addRouterParam('width', $width);
+        }
 
         return $this->createImageUrl();
     }

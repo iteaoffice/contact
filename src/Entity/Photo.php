@@ -14,10 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use General\Entity\ContentType;
 use Zend\Form\Annotation;
-use Zend\InputFilter\FileInput;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
-use Zend\Validator\File;
 
 /**
  * Domain.
@@ -128,67 +124,12 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * @return string
+     * @param $property
+     * @return bool
      */
-    public function __toString()
+    public function __isset($property)
     {
-        return (string)$this->phone;
-    }
-
-    /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (! $this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $fileUpload  = new FileInput('file');
-            $fileUpload->setRequired(false);
-            $fileUpload->getValidatorChain()->attachByName(
-                File\Extension::class,
-                [
-                    'extension' => ['jpg', 'jpeg', 'png'],
-                ]
-            );
-            $fileUpload->getValidatorChain()->attachByName(
-                File\MimeType::class,
-                [
-                    'image/jpeg',
-                    'image/jpg',
-                    'image/png',
-                ]
-            );
-            $fileUpload->getValidatorChain()->attachByName(
-                File\Size::class,
-                [
-                    'min' => '20kB',
-                    'max' => '4MB',
-                ]
-            );
-            $fileUpload->getValidatorChain()->attachByName(
-                File\ImageSize::class,
-                [
-                    'minWidth'  => 100,
-                    'minHeight' => 100,
-                ]
-            );
-            $inputFilter->add($fileUpload);
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
+        return isset($this->$property);
     }
 
     /**
@@ -204,20 +145,21 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Get the corresponding fileName of a file if it was cached
-     * Use a dash (-) to make the distinction between the format to avoid the need of an extra folder.
-     *
+     * @param null $width
      * @return string
      */
-    public function getCacheFileName()
+    public function getCacheFileName($width = null): string
     {
         $cacheDir = __DIR__ . '/../../../../../public' . DIRECTORY_SEPARATOR . 'assets' .
-                    DIRECTORY_SEPARATOR . ITEAOFFICE_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
+            DIRECTORY_SEPARATOR . ITEAOFFICE_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
 
-        return $cacheDir . DIRECTORY_SEPARATOR
-               . $this->getId() . '-'
-               . $this->getHash() . '.'
-               . $this->getContentType()->getExtension();
+        return $cacheDir . DIRECTORY_SEPARATOR . sprintf(
+            '%s-%s-%s.%s',
+            $this->getId(),
+            $this->getHash(),
+            $width,
+            $this->getContentType()->getExtension()
+        );
     }
 
     /**
@@ -242,7 +184,7 @@ class Photo extends EntityAbstract
      *
      * @return string
      */
-    public function getHash()
+    public function getHash(): string
     {
         return hash('sha512', $this->id . self::HASH_KEY);
     }

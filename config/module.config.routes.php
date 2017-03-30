@@ -27,7 +27,7 @@ return [
                     'contact-photo' => [
                         'type'    => 'Segment',
                         'options' => [
-                            'route'    => "/contact-photo/[:id]-[:hash].[:ext]",
+                            'route'    => "/contact-photo/[:id]-[:hash]-[:width].[:ext]",
                             'defaults' => [
                                 'controller' => Controller\ContactController::class,
                                 'action'     => 'photo',

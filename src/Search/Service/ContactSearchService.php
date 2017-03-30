@@ -71,9 +71,10 @@ class ContactSearchService extends AbstractSearchService
                 $contactDocument->photo_url = ($this->getServiceLocator()->get('ViewHelperManager')->get('url'))(
                     'assets/contact-photo',
                     [
-                        'hash' => $photo->getHash(),
-                        'ext'  => $photo->getContentType()->getExtension(),
-                        'id'   => $photo->getId(),
+                        'hash'  => $photo->getHash(),
+                        'ext'   => $photo->getContentType()->getExtension(),
+                        'id'    => $photo->getId(),
+                        'width' => 200,
                     ]
                 );
             }

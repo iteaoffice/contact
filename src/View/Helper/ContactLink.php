@@ -22,11 +22,11 @@ class ContactLink extends LinkAbstract
 {
     /**
      * @param Contact|null $contact
-     * @param string       $action
-     * @param string       $show
-     * @param null         $hash
-     * @param null         $alternativeShow
-     * @param null         $fragment
+     * @param string $action
+     * @param string $show
+     * @param null $hash
+     * @param null $alternativeShow
+     * @param null $fragment
      *
      * @return string
      */
@@ -37,7 +37,7 @@ class ContactLink extends LinkAbstract
         $hash = null,
         $alternativeShow = null,
         $fragment = null
-    ) {
+    ): string {
         $this->setContact($contact);
         $this->setAction($action);
         $this->setShow($show);
@@ -48,13 +48,13 @@ class ContactLink extends LinkAbstract
         /*
          * If the alternativeShow is not null, use it an otherwise take the hash
          */
-        if (! is_null($alternativeShow)) {
+        if (!is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($hash);
         }
 
-        if (! $this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
             return '';
         }
         $this->setShowOptions(
