@@ -1,15 +1,12 @@
 {
   "name": "iteaoffice/contact",
   "type": "library",
-  "description": "General code for contacts",
+  "license": "proprietary",
+  "description": "Code to manage contact",
   "keywords": [
     "contact"
   ],
-  "license": "proprietary",
   "homepage": "https://itea3.org",
-  "support": {
-    "email": "ticket@itea3.org"
-  },
   "repositories": [
     {
       "type": "composer",
@@ -24,30 +21,26 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": "^7",
+    "php": "^7.1",
     "zendframework/zendframework": "~3.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.7.x",
-    "doctrine/doctrine-orm-module": "~1.1",
-    "pdepend/pdepend": "@stable",
-    "phpmd/phpmd": "@stable",
-    "sebastian/phpcpd": "@stable",
-    "squizlabs/php_codesniffer": "@stable",
-    "friendsofphp/php-cs-fixer": "@stable",
-    "jakub-onderka/php-parallel-lint": "@stable",
-    "jakub-onderka/php-console-highlighter": "@stable"
+    "iteaoffice/testing": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "Contact\\": "src/",
+      "Contact\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "ContactTest\\": "tests/"
     }
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "2.0-dev",
-      "dev-develop": "2.1-dev"
+      "dev-master": "3.0.x-dev",
+      "dev-develop": "3.1-dev"
     }
   }
 }
