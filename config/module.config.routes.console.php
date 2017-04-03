@@ -5,8 +5,8 @@
  *
  * @category    Contact
  *
- * @author      Johan van der Heide <info@jield.nl>
- * @copyright   Copyright (c) 2004-2015 Jield (http://jield.nl)
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 use Contact\Controller\ConsoleController;
 
@@ -19,20 +19,20 @@ return [
                         'route'    => 'partner-search update',
                         'defaults' => [
                             'controller' => ConsoleController::class,
-                            'action'     => 'partner-search-update'
-                        ]
-                    ]
+                            'action'     => 'partner-search-update',
+                        ],
+                    ],
                 ],
                 'cli-partner-search-reset'  => [
                     'options' => [
                         'route'    => 'partner-search reset',
                         'defaults' => [
                             'controller' => ConsoleController::class,
-                            'action'     => 'partner-search-reset'
-                        ]
-                    ]
+                            'action'     => 'partner-search-reset',
+                        ],
+                    ],
                 ],
-            ]
-        ]
+            ],
+        ],
     ],
 ];

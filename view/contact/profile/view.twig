@@ -1,17 +1,18 @@
-{% set contactService = contactServiceProxy(zfcUserIdentity()) %}
-
 {% do headTitle().append(translate("txt-profile")) %}
-{% do headTitle().append(contactService.parseFullname()) %}
+{% do headTitle().append(contact.parseFullName()) %}
 
 <h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
 
 <ul id="tab" class="nav nav-tabs">
     <li class="active"><a href="#profile" data-toggle="tab">{{ translate("txt-profile")|capitalize }}</a></li>
-    <li><a href="#organisation" data-toggle="tab">{{ translate("txt-organisation")|capitalize }}</a></li>
+    <li><a href="#organisation"
+           data-toggle="tab">{{ translate("txt-organisation")|capitalize }} {% if not contact.contactOrganisation %}<i
+                    class="error fa fa-exclamation-triangle" aria-hidden="true"></i>
+            {% endif %}</a></li>
     <li><a href="#event" data-toggle="tab">{{ translate("txt-events")|capitalize }}</a></li>
     <li><a href="#updates" data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
-    {% if isAllowed('zfcadmin', 'index') %}
-        <li>{{ contactLink(contactService.contact,'signature', 'text') }}</li>
+    {% if isAllowed('route/zfcadmin/index') %}
+        <li>{{ contactLink(contact,'signature', 'text') }}</li>
     {% endif %}
 </ul>
 
@@ -20,67 +21,75 @@
         <h2>{{ translate("txt-personal-profile") }}</h2>
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
-            <dd>{{ contactService.parseFullName() }} ({{ contactService.contact.id }})</dd>
+            <dd>{{ contact.parseFullName() }} ({{ contact.id }})</dd>
             <dt>{{ translate("txt-email") }}</dt>
-            <dd>{{ contactService.contact.email }}</dd>
+            <dd>{{ contact.email }}</dd>
             <dt>{{ translate("txt-direct-phone") }}</dt>
-            <dd>{{ contactService.getDirectPhone() }}</dd>
+            <dd>{{ contactService.getDirectPhone(contact) }}</dd>
             <dt>{{ translate("txt-mobile-phone") }}</dt>
-            <dd>{{ contactService.getMobilePhone() }}</dd>
-            {% if  contactService.getMailAddress() %}
+            <dd>{{ contactService.getMobilePhone(contact) }}</dd>
+            {% if  contactService.getMailAddress(contact) %}
                 <dt>{{ translate("txt-postal-address") }}</dt>
-                <dd>{{ contactService.getMailAddress().address.address }}</dd>
-                <dd>{{ contactService.getMailAddress().address.zipCode }} {{ contactService.getMailAddress().address.city }}</dd>
-                <dd>{{ contactService.getMailAddress().address.country|upper }}</dd>
+                <dd>{{ contactService.getMailAddress(contact).address }}</dd>
+                <dd>{{ contactService.getMailAddress(contact).zipCode }} {{ contactService.getMailAddress(contact).city }}</dd>
+                <dd>{{ contactService.getMailAddress(contact).country|upper }}</dd>
             {% endif %}
             <dt>{{ translate("txt-profile-visibility") }}</dt>
-            {% if contactService.contact.profile.visible is not null %}
-                <dd>{{ translate(contactService.contact.profile.visible(true)) }}</dd>
+            {% if contact.profile.visible is not null %}
+                <dd>{{ translate(contact.profile.visible(true)) }}</dd>
             {% else %}
                 <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
             {% endif %}
             <dt>{{ translate("txt-expertise") }}</dt>
-            <dd>{{ contactService.contact.profile.description }}</dd>
+            <dd>{{ contact.profile.description }}</dd>
         </dl>
 
-        {{ contactLink(contactService.contact,'edit-profile', 'button') }}
-        {{ contactLink(contactService.contact,'change-password', 'button') }}
+        {{ contactLink(contact,'edit-profile', 'button') }}
+        {{ contactLink(contact,'change-password', 'button') }}
+
+
 
         {% if hasNda %}
-            {{ ndaLink(null,'upload', 'button') }}
+            {% if not isAllowed('route/community/program/nda/upload','upload') %}
+                <button class="btn btn-primary"
+                        disabled><i
+                            class="fa fa-upload"></i> {{ translate("txt-upload-of-nda-not-possible-without-organisation") }}
+                </button>
+            {% else %}
+                {{ ndaLink(null,'upload', 'button') }}
+            {% endif %}
+
         {% endif %}
     </div>
 
 
     <div class="tab-pane fade in" id="organisation">
-        {% set organisationService = contactService.findOrganisationService() %}
-
         <h2>{{ translate("txt-organisation") }}</h2>
-        {% if organisationService %}
+        {% if contact.contactOrganisation %}
             <dl class="dl-horizontal">
                 <dt>{{ translate("txt-organisation") }}</dt>
-                <dd>{{ organisationService.parseOrganisationWithBranch(contactService.contact.contactOrganisation.branch) }}</dd>
+                <dd>{{ contactService.parseOrganisation(contact) }}</dd>
                 <dt>{{ translate("txt-organisation-type") }}</dt>
-                <dd>{{ organisationService.organisation.type.description }}</dd>
+                <dd>{{ contact.contactOrganisation.organisation.type.description }}</dd>
                 <dt>{{ translate("txt-country") }}</dt>
-                <dd>{{ organisationService.organisation.country }}</dd>
-                {% if contactService.contact.department %}
+                <dd>{{ contact.contactOrganisation.organisation.country }}</dd>
+                {% if contact.department %}
                     <dt>{{ translate("txt-department") }}</dt>
-                    <dd>{{ contactService.contact.department }}</dd>
+                    <dd>{{ contact.department }}</dd>
                 {% endif %}
-                {% if contactService.contact.position %}
+                {% if contact.position %}
                     <dt>{{ translate("txt-position") }}</dt>
-                    <dd>{{ contactService.contact.position }}</dd>
+                    <dd>{{ contact.position }}</dd>
                 {% endif %}
-                {% if organisationService.organisation.description|length > 0 %}
+                {% if contact.contactOrganisation.organisation.description|length > 0 %}
                     <dt>{{ translate("txt-general-description") }}</dt>
-                    <dd>{{ organisationService.organisation.description|raw }}</dd>
+                    <dd>{{ contact.contactOrganisation.organisation.description|raw }}</dd>
                 {% endif %}
             </dl>
         {% else %}
-            {{ ztbalert().info(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
+            {{ ztbalert().danger(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
         {% endif %}
-        {{ contactLink(contactService.contact,'edit-profile', 'button') }}
+        {{ contactLink(contact,'edit-profile', 'button') }}
     </div>
 
     <div class="tab-pane fade in" id="event">
@@ -96,7 +105,7 @@
         <p>{{ translate("txt-updates-explanation") }}</p>
 
         <div ng-app="community">
-            {% for optIn in contactService.findAll('optIn') %}
+            {% for optIn in optIns %}
                 {% include 'contact/partial/optin-button' with {'optIn': optIn} %}
                 <br>
             {% endfor %}

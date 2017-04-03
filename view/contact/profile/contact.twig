@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-profile")) %}
-{% do headTitle().append(contactService.parseFullname()) %}
+{% do headTitle().append(contact.parseFullname()) %}
 
-<h1 class="home">{{ translate("%s")|format(contactService.parseFullname()) }}</h1>
+<h1 class="home">{{ translate("%s")|format(contact.parseFullname()) }}</h1>
 
 <div class="row">
 
@@ -11,22 +11,22 @@
         <h2>{{ translate("txt-personal-profile") }}</h2>
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
-            <dd>{{ contactService.parseFullName() }}
+            <dd>{{ contact.parseFullName() }}
             <dt>{{ translate("txt-organisation") }}</dt>
-            <dd>{{ contactService.parseOrganisation() }}</dd>
+            <dd>{{ contactService.parseOrganisation(contact) }}</dd>
             <dt>{{ translate("txt-organisation-type") }}</dt>
-            <dd>{{ contactService.findOrganisationService.organisation.type }}</dd>
+            <dd>{{ contact.contactOrganisation.organisation.type }}</dd>
             <dt>{{ translate("txt-country") }}</dt>
-            <dd>{{ contactService.parseCountry() }}</dd>
+            <dd>{{ contactService.parseCountry(contact) }}</dd>
             <dt>{{ translate("txt-expertise") }}</dt>
-            <dd>{{ contactService.contact.profile.description|nl2br|raw }}</dd>
+            <dd>{{ contact.profile.description|nl2br|raw }}</dd>
         </dl>
     </div>
 
     <div class="col-md-2">
-        {{ contactPhoto(contactService.contact) }}
+        {{ contactPhoto(contact) }}
     </div>
 </div>
 
-{{ ideaInviteLink(null, 'invite','button', null, contactService.contact) }}
-{{ projectInviteLink(null, 'invite','button', null, contactService.contact) }}
+{{ ideaInviteLink(null, 'invite','button', null, contact) }}
+{{ projectInviteLink(null, 'invite','button', null, contact) }}

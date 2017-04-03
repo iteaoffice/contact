@@ -4,7 +4,8 @@
 {{ form().openTag(form)|raw }}
 
 
-{% set facebook = form.get('facebook') %}
+{% set facebook = form.get('contact_entity_facebook') %}
+
 {{ ztbformelement(facebook.get('facebook')) }}
 {{ ztbformelement(facebook.get('public')) }}
 {{ ztbformelement(facebook.get('canSendMessage')) }}

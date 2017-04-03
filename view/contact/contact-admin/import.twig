@@ -50,66 +50,100 @@
     {{ ztbalert().info(translate("txt-%s-contacts-imported")|format(handleImport.getImportedContacts()|length))|raw }}
 {% endif %}
 
-<form method="post" action="">
+
     {% if  handleImport.getContacts()|length > 0 %}
-    <table class="table table-hover table-striped">
-        <thead>
-        <tr>
-            <th><input type="checkbox" id="check_all"></th>
-            <th class="col-md-1">{{ translate("txt-title") }}</th>
-            <th class="col-md-2">{{ translate("txt-firstname") }}</th>
-            <th class="col-md-1">{{ translate("txt-middlename") }}</th>
-            <th class="col-md-2">{{ translate("txt-lastname") }}</th>
-            <th class="col-md-1">{{ translate("txt-gender") }}</th>
-            <th class="col-md-1">{{ translate("txt-email") }}</th>
-            <th class="col-md-2">{{ translate("txt-phone") }}</th>
-            <th class="col-md-2">{{ translate("txt-position") }}</th>
-        </tr>
-        </thead>
-        <tfoot>
-        </tfoot>
-        <tbody>
-        {% for contact in handleImport.getContacts() %}
+        <table class="table table-hover table-striped table-condensed">
+            <thead>
             <tr>
-                <td><input type="checkbox" name="key[]" value="{{ contact.key }}"></td>
-                <td>{{ contact.title }}</td>
-                <td>{{ contact.firstname }} {% if contact.id %}{{ contactLink(contact,'view-admin', 'icon') }}{% endif %}</td>
-                <td>{{ contact.middlename }}</td>
-                <td>{{ contact.lastname }}</td>
-                <td>{{ contact.gender }}</td>
-                <td>{{ contact.email }}</td>
-                <td>{% for phone in contact.phone %}{{ phone.phone }}{% endfor %}</td>
-                <td>{{ contact.position }}</td>
-            </tr>
-            <tr>
-                <th>{{ translate("txt-organisation") }}</th>
-                <td colspan="3">{{ contact.contactOrganisation.organisation }}</td>
+                <th></th>
+                <th class="col-md-1">{{ translate("txt-title") }}</th>
+                <th class="col-md-2">{{ translate("txt-firstname") }}</th>
+                <th class="col-md-1">{{ translate("txt-middlename") }}</th>
+                <th class="col-md-2">{{ translate("txt-lastname") }}</th>
+                <th class="col-md-1">{{ translate("txt-gender") }}</th>
+                <th class="col-md-1">{{ translate("txt-email") }}</th>
+                <th class="col-md-2">{{ translate("txt-phone") }}</th>
+                <th class="col-md-2">{{ translate("txt-organisation") }}</th>
                 <th>{{ translate("txt-country") }}</th>
-                <td>{{ contact.contactOrganisation.organisation.country }}</td>
+                <th class="col-md-2">{{ translate("txt-position") }}</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</form>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="11">
+                    <button class="btn btn-xs btn-info" id="check_all"
+                            onclick="return false;">{{ translate("txt-check-all") }}</button>
+                    <button class="btn btn-xs btn-info" id="check_none"
+                            onclick="return false;">{{ translate("txt-check-none") }}</button>
+                    <button class="btn btn-xs btn-info" id="check_inverse"
+                            onclick="return false;">{{ translate("txt-check-inverse") }}</button>
+                    <button class="btn btn-xs btn-info" id="check_known"
+                            onclick="return false;">{{ translate("txt-check-known") }}</button>
+                    <button class="btn btn-xs btn-info" id="check_unknown"
+                            onclick="return false;">{{ translate("txt-check-unknown") }}</button>
+                </td>
+            </tr>
+            </tfoot>
+            <tbody>
+            {% for contact in handleImport.getContacts() %}
+                <tr>
+                    <td><input type="checkbox" name="key[]"
+                               class="check_import  {% if contact.id %}known_contact{% endif %}"
+                               value="{{ contact.key }}"></td>
+                    <td>{{ contact.title }}</td>
+                    <td>{{ contact.firstname }} {% if contact.id %}{{ contactLink(contact,'view-admin', 'icon') }}{% endif %}</td>
+                    <td>{{ contact.middlename }}</td>
+                    <td>{{ contact.lastname }}</td>
+                    <td>{{ contact.gender }}</td>
+                    <td>{{ contact.email }}</td>
+                    <td>{% for phone in contact.phone %}{{ phone.phone }}{% endfor %}</td>
+                    <td>{{ contact.contactOrganisation.organisation }}</td>
+                    <td>{{ contact.contactOrganisation.organisation.country }}</td>
+                    <td>{{ contact.position }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-    <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-            {{ ztbformelement(form.get('import')) }}
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                {{ ztbformelement(form.get('import')) }}
+            </div>
         </div>
-    </div>
 
 
-{{ form().closeTag()|raw }}
+        {{ form().closeTag()|raw }}
 
-{% endif %}
+    {% endif %}
 
 <script type="text/javascript">
-    $('#check_all').change(function () {
-        var checkboxes = $(this).closest('form').find(':checkbox');
-        if ($(this).is(':checked')) {
-            checkboxes.prop('checked', true);
-        } else {
-            checkboxes.prop('checked', false);
-        }
+    $("#check_all").click(function () {
+        $('.check_import').prop('checked', true);
     });
+
+    $("#check_none").click(function () {
+        $('.check_import').prop('checked', false);
+    });
+
+    $("#check_known").click(function () {
+        $('.known_contact').prop('checked', true);
+        $('.check_import:not(.known_contact)').prop('checked', false);
+    });
+
+    $("#check_unknown").click(function () {
+        $('.known_contact').prop('checked', false);
+        $('.check_import:not(.known_contact)').prop('checked', true);
+    });
+
+    $("#check_inverse").click(function () {
+        $('input:checkbox:not(:disabled)').each(function () {
+            if (!$(this).prop('checked')) {
+                $(this).prop('checked', true);
+            } else {
+                $(this).prop('checked', false);
+            }
+        });
+    });
+
+
 </script>

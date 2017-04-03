@@ -1,7 +1,7 @@
 <h2>{{ translate("txt-projects") }}</h2>
 
 {% if projects|length > 0 %}
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped table-condensed">
         <thead>
         <tr>
             <th>{{ translate("txt-project") }}</th>
@@ -12,9 +12,9 @@
         <tbody>
         {% for projectId, roles in projects %}
             <tr>
-                {% set projectService = projectService.setProjectId(projectId) %}
-                <td>{{ projectLink(projectService,'view-admin','name') }}</td>
-                <td>{{ projectService.parseStatus() }}</td>
+                {% set project = projectService.findProjectById(projectId) %}
+                <td>{{ projectLink(project,'view-admin','name') }}</td>
+                <td>{{ projectService.parseStatus(project) }}</td>
                 <td>{% for role in roles %}{{ role }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</td>
             </tr>
         {% endfor %}

@@ -1,3 +1,1 @@
-tests/ContactTest/data
-ocular.phar
-clover.xml
+.php_cs.cache

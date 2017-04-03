@@ -1,7 +1,7 @@
 <h2>{{ translate("txt-mailing") }}</h2>
 
 <h3>{{ translate("txt-opt-in") }}</h3>
-<table class="table table-hover table-striped">
+<table class="table table-hover table-striped table-condensed">
     <thead>
     <tr>
         <th>{{ translate("txt-opt-in") }}</th>
@@ -16,16 +16,17 @@
             <td>{{ optIn.optIn }}</td>
             <td>{{ optIn.description }}</td>
             <td>{{ translate(optIn.autoSubscribe(true)) }}</td>
-            <td>{% for contactOptIn in contactService.contact.optIn if optIn.id == contactOptIn.id %}YES{% endfor %}</td>
+            <td>{% for contactOptIn in contact.optIn if optIn.id == contactOptIn.id %}YES{% endfor %}</td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
 
 <h3>{{ translate("txt-mailings") }}</h3>
-<table class="table table-hover table-striped">
+<table class="table table-hover table-striped table-condensed">
     <thead>
     <tr>
+        <th>{{ translate("txt-number") }}</th>
         <th>{{ translate("txt-id") }}</th>
         <th>{{ translate("txt-mailing") }}</th>
         <th>{{ translate("txt-subject") }}</th>
@@ -34,12 +35,22 @@
     </tr>
     </thead>
     <tbody>
-    {% for mailingContact in contactService.contact.mailingContact %}
-        <tr>
-            <td>{{ mailingContact.mailing.id }}</td>
-            <td>{{ mailingLink(mailingContact.mailing,'view','name') }}</td>
-            <td>{{ mailingContact.mailing.mailSubject }}</td>
-            <td>{{ contactLink(mailingContact.mailing.contact,'view-admin','name') }}</td>
+    {% for mailingContact in contact.mailingContact %}
+        <tr {% if mailingContact.mailing.dateDeleted %}class="danger"{% endif %}>
+            <td>{{ loop.index }}</td>
+            <td>{{ mailingContact.mailing.id }}
+                {% if mailingContact.mailing.dateDeleted %}
+                    <i class="fa fa-trash"
+                       title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(mailingContact.mailing.dateDeleted|date("d-m-Y")) }}"></i>
+                {% endif %}</td>
+            <td>
+                {{ mailingLink(mailingContact.mailing,'view','name') }}
+                {{ mailingContactLink(mailingContact,'view','icon') }}
+            </td>
+            <td>
+                <span title="{{ mailingContact.mailing.mailSubject }}">{{ mailingContact.mailing.mailSubject|truncate(25, false, "...") }}</span>
+            </td>
+            <td>{{ contactLink(mailingContact.mailing.contact,'view-admin','initials') }}</td>
             <td>{{ mailingContact.dateSent|string_date }}</td>
         </tr>
     {% endfor %}

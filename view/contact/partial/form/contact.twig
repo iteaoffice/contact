@@ -3,11 +3,10 @@
 ) %}
 
 {% do form.prepare() %}
-{% do form.setAttribute('class','form-horizontal') %}
 
 {{ form().openTag(form)|raw }}
 
-{% set contact = form.get('contact') %}
+{% set contact = form.get('contact_entity_contact') %}
 
 {{ formelement(contact.get('id')) }}
 

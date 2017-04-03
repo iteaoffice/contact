@@ -17,7 +17,7 @@
 
     <div class="col-md-9">
 
-        <h1>{{ translate("txt-contact-list") }}</h1>
+        <h1>{{ translate("txt-contact-list") }} {{ contactLink(null,'new', 'button') }} {{ contactLink(null,'import', 'button') }}</h1>
 
         <div class="row">
             <div class="col-md-6">
@@ -31,11 +31,11 @@
         </div>
 
         {% if paginator.pageRange > 0 %}
-            <table class="table table-striped">
+            <table class="table table-hover table-striped table-condensed">
                 <thead>
                 <tr>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'email', 'text': translate('txt-email')} %}</th>
+                    <th>{{ translate('txt-email') }}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
                     <th>{{ translate("txt-projects") }}</th>
@@ -45,16 +45,12 @@
                 </tfoot>
                 <tbody>
                 {% for contact in paginator.getCurrentItems() %}
-                    {% set contactService = contactServiceProxy(contact) %}
-                    {% if contact.contactOrganisation.organisation %}
-                        {% set organisationService = organisationServiceProxy(contact.contactOrganisation.organisation) %}
-                    {% endif %}
-                    <tr>
+                    <tr {% if contact.dateEnd %}class="danger"{% endif %}>
                         <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
-                        <td>{{ contact.email }} <a href="maito:{{ contact.email }}"><i class="fa fa-envelope-o"></i> </a></td>
-                        <td>{% if organisationService and not organisationService.isEmpty() %}{{ organisationLink(organisationService,'view-admin','name') }}{% endif %}
-                        </td>
-                        <td>{{ contact.contactOrganisation.organisation.country }}</td>
+                        <td><a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
+                                        class="fa fa-envelope-o"></i> </a></td>
+                        <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
+                        <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
                         <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
                     </tr>
                 {% endfor %}
@@ -62,6 +58,9 @@
             </table>
 
             {% include 'contact/partial/pagination-control' %}
+            <a href="{{ url('zfcadmin/contact-admin/export',{'encodedFilter': encodedFilter}) }}"
+               class="btn btn-primary btn-sm"><i
+                        class="fa fa-file-excel-o"></i> {{ translate("txt-export-csv") }}</a>
         {% else %}
             {{ ztbalert().info(translate("txt-no-contact-found"))|raw }}
         {% endif %}
@@ -69,9 +68,15 @@
     <div class="col-md-3">
         <div class="well well-sm">
             <fieldset>
+
+                {{ ztbformelement(filter.get('options')) }}
+                {{ ztbformelement(filter.get('gender')) }}
+                {{ ztbformelement(filter.get('country')) }}
+
                 <div class="form-group">
                     {{ ztbformelement(form.get('submit')) }}
                     {{ ztbformelement(form.get('clear')) }}
+
                 </div>
             </fieldset>
         </div>
@@ -80,4 +85,4 @@
 
 {{ form().closeTag()|raw }}
 
-{{ contactLink(null,'new', 'button') }}
+

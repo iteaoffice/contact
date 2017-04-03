@@ -1,7 +1,7 @@
-<h1>{{ translate('txt-overview-permissions-of-%s')|format(contactService.parseFullname()) }}</h1>
+<h1>{{ translate('txt-overview-permissions-of-%s')|format(contact.parseFullname()) }}</h1>
 
 
-{#{% for permit in contactService.contact.permitContact %}#}
+{#{% for permit in contact.permitContact %}#}
 
     {#{{ permit.keyId }}#}
 

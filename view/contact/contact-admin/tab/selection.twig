@@ -1,8 +1,9 @@
 <h2>{{ translate("txt-selections") }}</h2>
 
-<table class="table table-hover table-striped">
+<table class="table table-hover table-striped table-condensed">
     <thead>
     <tr>
+        <th>{{ translate("txt-no") }}</th>
         <th>{{ translate("txt-id") }}</th>
         <th>{{ translate("txt-selection") }}</th>
         <th>{{ translate("txt-type") }}</th>
@@ -10,7 +11,11 @@
     </thead>
     <tbody>
     {% for selection in selections %}
-        <tr>
+        <tr {% if selection.dateDeleted %}class="danger"{% endif %}>
+            <td>{{ loop.index }} {% if selection.dateDeleted %}
+                    <i class="fa fa-trash"
+                       title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")) }}"></i>
+                {% endif %}</td>
             <td>{{ selection.id }}</td>
             <td>{{ selectionLink(selection,'view','name') }}</td>
             <td>{% if selection.sql %}{{ translate('txt-sql') }}{% else %}{{ translate("txt-fixed") }}{% endif %}</td>

@@ -16,7 +16,7 @@
     <label class="col-sm-3 control-label">{{ translate("txt-email-address") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ contactService.contact.email }}</p>
+        <p class="form-control-static">{{ contact.email }}</p>
     </div>
 </div>
 
@@ -48,25 +48,29 @@
         {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
 
 
-        <div class="form-group" id="branch">
+        <div class="form-group {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}hidden{% endif %}"
+             id="branch">
             <label class="col-sm-3 control-label">{{ translate("txt-branch-form-label") }}</label>
 
             <div class="col-sm-9">
                 <select class="form-control" name="contact_organisation[branch]">
                     {% for key, branch in branches %}
-                        <option value="{{ key }}">{{ branch }}</option>
+                        <option value="{{ key }}"
+                                {% if contact.contactOrganisation.branch == key %}selected="selected"{% endif %}>{{ branch }}</option>
                     {% endfor %}
                 </select>
 
                 <p class="help-block">{{ translate("txt-form-branch-explanation") }}</p>
             </div>
         </div>
+
     </div>
 
 
     <div id="organisation_country"
-         {% if hasOrganisations %}class="hidden"{% endif %}>
+         {% if hasOrganisations and form.get('contact_organisation').get('organisation_id').value() != 0 %}class="hidden"{% endif %}>
         {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
+        {{ ztbformelement(form.get('contact_organisation').get('type')) }}
         {{ ztbformelement(form.get('contact_organisation').get('country')) }}
     </div>
 
@@ -86,7 +90,7 @@
     <label class="col-sm-3 control-label">{{ translate("txt-current-photo") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ contactPhoto(contactService.contact) }}</p>
+        <p class="form-control-static">{{ contactPhoto(contact) }}</p>
     </div>
 </div>
 
@@ -120,10 +124,7 @@
                          * Store the branchValue because the options are rebuilt every time
                          * Use the branch val on form change, and take the current branch in any other case
                          */
-                        var branchValue = '{{ contactService.contact.contactOrganisation.branch|raw }}';
-                        if (branchSelect.val() != null) {
-                            branchValue = branchSelect.val()
-                        }
+                        var branchValue = '{{ contact.contactOrganisation.branch|raw }}';
 
                         branchSelect.find('option').remove();
 

@@ -81,8 +81,8 @@
                 <tr>
                     <td valign="top" width="400">
                         <strong>{{ contactService.parseFullName() }}</strong><br>
-                        {{ contactService.contact.position }}<br>
-                        {% for note in contactService.contact.note if note.source == 'signature' %}
+                        {{ contact.position }}<br>
+                        {% for note in contact.note if note.source == 'signature' %}
                             <em>{{ note.note }}</em>
                         {% endfor %}
                     </td>
@@ -113,7 +113,7 @@
 
                     <td valign="top" width="290">
                         <a style="color: #000; text-decoration: none;"
-                           href="mailto:{{ contactService.contact.email }}">{{ contactService.contact.email }}</a><br>
+                           href="mailto:{{ contact.email }}">{{ contact.email }}</a><br>
                         +31 880 036 136<br>
                         <a style="color: #000; text-decoration: none;" href="https://itea3.org">itea3.org</a><br>
                         <a style="color: #000; text-decoration: none;" href="https://itea3.org/community">itea3.org/community</a>

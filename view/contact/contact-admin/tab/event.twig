@@ -1,7 +1,7 @@
 <h2>{{ translate("txt-event") }}</h2>
 
-{% if contactService.contact.registration.count() > 0 %}
-    <table class="table table-hover table-striped">
+{% if contact.registration.count() > 0 %}
+    <table class="table table-hover table-striped table-condensed">
         <thead>
         <tr>
             <th>{{ translate("txt-event") }}</th>
@@ -12,18 +12,15 @@
         </tr>
         </thead>
         <tbody>
-        {% for registration in contactService.contact.registration %}
-            {# Try to see if we can find a registration of the event #}
-            {% set registrationService = registrationServiceProxy(registration) %}
-            <tr {% if registrationService.isCancelled() %}class="warning"{% endif %} >
+        {% for registration in contact.registration %}
+            <tr {% if registrationService.isCancelled(registration) %}class="warning"{% endif %} >
                 <td>{{ meetingLink(registration.meeting,'view', 'name') }}</td>
                 <td>{{ registrationLink(registration,'view', 'text') }}</td>
                 <td>{{ registration.meeting.dateFrom|from_to_date(registration.meeting.dateUntil, false) }}</td>
                 <td>{{ registration.meeting.location }}</td>
                 <td>
                     {% for call in registration.meeting.call %}
-                        {% set callService = callServiceProxy(call) %}
-                        {% set nda = callService.findNdaByCallAndContact(call, contactService.contact) %}
+                        {% set nda = callService.findNdaByCallAndContact(call, contact) %}
                         {% if nda %}
                             {% if nda.dateApproved %}
                                 {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}

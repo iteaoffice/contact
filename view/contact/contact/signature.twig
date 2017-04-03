@@ -1,9 +1,7 @@
-{% set contactService = contactServiceProxy(zfcUserIdentity()) %}
-
 {% do headTitle().append(translate("txt-profile")) %}
-{% do headTitle().append(contactService.parseFullname()) %}
+{% do headTitle().append(contact.parseFullName()) %}
 
-<h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
+<h1 class="home">{{ translate("txt-hello-%s")|format(contact.parseFullName()) }}</h1>
 
 <ul id="tab" class="nav nav-tabs">
     <li><a href="{{ url('community/contact/profile/view') }}#profile">{{ translate("txt-profile")|capitalize }}</a></li>
@@ -12,7 +10,7 @@
     </li>
     <li><a href="{{ url('community/contact/profile/view') }}#event">{{ translate("txt-events")|capitalize }}</a></li>
     <li><a href="{{ url('community/contact/profile/view') }}#updates">{{ translate("txt-updates")|capitalize }}</a></li>
-    {% if isAllowed('zfcadmin', 'index') %}
+    {% if isAllowed('route/zfcadmin/index') %}
         <li class="active"><a
                     href="{{ url('community/contact/signature') }}">{{ translate("txt-signature")|capitalize }}</a>
         </li>
@@ -20,15 +18,14 @@
 </ul>
 
 
-
 <div id="tabContent" class="tab-content">
 
     <div class="tab-pane fade in active" id="profile">
         <h1 class="home">{{ translate("txt-signature") }}</h1>
         <p>
-            Copy the HTML content of the signature below and save this at the following location (Windows 8.1)
+            Copy the HTML content of the signature below and save this at the following location (Windows 8/10)<br>
             <code>C:\Users\%username%\AppData\Roaming\Microsoft\Signatures\signature.htm</code>
-
+            <br>
             In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and
             replies
         </p>
@@ -38,12 +35,7 @@
 
         <form role="form">
             <div class="form-group">
-                {% if constant('DEBRANOVA_HOST') == 'itea' %}
                 <textarea rows="30">{% include 'contact/partial/signature/itea' %}</textarea>
-                {% endif %}
-                {% if constant('DEBRANOVA_HOST') == 'artemisia' %}
-                    <textarea rows="30">{% include 'contact/partial/signature/artemisia' %}</textarea>
-                {% endif %}
             </div>
         </form>
 

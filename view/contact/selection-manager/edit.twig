@@ -1,8 +1,6 @@
 {% do headTitle().append(translate("txt-admin")) %}
-{% do headTitle().append(translate("txt-edit-selection-%s")|format(selectionServcie.selection)) %}
+{% do headTitle().append(translate("txt-edit-selection-%s")|format(selection)) %}
 
-<h1>{{ translate("txt-edit-selection-%s")|format(selectionServcie.selection) }} </h1>
+<h1>{{ translate("txt-edit-selection-%s")|format(selection) }} </h1>
 
 {% include 'contact/partial/form/selection' %}
-
-{{ selectionLink( null ,'list','button') }}

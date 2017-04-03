@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c] 2004-2015 ITEA Office (https://itea3.org]
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
 use Contact\Controller;
@@ -13,11 +13,11 @@ use Contact\Controller;
 return [
     'router' => [
         'routes' => [
-            'assets' => [
+            'assets'    => [
                 'type'          => 'Literal',
                 'priority'      => 1000,
                 'options'       => [
-                    'route'    => '/assets/' . (defined("DEBRANOVA_HOST") ? DEBRANOVA_HOST : 'test'),
+                    'route'    => '/assets/' . (defined("ITEAOFFICE_HOST") ? ITEAOFFICE_HOST : 'test'),
                     'defaults' => [
                         'controller' => Controller\ContactController::class,
                     ],
@@ -27,7 +27,7 @@ return [
                     'contact-photo' => [
                         'type'    => 'Segment',
                         'options' => [
-                            'route'    => "/contact-photo/[:id]-[:hash].[:ext]",
+                            'route'    => "/contact-photo/[:id]-[:hash]-[:width].[:ext]",
                             'defaults' => [
                                 'controller' => Controller\ContactController::class,
                                 'action'     => 'photo',
@@ -36,7 +36,6 @@ return [
                     ],
                 ],
             ],
-
             'community' => [
                 'child_routes' => [
                     'contact' => [
@@ -55,14 +54,10 @@ return [
                             'search'              => [
                                 'type'    => 'Segment',
                                 'options' => [
-                                    'route'    => '/search.html',
+                                    'route'    => '/search[/page-:page].html',
                                     'defaults' => [
                                         'action' => 'search',
                                     ],
-                                    'query'    => [
-                                        'search' => null,
-                                        'page'   => null,
-                                    ]
                                 ],
                             ],
                             'signature'           => [

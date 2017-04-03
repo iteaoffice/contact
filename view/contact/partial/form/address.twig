@@ -11,7 +11,7 @@
     </div>
 </div>
 
-{% set address = form.get('address') %}
+{% set address = form.get('contact_entity_address') %}
 {{ ztbformelement(address.get('type')) }}
 {{ ztbformelement(address.get('address')) }}
 {{ ztbformelement(address.get('zipCode')) }}

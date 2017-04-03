@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2015 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 return [
     'navigation' => [
@@ -21,21 +21,30 @@ return [
                         'label' => _("txt-account-information"),
                         'route' => 'community/contact/profile/view',
                         'pages' => [
-                            'edit-profile'    => [
+                            'edit-profile'                => [
                                 'label' => _("txt-profile-edit"),
                                 'route' => 'community/contact/profile/edit',
                             ],
-                            'view-signature'  => [
+                            'view-signature'              => [
                                 'label' => _("txt-view-signature"),
                                 'route' => 'community/contact/signature',
                             ],
-                            'change-password' => [
+                            'change-password'             => [
                                 'label' => _("txt-change-password"),
                                 'route' => 'community/contact/change-password',
                             ],
-                        ]
+                            'community/mailing/subscribe' => [
+                                'label' => _("txt-subscribe"),
+                                'route' => 'community/mailing/subscribe',
+                            ],
+                            'manage-subscriptions'        => [
+                                'label' => _("txt-manage-subscriptions"),
+                                'route' => 'community/mailing/manage-subscriptions',
+                            ],
+
+                        ],
                     ],
-                ]
+                ],
 
             ],
             'idea'    => [
@@ -50,21 +59,23 @@ return [
                                 'route' => 'community/contact/profile/contact',
 
                             ],
-                        ]
+                        ],
 
-                    ]
+                    ],
                 ],
             ],
         ],
         'admin'     => [
             // And finally, here is where we define our page hierarchy
-            'contact' => [
-                'label'    => _("txt-contact-admin"),
+            'contact'    => [
+                'label'    => _("txt-nav-contact"),
                 'route'    => 'zfcadmin/contact-admin/list',
+                'order'    => 10,
                 'resource' => 'zfcadmin',
                 'pages'    => [
                     'contacts'   => [
-                        'label' => _("txt-contacts"),
+                        'label' => _("txt-nav-contact-list"),
+                        'order' => 10,
                         'route' => 'zfcadmin/contact-admin/list',
                         'pages' => [
                             'view-contact' => [
@@ -73,11 +84,11 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Contact::class
+                                        'id' => \Contact\Entity\Contact::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\ContactLabel::class
-                                    ]
+                                        Contact\Navigation\Invokable\ContactLabel::class,
+                                    ],
                                 ],
                                 'pages'   => [
                                     'edit-contact'        => [
@@ -86,7 +97,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                         ],
                                     ],
@@ -96,7 +107,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                         ],
                                     ],
@@ -106,30 +117,87 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class
+                                                'id' => \Contact\Entity\Contact::class,
                                             ],
                                         ],
                                     ],
-                                ]
+                                    'edit-address'        => [
+                                        'label'   => _('txt-edit-address'),
+                                        'route'   => 'zfcadmin/address-manager/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Address::class,
+                                            ],
+                                            'invokables' => [
+                                                Contact\Navigation\Invokable\AddressLabel::class,
+                                            ],
+                                        ],
+                                    ],
+                                    'new-address'         => [
+                                        'label'   => _('txt-new-address'),
+                                        'route'   => 'zfcadmin/address-manager/new',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'contact',
+                                            ],
+                                        ],
+                                    ],
+                                    'edit-phone'          => [
+                                        'label'   => _('txt-edit-phone'),
+                                        'route'   => 'zfcadmin/phone-manager/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Phone::class,
+                                            ],
+                                            'invokables' => [
+                                                Contact\Navigation\Invokable\PhoneLabel::class,
+                                            ],
+                                        ],
+                                    ],
+                                    'new-phone'           => [
+                                        'label'   => _('txt-new-phone'),
+                                        'route'   => 'zfcadmin/phone-manager/new',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'contact',
+                                            ],
+                                        ],
+                                    ],
+                                ],
                             ],
-
-                        ]
+                        ],
+                    ],
+                    'import'     => [
+                        'label' => _("txt-nav-contact-import"),
+                        'order' => 50,
+                        'route' => 'zfcadmin/contact-admin/import',
                     ],
                     'selections' => [
-                        'label' => _("txt-selections"),
+                        'label' => _("txt-nav-selection-list"),
+                        'order' => 20,
                         'route' => 'zfcadmin/selection-manager/list',
                         'pages' => [
-                            'view-contact' => [
+                            'view'          => [
                                 'label'   => _('txt-view'),
                                 'route'   => 'zfcadmin/selection-manager/view',
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Selection::class
+                                        'id' => \Contact\Entity\Selection::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\SelectionLabel::class
-                                    ]
+                                        Contact\Navigation\Invokable\SelectionLabel::class,
+                                    ],
                                 ],
                                 'pages'   => [
                                     'edit-selection' => [
@@ -138,7 +206,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Selection::class
+                                                'id' => \Contact\Entity\Selection::class,
                                             ],
                                         ],
                                     ],
@@ -148,17 +216,22 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Selection::class
+                                                'id' => \Contact\Entity\Selection::class,
                                             ],
                                         ],
                                     ],
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                            'edit-contacts' => [
+                                'label' => _('txt-new-selection'),
+                                'route' => 'zfcadmin/selection-manager/new',
+                            ],
+                        ],
                     ],
                     'facebook'   => [
-                        'label' => _("txt-facebook"),
+                        'label' => _("txt-nav-facebook-list"),
                         'route' => 'zfcadmin/facebook-manager/list',
+                        'order' => 40,
                         'pages' => [
                             'view-facebook' => [
                                 'label'   => _('txt-view'),
@@ -166,11 +239,11 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Facebook::class
+                                        'id' => \Contact\Entity\Facebook::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\FacebookLabel::class
-                                    ]
+                                        Contact\Navigation\Invokable\FacebookLabel::class,
+                                    ],
                                 ],
                                 'pages'   => [
                                     'edit-facebook' => [
@@ -179,22 +252,24 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Facebook::class
+                                                'id' => \Contact\Entity\Facebook::class,
                                             ],
                                         ],
                                     ],
                                 ],
                             ],
-                        ]
+                        ],
                     ],
-                    'permit'     => [
-                        'label' => _("txt-permissions"),
+
+                ],
+            ],
+            'management' => [
+                'pages' => [
+                    'permit' => [
+                        'label' => _("txt-nav-permission-list"),
                         'route' => 'zfcadmin/permit-manager/entity/list',
                     ],
-                    'import'     => [
-                        'label' => _("txt-import"),
-                        'route' => 'zfcadmin/contact-admin/import',
-                    ],
+
                 ],
             ],
         ],
