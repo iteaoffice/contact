@@ -88,7 +88,7 @@ class ProfileController extends ContactAbstractController
         $form = new Profile($this->getEntityManager(), $this->getContactService(), $contact);
         $form->bind($contact);
 
-        $form->getInputFilter()->get('address')->remove('country');
+        $form->getInputFilter()->get('address')->get('country')->setRequired(false);
         //When we have a valid organisation_id, we do not need the country
         if (isset($data['contact_organisation']['organisation_id'])
             && $data['contact_organisation']['organisation_id'] !== '0'

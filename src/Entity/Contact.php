@@ -1608,7 +1608,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Address|Collections\ArrayCollection
+     * @return Address[]|Collections\ArrayCollection
      */
     public function getAddress()
     {
@@ -1628,7 +1628,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Phone|Collections\ArrayCollection
+     * @return Phone[]|Collections\ArrayCollection
      */
     public function getPhone()
     {

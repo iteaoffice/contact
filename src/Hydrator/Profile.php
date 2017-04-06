@@ -42,35 +42,33 @@ class Profile extends DoctrineObject
             if ($address->getType()->getId() === AddressType::ADDRESS_TYPE_MAIL) {
                 $values['address']['address'] = $address->getAddress();
                 $values['address']['zipCode'] = $address->getZipCode();
-                $values['address']['city']    = $address->getCity();
+                $values['address']['city'] = $address->getCity();
                 $values['address']['country'] = $address->getCountry();
             }
         }
 
         unset($values['profile']);
-        $values['profile']['visible']     = ! is_null($contact->getProfile()) ? $contact->getProfile()->getVisible()
+        $values['profile']['visible'] = !is_null($contact->getProfile()) ? $contact->getProfile()->getVisible()
             : null;
-        $values['profile']['description'] = ! is_null($contact->getProfile()) ? $contact->getProfile()->getDescription()
+        $values['profile']['description'] = !is_null($contact->getProfile()) ? $contact->getProfile()->getDescription()
             : null;
         /*
          * Set the contact organisation, this will be taken from the contact_organisation item and can be used
          * to pre-fill the values
          */
         $organisationService = new OrganisationService();
-        if (! is_null($contact->getContactOrganisation())) {
+        if (!is_null($contact->getContactOrganisation())) {
             $values['contact_organisation']['organisation_id'] = $contact->getContactOrganisation()->getOrganisation()
-                                                                         ->getId();
+                ->getId();
             $values['contact_organisation']['organisation']
-                                                               = $organisationService->parseOrganisationWithBranch(
-                                                                   $contact->getContactOrganisation()->getBranch(),
-                                                                   $contact->getContactOrganisation()->getOrganisation()
-                                                               );
-            $values['contact_organisation']['type']            = $contact->getContactOrganisation()->getOrganisation()
-                                                                         ->getType()->getId();
-            if (! is_null($contact->getContactOrganisation())) {
-                $values['contact_organisation']['country'] = $contact->getContactOrganisation()->getOrganisation()
-                                                                     ->getCountry()->getId();
-            }
+                = $organisationService->parseOrganisationWithBranch(
+                $contact->getContactOrganisation()->getBranch(),
+                $contact->getContactOrganisation()->getOrganisation()
+            );
+            $values['contact_organisation']['type'] = $contact->getContactOrganisation()->getOrganisation()
+                ->getType()->getId();
+            $values['contact_organisation']['country'] = $contact->getContactOrganisation()->getOrganisation()
+                ->getCountry()->getId();
         }
 
         return $values;
@@ -79,7 +77,7 @@ class Profile extends DoctrineObject
     /**
      * Hydrate $contact with the provided $data.
      *
-     * @param array   $data
+     * @param array $data
      * @param Contact $contact
      *
      * @return object
@@ -97,11 +95,10 @@ class Profile extends DoctrineObject
             /*
              * Reset the data array and store the values locally
              */
-            $phoneData       = $data['phone'];
-            $data['phone']   = [];
-            $addressInfo     = $data['address'];
+            $phoneData = $data['phone'];
+            $data['phone'] = [];
+            $addressInfo = $data['address'];
             $data['address'] = [];
-
             /**
              * @var $contact Contact
              */
@@ -113,7 +110,7 @@ class Profile extends DoctrineObject
             //Reset the array
             $contact->getPhone()->clear();
             foreach ($phoneData as $phoneTypeId => $phoneElement) {
-                if (! empty($phoneElement['phone'])) {
+                if (!empty($phoneElement['phone'])) {
                     $phone = new Phone();
                     /** @var PhoneType $phoneType */
                     $phoneType = $this->objectManager->getRepository(PhoneType::class)->find($phoneTypeId);
@@ -124,45 +121,51 @@ class Profile extends DoctrineObject
                 }
             }
             foreach ($currentPhoneNumbers as $phone) {
-                if (! in_array(
+                if (!in_array(
                     $phone->getType()->getId(),
                     [
                         PhoneType::PHONE_TYPE_MOBILE,
                         PhoneType::PHONE_TYPE_DIRECT,
-                    ]
+                    ],
+                    true
                 )
                 ) {
                     $contact->getPhone()->add($phone);
                 }
             }
-            /** @var Address[] $currentAddress */
-            $currentAddress = $contact->getAddress()->getSnapshot();
-            /*
-             * Reformat the address
-             */
-            $contact->getAddress()->clear();
-            if (array_key_exists('address', $addressInfo)) {
-                if (! empty($addressInfo['address']) && ! empty($addressInfo['country'])) {
-                    $address = new Address();
-                    /** @var AddressType $addressType */
-                    $addressType = $this->objectManager->getRepository(AddressType::class)
-                                                       ->find(AddressType::ADDRESS_TYPE_MAIL);
-                    $address->setType($addressType);
-                    $address->setAddress($addressInfo['address']);
-                    $address->setZipCode($addressInfo['zipCode']);
-                    $address->setCity($addressInfo['city']);
-                    $address->setContact($contact);
-                    /** @var Country $country */
-                    $country = $this->objectManager->getRepository(Country::class)->find($addressInfo['country']);
-                    $address->setCountry($country);
-                    $contact->getAddress()->add($address);
+
+
+            //Find the Mail address
+            $mailAddress = new Address();
+            foreach ($contact->getAddress() as $address) {
+                if ($address->getType()->getId() === AddressType::ADDRESS_TYPE_MAIL) {
+                    $mailAddress = $address;
                 }
             }
-            foreach ($currentAddress as $address) {
-                if (! in_array($address->getType()->getId(), [AddressType::ADDRESS_TYPE_MAIL])) {
-                    $contact->getAddress()->add($address);
-                }
+
+
+            if (array_key_exists('address',
+                    $addressInfo) && !empty($addressInfo['address']) && !empty($addressInfo['country'])
+            ) {
+
+                /** @var AddressType $addressType */
+                $addressType = $this->objectManager->getRepository(AddressType::class)
+                    ->find(AddressType::ADDRESS_TYPE_MAIL);
+                $mailAddress->setType($addressType);
+                $mailAddress->setAddress($addressInfo['address']);
+                $mailAddress->setZipCode($addressInfo['zipCode']);
+                $mailAddress->setCity($addressInfo['city']);
+                $mailAddress->setContact($contact);
+                /** @var Country $country */
+                $country = $this->objectManager->getRepository(Country::class)->find($addressInfo['country']);
+                $mailAddress->setCountry($country);
+
+                //Save the address
+                $this->objectManager->persist($mailAddress);
+
+                $contact->getAddress()->add($mailAddress);
             }
+
 
             $contact->getProfile()->setContact($contact);
 
