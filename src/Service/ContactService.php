@@ -35,13 +35,8 @@ use Project\Entity\Project;
 use Zend\Crypt\Password\Bcrypt;
 
 /**
- * ContactService.
- *
- * this is a generic wrapper service for all the other services
- *
- * First parameter of all methods (lowercase, underscore_separated)
- * will be used to fetch the correct model service, one exception is the 'linkModel'
- * method.
+ * Class ContactService
+ * @package Contact\Service
  */
 class ContactService extends ServiceAbstract
 {

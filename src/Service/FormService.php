@@ -34,7 +34,7 @@ class FormService extends ServiceAbstract
      *
      * @return Form
      */
-    public function prepare($className, $entity = null, $data = [])
+    public function prepare($className, $entity = null, array $data = []): Form
     {
         $form = $this->getForm($className, $entity, true);
         $form->setData($data);
@@ -44,29 +44,28 @@ class FormService extends ServiceAbstract
 
     /**
      * @param null $className
-     * @param null $entity
+     * @param EntityAbstract|null $entity
      * @param bool $bind
-     *
      * @return Form
      */
     public function getForm($className = null, EntityAbstract $entity = null, bool $bind = true): Form
     {
-        if (! is_null($className) && is_null($entity)) {
+        if (!is_null($className) && is_null($entity)) {
             $entity = new $className();
         }
 
-        if (! $entity instanceof EntityAbstract) {
+        if (!$entity instanceof EntityAbstract) {
             throw new \InvalidArgumentException("No entity created given");
         }
 
-        $formName   = 'Contact\\Form\\' . $entity->get('entity_name') . 'Form';
+        $formName = 'Contact\\Form\\' . $entity->get('entity_name') . 'Form';
         $filterName = 'Contact\\InputFilter\\' . $entity->get('entity_name') . 'Filter';
 
         /**
          * The filter and the form can dynamically be created by pulling the form from the serviceManager
          * if the form or filter is not give in the serviceManager we will create it by default
          */
-        if (! $this->getServiceLocator()->has($formName)) {
+        if (!$this->getServiceLocator()->has($formName)) {
             $form = new CreateObject($this->getEntityManager(), new $entity());
         } else {
             $form = $this->getServiceLocator()->get($formName);
