@@ -12,18 +12,20 @@
         <th>{{ translate("txt-date-created") }}</th>
         <th>{{ translate("txt-date-signed") }}</th>
         <th>{{ translate("txt-date-approved") }}</th>
+        <th>{{ translate("txt-approved-by") }}</th>
     </tr>
     </thead>
     <tbody>
     {% for nda in contact.nda %}
         <tr>
-            <td>{{ translate("txt-nda") }} {{ ndaLink(nda,'download','icon') }} {{ ndaLink(nda,'view-admin','icon') }}</td>
+            <td>{{ ndaLink(nda,'view-admin','name') }} {% if not nda.object.isEmpty() %}{{ ndaLink(nda,'download','icon') }}{% endif %} {{ ndaLink(nda,'edit-admin','icon') }}</td>
             <td></td>
-            <td>{% if nda.call %}{{ callLink(nda.call,'view-admin') }}{% else %}{{ translate("txt-living-roadmap") }}{% endif %}</td>
-            <td>{% if nda.call %}{{ nda.call.program }}{% endif %}</td>
+            <td>{% if nda.hasCall %}{{ callLink(nda.parseCall, 'view-admin','name') }}{% endif %}</td>
+            <td>{% if nda.hasCall %}{{ nda.parseCall.program }}{% endif %}</td>
             <td>{{ nda.dateCreated|string_date }}</td>
             <td>{{ nda.dateSigned|string_date }}</td>
             <td>{{ nda.dateApproved|string_date }}</td>
+            <td>{{ nda.approver.displayName }}</td>
         </tr>
     {% endfor %}
     {% for dnd in contact.dnd %}
@@ -33,6 +35,7 @@
             <td></td>
             <td>{{ dnd.program }}</td>
             <td>{{ dnd.dateCreated|string_date }}</td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -48,6 +51,7 @@
             <td>{{ affiliationDoa.dateCreated|string_date }}</td>
             <td>{{ affiliationDoa.dateSigned|string_date }}</td>
             <td>{{ affiliationDoa.dateApproved|string_date }}</td>
+            <td>-</td>
         </tr>
     {% endfor %}
     {% for loi in contact.loi %}
@@ -61,6 +65,7 @@
             <td></td>
             <td>{{ loi.dateSigned|string_date }}</td>
             <td>{{ loi.dateApproved|string_date }}</td>
+            <td></td>
         </tr>
     {% endfor %}
     {% for programDoa in contact.programDoa %}
@@ -73,7 +78,10 @@
             <td>{{ programDoa.dateCreated|string_date }}</td>
             <td>{{ programDoa.dateSigned|string_date }}</td>
             <td>{{ programDoa.dateApproved|string_date }}</td>
+            <td></td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
+{{ ndaLink(null, 'upload-admin','button', null, contact) }}

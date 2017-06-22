@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use BjyAuthorize\Provider\Role\ProviderInterface;
@@ -285,11 +287,29 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $dnd;
     /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Contract", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Contract[]|Collections\ArrayCollection
+     */
+    private $contract;
+    /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Contract\Version", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Contract[]|Collections\ArrayCollection
+     */
+    private $contractVersion;
+    /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Program\Entity\Nda|Collections\ArrayCollection
+     * @var \Program\Entity\Nda[]|Collections\ArrayCollection
      */
     private $nda;
+    /**
+     * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="approver")
+     * @Annotation\Exclude()
+     * @var \Program\Entity\Nda[]|Collections\ArrayCollection
+     */
+    private $ndaApprover;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\RoadmapLog", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -849,6 +869,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->technology = new Collections\ArrayCollection();
         $this->dnd = new Collections\ArrayCollection();
         $this->nda = new Collections\ArrayCollection();
+        $this->ndaApprover = new Collections\ArrayCollection();
         $this->programDoa = new Collections\ArrayCollection();
         $this->domain = new Collections\ArrayCollection();
         $this->technology = new Collections\ArrayCollection();
@@ -901,6 +922,8 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
         $this->projectCalendarReview = new Collections\ArrayCollection();
         $this->projectReportReview = new Collections\ArrayCollection();
+        $this->contract = new Collections\ArrayCollection();
+        $this->contractVersion = new Collections\ArrayCollection();
         $this->invite = new Collections\ArrayCollection();
         $this->inviteContact = new Collections\ArrayCollection();
         $this->loi = new Collections\ArrayCollection();
@@ -940,9 +963,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return string
      */
-    public function parseHash(): string
+    public function parseHash($id = null): string
     {
-        return hash('sha1', $this->id . self::HASH_KEY);
+        if (is_null($id)) {
+            $id = $this->id;
+        }
+
+        return hash('sha1', $id . self::HASH_KEY);
     }
 
     /**
@@ -1440,19 +1467,17 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @param  int $state
      *
-     * @return null|UserInterface
+     * @return void
      */
-    public function setState($state)
+    public function setState($state): void
     {
-        return;
     }
 
     /**
-     * @return int
+     *
      */
-    public function getState()
+    public function getState(): void
     {
-        return;
     }
 
     /**
@@ -1482,11 +1507,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return string
      */
-    public function getShortName()
+    public function getShortName(): string
     {
         $name = sprintf(
             "%s. %s",
-            substr($this->firstName, 0, 1),
+            substr((string)$this->firstName, 0, 1),
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
@@ -1823,6 +1848,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setNda($nda)
     {
         $this->nda = $nda;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Program\Entity\Nda[]
+     */
+    public function getNdaApprover()
+    {
+        return $this->ndaApprover;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Program\Entity\Nda[] $ndaApprover
+     * @return Contact
+     */
+    public function setNdaApprover($ndaApprover)
+    {
+        $this->ndaApprover = $ndaApprover;
 
         return $this;
     }

@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\Contact;
@@ -41,7 +43,7 @@ class NoteManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (! isset($data['cancel']) && $form->isValid()) {
+            if (!isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $note Note
                  */
@@ -51,11 +53,11 @@ class NoteManagerController extends ContactAbstractController
             }
 
             return $this->redirect()
-                        ->toRoute(
-                            'zfcadmin/contact-admin/view',
-                            ['id' => $contact->getId()],
-                            ['fragment' => 'general']
-                        );
+                ->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $contact->getId()],
+                    ['fragment' => 'general']
+                );
         }
 
         return new ViewModel(
@@ -88,7 +90,7 @@ class NoteManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->getContactService()->removeEntity($note);
                 $this->flashMessenger()->setNamespace('success')
-                     ->addMessage(sprintf($this->translate("txt-note-has-successfully-been-deleted")));
+                    ->addMessage(sprintf($this->translate("txt-note-has-successfully-been-deleted")));
 
                 return $this->redirect()->toRoute(
                     'zfcadmin/contact-admin/view',
@@ -98,7 +100,7 @@ class NoteManagerController extends ContactAbstractController
             }
 
 
-            if (! isset($data['cancel']) && $form->isValid()) {
+            if (!isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var Note $note
                  */

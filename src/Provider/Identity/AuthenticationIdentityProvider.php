@@ -7,6 +7,8 @@
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Contact\Provider\Identity;
 
 use Admin\Service\AdminService;
@@ -40,8 +42,8 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      * AuthenticationIdentityProvider constructor.
      *
      * @param AuthenticationService $authService
-     * @param AdminService          $adminService
-     * @param array|null            $options
+     * @param AdminService $adminService
+     * @param array|null $options
      */
     public function __construct(AuthenticationService $authService, AdminService $adminService, array $options = null)
     {
@@ -54,7 +56,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      */
     public function getIdentityRoles()
     {
-        if (! $identity = $this->authService->getIdentity()) {
+        if (!$identity = $this->authService->getIdentity()) {
             return [$this->defaultRole];
         }
         if ($identity instanceof RoleInterface) {

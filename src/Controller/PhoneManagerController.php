@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\Contact;
@@ -20,9 +22,7 @@ use Zend\View\Model\ViewModel;
 class PhoneManagerController extends ContactAbstractController
 {
     /**
-     * Create a new phone.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function newAction()
     {
@@ -41,7 +41,7 @@ class PhoneManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (! isset($data['cancel']) && $form->isValid()) {
+            if (!isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $phone Phone
                  */
@@ -51,7 +51,7 @@ class PhoneManagerController extends ContactAbstractController
             }
 
             return $this->redirect()
-                        ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'phone']);
+                ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'phone']);
         }
 
         return new ViewModel(
@@ -64,9 +64,7 @@ class PhoneManagerController extends ContactAbstractController
     }
 
     /**
-     * Edit an phone by finding it and call the corresponding form.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function editAction()
     {
@@ -74,8 +72,8 @@ class PhoneManagerController extends ContactAbstractController
          * @var $phone Phone
          */
         $phone = $this->getContactService()->findEntityById(Phone::class, $this->params('id'));
-        $data  = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form  = $this->getFormService()->prepare($phone, $phone, $data);
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $form = $this->getFormService()->prepare($phone, $phone, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
@@ -84,17 +82,17 @@ class PhoneManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->getContactService()->removeEntity($phone);
                 $this->flashMessenger()->setNamespace('success')
-                     ->addMessage(sprintf($this->translate("txt-phone-has-successfully-been-deleted")));
+                    ->addMessage(sprintf($this->translate("txt-phone-has-successfully-been-deleted")));
 
                 return $this->redirect()
-                            ->toRoute(
-                                'zfcadmin/contact-admin/view',
-                                ['id' => $phone->getContact()->getId()],
-                                ['fragment' => 'phone']
-                            );
+                    ->toRoute(
+                        'zfcadmin/contact-admin/view',
+                        ['id' => $phone->getContact()->getId()],
+                        ['fragment' => 'phone']
+                    );
             }
 
-            if (! isset($data['cancel']) && $form->isValid()) {
+            if (!isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var Phone $phone
                  */

@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller\Plugin;
 
 use Contact\Entity\Contact;
@@ -85,10 +87,10 @@ class HandleImport extends AbstractPlugin
 
     /**
      * @param                $data
-     * @param array          $import
+     * @param array $import
      * @param []           $includeOptIn
-     * @param null           $selectionId
-     * @param null           $selectionName
+     * @param null $selectionId
+     * @param null $selectionName
      *
      * @return $this
      */
@@ -109,7 +111,7 @@ class HandleImport extends AbstractPlugin
         /** set the optIn */
         $this->setOptInFromFormData($includeOptIn);
 
-        if (! $this->hasErrors()) {
+        if (!$this->hasErrors()) {
             $this->prepareContent();
 
             if (count($import) > 0) {
@@ -178,7 +180,7 @@ class HandleImport extends AbstractPlugin
          * Go over all elements and check if the required elements are present
          */
         foreach ($minimalRequiredElements as $element) {
-            if (! in_array(strtolower($element), $this->header, true)) {
+            if (!in_array(strtolower($element), $this->header, true)) {
                 $this->errors[] = sprintf("Element %s is missing in the file", $element);
             }
         }
@@ -197,7 +199,7 @@ class HandleImport extends AbstractPlugin
              * Validate the email addresses
              */
             $validate = new EmailAddress();
-            if (! $validate->isValid($content[$this->headerKeys['email']])) {
+            if (!$validate->isValid($content[$this->headerKeys['email']])) {
                 $this->errors[] = sprintf(
                     "EmailAddress (%s) in row %s is invalid",
                     $content[$this->headerKeys['email']],
@@ -208,9 +210,9 @@ class HandleImport extends AbstractPlugin
             /**
              * Validate the organisation_id
              */
-            if (! empty($this->headerKeys['organisation_id'])) {
+            if (!empty($this->headerKeys['organisation_id'])) {
                 $organisation = $this->getOrganisationService()
-                                     ->findOrganisationById($this->headerKeys['organisation_id']);
+                    ->findOrganisationById($this->headerKeys['organisation_id']);
                 if (is_null($organisation)) {
                     $this->errors[] = sprintf(
                         "Organisation with ID (%s) in row %s cannot be found",
@@ -223,7 +225,7 @@ class HandleImport extends AbstractPlugin
             /**
              * Validate the country
              */
-            if (! empty($this->headerKeys['country'])) {
+            if (!empty($this->headerKeys['country'])) {
                 $country = $this->getGeneralService()->findCountryByName($content[$this->headerKeys['country']]);
                 if (is_null($country)) {
                     $this->warnings[] = sprintf(
@@ -287,19 +289,19 @@ class HandleImport extends AbstractPlugin
         }
 
         /** Parse the $selectionId if not empty */
-        if (! empty($selectionId)) {
+        if (!empty($selectionId)) {
             $selection = $this->getSelectionService()->findSelectionById($selectionId);
-            if (! is_null($selection)) {
+            if (!is_null($selection)) {
                 $this->setSelection($selection);
             }
         }
 
-        if (! empty($selectionName)) {
+        if (!empty($selectionName)) {
             $selection = new Selection();
             $selection->setSelection($selectionName);
             $selection->setContact(
                 $this->getServiceLocator()->get('Application\Authentication\Service')
-                     ->getIdentity()
+                    ->getIdentity()
             );
 
             $this->getContactService()->newEntity($selection);
@@ -332,7 +334,7 @@ class HandleImport extends AbstractPlugin
     {
         foreach ($includeOptIn as $optInId) {
             $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
-            if (! is_null($optIn)) {
+            if (!is_null($optIn)) {
                 $this->optIn[] = $optIn;
             }
         }
@@ -355,8 +357,8 @@ class HandleImport extends AbstractPlugin
             //See first if the contact can be found
             $contact = $this->getContactService()->findContactByEmail($content[$this->headerKeys['email']]);
 
-            if (! is_null($contact)) {
-                $contact->key     = $key;
+            if (!is_null($contact)) {
+                $contact->key = $key;
                 $this->contacts[] = $contact;
                 continue;
             }
@@ -377,45 +379,45 @@ class HandleImport extends AbstractPlugin
              */
 
             //Contact is not found
-            $contact      = new Contact();
+            $contact = new Contact();
             $contact->key = $key;
             $contact->setFirstName($content[$this->headerKeys['firstname']]);
-            if (isset($this->headerKeys['middlename']) && ! empty($content[$this->headerKeys['middlename']])) {
+            if (isset($this->headerKeys['middlename']) && !empty($content[$this->headerKeys['middlename']])) {
                 $contact->setMiddleName($content[$this->headerKeys['middlename']]);
             }
             $contact->setLastName($content[$this->headerKeys['lastname']]);
             $contact->setEmail($content[$this->headerKeys['email']]);
 
             $gender = null;
-            $title  = null;
-            if (isset($this->headerKeys['gender']) && ! empty($content[$this->headerKeys['gender']])) {
+            $title = null;
+            if (isset($this->headerKeys['gender']) && !empty($content[$this->headerKeys['gender']])) {
                 $gender = $this->getGeneralService()->findGenderByGender($content[$this->headerKeys['gender']]);
                 $contact->setGender($gender);
             }
 
-            if (! is_null($gender)) {
+            if (!is_null($gender)) {
                 $contact->setGender($gender);
             } else {
                 $contact->setGender($this->getGeneralService()->findEntityById(Gender::class, Gender::GENDER_UNKNOWN));
             }
 
-            if (isset($this->headerKeys['title']) && ! empty($content[$this->headerKeys['title']])) {
+            if (isset($this->headerKeys['title']) && !empty($content[$this->headerKeys['title']])) {
                 $title = $this->getGeneralService()->findTitleByTitle($content[$this->headerKeys['title']]);
                 $contact->setTitle($title);
             }
 
-            if (! is_null($title)) {
+            if (!is_null($title)) {
                 $contact->setTitle($title);
             } else {
                 $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
             }
 
-            if (isset($this->headerKeys['phone']) && ! empty($content[$this->headerKeys['phone']])) {
+            if (isset($this->headerKeys['phone']) && !empty($content[$this->headerKeys['phone']])) {
                 $contact->setPosition($content[$this->headerKeys['phone']]);
             }
 
             //If found, set the phone number
-            if (isset($this->headerKeys['phone']) && ! empty($content[$this->headerKeys['phone']])) {
+            if (isset($this->headerKeys['phone']) && !empty($content[$this->headerKeys['phone']])) {
                 $phone = new Phone();
 
                 /** @var PhoneType $phoneType */
@@ -432,33 +434,33 @@ class HandleImport extends AbstractPlugin
             //Try to find the country
             $country = null;
 
-            if (isset($this->headerKeys['country']) && ! empty($content[$this->headerKeys['country']])) {
+            if (isset($this->headerKeys['country']) && !empty($content[$this->headerKeys['country']])) {
                 $country = $this->getGeneralService()->findCountryByName($content[$this->headerKeys['country']]);
             }
 
-            $organisation     = null;
+            $organisation = null;
             $organisationName = null;
 
-            if (isset($this->headerKeys['organisation']) && ! empty($content[$this->headerKeys['organisation']])) {
+            if (isset($this->headerKeys['organisation']) && !empty($content[$this->headerKeys['organisation']])) {
                 //Try to find the organisation
                 $organisationName = $content[$this->headerKeys['organisation']];
             }
 
 
             if (isset($this->headerKeys['organisation_id'])
-                && ! empty($content[$this->headerKeys['organisation_id']])
+                && !empty($content[$this->headerKeys['organisation_id']])
             ) {
                 $organisation = $this->getOrganisationService()
-                                     ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
+                    ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
             }
 
-            if (is_null($organisation) && ! is_null($country) && ! is_null($organisationName)) {
+            if (is_null($organisation) && !is_null($country) && !is_null($organisationName)) {
                 $organisation = $this->getOrganisationService()
-                                     ->findOrganisationByNameCountry($organisationName, $country);
+                    ->findOrganisationByNameCountry($organisationName, $country);
             }
 
             //If the organisation does not exist, create it
-            if (is_null($organisation) && ! is_null($country) && ! is_null($organisationName)) {
+            if (is_null($organisation) && !is_null($country) && !is_null($organisationName)) {
                 $organisation = new Organisation();
                 $organisation->setOrganisation($organisationName);
                 $organisation->setCountry($country);
@@ -479,7 +481,7 @@ class HandleImport extends AbstractPlugin
                 $organisationWeb->setOrganisation($organisation);
                 $organisationWebElements->add($organisationWeb);
 
-                if (isset($this->headerKeys['website']) && ! is_null($content[$this->headerKeys['website']])) {
+                if (isset($this->headerKeys['website']) && !is_null($content[$this->headerKeys['website']])) {
                     //Strip the http:// and https://
                     $website = str_replace('http://', '', $content[$this->headerKeys['website']]);
                     $website = str_replace('https://', '', $website);
@@ -497,7 +499,7 @@ class HandleImport extends AbstractPlugin
             /**
              * If an organisation is found, add it to the contact
              */
-            if (! is_null($organisation)) {
+            if (!is_null($organisation)) {
                 $contactOrganisation = new ContactOrganisation();
                 $contactOrganisation->setOrganisation($organisation);
                 $contactOrganisation->setContact($contact);
@@ -528,7 +530,7 @@ class HandleImport extends AbstractPlugin
                 }
                 $contact->addOptIn($contactOptIn);
 
-                if (! $this->getContactService()->contactInSelection($contact, $this->getSelection())) {
+                if (!$this->getContactService()->contactInSelection($contact, $this->getSelection())) {
                     $selectionContact = new SelectionContact();
                     $selectionContact->setSelection($this->getSelection());
                     $selectionContact->setContact($contact);

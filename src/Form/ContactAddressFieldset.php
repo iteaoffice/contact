@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity;
@@ -22,13 +24,13 @@ use Zend\Form\Fieldset;
 class ContactAddressFieldset extends Fieldset
 {
     /**
-     * @param EntityManager         $entityManager
+     * @param EntityManager $entityManager
      * @param Entity\EntityAbstract $object
      */
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-        $address          = new Entity\Address();
+        $address = new Entity\Address();
         $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Address');
         $this->setHydrator($doctrineHydrator)->setObject($address);
         $builder = new AnnotationBuilder();
@@ -41,18 +43,18 @@ class ContactAddressFieldset extends Fieldset
              */
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
                 $element->setOptions(
-                    array(
+                    [
                         'object_manager' => $entityManager,
-                    )
+                    ]
                 );
             }
             if ($element instanceof Radio) {
-                $attributes        = $element->getAttributes();
+                $attributes = $element->getAttributes();
                 $valueOptionsArray = 'get' . ucfirst($attributes['array']);
                 $element->setOptions(
-                    array(
+                    [
                         'value_options' => $object->$valueOptionsArray(),
-                    )
+                    ]
                 );
             }
             //Add only when a type is provided

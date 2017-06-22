@@ -8,6 +8,8 @@
  * @copyright   Copyright (contact_entity_contact) Copyright (c) 2004-2017 ITEA Office (https://itea3.org) (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Repository;
 
 use Calendar\Entity\Calendar;
@@ -45,7 +47,7 @@ class Contact extends EntityRepository
         /*
          * Only add a limit when asked
          */
-        if (! is_null($limit)) {
+        if (!is_null($limit)) {
             $qb->setMaxResults($limit);
         }
 
@@ -90,13 +92,13 @@ class Contact extends EntityRepository
 
 
         /** Only when the filter is turned on, omit this extra rule */
-        if (! (array_key_exists('options', $filter) && in_array('includeDeactivated', $filter['options']))
-             && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options'], true))
+        if (!(array_key_exists('options', $filter) && in_array('includeDeactivated', $filter['options']))
+            && (isset($filter['options']) && !in_array('onlyDeactivated', $filter['options'], true))
         ) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('content_entity_contact.dateEnd'));
         }
 
-        if (! isset($filter['options'])) {
+        if (!isset($filter['options'])) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('content_entity_contact.dateEnd'));
         }
 
@@ -104,12 +106,12 @@ class Contact extends EntityRepository
             $queryBuilder->join('content_entity_contact.gender', 'general_entity_gender');
             $queryBuilder->andWhere(
                 $queryBuilder->expr()
-                             ->in('general_entity_gender.id', $filter['gender'])
+                    ->in('general_entity_gender.id', $filter['gender'])
             );
         }
 
 
-        if (array_key_exists('country', $filter) && ! empty($filter['country'])
+        if (array_key_exists('country', $filter) && !empty($filter['country'])
 
         ) {
             $queryBuilder->innerJoin(
@@ -126,10 +128,10 @@ class Contact extends EntityRepository
             );
             $queryBuilder->andWhere(
                 $queryBuilder->expr()
-                             ->in(
-                                 'contact_entity_contact_organisation_for_country_organisation_country.id',
-                                 $filter['country']
-                             )
+                    ->in(
+                        'contact_entity_contact_organisation_for_country_organisation_country.id',
+                        $filter['country']
+                    )
             );
         }
 
@@ -242,7 +244,7 @@ class Contact extends EntityRepository
         $queryBuilder->orWhere('contact_entity_contact.email = ?1');
         $queryBuilder->setParameter(1, $email);
 
-        if (! $onlyMain) {
+        if (!$onlyMain) {
             $queryBuilder->leftJoin('contact_entity_contact.emailAddress', 'contact_entity_email');
             $queryBuilder->orWhere('contact_entity_email.email = ?2');
             $queryBuilder->setParameter(2, $email);
@@ -309,7 +311,7 @@ class Contact extends EntityRepository
     /**
      *  Returns true of false depending if a contact is a community member.
      *
-     * @param Entity\Contact        $contact
+     * @param Entity\Contact $contact
      * @param Options\ModuleOptions $options
      *
      * @return boolean|null
@@ -376,7 +378,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param SelectionSql $sql
-     * @param bool         $toArray
+     * @param bool $toArray
      *
      * @return Entity\Contact[]
      */
@@ -417,55 +419,48 @@ class Contact extends EntityRepository
         );
 
         /**
-         * 'c_id' => int 5059
-         * 'c_email' => string 'laila.gide@thalesgroup.com' (length=26)
-         * 'c_firstName' => string 'Laila' (length=5)
-         * 'c_middleName' => null
-         * 'c_lastName' => string 'Gide' (length=4)
-         * 'o_organisation' => string 'Thales' (length=6)
-         * 'cy_country' => string 'Thales' (length=6)
+         *
          */
         if ($toArray) {
-            return $this->reIndexContactArray($query->getResult(AbstractQuery::HYDRATE_SCALAR));
-        } else {
-            //Note that the contactOrgansiation is always empty
-            return $query->getResult();
+            return $query->getResult(AbstractQuery::HYDRATE_ARRAY);
         }
+
+        //Note that the contactOrgansiation is always empty
+        return $query->getResult();
     }
 
     /**
-     * @param $contacts
-     *
-     * @return array
+     * @param Selection $selection
+     * @return int
      */
-    private function reIndexContactArray($contacts)
+    public function findAmountOfContactsInSelection(Selection $selection)
     {
-        //Normalize the array to default values
-        foreach ($contacts as $k => $contact) {
-            $contact['id'] = $contact['contact_entity_contact_id'];
-            unset($contact['c_id']);
-            $contact['email'] = $contact['contact_entity_contact_email'];
-            unset($contact['c_email']);
-            $contact['firstName'] = $contact['contact_entity_contact_firstName'];
-            unset($contact['c_firstName']);
-            $contact['middleName'] = $contact['contact_entity_contact_middleName'];
-            unset($contact['c_middleName']);
-            $contact['lastName'] = $contact['contact_entity_contact_lastName'];
-            unset($contact['c_lastName']);
-            $contact['fullname']     = sprintf(
-                "%s %s",
-                $contact['firstName'],
-                trim(implode(' ', [$contact['middleName'], $contact['lastName']]))
-            );
-            $contact['organisation'] = $contact['o_organisation'];
-            unset($contact['o_organisation']);
-            $contact['country'] = $contact['cy_country'];
-            unset($contact['cy_country']);
+        if (!is_null($selection->getSql())) {
+            $resultSetMap = new ResultSetMapping();
+            $resultSetMap->addEntityResult(Entity\Contact::class, 'contact');
+            $resultSetMap->addFieldResult('contact', 'blabla', 'blabla');
 
-            $contacts[$k] = $contact;
+            $query =
+                sprintf("SELECT COUNT(contact.contact_id) FROM contact
+            WHERE contact_id IN (%s) AND date_end IS NULL", $selection->getSql()->getQuery());
+
+            $statement = $this->_em->getConnection()->prepare($query);
+            $statement->execute();
+
+            return (int)$statement->fetch(\PDO::FETCH_COLUMN);
         }
 
-        return $contacts;
+
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('COUNT(contact_entity_contact)');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->join('contact_entity_contact.selectionContact', 'contact_entity_selection_contact');
+        $qb->distinct('contact_entity_contact.id');
+        $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
+        $qb->andWhere('contact_entity_selection_contact.selection = ?1');
+        $qb->setParameter(1, $selection->getId());
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -499,14 +494,14 @@ class Contact extends EntityRepository
         }
 
         $query = $this->getEntityManager()
-                      ->createNativeQuery(
-                          sprintf(
-                              "SELECT contact_id, email, firstname, middlename, lastname, position FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ",
-                              $queryInString,
-                              $orderBy
-                          ),
-                          $resultSetMap
-                      );
+            ->createNativeQuery(
+                sprintf(
+                    "SELECT contact_id, email, firstname, middlename, lastname, position FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ",
+                    $queryInString,
+                    $orderBy
+                ),
+                $resultSetMap
+            );
 
         return $query->getResult();
     }
@@ -515,7 +510,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Selection $selection
-     * @param bool      $toArray
+     * @param bool $toArray
      *
      * @return Entity\Contact[]
      */
@@ -526,8 +521,8 @@ class Contact extends EntityRepository
         $qb->from(Entity\Contact::class, 'contact_entity_contact');
         $qb->join('contact_entity_contact.selectionContact', 'sc');
         $qb->leftJoin('contact_entity_contact.contactOrganisation', 'co');
-        $qb->join('co.organisation', 'o');
-        $qb->join('o.country', 'cy');
+        $qb->leftJoin('co.organisation', 'o');
+        $qb->leftJoin('o.country', 'cy');
         $qb->distinct('contact_entity_contact.id');
         $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
         $qb->andWhere('sc.selection = ?1');
@@ -535,7 +530,7 @@ class Contact extends EntityRepository
         $qb->orderBy('contact_entity_contact.lastName');
 
         if ($toArray) {
-            return $this->reIndexContactArray($qb->getQuery()->getResult(AbstractQuery::HYDRATE_SCALAR));
+            return $qb->getQuery()->getResult(AbstractQuery::HYDRATE_ARRAY);
         }
 
         return $qb->getQuery()->getResult();
@@ -543,7 +538,7 @@ class Contact extends EntityRepository
 
     /**
      * @param Entity\OptIn $optIn
-     * @param bool         $toArray
+     * @param bool $toArray
      *
      * @return Entity\Contact[]
      */
@@ -568,7 +563,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Entity\Contact $contact
-     * @param SelectionSql   $sql
+     * @param SelectionSql $sql
      *
      * @return bool
      */
@@ -593,7 +588,7 @@ class Contact extends EntityRepository
      * This is basic search for contacts (based on the name, and email.
      *
      * @param string $searchItem
-     * @param int    $maxResults
+     * @param int $maxResults
      *
      * @return Entity\Contact[]
      */
@@ -619,14 +614,14 @@ class Contact extends EntityRepository
             $qb->expr()->orX(
                 $qb->expr()->like(
                     $qb->expr()
-                       ->concat(
-                           'contact_entity_contact.firstName',
-                           $qb->expr()
-                              ->concat(
-                                  $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.middleName'),
-                                  $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.lastName')
-                              )
-                       ),
+                        ->concat(
+                            'contact_entity_contact.firstName',
+                            $qb->expr()
+                                ->concat(
+                                    $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.middleName'),
+                                    $qb->expr()->concat($qb->expr()->literal(' '), 'contact_entity_contact.lastName')
+                                )
+                        ),
                     $qb->expr()->literal("%" . $searchItem . "%")
                 ),
                 $qb->expr()->like('contact_entity_contact.email', $qb->expr()->literal("%" . $searchItem . "%"))
@@ -688,10 +683,10 @@ class Contact extends EntityRepository
         //Remove all the contacts which are already in the project as associate or otherwise affected
         $findContactByProjectIdQueryBuilder->andWhere(
             $findContactByProjectIdQueryBuilder->expr()
-                                               ->notIn(
-                                                   'contact_entity_contact',
-                                                   $findReviewContactByProjectQueryBuilder->getDQL()
-                                               )
+                ->notIn(
+                    'contact_entity_contact',
+                    $findReviewContactByProjectQueryBuilder->getDQL()
+                )
         );
 
         $findContactByProjectIdQueryBuilder->setParameter(1, $calendar->getProjectCalendar()->getProject()->getId());

@@ -8,9 +8,12 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\AddressType;
+use Contact\Entity\Contact;
 use Contact\Entity\Photo;
 use Contact\Form\Password;
 use Contact\InputFilter\PasswordFilter;
@@ -108,10 +111,10 @@ class ContactController extends ContactAbstractController
             return new JsonModel(
                 [
                     'enable' => $this->getContactService()
-                                     ->hasOptInEnabledByContact(
-                                         $optInId,
-                                         $this->zfcUserAuthentication()->getIdentity()
-                                     ),
+                        ->hasOptInEnabledByContact(
+                            $optInId,
+                            $this->zfcUserAuthentication()->getIdentity()
+                        ),
                     'id'     => $optInId,
                 ]
             );
@@ -121,7 +124,7 @@ class ContactController extends ContactAbstractController
         $enable = ($enable === 'true');
 
         $this->getContactService()
-             ->updateOptInForContact($optInId, $enable, $this->zfcUserAuthentication()->getIdentity());
+            ->updateOptInForContact($optInId, $enable, $this->zfcUserAuthentication()->getIdentity());
 
         return new JsonModel(
             [
@@ -160,10 +163,10 @@ class ContactController extends ContactAbstractController
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
             if ($this->getContactService()
-                     ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity())
+                ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity())
             ) {
                 $this->flashMessenger()->setNamespace('success')
-                     ->addMessage($this->translate("txt-password-successfully-been-updated"));
+                    ->addMessage($this->translate("txt-password-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
             }
@@ -178,7 +181,7 @@ class ContactController extends ContactAbstractController
     public function getAddressByTypeAction()
     {
         $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
-        $typeId    = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
+        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
 
         $contact = $this->getContactService()->findContactById($contactId);
 
@@ -189,11 +192,11 @@ class ContactController extends ContactAbstractController
         switch ($typeId) {
             case AddressType::ADDRESS_TYPE_FINANCIAL:
                 $address = $this->getContactService()
-                                ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
+                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
                 break;
             case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
                 $address = $this->getContactService()
-                                ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
                 break;
             default:
                 return $this->notFoundAction();
@@ -219,7 +222,7 @@ class ContactController extends ContactAbstractController
     public function searchAction()
     {
         $searchService = $this->getProfileSearchService();
-        $page          = $this->params('page', 1);
+        $page = $this->params('page', 1);
 
         $form = new SearchResult();
         $data = array_merge(['query' => '*', 'facet' => []], $this->getRequest()->getQuery()->toArray());
@@ -261,6 +264,7 @@ class ContactController extends ContactAbstractController
                 'params'                 => $this->getEvent()->getRouteMatch()->getParams(),
                 'currentPage'            => $page,
                 'lastPage'               => $paginator->getPageRange(),
+                'contact'                => new Contact(),
                 'showAlwaysFirstAndLast' => true,
             ]
         );

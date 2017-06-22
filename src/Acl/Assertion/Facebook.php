@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Acl\Assertion;
 
 use Admin\Entity\Access;
@@ -25,10 +27,10 @@ class Facebook extends AssertionAbstract
      * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
      * privileges, respectively.
      *
-     * @param Acl               $acl
-     * @param RoleInterface     $role
+     * @param Acl $acl
+     * @param RoleInterface $role
      * @param ResourceInterface $facebook
-     * @param string            $privilege
+     * @param string $privilege
      *
      * @return bool
      */
@@ -44,7 +46,7 @@ class Facebook extends AssertionAbstract
         $this->setPrivilege($privilege);
         $id = $this->getId();
 
-        if (! $facebook instanceof FacebookEntity && ! is_null($id)) {
+        if (!$facebook instanceof FacebookEntity && !is_null($id)) {
             /*
              * @var FacebookEntity
              */
@@ -61,7 +63,7 @@ class Facebook extends AssertionAbstract
                 return $this->rolesHaveAccess($facebook->getAccess()->toArray());
             case 'send-message':
                 return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
-                       && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
+                    && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
             default:
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }

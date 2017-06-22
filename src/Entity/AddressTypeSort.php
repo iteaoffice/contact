@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -121,9 +123,9 @@ class AddressTypeSort extends EntityAbstract
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'sort' => $this->sort,
-        );
+        ];
     }
 
     /**

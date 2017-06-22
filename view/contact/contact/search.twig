@@ -33,16 +33,11 @@
             <div class="row">
 
             {% for result in paginator.getCurrentItems() %}
-
-                {% set contact = createContactFromArray(
-                {'id': result.fields.contact_id }
-                ) %}
-
                 <div class="col-sm-3">
                     <div class="thumbnail contact-box">
                         <div class="information-box-header">
                             <h5>
-                                <a href="{{ url("community/contact/profile/contact", {'id': result.fields.contact_id,'hash': contact.parseHash()}) }}">{{ result.fields.fullname }}</a>
+                                <a href="{{ url("community/contact/profile/contact", {'id': result.fields.contact_id,'hash': contact.parseHash(result.fields.contact_id)}) }}">{{ result.fields.fullname }}</a>
                             </h5>
                         </div>
                         <div class="contact-box-image">

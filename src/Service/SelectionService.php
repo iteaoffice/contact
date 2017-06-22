@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Service;
 
 use Contact\Entity;
@@ -24,11 +26,37 @@ class SelectionService extends ServiceAbstract
     /**
      * @param $id
      *
-     * @return null|Entity\Selection
+     * @return null|Entity\Selection|object
      */
-    public function findSelectionById($id)
+    public function findSelectionById($id): ?Entity\Selection
     {
         return $this->getEntityManager()->getRepository(Entity\Selection::class)->find($id);
+    }
+
+    /**
+     * This function returns all the SQL selections
+     *
+     * @return array|Entity\Selection[]
+     */
+    public function findSqlSelections(): array
+    {
+        /** @var Repository\Selection $repository */
+        $repository = $this->getEntityManager()->getRepository(Entity\Selection::class);
+
+        return $repository->findSqlSelections();
+    }
+
+    /**
+     * This function returns all the SQL selections
+     *
+     * @return array|Entity\Selection[]
+     */
+    public function findNonSqlSelections(): array
+    {
+        /** @var Repository\Selection $repository */
+        $repository = $this->getEntityManager()->getRepository(Entity\Selection::class);
+
+        return $repository->findNonSqlSelections();
     }
 
     /**
@@ -36,9 +64,9 @@ class SelectionService extends ServiceAbstract
      *
      * @return bool
      */
-    public function isSql(Entity\Selection $selection)
+    public function isSql(Entity\Selection $selection): bool
     {
-        return ! is_null($selection->getSql());
+        return !is_null($selection->getSql());
     }
 
     /**
@@ -46,19 +74,18 @@ class SelectionService extends ServiceAbstract
      *
      * @return int
      */
-    public function getAmountOfContacts(Entity\Selection $selection)
+    public function getAmountOfContacts(Entity\Selection $selection): ?int
     {
-        try {
-            return count($this->getContactService()->findContactsInSelection($selection));
-        } catch (\Throwable $e) {
-            return null;
-        }
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Entity\Contact::class);
+
+        return $repository->findAmountOfContactsInSelection($selection);
     }
 
     /**
      * @return array
      */
-    public function findTags()
+    public function findTags(): array
     {
         /** @var Repository\Selection $repository */
         $repository = $this->getEntityManager()->getRepository(Entity\Selection::class);
@@ -73,7 +100,7 @@ class SelectionService extends ServiceAbstract
      *
      * @return Entity\Selection[]
      */
-    public function findSelectionsByContact(Entity\Contact $contact)
+    public function findSelectionsByContact(Entity\Contact $contact): array
     {
         /** @var Repository\Selection $repository */
         $repository = $this->getEntityManager()->getRepository(Entity\Selection::class);
@@ -87,7 +114,7 @@ class SelectionService extends ServiceAbstract
             /**
              * Skip the deleted selections and the ones the user is in
              */
-            if (! is_null($selection->getSql()) && $this->getContactService()->contactInSelection($contact, $selection)
+            if (!is_null($selection->getSql()) && $this->getContactService()->contactInSelection($contact, $selection)
             ) {
                 $selections[] = $selection;
             }
@@ -104,7 +131,7 @@ class SelectionService extends ServiceAbstract
 
     /**
      * @param Entity\Selection $selection
-     * @param array            $data
+     * @param array $data
      *
      * array (size=5)
      * 'type' => string '2' (length=1)
@@ -114,38 +141,30 @@ class SelectionService extends ServiceAbstract
      *
      *
      */
-    public function updateSelectionContacts(Entity\Selection $selection, array $data)
+    public function updateSelectionContacts(Entity\Selection $selection, array $data): void
     {
         /**
          * First update the selection based on the type
          */
         if ((int)$data['type'] === Entity\Selection::TYPE_FIXED) {
             //remove the query
-            if (! is_null($sql = $selection->getSql())) {
+            if (!is_null($sql = $selection->getSql())) {
                 $this->removeEntity($sql);
             }
 
             //Update the contacts
-            if (! empty($data['added'])) {
+            if (!empty($data['added'])) {
                 foreach (explode(',', $data['added']) as $contactId) {
                     $contact = $this->getContactService()->findContactById($contactId);
 
-                    if (! $contact->isEmpty()
-                         && ! $this->getContactService()->contactInSelection(
-                             $contact,
-                             $selection
-                         )
-                    ) {
-                        $selectionContact = new Entity\SelectionContact();
-                        $selectionContact->setContact($contact);
-                        $selectionContact->setSelection($selection);
-                        $this->newEntity($selectionContact);
+                    if (!$contact->isEmpty()) {
+                        $this->addContactToSelection($selection, $contact);
                     }
                 }
             }
 
             //Update the contacts
-            if (! empty($data['removed'])) {
+            if (!empty($data['removed'])) {
                 foreach (explode(',', $data['removed']) as $contactId) {
                     foreach ($selection->getSelectionContact() as $selectionContact) {
                         if ($selectionContact->getContact()->getId() === (int)$contactId) {
@@ -162,6 +181,20 @@ class SelectionService extends ServiceAbstract
             }
             $selectionSql->setQuery($data['sql']);
             $this->updateEntity($selectionSql);
+        }
+    }
+
+    /**
+     * @param Entity\Selection $selection
+     * @param Entity\Contact $contact
+     */
+    public function addContactToSelection(Entity\Selection $selection, Entity\Contact $contact): void
+    {
+        if (!$this->getContactService()->contactInSelection($contact, $selection)) {
+            $selectionContact = new Entity\SelectionContact();
+            $selectionContact->setContact($contact);
+            $selectionContact->setSelection($selection);
+            $this->newEntity($selectionContact);
         }
     }
 }

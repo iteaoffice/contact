@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\Address;
@@ -41,7 +43,7 @@ class AddressManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (! isset($data['cancel']) && $form->isValid()) {
+            if (!isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $address Address
                  */
@@ -51,11 +53,11 @@ class AddressManagerController extends ContactAbstractController
             }
 
             return $this->redirect()
-                        ->toRoute(
-                            'zfcadmin/contact-admin/view',
-                            ['id' => $contact->getId()],
-                            ['fragment' => 'address']
-                        );
+                ->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $contact->getId()],
+                    ['fragment' => 'address']
+                );
         }
 
         return new ViewModel(
@@ -78,8 +80,8 @@ class AddressManagerController extends ContactAbstractController
          * @var $address Address
          */
         $address = $this->getContactService()->findEntityById(Address::class, $this->params('id'));
-        $data    = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form    = $this->getFormService()->prepare($address, $address, $data);
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $form = $this->getFormService()->prepare($address, $address, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
@@ -88,17 +90,17 @@ class AddressManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->getContactService()->removeEntity($address);
                 $this->flashMessenger()->setNamespace('success')
-                     ->addMessage(sprintf($this->translate("txt-address-has-successfully-been-deleted")));
+                    ->addMessage(sprintf($this->translate("txt-address-has-successfully-been-deleted")));
 
                 return $this->redirect()
-                            ->toRoute(
-                                'zfcadmin/contact-admin/view',
-                                ['id' => $address->getContact()->getId()],
-                                ['fragment' => 'address']
-                            );
+                    ->toRoute(
+                        'zfcadmin/contact-admin/view',
+                        ['id' => $address->getContact()->getId()],
+                        ['fragment' => 'address']
+                    );
             }
 
-            if (! isset($data['cancel']) && $form->isValid()) {
+            if (!isset($data['cancel']) && $form->isValid()) {
                 /*
                 * @var Address
                 */

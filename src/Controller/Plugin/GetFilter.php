@@ -9,12 +9,14 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller\Plugin;
 
 use Zend\Http\Request;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Mvc\Controller\PluginManager;
-use Zend\Mvc\Router\RouteMatch;
+use Zend\Router\Http\RouteMatch;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -38,37 +40,37 @@ class GetFilter extends AbstractPlugin
      */
     public function __invoke()
     {
-        $encodedFilter = urldecode($this->getRouteMatch()->getParam('encodedFilter'));
+        $encodedFilter = urldecode((string) $this->getRouteMatch()->getParam('encodedFilter'));
 
-        $order     = $this->getRequest()->getQuery('order');
+        $order = $this->getRequest()->getQuery('order');
         $direction = $this->getRequest()->getQuery('direction');
 
         //Take the filter from the URL
         $filter = unserialize(base64_decode($encodedFilter));
 
         //If the form is submitted, refresh the URL
-        if ($this->getRequest()->isGet() && ! is_null($this->getRequest()->getQuery('submit'))) {
+        if ($this->getRequest()->isGet() && !is_null($this->getRequest()->getQuery('submit'))) {
             $filter = $this->getRequest()->getQuery()->toArray()['filter'];
         }
 
         //Create a new filter if not set already
-        if (! $filter) {
+        if (!$filter) {
             $filter = [];
         }
 
         //Add a default order and direction if not known in the filter
-        if (! isset($filter['order'])) {
-            $filter['order']     = 'dateCreated';
+        if (!isset($filter['order'])) {
+            $filter['order'] = 'dateCreated';
             $filter['direction'] = 'desc';
         }
 
         //Overrule the order if set in the query
-        if (! is_null($order)) {
+        if (!is_null($order)) {
             $filter['order'] = $order;
         }
 
         //Overrule the direction if set in the query
-        if (! is_null($direction)) {
+        if (!is_null($direction)) {
             $filter['direction'] = $direction;
         }
 

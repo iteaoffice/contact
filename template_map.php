@@ -23,6 +23,7 @@ return array(
     'contact/selection-manager/edit'          => __DIR__ . '//view/contact/selection-manager/edit.twig',
     'contact/selection-manager/edit-contacts' => __DIR__ . '//view/contact/selection-manager/edit-contacts.twig',
     'contact/selection-manager/new'           => __DIR__ . '//view/contact/selection-manager/new.twig',
+    'contact/selection-manager/add-contact'   => __DIR__ . '//view/contact/selection-manager/add-contact.twig',
     'contact/selection-manager/view'          => __DIR__ . '//view/contact/selection-manager/view.twig',
     'contact/selection-manager/list'          => __DIR__ . '//view/contact/selection-manager/list.twig',
     'contact/address-manager/edit'            => __DIR__ . '//view/contact/address-manager/edit.twig',

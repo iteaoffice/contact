@@ -7,6 +7,7 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
+
 use Admin\Entity\Access;
 use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
@@ -145,80 +146,84 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/list',
+                    'route' => 'zfcadmin/selection/list',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/new',
+                    'route' => 'zfcadmin/selection/new',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/edit',
+                    'route' => 'zfcadmin/selection/edit',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/edit-contacts',
+                    'route' => 'zfcadmin/selection/add-contact',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/get-contacts',
+                    'route' => 'zfcadmin/selection/edit-contacts',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/export/csv',
+                    'route' => 'zfcadmin/selection/get-contacts',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/export/excel',
+                    'route' => 'zfcadmin/selection/export/csv',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection-manager/view',
+                    'route' => 'zfcadmin/selection/export/excel',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/facebook-manager/list',
+                    'route' => 'zfcadmin/selection/view',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/facebook-manager/new',
+                    'route' => 'zfcadmin/facebook/list',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/facebook-manager/edit',
+                    'route' => 'zfcadmin/facebook/new',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/facebook-manager/view',
+                    'route' => 'zfcadmin/facebook/edit',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route'     => 'zfcadmin/address-manager/edit',
+                    'route' => 'zfcadmin/facebook/view',
+                    'roles' => [Access::ACCESS_OFFICE],
+                ],
+                [
+                    'route'     => 'zfcadmin/address/edit',
                     'roles'     => [],
                     'assertion' => AddressAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/address-manager/new',
+                    'route'     => 'zfcadmin/address/new',
                     'roles'     => [],
                     'assertion' => AddressAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/phone-manager/edit',
+                    'route'     => 'zfcadmin/phone/edit',
                     'roles'     => [],
                     'assertion' => PhoneAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/phone-manager/new',
+                    'route'     => 'zfcadmin/phone/new',
                     'roles'     => [],
                     'assertion' => PhoneAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/note-manager/edit',
+                    'route'     => 'zfcadmin/note/edit',
                     'roles'     => [],
                     'assertion' => NoteAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/note-manager/new',
+                    'route'     => 'zfcadmin/note/new',
                     'roles'     => [],
                     'assertion' => NoteAssertion::class,
                 ],

@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -39,10 +41,10 @@ class SelectionMailinglist
      * @var array
      */
     protected $privateTemplates
-        = array(
+        = [
             self::NOT_MAIN => 'txt-not-main',
             self::MAIN     => 'txt-main',
-        );
+        ];
     /**
      * @var integer
      *

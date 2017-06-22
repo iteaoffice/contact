@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Navigation\Service;
 
 use Contact\Entity\Contact;
@@ -50,13 +52,13 @@ class ContactNavigationService extends NavigationServiceAbstract
         /*
          * Update the navigation with the facebooks (if a a contact object is present)
          */
-        if (! is_null($this->getContact())) {
+        if (!is_null($this->getContact())) {
             foreach ($this->getContactService()->findFacebookByContact($this->getContact()) as $facebook) {
                 $page = [
                     'label'  => $facebook->getFacebook(),
                     'route'  => 'community/contact/facebook/facebook',
-                    'active' => strtolower($this->getRouteMatch()->getParam('namespace')) === 'contact'
-                                && intval($this->getRouteMatch()->getParam('id')) === $facebook->getId(),
+                    'active' => strtolower((string)$this->getRouteMatch()->getParam('namespace')) === 'contact'
+                        && (int)$this->getRouteMatch()->getParam('id') === $facebook->getId(),
                     'router' => $this->getRouter(),
                     'params' => [
                         'id' => $facebook->getId(),

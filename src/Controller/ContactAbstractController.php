@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Admin\Service\AdminService;
@@ -419,6 +421,25 @@ abstract class ContactAbstractController extends AbstractActionController
     }
 
     /**
+     * @return ProfileSearchService
+     */
+    public function getProfileSearchService(): ProfileSearchService
+    {
+        return $this->profileSearchService;
+    }
+
+    /**
+     * @param ProfileSearchService $profileSearchService
+     * @return ContactAbstractController
+     */
+    public function setProfileSearchService(ProfileSearchService $profileSearchService): ContactAbstractController
+    {
+        $this->profileSearchService = $profileSearchService;
+
+        return $this;
+    }
+
+    /**
      * Proxy for the flash messenger helper to have the string translated earlier.
      *
      * @param $string
@@ -451,25 +472,6 @@ abstract class ContactAbstractController extends AbstractActionController
     public function setViewHelperManager(HelperPluginManager $viewHelperManager): ContactAbstractController
     {
         $this->viewHelperManager = $viewHelperManager;
-
-        return $this;
-    }
-
-    /**
-     * @return ProfileSearchService
-     */
-    public function getProfileSearchService(): ProfileSearchService
-    {
-        return $this->profileSearchService;
-    }
-
-    /**
-     * @param ProfileSearchService $profileSearchService
-     * @return ContactAbstractController
-     */
-    public function setProfileSearchService(ProfileSearchService $profileSearchService): ContactAbstractController
-    {
-        $this->profileSearchService = $profileSearchService;
 
         return $this;
     }

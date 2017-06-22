@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -88,8 +90,8 @@ class OptIn extends EntityAbstract
      */
     public function __construct()
     {
-        $this->contact       = new Collections\ArrayCollection();
-        $this->mailing       = new Collections\ArrayCollection();
+        $this->contact = new Collections\ArrayCollection();
+        $this->mailing = new Collections\ArrayCollection();
         $this->autoSubscribe = self::AUTO_SUBSCRIBE;
     }
 

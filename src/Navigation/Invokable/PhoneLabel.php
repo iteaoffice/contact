@@ -12,6 +12,8 @@
  *
  * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
+declare(strict_types=1);
+
 namespace Contact\Navigation\Invokable;
 
 use Admin\Navigation\Invokable\AbstractNavigationInvokable;

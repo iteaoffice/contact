@@ -8,13 +8,15 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Navigation\Service;
 
 use Contact\Service\ContactService;
 use Zend\I18n\View\Helper\Translate;
-use Zend\Router\Http\RouteMatch;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 use Zend\Navigation\Navigation;
+use Zend\Router\Http\RouteMatch;
 
 /**
  * Factory for the Program admin navigation.

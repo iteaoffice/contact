@@ -9,6 +9,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Service\SelectionService;
@@ -65,7 +67,7 @@ class SelectionFilter extends Form
 
         $tags = [];
         foreach ($selectionService->findTags() as $tag) {
-            if (! empty($tag['tag'])) {
+            if (!empty($tag['tag'])) {
                 $tags[$tag['tag']] = $tag['tag'];
             }
         }

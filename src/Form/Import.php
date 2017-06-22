@@ -13,6 +13,8 @@
  * @link        https://itea3.org
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity\OptIn;
@@ -39,7 +41,7 @@ class Import extends Form implements InputFilterProviderInterface
     /**
      * Import constructor.
      *
-     * @param ContactService   $contactService
+     * @param ContactService $contactService
      * @param SelectionService $selectionService
      */
     public function __construct(ContactService $contactService, SelectionService $selectionService)

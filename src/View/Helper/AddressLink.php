@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Address as AddressAssertion;
@@ -23,8 +25,8 @@ class AddressLink extends LinkAbstract
 {
     /**
      * @param Address|null $address
-     * @param string       $action
-     * @param string       $show
+     * @param string $action
+     * @param string $show
      * @param Contact|null $contact
      *
      * @return string
@@ -40,7 +42,7 @@ class AddressLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (! $this->hasAccess(
+        if (!$this->hasAccess(
             $this->getAddress(),
             AddressAssertion::class,
             $this->getAction()
@@ -63,7 +65,7 @@ class AddressLink extends LinkAbstract
     /**
      * @throws \Exception
      */
-    public function parseAction()
+    public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
@@ -71,11 +73,11 @@ class AddressLink extends LinkAbstract
                     throw new \Exception(sprintf("A contact is needed for a new address"));
                 }
 
-                $this->setRouter('zfcadmin/address-manager/new');
+                $this->setRouter('zfcadmin/address/new');
                 $this->setText($this->translate("txt-new-address"));
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/address-manager/edit');
+                $this->setRouter('zfcadmin/address/edit');
                 $this->setText(
                     sprintf($this->translate("txt-edit-address-%s"), $this->getAddress()->getAddress())
                 );

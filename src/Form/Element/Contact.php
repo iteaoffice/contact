@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form\Element;
 
 use Contact\Entity;
@@ -24,7 +26,7 @@ class Contact extends Element\Select
     /**
      * Contact constructor.
      *
-     * @param null  $name
+     * @param null $name
      * @param array $options
      */
     public function __construct($name = null, $options = [])

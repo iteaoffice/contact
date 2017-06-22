@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\Contact;
@@ -16,6 +18,7 @@ use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Validator\File\ImageSize;
+use Zend\Validator\File\MimeType;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -76,7 +79,7 @@ class ProfileController extends ContactAbstractController
         if ($this->getContactService()->hasOrganisation($contact)) {
             $branches = $this->getOrganisationService()->findBranchesByOrganisation(
                 $contact->getContactOrganisation()
-                        ->getOrganisation()
+                    ->getOrganisation()
             );
         }
 
@@ -107,12 +110,12 @@ class ProfileController extends ContactAbstractController
 
             if ($form->isValid()) {
                 /** @var Contact $contact */
-                $contact  = $form->getData();
+                $contact = $form->getData();
                 $fileData = $this->params()->fromFiles();
-                if (! empty($fileData['file']['name'])) {
+                if (!empty($fileData['file']['name'])) {
                     /** @var Photo $photo */
                     $photo = $contact->getPhoto()->first();
-                    if (! $photo) {
+                    if (!$photo) {
                         //Create a photo element
                         $photo = new Photo();
                     }
@@ -123,10 +126,11 @@ class ProfileController extends ContactAbstractController
                     $imageSizeValidator->isValid($fileData['file']);
                     $photo->setWidth($imageSizeValidator->width);
                     $photo->setHeight($imageSizeValidator->height);
-                    $photo->setContentType(
-                        $this->getGeneralService()
-                             ->findContentTypeByContentTypeName($fileData['file']['type'])
-                    );
+
+                    $fileTypeValidator = new MimeType();
+                    $fileTypeValidator->isValid($fileData['file']);
+                    $photo->setContentType($this->getGeneralService()->findContentTypeByContentTypeName($fileTypeValidator->type));
+
                     $this->getContactService()->updateEntity($photo);
                 }
                 /*
@@ -147,7 +151,7 @@ class ProfileController extends ContactAbstractController
                  */
                 $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
                 $this->flashMessenger()->setNamespace('success')
-                     ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
+                    ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
             }

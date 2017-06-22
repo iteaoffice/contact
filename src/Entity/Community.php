@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -106,27 +108,27 @@ class Community extends EntityAbstract
      */
     public function getInputFilter()
     {
-        if (! $this->inputFilter) {
+        if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
+            $factory = new InputFactory();
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'community',
                         'required' => false,
-                        'filters'  => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                    )
+                        'filters'  => [
+                            ['name' => 'StripTags'],
+                            ['name' => 'StringTrim'],
+                        ],
+                    ]
                 )
             );
             $inputFilter->add(
                 $factory->createInput(
-                    array(
+                    [
                         'name'     => 'type',
                         'required' => false,
-                    )
+                    ]
                 )
             );
             $this->inputFilter = $inputFilter;
@@ -147,11 +149,11 @@ class Community extends EntityAbstract
      */
     public function getArrayCopy()
     {
-        return array(
+        return [
             'community' => $this->community,
             'contact'   => $this->contact,
             'type'      => $this->type,
-        );
+        ];
     }
 
     /**

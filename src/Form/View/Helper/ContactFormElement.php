@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 Jield BV (http://jield.nl)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form\View\Helper;
 
 use Zend\Form\Element\Select;
@@ -150,11 +152,11 @@ class ContactFormElement extends FormElement
         }
 
         $html = $controlLabel . sprintf(
-            $controlWrapper,
-            $controls,
-            $descriptionHelper->render($element),
-            $elementErrorHelper->render($element)
-        );
+                $controlWrapper,
+                $controls,
+                $descriptionHelper->render($element),
+                $elementErrorHelper->render($element)
+            );
         $addtClass = ($element->getMessages()) ? ' has-error' : '';
 
         return sprintf($groupWrapper, $addtClass, $id, $html);

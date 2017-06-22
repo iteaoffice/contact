@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Repository;
 
 use Contact\Entity;
@@ -44,7 +46,7 @@ class Facebook extends EntityRepository
     }
 
     /**
-     * @param Entity\Contact  $contact
+     * @param Entity\Contact $contact
      * @param Entity\Facebook $facebook
      *
      * @return bool

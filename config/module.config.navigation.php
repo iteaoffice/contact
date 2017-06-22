@@ -123,7 +123,7 @@ return [
                                     ],
                                     'edit-address'        => [
                                         'label'   => _('txt-edit-address'),
-                                        'route'   => 'zfcadmin/address-manager/edit',
+                                        'route'   => 'zfcadmin/address/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -136,7 +136,7 @@ return [
                                     ],
                                     'new-address'         => [
                                         'label'   => _('txt-new-address'),
-                                        'route'   => 'zfcadmin/address-manager/new',
+                                        'route'   => 'zfcadmin/address/new',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -149,7 +149,7 @@ return [
                                     ],
                                     'edit-phone'          => [
                                         'label'   => _('txt-edit-phone'),
-                                        'route'   => 'zfcadmin/phone-manager/edit',
+                                        'route'   => 'zfcadmin/phone/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -162,7 +162,7 @@ return [
                                     ],
                                     'new-phone'           => [
                                         'label'   => _('txt-new-phone'),
-                                        'route'   => 'zfcadmin/phone-manager/new',
+                                        'route'   => 'zfcadmin/phone/new',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -185,11 +185,11 @@ return [
                     'selections' => [
                         'label' => _("txt-nav-selection-list"),
                         'order' => 20,
-                        'route' => 'zfcadmin/selection-manager/list',
+                        'route' => 'zfcadmin/selection/list',
                         'pages' => [
                             'view'          => [
                                 'label'   => _('txt-view'),
-                                'route'   => 'zfcadmin/selection-manager/view',
+                                'route'   => 'zfcadmin/selection/view',
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
@@ -202,7 +202,7 @@ return [
                                 'pages'   => [
                                     'edit-selection' => [
                                         'label'   => _('txt-edit-selection'),
-                                        'route'   => 'zfcadmin/selection-manager/edit',
+                                        'route'   => 'zfcadmin/selection/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -212,7 +212,7 @@ return [
                                     ],
                                     'edit-contacts'  => [
                                         'label'   => _('txt-edit-contacts'),
-                                        'route'   => 'zfcadmin/selection-manager/edit-contacts',
+                                        'route'   => 'zfcadmin/selection/edit-contacts',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -222,20 +222,24 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit-contacts' => [
+                            'new-selection' => [
                                 'label' => _('txt-new-selection'),
-                                'route' => 'zfcadmin/selection-manager/new',
+                                'route' => 'zfcadmin/selection/new',
+                            ],
+                            'add-contact'   => [
+                                'label' => _('txt-add-contact-to-selection'),
+                                'route' => 'zfcadmin/selection/add-contact',
                             ],
                         ],
                     ],
                     'facebook'   => [
                         'label' => _("txt-nav-facebook-list"),
-                        'route' => 'zfcadmin/facebook-manager/list',
+                        'route' => 'zfcadmin/facebook/list',
                         'order' => 40,
                         'pages' => [
                             'view-facebook' => [
                                 'label'   => _('txt-view'),
-                                'route'   => 'zfcadmin/facebook-manager/view',
+                                'route'   => 'zfcadmin/facebook/view',
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
@@ -248,7 +252,7 @@ return [
                                 'pages'   => [
                                     'edit-facebook' => [
                                         'label'   => _('txt-edit-facebook'),
-                                        'route'   => 'zfcadmin/facebook-manager/edit',
+                                        'route'   => 'zfcadmin/facebook/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [

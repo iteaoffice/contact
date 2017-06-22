@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -55,30 +57,30 @@ class Profile extends EntityAbstract
      * @var array
      */
     protected $hideForOthersTemplates
-        = array(
+        = [
             self::NOT_HIDE_FOR_OTHERS => 'txt-not-hide-for-others',
             self::HIDE_FOR_OTHERS     => 'txt-hide-for-others',
-        );
+        ];
     /**
      * Textual versions of the hideForOthers.
      *
      * @var array
      */
     protected $hidePhotoTemplates
-        = array(
+        = [
             self::NOT_HIDE_PHOTO => 'txt-not-hide-photo',
             self::HIDE_PHOTO     => 'txt-hide-photo',
-        );
+        ];
     /**
      * Textual versions of the visibility.
      *
      * @var array
      */
     protected $visibleTemplates
-        = array(
+        = [
             self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
             self::VISIBLE_COMMUNITY => 'txt-visibility-community',
-        );
+        ];
     /**
      * @ORM\Column(name="profile_id", type="integer", nullable=false)
      * @ORM\Id
@@ -144,7 +146,7 @@ class Profile extends EntityAbstract
     public function __construct()
     {
         $this->hideForOthers = self::NOT_HIDE_FOR_OTHERS;
-        $this->hidePhoto     = self::NOT_HIDE_PHOTO;
+        $this->hidePhoto = self::NOT_HIDE_PHOTO;
     }
 
     /**

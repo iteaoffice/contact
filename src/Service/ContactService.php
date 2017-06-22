@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
@@ -103,7 +105,7 @@ class ContactService extends ServiceAbstract
     /**
      * @return \Doctrine\ORM\Query
      */
-    public function findAllContacts()
+    public function findAllContacts(): \Doctrine\ORM\Query
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -288,7 +290,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Address
      */
-    public function getMailAddress(Contact $contact)
+    public function getMailAddress(Contact $contact): ?Address
     {
         return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_MAIL);
     }
@@ -304,7 +306,7 @@ class ContactService extends ServiceAbstract
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      */
-    public function getAddressByTypeId(Contact $contact, $typeId)
+    public function getAddressByTypeId(Contact $contact, $typeId): ?Address
     {
         /**
          * @var AddressType $addressType
@@ -377,7 +379,7 @@ class ContactService extends ServiceAbstract
      *
      * @return null|Phone
      */
-    private function getPhoneByContactAndType(Contact $contact, $type)
+    private function getPhoneByContactAndType(Contact $contact, $type): ?Phone
     {
         if (!in_array($type, PhoneType::getPhoneTypes())) {
             throw new \InvalidArgumentException(sprintf("A invalid phone type chosen"));
@@ -807,9 +809,9 @@ class ContactService extends ServiceAbstract
         if (!is_null($selection->getSql())) {
             //We have a dynamic query, check if the contact is in the selection
             return $repository->findContactsBySelectionSQL($selection->getSql(), $toArray);
-        } else {
-            return $repository->findContactsBySelectionContact($selection);
         }
+
+        return $repository->findContactsBySelectionContact($selection, $toArray);
     }
 
     /**

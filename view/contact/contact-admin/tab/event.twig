@@ -41,3 +41,5 @@
 {% else %}
     {{ ztbalert().info(translate("txt-no-event-registrations-were-found-for-this-contact"))|raw }}
 {% endif %}
+
+{{ registrationLink(null, 'add-contact', 'button', null, contact) }}

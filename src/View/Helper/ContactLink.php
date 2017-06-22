@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
@@ -65,9 +67,9 @@ class ContactLink extends LinkAbstract
                 'firstname'       => $this->getContact()->getFirstName(),
                 'initials'        => sprintf(
                     "%s%s%s",
-                    substr($this->getContact()->getFirstName(), 0, 1),
-                    substr($this->getContact()->getMiddleName(), 0, 1),
-                    substr($this->getContact()->getLastName(), 0, 1)
+                    substr((string)$this->getContact()->getFirstName(), 0, 1),
+                    substr((string)$this->getContact()->getMiddleName(), 0, 1),
+                    substr((string)$this->getContact()->getLastName(), 0, 1)
                 ),
                 'name'            => $this->getContact()->getDisplayName(),
             ]
@@ -81,7 +83,7 @@ class ContactLink extends LinkAbstract
     /**
      * @throws \Exception
      */
-    public function parseAction()
+    public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':

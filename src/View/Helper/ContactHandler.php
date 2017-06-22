@@ -8,6 +8,8 @@
  * @copyright  Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Contact\Entity\OptIn;
@@ -70,7 +72,7 @@ class ContactHandler extends AbstractViewHelper
                 case 'optin':
                     $optInId = $this->findParamValueFromContent($content, $parameter);
 
-                    if (! is_null($optInId)) {
+                    if (!is_null($optInId)) {
                         /** @var OptIn $optIn */
                         $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
                         $this->setOptIn($optIn);
@@ -82,7 +84,7 @@ class ContactHandler extends AbstractViewHelper
 
     /**
      * @param Content $content
-     * @param Param   $param
+     * @param Param $param
      *
      * @return null|string
      */
@@ -90,13 +92,13 @@ class ContactHandler extends AbstractViewHelper
     {
 
         //Try first to see if the param can be found from the route (rule 1)
-        if (! is_null($this->getRouteMatch()->getParam($param->getParam()))) {
+        if (!is_null($this->getRouteMatch()->getParam($param->getParam()))) {
             return $this->getRouteMatch()->getParam($param->getParam());
         }
 
         //If it cannot be found, try to find it from the docref (rule 2)
         foreach ($content->getContentParam() as $contentParam) {
-            if ($contentParam->getParameter() === $param && ! empty($contentParam->getParameterId())) {
+            if ($contentParam->getParameter() === $param && !empty($contentParam->getParameterId())) {
                 return $contentParam->getParameterId();
             }
         }
@@ -126,7 +128,7 @@ class ContactHandler extends AbstractViewHelper
                 'includeAngularApp' => true,
                 'optIn'             => $optIn,
                 'hasIdentity'       => $this->getServiceManager()->get('Application\Authentication\Service')
-                                            ->hasIdentity(),
+                    ->hasIdentity(),
             ]
         );
     }

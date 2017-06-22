@@ -15,7 +15,7 @@ return [
         'routes' => [
             'zfcadmin' => [
                 'child_routes' => [
-                    'contact-admin'     => [
+                    'contact-admin' => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/contact',
@@ -111,7 +111,7 @@ return [
                             ],
                         ],
                     ],
-                    'selection-manager' => [
+                    'selection'     => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/selection',
@@ -164,6 +164,15 @@ return [
                                     ],
                                 ],
                             ],
+                            'add-contact'   => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/add-contact/contact-[:contactId].html',
+                                    'defaults' => [
+                                        'action' => 'add-contact',
+                                    ],
+                                ],
+                            ],
                             'edit-contacts' => [
                                 'type'    => 'Segment',
                                 'options' => [
@@ -213,7 +222,7 @@ return [
                             ],
                         ],
                     ],
-                    'facebook-manager'  => [
+                    'facebook'      => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/facebook',
@@ -267,7 +276,7 @@ return [
                             ],
                         ],
                     ],
-                    'address-manager'   => [
+                    'address'       => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/address',
@@ -299,7 +308,7 @@ return [
                             ],
                         ],
                     ],
-                    'phone-manager'     => [
+                    'phone'         => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/phone',
@@ -331,7 +340,7 @@ return [
                             ],
                         ],
                     ],
-                    'note-manager'      => [
+                    'note'          => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/note',

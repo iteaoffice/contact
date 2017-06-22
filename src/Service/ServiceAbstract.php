@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Service;
 
 use Admin\Service\AdminService;
@@ -103,7 +105,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @return \Doctrine\ORM\EntityManager
      */
-    public function getEntityManager()
+    public function getEntityManager(): \Doctrine\ORM\EntityManager
     {
         return $this->entityManager;
     }
@@ -129,7 +131,7 @@ abstract class ServiceAbstract implements ServiceInterface
     public function findEntitiesFiltered($entity, $filter)
     {
         $equipmentList = $this->getEntityManager()->getRepository($entity)
-                              ->findFiltered($filter, AbstractQuery::HYDRATE_SIMPLEOBJECT);
+            ->findFiltered($filter, AbstractQuery::HYDRATE_SIMPLEOBJECT);
 
         return $equipmentList;
     }

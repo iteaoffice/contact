@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
@@ -27,10 +29,10 @@ class FacebookLink extends LinkAbstract
 
     /**
      * @param Facebook $facebook
-     * @param string   $action
-     * @param string   $show
-     * @param null     $page
-     * @param null     $alternativeShow
+     * @param string $action
+     * @param string $show
+     * @param null $page
+     * @param null $alternativeShow
      *
      * @return string
      *
@@ -49,14 +51,14 @@ class FacebookLink extends LinkAbstract
         $this->setShow($show);
         $this->setPage($page);
 
-        if (! $this->hasAccess($this->getFacebook(), FacebookAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($this->getFacebook(), FacebookAssertion::class, $this->getAction())) {
             return '';
         }
 
         /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
-        if (! is_null($alternativeShow)) {
+        if (!is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($page);
@@ -95,26 +97,28 @@ class FacebookLink extends LinkAbstract
     /**
      * @throws \Exception
      */
-    public function parseAction()
+    public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
-                $this->setRouter('zfcadmin/facebook-manager/new');
+                $this->setRouter('zfcadmin/facebook/new');
                 $this->setText($this->translate("txt-new-facebook"));
                 break;
             case 'list':
-                $this->setRouter('zfcadmin/facebook-manager/list');
+                $this->setRouter('zfcadmin/facebook/list');
                 $this->setText($this->translate("txt-list-facebooks"));
 
-                foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
-                    $param) {
+                foreach (
+                    $this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
+                    $param
+                ) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
 
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/facebook-manager/edit');
+                $this->setRouter('zfcadmin/facebook/edit');
                 $this->setText(sprintf($this->translate("txt-edit-facebook-%s"), $this->getFacebook()->getFacebook()));
                 break;
             case 'view-community':
@@ -131,7 +135,7 @@ class FacebookLink extends LinkAbstract
                 );
                 break;
             case 'view-admin':
-                $this->setRouter('zfcadmin/facebook-manager/view');
+                $this->setRouter('zfcadmin/facebook/view');
                 $this->setText(sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook()));
                 break;
             default:

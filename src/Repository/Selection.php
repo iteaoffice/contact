@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Repository;
 
 use Contact\Entity;
@@ -89,6 +91,46 @@ class Selection extends EntityRepository
     /**
      * @return iterable
      */
+    public function findSqlSelections(): iterable
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('contact_entity_selection');
+        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
+        $queryBuilder->innerJoin('contact_entity_selection.sql', 'contact_entity_selection_sql');
+        $queryBuilder->orderBy('contact_entity_selection.selection', 'ASC');
+
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+
+    /**
+     * @return iterable
+     */
+    public function findNonSqlSelections(): iterable
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('contact_entity_selection');
+        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
+        $queryBuilder->orderBy('contact_entity_selection.selection', 'ASC');
+
+        $subSelect = $this->_em->createQueryBuilder();
+        $subSelect->select('contact_entity_selection_sub.id');
+        $subSelect->from(Entity\SelectionSql::class, 'contact_entity_selection_sql');
+        $subSelect->join('contact_entity_selection_sql.selection', 'contact_entity_selection_sub');
+
+        $queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_selection.id', $subSelect->getDQL()));
+
+        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+
+    /**
+     * @return iterable
+     */
     public function findTags(): iterable
     {
         $queryBuilder = $this->_em->createQueryBuilder();
@@ -103,9 +145,9 @@ class Selection extends EntityRepository
     }
 
     /**
-     * @return array
+     * @return iterable
      */
-    public function findActive()
+    public function findActive(): iterable
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_selection');

@@ -12,6 +12,8 @@
  *
  * @link        http://github.com/iteaoffice/main for the canonical source repository
  */
+declare(strict_types=1);
+
 namespace Contact\Factory;
 
 use Contact\Service\ContactService;
@@ -30,7 +32,7 @@ final class SelectionServiceFactory implements FactoryInterface
     /**
      * @param ContainerInterface $container
      * @param                    $requestedName
-     * @param array|null         $options
+     * @param array|null $options
      *
      * @return SelectionService
      */

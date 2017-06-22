@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
@@ -66,7 +68,7 @@ class FacebookManagerController extends ContactAbstractController
             $facebook = $form->getData();
             $facebook = $this->getContactService()->newEntity($facebook);
 
-            return $this->redirect()->toRoute('zfcadmin/facebook-manager/view', ['id' => $facebook->getId()]);
+            return $this->redirect()->toRoute('zfcadmin/facebook/view', ['id' => $facebook->getId()]);
         }
 
         return new ViewModel(['form' => $form]);
@@ -83,8 +85,8 @@ class FacebookManagerController extends ContactAbstractController
          * @var $facebook Facebook
          */
         $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
-        $data     = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form     = $this->getFormService()->prepare($facebook, $facebook, $data);
+        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $form = $this->getFormService()->prepare($facebook, $facebook, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             if (isset($data['delete'])) {
@@ -95,16 +97,16 @@ class FacebookManagerController extends ContactAbstractController
 
                 $this->getContactService()->removeEntity($facebook);
                 $this->flashMessenger()->setNamespace('success')
-                     ->addMessage(sprintf($this->translate("txt-facebook-has-successfully-been-deleted")));
+                    ->addMessage(sprintf($this->translate("txt-facebook-has-successfully-been-deleted")));
 
-                return $this->redirect()->toRoute('zfcadmin/facebook-manager/list');
+                return $this->redirect()->toRoute('zfcadmin/facebook/list');
             }
 
-            if (! isset($data['cancel'])) {
+            if (!isset($data['cancel'])) {
                 $facebook = $this->getContactService()->updateEntity($facebook);
             }
 
-            return $this->redirect()->toRoute('zfcadmin/facebook-manager/view', ['id' => $facebook->getId()]);
+            return $this->redirect()->toRoute('zfcadmin/facebook/view', ['id' => $facebook->getId()]);
         }
 
         return new ViewModel(['form' => $form]);

@@ -13,6 +13,8 @@
  * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity;
@@ -20,8 +22,11 @@ use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntitySelect;
+use Organisation\Form\Element\Organisation;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\File;
 use Zend\Form\Element\Radio;
+use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
 
 /**
@@ -32,7 +37,7 @@ use Zend\Form\Fieldset;
 class ContactFieldset extends Fieldset
 {
     /**
-     * @param EntityManager         $entityManager
+     * @param EntityManager $entityManager
      * @param Entity\EntityAbstract $object
      */
     public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
@@ -59,7 +64,7 @@ class ContactFieldset extends Fieldset
                 );
             }
             if ($element instanceof Radio) {
-                $attributes        = $element->getAttributes();
+                $attributes = $element->getAttributes();
                 $valueOptionsArray = 'get' . ucfirst($attributes['array']);
                 $element->setOptions(
                     array_merge_recursive(
@@ -78,7 +83,7 @@ class ContactFieldset extends Fieldset
 
         $this->add(
             [
-                'type'    => '\Organisation\Form\Element\Organisation',
+                'type'    => Organisation::class,
                 'name'    => 'organisation',
                 'options' => [
                     "label"      => _("txt-organisation"),
@@ -89,11 +94,22 @@ class ContactFieldset extends Fieldset
 
         $this->add(
             [
-                'type'    => '\Zend\Form\Element\Text',
+                'type'    => Text::class,
                 'name'    => 'branch',
                 'options' => [
                     "label"      => _("txt-branch"),
                     "help-block" => _("txt-branch-help-block"),
+                ],
+            ]
+        );
+
+        $this->add(
+            [
+                'type'    => File::class,
+                'name'    => 'file',
+                'options' => [
+                    "label"      => _("txt-contact-photo-label"),
+                    "help-block" => _("txt-contact-photo-help-block"),
                 ],
             ]
         );

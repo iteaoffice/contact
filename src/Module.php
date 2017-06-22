@@ -13,6 +13,8 @@
  * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
 
+declare(strict_types=1);
+
 namespace Contact;
 
 use Contact\Navigation\Service\ContactNavigationService;
@@ -22,6 +24,7 @@ use Zend\ModuleManager\Feature;
 use Zend\Mvc\MvcEvent;
 
 //Makes the module class more strict
+
 /**
  *
  */

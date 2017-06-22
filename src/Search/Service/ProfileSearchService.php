@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Search\Service;
 
 use Contact\Entity\Contact;
@@ -131,6 +133,26 @@ class ProfileSearchService extends AbstractSearchService
     }
 
     /**
+     * @return ContactService
+     */
+    public function getContactService()
+    {
+        return $this->contactService;
+    }
+
+    /**
+     * @param ContactService $contactService
+     *
+     * @return ProfileSearchService
+     */
+    public function setContactService(ContactService $contactService): ProfileSearchService
+    {
+        $this->contactService = $contactService;
+
+        return $this;
+    }
+
+    /**
      * @param string $searchTerm
      * @param string $order
      * @param string $direction
@@ -175,26 +197,6 @@ class ProfileSearchService extends AbstractSearchService
             $facetSet->createFacetField('organisation')->setField('organisation')->setMinCount(1);
         }
         $facetSet->createFacetField('country')->setField('country')->setMinCount(1)->setExcludes(['country']);
-
-        return $this;
-    }
-
-    /**
-     * @return ContactService
-     */
-    public function getContactService()
-    {
-        return $this->contactService;
-    }
-
-    /**
-     * @param ContactService $contactService
-     *
-     * @return ProfileSearchService
-     */
-    public function setContactService(ContactService $contactService): ProfileSearchService
-    {
-        $this->contactService = $contactService;
 
         return $this;
     }

@@ -13,6 +13,8 @@
  * @link        http://github.com/iteaoffice/contact for the canonical source repository
  */
 
+declare(strict_types=1);
+
 namespace Contact\Service;
 
 use Contact\Entity\EntityAbstract;

@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Note as NoteAssertion;
@@ -22,9 +24,9 @@ use Contact\Entity\Note;
 class NoteLink extends LinkAbstract
 {
     /**
-     * @param Note|null    $note
-     * @param string       $action
-     * @param string       $show
+     * @param Note|null $note
+     * @param string $action
+     * @param string $show
      * @param Contact|null $contact
      *
      * @return string
@@ -40,7 +42,7 @@ class NoteLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (! $this->hasAccess($this->getNote(), NoteAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($this->getNote(), NoteAssertion::class, $this->getAction())) {
             return '';
         }
 
@@ -58,7 +60,7 @@ class NoteLink extends LinkAbstract
     /**
      * @throws \Exception
      */
-    public function parseAction()
+    public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
@@ -66,11 +68,11 @@ class NoteLink extends LinkAbstract
                     throw new \Exception(sprintf("A contact is needed for a new note"));
                 }
 
-                $this->setRouter('zfcadmin/note-manager/new');
+                $this->setRouter('zfcadmin/note/new');
                 $this->setText($this->translate("txt-new-note"));
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/note-manager/edit');
+                $this->setRouter('zfcadmin/note/edit');
                 $this->setText(sprintf($this->translate("txt-edit-note-%s"), $this->getNote()->getNote()));
                 break;
             default:

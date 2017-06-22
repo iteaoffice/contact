@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -209,16 +211,16 @@ class Selection extends EntityAbstract
      */
     public function __construct()
     {
-        $this->private  = self::NOT_PRIVATE;
+        $this->private = self::NOT_PRIVATE;
         $this->personal = self::NOT_PERSONAL;
 
-        $this->selectionContact  = new Collections\ArrayCollection();
-        $this->mailingList       = new Collections\ArrayCollection();
-        $this->mailing           = new Collections\ArrayCollection();
-        $this->meeting           = new Collections\ArrayCollection();
+        $this->selectionContact = new Collections\ArrayCollection();
+        $this->mailingList = new Collections\ArrayCollection();
+        $this->mailing = new Collections\ArrayCollection();
+        $this->meeting = new Collections\ArrayCollection();
         $this->meetingOptionCost = new Collections\ArrayCollection();
-        $this->meetingCost       = new Collections\ArrayCollection();
-        $this->access            = new Collections\ArrayCollection();
+        $this->meetingCost = new Collections\ArrayCollection();
+        $this->access = new Collections\ArrayCollection();
     }
 
     /**
@@ -258,6 +260,15 @@ class Selection extends EntityAbstract
     public function __set($property, $value)
     {
         $this->$property = $value;
+    }
+
+    /**
+     * @param $property
+     * @return bool
+     */
+    public function __isset($property)
+    {
+        return isset($this->$property);
     }
 
     /**

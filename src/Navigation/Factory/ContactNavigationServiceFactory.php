@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Navigation\Factory;
 
 use Contact\Navigation\Service\ContactNavigationService;
@@ -25,8 +27,8 @@ final class ContactNavigationServiceFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param array|null         $options
+     * @param string $requestedName
+     * @param array|null $options
      *
      * @return ContactNavigationService
      */
@@ -49,7 +51,7 @@ final class ContactNavigationServiceFactory implements FactoryInterface
         if ($container->get('Application\Authentication\Service')->hasIdentity()) {
             $contactNavigationService->setContact(
                 $container->get('Application\Authentication\Service')
-                          ->getIdentity()
+                    ->getIdentity()
             );
         }
 

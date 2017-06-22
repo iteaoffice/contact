@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity\Contact;
@@ -33,9 +35,9 @@ class Profile extends Form
     /**
      * Profile constructor.
      *
-     * @param EntityManager  $entityManager
+     * @param EntityManager $entityManager
      * @param ContactService $contactService
-     * @param Contact        $contact
+     * @param Contact $contact
      */
     public function __construct(EntityManager $entityManager, ContactService $contactService, Contact $contact)
     {
@@ -242,12 +244,12 @@ class Profile extends Form
                         ],
                     ],
                     'label_generator'           => function (Organisation $organisation) {
-                        if (! is_null($organisation->getCountry())) {
+                        if (!is_null($organisation->getCountry())) {
                             return sprintf(
                                 "%s (%s) [VAT: %s]",
                                 $organisation->getOrganisation(),
                                 $organisation->getCountry()->getCountry(),
-                                (! is_null($organisation->getFinancial()) ? $organisation->getFinancial()->getVat()
+                                (!is_null($organisation->getFinancial()) ? $organisation->getFinancial()->getVat()
                                     : 'unknown')
                             );
                         } else {
@@ -256,7 +258,7 @@ class Profile extends Form
                     },
                 ],
                 'attributes' => [
-                    'required' => ! is_null($contact->getContactOrganisation()),
+                    'required' => !is_null($contact->getContactOrganisation()),
                     //Only required when a contact has an organisation
                     'id'       => 'organisation',
                 ],
@@ -344,7 +346,7 @@ class Profile extends Form
          * Produce a list of all phone numbers
          */
         $profileFieldSet = new Fieldset('profile');
-        $profileEntity   = new ProfileEntity();
+        $profileEntity = new ProfileEntity();
         $profileFieldSet->add(
             [
                 'type'    => 'Zend\Form\Element\Radio',
