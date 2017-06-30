@@ -35,7 +35,7 @@ class ContactPhoto extends ImageAbstract
         $responsive = true,
         $classes = []
     ): string {
-        if ($contact->getPhoto()->isEmpty()) {
+        if (empty($contact->getPhoto()) || $contact->getPhoto()->isEmpty()) {
             return sprintf(
                 '<img src="assets/' . ITEAOFFICE_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
                 !($responsive && is_null($width)) ?: implode(' ', ['img-responsive']),
