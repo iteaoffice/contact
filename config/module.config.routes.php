@@ -79,11 +79,12 @@ return [
                                     ],
                                 ],
                                 'child_routes' => [
-                                    'facebook'     => [
+                                    'view'         => [
                                         'type'     => 'Segment',
                                         'priority' => 1000,
                                         'options'  => [
-                                            'route'    => '/[:id].html',
+                                            'route'    => '/facebook-[:facebook].html',
+                                            //No id, because it gives issues with the dynamic menu
                                             'defaults' => [
                                                 'action' => 'facebook',
                                             ],

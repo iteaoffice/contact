@@ -25,33 +25,33 @@ return [
              */
             'BjyAuthorize\Guard\Route' => [
                 [
-                    'route'     => 'community/contact/facebook/facebook',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'route'     => 'community/contact/facebook/view',
+                    'roles'     => [],
                     'assertion' => FacebookAssertion::class,
                 ],
                 [
                     'route'     => 'community/contact/facebook/send-message',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => FacebookAssertion::class,
                 ],
                 [
                     'route'     => 'community/contact/profile/edit',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'community/contact/profile/view',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'community/contact/profile/contact',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'community/contact/signature',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
@@ -61,12 +61,12 @@ return [
                 ],
                 [
                     'route'     => 'community/contact/get-address-by-type',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'community/contact/opt-in-update',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
@@ -78,12 +78,12 @@ return [
                 ],
                 [
                     'route'     => 'community/contact/change-password',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'community/contact/photo',
-                    'roles'     => [strtolower(Access::ACCESS_USER)],
+                    'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
                 [

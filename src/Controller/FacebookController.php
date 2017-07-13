@@ -35,8 +35,9 @@ class FacebookController extends ContactAbstractController
         /**
          * @var Facebook $facebook
          */
-        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
-        $view = new ViewModel(
+        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('facebook'));
+
+        return new ViewModel(
             [
                 'facebook'          => $facebook,
                 'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
@@ -47,15 +48,10 @@ class FacebookController extends ContactAbstractController
                 ),
             ]
         );
-        $view->setTemplate($this->getContactService()->getFacebookTemplate());
-
-        return $view;
     }
 
     /**
-     * Special action which produces an HTML version of the review calendar.
-     *
-     * @return ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function sendMessageAction()
     {
@@ -64,7 +60,7 @@ class FacebookController extends ContactAbstractController
          */
         $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
 
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = new SendMessage();
         $form->setData($data);

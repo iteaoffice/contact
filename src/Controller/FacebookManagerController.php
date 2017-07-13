@@ -57,7 +57,7 @@ class FacebookManagerController extends ContactAbstractController
      */
     public function newAction()
     {
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = $this->getFormService()->prepare(Facebook::class, null, $data);
 
@@ -85,7 +85,7 @@ class FacebookManagerController extends ContactAbstractController
          * @var $facebook Facebook
          */
         $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
         $form = $this->getFormService()->prepare($facebook, $facebook, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {

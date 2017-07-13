@@ -17,25 +17,18 @@ declare(strict_types=1);
 
 namespace Contact\InputFilter;
 
-use Doctrine\ORM\EntityManager;
 use Zend\InputFilter\InputFilter;
 
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
- *
- * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * Class FacebookFilter
+ * @package Contact\InputFilter
  */
 class FacebookFilter extends InputFilter
 {
     /**
-     * ContactFilter constructor.
-     *
-     * @param EntityManager $entityManager
+     * FacebookFilter constructor.
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct()
     {
         $inputFilter = new InputFilter();
         $inputFilter->add(

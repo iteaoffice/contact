@@ -14,7 +14,7 @@ namespace Contact\Navigation\Service;
 
 use Contact\Service\ContactService;
 use Zend\I18n\View\Helper\Translate;
-use Zend\Mvc\Router\Http\TreeRouteStack;
+use Zend\Router\Http\TreeRouteStack;
 use Zend\Navigation\Navigation;
 use Zend\Router\Http\RouteMatch;
 

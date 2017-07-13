@@ -37,7 +37,7 @@ class NoteManagerController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = $this->getFormService()->prepare(Note::class, null, $data);
         $form->remove('delete');
@@ -80,7 +80,7 @@ class NoteManagerController extends ContactAbstractController
          * @var $note Note
          */
         $note = $this->getContactService()->findEntityById(Note::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
         $form = $this->getFormService()->prepare($note, $note, $data);
 
         if ($this->getRequest()->isPost()) {

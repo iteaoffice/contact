@@ -15,7 +15,6 @@ use Admin\Service\AdminService;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
 use Zend\Authentication\AuthenticationService;
-use Zend\Cache\StorageFactory;
 use Zend\Permissions\Acl\Role\RoleInterface;
 
 /**
@@ -29,23 +28,13 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
      * @var AdminService;
      */
     protected $adminService;
-    /**
-     * @var StorageFactory
-     */
-    protected $cache;
-    /**
-     * @var array
-     */
-    protected $config;
 
     /**
      * AuthenticationIdentityProvider constructor.
-     *
      * @param AuthenticationService $authService
      * @param AdminService $adminService
-     * @param array|null $options
      */
-    public function __construct(AuthenticationService $authService, AdminService $adminService, array $options = null)
+    public function __construct(AuthenticationService $authService, AdminService $adminService)
     {
         parent::__construct($authService);
         $this->adminService = $adminService;
@@ -54,7 +43,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     /**
      * {@inheritDoc}
      */
-    public function getIdentityRoles()
+    public function getIdentityRoles(): array
     {
         if (!$identity = $this->authService->getIdentity()) {
             return [$this->defaultRole];

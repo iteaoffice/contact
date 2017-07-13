@@ -34,8 +34,12 @@ class Facebook extends AssertionAbstract
      *
      * @return bool
      */
-    public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $facebook = null, $privilege = null)
-    {
+    public function assert(
+        Acl $acl,
+        RoleInterface $role = null,
+        ResourceInterface $facebook = null,
+        $privilege = null
+    ): bool {
         /*
          * A meeting can be shown when we have a contact
          */
@@ -47,10 +51,13 @@ class Facebook extends AssertionAbstract
         $id = $this->getId();
 
         if (!$facebook instanceof FacebookEntity && !is_null($id)) {
-            /*
-             * @var FacebookEntity
-             */
+            /** @var FacebookEntity $facebook */
             $facebook = $this->getContactService()->findEntityById(FacebookEntity::class, $id);
+        }
+
+        if (!$facebook instanceof FacebookEntity && $facebook = $this->getRouteMatch()->getParam('facebook')) {
+            /** @var FacebookEntity $facebook */
+            $facebook = $this->getContactService()->findEntityById(FacebookEntity::class, $facebook);
         }
 
         switch ($this->getPrivilege()) {

@@ -12,12 +12,8 @@ declare(strict_types=1);
 
 namespace Contact\Entity;
 
-use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Phone.
@@ -62,7 +58,7 @@ class PhoneType extends EntityAbstract
      */
     public function __construct()
     {
-        $this->address = new Collections\ArrayCollection();
+
     }
 
     /**
@@ -70,7 +66,7 @@ class PhoneType extends EntityAbstract
      *
      * @return array
      */
-    public static function getPhoneTypes()
+    public static function getPhoneTypes(): array
     {
         return [
             self::PHONE_TYPE_DIRECT,
@@ -104,69 +100,14 @@ class PhoneType extends EntityAbstract
     }
 
     /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
+     * @param $property
+     * @return bool
      */
-    public function setInputFilter(InputFilterInterface $inputFilter)
+    public function __isset($property)
     {
-        throw new \Exception("Setting an inputFilter is currently not supported");
+        return isset($this->$property);
     }
 
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (!$this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'       => 'type',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
-                        ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 100,
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
-    /**
-     * Needed for the hydration of form elements.
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return [
-            'type' => $this->type,
-        ];
-    }
 
     /**
      * @return string

@@ -74,7 +74,7 @@ class SelectionManagerController extends ContactAbstractController
          */
 
         try {
-            $contacts = $this->getContactService()->findContactsInSelectionAsArray($selection);
+            $contacts = $this->getContactService()->findContactsInSelection($selection, true);
 
             $error = false;
         } catch (\Throwable $e) {
@@ -199,7 +199,7 @@ class SelectionManagerController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $data = array_merge($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = $this->getFormService()->prepare($selection, $selection, $data);
 
@@ -265,7 +265,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $selection = new Selection();
 
-        $data = array_merge($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = $this->getFormService()->prepare($selection, $selection, $data);
         $form->remove('delete');
@@ -351,7 +351,7 @@ class SelectionManagerController extends ContactAbstractController
         }
 
         // Open the output stream
-        $fh = fopen('php://output', 'w');
+        $fh = fopen('php://output', 'wb');
 
         ob_start();
 
@@ -373,8 +373,8 @@ class SelectionManagerController extends ContactAbstractController
                     $contact['email'],
                     $contact['firstName'],
                     trim(sprintf("%s %s", $contact['middleName'], $contact['lastName'])),
-                    $contact['organisation'],
-                    $contact['country'],
+                    $contact['contactOrganisation']['organisation']['organisation'] ?? null,
+                    $contact['contactOrganisation']['organisation']['country']['iso3'] ?? null,
                 ]
             );
         }

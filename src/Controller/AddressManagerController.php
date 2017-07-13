@@ -37,7 +37,7 @@ class AddressManagerController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = $this->getFormService()->prepare(Address::class, null, $data);
         $form->remove('delete');
@@ -80,7 +80,7 @@ class AddressManagerController extends ContactAbstractController
          * @var $address Address
          */
         $address = $this->getContactService()->findEntityById(Address::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
         $form = $this->getFormService()->prepare($address, $address, $data);
 
         if ($this->getRequest()->isPost()) {

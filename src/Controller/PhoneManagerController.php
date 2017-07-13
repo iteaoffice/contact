@@ -35,7 +35,7 @@ class PhoneManagerController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = $this->getFormService()->prepare(Phone::class, null, $data);
         $form->remove('delete');
@@ -72,7 +72,7 @@ class PhoneManagerController extends ContactAbstractController
          * @var $phone Phone
          */
         $phone = $this->getContactService()->findEntityById(Phone::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
         $form = $this->getFormService()->prepare($phone, $phone, $data);
 
         if ($this->getRequest()->isPost()) {

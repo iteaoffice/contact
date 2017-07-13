@@ -34,7 +34,7 @@ class ContactLabel extends AbstractNavigationInvokable
      *
      * @return void
      */
-    public function __invoke(Mvc $page)
+    public function __invoke(Mvc $page): void
     {
         if ($this->getEntities()->containsKey(Contact::class)) {
             /** @var Contact $contact */
@@ -42,8 +42,7 @@ class ContactLabel extends AbstractNavigationInvokable
 
             $page->setParams(
                 array_merge(
-                    $page->getParams(),
-                    [
+                    $page->getParams(), [
                         'id' => $contact->getId(),
                     ]
                 )

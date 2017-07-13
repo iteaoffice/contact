@@ -30,16 +30,18 @@
     {{ ztbformelement(contactFieldset.get('position')) }}
 </fieldset>
 
-<fieldset>
-    <legend>{{ translate("txt-photo") }}</legend>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">{{ translate("txt-current-photo") }}</label>
+{% if contact.id %}
+    <fieldset>
+        <legend>{{ translate("txt-photo") }}</legend>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">{{ translate("txt-current-photo") }}</label>
 
-        <div class="col-sm-9">
-            <p class="form-control-static">{{ contactPhoto(contact, 400) }}</p>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{ contactPhoto(contact, 400) }}</p>
+            </div>
         </div>
-    </div>
-</fieldset>
+    </fieldset>
+{% endif %}
 
 {{ ztbformelement(contactFieldset.get('file')) }}
 

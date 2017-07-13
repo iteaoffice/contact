@@ -35,7 +35,7 @@ class PhoneLabel extends AbstractNavigationInvokable
      *
      * @return void
      */
-    public function __invoke(Mvc $page)
+    public function __invoke(Mvc $page): void
     {
         if ($this->getEntities()->containsKey(Phone::class)) {
             /** @var Phone $phone */
@@ -45,8 +45,7 @@ class PhoneLabel extends AbstractNavigationInvokable
 
             $page->setParams(
                 array_merge(
-                    $page->getParams(),
-                    [
+                    $page->getParams(), [
                         'id' => $phone->getId(),
                     ]
                 )

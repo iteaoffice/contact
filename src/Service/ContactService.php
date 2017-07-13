@@ -798,7 +798,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function findContactsInSelection(Selection $selection, $toArray = false)
+    public function findContactsInSelection(Selection $selection, $toArray = false): array
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -815,36 +815,13 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param Selection $selection
-     *
-     * @return Contact[]
-     */
-    public function findContactsInSelectionAsArray(Selection $selection)
-    {
-        /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
-
-        /*
-         * A selection can have 2 methods, either SQL or a contacts. We need to query both
-         */
-        if (!is_null($selection->getSql())) {
-            //We have a dynamic query, check if the contact is in the selection
-            $contacts = $repository->findContactsBySelectionSQL($selection->getSql(), true);
-        } else {
-            $contacts = $repository->findContactsBySelectionContact($selection, true);
-        }
-
-        return $contacts;
-    }
-
-    /**
      * Get a list of facebooks by contact (based on the access role).
      *
      * @param Contact $contact
      *
      * @return Facebook[]
      */
-    public function findFacebookByContact(Contact $contact)
+    public function findFacebookByContact(Contact $contact): array
     {
         /** @var \Contact\Repository\Facebook $repository */
         $repository = $this->getEntityManager()->getRepository(Facebook::class);
@@ -857,7 +834,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function findContactsInFacebook(Facebook $facebook)
+    public function findContactsInFacebook(Facebook $facebook): array
     {
 
         /** @var \Contact\Repository\Contact $repository */
@@ -1136,7 +1113,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function searchContacts($searchItem)
+    public function searchContacts($searchItem): array
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -1160,9 +1137,9 @@ class ContactService extends ServiceAbstract
      *
      * @param Contact $contact
      *
-     * @return array;
+     * @return array
      */
-    public function getProfileInCompleteness(Contact $contact)
+    public function getProfileInCompleteness(Contact $contact): array
     {
         $inCompleteness = [];
         $totalWeight = 0;

@@ -277,7 +277,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Document\Document[]\Document|Collections\ArrayCollection
+     * @var \Project\Entity\Document\Document[]|Collections\ArrayCollection
      */
     private $projectDocument;
     /**
@@ -1713,7 +1713,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Project
+     * @return Collections\ArrayCollection|\Project\Entity\Project[]
      */
     public function getProject()
     {
@@ -1721,7 +1721,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Project $project
+     * @param  Collections\ArrayCollection|\Project\Entity\Project[] $project
      *
      * @return Contact
      */

@@ -259,7 +259,7 @@ class ContactAdminController extends ContactAbstractController
             $form->get('contact_entity_contact')->get("organisation")
                 ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
-            $data = array_merge($this->getRequest()->getPost()->toArray());
+            $data = $this->getRequest()->getPost()->toArray();
             $form = $this->getFormService()->prepare(Contact::class, $contact, $data);
         }
 
@@ -390,7 +390,7 @@ class ContactAdminController extends ContactAbstractController
         $contact = new Contact();
 
 
-        $data = array_merge($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
         $form = $this->getFormService()->prepare($contact, $contact, $data);
 
         //Disable the inarray validator for organisations

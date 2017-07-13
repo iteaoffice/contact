@@ -27,7 +27,7 @@ class ContactNavigationService extends NavigationServiceAbstract
     /**
      * Add the dedicated pages to the navigation.
      */
-    public function update()
+    public function update(): void
     {
         /*
          * Add a route for the facebook
@@ -41,49 +41,51 @@ class ContactNavigationService extends NavigationServiceAbstract
     /**
      * Update the navigation for a publication.
      */
-    public function includeFacebooksInNavigation()
+    public function includeFacebooksInNavigation(): void
     {
-        $communityNavigation = $this->getNavigation()->findOneBy('id', 'community/contact');
+        $navigation = $this->getNavigation()->findOneBy('id', 'community/contact');
 
-        if (is_null($communityNavigation)) {
-            return null;
+        if (is_null($navigation)) {
+            return;
         }
-
         /*
          * Update the navigation with the facebooks (if a a contact object is present)
          */
         if (!is_null($this->getContact())) {
             foreach ($this->getContactService()->findFacebookByContact($this->getContact()) as $facebook) {
+
                 $page = [
-                    'label'  => $facebook->getFacebook(),
-                    'route'  => 'community/contact/facebook/facebook',
-                    'active' => strtolower((string)$this->getRouteMatch()->getParam('namespace')) === 'contact'
-                        && (int)$this->getRouteMatch()->getParam('id') === $facebook->getId(),
-                    'router' => $this->getRouter(),
-                    'params' => [
-                        'id' => $facebook->getId(),
+                    'label'      => $facebook->getFacebook(),
+                    'route'      => 'community/contact/facebook/view',
+                    'active'     => (int)$this->getRouteMatch()->getParam('facebook') === $facebook->getId(),
+                    'router'     => $this->getRouter(),
+                    'routeMatch' => $this->getRouteMatch(),
+                    'params'     => [
+                        'facebook' => $facebook->getId(),
                     ],
                 ];
 
-                $communityNavigation->addPage($page);
+                $navigation->addPage($page);
             }
         }
     }
 
-
     /**
      * @return Contact
      */
-    public function getContact()
+    public function getContact(): Contact
     {
         return $this->contact;
     }
 
     /**
      * @param Contact $contact
+     * @return ContactNavigationService
      */
-    public function setContact($contact)
+    public function setContact(Contact $contact): ContactNavigationService
     {
         $this->contact = $contact;
+
+        return $this;
     }
 }

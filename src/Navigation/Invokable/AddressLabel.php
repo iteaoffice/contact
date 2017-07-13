@@ -35,7 +35,7 @@ class AddressLabel extends AbstractNavigationInvokable
      *
      * @return void
      */
-    public function __invoke(Mvc $page)
+    public function __invoke(Mvc $page): void
     {
         if ($this->getEntities()->containsKey(Address::class)) {
             /** @var Address $address */
@@ -45,8 +45,7 @@ class AddressLabel extends AbstractNavigationInvokable
 
             $page->setParams(
                 array_merge(
-                    $page->getParams(),
-                    [
+                    $page->getParams(), [
                         'id' => $address->getId(),
                     ]
                 )

@@ -316,7 +316,7 @@ class Contact extends EntityRepository
      *
      * @return boolean|null
      */
-    public function findIsCommunityMember(Entity\Contact $contact, Options\ModuleOptions $options)
+    public function findIsCommunityMember(Entity\Contact $contact, Options\ModuleOptions $options): bool
     {
         if ($options->getCommunityViaProjectParticipation()) {
             /** @var Project $projectRepository */
@@ -382,41 +382,51 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsBySelectionSQL(SelectionSql $sql, $toArray = false)
+    public function findContactsBySelectionSQL(SelectionSql $sql, $toArray = false): array
     {
         $resultSetMap = new ResultSetMapping();
-        $resultSetMap->addEntityResult(Entity\Contact::class, 'contact_entity_contact');
-        $resultSetMap->addJoinedEntityResult(
-            'Contact\Entity\ContactOrganisation',
-            'co',
-            'contact_entity_contact',
-            'contactOrganisation'
-        );
+        $resultSetMap->addEntityResult(Entity\Contact::class, 'contact');
 
-        $resultSetMap->addFieldResult('contact_entity_contact', 'contact_id', 'id');
-        $resultSetMap->addFieldResult('contact_entity_contact', 'email', 'email');
-        $resultSetMap->addFieldResult('contact_entity_contact', 'firstname', 'firstName');
-        $resultSetMap->addFieldResult('contact_entity_contact', 'middlename', 'middleName');
-        $resultSetMap->addFieldResult('contact_entity_contact', 'lastname', 'lastName');
+        $resultSetMap->addJoinedEntityResult(Entity\ContactOrganisation::class, 'contact_organisation', 'contact',
+            'contactOrganisation');
+        $resultSetMap->addJoinedEntityResult('Organisation\Entity\Organisation', 'organisation',
+            'contact_organisation', 'organisation');
+        $resultSetMap->addJoinedEntityResult('General\Entity\Country', 'country', 'organisation',
+            'country');
 
+        $resultSetMap->addFieldResult('contact', 'contact_id', 'id');
+        $resultSetMap->addFieldResult('contact', 'email', 'email');
+        $resultSetMap->addFieldResult('contact', 'firstname', 'firstName');
+        $resultSetMap->addFieldResult('contact', 'middlename', 'middleName');
+        $resultSetMap->addFieldResult('contact', 'lastname', 'lastName');
+        $resultSetMap->addFieldResult('contact_organisation', 'contact_organisation_id', 'id');
+        $resultSetMap->addFieldResult('organisation', 'organisation_id', 'id');
+        $resultSetMap->addFieldResult('organisation', 'organisation', 'organisation');
+        $resultSetMap->addFieldResult('country', 'country_id', 'id');
+        $resultSetMap->addFieldResult('country', 'iso3', 'iso3');
 
-        $resultSetMap->addFieldResult('co', 'id', 'contact_organisation_id');
-
-        $resultSetMap->addJoinedEntityResult('Organisation\Entity\Organisation', 'o', 'co', 'organisation');
-        $resultSetMap->addJoinedEntityResult('General\Entity\Country', 'cy', 'o', 'country');
-
-        $resultSetMap->addFieldResult('o', 'organisation', 'organisation');
-        $resultSetMap->addFieldResult('cy', 'country', 'country');
 
         $query = $this->getEntityManager()->createNativeQuery(
-            "SELECT contact_entity_contact.contact_id, email, firstname, middlename, lastname, co.contact_organisation_id, o.organisation, cy.country FROM contact contact_entity_contact
-                LEFT JOIN contact_organisation co ON co.contact_id = contact_entity_contact.contact_id
-                LEFT JOIN organisation o ON co.organisation_id = o.organisation_id
-                LEFT JOIN country cy ON o.country_id = cy.country_id
-            WHERE contact_entity_contact.contact_id IN (" . $sql->getQuery()
+            "SELECT 
+                      contact.contact_id, 
+                      contact.email, 
+                      contact.firstname, 
+                      contact.middlename, 
+                      contact.lastname, 
+                      contact_organisation.contact_organisation_id, 
+                      organisation.organisation_id,
+                      organisation.organisation,
+                      country.country_id,
+                      country.iso3
+                FROM contact
+                LEFT JOIN contact_organisation ON contact_organisation.contact_id = contact.contact_id
+                LEFT JOIN organisation ON contact_organisation.organisation_id = organisation.organisation_id
+                LEFT JOIN country ON organisation.country_id = country.country_id
+            WHERE contact.contact_id IN (" . $sql->getQuery()
             . ") AND date_end IS NULL ORDER BY lastName",
             $resultSetMap
         );
+
 
         /**
          *
@@ -590,9 +600,9 @@ class Contact extends EntityRepository
      * @param string $searchItem
      * @param int $maxResults
      *
-     * @return Entity\Contact[]
+     * @return Entity\Contact[]|array
      */
-    public function searchContacts($searchItem, $maxResults = 12)
+    public function searchContacts($searchItem, $maxResults = 12): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(

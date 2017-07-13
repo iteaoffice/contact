@@ -98,7 +98,7 @@ class OptIn extends EntityAbstract
     /**
      * @return array
      */
-    public static function getAutoSubscribeTemplates()
+    public static function getAutoSubscribeTemplates(): array
     {
         return self::$autoSubscribeTemplates;
     }
@@ -125,6 +125,16 @@ class OptIn extends EntityAbstract
     {
         $this->$property = $value;
     }
+
+    /**
+     * @param $property
+     * @return bool
+     */
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
+
 
     /**
      * @return string
