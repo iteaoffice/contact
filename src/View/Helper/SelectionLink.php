@@ -97,7 +97,6 @@ class SelectionLink extends LinkAbstract
                 );
                 break;
             case 'add-contact':
-
                 if (is_null($this->getContact())) {
                     throw new \Exception('Contact cannot be empty when adding a contact to a selection');
                 }

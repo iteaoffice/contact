@@ -42,7 +42,8 @@ class FacebookLabel extends AbstractNavigationInvokable
 
             $page->setParams(
                 array_merge(
-                    $page->getParams(), [
+                    $page->getParams(),
+                    [
                         'id' => $facebook->getId(),
                     ]
                 )

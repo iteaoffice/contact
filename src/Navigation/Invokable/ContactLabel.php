@@ -42,7 +42,8 @@ class ContactLabel extends AbstractNavigationInvokable
 
             $page->setParams(
                 array_merge(
-                    $page->getParams(), [
+                    $page->getParams(),
+                    [
                         'id' => $contact->getId(),
                     ]
                 )

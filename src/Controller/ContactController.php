@@ -46,7 +46,7 @@ class ContactController extends ContactAbstractController
     }
 
     /**
-     * @return array|\Zend\Http\PhpEnvironment\Response|\Zend\Stdlib\ResponseInterface
+     * @return \Zend\Stdlib\ResponseInterface|ViewModel
      */
     public function photoAction()
     {
@@ -176,7 +176,7 @@ class ContactController extends ContactAbstractController
     }
 
     /**
-     * @return array|JsonModel
+     * @return JsonModel|ViewModel
      */
     public function getAddressByTypeAction()
     {

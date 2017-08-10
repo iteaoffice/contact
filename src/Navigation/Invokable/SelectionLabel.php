@@ -40,7 +40,8 @@ class SelectionLabel extends AbstractNavigationInvokable
 
             $page->setParams(
                 array_merge(
-                    $page->getParams(), [
+                    $page->getParams(),
+                    [
                         'id' => $selection->getId(),
                     ]
                 )

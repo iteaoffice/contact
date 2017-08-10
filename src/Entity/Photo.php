@@ -160,7 +160,7 @@ class Photo extends EntityAbstract
             $this->getId(),
             $this->getHash(),
             $width,
-                $this->getContentType()->getExtension()
+            $this->getContentType()->getExtension()
         );
     }
 

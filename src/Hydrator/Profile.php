@@ -64,9 +64,9 @@ class Profile extends DoctrineObject
                 ->getId();
             $values['contact_organisation']['organisation']
                 = $organisationService->parseOrganisationWithBranch(
-                $contact->getContactOrganisation()->getBranch(),
-                $contact->getContactOrganisation()->getOrganisation()
-            );
+                    $contact->getContactOrganisation()->getBranch(),
+                    $contact->getContactOrganisation()->getOrganisation()
+                );
             $values['contact_organisation']['type'] = $contact->getContactOrganisation()->getOrganisation()
                 ->getType()->getId();
             $values['contact_organisation']['country'] = $contact->getContactOrganisation()->getOrganisation()
@@ -148,7 +148,7 @@ class Profile extends DoctrineObject
 
             if (array_key_exists(
                 'address',
-                    $addressInfo
+                $addressInfo
             ) && !empty($addressInfo['address']) && !empty($addressInfo['country'])
             ) {
 

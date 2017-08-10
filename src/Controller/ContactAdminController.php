@@ -154,10 +154,10 @@ class ContactAdminController extends ContactAbstractController
                         $this->flashMessenger()
                             ->addSuccessMessage(
                                 sprintf(
-                                $this->translate("txt-contact-%s-has-removed-form-selection-%s-successfully"),
-                                $contact->getDisplayName(),
-                                $selection->getSelection()
-                            ),
+                                    $this->translate("txt-contact-%s-has-removed-form-selection-%s-successfully"),
+                                    $contact->getDisplayName(),
+                                    $selection->getSelection()
+                                ),
                                 $contact
                             );
                     }

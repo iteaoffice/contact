@@ -45,7 +45,8 @@ class AddressLabel extends AbstractNavigationInvokable
 
             $page->setParams(
                 array_merge(
-                    $page->getParams(), [
+                    $page->getParams(),
+                    [
                         'id' => $address->getId(),
                     ]
                 )

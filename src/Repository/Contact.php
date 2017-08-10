@@ -387,12 +387,24 @@ class Contact extends EntityRepository
         $resultSetMap = new ResultSetMapping();
         $resultSetMap->addEntityResult(Entity\Contact::class, 'contact');
 
-        $resultSetMap->addJoinedEntityResult(Entity\ContactOrganisation::class, 'contact_organisation', 'contact',
-            'contactOrganisation');
-        $resultSetMap->addJoinedEntityResult('Organisation\Entity\Organisation', 'organisation',
-            'contact_organisation', 'organisation');
-        $resultSetMap->addJoinedEntityResult('General\Entity\Country', 'country', 'organisation',
-            'country');
+        $resultSetMap->addJoinedEntityResult(
+            Entity\ContactOrganisation::class,
+            'contact_organisation',
+            'contact',
+            'contactOrganisation'
+        );
+        $resultSetMap->addJoinedEntityResult(
+            'Organisation\Entity\Organisation',
+            'organisation',
+            'contact_organisation',
+            'organisation'
+        );
+        $resultSetMap->addJoinedEntityResult(
+            'General\Entity\Country',
+            'country',
+            'organisation',
+            'country'
+        );
 
         $resultSetMap->addFieldResult('contact', 'contact_id', 'id');
         $resultSetMap->addFieldResult('contact', 'email', 'email');

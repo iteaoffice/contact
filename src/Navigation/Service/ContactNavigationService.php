@@ -53,7 +53,6 @@ class ContactNavigationService extends NavigationServiceAbstract
          */
         if (!is_null($this->getContact())) {
             foreach ($this->getContactService()->findFacebookByContact($this->getContact()) as $facebook) {
-
                 $page = [
                     'label'      => $facebook->getFacebook(),
                     'route'      => 'community/contact/facebook/view',
@@ -71,9 +70,9 @@ class ContactNavigationService extends NavigationServiceAbstract
     }
 
     /**
-     * @return Contact
+     * @return Contact|null
      */
-    public function getContact(): Contact
+    public function getContact(): ?Contact
     {
         return $this->contact;
     }
