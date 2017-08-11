@@ -17,6 +17,8 @@ use Contact\Entity\Contact;
 use Contact\Entity\EntityAbstract;
 use Contact\Entity\Selection;
 use Contact\Options\ModuleOptions;
+use Contact\Search\Service\ContactSearchService;
+use Contact\Search\Service\ProfileSearchService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
@@ -168,6 +170,17 @@ abstract class ServiceAbstract implements ServiceInterface
     {
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
+
+        // Update the search engine after contact update
+        if ($entity instanceof Contact) {
+            /** @var ProfileSearchService $profileSearchService */
+            $profileSearchService = $this->getServiceLocator()->get(ProfileSearchService::class);
+            /** @var Contact $entity */
+            $profileSearchService->updateDocument($entity);
+            /** @var ContactSearchService $contactSearchService */
+            $contactSearchService = $this->getServiceLocator()->get(ContactSearchService::class);
+            $contactSearchService->updateDocument($entity);
+        }
 
         return $entity;
     }
