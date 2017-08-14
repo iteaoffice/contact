@@ -63,7 +63,7 @@ class ProfileSearchService extends AbstractSearchService
         $contactDocument->position_sort = $contact->getPosition();
 
         if (!is_null($contact->getProfile())) {
-            $contactDocument->profile = str_replace(PHP_EOL, '', strip_tags($contact->getProfile()->getDescription()));
+            $contactDocument->profile = str_replace(PHP_EOL, '', strip_tags((string) $contact->getProfile()->getDescription()));
             $contactDocument->profile_sort = str_replace(
                 PHP_EOL,
                 '',
@@ -108,7 +108,7 @@ class ProfileSearchService extends AbstractSearchService
             $cv = str_replace(
                 PHP_EOL,
                 '',
-                strip_tags(stream_get_contents($contact->getCv()->getCv()))
+                strip_tags((string) stream_get_contents($contact->getCv()->getCv()))
             );
 
             $contactDocument->cv = $cv;
