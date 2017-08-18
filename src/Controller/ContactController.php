@@ -21,6 +21,7 @@ use PHPThumb\GD;
 use Search\Form\SearchResult;
 use Search\Paginator\Adapter\SolariumPaginator;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
+use Zend\Http\Request;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -221,14 +222,25 @@ class ContactController extends ContactAbstractController
      */
     public function searchAction()
     {
+        /** @var Request $request */
+        $request = $this->getRequest();
         $searchService = $this->getProfileSearchService();
         $page = $this->params('page', 1);
 
         $form = new SearchResult();
-        $data = array_merge(['query' => '*', 'facet' => []], $this->getRequest()->getQuery()->toArray());
+        $data = array_merge(['query' => '*', 'facet' => []], $request->getQuery()->toArray());
+        $searchFields = [
+            'fullname_search',
+            'position_search',
+            'profile_search',
+            'organisation_search',
+            'organisation_type_search',
+            'country_search',
+            'cv_search',
+        ];
 
-        if ($this->getRequest()->isGet()) {
-            $searchService->setSearch($data['query']);
+        if ($request->isGet()) {
+            $searchService->setSearch($data['query'], $searchFields);
             if (isset($data['facet'])) {
                 foreach ($data['facet'] as $facetField => $values) {
                     $quotedValues = [];

@@ -17,6 +17,7 @@ use Contact\Entity\Photo;
 use Contact\Entity\Profile;
 use Contact\Service\ContactService;
 use Search\Service\AbstractSearchService;
+use Search\Service\SearchServiceInterface;
 use Solarium\QueryType\Select\Query\Query;
 
 /**
@@ -144,12 +145,18 @@ class ContactSearchService extends AbstractSearchService
 
     /**
      * @param string $searchTerm
+     * @param array $searchFields
      * @param string $order
      * @param string $direction
      *
-     * @return ContactSearchService
+     * @return SearchServiceInterface
      */
-    public function setSearch($searchTerm, $order = '', $direction = Query::SORT_ASC): ContactSearchService
+    public function setSearch(
+        string $searchTerm,
+        array $searchFields = [],
+        string $order = '',
+        string $direction = Query::SORT_ASC
+    ): SearchServiceInterface
     {
         $this->setQuery($this->getSolrClient()->createSelect());
 
