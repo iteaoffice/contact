@@ -81,7 +81,7 @@ class ProfileSearchService extends AbstractSearchService
             ) {
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
-                $contactDocument->photo_url = ($this->getServiceLocator()->get('ViewHelperManager')->get('url'))(
+                $contactDocument->photo_url = $this->getUrl(
                     'assets/contact-photo',
                     [
                         'hash'  => $photo->getHash(),
