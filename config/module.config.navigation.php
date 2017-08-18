@@ -176,11 +176,6 @@ return [
                             ],
                         ],
                     ],
-                    'import'     => [
-                        'label' => _("txt-nav-contact-import"),
-                        'order' => 50,
-                        'route' => 'zfcadmin/contact-admin/import',
-                    ],
                     'selections' => [
                         'label' => _("txt-nav-selection-list"),
                         'order' => 20,
@@ -273,6 +268,15 @@ return [
                         'route' => 'zfcadmin/permit-manager/entity/list',
                     ],
 
+                ],
+            ],
+            'tools'      => [
+                'pages' => [
+                    'import' => [
+                        'label' => _("txt-nav-contact-import"),
+                        'order' => 50,
+                        'route' => 'zfcadmin/contact-admin/import',
+                    ],
                 ],
             ],
         ],

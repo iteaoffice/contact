@@ -23,25 +23,11 @@ use Zend\EventManager\EventManager;
 use Zend\ModuleManager\Feature;
 use Zend\Mvc\MvcEvent;
 
-//Makes the module class more strict
-
 /**
  *
  */
-class Module implements Feature\AutoloaderProviderInterface, Feature\ConfigProviderInterface, Feature\BootstrapListenerInterface
+class Module implements Feature\ConfigProviderInterface, Feature\BootstrapListenerInterface
 {
-    /**
-     * @return array
-     */
-    public function getAutoloaderConfig(): array
-    {
-        return [
-            'Zend\Loader\ClassMapAutoloader' => [
-                __DIR__ . '/../autoload_classmap.php',
-            ],
-        ];
-    }
-
     /**
      * @return array
      */

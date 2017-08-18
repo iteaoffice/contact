@@ -662,7 +662,7 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsInOrganisation(Organisation $organisation)
+    public function findContactsInOrganisation(Organisation $organisation): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_contact');

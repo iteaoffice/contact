@@ -208,7 +208,9 @@ class ContactService extends ServiceAbstract
 
         if (!is_null($contact->getTitle()->getAttention())) {
             return $contact->getTitle()->getAttention();
-        } elseif ((int)$contact->getGender()->getId() !== 0) {
+        }
+
+        if ((int)$contact->getGender()->getId() !== 0) {
             return $contact->getGender()->getAttention();
         }
 
@@ -222,7 +224,7 @@ class ContactService extends ServiceAbstract
      *
      * @return null|string
      */
-    public function parseOrganisation(Contact $contact)
+    public function parseOrganisation(Contact $contact):?string
     {
         if (!$this->hasOrganisation($contact)) {
             return null;
@@ -273,7 +275,7 @@ class ContactService extends ServiceAbstract
      *
      * @return null|Country
      */
-    public function parseCountry(Contact $contact)
+    public function parseCountry(Contact $contact):?Country
     {
         if (!$this->hasOrganisation($contact)) {
             return null;
@@ -326,7 +328,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Address
      */
-    public function getVisitAddress(Contact $contact)
+    public function getVisitAddress(Contact $contact):?Address
     {
         return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_VISIT);
     }
@@ -340,7 +342,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Address
      */
-    public function getFinancialAddress(Contact $contact)
+    public function getFinancialAddress(Contact $contact):?Address
     {
         return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
     }
@@ -354,7 +356,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Address
      */
-    public function getBoothFinancialAddress(Contact $contact)
+    public function getBoothFinancialAddress(Contact $contact):?Address
     {
         return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
     }
@@ -368,7 +370,7 @@ class ContactService extends ServiceAbstract
      *
      * @throws \InvalidArgumentException
      */
-    public function getDirectPhone(Contact $contact)
+    public function getDirectPhone(Contact $contact):?Phone
     {
         return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
     }
@@ -402,7 +404,7 @@ class ContactService extends ServiceAbstract
      *
      * @throws \InvalidArgumentException
      */
-    public function getMobilePhone(Contact $contact)
+    public function getMobilePhone(Contact $contact):?Phone
     {
         return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
     }
@@ -522,7 +524,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact
      */
-    public function lostPassword($emailAddress)
+    public function lostPassword($emailAddress): Contact
     {
         //Create the account
         $contact = $this->findContactByEmail($emailAddress, true);
@@ -557,7 +559,7 @@ class ContactService extends ServiceAbstract
      *
      * @return null|Contact
      */
-    public function findContactByEmail($email, $onlyMain = false)
+    public function findContactByEmail($email, $onlyMain = false):?Contact
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -1201,7 +1203,7 @@ class ContactService extends ServiceAbstract
      *
      * @return array
      */
-    public function findContactsInAffiliation(Affiliation $affiliation)
+    public function findContactsInAffiliation(Affiliation $affiliation): array
     {
         $contacts = [];
         $contactRole = [];
