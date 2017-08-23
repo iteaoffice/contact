@@ -156,8 +156,7 @@ class ContactSearchService extends AbstractSearchService
         array $searchFields = [],
         string $order = '',
         string $direction = Query::SORT_ASC
-    ): SearchServiceInterface
-    {
+    ): SearchServiceInterface {
         $this->setQuery($this->getSolrClient()->createSelect());
 
         $this->getQuery()->setQuery(

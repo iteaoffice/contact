@@ -35,20 +35,4 @@ class FormServiceTest extends AbstractServiceTest
         $service = new FormService();
         $this->assertInstanceOf(FormService::class, $service);
     }
-
-    public function testCanPrepare()
-    {
-        $this->markTestIncomplete("To be continued");
-
-        $service = new FormService();
-
-        $serviceManager = $this->getServiceManager();
-        $service->setEntityManager($this->getEntityManagerMock());
-
-
-        $service->setServiceLocator($serviceManager);
-
-        $this->assertInstanceOf(Form::class, $service->prepare(Contact::class));
-    }
-
 }
