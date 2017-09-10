@@ -41,7 +41,7 @@
                 <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
             {% endif %}
             <dt>{{ translate("txt-expertise") }}</dt>
-            <dd>{{ contact.profile.description }}</dd>
+            <dd>{{ contact.profile.description|nl2br }}</dd>
         </dl>
 
         {{ contactLink(contact,'edit-profile', 'button') }}

@@ -39,7 +39,7 @@
         <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
     {% endif %}
     <dt>{{ translate("txt-expertise") }}</dt>
-    <dd>{{ contact.profile.description }}</dd>
+    <dd>{{ contact.profile.description|nl2br }}</dd>
 
     <dt>{{ translate("txt-department") }}</dt>
     <dd>{{ contact.department|default(translate("txt-unknown")) }}</dd>
