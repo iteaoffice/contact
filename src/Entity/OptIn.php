@@ -167,7 +167,7 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @return \Contact\Entity\Contact[]
+     * @return \Contact\Entity\Contact[]|Collections\Collection
      */
     public function getContact()
     {

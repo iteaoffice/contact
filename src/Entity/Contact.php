@@ -1833,6 +1833,42 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
+     * @return Collections\ArrayCollection|\Project\Entity\Contract[]
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Contract[] $contract
+     * @return Contact
+     */
+    public function setContract($contract)
+    {
+        $this->contract = $contract;
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Contract[]
+     */
+    public function getContractVersion()
+    {
+        return $this->contractVersion;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Contract[] $contractVersion
+     * @return Contact
+     */
+    public function setContractVersion($contractVersion)
+    {
+        $this->contractVersion = $contractVersion;
+        return $this;
+    }
+
+    /**
      * @return Collections\ArrayCollection|\Program\Entity\Nda
      */
     public function getNda()
@@ -3415,7 +3451,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\Item[]
+     * @return Collections\ArrayCollection|\Project\Entity\Report\EffortSpent[]
      */
     public function getProjectReportEffortSpent()
     {
@@ -3423,7 +3459,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\Item[] $projectReportEffortSpent
+     * @param Collections\ArrayCollection|\Project\Entity\Report\EffortSpent[] $projectReportEffortSpent
      *
      * @return Contact
      */

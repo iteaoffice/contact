@@ -40,10 +40,12 @@ $config = [
         'aliases'   => [
             'handleImport'     => Controller\Plugin\HandleImport::class,
             'getContactFilter' => Controller\Plugin\GetFilter::class,
+            'mergeContact'     => Controller\Plugin\MergeContact::class,
         ],
         'factories' => [
             Controller\Plugin\HandleImport::class => Controller\Factory\PluginFactory::class,
             Controller\Plugin\GetFilter::class    => Controller\Factory\PluginFactory::class,
+            Controller\Plugin\MergeContact::class => Controller\Factory\PluginFactory::class,
         ],
     ],
     'view_manager'       => [
