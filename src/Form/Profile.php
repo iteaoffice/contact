@@ -26,11 +26,13 @@ use Organisation\Entity\Type;
 use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
+use Zend\Validator\File\IsImage;
 
 /**
  *
  */
-class Profile extends Form
+class Profile extends Form implements InputFilterProviderInterface
 {
     /**
      * Profile constructor.
@@ -60,9 +62,9 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => EntitySelect::class,
-                'name'       => 'gender',
-                'options'    => [
+                'type'    => EntitySelect::class,
+                'name'    => 'gender',
+                'options' => [
                     'label'          => _("txt-attention"),
                     'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Gender',
@@ -70,25 +72,19 @@ class Profile extends Form
                         'name' => 'findAll',
                     ],
                 ],
-                'attributes' => [
-                    'required' => true,
-                ],
             ]
         );
         $this->add(
             [
-                'type'       => EntitySelect::class,
-                'name'       => 'title',
-                'options'    => [
+                'type'    => EntitySelect::class,
+                'name'    => 'title',
+                'options' => [
                     'label'          => _("txt-title"),
                     'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Title',
                     'find_method'    => [
                         'name' => 'findAll',
                     ],
-                ],
-                'attributes' => [
-                    'required' => true,
                 ],
             ]
         );
@@ -101,7 +97,6 @@ class Profile extends Form
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'required'    => true,
                     'placeholder' => _("txt-give-your-first-name"),
                 ],
             ]
@@ -139,7 +134,7 @@ class Profile extends Form
         $phoneFieldSet = new Fieldset('phone');
         /** @var PhoneType $phoneType */
         foreach ($contactService->findAll(PhoneType::class) as $phoneType) {
-            if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE])) {
+            if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE], true)) {
                 $fieldSet = new Fieldset($phoneType->getId());
                 $fieldSet->add(
                     [
@@ -252,9 +247,9 @@ class Profile extends Form
                                 (!is_null($organisation->getFinancial()) ? $organisation->getFinancial()->getVat()
                                     : 'unknown')
                             );
-                        } else {
-                            return sprintf("%s", $organisation->getOrganisation());
                         }
+
+                        return sprintf("%s", $organisation->getOrganisation());
                     },
                 ],
                 'attributes' => [
@@ -405,5 +400,33 @@ class Profile extends Form
                 ],
             ]
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getInputFilterSpecification(): array
+    {
+        return [
+            'firstName' => [
+                'required' => true
+            ],
+            'lastName'  => [
+                'required' => true
+            ],
+            'address'   => [
+                'country' => [
+                    'required' => false,
+                ]
+            ],
+            'file'      => [
+                'required'   => false,
+                'validators' => [
+                    [
+                        'name' => IsImage::class
+                    ]
+                ]
+            ]
+        ];
     }
 }

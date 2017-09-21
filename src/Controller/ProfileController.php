@@ -91,7 +91,6 @@ class ProfileController extends ContactAbstractController
         $form = new Profile($this->getEntityManager(), $this->getContactService(), $contact);
         $form->bind($contact);
 
-        $form->getInputFilter()->get('address')->get('country')->setRequired(false);
         //When we have a valid organisation_id, we do not need the country
         if (isset($data['contact_organisation']['organisation_id'])
             && $data['contact_organisation']['organisation_id'] !== '0'
@@ -154,6 +153,8 @@ class ProfileController extends ContactAbstractController
                     ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
+            } else {
+                var_dump($form->getInputFilter()->getMessages());
             }
         }
 

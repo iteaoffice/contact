@@ -62,7 +62,7 @@ class ContactService extends ServiceAbstract
      *
      * @return null|Contact
      */
-    public function findContactByHash($hash)
+    public function findContactByHash($hash):?Contact
     {
         list($contactId, $hash) = explode('-', $hash);
 

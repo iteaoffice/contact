@@ -693,6 +693,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $loi;
     /**
+     * @ORM\OneToMany(targetEntity="\Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="approver")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     */
+    private $loiApprover;
+    /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Affiliation\Entity\Doa[]|Collections\ArrayCollection
@@ -927,6 +933,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->invite = new Collections\ArrayCollection();
         $this->inviteContact = new Collections\ArrayCollection();
         $this->loi = new Collections\ArrayCollection();
+        $this->loiApprover = new Collections\ArrayCollection();
         $this->affiliationDoa = new Collections\ArrayCollection();
         $this->parentDoa = new Collections\ArrayCollection();
         $this->permitContact = new Collections\ArrayCollection();
@@ -3011,6 +3018,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
+     * @return \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     */
+    public function getLoiApprover()
+    {
+        return $this->loiApprover;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Loi[]|Collections\ArrayCollection $loiApprover
+     * @return Contact
+     */
+    public function setLoiApprover($loiApprover)
+    {
+        $this->loiApprover = $loiApprover;
+
+        return $this;
+    }
+
+    /**
      * @return \Affiliation\Entity\Doa[]|Collections\ArrayCollection
      */
     public function getAffiliationDoa()
@@ -3031,7 +3057,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Admin\Entity\Permit\Contact
+     * @return \Admin\Entity\Permit\Contact[]|Collections\ArrayCollection
      */
     public function getPermitContact()
     {
