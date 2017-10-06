@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 
@@ -21,7 +22,6 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  *
  * @ORM\Table(name="contact_note")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_note")
  *
  * @category    Contact
@@ -56,15 +56,14 @@ class Note extends EntityAbstract implements ResourceInterface
     private $source;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="create")
      *
      * @var \DateTime
      */
     private $dateCreated;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="note")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * })
      *
      * @var \Contact\Entity\Contact
      */

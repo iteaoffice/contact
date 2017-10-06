@@ -854,6 +854,21 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Project\Entity\Workpackage\Contact
      */
     private $workpackageContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Log", cascade={"persist"}, mappedBy="createdBy")
+     * @Annotation\Exclude()
+     *
+     * @var \Contact\Entity\Log[]|Collections\Collection
+     */
+    private $logCreatedBy;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Log", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Contact\Entity\Log[]|Collections\Collection
+     */
+    private $log;
+
 
     /**
      * Class constructor
@@ -863,6 +878,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->project = new Collections\ArrayCollection();
         $this->projectVersion = new Collections\ArrayCollection();
         $this->projectDescription = new Collections\ArrayCollection();
+        $this->projectReportEffortSpent = new Collections\ArrayCollection();
         $this->projectDocument = new Collections\ArrayCollection();
         $this->web = new Collections\ArrayCollection();
         $this->roadmapLog = new Collections\ArrayCollection();
@@ -953,11 +969,16 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->invoiceLog = new Collections\ArrayCollection();
         $this->reminder = new Collections\ArrayCollection();
         $this->achievement = new Collections\ArrayCollection();
-        $this->changerequestProcess = new  Collections\ArrayCollection();
-        $this->changerequestCostChange = new  Collections\ArrayCollection();
-        $this->changerequestCountry = new  Collections\ArrayCollection();
-        $this->versionContact = new  Collections\ArrayCollection();
-        $this->workpackageContact = new  Collections\ArrayCollection();
+        $this->changerequestProcess = new Collections\ArrayCollection();
+        $this->changerequestCostChange = new Collections\ArrayCollection();
+        $this->changerequestCountry = new Collections\ArrayCollection();
+        $this->versionContact = new Collections\ArrayCollection();
+        $this->workpackageContact = new Collections\ArrayCollection();
+        $this->logCreatedBy = new Collections\ArrayCollection();
+        $this->log = new Collections\ArrayCollection();
+        $this->affiliationDescription = new Collections\ArrayCollection();
+        $this->affiliationVersion = new Collections\ArrayCollection();
+        $this->note = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -3689,6 +3710,42 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $this->parentOrganisation = $parentOrganisation;
 
+        return $this;
+    }
+
+    /**
+     * @return Log[]|Collections\Collection
+     */
+    public function getLogCreatedBy()
+    {
+        return $this->logCreatedBy;
+    }
+
+    /**
+     * @param Collections\Collection $logCreatedBy
+     * @return Contact
+     */
+    public function setLogCreatedBy($logCreatedBy)
+    {
+        $this->logCreatedBy = $logCreatedBy;
+        return $this;
+    }
+
+    /**
+     * @return Log[]|Collections\Collection
+     */
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * @param Collections\Collection $log
+     * @return Contact
+     */
+    public function setLog($log)
+    {
+        $this->log = $log;
         return $this;
     }
 }

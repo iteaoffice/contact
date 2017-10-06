@@ -18,8 +18,11 @@ declare(strict_types=1);
 namespace Contact\Controller\Plugin;
 
 use Affiliation\Entity\Affiliation;
+use Contact\Controller\ContactAbstractController;
 use Contact\Entity\Contact;
 use Contact\Entity\Email;
+use Contact\Entity\Log;
+use Contact\Entity\Note;
 use Contact\Entity\OpenId;
 use Contact\Entity\OptIn;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,12 +33,13 @@ use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Log\LoggerInterface;
+use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
  * Class MergeContact
  * @package Contact\Controller\Plugin
  */
-class MergeContact
+class MergeContact extends AbstractPlugin
 {
     /**
      * @var EntityManagerInterface
@@ -123,9 +127,6 @@ class MergeContact
             }
             if ($source->getLastUpdate() > $target->getLastUpdate()) {
                 $target->setLastUpdate($source->getLastUpdate());
-            }
-            if (!is_null($source->getDateEnd()) && ($source->getDateEnd() < $target->getDateEnd())) {
-                $target->setDateEnd($source->getDateEnd());
             }
             if ($source->getMessenger() === 1) {
                 $target->setMessenger($source->getMessenger());
@@ -493,13 +494,20 @@ class MergeContact
             }
             $source->setAssociate(new ArrayCollection());
 
-            // Transfer funder
-            if (is_null($target->getFunder())) {
+            // Transfer funder (one-to-one)
+            if (is_null($target->getFunder()) && !is_null($source->getFunder())) {
                 $funder = $source->getFunder();
                 $funder->setContact($target);
                 $target->setFunder($funder);
             }
             $source->setFunder(null);
+
+            // Transfer deeplink contact (no matching)
+            foreach ($source->getDeeplinkContact() as $key => $deeplinkContact) {
+                $deeplinkContact->setContact($target);
+                $target->getDeeplinkContact()->add($deeplinkContact);
+                $source->getDeeplinkContact()->remove($key);
+            }
 
 
 //            // Transfer log
@@ -664,40 +672,37 @@ class MergeContact
 //                $source->getResult()->remove($key);
 //            }
 //
-//            // Persist main organisation, remove the other + flush and update permissions
-//            $this->persist($target);
-//            $sourceId = $source->getId();
-//            $this->entityManager->remove($source);
-//            $this->entityManager->flush();
-//
-//            // Prepare for logging
-//            $message = sprintf(
-//                'Merged organisation %s (%d) into %s (%d)',
-//                $source->getOrganisation(),
-//                $sourceId,
-//                $target->getOrganisation(),
-//                $target->getId()
-//            );
-//            /** @var OrganisationAbstractController $controller */
-//            $controller = $this->getController();
-//            $contact = $controller->zfcUserAuthentication()->getIdentity();
-//
-//            // Log the merge in the target organisation
-//            $organisationLog = new Log();
-//            $organisationLog->setOrganisation($target);
-//            $organisationLog->setContact($contact);
-//            $organisationLog->setLog($message);
-//            $this->persist($organisationLog);
-//            // Add a note to the target organisation about the merge
-//            $organisationNote = new Note();
-//            $organisationNote->setOrganisation($target);
-//            $organisationNote->setSource('auto');
-//            $organisationNote->setContact($contact);
-//            $organisationNote->setNote($message);
-//            $notes = $target->getNote()->toArray();
-//            array_unshift($notes, $organisationNote);
-//            $target->setNote(new ArrayCollection($notes));
-//            $this->persist($organisationNote);
+            // Save main contact, remove the other + flush and update permissions
+            $this->entityManager->remove($source);
+            $this->entityManager->flush();
+
+            // Prepare for logging
+            $message = sprintf(
+                'Merged contact %s (%d) into %s (%d)',
+                $source->parseFullName(),
+                $source->getId(),
+                $target->parseFullName(),
+                $target->getId()
+            );
+            /** @var ContactAbstractController $controller */
+            $controller = $this->getController();
+            $contact = $controller->zfcUserAuthentication()->getIdentity();
+
+            // Log the merge in the target organisation
+            $contactLog = new Log();
+            $contactLog->setContact($target);
+            $contactLog->setCreatedBy($contact);
+            $contactLog->setLog($message);
+            $this->entityManager->persist($contactLog);
+            // Add a note to the target contact about the merge
+            $contactNote = new Note();
+            $contactNote->setContact($target);
+            $contactNote->setSource('merge');
+            $contactNote->setNote($message);
+            $notes = $target->getNote()->toArray();
+            array_unshift($notes, $contactNote);
+            $target->setNote(new ArrayCollection($notes));
+            $this->entityManager->persist($contactNote);
 
             $this->entityManager->flush();
         } catch (ORMException $exception) {
@@ -713,15 +718,5 @@ class MergeContact
         }
 
         return $response;
-    }
-
-    /**
-     * Persist an object
-     * @param object $object
-     *
-     */
-    private function persist($object): void
-    {
-        $this->entityManager->persist($object);
     }
 }

@@ -175,7 +175,7 @@ class OptIn extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\Contact[] $contact
+     * @param \Contact\Entity\Contact[]|Collections\ArrayCollection $contact
      */
     public function setContact($contact)
     {
