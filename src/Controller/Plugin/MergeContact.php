@@ -509,6 +509,21 @@ class MergeContact extends AbstractPlugin
                 $source->getDeeplinkContact()->remove($key);
             }
 
+            // Transfer profile (one-to-one)
+            if (is_null($target->getProfile()) && !is_null($source->getProfile())) {
+                $profile = $source->getProfile();
+                $profile->setContact($target);
+                $target->setProfile($profile);
+            }
+            $source->setProfile(null);
+
+            // Transfer community (no matching)
+            foreach ($source->getCommunity() as $key => $community) {
+                $community->setContact($target);
+                $target->getCommunity()->add($community);
+                $source->getCommunity()->remove($key);
+            }
+
 
 //            // Transfer log
 //            foreach ($source->getLog() as $key => $log) {
