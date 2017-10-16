@@ -18,6 +18,7 @@ use Affiliation\Entity\Financial;
 use Contact\Controller\ContactAdminController;
 use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Address;
+use Contact\Entity\Community;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Entity\Cv;
@@ -26,6 +27,7 @@ use Contact\Entity\OpenId;
 use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\Photo;
+use Contact\Entity\Profile;
 use Contact\Entity\Web;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -413,6 +415,16 @@ final class MergeContactTest extends AbstractServiceTest
         $deeplinkContact->setId(1);
         $deeplinkContact->setContact($source);
         $source->setDeeplinkContact(new ArrayCollection([$deeplinkContact]));
+
+        $profile = new Profile();
+        $profile->setId(1);
+        $profile->setContact($source);
+        $source->setProfile($profile);
+
+        $community = new Community();
+        $community->setId(1);
+        $community->setContact($source);
+        $source->setCommunity(new ArrayCollection([$community]));
 
         return $source;
     }
