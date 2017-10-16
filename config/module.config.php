@@ -29,6 +29,7 @@ $config = [
             Controller\ContactAdminController::class     => Controller\Factory\ControllerFactory::class,
             Controller\ContactController::class          => Controller\Factory\ControllerFactory::class,
             Controller\FacebookController::class         => Controller\Factory\ControllerFactory::class,
+            Controller\ImageController::class            => Controller\Factory\ControllerFactory::class,
             Controller\FacebookManagerController::class  => Controller\Factory\ControllerFactory::class,
             Controller\NoteManagerController::class      => Controller\Factory\ControllerFactory::class,
             Controller\PhoneManagerController::class     => Controller\Factory\ControllerFactory::class,

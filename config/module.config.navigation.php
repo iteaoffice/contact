@@ -25,10 +25,6 @@ return [
                                 'label' => _("txt-profile-edit"),
                                 'route' => 'community/contact/profile/edit',
                             ],
-                            'view-signature'              => [
-                                'label' => _("txt-view-signature"),
-                                'route' => 'community/contact/signature',
-                            ],
                             'change-password'             => [
                                 'label' => _("txt-change-password"),
                                 'route' => 'community/contact/change-password',

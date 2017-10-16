@@ -855,14 +855,14 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $workpackageContact;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Log", cascade={"persist"}, mappedBy="createdBy")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Log", cascade={"persist"}, mappedBy="createdBy")
      * @Annotation\Exclude()
      *
      * @var \Contact\Entity\Log[]|Collections\Collection
      */
     private $logCreatedBy;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Log", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
      * @var \Contact\Entity\Log[]|Collections\Collection

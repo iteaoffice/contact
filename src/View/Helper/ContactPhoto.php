@@ -3,10 +3,15 @@
 /**
  * ITEA Office all rights reserved
  *
+ * PHP Version 7
+ *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
+ *
+ * @link        http://github.com/iteaoffice/Contact for the canonical source repository
  */
 
 declare(strict_types=1);
@@ -14,7 +19,6 @@ declare(strict_types=1);
 namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
-use Contact\Entity\Photo;
 
 /**
  * Class ContactPhoto
@@ -25,6 +29,7 @@ class ContactPhoto extends ImageAbstract
     /**
      * @param Contact $contact
      * @param null $width
+     * @param bool $onlyUrl
      * @param bool $responsive
      * @param array $classes
      * @return string
@@ -32,43 +37,32 @@ class ContactPhoto extends ImageAbstract
     public function __invoke(
         Contact $contact,
         $width = null,
-        $responsive = true,
-        $classes = []
+        $onlyUrl = false,
+        $grayscale = true
     ): string {
-        if (empty($contact->getPhoto()) || $contact->getPhoto()->isEmpty()) {
-            return sprintf(
-                '<img src="assets/' . ITEAOFFICE_HOST . '/style/image/anonymous.jpg" class="%s" %s>',
-                !($responsive && is_null($width)) ?: implode(' ', ['img-responsive']),
-                is_null($width) ?: 'width="' . $width . '"'
-            );
-        }
-
-        /**
-         * @var Photo $photo
-         */
         $photo = $contact->getPhoto()->first();
 
-        if (null !== $classes && !is_array($classes)) {
-            $classes = [$classes];
-        } elseif (null === $classes) {
-            $classes = [];
+        $this->filter = [];
+
+        if (!$photo) {
+            return '';
         }
 
-        if ($responsive) {
-            $classes[] = 'img-responsive';
-        }
+        $this->setRouter('image/contact-photo');
 
-        $this->setClasses($classes);
-        $this->setRouter('assets/contact-photo');
-
-        $this->addRouterParam('hash', $photo->getHash());
         $this->addRouterParam('ext', $photo->getContentType()->getExtension());
+        $this->addRouterParam('last-update', $photo->getDateUpdated()->getTimestamp());
         $this->addRouterParam('id', $photo->getId());
 
-        if (!is_null($width)) {
-            $this->addRouterParam('width', $width);
+        $this->setImageId('contact_photo_' . $photo->getId());
+
+        if ($grayscale)
+        {
+            $this->addFilter('grayscale');
         }
 
-        return $this->createImageUrl();
+        $this->setWidth($width);
+
+        return $this->createImageUrl($onlyUrl);
     }
 }

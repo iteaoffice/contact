@@ -25,6 +25,10 @@ return [
              */
             'BjyAuthorize\Guard\Route' => [
                 [
+                    'route' => 'image/contact-photo',
+                    'roles' => [],
+                ],
+                [
                     'route'     => 'community/contact/facebook/view',
                     'roles'     => [],
                     'assertion' => FacebookAssertion::class,
@@ -46,11 +50,6 @@ return [
                 ],
                 [
                     'route'     => 'community/contact/profile/contact',
-                    'roles'     => [],
-                    'assertion' => ContactAssertion::class,
-                ],
-                [
-                    'route'     => 'community/contact/signature',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
@@ -81,15 +80,7 @@ return [
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
-                [
-                    'route'     => 'community/contact/photo',
-                    'roles'     => [],
-                    'assertion' => ContactAssertion::class,
-                ],
-                [
-                    'route' => 'assets/contact-photo',
-                    'roles' => [],
-                ],
+
                 [
                     'route'     => 'zfcadmin/contact-admin',
                     'roles'     => [Access::ACCESS_OFFICE],

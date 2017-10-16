@@ -31,10 +31,6 @@ use Zend\Form\Annotation;
 class Photo extends EntityAbstract
 {
     /**
-     * Key needed for the encryption and decryption of the Keys.
-     */
-    const HASH_KEY = 'afc26c5daef5373cf4acb7ee107d423f';
-    /**
      * @ORM\Column(name="photo_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -135,36 +131,6 @@ class Photo extends EntityAbstract
     }
 
     /**
-     * Remove all the cached images of a user.
-     *
-     * @ORM\PreUpdate
-     */
-    public function removeCachedImageFile()
-    {
-        if (file_exists($this->getCacheFileName())) {
-            unlink($this->getCacheFileName());
-        }
-    }
-
-    /**
-     * @param null $width
-     * @return string
-     */
-    public function getCacheFileName($width = null): string
-    {
-        $cacheDir = __DIR__ . '/../../../../../public' . DIRECTORY_SEPARATOR . 'assets' .
-            DIRECTORY_SEPARATOR . ITEAOFFICE_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
-
-        return $cacheDir . DIRECTORY_SEPARATOR . sprintf(
-            '%s-%s-%s.%s',
-            $this->getId(),
-            $this->getHash(),
-            $width,
-            $this->getContentType()->getExtension()
-        );
-    }
-
-    /**
      * @return int
      */
     public function getId()
@@ -178,17 +144,6 @@ class Photo extends EntityAbstract
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * Although an alternative does not have a clear hash, we can create one based on the id;
-     * Don't use the elements from underlying objects since this gives confusion.
-     *
-     * @return string
-     */
-    public function getHash(): string
-    {
-        return hash('sha512', $this->id . self::HASH_KEY);
     }
 
     /**

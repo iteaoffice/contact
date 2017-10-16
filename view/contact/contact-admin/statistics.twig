@@ -1,4 +1,4 @@
-<h1>{{ translate("txt-statistics") }}</h1>
+<h1 class="display-4">{{ translate("txt-statistics") }}</h1>
 
 {% do form.prepare() %}
 
@@ -32,11 +32,11 @@
 {{ contacts|length }}
 
 {% if contacts|length > 0 %}
-    <table class="table table-hover table-striped table-condensed">
+    <table class="table table-hover table-striped table-condensed table-sm">
         <thead>
         <tr>
-            <th class="col-md-2">{{ translate("txt-name") }}</th>
-            <th class="col-md-2">{{ translate("txt-email") }}</th>
+            <th>{{ translate("txt-name") }}</th>
+            <th>{{ translate("txt-email") }}</th>
             <th>{{ translate("txt-organisation") }}</th>
             <th>{{ translate("txt-projects") }}</th>
         </tr>

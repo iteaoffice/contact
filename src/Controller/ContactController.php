@@ -47,56 +47,6 @@ class ContactController extends ContactAbstractController
     }
 
     /**
-     * @return \Zend\Stdlib\ResponseInterface|ViewModel
-     */
-    public function photoAction()
-    {
-        /**
-         * @var $photo Photo
-         */
-        $photo = $this->getContactService()->findEntityById(Photo::class, $this->params('id'));
-
-        /*
-         * Do a check if the given has is correct to avoid guessing the image
-         */
-        if (is_null($photo) || is_null($photo->getPhoto())
-            || $this->params('hash') !== $photo->getHash()
-        ) {
-            return $this->notFoundAction();
-        }
-
-        $file = stream_get_contents($photo->getPhoto());
-        $width = $this->params('width', null);
-
-        /*
-         * Check if the file is cached and if not, create it
-         */
-        if (!file_exists($photo->getCacheFileName($width))) {
-            /*
-             * The file exists, but is it not updated?
-             */
-            file_put_contents($photo->getCacheFileName($width), $file);
-
-            //Start the resize-action based on the width
-            if (!is_null($width)) {
-                $thumb = new GD($photo->getCacheFileName($width));
-                $thumb->resize($width);
-                $thumb->save($photo->getCacheFileName($width));
-            }
-        }
-
-
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
-            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")->addHeaderLine("Pragma: public")
-            ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string)strlen(file_get_contents($photo->getCacheFileName($width))));
-        $response->setContent(file_get_contents($photo->getCacheFileName($width)));
-
-        return $response;
-    }
-
-    /**
      * Ajax controller to update the OptIn.
      *
      * @return \Zend\View\Model\JsonModel

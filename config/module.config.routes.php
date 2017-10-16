@@ -13,24 +13,16 @@ use Contact\Controller;
 return [
     'router' => [
         'routes' => [
-            'assets'    => [
-                'type'          => 'Literal',
-                'priority'      => 1000,
-                'options'       => [
-                    'route'    => '/assets/' . (defined("ITEAOFFICE_HOST") ? ITEAOFFICE_HOST : 'test'),
-                    'defaults' => [
-                        'controller' => Controller\ContactController::class,
-                    ],
-                ],
-                'may_terminate' => true,
+            'image'    => [
                 'child_routes'  => [
                     'contact-photo' => [
                         'type'    => 'Segment',
                         'options' => [
-                            'route'    => "/contact-photo/[:id]-[:hash]-[:width].[:ext]",
+                            'route'    => '/c/[:id]-[:last-update].[:ext]',
                             'defaults' => [
-                                'controller' => Controller\ContactController::class,
-                                'action'     => 'photo',
+                                //Explicitly add the controller here as the assets are collected
+                                'controller' => Controller\ImageController::class,
+                                'action'     => 'contact-photo',
                             ],
                         ],
                     ],

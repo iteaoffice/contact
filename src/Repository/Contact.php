@@ -21,6 +21,7 @@ use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\QueryBuilder;
 use Organisation\Entity\Organisation;
 use Project\Entity\Review\Review;
 use Project\Repository\Project;
@@ -163,16 +164,11 @@ class Contact extends EntityRepository
         return $queryBuilder->getQuery();
     }
 
-
     /**
      * @param $projectId
-     *
      * @return array
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \InvalidArgumentException
      */
-    public function findContactByProjectId($projectId)
+    public function findContactByProjectId($projectId):array
     {
         $queryBuilder = $this->findContactByProjectIdQueryBuilder();
         $queryBuilder->setParameter(1, $projectId);
@@ -181,9 +177,9 @@ class Contact extends EntityRepository
     }
 
     /**
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
-    public function findContactByProjectIdQueryBuilder()
+    public function findContactByProjectIdQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_contact');
@@ -233,10 +229,10 @@ class Contact extends EntityRepository
     /**
      * @param $email
      * @param $onlyMain
-     *
      * @return Entity\Contact|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findContactByEmail($email, $onlyMain)
+    public function findContactByEmail($email, $onlyMain): ?Entity\Contact
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_contact');
@@ -258,7 +254,7 @@ class Contact extends EntityRepository
     /**
      * @return Entity\Contact[]
      */
-    public function findContactsWithDateOfBirth()
+    public function findContactsWithDateOfBirth(): array
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_contact');
@@ -272,7 +268,7 @@ class Contact extends EntityRepository
     /**
      * @return Entity\Contact[]
      */
-    public function findContactsWithCV()
+    public function findContactsWithCV(): array
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_contact');
@@ -288,7 +284,7 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsWithActiveProfile($onlyPublic)
+    public function findContactsWithActiveProfile($onlyPublic): array
     {
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_contact');
@@ -492,7 +488,7 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsInFacebook(Entity\Facebook $facebook)
+    public function findContactsInFacebook(Entity\Facebook $facebook): array
     {
         $resultSetMap = new ResultSetMapping();
         $resultSetMap->addEntityResult(Entity\Contact::class, 'contact_entity_contact');
@@ -536,7 +532,7 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsBySelectionContact(Selection $selection, $toArray = false)
+    public function findContactsBySelectionContact(Selection $selection, $toArray = false): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_contact', 'co', 'o', 'cy');
@@ -564,7 +560,7 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsByOptIn(Entity\OptIn $optIn, $toArray = false)
+    public function findContactsByOptIn(Entity\OptIn $optIn, $toArray = false): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_contact');
@@ -589,7 +585,7 @@ class Contact extends EntityRepository
      *
      * @return bool
      */
-    public function isContactInSelectionSQL(Entity\Contact $contact, SelectionSql $sql)
+    public function isContactInSelectionSQL(Entity\Contact $contact, SelectionSql $sql): bool
     {
         $resultSetMap = new ResultSetMapping();
         $resultSetMap->addEntityResult(Entity\Contact::class, 'contact_entity_contact');
@@ -689,7 +685,7 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findPossibleContactByCalendar(Calendar $calendar)
+    public function findPossibleContactByCalendar(Calendar $calendar): array
     {
         /*
          * Use the contactQueryBuilder and exclude the ones which are already present based on the roles

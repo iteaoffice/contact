@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-import-contacts")) %}
 
-<h1>{{ translate("txt-import-contacts") }}</h1>
+<h1 class="display-4">{{ translate("txt-import-contacts") }}</h1>
 
 {% do form.prepare() %}
 
@@ -52,20 +52,20 @@
 
 
     {% if  handleImport.getContacts()|length > 0 %}
-        <table class="table table-hover table-striped table-condensed">
+        <table class="table table-hover table-striped table-condensed table-sm">
             <thead>
             <tr>
                 <th></th>
-                <th class="col-md-1">{{ translate("txt-title") }}</th>
-                <th class="col-md-2">{{ translate("txt-firstname") }}</th>
-                <th class="col-md-1">{{ translate("txt-middlename") }}</th>
-                <th class="col-md-2">{{ translate("txt-lastname") }}</th>
-                <th class="col-md-1">{{ translate("txt-gender") }}</th>
-                <th class="col-md-1">{{ translate("txt-email") }}</th>
-                <th class="col-md-2">{{ translate("txt-phone") }}</th>
-                <th class="col-md-2">{{ translate("txt-organisation") }}</th>
+                <th>{{ translate("txt-title") }}</th>
+                <th>{{ translate("txt-firstname") }}</th>
+                <th>{{ translate("txt-middlename") }}</th>
+                <th>{{ translate("txt-lastname") }}</th>
+                <th>{{ translate("txt-gender") }}</th>
+                <th>{{ translate("txt-email") }}</th>
+                <th>{{ translate("txt-phone") }}</th>
+                <th>{{ translate("txt-organisation") }}</th>
                 <th>{{ translate("txt-country") }}</th>
-                <th class="col-md-2">{{ translate("txt-position") }}</th>
+                <th>{{ translate("txt-position") }}</th>
             </tr>
             </thead>
             <tfoot>
