@@ -79,7 +79,8 @@ abstract class ImageAbstract extends AbstractViewHelper
         $config = $this->getServiceManager()->get('content_module_config');
 
         $thumberLink = Builder::construct(
-            $config['image']['server'], $config['image']['secret'],
+            $config['image']['server'],
+            $config['image']['secret'],
             $serverUrl() . $url($this->router, $this->routerParams)
         )
             ->fullFitIn($this->width, null)
@@ -109,7 +110,8 @@ abstract class ImageAbstract extends AbstractViewHelper
 
 
         $thumberLinkFull = Builder::construct(
-            $config['image']['server'], $config['image']['secret'],
+            $config['image']['server'],
+            $config['image']['secret'],
             $serverUrl() . $url($this->router, $this->routerParams)
         );
 

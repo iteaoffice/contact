@@ -56,8 +56,7 @@ class ContactPhoto extends ImageAbstract
 
         $this->setImageId('contact_photo_' . $photo->getId());
 
-        if ($grayscale)
-        {
+        if ($grayscale) {
             $this->addFilter('grayscale');
         }
 

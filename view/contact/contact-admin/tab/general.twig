@@ -7,8 +7,10 @@
     <dd>{{ contact.lastName }} {% if contact.middleName %}({{ contact.middleName }}){% endif %}</dd>
     <dt>{{ translate("txt-gender") }}</dt>
     <dd>{{ contact.gender.name }} ({{ contact.gender }})</dd>
-    <dt>{{ translate("txt-title") }}</dt>
-    <dd>{{ contact.title }} ({{ contactService.parseAttention(contact) }})</dd>
+    {% if contact.title.name %}
+        <dt>{{ translate("txt-title") }}</dt>
+        <dd>{{ contact.title }} ({{ contactService.parseAttention(contact) }})</dd>
+    {% endif %}
     <dt>{{ translate("txt-primary-email") }}</dt>
     <dd>{{ contact.email }} <a href="mailto:{{ contact.email }}"><i
                     class="fa fa-envelope-o"></i></a></dd>
@@ -25,7 +27,7 @@
     <dt>{{ translate("txt-organisation") }}</dt>
     {% if contactService.hasOrganisation(contact) %}
         <dd>{{ organisationLink(
-            contact.contactOrganisation.organisation,'view-admin', 'name',contact.contactOrganisation.branch
+                contact.contactOrganisation.organisation,'view-admin', 'name',contact.contactOrganisation.branch
             ) }} ({{ contact.contactOrganisation.organisation.type }}),
             {{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
     {% else %}
@@ -38,13 +40,15 @@
     {% else %}
         <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
     {% endif %}
-    <dt>{{ translate("txt-expertise") }}</dt>
-    <dd>{{ contact.profile.description|nl2br }}</dd>
+    {% if contact.profile.description %}
+        <dt>{{ translate("txt-expertise") }}</dt>
+        <dd>{{ contact.profile.description|nl2br }}</dd>
+    {% endif %}
 
     <dt>{{ translate("txt-department") }}</dt>
     <dd>{{ contact.department|default(translate("txt-unknown")) }}</dd>
     <dt>{{ translate("txt-position") }}</dt>
-    <dd>{{ contact.position }}</dd>
+    <dd>{{ contact.position|default(translate("txt-unknown")) }}</dd>
     <dt>{{ translate("txt-access") }}</dt>
     {% for access in contact.access %}
         <dd>{{ accessLink(access,'view','name') }} {% if not access.selection.isEmpty() %}*{% endif %}</dd>

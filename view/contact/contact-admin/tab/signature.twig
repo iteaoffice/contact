@@ -1,0 +1,25 @@
+<h1 class="home">{{ translate("txt-signature") }}</h1>
+<p>
+    Copy the HTML content of the signature below and save this at the following location (Windows 8/10)<br>
+    <code>C:\Users\%username%\AppData\Roaming\Microsoft\Signatures\signature.htm</code>
+    <br>
+    In Outlook go to File > Option > Mail > Signatures and set "Signature" as your default for new messages and
+    replies
+</p>
+
+
+<h2>{{ translate("txt-source") }}</h2>
+
+<form role="form">
+    <div class="form-group">
+        <textarea rows="30">{% include 'contact/partial/signature/itea' %}</textarea>
+    </div>
+</form>
+
+
+<style type="text/css">
+    textarea {
+        width: 100%;
+        font-family: Courier, monospace;
+    }
+</style>
