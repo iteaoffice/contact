@@ -33,8 +33,8 @@
 {% if contact.id %}
     <fieldset>
         <legend>{{ translate("txt-photo") }}</legend>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">{{ translate("txt-current-photo") }}</label>
+        <div class="form-group row">
+            <label class="col-md-3 form-control-label control-label">{{ translate("txt-current-photo") }}</label>
 
             <div class="col-sm-9">
                 <p class="form-control-static">{{ contactPhoto(contact, 400) }}</p>
@@ -50,8 +50,8 @@
     {{ ztbformelement(contactFieldset.get('access')) }}
 </fieldset>
 
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
+<div class="form-group row">
+    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
         {% if form.has('deactivate') %}

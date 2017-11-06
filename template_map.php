@@ -36,6 +36,7 @@ return array(
     'contact/profile/view'                    => __DIR__ . '//view/contact/profile/view.twig',
     'contact/note-manager/edit'               => __DIR__ . '//view/contact/note-manager/edit.twig',
     'contact/note-manager/new'                => __DIR__ . '//view/contact/note-manager/new.twig',
+    'contact/facebook/facebook-itea'          => __DIR__ . '//view/contact/facebook/facebook-itea.twig',
     'contact/facebook/send-message'           => __DIR__ . '//view/contact/facebook/send-message.twig',
     'contact/facebook/facebook'               => __DIR__ . '//view/contact/facebook/facebook.twig',
     'contact/contact-admin/impersonate'       => __DIR__ . '//view/contact/contact-admin/impersonate.twig',

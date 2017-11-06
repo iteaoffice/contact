@@ -17,11 +17,11 @@
 {% endif %}
 
 <!-- Nav tabs -->
-<ul class="nav nav-tabs">
-    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab">{{ translate("txt-general") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#contacts" data-toggle="tab">{{ translate("txt-contacts") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#mailings" data-toggle="tab">{{ translate("txt-mailings") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#access" data-toggle="tab">{{ translate("txt-access") }}</a></li>
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab" role="tab">{{ translate("txt-general") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#contacts" data-toggle="tab" role="tab">{{ translate("txt-contacts") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mailings" data-toggle="tab" role="tab">{{ translate("txt-mailings") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#access" data-toggle="tab" role="tab">{{ translate("txt-access") }}</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -69,14 +69,14 @@
         <h3>{{ translate("txt-contacts") }}</h3>
 
         {% if contacts|length > 0 %}
-            <table class="table table-striped table-condensed table-hover">
+            <table class="table table-striped table-hover table-condensed table-sm">
                 <thead>
                 <tr>
                     <th>{{ translate("txt-firstname") }}</th>
                     <th>{{ translate("txt-lastname") }}</th>
                     <th>{{ translate("txt-email") }}</th>
-                    <th class="col-md-5">{{ translate("txt-organisation") }}</th>
-                    <th class="col-md-5">{{ translate("txt-country") }}</th>
+                    <th>{{ translate("txt-organisation") }}</th>
+                    <th>{{ translate("txt-country") }}</th>
                 </tr>
                 </thead>
                 <tbody>

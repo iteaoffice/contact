@@ -1,84 +1,56 @@
 {% do headTitle().append(translate("txt-contacts")) %}
 {% do headTitle().append(facebook.facebook) %}
-<h1 class="display-4">{{ facebook }} {{ facebookLink(facebook,'send-message','button') }}</h1>
+<h1 class="display-4">{{ facebook }}</h1>
 
 {% if  contacts|length > 0 %}
     <div class="row">
-        {% for contact in contacts %}
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header-box">
-                        <div class="card-header" id="card_{{ contact.contact.id }}"></div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ contact.contact.displayName }}</h5>
-                        <p class="card-text">
-                            {% if contact.title|length > 0 %}{{ contact.title|raw }}<br>{% endif %}
-                            {% if contact.subTitle|length > 0 %}{{ contact.subTitle|raw }}<br>{% endif %}
+    {% for contact in contacts %}
+        <div class="col-sm-3">
+            <div class="thumbnail contact-box">
+                <div class="information-box-header">
+                    <h5>{{ contact.contact.displayName }}</h5>
+                </div>
+                <div class="contact-box-image">
+                    {{ contactPhoto(contact.contact, 200, false) }}
+                </div>
+                <div class="caption caption-relative">
+                    {% if contact.title|length > 0 %}{{ contact.title|raw }}<br>{% endif %}
+                    {% if contact.subTitle|length > 0 %}{{ contact.subTitle|raw }}<br>{% endif %}
 
-                            {% if facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_ALL") or
-                            (
-                            facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_MEMBER") and
-                            contactInFacebook
-                            ) %}
-                                <span class="d-inline-block text-truncate" style="max-width: 200px;">
-                                <i class="fa fa-envelope-o"></i>&nbsp;<a
-                                            href="mailto:{{ contact.email }}">{{ contact.email }}</a>
-                            </span>
-                            {% endif %}
-                            {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER") %}
-                                {% if contactInFacebook and contact.mobile|length > 0 %}
-                                    <i class="fa fa-mobile"></i>&nbsp;{{ contact.mobile }}
-                                {% elseif contact.phone|length > 0 %}
-                                    <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
-                                {% endif %}
-                            {% endif %}
-                            {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and contact.phone|length > 0 %}
-                                {% if contactInFacebook %}
-                                    <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
-                                {% endif %}
-                            {% endif %}
-                            {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") and contact.phone|length > 0 %}
-                                <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
-                            {% endif %}
-                        </p>
-                    </div>
+                    {% if facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_ALL") or
+                    (
+                    facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_MEMBER") and
+                    contactInFacebook
+                    ) %}
+                        <i class="fa fa-envelope-o"></i>&nbsp;<a
+                            href="mailto:{{ contact.email }}">{{ contact.email }}</a><br>
+                    {% endif %}
+                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER") %}
+                        {% if contactInFacebook and contact.mobile|length > 0 %}
+                            <i class="fa fa-mobile"></i>&nbsp;{{ contact.mobile }}
+                        {% elseif contact.phone|length > 0 %}
+                            <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                        {% endif %}
+                    {% endif %}
+                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and contact.phone|length > 0 %}
+                        {% if contactInFacebook %}
+                            <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                        {% endif %}
+                    {% endif %}
+                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") and contact.phone|length > 0 %}
+                        <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                    {% endif %}
                 </div>
             </div>
-
-
-
-            {% if loop.index is divisible by (4) %}
-                <div class="w-100"><br></div>
-            {% endif %}
-
-        {% endfor %}
+        </div>
+        {% if loop.index is divisible by(4) %}
+            </div>
+            <div class="row top-buffer">
+        {% endif %}
+    {% endfor %}
     </div>
 {% endif %}
 
-{% for contact in contacts %}
-    <style class="text/css">
-        .card-header-box {
-            height: 260px;
-            overflow: hidden;
-        }
 
-        #card_{{ contact.contact.id }} {
-            height: 100%;
-            width: 100%;
-            background-size: cover;
-            -webkit-transition: all .5s;
-            -moz-transition: all .5s;
-            -o-transition: all .5s;
-            transition: all .5s;
-            background: url('{{ contactPhoto(contact.contact, 300, true, false) }}') no-repeat center center;
-        }
-
-        .card:hover .card-header, card:focus .card-header {
-            transform: scale(1.2);
-            transition: all .5s;
-        }
-    </style>
-{% endfor %}
-
+{{ facebookLink(facebook,'send-message','button') }}
 {{ facebookLink(facebook,'edit','button') }}

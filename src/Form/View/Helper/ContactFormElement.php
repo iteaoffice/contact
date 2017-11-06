@@ -112,7 +112,7 @@ class ContactFormElement extends FormElement
         if ($label && !$element->getOption('skipLabel')) {
             $controlLabel .= $labelHelper->openTag(
                 [
-                    'class' => 'col-lg-3 ' . ($element->getOption('wrapCheckboxInLabel') ? 'checkbox'
+                    'class' => 'col-md-3 ' . ($element->getOption('wrapCheckboxInLabel') ? 'checkbox'
                             : 'control-label'),
                 ] + ($element->hasAttribute('id') ? ['for' => $id] : [])
             );
