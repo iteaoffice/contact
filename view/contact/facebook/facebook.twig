@@ -11,7 +11,7 @@
                     <h5>{{ contact.contact.displayName }}</h5>
                 </div>
                 <div class="contact-box-image">
-                    {{ contactPhoto(contact.contact, 200, false) }}
+                    {{ contactPhoto(contact.contact, null, false, true) }}
                 </div>
                 <div class="caption caption-relative">
                     {% if contact.title|length > 0 %}{{ contact.title|raw }}<br>{% endif %}

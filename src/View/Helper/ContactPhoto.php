@@ -31,18 +31,22 @@ class ContactPhoto extends ImageAbstract
      * @param null $width
      * @param bool $onlyUrl
      * @param bool $responsive
-     * @param array $classes
+     * @param bool $grayscale
      * @return string
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __invoke(
         Contact $contact,
         $width = null,
         $onlyUrl = false,
-        $grayscale = true
+        $responsive = false,
+        $grayscale = false
     ): string {
         $photo = $contact->getPhoto()->first();
 
         $this->filter = [];
+        $this->classes = [];
 
         if (!$photo) {
             return '';
@@ -58,6 +62,9 @@ class ContactPhoto extends ImageAbstract
 
         if ($grayscale) {
             $this->addFilter('grayscale');
+        }
+        if ($responsive) {
+            $this->addClasses('img-responsive img-fluid');
         }
 
         $this->setWidth($width);
