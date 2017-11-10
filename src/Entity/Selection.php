@@ -30,7 +30,8 @@ use Zend\Form\Annotation;
  */
 class Selection extends EntityAbstract
 {
-    const SELECTION_INVOICE_CORE = 1;
+    const SELECTION_INVOICE_CORE       = 1;
+    const SELECTION_STG                = 47;
     const SELECTION_PROJECT_MANAGEMENT = 219;
     /**
      * Constant for notPersonal = 0 (not personal).
