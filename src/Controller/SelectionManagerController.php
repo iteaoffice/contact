@@ -381,8 +381,11 @@ class SelectionManagerController extends ContactAbstractController
 
         $string = ob_get_clean();
 
-        //To be able to open the file correctly in Excel, we need to convert it to UTF-16LE
-        $string = mb_convert_encoding($string, 'UTF-16LE', 'UTF8');
+        // Convert to UTF-16LE
+        $string = mb_convert_encoding($string, 'UTF-16LE', 'UTF-8');
+
+        // Prepend BOM
+        $string = "\xFF\xFE" . $string;
 
         $response = $this->getResponse();
         $headers = $response->getHeaders();

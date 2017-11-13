@@ -107,6 +107,15 @@ class Cv extends EntityAbstract implements ResourceInterface
     }
 
     /**
+     * @return bool|string
+     */
+    public function parseCV(): string
+    {
+        rewind($this->cv);
+        return (string) stream_get_contents($this->cv);
+    }
+
+    /**
      * @return \Contact\Entity\Contact
      */
     public function getContact()

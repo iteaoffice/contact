@@ -663,6 +663,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $invite;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Pca", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Pca[]|Collections\ArrayCollection
+     */
+    private $pca;
+    /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Invite[]|Collections\ArrayCollection
@@ -891,6 +897,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->technology = new Collections\ArrayCollection();
         $this->dnd = new Collections\ArrayCollection();
         $this->nda = new Collections\ArrayCollection();
+        $this->pca = new Collections\ArrayCollection();
         $this->ndaApprover = new Collections\ArrayCollection();
         $this->programDoa = new Collections\ArrayCollection();
         $this->domain = new Collections\ArrayCollection();
@@ -3746,6 +3753,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setLog($log)
     {
         $this->log = $log;
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Pca[]
+     */
+    public function getPca()
+    {
+        return $this->pca;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Pca[] $pca
+     * @return Contact
+     */
+    public function setPca($pca)
+    {
+        $this->pca = $pca;
+
         return $this;
     }
 }

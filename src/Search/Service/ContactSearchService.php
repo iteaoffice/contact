@@ -64,7 +64,11 @@ class ContactSearchService extends AbstractSearchService
         $contactDocument->position_sort = $contact->getPosition();
 
         if (!is_null($contact->getProfile())) {
-            $contactDocument->profile = str_replace(PHP_EOL, '', strip_tags((string) $contact->getProfile()->getDescription()));
+            $contactDocument->profile = str_replace(
+                PHP_EOL,
+                '',
+                strip_tags((string)$contact->getProfile()->getDescription())
+            );
 
             if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
                 && ($contact->getPhoto()->count() > 0)
@@ -72,12 +76,11 @@ class ContactSearchService extends AbstractSearchService
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
                 $contactDocument->photo_url = $this->getUrl(
-                    'assets/contact-photo',
+                    'image/contact-photo',
                     [
-                        'hash'  => $photo->getHash(),
-                        'ext'   => $photo->getContentType()->getExtension(),
-                        'id'    => $photo->getId(),
-                        'width' => 200,
+                        'ext'         => $photo->getContentType()->getExtension(),
+                        'last-update' => $photo->getDateUpdated()->getTimestamp(),
+                        'id'          => $photo->getId(),
                     ]
                 );
             }
@@ -99,7 +102,7 @@ class ContactSearchService extends AbstractSearchService
             $cv = str_replace(
                 PHP_EOL,
                 '',
-                strip_tags((string) stream_get_contents($contact->getCv()->getCv()))
+                strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
             );
 
             $contactDocument->cv = $cv;
@@ -117,7 +120,7 @@ class ContactSearchService extends AbstractSearchService
      *
      * @param boolean $clear
      */
-    public function updateIndex($clear = false)
+    public function updateIndex($clear = false): void
     {
         $contacts = $this->getContactService()->findAll(Contact::class);
         $this->updateIndexWithCollection($contacts, $clear);

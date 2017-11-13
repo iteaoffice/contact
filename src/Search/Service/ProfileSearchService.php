@@ -81,13 +81,13 @@ class ProfileSearchService extends AbstractSearchService
             ) {
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
+
                 $contactDocument->photo_url = $this->getUrl(
-                    'assets/contact-photo',
+                    'image/contact-photo',
                     [
-                        'hash'  => $photo->getHash(),
                         'ext'   => $photo->getContentType()->getExtension(),
+                        'last-update'   => $photo->getDateUpdated()->getTimestamp(),
                         'id'    => $photo->getId(),
-                        'width' => 200,
                     ]
                 );
             }

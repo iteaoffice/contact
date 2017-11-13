@@ -1,7 +1,7 @@
 <h2>{{ translate("txt-cv") }}</h2>
 
 {% if contact.cv|length > 0 %}
-    {{ contact.cv|raw }}
+    {{ contact.cv.parseCV()|raw }}
 {% else %}
     {{ ztbalert().info(translate("txt-no-cv-available"))|raw }}
 {% endif %}

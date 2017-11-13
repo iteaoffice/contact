@@ -35,7 +35,6 @@
                 <tr>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'owner', 'text': translate('txt-owner')} %}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'tag', 'text': translate('txt-tag')} %}</th>
                     <th>{{ translate("txt-contacts") }}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'date', 'text': translate('txt-date')} %}</th>
                 </tr>
@@ -53,7 +52,6 @@
                             {{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}
                         </td>
                         <td>{{ contactLink(selection.contact,'view-admin','initials') }}</td>
-                        <td>{{ selection.tag }}</td>
                         <td>{{ selectionService.getAmountOfContacts(selection) }}{% if selectionService.isSql(selection) %}
                                 <i class="fa fa-code fa-help" aria-hidden="true"
                                    title="{{ translate("txt-selection-is-sql") }}"></i>
