@@ -50,7 +50,7 @@ class SelectionLink extends LinkAbstract
          * If the alternativeShow is not null, use it an otherwise take the page
          */
         $this->setAlternativeShow($page);
-        if (!is_null($alternativeShow)) {
+        if (!\is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         }
 
@@ -97,7 +97,7 @@ class SelectionLink extends LinkAbstract
                 );
                 break;
             case 'add-contact':
-                if (is_null($this->getContact())) {
+                if (\is_null($this->getContact())) {
                     throw new \Exception('Contact cannot be empty when adding a contact to a selection');
                 }
 

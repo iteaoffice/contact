@@ -283,7 +283,7 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function getMeetingService()
     {
-        if (is_null($this->meetingService)) {
+        if (\is_null($this->meetingService)) {
             $this->meetingService = $this->getServiceLocator()->get(MeetingService::class);
         }
 
@@ -367,7 +367,7 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function getEmailService()
     {
-        if (is_null($this->emailService)) {
+        if (\is_null($this->emailService)) {
             $this->emailService = $this->getServiceLocator()->get(EmailService::class);
         }
 

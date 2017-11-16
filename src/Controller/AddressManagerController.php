@@ -33,7 +33,7 @@ class AddressManagerController extends ContactAbstractController
          */
         $contact = $this->getContactService()->findContactById($this->params('contact'));
 
-        if (is_null($contact)) {
+        if (\is_null($contact)) {
             return $this->notFoundAction();
         }
 

@@ -22,9 +22,7 @@ use Zend\View\Model\ViewModel;
 class NoteManagerController extends ContactAbstractController
 {
     /**
-     * Create a new note.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function newAction()
     {
@@ -33,7 +31,7 @@ class NoteManagerController extends ContactAbstractController
          */
         $contact = $this->getContactService()->findContactById($this->params('contact'));
 
-        if (is_null($contact)) {
+        if (\is_null($contact)) {
             return $this->notFoundAction();
         }
 
@@ -70,9 +68,7 @@ class NoteManagerController extends ContactAbstractController
     }
 
     /**
-     * Edit an note by finding it and call the corresponding form.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function editAction()
     {

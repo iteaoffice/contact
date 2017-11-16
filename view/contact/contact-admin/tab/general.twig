@@ -77,7 +77,8 @@
         {% endfor %}
         </tbody>
     </table>
-    {{ noteLink(null,'new','button') }}
 {% else %}
     {{ ztbalert().info(translate("txt-no-notes-available-for-this-contact"))|raw }}
 {% endif %}
+
+{{ noteLink(null,'new','button', contact) }}

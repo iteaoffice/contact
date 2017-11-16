@@ -28,7 +28,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  */
 class Note extends EntityAbstract implements ResourceInterface
 {
-    const SOURCE_SIGNATURE = 'signature';
+    public const SOURCE_SIGNATURE = 'signature';
 
     /**
      * @ORM\Column(name="note_id", type="integer", nullable=false)

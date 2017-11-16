@@ -102,9 +102,9 @@ class ContactAdminController extends ContactAbstractController
                     $contact->getEmail(),
                     $contact->getFirstName(),
                     trim(sprintf("%s %s", $contact->getMiddleName(), $contact->getLastName())),
-                    !is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()
+                    !\is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()
                         ->getOrganisation() : '',
-                    !is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()
+                    !\is_null($contact->getContactOrganisation()) ? $contact->getContactOrganisation()
                         ->getOrganisation()->getCountry() : '',
                 ]
             );
@@ -142,7 +142,7 @@ class ContactAdminController extends ContactAbstractController
         $selections = $this->getSelectionService()->findSelectionsByContact($contact);
         $optIn = $this->getContactService()->findAll(OptIn::class);
 
-        if (is_null($contact)) {
+        if (\is_null($contact)) {
             return $this->notFoundAction();
         }
 
@@ -241,7 +241,7 @@ class ContactAdminController extends ContactAbstractController
     {
         $contact = $this->getContactService()->findContactById($this->params('id'));
 
-        if (is_null($contact)) {
+        if (\is_null($contact)) {
             return $this->notFoundAction();
         }
 
@@ -328,7 +328,7 @@ class ContactAdminController extends ContactAbstractController
                 /** Update the organisation if there is any */
                 if (isset($data['contact_entity_contact']['organisation'])) {
                     //Update the contactOrganisation (if set)
-                    if (is_null($contact->getContactOrganisation())) {
+                    if (\is_null($contact->getContactOrganisation())) {
                         $contactOrganisation = new ContactOrganisation();
                         $contactOrganisation->setContact($contact);
                     } else {

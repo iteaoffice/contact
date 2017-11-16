@@ -24,10 +24,10 @@ use Zend\InputFilter\InputFilterInterface;
  */
 class AddressTypeSort extends EntityAbstract
 {
-    const ADDRESS_TYPE_MAIL = 1;
-    const ADDRESS_TYPE_VISIT = 2;
-    const ADDRESS_TYPE_FINANCIAL = 3;
-    const ADDRESS_TYPE_HOME = 4;
+    public const ADDRESS_TYPE_MAIL = 1;
+    public const ADDRESS_TYPE_VISIT = 2;
+    public const ADDRESS_TYPE_FINANCIAL = 3;
+    public const ADDRESS_TYPE_HOME = 4;
     /**
      * @ORM\Column(name="sort_id", type="integer", nullable=false)
      * @ORM\Id

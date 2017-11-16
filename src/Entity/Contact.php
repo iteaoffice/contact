@@ -36,15 +36,15 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * Key needed for the encryption and decryption of the Keys
      */
-    const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
+    public const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
     /**
      * Constant for messenger;
      */
-    const MESSENGER_ACTIVE = 1;
+    public const MESSENGER_ACTIVE = 1;
     /**
      * Value for messenger
      */
-    const MESSENGER_ACTIVE_VALUE = "txt-messenger-active";
+    public const MESSENGER_ACTIVE_VALUE = "txt-messenger-active";
     /**
      * Templates for the constant status
      *
@@ -1000,7 +1000,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     public function parseHash($id = null): string
     {
-        if (is_null($id)) {
+        if (\is_null($id)) {
             $id = $this->id;
         }
 

@@ -95,31 +95,31 @@ class MergeContact extends AbstractPlugin
 
         try {
             // Update contact properties
-            if (is_null($target->getFirstName())) {
+            if (\is_null($target->getFirstName())) {
                 $target->setFirstName($source->getFirstName());
             }
-            if (is_null($target->getMiddleName())) {
+            if (\is_null($target->getMiddleName())) {
                 $target->setMiddleName($source->getMiddleName());
             }
-            if (is_null($target->getLastName())) {
+            if (\is_null($target->getLastName())) {
                 $target->setLastName($source->getLastName());
             }
-            if (is_null($target->getEmail())) {
+            if (\is_null($target->getEmail())) {
                 $target->setEmail($source->getEmail());
             }
-            if (is_null($target->getGender())) {
+            if (\is_null($target->getGender())) {
                 $target->setGender($source->getGender());
             }
-            if (is_null($target->getTitle())) {
+            if (\is_null($target->getTitle())) {
                 $target->setTitle($source->getTitle());
             }
-            if (is_null($target->getPosition())) {
+            if (\is_null($target->getPosition())) {
                 $target->setPosition($source->getPosition());
             }
-            if (is_null($target->getDepartment())) {
+            if (\is_null($target->getDepartment())) {
                 $target->setDepartment($source->getDepartment());
             }
-            if (is_null($target->getDateOfBirth())) {
+            if (\is_null($target->getDateOfBirth())) {
                 $target->setDateOfBirth($source->getDateOfBirth());
             }
             if ($source->getDateCreated() < $target->getDateCreated()) {
@@ -150,14 +150,14 @@ class MergeContact extends AbstractPlugin
             }
             /** @var Email $emailSource */
             foreach ($source->getEmailAddress() as $emailSource) {
-                if (!in_array($emailSource->getEmail(), $targetEmailAddresses)) {
+                if (!\in_array($emailSource->getEmail(), $targetEmailAddresses)) {
                     $emailSource->setContact($target);
                     $target->getEmailAddress()->add($emailSource);
                 }
             }
 
             // Transfer CV
-            if (!is_null($source->getCv()) && is_null($target->getCv())) {
+            if (!\is_null($source->getCv()) && \is_null($target->getCv())) {
                 $target->setCv($source->getCv());
                 $target->getCv()->setContact($target);
             }
@@ -192,7 +192,7 @@ class MergeContact extends AbstractPlugin
             }
             /** @var OptIn $optInSource */
             foreach ($source->getOptIn() as $optInSource) {
-                if (!in_array($optInSource->getId(), $targetOptIns)) {
+                if (!\in_array($optInSource->getId(), $targetOptIns)) {
                     $target->getOptIn()->add($optInSource);
                 }
             }
@@ -319,14 +319,14 @@ class MergeContact extends AbstractPlugin
             }
             /** @var OpenId $openIdSource */
             foreach ($source->getOpenId() as $openIdSource) {
-                if (!in_array($openIdSource->getIdentity(), $targetOpenIds)) {
+                if (!\in_array($openIdSource->getIdentity(), $targetOpenIds)) {
                     $openIdSource->setContact($target);
                     $target->getOpenId()->add($openIdSource);
                 }
             }
 
             // Transfer contact organisation
-            if (is_null($target->getContactOrganisation())) {
+            if (\is_null($target->getContactOrganisation())) {
                 $contactorganisation = $source->getContactOrganisation();
                 $contactorganisation->setContact($target);
                 $target->setContactOrganisation($contactorganisation);
@@ -341,7 +341,7 @@ class MergeContact extends AbstractPlugin
             }
             /** @var Domain $domainSource */
             foreach ($source->getDomain() as $domainSource) {
-                if (!in_array($domainSource->getId(), $targetDomains)) {
+                if (!\in_array($domainSource->getId(), $targetDomains)) {
                     $target->getDomain()->add($domainSource);
                 }
             }
@@ -495,7 +495,7 @@ class MergeContact extends AbstractPlugin
             $source->setAssociate(new ArrayCollection());
 
             // Transfer funder (one-to-one)
-            if (is_null($target->getFunder()) && !is_null($source->getFunder())) {
+            if (\is_null($target->getFunder()) && !\is_null($source->getFunder())) {
                 $funder = $source->getFunder();
                 $funder->setContact($target);
                 $target->setFunder($funder);
@@ -510,7 +510,7 @@ class MergeContact extends AbstractPlugin
             }
 
             // Transfer profile (one-to-one)
-            if (is_null($target->getProfile()) && !is_null($source->getProfile())) {
+            if (\is_null($target->getProfile()) && !\is_null($source->getProfile())) {
                 $profile = $source->getProfile();
                 $profile->setContact($target);
                 $target->setProfile($profile);

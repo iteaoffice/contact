@@ -27,8 +27,8 @@ class OptIn extends EntityAbstract
     /**
      * Feature to decide which opt-ins to enable on registration.
      */
-    const AUTO_SUBSCRIBE = 1;
-    const NO_AUTO_SUBSCRIBE = 0;
+    public const AUTO_SUBSCRIBE = 1;
+    public const NO_AUTO_SUBSCRIBE = 0;
 
     /**
      * @var array

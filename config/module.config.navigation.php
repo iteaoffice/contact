@@ -116,6 +116,32 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'edit-note'        => [
+                                        'label'   => _('txt-edit-note'),
+                                        'route'   => 'zfcadmin/note/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Note::class,
+                                            ],
+                                            'invokables' => [
+                                                Contact\Navigation\Invokable\NoteLabel::class,
+                                            ],
+                                        ],
+                                    ],
+                                    'new-note'         => [
+                                        'label'   => _('txt-new-note'),
+                                        'route'   => 'zfcadmin/note/new',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'contact',
+                                            ],
+                                        ],
+                                    ],
                                     'edit-address'        => [
                                         'label'   => _('txt-edit-address'),
                                         'route'   => 'zfcadmin/address/edit',

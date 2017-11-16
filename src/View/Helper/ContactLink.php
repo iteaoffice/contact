@@ -50,7 +50,7 @@ class ContactLink extends LinkAbstract
         /*
          * If the alternativeShow is not null, use it an otherwise take the hash
          */
-        if (!is_null($alternativeShow)) {
+        if (!\is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($hash);
@@ -166,7 +166,7 @@ class ContactLink extends LinkAbstract
                  * Users can have access without a password (via the deeplink)
                  * We will therefore have the option to set a password
                  */
-                if (is_null($this->getContact()->getSaltedPassword())) {
+                if (\is_null($this->getContact()->getSaltedPassword())) {
                     $this->setText($this->translate("txt-set-your-password"));
                     $this->addClasses('btn-danger');
                 } else {

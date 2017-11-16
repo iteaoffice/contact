@@ -54,7 +54,7 @@ class Import extends Form implements InputFilterProviderInterface
         $selections = [];
         foreach ($selectionService->findAll(Selection::class) as $selection) {
             /** @var $selection Selection */
-            if (is_null($selection->getSql())) {
+            if (\is_null($selection->getSql())) {
                 $selections[$selection->getId()] = $selection->getSelection();
             }
         }

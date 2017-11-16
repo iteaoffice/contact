@@ -94,6 +94,7 @@ $config = [
             Navigation\Invokable\FacebookLabel::class               => Navigation\Factory\NavigationInvokableFactory::class,
             Navigation\Invokable\SelectionLabel::class              => Navigation\Factory\NavigationInvokableFactory::class,
             Navigation\Invokable\AddressLabel::class                => Navigation\Factory\NavigationInvokableFactory::class,
+            Navigation\Invokable\NoteLabel::class                   => Navigation\Factory\NavigationInvokableFactory::class,
             Navigation\Invokable\PhoneLabel::class                  => Navigation\Factory\NavigationInvokableFactory::class,
             Provider\Identity\AuthenticationIdentityProvider::class => Factory\AuthenticationIdentityProviderServiceFactory::class,
             Service\SelectionService::class                         => Factory\SelectionServiceFactory::class,

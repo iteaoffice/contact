@@ -28,7 +28,7 @@ class ProfileSearchService extends AbstractSearchService
     /**
      *
      */
-    const SOLR_CONNECTION = 'contact_profile';
+    public const SOLR_CONNECTION = 'contact_profile';
 
     /**
      * The contact service
@@ -63,7 +63,7 @@ class ProfileSearchService extends AbstractSearchService
         $contactDocument->position_search = $contact->getPosition();
         $contactDocument->position_sort = $contact->getPosition();
 
-        if (!is_null($contact->getProfile())) {
+        if (!\is_null($contact->getProfile())) {
             $contactDocument->profile = str_replace(PHP_EOL, '', strip_tags((string) $contact->getProfile()->getDescription()));
             $contactDocument->profile_sort = str_replace(
                 PHP_EOL,
@@ -93,7 +93,7 @@ class ProfileSearchService extends AbstractSearchService
             }
         }
 
-        if (!is_null($contact->getContactOrganisation())) {
+        if (!\is_null($contact->getContactOrganisation())) {
             $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
             $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
             $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
@@ -105,7 +105,7 @@ class ProfileSearchService extends AbstractSearchService
             $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
         }
 
-        if (!is_null($contact->getCv())) {
+        if (!\is_null($contact->getCv())) {
             $cv = str_replace(
                 PHP_EOL,
                 '',
@@ -170,7 +170,7 @@ class ProfileSearchService extends AbstractSearchService
         $this->setQuery($this->getSolrClient()->createSelect());
         $this->getQuery()->setQuery(static::parseQuery($searchTerm, $searchFields));
 
-        $hasTerm = !in_array($searchTerm, ['*', '']);
+        $hasTerm = !\in_array($searchTerm, ['*', '']);
         $hasSort = ($order !== '');
 
         if ($hasSort) {

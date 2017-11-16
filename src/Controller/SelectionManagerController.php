@@ -65,7 +65,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (is_null($selection)) {
+        if (\is_null($selection)) {
             return $this->notFoundAction();
         }
 
@@ -99,7 +99,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (is_null($selection)) {
+        if (\is_null($selection)) {
             return $this->notFoundAction();
         }
 
@@ -146,7 +146,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $contact = $this->getContactService()->findContactById($this->params('contactId'));
 
-        if (is_null($contact)) {
+        if (\is_null($contact)) {
             return $this->notFoundAction();
         }
 
@@ -195,7 +195,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (is_null($selection)) {
+        if (\is_null($selection)) {
             return $this->notFoundAction();
         }
 
@@ -203,7 +203,7 @@ class SelectionManagerController extends ContactAbstractController
 
         $form = $this->getFormService()->prepare($selection, $selection, $data);
 
-        if (!is_null($selection->getContact())) {
+        if (!\is_null($selection->getContact())) {
             $form->get($selection->get('underscore_entity_name'))->get('contact')->injectContact(
                 $selection->getContact()
             );
@@ -310,7 +310,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params()->fromPost('id'));
 
-        if (is_null($selection)) {
+        if (\is_null($selection)) {
             return $this->notFoundAction();
         }
 
@@ -331,7 +331,7 @@ class SelectionManagerController extends ContactAbstractController
                 'name'         => $contact->getFormName(),
                 'id'           => $contact->getId(),
                 'email'        => $contact->getEmail(),
-                'organisation' => is_null($contact->getContactOrganisation())
+                'organisation' => \is_null($contact->getContactOrganisation())
                     ?: $contact->getContactOrganisation()->getOrganisation()->getOrganisation(),
             ];
         }
@@ -346,7 +346,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (is_null($selection)) {
+        if (\is_null($selection)) {
             return $this->notFoundAction();
         }
 

@@ -50,7 +50,7 @@ class Facebook extends AssertionAbstract
         $this->setPrivilege($privilege);
         $id = $this->getId();
 
-        if (!$facebook instanceof FacebookEntity && !is_null($id)) {
+        if (!$facebook instanceof FacebookEntity && !\is_null($id)) {
             /** @var FacebookEntity $facebook */
             $facebook = $this->getContactService()->findEntityById(FacebookEntity::class, $id);
         }

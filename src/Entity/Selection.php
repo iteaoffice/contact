@@ -30,27 +30,27 @@ use Zend\Form\Annotation;
  */
 class Selection extends EntityAbstract
 {
-    const SELECTION_INVOICE_CORE       = 1;
-    const SELECTION_STG                = 47;
-    const SELECTION_PROJECT_MANAGEMENT = 219;
+    public const SELECTION_INVOICE_CORE       = 1;
+    public const SELECTION_STG                = 47;
+    public const SELECTION_PROJECT_MANAGEMENT = 219;
     /**
      * Constant for notPersonal = 0 (not personal).
      */
-    const NOT_PERSONAL = 0;
+    public const NOT_PERSONAL = 0;
     /**
      * Constant for notPersonal = 1 (personal).
      */
-    const PERSONAL = 1;
+    public const PERSONAL = 1;
     /**
      * Constant for private = 0 (not private).
      */
-    const NOT_PRIVATE = 0;
+    public const NOT_PRIVATE = 0;
     /**
      * Constant for private = 1 (hidden).
      */
-    const IS_PRIVATE = 1;
-    const TYPE_SQL = 1;
-    const TYPE_FIXED = 2;
+    public const IS_PRIVATE = 1;
+    public const TYPE_SQL = 1;
+    public const TYPE_FIXED = 2;
 
     /**
      * Textual versions of the hideForOthers.

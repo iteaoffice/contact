@@ -45,13 +45,13 @@ class ContactNavigationService extends NavigationServiceAbstract
     {
         $navigation = $this->getNavigation()->findOneBy('id', 'community/contact');
 
-        if (is_null($navigation)) {
+        if (\is_null($navigation)) {
             return;
         }
         /*
          * Update the navigation with the facebooks (if a a contact object is present)
          */
-        if (!is_null($this->getContact())) {
+        if (!\is_null($this->getContact())) {
             foreach ($this->getContactService()->findFacebookByContact($this->getContact()) as $facebook) {
                 $page = [
                     'label'      => $facebook->getFacebook(),

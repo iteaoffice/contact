@@ -50,16 +50,16 @@ class Profile extends DoctrineObject
         }
 
         unset($values['profile']);
-        $values['profile']['visible'] = !is_null($contact->getProfile()) ? $contact->getProfile()->getVisible()
+        $values['profile']['visible'] = !\is_null($contact->getProfile()) ? $contact->getProfile()->getVisible()
             : null;
-        $values['profile']['description'] = !is_null($contact->getProfile()) ? $contact->getProfile()->getDescription()
+        $values['profile']['description'] = !\is_null($contact->getProfile()) ? $contact->getProfile()->getDescription()
             : null;
         /*
          * Set the contact organisation, this will be taken from the contact_organisation item and can be used
          * to pre-fill the values
          */
         $organisationService = new OrganisationService();
-        if (!is_null($contact->getContactOrganisation())) {
+        if (!\is_null($contact->getContactOrganisation())) {
             $values['contact_organisation']['organisation_id'] = $contact->getContactOrganisation()->getOrganisation()
                 ->getId();
             $values['contact_organisation']['organisation']
@@ -123,7 +123,7 @@ class Profile extends DoctrineObject
                 }
             }
             foreach ($currentPhoneNumbers as $phone) {
-                if (!in_array(
+                if (!\in_array(
                     $phone->getType()->getId(),
                     [
                         PhoneType::PHONE_TYPE_MOBILE,

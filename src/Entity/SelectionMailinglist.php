@@ -30,11 +30,11 @@ class SelectionMailinglist
     /**
      * Constant for main = 0 (not main).
      */
-    const NOT_MAIN = 0;
+    public const NOT_MAIN = 0;
     /**
      * Constant for main = 1 (main).
      */
-    const MAIN = 1;
+    public const MAIN = 1;
     /**
      * Textual versions of the main.
      *

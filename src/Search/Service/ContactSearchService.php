@@ -28,7 +28,7 @@ class ContactSearchService extends AbstractSearchService
     /**
      *
      */
-    const SOLR_CONNECTION = 'contact_contact';
+    public const SOLR_CONNECTION = 'contact_contact';
 
     /**
      * The contact service
@@ -63,12 +63,9 @@ class ContactSearchService extends AbstractSearchService
         $contactDocument->position_search = $contact->getPosition();
         $contactDocument->position_sort = $contact->getPosition();
 
-        if (!is_null($contact->getProfile())) {
-            $contactDocument->profile = str_replace(
-                PHP_EOL,
-                '',
-                strip_tags((string)$contact->getProfile()->getDescription())
-            );
+        if (!\is_null($contact->getProfile())) {
+            $contactDocument->profile = str_replace(PHP_EOL, '',
+                strip_tags((string)$contact->getProfile()->getDescription()));
 
             if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
                 && ($contact->getPhoto()->count() > 0)
@@ -86,7 +83,7 @@ class ContactSearchService extends AbstractSearchService
             }
         }
 
-        if (!is_null($contact->getContactOrganisation())) {
+        if (!\is_null($contact->getContactOrganisation())) {
             $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
             $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
             $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
@@ -98,7 +95,7 @@ class ContactSearchService extends AbstractSearchService
             $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
         }
 
-        if (!is_null($contact->getCv())) {
+        if (!\is_null($contact->getCv())) {
             $cv = str_replace(
                 PHP_EOL,
                 '',
@@ -177,7 +174,7 @@ class ContactSearchService extends AbstractSearchService
             )
         );
 
-        $hasTerm = !in_array($searchTerm, ['*', '']);
+        $hasTerm = !\in_array($searchTerm, ['*', '']);
         $hasSort = ($order !== '');
 
         if ($hasSort) {

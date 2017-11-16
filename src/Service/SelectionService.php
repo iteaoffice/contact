@@ -66,7 +66,7 @@ class SelectionService extends ServiceAbstract
      */
     public function isSql(Entity\Selection $selection): bool
     {
-        return !is_null($selection->getSql());
+        return !\is_null($selection->getSql());
     }
 
     /**
@@ -114,7 +114,7 @@ class SelectionService extends ServiceAbstract
             /**
              * Skip the deleted selections and the ones the user is in
              */
-            if (!is_null($selection->getSql()) && $this->getContactService()->contactInSelection($contact, $selection)
+            if (!\is_null($selection->getSql()) && $this->getContactService()->contactInSelection($contact, $selection)
             ) {
                 $selections[] = $selection;
             }
@@ -148,7 +148,7 @@ class SelectionService extends ServiceAbstract
          */
         if ((int)$data['type'] === Entity\Selection::TYPE_FIXED) {
             //remove the query
-            if (!is_null($sql = $selection->getSql())) {
+            if (!\is_null($sql = $selection->getSql())) {
                 $this->removeEntity($sql);
             }
 
@@ -175,7 +175,7 @@ class SelectionService extends ServiceAbstract
             }
         } else {
             $selectionSql = $selection->getSql();
-            if (is_null($selectionSql)) {
+            if (\is_null($selectionSql)) {
                 $selectionSql = new Entity\SelectionSql();
                 $selectionSql->setSelection($selection);
             }

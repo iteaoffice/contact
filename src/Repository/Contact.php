@@ -48,7 +48,7 @@ class Contact extends EntityRepository
         /*
          * Only add a limit when asked
          */
-        if (!is_null($limit)) {
+        if (!\is_null($limit)) {
             $qb->setMaxResults($limit);
         }
 
@@ -80,21 +80,21 @@ class Contact extends EntityRepository
         }
 
         if (array_key_exists('options', $filter)) {
-            if (in_array('hasOrganisation', $filter['options'])) {
+            if (\in_array('hasOrganisation', $filter['options'])) {
                 $queryBuilder->innerJoin(
                     'content_entity_contact.contactOrganisation',
                     'contact_entity_contact_organisation_for_filter'
                 );
             }
-            if (in_array('onlyDeactivated', $filter['options'])) {
+            if (\in_array('onlyDeactivated', $filter['options'])) {
                 $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('content_entity_contact.dateEnd'));
             }
         }
 
 
         /** Only when the filter is turned on, omit this extra rule */
-        if (!(array_key_exists('options', $filter) && in_array('includeDeactivated', $filter['options']))
-            && (isset($filter['options']) && !in_array('onlyDeactivated', $filter['options'], true))
+        if (!(array_key_exists('options', $filter) && \in_array('includeDeactivated', $filter['options']))
+            && (isset($filter['options']) && !\in_array('onlyDeactivated', $filter['options'], true))
         ) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('content_entity_contact.dateEnd'));
         }
@@ -137,7 +137,7 @@ class Contact extends EntityRepository
         }
 
         $direction = 'ASC';
-        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
+        if (isset($filter['direction']) && \in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
             $direction = strtoupper($filter['direction']);
         }
 
@@ -328,7 +328,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
+            if (\count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
             /*
@@ -344,7 +344,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
+            if (\count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
             /*
@@ -362,7 +362,7 @@ class Contact extends EntityRepository
             $queryBuilder->andWhere('contact = :contact');
             $queryBuilder->setParameter('contact', $contact);
             //If we find a associate, return true, else proceed
-            if (count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
+            if (\count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
                 return true;
             }
 
@@ -453,7 +453,7 @@ class Contact extends EntityRepository
      */
     public function findAmountOfContactsInSelection(Selection $selection)
     {
-        if (!is_null($selection->getSql())) {
+        if (!\is_null($selection->getSql())) {
             $resultSetMap = new ResultSetMapping();
             $resultSetMap->addEntityResult(Entity\Contact::class, 'contact');
             $resultSetMap->addFieldResult('contact', 'blabla', 'blabla');

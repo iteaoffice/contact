@@ -30,27 +30,27 @@ class Profile extends EntityAbstract
     /**
      * Constant for hideForOthers = 0 (not hidden).
      */
-    const NOT_HIDE_FOR_OTHERS = 0;
+    public const NOT_HIDE_FOR_OTHERS = 0;
     /**
      * Constant for hideForOthers = 1 (hidden).
      */
-    const HIDE_FOR_OTHERS = 1;
+    public const HIDE_FOR_OTHERS = 1;
     /**
      * Constant for hidePhoto = 0 (not hidden).
      */
-    const NOT_HIDE_PHOTO = 0;
+    public const NOT_HIDE_PHOTO = 0;
     /**
      * Constant for hidePhoto = 1 (hidden).
      */
-    const HIDE_PHOTO = 1;
+    public const HIDE_PHOTO = 1;
     /**
      * Constant for visible = 0 (hidden).
      */
-    const VISIBLE_HIDDEN = 0;
+    public const VISIBLE_HIDDEN = 0;
     /**
      * Constant for visible = 1 (community).
      */
-    const VISIBLE_COMMUNITY = 1;
+    public const VISIBLE_COMMUNITY = 1;
     /**
      * Textual versions of the hideForOthers.
      *

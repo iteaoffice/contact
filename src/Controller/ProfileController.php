@@ -52,7 +52,7 @@ class ProfileController extends ContactAbstractController
     {
         $contact = $this->getContactService()->findContactById($this->params('id'));
 
-        if (is_null($contact) || $contact->parseHash() !== $this->params('hash')) {
+        if (\is_null($contact) || $contact->parseHash() !== $this->params('hash')) {
             return $this->notFoundAction();
         }
 
@@ -136,7 +136,7 @@ class ProfileController extends ContactAbstractController
                  * Remove any unwanted photo's
                  */
                 foreach ($contact->getPhoto() as $photo) {
-                    if (is_null($photo->getWidth())) {
+                    if (\is_null($photo->getWidth())) {
                         $collection = new ArrayCollection();
                         $collection->add($photo);
                         $contact->removePhoto($collection);

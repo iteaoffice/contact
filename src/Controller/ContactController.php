@@ -58,7 +58,7 @@ class ContactController extends ContactAbstractController
         /*
          * We do not specify the enable, so we give the result
          */
-        if (is_null($enable = $this->params()->fromQuery('enable'))) {
+        if (\is_null($enable = $this->params()->fromQuery('enable'))) {
             return new JsonModel(
                 [
                     'enable' => $this->getContactService()
@@ -136,7 +136,7 @@ class ContactController extends ContactAbstractController
 
         $contact = $this->getContactService()->findContactById($contactId);
 
-        if (is_null($contact)) {
+        if (\is_null($contact)) {
             return $this->notFoundAction();
         }
 
@@ -153,7 +153,7 @@ class ContactController extends ContactAbstractController
                 return $this->notFoundAction();
         }
 
-        if (is_null($address)) {
+        if (\is_null($address)) {
             return new JsonModel();
         }
 

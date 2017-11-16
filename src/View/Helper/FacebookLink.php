@@ -58,7 +58,7 @@ class FacebookLink extends LinkAbstract
         /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
-        if (!is_null($alternativeShow)) {
+        if (!\is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($page);
@@ -79,7 +79,7 @@ class FacebookLink extends LinkAbstract
      */
     public function getFacebook()
     {
-        if (is_null($this->facebook)) {
+        if (\is_null($this->facebook)) {
             $this->facebook = new Facebook();
         }
 

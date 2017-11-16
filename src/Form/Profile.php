@@ -134,7 +134,7 @@ class Profile extends Form implements InputFilterProviderInterface
         $phoneFieldSet = new Fieldset('phone');
         /** @var PhoneType $phoneType */
         foreach ($contactService->findAll(PhoneType::class) as $phoneType) {
-            if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE], true)) {
+            if (\in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE], true)) {
                 $fieldSet = new Fieldset($phoneType->getId());
                 $fieldSet->add(
                     [
@@ -239,12 +239,12 @@ class Profile extends Form implements InputFilterProviderInterface
                         ],
                     ],
                     'label_generator'           => function (Organisation $organisation) {
-                        if (!is_null($organisation->getCountry())) {
+                        if (!\is_null($organisation->getCountry())) {
                             return sprintf(
                                 "%s (%s) [VAT: %s]",
                                 $organisation->getOrganisation(),
                                 $organisation->getCountry()->getCountry(),
-                                (!is_null($organisation->getFinancial()) ? $organisation->getFinancial()->getVat()
+                                (!\is_null($organisation->getFinancial()) ? $organisation->getFinancial()->getVat()
                                     : 'unknown')
                             );
                         }
@@ -253,7 +253,7 @@ class Profile extends Form implements InputFilterProviderInterface
                     },
                 ],
                 'attributes' => [
-                    'required' => !is_null($contact->getContactOrganisation()),
+                    'required' => !\is_null($contact->getContactOrganisation()),
                     //Only required when a contact has an organisation
                     'id'       => 'organisation',
                 ],

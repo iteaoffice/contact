@@ -29,34 +29,34 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  */
 class Facebook extends EntityAbstract implements ResourceInterface
 {
-    const DISPLAY_NONE = 1;
-    const DISPLAY_ORGANISATION = 2;
-    const DISPLAY_COUNTRY = 3;
-    const DISPLAY_POSITION = 4;
-    const DISPLAY_PROJECTS = 5;
-    const SHOW_EMAIL_NO = 1;
-    const SHOW_EMAIL_MEMBER = 2;
-    const SHOW_EMAIL_ALL = 3;
-    const SHOW_PHONE_NO = 1;
-    const SHOW_PHONE_MEMBER = 2;
-    const SHOW_PHONE_ALL = 3;
-    const SHOW_MOBILE_PHONE_MEMBER = 4;
+    public const DISPLAY_NONE = 1;
+    public const DISPLAY_ORGANISATION = 2;
+    public const DISPLAY_COUNTRY = 3;
+    public const DISPLAY_POSITION = 4;
+    public const DISPLAY_PROJECTS = 5;
+    public const SHOW_EMAIL_NO = 1;
+    public const SHOW_EMAIL_MEMBER = 2;
+    public const SHOW_EMAIL_ALL = 3;
+    public const SHOW_PHONE_NO = 1;
+    public const SHOW_PHONE_MEMBER = 2;
+    public const SHOW_PHONE_ALL = 3;
+    public const SHOW_MOBILE_PHONE_MEMBER = 4;
     /**
      * Constant for public = 0 (not public).
      */
-    const CAN_NOT_SEND_MESSAGE = 0;
+    public const CAN_NOT_SEND_MESSAGE = 0;
     /**
      * Constant for public = 1 (hidden).
      */
-    const CAN_SEND_MESSAGE = 1;
+    public const CAN_SEND_MESSAGE = 1;
     /**
      * Constant for public = 0 (not public).
      */
-    const NOT_PUBLIC = 0;
+    public const NOT_PUBLIC = 0;
     /**
      * Constant for public = 1 (hidden).
      */
-    const IS_PUBLIC = 1;
+    public const IS_PUBLIC = 1;
     /**
      * Textual versions of the display.
      *

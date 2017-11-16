@@ -143,11 +143,11 @@ abstract class LinkAbstract extends AbstractViewHelper
             $serverUrl() . $url(
                 $this->router,
                 $this->routerParams,
-                is_null($this->getFragment()) ? [] : ['fragment' => $this->getFragment()]
+                \is_null($this->getFragment()) ? [] : ['fragment' => $this->getFragment()]
             ),
             htmlentities((string) $this->text),
             implode(' ', $this->classes),
-            in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
+            \in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
                 : htmlentities(implode('', $this->linkContent))
         );
     }
@@ -214,7 +214,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                 $this->addLinkContent($this->getText());
                 break;
             case 'paginator':
-                if (is_null($this->getAlternativeShow())) {
+                if (\is_null($this->getAlternativeShow())) {
                     throw new \InvalidArgumentException(
                         sprintf("this->alternativeShow cannot be null for a paginator link")
                     );
@@ -386,7 +386,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function hasAccess(EntityAbstract $entity, $assertion, $action)
     {
         $assertion = $this->getAssertion($assertion);
-        if (!is_null($entity) && !$this->getAuthorizeService()->getAcl()->hasResource($entity)) {
+        if (!\is_null($entity) && !$this->getAuthorizeService()->getAcl()->hasResource($entity)) {
             $this->getAuthorizeService()->getAcl()->addResource($entity);
             $this->getAuthorizeService()->getAcl()->allow([], $entity, [], $assertion);
         }
@@ -440,10 +440,10 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
-        if (!$allowNull && is_null($value)) {
+        if (!$allowNull && \is_null($value)) {
             throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
         }
-        if (!is_null($value)) {
+        if (!\is_null($value)) {
             $this->routerParams[$key] = $value;
         }
     }
@@ -457,10 +457,10 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function addQueryParam($key, $value, $allowNull = true)
     {
-        if (!$allowNull && is_null($value)) {
+        if (!$allowNull && \is_null($value)) {
             throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
         }
-        if (!is_null($value)) {
+        if (!\is_null($value)) {
             $this->queryParams[$key] = $value;
         }
     }
@@ -534,7 +534,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getContact()
     {
-        if (is_null($this->contact)) {
+        if (\is_null($this->contact)) {
             $this->contact = new Contact();
         }
 
@@ -558,7 +558,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getAddress()
     {
-        if (is_null($this->address)) {
+        if (\is_null($this->address)) {
             $this->address = new Address();
         }
 
@@ -582,7 +582,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getNote()
     {
-        if (is_null($this->note)) {
+        if (\is_null($this->note)) {
             $this->note = new Note();
         }
 
@@ -606,7 +606,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getPhone()
     {
-        if (is_null($this->phone)) {
+        if (\is_null($this->phone)) {
             $this->phone = new Phone();
         }
 
@@ -630,7 +630,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getSelection()
     {
-        if (is_null($this->selection)) {
+        if (\is_null($this->selection)) {
             $this->selection = new Selection();
         }
 

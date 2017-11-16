@@ -24,11 +24,11 @@ use Zend\Form\Annotation;
  */
 class AddressType extends EntityAbstract
 {
-    const ADDRESS_TYPE_MAIL = 1;
-    const ADDRESS_TYPE_VISIT = 2;
-    const ADDRESS_TYPE_FINANCIAL = 3;
-    const ADDRESS_TYPE_HOME = 4;
-    const ADDRESS_TYPE_BOOTH_FINANCIAL = 5;
+    public const ADDRESS_TYPE_MAIL = 1;
+    public const ADDRESS_TYPE_VISIT = 2;
+    public const ADDRESS_TYPE_FINANCIAL = 3;
+    public const ADDRESS_TYPE_HOME = 4;
+    public const ADDRESS_TYPE_BOOTH_FINANCIAL = 5;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id

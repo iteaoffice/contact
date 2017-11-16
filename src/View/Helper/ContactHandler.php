@@ -72,7 +72,7 @@ class ContactHandler extends AbstractViewHelper
                 case 'optin':
                     $optInId = $this->findParamValueFromContent($content, $parameter);
 
-                    if (!is_null($optInId)) {
+                    if (!\is_null($optInId)) {
                         /** @var OptIn $optIn */
                         $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
                         $this->setOptIn($optIn);
@@ -92,7 +92,7 @@ class ContactHandler extends AbstractViewHelper
     {
 
         //Try first to see if the param can be found from the route (rule 1)
-        if (!is_null($this->getRouteMatch()->getParam($param->getParam()))) {
+        if (!\is_null($this->getRouteMatch()->getParam($param->getParam()))) {
             return $this->getRouteMatch()->getParam($param->getParam());
         }
 

@@ -555,7 +555,7 @@ final class MergeContactTest extends AbstractServiceTest
             [$this->isInstanceOf(Note::class)],
         ];
 
-        $entityManagerMock->expects($this->exactly(count($params)))->method('persist')->withConsecutive(...$params);
+        $entityManagerMock->expects($this->exactly(\count($params)))->method('persist')->withConsecutive(...$params);
         $entityManagerMock->expects($this->once())->method('remove')->with($this->source);
         $entityManagerMock->expects($this->exactly(2))->method('flush');
 

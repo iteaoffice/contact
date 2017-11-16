@@ -69,7 +69,7 @@ class AddressLink extends LinkAbstract
     {
         switch ($this->getAction()) {
             case 'new':
-                if (is_null($this->getContact())) {
+                if (\is_null($this->getContact())) {
                     throw new \Exception(sprintf("A contact is needed for a new address"));
                 }
 

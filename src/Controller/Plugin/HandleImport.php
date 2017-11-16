@@ -114,7 +114,7 @@ class HandleImport extends AbstractPlugin
         if (!$this->hasErrors()) {
             $this->prepareContent();
 
-            if (count($import) > 0) {
+            if (\count($import) > 0) {
                 $this->importContacts($import);
             }
         }
@@ -153,7 +153,7 @@ class HandleImport extends AbstractPlugin
         for ($i = 1; $i < $amount; $i++) {
             $row = explode($this->delimiter, $data[$i]);
 
-            if (count($row) === count($this->header)) {
+            if (\count($row) === count($this->header)) {
                 //Trim all the elements
                 $row = array_map('trim', $row);
 
@@ -180,7 +180,7 @@ class HandleImport extends AbstractPlugin
          * Go over all elements and check if the required elements are present
          */
         foreach ($minimalRequiredElements as $element) {
-            if (!in_array(strtolower($element), $this->header, true)) {
+            if (!\in_array(strtolower($element), $this->header, true)) {
                 $this->errors[] = sprintf("Element %s is missing in the file", $element);
             }
         }
@@ -213,7 +213,7 @@ class HandleImport extends AbstractPlugin
             if (!empty($this->headerKeys['organisation_id'])) {
                 $organisation = $this->getOrganisationService()
                     ->findOrganisationById($this->headerKeys['organisation_id']);
-                if (is_null($organisation)) {
+                if (\is_null($organisation)) {
                     $this->errors[] = sprintf(
                         "Organisation with ID (%s) in row %s cannot be found",
                         $content[$this->headerKeys['organisation_id']],
@@ -227,7 +227,7 @@ class HandleImport extends AbstractPlugin
              */
             if (!empty($this->headerKeys['country'])) {
                 $country = $this->getGeneralService()->findCountryByName($content[$this->headerKeys['country']]);
-                if (is_null($country)) {
+                if (\is_null($country)) {
                     $this->warnings[] = sprintf(
                         "Country (%s) in row %s cannot be found",
                         $content[$this->headerKeys['country']],
@@ -291,7 +291,7 @@ class HandleImport extends AbstractPlugin
         /** Parse the $selectionId if not empty */
         if (!empty($selectionId)) {
             $selection = $this->getSelectionService()->findSelectionById($selectionId);
-            if (!is_null($selection)) {
+            if (!\is_null($selection)) {
                 $this->setSelection($selection);
             }
         }
@@ -334,7 +334,7 @@ class HandleImport extends AbstractPlugin
     {
         foreach ($includeOptIn as $optInId) {
             $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
-            if (!is_null($optIn)) {
+            if (!\is_null($optIn)) {
                 $this->optIn[] = $optIn;
             }
         }
@@ -357,7 +357,7 @@ class HandleImport extends AbstractPlugin
             //See first if the contact can be found
             $contact = $this->getContactService()->findContactByEmail($content[$this->headerKeys['email']]);
 
-            if (!is_null($contact)) {
+            if (!\is_null($contact)) {
                 $contact->key = $key;
                 $this->contacts[] = $contact;
                 continue;
@@ -395,7 +395,7 @@ class HandleImport extends AbstractPlugin
                 $contact->setGender($gender);
             }
 
-            if (!is_null($gender)) {
+            if (!\is_null($gender)) {
                 $contact->setGender($gender);
             } else {
                 $contact->setGender($this->getGeneralService()->findEntityById(Gender::class, Gender::GENDER_UNKNOWN));
@@ -406,7 +406,7 @@ class HandleImport extends AbstractPlugin
                 $contact->setTitle($title);
             }
 
-            if (!is_null($title)) {
+            if (!\is_null($title)) {
                 $contact->setTitle($title);
             } else {
                 $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
@@ -454,13 +454,13 @@ class HandleImport extends AbstractPlugin
                     ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
             }
 
-            if (is_null($organisation) && !is_null($country) && !is_null($organisationName)) {
+            if (\is_null($organisation) && !\is_null($country) && !\is_null($organisationName)) {
                 $organisation = $this->getOrganisationService()
                     ->findOrganisationByNameCountry($organisationName, $country);
             }
 
             //If the organisation does not exist, create it
-            if (is_null($organisation) && !is_null($country) && !is_null($organisationName)) {
+            if (\is_null($organisation) && !\is_null($country) && !\is_null($organisationName)) {
                 $organisation = new Organisation();
                 $organisation->setOrganisation($organisationName);
                 $organisation->setCountry($country);
@@ -481,7 +481,7 @@ class HandleImport extends AbstractPlugin
                 $organisationWeb->setOrganisation($organisation);
                 $organisationWebElements->add($organisationWeb);
 
-                if (isset($this->headerKeys['website']) && !is_null($content[$this->headerKeys['website']])) {
+                if (isset($this->headerKeys['website']) && !\is_null($content[$this->headerKeys['website']])) {
                     //Strip the http:// and https://
                     $website = str_replace('http://', '', $content[$this->headerKeys['website']]);
                     $website = str_replace('https://', '', $website);
@@ -499,7 +499,7 @@ class HandleImport extends AbstractPlugin
             /**
              * If an organisation is found, add it to the contact
              */
-            if (!is_null($organisation)) {
+            if (!\is_null($organisation)) {
                 $contactOrganisation = new ContactOrganisation();
                 $contactOrganisation->setOrganisation($organisation);
                 $contactOrganisation->setContact($contact);
@@ -518,8 +518,8 @@ class HandleImport extends AbstractPlugin
     private function importContacts($import)
     {
         foreach ($this->contacts as $key => $contact) {
-            if (in_array($key, $import)) {
-                if (is_null($contact->getId())) {
+            if (\in_array($key, $import)) {
+                if (\is_null($contact->getId())) {
                     $contact = $this->getContactService()->newEntity($contact);
                 }
 

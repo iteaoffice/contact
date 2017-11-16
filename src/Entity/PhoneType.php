@@ -27,10 +27,10 @@ use Zend\Form\Annotation;
  */
 class PhoneType extends EntityAbstract
 {
-    const PHONE_TYPE_DIRECT = 1;
-    const PHONE_TYPE_MOBILE = 2;
-    const PHONE_TYPE_HOME = 3;
-    const PHONE_TYPE_FAX = 4;
+    public const PHONE_TYPE_DIRECT = 1;
+    public const PHONE_TYPE_MOBILE = 2;
+    public const PHONE_TYPE_HOME = 3;
+    public const PHONE_TYPE_FAX = 4;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
