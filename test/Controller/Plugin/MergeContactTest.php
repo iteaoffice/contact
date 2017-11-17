@@ -13,8 +13,12 @@ declare(strict_types=1);
 namespace ContactTest\Controller\Plugin;
 
 use Admin\Entity\Access;
+use Admin\Entity\Session;
 use Affiliation\Entity\Affiliation;
 use Affiliation\Entity\Financial;
+use Affiliation\Entity\Loi;
+use Calendar\Entity\Calendar;
+use Calendar\Entity\ScheduleContact;
 use Contact\Controller\ContactAdminController;
 use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Address;
@@ -28,6 +32,8 @@ use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\Photo;
 use Contact\Entity\Profile;
+use Contact\Entity\Selection;
+use Contact\Entity\SelectionContact;
 use Contact\Entity\Web;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -35,9 +41,15 @@ use Doctrine\ORM\ORMException;
 use Contact\Entity\Log;
 use Contact\Entity\Note;
 use Contact\Entity\Email;
+use Event\Entity\Badge\Badge;
+use Event\Entity\Exhibition\Tour;
+use Event\Entity\Exhibition\Voter;
+use Event\Entity\Registration;
+use General\Entity\EmailMessage;
 use General\Entity\Gender;
 use General\Entity\Title;
 use Invoice\Entity\Invoice;
+use Mailing\Entity\Mailing;
 use Organisation\Entity\OParent;
 use Organisation\Entity\Parent\Organisation;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -47,17 +59,26 @@ use Program\Entity\Funder;
 use Program\Entity\Nda;
 use Program\Entity\RoadmapLog;
 use Program\Entity\Technology;
+use Project\Entity\Booth;
 use Project\Entity\Contract;
 use Project\Entity\Description\Description;
 use Project\Entity\Document\Document;
+use Project\Entity\Evaluation\Evaluation;
 use Project\Entity\Idea\Idea;
+use Project\Entity\Idea\Message;
+use Project\Entity\Idea\MessageBoard;
 use Project\Entity\Idea\Partner;
+use Project\Entity\Invite;
 use Project\Entity\Project;
 use Project\Entity\Rationale;
 use Project\Entity\Report\EffortSpent;
 use Project\Entity\Report\Item;
+use Project\Entity\Report\Report;
 use Project\Entity\Report\WorkpackageDescription;
+use Project\Entity\Result\Result;
+use Project\Entity\Review\Review;
 use Project\Entity\Version\Version;
+use Project\Entity\Workpackage\Workpackage;
 use Publication\Entity\Download;
 use Publication\Entity\Publication;
 use Testing\Util\AbstractServiceTest;
@@ -426,6 +447,216 @@ final class MergeContactTest extends AbstractServiceTest
         $community->setContact($source);
         $source->setCommunity(new ArrayCollection([$community]));
 
+        $registration = new Registration();
+        $registration->setId(1);
+        $registration->setContact($source);
+        $source->setRegistration(new ArrayCollection([$registration]));
+
+        $badge = new Badge();
+        $badge->setId(1);
+        $badge->setContact($source);
+        $source->setBadge(new ArrayCollection([$badge]));
+
+        $badgeContact = new \Event\Entity\Badge\Contact();
+        $badgeContact->setId(1);
+        $badgeContact->setContact($source);
+        $source->setBadgeContact(new ArrayCollection([$badgeContact]));
+
+        $boothContact = new \Event\Entity\Booth\Contact();
+        $boothContact->setId(1);
+        $boothContact->setContact($source);
+        $source->setBoothContact(new ArrayCollection([$boothContact]));
+
+        $projectBooth = new Booth();
+        $projectBooth->setId(1);
+        $projectBooth->setContact($source);
+        $source->setProjectBooth(new ArrayCollection([$projectBooth]));
+
+        $organisationBooth = new \Organisation\Entity\Booth();
+        $organisationBooth->setId(1);
+        $organisationBooth->setContact($source);
+        $source->setOrganisationBooth(new ArrayCollection([$organisationBooth]));
+
+        $boothFinancial = new \Event\Entity\Booth\Financial();
+        $boothFinancial->setId(1);
+        $boothFinancial->setContact($source);
+        $source->setBoothFinancial(new ArrayCollection([$boothFinancial]));
+
+        $note = new Note();
+        $note->setId(1);
+        $note->setContact($source);
+        $source->setNote(new ArrayCollection([$note]));
+
+        $selection = new Selection();
+        $selection->setId(1);
+        $selection->setContact($source);
+        $source->setSelection(new ArrayCollection([$selection]));
+
+        $selectionContact = new SelectionContact();
+        $selectionContact->setId(1);
+        $selectionContact->setContact($source);
+        $source->setSelectionContact(new ArrayCollection([$selectionContact]));
+
+        $mailingContact = new \Mailing\Entity\Contact();
+        $mailingContact->setId(1);
+        $mailingContact->setContact($source);
+        $source->setMailingContact(new ArrayCollection([$mailingContact]));
+
+        $mailing = new Mailing();
+        $mailing->setId(1);
+        $mailing->setContact($source);
+        $source->setMailing(new ArrayCollection([$mailing]));
+
+        $emailMessage = new EmailMessage();
+        $emailMessage->setId(1);
+        $emailMessage->setContact($source);
+        $source->setEmailMessage(new ArrayCollection([$emailMessage]));
+
+        $result = new Result();
+        $result->setId(1);
+        $result->setContact($source);
+        $source->setResult(new ArrayCollection([$result]));
+
+        $workpackage = new Workpackage();
+        $workpackage->setId(1);
+        $workpackage->setContact($source);
+        $source->setWorkpackage(new ArrayCollection([$workpackage]));
+
+        $workpackageDocument = new \Project\Entity\Workpackage\Document();
+        $workpackageDocument->setId(1);
+        $workpackageDocument->setContact($source);
+        $source->setWorkpackageDocument(new ArrayCollection([$workpackageDocument]));
+
+        $ideaMessage = new Message();
+        $ideaMessage->setId(1);
+        $ideaMessage->setContact($source);
+        $source->setIdeaMessage(new ArrayCollection([$ideaMessage]));
+
+        $evaluation = new Evaluation();
+        $evaluation->setId(1);
+        $evaluation->setContact($source);
+        $source->setEvaluation(new ArrayCollection([$evaluation]));
+
+        $calendar = new Calendar();
+        $calendar->setId(1);
+        $calendar->setContact($source);
+        $source->setCalendar(new ArrayCollection([$calendar]));
+
+        $calendarContact = new \Calendar\Entity\Contact();
+        $calendarContact->setId(1);
+        $calendarContact->setContact($source);
+        $source->setCalendarContact(new ArrayCollection([$calendarContact]));
+
+        $calendarDocument = new \Calendar\Entity\Document();
+        $calendarDocument->setId(1);
+        $calendarDocument->setContact($source);
+        $source->setCalendarDocument(new ArrayCollection([$calendarDocument]));
+
+        $scheduleContact = new ScheduleContact();
+        $scheduleContact->setId(1);
+        $scheduleContact->setContact($source);
+        $source->setScheduleContact(new ArrayCollection([$scheduleContact]));
+
+        $projectReview = new Review();
+        $projectReview->setId(1);
+        $projectReview->setContact($source);
+        $source->setProjectReview(new ArrayCollection([$projectReview]));
+
+        $reviewContact = new \Project\Entity\Review\Contact();
+        $reviewContact->setId(1);
+        $reviewContact->setContact($source);
+        $source->setProjectReviewContact($reviewContact);
+
+        $projectVersionReview = new \Project\Entity\Version\Review();
+        $projectVersionReview->setId(1);
+        $projectVersionReview->setContact($source);
+        $source->setProjectVersionReview(new ArrayCollection([$projectVersionReview]));
+
+        $projectReport = new Report();
+        $projectReport->setId(1);
+        $projectReport->setContact($source);
+        $source->setProjectReport(new ArrayCollection([$projectReport]));
+
+        $projectCalendarReview = new \Project\Entity\Calendar\Review();
+        $projectCalendarReview->setId(1);
+        $projectCalendarReview->setContact($source);
+        $source->setProjectCalendarReview(new ArrayCollection([$projectCalendarReview]));
+
+        $projectReportReview = new \Project\Entity\Report\Review();
+        $projectReportReview->setId(1);
+        $projectReportReview->setContact($source);
+        $source->setProjectReportReview(new ArrayCollection([$projectReportReview]));
+
+        $invite = new Invite();
+        $invite->setId(1);
+        $invite->setContact($source);
+        $source->setInvite(new ArrayCollection([$invite]));
+
+        /*$pca = new Pca();
+        $pca->setId(1);
+        $pca->setContact($source);
+        $source->setPca(new ArrayCollection([$pca]));*/
+
+        $inviteContact = new Invite();
+        $inviteContact->setId(2);
+        $inviteContact->setInviteContact(new ArrayCollection([$source]));
+        $source->setInviteContact(new ArrayCollection([$inviteContact]));
+
+        $ideaInvite = new \Project\Entity\Idea\Invite();
+        $ideaInvite->setId(1);
+        $ideaInvite->setContact($source);
+        $source->setIdeaInvite(new ArrayCollection([$ideaInvite]));
+
+        $ideaMessageboard = new MessageBoard();
+        $ideaMessageboard->setId(1);
+        $ideaMessageboard->setContact($source);
+        $source->setIdeaMessageboard(new ArrayCollection([$ideaMessageboard]));
+
+        $ideaInviteContact = new \Project\Entity\Idea\Invite();
+        $ideaInviteContact->setId(2);
+        $ideaInviteContact->setInviteContact(new ArrayCollection([$source]));
+        $source->setIdeaInviteContact(new ArrayCollection([$ideaInviteContact]));
+
+        $loi = new Loi();
+        $loi->setId(1);
+        $loi->setContact($source);
+        $source->setLoi(new ArrayCollection([$loi]));
+
+        $loiApprover = new Loi();
+        $loiApprover->setId(2);
+        $loiApprover->setApprover($source);
+        $source->setLoiApprover(new ArrayCollection([$loiApprover]));
+
+        $affiliationDoa = new \Affiliation\Entity\Doa();
+        $affiliationDoa->setId(1);
+        $affiliationDoa->setContact($source);
+        $source->setAffiliationDoa(new ArrayCollection([$affiliationDoa]));
+
+        $permitContact = new \Admin\Entity\Permit\Contact();
+        $permitContact->setId(1);
+        $permitContact->setContact($source);
+        $source->setPermitContact(new ArrayCollection([$permitContact]));
+
+        $session = new Session();
+        $session->setId(1);
+        $session->setContact($source);
+        $source->setSession(new ArrayCollection([$session]));
+
+        $voter = new Voter();
+        $voter->setId(1);
+        $voter->setContact(new ArrayCollection([$source]));
+        $source->setVoter(new ArrayCollection([$voter]));
+
+        $tour = new Tour();
+        $tour->setId(1);
+        $tour->setContact($source);
+        $source->setTour(new ArrayCollection([$tour]));
+
+        $tourContact = new Tour();
+        $tourContact->setId(2);
+        $tourContact->setTourContact(new ArrayCollection([$source]));
+        $source->setTourContact(new ArrayCollection([$tourContact]));
+
         return $source;
     }
 
@@ -475,6 +706,26 @@ final class MergeContactTest extends AbstractServiceTest
         $associate->setId(3);
         $associate->setAssociate(new ArrayCollection([$target]));
         $target->setAssociate(new ArrayCollection([$associate]));
+
+        $inviteContact = new Invite();
+        $inviteContact->setId(3);
+        $inviteContact->setInviteContact(new ArrayCollection([$target]));
+        $target->setInviteContact(new ArrayCollection([$inviteContact]));
+
+        $ideaInviteContact = new \Project\Entity\Idea\Invite();
+        $ideaInviteContact->setId(3);
+        $ideaInviteContact->setInviteContact(new ArrayCollection([$target]));
+        $target->setIdeaInviteContact(new ArrayCollection([$ideaInviteContact]));
+
+        $voter = new Voter();
+        $voter->setId(2);
+        $voter->setContact(new ArrayCollection([$target]));
+        $target->setVoter(new ArrayCollection([$voter]));
+
+        $tourContact = new Tour();
+        $tourContact->setId(3);
+        $tourContact->setTourContact(new ArrayCollection([$target]));
+        $target->setTourContact(new ArrayCollection([$tourContact]));
 
         return $target;
     }
@@ -560,5 +811,15 @@ final class MergeContactTest extends AbstractServiceTest
         $entityManagerMock->expects($this->exactly(2))->method('flush');
 
         return $entityManagerMock;
+    }
+
+    /**
+     * Free memory
+     */
+    public function tearDown()
+    {
+        $this->source = null;
+        $this->target = null;
+        $this->translator = null;
     }
 }

@@ -16,6 +16,7 @@ use BjyAuthorize\Provider\Role\ProviderInterface;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use General\Entity\EmailMessage;
 use Zend\Form\Annotation;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use ZfcUser\Entity\UserInterface;
@@ -923,6 +924,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->registration = new Collections\ArrayCollection();
         $this->badge = new Collections\ArrayCollection();
         $this->badgeContact = new Collections\ArrayCollection();
+        $this->boothContact = new Collections\ArrayCollection();
         $this->boothFinancial = new Collections\ArrayCollection();
         $this->selection = new Collections\ArrayCollection();
         $this->selectionContact = new Collections\ArrayCollection();
@@ -955,6 +957,8 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->contractVersion = new Collections\ArrayCollection();
         $this->invite = new Collections\ArrayCollection();
         $this->inviteContact = new Collections\ArrayCollection();
+        $this->ideaInvite = new Collections\ArrayCollection();
+        $this->ideaInviteContact = new Collections\ArrayCollection();
         $this->loi = new Collections\ArrayCollection();
         $this->loiApprover = new Collections\ArrayCollection();
         $this->affiliationDoa = new Collections\ArrayCollection();
@@ -2346,7 +2350,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Deeplink\Entity\Contact|Collections\ArrayCollection
+     * @return \Deeplink\Entity\Contact[]|Collections\ArrayCollection
      */
     public function getDeeplinkContact()
     {
@@ -2386,7 +2390,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Community|Collections\ArrayCollection
+     * @return Community[]|Collections\ArrayCollection
      */
     public function getCommunity()
     {
@@ -2406,7 +2410,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Registration
+     * @return Collections\ArrayCollection|\Event\Entity\Registration[]
      */
     public function getRegistration()
     {
@@ -2426,7 +2430,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Badge\Badge
+     * @return Collections\ArrayCollection|\Event\Entity\Badge\Badge[]
      */
     public function getBadge()
     {
@@ -2446,7 +2450,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Badge\Contact
+     * @return Collections\ArrayCollection|\Event\Entity\Badge\Contact[]
      */
     public function getBadgeContact()
     {
@@ -2642,6 +2646,24 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $this->mailing = $mailing;
 
+        return $this;
+    }
+
+    /**
+     * @return Collections\Collection|EmailMessage[]
+     */
+    public function getEmailMessage()
+    {
+        return $this->emailMessage;
+    }
+
+    /**
+     * @param Collections\Collection|EmailMessage[] $emailMessage
+     * @return Contact
+     */
+    public function setEmailMessage($emailMessage)
+    {
+        $this->emailMessage = $emailMessage;
         return $this;
     }
 
@@ -3093,7 +3115,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  \Admin\Entity\Permit\Contact $permitContact
+     * @param  \Admin\Entity\Permit\Contact[]|Collections\Collection $permitContact
      *
      * @return Contact
      */

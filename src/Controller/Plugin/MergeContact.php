@@ -28,9 +28,11 @@ use Contact\Entity\OptIn;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
+use Event\Entity\Exhibition\Tour;
 use Program\Entity\Domain;
 use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
+use Project\Entity\Invite;
 use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Log\LoggerInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
@@ -95,31 +97,31 @@ class MergeContact extends AbstractPlugin
 
         try {
             // Update contact properties
-            if (\is_null($target->getFirstName())) {
+            if ($target->getFirstName() === null) {
                 $target->setFirstName($source->getFirstName());
             }
-            if (\is_null($target->getMiddleName())) {
+            if ($target->getMiddleName() === null) {
                 $target->setMiddleName($source->getMiddleName());
             }
-            if (\is_null($target->getLastName())) {
+            if ($target->getLastName() === null) {
                 $target->setLastName($source->getLastName());
             }
-            if (\is_null($target->getEmail())) {
+            if ($target->getEmail() === null) {
                 $target->setEmail($source->getEmail());
             }
-            if (\is_null($target->getGender())) {
+            if ($target->getGender() === null) {
                 $target->setGender($source->getGender());
             }
-            if (\is_null($target->getTitle())) {
+            if ($target->getTitle() === null) {
                 $target->setTitle($source->getTitle());
             }
-            if (\is_null($target->getPosition())) {
+            if ($target->getPosition() === null) {
                 $target->setPosition($source->getPosition());
             }
-            if (\is_null($target->getDepartment())) {
+            if ($target->getDepartment() === null) {
                 $target->setDepartment($source->getDepartment());
             }
-            if (\is_null($target->getDateOfBirth())) {
+            if ($target->getDateOfBirth() === null) {
                 $target->setDateOfBirth($source->getDateOfBirth());
             }
             if ($source->getDateCreated() < $target->getDateCreated()) {
@@ -157,7 +159,7 @@ class MergeContact extends AbstractPlugin
             }
 
             // Transfer CV
-            if (!\is_null($source->getCv()) && \is_null($target->getCv())) {
+            if (($source->getCv() !== null) && ($target->getCv() === null)) {
                 $target->setCv($source->getCv());
                 $target->getCv()->setContact($target);
             }
@@ -326,7 +328,7 @@ class MergeContact extends AbstractPlugin
             }
 
             // Transfer contact organisation
-            if (\is_null($target->getContactOrganisation())) {
+            if ($target->getContactOrganisation() === null) {
                 $contactorganisation = $source->getContactOrganisation();
                 $contactorganisation->setContact($target);
                 $target->setContactOrganisation($contactorganisation);
@@ -495,7 +497,7 @@ class MergeContact extends AbstractPlugin
             $source->setAssociate(new ArrayCollection());
 
             // Transfer funder (one-to-one)
-            if (\is_null($target->getFunder()) && !\is_null($source->getFunder())) {
+            if (($target->getFunder() === null) && ($source->getFunder() !== null)) {
                 $funder = $source->getFunder();
                 $funder->setContact($target);
                 $target->setFunder($funder);
@@ -510,7 +512,7 @@ class MergeContact extends AbstractPlugin
             }
 
             // Transfer profile (one-to-one)
-            if (\is_null($target->getProfile()) && !\is_null($source->getProfile())) {
+            if (($target->getProfile() === null) && ($source->getProfile() !== null)) {
                 $profile = $source->getProfile();
                 $profile->setContact($target);
                 $target->setProfile($profile);
@@ -524,169 +526,330 @@ class MergeContact extends AbstractPlugin
                 $source->getCommunity()->remove($key);
             }
 
+            // Transfer registrations (no matching)
+            foreach ($source->getRegistration() as $key => $registration) {
+                $registration->setContact($target);
+                $target->getRegistration()->add($registration);
+                $source->getRegistration()->remove($key);
+            }
 
-//            // Transfer log
-//            foreach ($source->getLog() as $key => $log) {
-//                $log->setOrganisation($target);
-//                $this->persist($log);
-//                $target->getLog()->add($log);
-//                $source->getLog()->remove($key);
+            // Transfer badges (no matching)
+            foreach ($source->getBadge() as $key => $badge) {
+                $badge->setContact($target);
+                $target->getBadge()->add($badge);
+                $source->getBadge()->remove($key);
+            }
+
+            // Transfer badge contacts (no matching)
+            foreach ($source->getBadgeContact() as $key => $badgeContact) {
+                $badgeContact->setContact($target);
+                $target->getBadgeContact()->add($badgeContact);
+                $source->getBadgeContact()->remove($key);
+            }
+
+            // Transfer booth contacts (no matching)
+            foreach ($source->getBoothContact() as $key => $boothContact) {
+                $boothContact->setContact($target);
+                $target->getBoothContact()->add($boothContact);
+                $source->getBoothContact()->remove($key);
+            }
+
+            // Transfer project booths (no matching)
+            foreach ($source->getProjectBooth() as $key => $projectBooth) {
+                $projectBooth->setContact($target);
+                $target->getProjectBooth()->add($projectBooth);
+                $source->getProjectBooth()->remove($key);
+            }
+
+            // Transfer organisation booths (no matching)
+            foreach ($source->getOrganisationBooth() as $key => $organisationBooth) {
+                $organisationBooth->setContact($target);
+                $target->getOrganisationBooth()->add($organisationBooth);
+                $source->getOrganisationBooth()->remove($key);
+            }
+
+            // Transfer booth financial (no matching)
+            foreach ($source->getBoothFinancial() as $key => $boothFinancial) {
+                $boothFinancial->setContact($target);
+                $target->getBoothFinancial()->add($boothFinancial);
+                $source->getBoothFinancial()->remove($key);
+            }
+
+            // Transfer notes (no matching)
+            foreach ($source->getNote() as $key => $note) {
+                $note->setContact($target);
+                $target->getNote()->add($note);
+                $source->getNote()->remove($key);
+            }
+
+            // Transfer selections (no matching)
+            foreach ($source->getSelection() as $key => $selection) {
+                $selection->setContact($target);
+                $target->getSelection()->add($selection);
+                $source->getSelection()->remove($key);
+            }
+
+            // Transfer selection contacts (no matching)
+            foreach ($source->getSelectionContact() as $key => $selectionContact) {
+                $selectionContact->setContact($target);
+                $target->getSelectionContact()->add($selectionContact);
+                $source->getSelectionContact()->remove($key);
+            }
+
+            // Transfer mailing contacts (no matching)
+            foreach ($source->getMailingContact() as $key => $mailingContact) {
+                $mailingContact->setContact($target);
+                $target->getMailingContact()->add($mailingContact);
+                $source->getMailingContact()->remove($key);
+            }
+
+            // Transfer mailing contacts (no matching)
+            foreach ($source->getMailing() as $key => $mailing) {
+                $mailing->setContact($target);
+                $target->getMailing()->add($mailing);
+                $source->getMailing()->remove($key);
+            }
+
+            // Transfer email messages (no matching)
+            foreach ($source->getEmailMessage() as $key => $emailMessage) {
+                $emailMessage->setContact($target);
+                $target->getEmailMessage()->add($emailMessage);
+                $source->getEmailMessage()->remove($key);
+            }
+
+            // Transfer results (no matching)
+            foreach ($source->getResult() as $key => $result) {
+                $result->setContact($target);
+                $target->getResult()->add($result);
+                $source->getResult()->remove($key);
+            }
+
+            // Transfer workpackages (no matching)
+            foreach ($source->getWorkpackage() as $key => $workpackage) {
+                $workpackage->setContact($target);
+                $target->getWorkpackage()->add($workpackage);
+                $source->getWorkpackage()->remove($key);
+            }
+
+            // Transfer workpackage documents (no matching)
+            foreach ($source->getWorkpackageDocument() as $key => $workpackageDocument) {
+                $workpackageDocument->setContact($target);
+                $target->getWorkpackageDocument()->add($workpackageDocument);
+                $source->getWorkpackageDocument()->remove($key);
+            }
+
+            // Transfer idea messages (no matching)
+            foreach ($source->getIdeaMessage() as $key => $ideaMessage) {
+                $ideaMessage->setContact($target);
+                $target->getIdeaMessage()->add($ideaMessage);
+                $source->getIdeaMessage()->remove($key);
+            }
+
+            // Transfer evaluations (no matching)
+            foreach ($source->getEvaluation() as $key => $evaluation) {
+                $evaluation->setContact($target);
+                $target->getEvaluation()->add($evaluation);
+                $source->getEvaluation()->remove($key);
+            }
+
+            // Transfer calendars (no matching)
+            foreach ($source->getCalendar() as $key => $calendar) {
+                $calendar->setContact($target);
+                $target->getCalendar()->add($calendar);
+                $source->getCalendar()->remove($key);
+            }
+
+            // Transfer calendar contacts (no matching)
+            foreach ($source->getCalendarContact() as $key => $calendarContact) {
+                $calendarContact->setContact($target);
+                $target->getCalendarContact()->add($calendarContact);
+                $source->getCalendarContact()->remove($key);
+            }
+
+            // Transfer calendar documents (no matching)
+            foreach ($source->getCalendarDocument() as $key => $calendarDocument) {
+                $calendarDocument->setContact($target);
+                $target->getCalendarDocument()->add($calendarDocument);
+                $source->getCalendarDocument()->remove($key);
+            }
+
+            // Transfer schedule contacts (no matching)
+            foreach ($source->getScheduleContact() as $key => $scheduleContact) {
+                $scheduleContact->setContact($target);
+                $target->getScheduleContact()->add($scheduleContact);
+                $source->getScheduleContact()->remove($key);
+            }
+
+            // Transfer project reviewers (no matching)
+            foreach ($source->getProjectReview() as $key => $projectReview) {
+                $projectReview->setContact($target);
+                $target->getProjectReview()->add($projectReview);
+                $source->getProjectReview()->remove($key);
+            }
+
+            // Transfer review contact (one-to-one)
+            if (($target->getProjectReviewContact() === null) && ($source->getProjectReviewContact() !== null)) {
+                $reviewContact = $source->getProjectReviewContact();
+                $reviewContact->setContact($target);
+                $target->setProjectReviewContact($reviewContact);
+            }
+            $source->setProjectReviewContact(null);
+
+            // Transfer project version reviewers (no matching)
+            foreach ($source->getProjectVersionReview() as $key => $projectVersionReview) {
+                $projectVersionReview->setContact($target);
+                $target->getProjectVersionReview()->add($projectVersionReview);
+                $source->getProjectVersionReview()->remove($key);
+            }
+
+            // Transfer project reports (no matching)
+            foreach ($source->getProjectReport() as $key => $projectReport) {
+                $projectReport->setContact($target);
+                $target->getProjectReport()->add($projectReport);
+                $source->getProjectReport()->remove($key);
+            }
+
+            // Transfer project calendar reviewers (no matching)
+            foreach ($source->getProjectCalendarReview() as $key => $projectCalendarReview) {
+                $projectCalendarReview->setContact($target);
+                $target->getProjectCalendarReview()->add($projectCalendarReview);
+                $source->getProjectCalendarReview()->remove($key);
+            }
+
+            // Transfer project report reviewers (no matching)
+            foreach ($source->getProjectReportReview() as $key => $projectReportReview) {
+                $projectReportReview->setContact($target);
+                $target->getProjectReportReview()->add($projectReportReview);
+                $source->getProjectReportReview()->remove($key);
+            }
+
+            // Transfer project invites (no matching)
+            foreach ($source->getInvite() as $key => $invite) {
+                $invite->setContact($target);
+                $target->getInvite()->add($invite);
+                $source->getInvite()->remove($key);
+            }
+
+            // Transfer pca (no matching)
+//            foreach ($source->getPca() as $key => $pca) {
+//                $pca->setContact($target);
+//                $target->getPca()->add($pca);
+//                $source->getPca()->remove($key);
 //            }
-//
-//            // Transfer technology (many-to-many)
-//            foreach ($source->getTechnology() as $key => $technology) {
-//                $technology->getOrganisation()->removeElement($source);
-//                $technology->getOrganisation()->add($target);
-//                $this->persist($technology);
-//                $target->getTechnology()->add($technology);
-//                $source->getTechnology()->remove($key);
-//            }
-//
-//            // Transfer websites
-//            foreach ($source->getWeb() as $key => $website) {
-//                $website->setOrganisation($target);
-//                $this->persist($website);
-//                $target->getWeb()->add($website);
-//                $source->getWeb()->remove($key);
-//            }
-//
-//            // Transfer notes
-//            foreach ($source->getNote() as $key => $note) {
-//                $note->setOrganisation($target);
-//                $this->persist($note);
-//                $target->getNote()->add($note);
-//                $source->getNote()->remove($key);
-//            }
-//
-//            // Transfer names
-//            foreach ($source->getNames() as $key => $name) {
-//                $name->setOrganisation($target);
-//                $this->persist($name);
-//                $target->getNames()->add($name);
-//                $source->getNames()->remove($key);
-//            }
-//
-//            // Transfer affiliations
-//            foreach ($source->getAffiliation() as $key => $affiliation) {
-//                $affiliation->setOrganisation($target);
-//                $this->persist($affiliation);
-//                $target->getAffiliation()->add($affiliation);
-//                $source->getAffiliation()->remove($key);
-//            }
-//
-//            // Transfer affiliation financial data
-//            foreach ($source->getAffiliationFinancial() as $key => $affiliationFinancial) {
-//                $affiliationFinancial->setOrganisation($target);
-//                $this->persist($affiliationFinancial);
-//                $target->getAffiliationFinancial()->add($affiliationFinancial);
-//                $source->getAffiliationFinancial()->remove($key);
-//            }
-//
-//            // Transfer ICT organisations
-//            foreach ($source->getIctOrganisation() as $key => $ictOrganisation) {
-//                $ictOrganisation->setOrganisation($target);
-//                $this->persist($ictOrganisation);
-//                $target->getIctOrganisation()->add($ictOrganisation);
-//                $source->getIctOrganisation()->remove($key);
-//            }
-//
-//            // Transfer cluster head
-//            foreach ($source->getCluster() as $key => $cluster) {
-//                $cluster->setOrganisation($target);
-//                $this->persist($cluster);
-//                $target->getCluster()->add($cluster);
-//                $source->getCluster()->remove($key);
-//            }
-//
-//            // Transfer cluster memberships
-//            foreach ($source->getClusterMember() as $key => $clusterMember) {
-//                $clusterMember->setOrganisation($target);
-//                $this->persist($clusterMember);
-//                $target->getClusterMember()->add($clusterMember);
-//                $source->getClusterMember()->remove($key);
-//            }
-//
-//            // Transfer contacts
-//            foreach ($source->getContactOrganisation() as $key => $contactOrganisation) {
-//                $contactOrganisation->setOrganisation($target);
-//                $this->persist($contactOrganisation);
-//                $target->getContactOrganisation()->add($contactOrganisation);
-//                $source->getContactOrganisation()->remove($key);
-//            }
-//
-//            // Transfer booths
-//            foreach ($source->getOrganisationBooth() as $key => $organisationBooth) {
-//                $organisationBooth->setOrganisation($target);
-//                $this->persist($organisationBooth);
-//                $target->getOrganisationBooth()->add($organisationBooth);
-//                $source->getOrganisationBooth()->remove($key);
-//            }
-//
-//            // Transfer booth financial data
-//            foreach ($source->getBoothFinancial() as $key => $boothFinancial) {
-//                $boothFinancial->setOrganisation($target);
-//                $this->persist($boothFinancial);
-//                $target->getBoothFinancial()->add($boothFinancial);
-//                $source->getBoothFinancial()->remove($key);
-//            }
-//
-//            // Transfer idea partners
-//            foreach ($source->getIdeaPartner() as $key => $ideaPartner) {
-//                $ideaPartner->setOrganisation($target);
-//                $this->persist($ideaPartner);
-//                $target->getIdeaPartner()->add($ideaPartner);
-//                $source->getIdeaPartner()->remove($key);
-//            }
-//
-//            // Transfer invoices
-//            foreach ($source->getInvoice() as $key => $invoice) {
-//                $invoice->setOrganisation($target);
-//                $this->persist($invoice);
-//                $target->getInvoice()->add($invoice);
-//                $source->getInvoice()->remove($key);
-//            }
-//
-//            // Transfer invoice journal
-//            foreach ($source->getJournal() as $key => $journal) {
-//                $journal->setOrganisation($target);
-//                $this->persist($journal);
-//                $target->getJournal()->add($journal);
-//                $source->getJournal()->remove($key);
-//            }
-//
-//            // Transfer program doa
-//            foreach ($source->getProgramDoa() as $key => $programDoa) {
-//                $programDoa->setOrganisation($target);
-//                $this->persist($programDoa);
-//                $target->getProgramDoa()->add($programDoa);
-//                $source->getProgramDoa()->remove($key);
-//            }
-//
-//            // Transfer program call doa
-//            foreach ($source->getDoa() as $key => $callDoa) {
-//                $callDoa->setOrganisation($target);
-//                $this->persist($callDoa);
-//                $target->getDoa()->add($callDoa);
-//                $source->getDoa()->remove($key);
-//            }
-//
-//            // Transfer reminders
-//            foreach ($source->getReminder() as $key => $reminder) {
-//                $reminder->setOrganisation($target);
-//                $this->persist($reminder);
-//                $target->getReminder()->add($reminder);
-//                $source->getReminder()->remove($key);
-//            }
-//
-//            // Transfer results (many-to-many)
-//            foreach ($source->getResult() as $key => $result) {
-//                $result->getOrganisation()->removeElement($source);
-//                $result->getOrganisation()->add($target);
-//                $this->persist($result);
-//                $target->getResult()->add($result);
-//                $source->getResult()->remove($key);
-//            }
-//
+
+            // Transfer invite contacts (many-to-many, with matching)
+            $targetInviteContacts = [];
+            /** @var Invite $inviteContactTarget */
+            foreach ($target->getInviteContact() as $inviteContactTarget) {
+                $targetInviteContacts[] = $inviteContactTarget->getId();
+            }
+            /** @var Invite $inviteContactSource */
+            foreach ($source->getInviteContact() as $inviteContactSource) {
+                if (!\in_array($inviteContactSource->getId(), $targetInviteContacts)) {
+                    $target->getInviteContact()->add($inviteContactSource);
+                }
+            }
+            $source->setInviteContact(new ArrayCollection());
+
+            // Transfer idea invites (no matching)
+            foreach ($source->getIdeaInvite() as $key => $ideaInvite) {
+                $ideaInvite->setContact($target);
+                $target->getIdeaInvite()->add($ideaInvite);
+                $source->getIdeaInvite()->remove($key);
+            }
+
+            // Transfer idea messageboard (no matching)
+            foreach ($source->getIdeaMessageBoard() as $key => $ideaMessageboard) {
+                $ideaMessageboard->setContact($target);
+                $target->getIdeaMessageBoard()->add($ideaMessageboard);
+                $source->getIdeaMessageBoard()->remove($key);
+            }
+
+            // Transfer idea invite contacts (many-to-many, with matching)
+            $targetIdeaInviteContacts = [];
+            /** @var Invite $ideaInviteContactTarget */
+            foreach ($target->getIdeaInviteContact() as $ideaInviteContactTarget) {
+                $targetIdeaInviteContacts[] = $ideaInviteContactTarget->getId();
+            }
+            /** @var Invite $inviteContactSource */
+            foreach ($source->getIdeaInviteContact() as $ideaInviteContactSource) {
+                if (!\in_array($ideaInviteContactSource->getId(), $targetIdeaInviteContacts)) {
+                    $target->getIdeaInviteContact()->add($ideaInviteContactSource);
+                }
+            }
+            $source->setIdeaInviteContact(new ArrayCollection());
+
+            // Transfer loi (no matching)
+            foreach ($source->getLoi() as $key => $loi) {
+                $loi->setContact($target);
+                $target->getLoi()->add($loi);
+                $source->getLoi()->remove($key);
+            }
+
+            // Transfer approved loi (no matching)
+            foreach ($source->getLoiApprover() as $key => $loiApprover) {
+                $loiApprover->setContact($target);
+                $target->getLoiApprover()->add($loiApprover);
+                $source->getLoiApprover()->remove($key);
+            }
+
+            // Transfer affiliation doa (no matching)
+            foreach ($source->getAffiliationDoa() as $key => $affiliationDoa) {
+                $affiliationDoa->setContact($target);
+                $target->getAffiliationDoa()->add($affiliationDoa);
+                $source->getAffiliationDoa()->remove($key);
+            }
+
+            // Transfer permits (no matching)
+            foreach ($source->getPermitContact() as $key => $permitContact) {
+                $permitContact->setContact($target);
+                $target->getPermitContact()->add($permitContact);
+                $source->getPermitContact()->remove($key);
+            }
+
+            // Transfer sessions (no matching)
+            foreach ($source->getSession() as $key => $session) {
+                $session->setContact($target);
+                $target->getSession()->add($session);
+                $source->getSession()->remove($key);
+            }
+
+            // Transfer voters (many-to-many, with matching)
+            $targetVoters = [];
+            /** @var Invite $ideaInviteContactTarget */
+            foreach ($target->getVoter() as $voterTarget) {
+                $targetVoters[] = $voterTarget->getId();
+            }
+            /** @var Invite $inviteContactSource */
+            foreach ($source->getVoter() as $voterSource) {
+                if (!\in_array($voterSource->getId(), $targetVoters)) {
+                    $target->getVoter()->add($voterSource);
+                }
+            }
+            $source->setVoter(new ArrayCollection());
+
+            // Transfer tours (no matching)
+            foreach ($source->getTour() as $key => $tour) {
+                $tour->setContact($target);
+                $target->getTour()->add($tour);
+                $source->getTour()->remove($key);
+            }
+
+            // Transfer tour contacts (many-to-many, with matching)
+            $targetTourContacts = [];
+            /** @var Tour $tourContactTarget */
+            foreach ($target->getTourContact() as $tourContactTarget) {
+                $targetTourContacts[] = $tourContactTarget->getId();
+            }
+            /** @var Invite $inviteContactSource */
+            foreach ($source->getTourContact() as $tourContactSource) {
+                if (!\in_array($tourContactSource->getId(), $targetTourContacts)) {
+                    $target->getTourContact()->add($tourContactSource);
+                }
+            }
+            $source->setTourContact(new ArrayCollection());
+
+
             // Save main contact, remove the other + flush and update permissions
             $this->entityManager->remove($source);
             $this->entityManager->flush();
