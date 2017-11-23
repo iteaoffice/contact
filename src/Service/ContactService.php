@@ -59,8 +59,10 @@ class ContactService extends ServiceAbstract
      * This function returns the contact by the hash. The hash has as format contactId-CHECKSUM which needs to be checked.
      *
      * @param $hash
-     *
-     * @return null|Contact
+     * @return Contact|null
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function findContactByHash($hash): ?Contact
     {
@@ -69,7 +71,7 @@ class ContactService extends ServiceAbstract
         /** @var Contact $contact */
         $contact = $this->getEntityManager()->find(Contact::class, $contactId);
 
-        if ($contact->parseHash() !== $hash) {
+        if (\is_null($contact) && $contact->parseHash() !== $hash) {
             return null;
         }
 
@@ -118,7 +120,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function findContactsWithDateOfBirth()
+    public function findContactsWithDateOfBirth(): array
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -131,7 +133,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function findContactsWithCV()
+    public function findContactsWithCV(): array
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -146,7 +148,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function findContactsWithActiveProfile($onlyPublic = true)
+    public function findContactsWithActiveProfile($onlyPublic = true): array
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -288,9 +290,10 @@ class ContactService extends ServiceAbstract
      * Find the mail address of a contact.
      *
      * @param Contact $contact
-     *
-     *
-     * @return Address
+     * @return Address|null
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function getMailAddress(Contact $contact): ?Address
     {
@@ -381,9 +384,9 @@ class ContactService extends ServiceAbstract
      *
      * @return null|Phone
      */
-    private function getPhoneByContactAndType(Contact $contact, $type): ?Phone
+    private function getPhoneByContactAndType(Contact $contact, int $type): ?Phone
     {
-        if (!\in_array($type, PhoneType::getPhoneTypes())) {
+        if (!\in_array($type, PhoneType::getPhoneTypes(), true)) {
             throw new \InvalidArgumentException(sprintf("A invalid phone type chosen"));
         }
 
@@ -420,7 +423,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact
      */
-    public function register($emailAddress, $firstName, $middleName, $lastName)
+    public function register($emailAddress, $firstName, $middleName, $lastName): Contact
     {
         //Create the account
         $contact = new Contact();
@@ -514,17 +517,12 @@ class ContactService extends ServiceAbstract
      * @return Contact
      * @throws \Exception
      */
-    public function lostPassword($emailAddress): Contact
+    public function lostPassword($emailAddress): ?Contact
     {
         //Create the account
-        $contact = $this->findContactByEmail($emailAddress, true);
+        $contact = $this->findContactByEmail($emailAddress);
         if (\is_null($contact)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "The contact with emailAddress %s cannot be found",
-                    $emailAddress
-                )
-            );
+            return null;
         }
         //Create a target
         $target = $this->getDeeplinkService()->createTargetFromRoute('community/contact/change-password');
@@ -613,7 +611,7 @@ class ContactService extends ServiceAbstract
      *
      * @return bool
      */
-    public function isCommunity(Contact $contact)
+    public function isCommunity(Contact $contact): bool
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -624,7 +622,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param Contact $contact
-     * @param array|Selection $selections
+     * @param array|Selection[] $selections
      *
      * @return bool
      */
@@ -702,7 +700,7 @@ class ContactService extends ServiceAbstract
     {
         $projectContacts = $this->findContactsInProject($project);
 
-        return array_key_exists($contact->getId(), $projectContacts);
+        return \array_key_exists($contact->getId(), $projectContacts);
     }
 
     /**
@@ -714,7 +712,7 @@ class ContactService extends ServiceAbstract
      *
      * @throws \InvalidArgumentException
      */
-    public function findContactsInProject(Project $project)
+    public function findContactsInProject(Project $project): array
     {
         $contacts = [];
         /*
@@ -787,7 +785,7 @@ class ContactService extends ServiceAbstract
      *
      * @return bool
      */
-    public function contactHasPermit(Contact $contact, $role, $entity)
+    public function contactHasPermit(Contact $contact, $role, $entity): bool
     {
         if (\is_null($entity)) {
             throw new \InvalidArgumentException("Permit can only be determined of an existing entity, null given");
@@ -882,7 +880,7 @@ class ContactService extends ServiceAbstract
      *
      * @return string
      */
-    private function facebookTitleParser($titleGetter, Contact $contact)
+    private function facebookTitleParser($titleGetter, Contact $contact):?string
     {
         if (empty($titleGetter)) {
             return '';
@@ -931,21 +929,17 @@ class ContactService extends ServiceAbstract
      *
      * @param string $password
      * @param Contact $contact
-     *
-     * @return bool
      */
     public function updatePasswordForContact(
-        $password,
+        string $password,
         Contact $contact
-    ) {
+    ): void {
         $Bcrypt = new Bcrypt();
         $Bcrypt->setCost($this->getZfcUserOptions()->getPasswordCost());
         $pass = $Bcrypt->create(md5($password));
-        $contact->setPassword(md5($password));
+
         $contact->setSaltedPassword($pass);
         $this->updateEntity($contact);
-
-        return true;
     }
 
     /**
@@ -1070,7 +1064,7 @@ class ContactService extends ServiceAbstract
         $optInId,
         $enable,
         Contact $contact
-    ) {
+    ): void {
         $optIn = $this->findEntityById(OptIn::class, $optInId);
         $collection = new ArrayCollection();
         $collection->add($optIn);
@@ -1084,10 +1078,9 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param OptIn $optIn
-     *
-     * @return Contact[]
+     * @return array|Contact[]
      */
-    public function findContactsByOptInAsArray(OptIn $optIn)
+    public function findContactsByOptInAsArray(OptIn $optIn): array
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);
@@ -1269,7 +1262,7 @@ class ContactService extends ServiceAbstract
      *
      * @throws \Exception
      */
-    public function findPossibleContactByCalendar(Calendar $calendar)
+    public function findPossibleContactByCalendar(Calendar $calendar): array
     {
         if (\is_null($calendar->getProjectCalendar())) {
             throw new \Exception("A projectCalendar is required to find the contacts");
@@ -1286,7 +1279,7 @@ class ContactService extends ServiceAbstract
      *
      * @return Contact[]
      */
-    public function findContactsInOrganisation(Organisation $organisation)
+    public function findContactsInOrganisation(Organisation $organisation): array
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->getEntityManager()->getRepository(Contact::class);

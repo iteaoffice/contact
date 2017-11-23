@@ -32,7 +32,7 @@ use Project\Service\IdeaService;
 use Project\Service\ProjectService;
 use Zend\I18n\View\Helper\Translate;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Zend\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Zend\View\HelperPluginManager;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 

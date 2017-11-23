@@ -64,8 +64,11 @@ class ContactSearchService extends AbstractSearchService
         $contactDocument->position_sort = $contact->getPosition();
 
         if (!\is_null($contact->getProfile())) {
-            $contactDocument->profile = str_replace(PHP_EOL, '',
-                strip_tags((string)$contact->getProfile()->getDescription()));
+            $contactDocument->profile = str_replace(
+                PHP_EOL,
+                '',
+                strip_tags((string)$contact->getProfile()->getDescription())
+            );
 
             if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
                 && ($contact->getPhoto()->count() > 0)

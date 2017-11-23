@@ -14,10 +14,8 @@ namespace Contact\Controller;
 
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
-use Contact\Entity\Photo;
 use Contact\Form\Password;
 use Contact\InputFilter\PasswordFilter;
-use PHPThumb\GD;
 use Search\Form\SearchResult;
 use Search\Paginator\Adapter\SolariumPaginator;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
@@ -36,7 +34,7 @@ class ContactController extends ContactAbstractController
     /**
      * @return ViewModel
      */
-    public function signatureAction()
+    public function signatureAction(): ViewModel
     {
         return new ViewModel(
             [
@@ -47,11 +45,9 @@ class ContactController extends ContactAbstractController
     }
 
     /**
-     * Ajax controller to update the OptIn.
-     *
-     * @return \Zend\View\Model\JsonModel
+     * @return JsonModel
      */
-    public function optInUpdateAction()
+    public function optInUpdateAction(): JsonModel
     {
         $optInId = (int)$this->params()->fromQuery('optInId');
 
@@ -72,7 +68,7 @@ class ContactController extends ContactAbstractController
         }
 
         //Make a boolean value of $enable
-        $enable = ($enable === 'true');
+        $enable = $enable === 'true';
 
         $this->getContactService()
             ->updateOptInForContact($optInId, $enable, $this->zfcUserAuthentication()->getIdentity());
@@ -105,22 +101,18 @@ class ContactController extends ContactAbstractController
         $form->setInputFilter(new PasswordFilter());
         $form->setAttribute('class', 'form-horizontal');
 
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray(),
-            $this->getRequest()->getFiles()->toArray()
-        );
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
-            if ($this->getContactService()
-                ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity())
-            ) {
-                $this->flashMessenger()->setNamespace('success')
-                    ->addMessage($this->translate("txt-password-successfully-been-updated"));
+            $this->getContactService()
+                ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity());
 
-                return $this->redirect()->toRoute('community/contact/profile/view');
-            }
+            $this->flashMessenger()->setNamespace('success')
+                ->addMessage($this->translate("txt-password-successfully-been-updated"));
+
+            return $this->redirect()->toRoute('community/contact/profile/view');
         }
 
         return new ViewModel(['form' => $form]);

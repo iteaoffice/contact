@@ -31,7 +31,7 @@ class ProfileController extends ContactAbstractController
     /**
      * @return ViewModel
      */
-    public function viewAction()
+    public function viewAction(): ViewModel
     {
         return new ViewModel(
             [
@@ -46,9 +46,9 @@ class ProfileController extends ContactAbstractController
     }
 
     /**
-     * @return array|ViewModel
+     * @return ViewModel
      */
-    public function contactAction()
+    public function contactAction(): ViewModel
     {
         $contact = $this->getContactService()->findContactById($this->params('id'));
 
@@ -66,6 +66,7 @@ class ProfileController extends ContactAbstractController
 
     /**
      * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
      */
     public function editAction()
     {
@@ -153,8 +154,6 @@ class ProfileController extends ContactAbstractController
                     ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
-            } else {
-                var_dump($form->getInputFilter()->getMessages());
             }
         }
 

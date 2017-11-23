@@ -14,7 +14,7 @@ namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
 use Contact\Form\SendMessage;
-use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Zend\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Zend\View\Model\ViewModel;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
