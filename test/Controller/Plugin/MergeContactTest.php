@@ -15,8 +15,10 @@ namespace ContactTest\Controller\Plugin;
 use Admin\Entity\Access;
 use Admin\Entity\Session;
 use Affiliation\Entity\Affiliation;
+use Affiliation\Entity\DoaReminder;
 use Affiliation\Entity\Financial;
 use Affiliation\Entity\Loi;
+use Affiliation\Entity\LoiReminder;
 use Calendar\Entity\Calendar;
 use Calendar\Entity\ScheduleContact;
 use Contact\Controller\ContactAdminController;
@@ -49,7 +51,11 @@ use General\Entity\EmailMessage;
 use General\Entity\Gender;
 use General\Entity\Title;
 use Invoice\Entity\Invoice;
+use Invoice\Entity\Journal;
+use Invoice\Entity\Journal\Entry;
+use Invoice\Entity\Reminder;
 use Mailing\Entity\Mailing;
+use News\Entity\Blog;
 use Organisation\Entity\OParent;
 use Organisation\Entity\Parent\Organisation;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -59,7 +65,11 @@ use Program\Entity\Funder;
 use Program\Entity\Nda;
 use Program\Entity\RoadmapLog;
 use Program\Entity\Technology;
+use Project\Entity\Achievement;
 use Project\Entity\Booth;
+use Project\Entity\ChangeRequest\CostChange;
+use Project\Entity\ChangeRequest\Country;
+use Project\Entity\ChangeRequest\Process;
 use Project\Entity\Contract;
 use Project\Entity\Description\Description;
 use Project\Entity\Document\Document;
@@ -154,6 +164,22 @@ final class MergeContactTest extends AbstractServiceTest
 
         $result = $mergeOrganisation()->merge($this->source, $this->target);
 
+        $this->assertTrue($result['success']);
+        $this->assertSame($this->source->getFirstName(), $this->target->getFirstName());
+        $this->assertSame($this->source->getMiddleName(), $this->target->getMiddleName());
+        $this->assertSame($this->source->getLastName(), $this->target->getLastName());
+        $this->assertSame($this->source->getEmail(), $this->target->getEmail());
+        $this->assertSame($this->source->getGender(), $this->target->getGender());
+        $this->assertSame($this->source->getTitle(), $this->target->getTitle());
+        $this->assertSame($this->source->getPosition(), $this->target->getPosition());
+        $this->assertSame($this->source->getDepartment(), $this->target->getDepartment());
+        $this->assertSame($this->source->getDateOfBirth(), $this->target->getDateOfBirth());
+        $this->assertSame($this->source->getDateCreated(), $this->target->getDateCreated());
+        $this->assertSame($this->source->getLastUpdate(), $this->target->getLastUpdate());
+        $this->assertSame($this->source->getMessenger(), $this->target->getMessenger());
+
+        $this->assertSame(1, $this->target->getAccess()->count());
+        $this->assertSame(1, $this->target->getAccess()->first()->getId());
     }
 
     /**
@@ -656,6 +682,106 @@ final class MergeContactTest extends AbstractServiceTest
         $tourContact->setId(2);
         $tourContact->setTourContact(new ArrayCollection([$source]));
         $source->setTourContact(new ArrayCollection([$tourContact]));
+
+        $doaReminderReveiver = new DoaReminder();
+        $doaReminderReveiver->setId(1);
+        $doaReminderReveiver->setReceiver($source);
+        $source->setDoaReminderReceiver(new ArrayCollection([$doaReminderReveiver]));
+
+        $doaReminderSender = new DoaReminder();
+        $doaReminderSender->setId(2);
+        $doaReminderSender->setSender($source);
+        $source->setDoaReminderSender(new ArrayCollection([$doaReminderSender]));
+
+        $loiReminderReveiver = new LoiReminder();
+        $loiReminderReveiver->setId(1);
+        $loiReminderReveiver->setReceiver($source);
+        $source->setLoiReminderReceiver(new ArrayCollection([$loiReminderReveiver]));
+
+        $loiReminderSender = new LoiReminder();
+        $loiReminderSender->setId(2);
+        $loiReminderSender->setSender($source);
+        $source->setLoiReminderSender(new ArrayCollection([$loiReminderSender]));
+
+        $blog = new Blog();
+        $blog->setId(1);
+        $blog->setContact($source);
+        $source->setBlog(new ArrayCollection([$blog]));
+
+        $blogMessage = new \News\Entity\Message();
+        $blogMessage->setId(1);
+        $blogMessage->setContact($source);
+        $source->setBlogMessage(new ArrayCollection([$blogMessage]));
+
+        $journalEntry = new Entry();
+        $journalEntry->setId(1);
+        $journalEntry->setContact($source);
+        $source->setJournalEntry(new ArrayCollection([$journalEntry]));
+
+        $journal = new Journal();
+        $journal->setId(1);
+        $journal->setContact($source);
+        $source->setJournal(new ArrayCollection([$journal]));
+
+        $organisationJournal = new Journal();
+        $organisationJournal->setId(2);
+        $organisationJournal->setOrganisationContact($source);
+        $source->setOrganisationJournal(new ArrayCollection([$organisationJournal]));
+
+        $invoiceLog = new \Invoice\Entity\Log();
+        $invoiceLog->setId(1);
+        $invoiceLog->setContact($source);
+        $source->setInvoiceLog(new ArrayCollection([$invoiceLog]));
+
+        $invoiceReminder = new Reminder();
+        $invoiceReminder->setId(1);
+        $invoiceReminder->setContact($source);
+        $source->setReminder(new ArrayCollection([$invoiceReminder]));
+
+        $achievement = new Achievement();
+        $achievement->setId(1);
+        $achievement->setContact($source);
+        $source->setAchievement(new ArrayCollection([$achievement]));
+
+        $projectLog = new \Project\Entity\Log();
+        $projectLog->setId(1);
+        $projectLog->setContact($source);
+        $source->setProjectLog(new ArrayCollection([$projectLog]));
+
+        $changeRequestProcess = new Process();
+        $changeRequestProcess->setId(1);
+        $changeRequestProcess->setContact($source);
+        $source->setChangeRequestProcess(new ArrayCollection([$changeRequestProcess]));
+
+        $changeRequestCostChange = new CostChange();
+        $changeRequestCostChange->setId(1);
+        $changeRequestCostChange->setContact($source);
+        $source->setChangeRequestCostChange(new ArrayCollection([$changeRequestCostChange]));
+
+        $changeRequestCountry = new Country();
+        $changeRequestCountry->setId(1);
+        $changeRequestCountry->setContact($source);
+        $source->setChangeRequestCountry(new ArrayCollection([$changeRequestCountry]));
+
+        $versionContact = new \Project\Entity\Version\Contact();
+        $versionContact->setId(1);
+        $versionContact->setContact($source);
+        $source->setVersionContact(new ArrayCollection([$versionContact]));
+
+        $workpackageContact = new \Project\Entity\Workpackage\Contact();
+        $workpackageContact->setId(1);
+        $workpackageContact->setContact($source);
+        $source->setWorkpackageContact(new ArrayCollection([$workpackageContact]));
+
+        $logCreatedBy = new Log();
+        $logCreatedBy->setId(1);
+        $logCreatedBy->setCreatedBy($source);
+        $source->setLogCreatedBy(new ArrayCollection([$logCreatedBy]));
+
+        $log = new Log();
+        $log->setId(2);
+        $log->setContact($source);
+        $source->setLog(new ArrayCollection([$log]));
 
         return $source;
     }

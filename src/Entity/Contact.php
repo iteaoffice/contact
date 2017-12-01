@@ -832,21 +832,21 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @var \Project\Entity\ChangeRequest\Process
      */
-    private $changerequestProcess;
+    private $changeRequestProcess;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\CostChange", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
      * @var \Project\Entity\ChangeRequest\CostChange
      */
-    private $changerequestCostChange;
+    private $changeRequestCostChange;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Country", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
      * @var \Project\Entity\ChangeRequest\Country
      */
-    private $changerequestCountry;
+    private $changeRequestCountry;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Version\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -980,9 +980,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->invoiceLog = new Collections\ArrayCollection();
         $this->reminder = new Collections\ArrayCollection();
         $this->achievement = new Collections\ArrayCollection();
-        $this->changerequestProcess = new Collections\ArrayCollection();
-        $this->changerequestCostChange = new Collections\ArrayCollection();
-        $this->changerequestCountry = new Collections\ArrayCollection();
+        $this->changeRequestProcess = new Collections\ArrayCollection();
+        $this->changeRequestCostChange = new Collections\ArrayCollection();
+        $this->changeRequestCountry = new Collections\ArrayCollection();
         $this->versionContact = new Collections\ArrayCollection();
         $this->workpackageContact = new Collections\ArrayCollection();
         $this->logCreatedBy = new Collections\ArrayCollection();
@@ -3127,7 +3127,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Admin\Entity\Session[]
+     * @return \Admin\Entity\Session[]|Collections\Collection
      */
     public function getSession()
     {
@@ -3135,7 +3135,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  \Admin\Entity\Session $session
+     * @param  \Admin\Entity\Session[]|Collections\Collection $session
      *
      * @return Contact
      */
@@ -3547,63 +3547,63 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\Process
+     * @return \Project\Entity\ChangeRequest\Process[]|Collections\Collection
      */
     public function getChangeRequestProcess()
     {
-        return $this->changerequestProcess;
+        return $this->changeRequestProcess;
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\Process $changerequestProcess
+     * @param \Project\Entity\ChangeRequest\Process[]|Collections\Collection $changerequestProcess
      *
      * @return Contact
      */
     public function setChangeRequestProcess($changerequestProcess)
     {
-        $this->changerequestProcess = $changerequestProcess;
+        $this->changeRequestProcess = $changerequestProcess;
 
         return $this;
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\CostChange
+     * @return \Project\Entity\ChangeRequest\CostChange[]|Collections\Collection
      */
     public function getChangeRequestCostChange()
     {
-        return $this->changerequestCostChange;
+        return $this->changeRequestCostChange;
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\CostChange $changerequestCostChange
+     * @param \Project\Entity\ChangeRequest\CostChange[]|Collections\Collection $changerequestCostChange
      *
      * @return Contact
      */
     public function setChangeRequestCostChange($changerequestCostChange)
     {
-        $this->changerequestCostChange = $changerequestCostChange;
+        $this->changeRequestCostChange = $changerequestCostChange;
 
         return $this;
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\Country
+     * @return \Project\Entity\ChangeRequest\Country[]|Collections\Collection
      */
     public function getChangeRequestCountry()
     {
-        return $this->changerequestCountry;
+        return $this->changeRequestCountry;
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\Country $changerequestCountry
+     * @param \Project\Entity\ChangeRequest\Country[]|Collections\Collection $changerequestCountry
      */
     public function setChangeRequestCountry($changerequestCountry)
     {
-        $this->changerequestCountry = $changerequestCountry;
+        $this->changeRequestCountry = $changerequestCountry;
     }
 
     /**
-     * @return \Project\Entity\Version\Contact
+     * @return \Project\Entity\Version\Contact[]|Collections\Collection
      */
     public function getVersionContact()
     {
@@ -3611,7 +3611,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param \Project\Entity\Version\Contact $versionContact
+     * @param \Project\Entity\Version\Contact[]|Collections\Collection $versionContact
      *
      * @return Contact
      */
@@ -3623,7 +3623,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Project\Entity\Workpackage\Contact
+     * @return \Project\Entity\Workpackage\Contact[]|Collections\Collection
      */
     public function getWorkpackageContact()
     {
@@ -3631,7 +3631,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param \Project\Entity\Workpackage\Contact $workpackageContact
+     * @param \Project\Entity\Workpackage\Contact[]|Collections\Collection $workpackageContact
      *
      * @return Contact
      */
@@ -3643,7 +3643,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[]
+     * @return Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[]|Collections\Collection
      */
     public function getProjectReportWorkpackageDescription()
     {
@@ -3651,7 +3651,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[] $projectReportWorkpackageDescription
+     * @param Collections\Collection|\Project\Entity\Report\WorkpackageDescription[] $projectReportWorkpackageDescription
      *
      * @return Contact
      */
@@ -3663,7 +3663,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]
+     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]|Collections\Collection
      */
     public function getParentDoa()
     {
@@ -3671,7 +3671,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[] $parentDoa
+     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]|Collections\Collection $parentDoa
      *
      * @return Contact
      */
@@ -3683,7 +3683,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\OParent[]
+     * @return Collections\ArrayCollection|\Organisation\Entity\OParent[]|Collections\Collection
      */
     public function getParent()
     {
@@ -3691,7 +3691,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\OParent[] $parent
+     * @param Collections\ArrayCollection|\Organisation\Entity\OParent[]|Collections\Collection $parent
      *
      * @return Contact
      */

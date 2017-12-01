@@ -849,6 +849,145 @@ class MergeContact extends AbstractPlugin
             }
             $source->setTourContact(new ArrayCollection());
 
+            // Transfer doa reminder receivers (no matching)
+            foreach ($source->getDoaReminderReceiver() as $key => $doaReminder) {
+                $doaReminder->setReceiver($target);
+                $target->getDoaReminderReceiver()->add($doaReminder);
+                $source->getDoaReminderReceiver()->remove($key);
+            }
+
+            // Transfer doa reminder senders (no matching)
+            foreach ($source->getDoaReminderSender() as $key => $doaReminder) {
+                $doaReminder->setSender($target);
+                $target->getDoaReminderSender()->add($doaReminder);
+                $source->getDoaReminderSender()->remove($key);
+            }
+
+            // Transfer loi reminder receivers (no matching)
+            foreach ($source->getLoiReminderReceiver() as $key => $loiReminder) {
+                $loiReminder->setReceiver($target);
+                $target->getDoaReminderReceiver()->add($loiReminder);
+                $source->getDoaReminderReceiver()->remove($key);
+            }
+
+            // Transfer loi reminder senders (no matching)
+            foreach ($source->getLoiReminderSender() as $key => $loiReminder) {
+                $loiReminder->setSender($target);
+                $target->getDoaReminderSender()->add($loiReminder);
+                $source->getDoaReminderSender()->remove($key);
+            }
+
+            // Transfer blogs (no matching)
+            foreach ($source->getBlog() as $key => $blog) {
+                $blog->setContact($target);
+                $target->getBlog()->add($blog);
+                $source->getBlog()->remove($key);
+            }
+
+            // Transfer blog messages (no matching)
+            foreach ($source->getBlogMessage() as $key => $blogMessage) {
+                $blogMessage->setContact($target);
+                $target->getBlogMessage()->add($blogMessage);
+                $source->getBlogMessage()->remove($key);
+            }
+
+            // Transfer journal entries (no matching)
+            foreach ($source->getJournalEntry() as $key => $journalEntry) {
+                $journalEntry->setContact($target);
+                $target->getJournalEntry()->add($journalEntry);
+                $source->getJournalEntry()->remove($key);
+            }
+
+            // Transfer journals (no matching)
+            foreach ($source->getJournal() as $key => $journal) {
+                $journal->setContact($target);
+                $target->getJournal()->add($journal);
+                $source->getJournal()->remove($key);
+            }
+
+            // Transfer organisation journals (no matching)
+            foreach ($source->getOrganisationJournal() as $key => $organisationJournal) {
+                $organisationJournal->setContact($target);
+                $target->getOrganisationJournal()->add($organisationJournal);
+                $source->getOrganisationJournal()->remove($key);
+            }
+
+            // Transfer invoice logs (no matching)
+            foreach ($source->getInvoiceLog() as $key => $invoiceLog) {
+                $invoiceLog->setContact($target);
+                $target->getInvoiceLog()->add($invoiceLog);
+                $source->getInvoiceLog()->remove($key);
+            }
+
+            // Transfer invoice reminders (no matching)
+            foreach ($source->getReminder() as $key => $invoiceReminder) {
+                $invoiceReminder->setContact($target);
+                $target->getReminder()->add($invoiceReminder);
+                $source->getReminder()->remove($key);
+            }
+
+            // Transfer achievements (no matching)
+            foreach ($source->getAchievement() as $key => $achievement) {
+                $achievement->setContact($target);
+                $target->getAchievement()->add($achievement);
+                $source->getAchievement()->remove($key);
+            }
+
+            // Transfer project logs (no matching)
+            foreach ($source->getProjectLog() as $key => $projectLog) {
+                $projectLog->setContact($target);
+                $target->getProjectLog()->add($projectLog);
+                $source->getProjectLog()->remove($key);
+            }
+
+            // Transfer change request processes (no matching)
+            foreach ($source->getChangeRequestProcess() as $key => $changeRequestProcess) {
+                $changeRequestProcess->setContact($target);
+                $target->getChangeRequestProcess()->add($changeRequestProcess);
+                $source->getChangeRequestProcess()->remove($key);
+            }
+
+            // Transfer change request cost changes (no matching)
+            foreach ($source->getChangeRequestCostChange() as $key => $changeRequestCostChange) {
+                $changeRequestCostChange->setContact($target);
+                $target->getChangeRequestCostChange()->add($changeRequestCostChange);
+                $source->getChangeRequestCostChange()->remove($key);
+            }
+
+            // Transfer change request countries (no matching)
+            foreach ($source->getChangeRequestCountry() as $key => $changeRequestCountry) {
+                $changeRequestCountry->setContact($target);
+                $target->getChangeRequestCountry()->add($changeRequestCountry);
+                $source->getChangeRequestCountry()->remove($key);
+            }
+
+            // Transfer version contacts (no matching)
+            foreach ($source->getVersionContact() as $key => $versionContact) {
+                $versionContact->setContact($target);
+                $target->getVersionContact()->add($versionContact);
+                $source->getVersionContact()->remove($key);
+            }
+
+            // Transfer workpackage contacts (no matching)
+            foreach ($source->getWorkpackageContact() as $key => $workpackageContact) {
+                $workpackageContact->setContact($target);
+                $target->getWorkpackageContact()->add($workpackageContact);
+                $source->getWorkpackageContact()->remove($key);
+            }
+
+            // Transfer log created by (no matching)
+            foreach ($source->getLogCreatedBy() as $key => $logCreatedBy) {
+                $logCreatedBy->setCreatedBy($target);
+                $target->getLogCreatedBy()->add($logCreatedBy);
+                $source->getLogCreatedBy()->remove($key);
+            }
+
+            // Transfer logs (no matching)
+            foreach ($source->getLog() as $key => $log) {
+                $log->setContact($target);
+                $target->getLog()->add($log);
+                $source->getLog()->remove($key);
+            }
 
             // Save main contact, remove the other + flush and update permissions
             $this->entityManager->remove($source);
