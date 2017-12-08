@@ -866,15 +866,15 @@ class MergeContact extends AbstractPlugin
             // Transfer loi reminder receivers (no matching)
             foreach ($source->getLoiReminderReceiver() as $key => $loiReminder) {
                 $loiReminder->setReceiver($target);
-                $target->getDoaReminderReceiver()->add($loiReminder);
-                $source->getDoaReminderReceiver()->remove($key);
+                $target->getLoiReminderReceiver()->add($loiReminder);
+                $source->getLoiReminderReceiver()->remove($key);
             }
 
             // Transfer loi reminder senders (no matching)
             foreach ($source->getLoiReminderSender() as $key => $loiReminder) {
                 $loiReminder->setSender($target);
-                $target->getDoaReminderSender()->add($loiReminder);
-                $source->getDoaReminderSender()->remove($key);
+                $target->getLoiReminderSender()->add($loiReminder);
+                $source->getLoiReminderSender()->remove($key);
             }
 
             // Transfer blogs (no matching)
@@ -1010,6 +1010,7 @@ class MergeContact extends AbstractPlugin
             $contactLog->setContact($target);
             $contactLog->setCreatedBy($contact);
             $contactLog->setLog($message);
+            $target->getLog()->add($contactLog);
             $this->entityManager->persist($contactLog);
             // Add a note to the target contact about the merge
             $contactNote = new Note();

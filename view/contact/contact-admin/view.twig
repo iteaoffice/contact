@@ -24,6 +24,7 @@
             <li class="nav-item"><a class="nav-link" href="#event" data-toggle="tab" role="tab">{{ translate("txt-event") }}</a></li>
             <li class="nav-item"><a class="nav-link" href="#cv" data-toggle="tab" role="tab">{{ translate("txt-cv") }}</a></li>
             <li class="nav-item"><a class="nav-link" href="#signature" data-toggle="tab" role="tab">{{ translate("txt-signature") }}</a></li>
+            <li class="nav-item"><a class="nav-link" href="#merge" data-toggle="tab" role="tab">{{ translate("txt-merge") }}</a></li>
         </ul>
 
         <!-- Tab panes -->
@@ -61,12 +62,10 @@
             <div class="tab-pane" role="tabpanel" id="signature">
                 {% include 'contact/contact-admin/tab/signature' %}
             </div>
+            <div class="tab-pane" role="tabpanel" id="merge">
+                {% include 'contact/contact-admin/tab/merge' %}
+            </div>
         </div>
-
-        <hr>
-        {{ contactLink(contact,'edit-admin','button') }}
-        {{ contactLink(contact,'permit','button') }}
-        {{ contactLink(contact,'impersonate','button') }}
     </div>
     <div class="col-md-2">
         {{ contactPhoto(contact, 150, false, true) }}

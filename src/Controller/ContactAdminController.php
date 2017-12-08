@@ -17,6 +17,7 @@ use Contact\Entity\ContactOrganisation;
 use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
 use Contact\Form\ContactFilter;
+use Contact\Form\ContactMerge;
 use Contact\Form\Impersonate;
 use Contact\Form\Import;
 use Deeplink\Entity\Target;
@@ -170,6 +171,8 @@ class ContactAdminController extends ContactAbstractController
             return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
         }
 
+        //$mergeForm = new ContactMerge($this->getEntityManager(), $contact);
+
         return new ViewModel(
             [
                 'contact'             => $contact,
@@ -182,6 +185,7 @@ class ContactAdminController extends ContactAbstractController
                 'callService'         => $this->getCallService(),
                 'registrationService' => $this->getRegistrationService(),
                 'ideaService'         => $this->getIdeaService(),
+                //'mergeForm'           => $mergeForm,
             ]
         );
     }

@@ -54,6 +54,7 @@ return array(
     'contact/contact-admin/tab/address'       => __DIR__ . '//view/contact/contact-admin/tab/address.twig',
     'contact/contact-admin/tab/selection'     => __DIR__ . '//view/contact/contact-admin/tab/selection.twig',
     'contact/contact-admin/tab/mailing'       => __DIR__ . '//view/contact/contact-admin/tab/mailing.twig',
+    'contact/contact-admin/tab/merge'         => __DIR__ . '//view/contact/contact-admin/tab/merge.twig',
     'contact/contact-admin/import'            => __DIR__ . '//view/contact/contact-admin/import.twig',
     'contact/contact-admin/list'              => __DIR__ . '//view/contact/contact-admin/list.twig',
     'contact/contact-admin/statistics'        => __DIR__ . '//view/contact/contact-admin/statistics.twig',
