@@ -194,6 +194,19 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'merge'           => [
+                                        'label'   => _('txt-nav-merge'),
+                                        'route'   => 'zfcadmin/contact-admin/merge',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'targetId',
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],

@@ -109,6 +109,15 @@ return [
                                     ],
                                 ],
                             ],
+                            'merge'           => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/merge/[:sourceId]/into/[:targetId].html',
+                                    'defaults' => [
+                                        'action' => 'merge',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'selection'     => [

@@ -14,62 +14,71 @@ declare(strict_types=1);
 namespace Contact\Controller\Plugin;
 
 use Zend\Http\Request;
+use Zend\Mvc\Application;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Zend\Mvc\Controller\PluginManager;
-use Zend\Router\Http\RouteMatch;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Router\RouteMatch;
+use Zend\Stdlib\RequestInterface;
 
 /**
  * @category    Application
  */
-class GetFilter extends AbstractPlugin
+final class GetFilter extends AbstractPlugin
 {
     /**
-     * @var PluginManager
+     * @var Application
      */
-    protected $serviceManager;
+    private $application;
     /**
      * @var array
      */
-    protected $filter = [];
+    private $filter = [];
+
+    /**
+     * GetFilter constructor.
+     * @param Application $application
+     */
+    public function __construct(Application $application)
+    {
+        $this->application = $application;
+    }
 
     /**
      * Instantiate the filter
      *
      * @return GetFilter
      */
-    public function __invoke()
+    public function __invoke(): GetFilter
     {
         $encodedFilter = urldecode((string) $this->getRouteMatch()->getParam('encodedFilter'));
 
         $order = $this->getRequest()->getQuery('order');
         $direction = $this->getRequest()->getQuery('direction');
 
-        //Take the filter from the URL
+        // Take the filter from the URL
         $filter = (array) json_decode(base64_decode($encodedFilter));
 
-        //If the form is submitted, refresh the URL
+        // If the form is submitted, refresh the URL
         if ($this->getRequest()->isGet() && !\is_null($this->getRequest()->getQuery('submit'))) {
             $filter = $this->getRequest()->getQuery()->toArray()['filter'];
         }
 
-        //Create a new filter if not set already
+        // Create a new filter if not set already
         if (!$filter) {
             $filter = [];
         }
 
-        //Add a default order and direction if not known in the filter
+        // Add a default order and direction if not known in the filter
         if (!isset($filter['order'])) {
             $filter['order'] = 'dateCreated';
             $filter['direction'] = 'desc';
         }
 
-        //Overrule the order if set in the query
+        // Overrule the order if set in the query
         if (!\is_null($order)) {
             $filter['order'] = $order;
         }
 
-        //Overrule the direction if set in the query
+        // Overrule the direction if set in the query
         if (!\is_null($direction)) {
             $filter['direction'] = $direction;
         }
@@ -84,27 +93,17 @@ class GetFilter extends AbstractPlugin
      */
     public function getRouteMatch(): RouteMatch
     {
-        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRouteMatch();
-    }
-
-    /**
-     * Get service locator.
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceManager;
+        return $this->application->getMvcEvent()->getRouteMatch();
     }
 
     /**
      * Proxy to the original request object to handle form
      *
-     * @return Request
+     * @return RequestInterface|Request
      */
     public function getRequest(): Request
     {
-        return $this->getServiceLocator()->get('application')->getMvcEvent()->getRequest();
+        return $this->application->getMvcEvent()->getRequest();
     }
 
     /**
@@ -112,7 +111,7 @@ class GetFilter extends AbstractPlugin
      *
      * @return array
      */
-    public function getFilter()
+    public function getFilter(): array
     {
         return $this->filter;
     }
@@ -138,18 +137,8 @@ class GetFilter extends AbstractPlugin
      *
      * @return string
      */
-    public function getHash()
+    public function getHash(): string
     {
         return base64_encode(json_encode($this->filter));
-    }
-
-    /**
-     * Set service locator.
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceManager = $serviceLocator;
     }
 }

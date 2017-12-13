@@ -80,7 +80,10 @@ class MergeContact extends AbstractPlugin
     {
         $errors = [];
 
-        // Checks here
+        // Can't merge the same organisation
+        if ($source->getId() === $target->getId()) {
+            $errors[] = $this->translator->translate('txt-cant-merge-the-same-contact');
+        }
 
         return $errors;
     }

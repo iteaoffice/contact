@@ -19,6 +19,8 @@ use Contact\Provider;
 use Contact\Search;
 use Contact\Service;
 use Contact\View;
+use DoctrineExtensions\Query\Mysql\Replace;
+use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Zend\Stdlib;
 
 $config = [
@@ -45,8 +47,8 @@ $config = [
         ],
         'factories' => [
             Controller\Plugin\HandleImport::class => Controller\Factory\PluginFactory::class,
-            Controller\Plugin\GetFilter::class    => Controller\Factory\PluginFactory::class,
-            Controller\Plugin\MergeContact::class => Controller\Factory\PluginFactory::class,
+            Controller\Plugin\GetFilter::class    => ConfigAbstractFactory::class,
+            Controller\Plugin\MergeContact::class => ConfigAbstractFactory::class,
         ],
     ],
     'view_manager'       => [
@@ -141,6 +143,13 @@ $config = [
                     'Gedmo\SoftDeleteable\SoftDeleteableListener',
                 ],
             ],
+        ],
+        'configuration' => [
+            'orm_default' => [
+                'string_functions' => [
+                    'replace' => Replace::class
+                ]
+            ]
         ],
     ],
 ];

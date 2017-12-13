@@ -17,11 +17,13 @@ use Contact\Entity;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionSql;
 use Contact\Options;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
+use DoctrineExtensions\Query\Mysql\Replace;
 use Organisation\Entity\Organisation;
 use Project\Entity\Review\Review;
 use Project\Repository\Project;
@@ -712,5 +714,39 @@ class Contact extends EntityRepository
         $findContactByProjectIdQueryBuilder->addOrderBy('contact_entity_contact.lastName', 'ASC');
 
         return $findContactByProjectIdQueryBuilder->getQuery()->useQueryCache(true)->getResult();
+    }
+
+    /**
+     * @param Entity\Contact $contact
+     * @return Entity\Contact[]
+     */
+    public function findMergeCandidatesFor(Entity\Contact $contact): array
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder->select('c');
+        $queryBuilder->from(Entity\Contact::class, 'c');
+        $queryBuilder->where($queryBuilder->expr()->neq('c.id', ':contactId'));
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->orX(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->like('c.firstName', ':firstName'),
+                    $queryBuilder->expr()->like('c.lastName', ':lastName')
+                ),
+                $queryBuilder->expr()->eq("REPLACE(c.email,'.','')", ':email')
+            )
+        );
+        $queryBuilder->orderBy('c.lastName', Criteria::ASC);
+        $queryBuilder->addOrderBy('c.middleName', Criteria::ASC);
+        $queryBuilder->addOrderBy('c.firstName', Criteria::ASC);
+
+        $queryBuilder->setParameter('contactId', $contact->getId());
+        $queryBuilder->setParameter('firstName', '%' . $contact->getFirstName() . '%');
+        $queryBuilder->setParameter('lastName', '%' . $contact->getLastName() . '%');
+        $queryBuilder->setParameter('email', str_replace('.', '', $contact->getEmail()));
+
+        //var_dump($queryBuilder->getParameters());
+        //die($queryBuilder->getQuery()->getSQL());
+
+        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 }

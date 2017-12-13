@@ -44,9 +44,10 @@ class ContactMerge extends Form
             /** @var Contact $contact */
             foreach ($suggestions as $contact) {
                 $mainSuggestions[$contact->getId()] = sprintf(
-                    '%s (%s)',
+                    '%s - %s (%s)',
+                    $contact->getId(),
                     $contact->parseFullName(),
-                    $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry()
+                    $contact->getContactOrganisation()->getOrganisation()->getOrganisation()
                 );
             }
         }

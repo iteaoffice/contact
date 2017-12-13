@@ -137,6 +137,10 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'zfcadmin/contact-admin/merge',
+                    'roles'     => [Access::ACCESS_OFFICE],
+                ],
+                [
                     'route' => 'zfcadmin/selection/list',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],

@@ -58,4 +58,5 @@ return array(
     'contact/contact-admin/import'            => __DIR__ . '//view/contact/contact-admin/import.twig',
     'contact/contact-admin/list'              => __DIR__ . '//view/contact/contact-admin/list.twig',
     'contact/contact-admin/statistics'        => __DIR__ . '//view/contact/contact-admin/statistics.twig',
+    'contact/contact-admin/merge'             => __DIR__ . '//view/contact/contact-admin/merge.twig',
 );

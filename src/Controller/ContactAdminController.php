@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contact\Controller;
 
+use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Entity\OptIn;
@@ -24,6 +25,10 @@ use Deeplink\Entity\Target;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
+use Zend\Http\Request;
+use Zend\Http\Response;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream;
 use Zend\Paginator\Paginator;
 use Zend\Session\Container;
 use Zend\Validator\File\ImageSize;
@@ -33,7 +38,7 @@ use Zend\View\Model\ViewModel;
 
 /**
  * Class ContactManagerController.
- *
+ * @method MergeContact mergeContact()
  *
  */
 class ContactAdminController extends ContactAbstractController
@@ -56,16 +61,14 @@ class ContactAdminController extends ContactAbstractController
 
         $form->setData(['filter' => $filterPlugin->getFilter()]);
 
-        return new ViewModel(
-            [
-                'paginator'      => $paginator,
-                'form'           => $form,
-                'encodedFilter'  => urlencode($filterPlugin->getHash()),
-                'order'          => $filterPlugin->getOrder(),
-                'direction'      => $filterPlugin->getDirection(),
-                'projectService' => $this->getProjectService(),
-            ]
-        );
+        return new ViewModel([
+            'paginator'      => $paginator,
+            'form'           => $form,
+            'encodedFilter'  => urlencode($filterPlugin->getHash()),
+            'order'          => $filterPlugin->getOrder(),
+            'direction'      => $filterPlugin->getDirection(),
+            'projectService' => $this->getProjectService(),
+        ]);
     }
 
     /**
@@ -119,6 +122,7 @@ class ContactAdminController extends ContactAbstractController
         // Prepend BOM
         $string = "\xFF\xFE" . $string;
 
+        /** @var Response $response */
         $response = $this->getResponse();
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'text/csv');
@@ -139,31 +143,29 @@ class ContactAdminController extends ContactAbstractController
      */
     public function viewAction()
     {
+        /** @var Request $request */
+        $request = $this->getRequest();
         $contact = $this->getContactService()->findContactById($this->params('id'));
         $selections = $this->getSelectionService()->findSelectionsByContact($contact);
         $optIn = $this->getContactService()->findAll(OptIn::class);
 
-        if (\is_null($contact)) {
+        if ($contact === null) {
             return $this->notFoundAction();
         }
 
-        $data = $this->getRequest()->getPost()->toArray();
-        if ($this->getRequest()->isPost() && !empty($data['selection'])) {
+        $data = $request->getPost()->toArray();
+        if ($request->isPost() && !empty($data['selection'])) {
             foreach ((array)$data['selection'] as $selectionId) {
                 $selection = $this->getSelectionService()->findSelectionById($selectionId);
                 foreach ($selection->getSelectionContact() as $selectionContact) {
                     if ($selectionContact->getContact() === $contact) {
                         $this->getSelectionService()->removeEntity($selectionContact);
 
-                        $this->flashMessenger()
-                            ->addSuccessMessage(
-                                sprintf(
-                                    $this->translate("txt-contact-%s-has-removed-form-selection-%s-successfully"),
-                                    $contact->getDisplayName(),
-                                    $selection->getSelection()
-                                ),
-                                $contact
-                            );
+                        $this->flashMessenger()->addSuccessMessage(sprintf(
+                            $this->translate("txt-contact-%s-has-removed-form-selection-%s-successfully"),
+                            $contact->getDisplayName(),
+                            $selection->getSelection()
+                        ));
                     }
                 }
             }
@@ -171,23 +173,21 @@ class ContactAdminController extends ContactAbstractController
             return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
         }
 
-        //$mergeForm = new ContactMerge($this->getEntityManager(), $contact);
+        $mergeForm = new ContactMerge($this->getEntityManager(), $contact);
 
-        return new ViewModel(
-            [
-                'contact'             => $contact,
-                'contactService'      => $this->getContactService(),
-                'selections'          => $selections,
-                'selectionService'    => $this->getSelectionService(),
-                'projects'            => $this->getProjectService()->findProjectParticipationByContact($contact),
-                'projectService'      => $this->getProjectService(),
-                'optIn'               => $optIn,
-                'callService'         => $this->getCallService(),
-                'registrationService' => $this->getRegistrationService(),
-                'ideaService'         => $this->getIdeaService(),
-                //'mergeForm'           => $mergeForm,
-            ]
-        );
+        return new ViewModel([
+            'contact'             => $contact,
+            'contactService'      => $this->getContactService(),
+            'selections'          => $selections,
+            'selectionService'    => $this->getSelectionService(),
+            'projects'            => $this->getProjectService()->findProjectParticipationByContact($contact),
+            'projectService'      => $this->getProjectService(),
+            'optIn'               => $optIn,
+            'callService'         => $this->getCallService(),
+            'registrationService' => $this->getRegistrationService(),
+            'ideaService'         => $this->getIdeaService(),
+            'mergeForm'           => $mergeForm,
+        ]);
     }
 
     /***
@@ -199,11 +199,9 @@ class ContactAdminController extends ContactAbstractController
 
         $this->getAdminService()->findPermitContactByContact($contact);
 
-        return new ViewModel(
-            [
-                'contact' => $contact,
-            ]
-        );
+        return new ViewModel([
+            'contact' => $contact,
+        ]);
     }
 
     /**
@@ -211,14 +209,16 @@ class ContactAdminController extends ContactAbstractController
      */
     public function impersonateAction()
     {
+        /** @var Request $request */
+        $request = $this->getRequest();
         $contact = $this->getContactService()->findContactById($this->params('id'));
         $form = new Impersonate($this->getEntityManager());
 
-        $data = $this->getRequest()->getPost()->toArray();
+        $data = $request->getPost()->toArray();
 
         $form->setData($data);
         $deeplink = false;
-        if ($this->getRequest()->isPost() && $form->isValid()) {
+        if ($request->isPost() && $form->isValid()) {
             $data = $form->getData();
 
             /** @var Target $target */
@@ -228,14 +228,12 @@ class ContactAdminController extends ContactAbstractController
             $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact, null, $key);
         }
 
-        return new ViewModel(
-            [
-                'deeplink'       => $deeplink,
-                'contact'        => $contact,
-                'contactService' => $this->getContactService(),
-                'form'           => $form,
-            ]
-        );
+        return new ViewModel([
+            'deeplink'       => $deeplink,
+            'contact'        => $contact,
+            'contactService' => $this->getContactService(),
+            'form'           => $form,
+        ]);
     }
 
     /**
@@ -243,12 +241,13 @@ class ContactAdminController extends ContactAbstractController
      */
     public function editAction()
     {
+        /** @var Request $request */
+        $request = $this->getRequest();
         $contact = $this->getContactService()->findContactById($this->params('id'));
 
-        if (\is_null($contact)) {
+        if ($contact === null) {
             return $this->notFoundAction();
         }
-
 
         //Get contacts in an organisation
         if ($this->getContactService()->hasOrganisation($contact)) {
@@ -259,14 +258,14 @@ class ContactAdminController extends ContactAbstractController
                         'branch'       => $contact->getContactOrganisation()->getBranch(),
                     ],
                 ],
-                $this->getRequest()->getPost()->toArray()
+                $request->getPost()->toArray()
             );
 
             $form = $this->getFormService()->prepare(Contact::class, $contact, $data);
             $form->get('contact_entity_contact')->get("organisation")
                 ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
-            $data = $this->getRequest()->getPost()->toArray();
+            $data = $request->getPost()->toArray();
             $form = $this->getFormService()->prepare(Contact::class, $contact, $data);
         }
 
@@ -278,7 +277,7 @@ class ContactAdminController extends ContactAbstractController
         }
 
 
-        if ($this->getRequest()->isPost()) {
+        if ($request->isPost()) {
 
             /** Deactivate a contact */
             if (isset($data['deactivate'])) {
@@ -380,13 +379,11 @@ class ContactAdminController extends ContactAbstractController
             }
         }
 
-        return new ViewModel(
-            [
-                'contactService' => $this->getContactService(),
-                'contact'        => $contact,
-                'form'           => $form,
-            ]
-        );
+        return new ViewModel([
+            'contactService' => $this->getContactService(),
+            'contact'        => $contact,
+            'form'           => $form,
+        ]);
     }
 
     /**
@@ -394,34 +391,27 @@ class ContactAdminController extends ContactAbstractController
      */
     public function newAction()
     {
+        /** @var Request $request */
+        $request = $this->getRequest();
         $contact = new Contact();
-
-
-        $data = $this->getRequest()->getPost()->toArray();
+        $data = $request->getPost()->toArray();
         $form = $this->getFormService()->prepare($contact, $contact, $data);
 
-        //Disable the inarray validator for organisations
+        // Disable the inarray validator for organisations
         $form->get('contact_entity_contact')->get('organisation')->setDisableInArrayValidator(true);
 
-        /** Show or hide buttons based on the status of a contact */
-
+        // Show or hide buttons based on the status of a contact
         $form->remove('reactivate');
         $form->remove('deactivate');
 
+        if ($request->isPost()) {
 
-        if ($this->getRequest()->isPost()) {
-
-            /** Cancel the form */
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute('zfcadmin/contact-admin/list');
             }
 
-            /** Handle the form */
             if ($form->isValid()) {
-
-                /**
-                 * @var $contact Contact
-                 */
+                /** @var Contact $contact */
                 $contact = $form->getData();
                 $contact = $this->getContactService()->updateEntity($contact);
 
@@ -445,11 +435,9 @@ class ContactAdminController extends ContactAbstractController
             }
         }
 
-        return new ViewModel(
-            [
-                'form' => $form,
-            ]
-        );
+        return new ViewModel([
+            'form' => $form,
+        ]);
     }
 
     /**
@@ -459,9 +447,11 @@ class ContactAdminController extends ContactAbstractController
     {
         set_time_limit(0);
 
+        /** @var Request $request */
+        $request = $this->getRequest();
         $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray(),
-            $this->getRequest()->getFiles()->toArray()
+            $request->getPost()->toArray(),
+            $request->getFiles()->toArray()
         );
         $form = new Import($this->getContactService(), $this->getSelectionService());
         $form->setData($data);
@@ -470,7 +460,7 @@ class ContactAdminController extends ContactAbstractController
         $importSession = new Container('import');
 
         $handleImport = null;
-        if ($this->getRequest()->isPost()) {
+        if ($request->isPost()) {
             if (isset($data['upload']) && $form->isValid()) {
                 $fileData = file_get_contents($data['file']['tmp_name'], FILE_TEXT);
 
@@ -505,7 +495,9 @@ class ContactAdminController extends ContactAbstractController
      */
     public function searchAction()
     {
-        $search = $this->getRequest()->getPost()->get('search');
+        /** @var Request $request */
+        $request = $this->getRequest();
+        $search = $request->getPost()->get('search');
 
         $results = [];
         foreach ($this->getContactService()->searchContacts($search) as $result) {
@@ -518,9 +510,7 @@ class ContactAdminController extends ContactAbstractController
                 )
             );
 
-            /*
-             * Do a fall-back to the email when the name is empty
-             */
+            // Do a fall-back to the email when the name is empty
             if (empty($text)) {
                 $text = $result['email'];
             }
@@ -540,5 +530,83 @@ class ContactAdminController extends ContactAbstractController
         }
 
         return new JsonModel($results);
+    }
+
+    /**
+     * @return Response|ViewModel
+     */
+    public function mergeAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        /** @var Contact $source */
+        $source = $this->getContactService()->findContactById($this->params('sourceId'));
+        /** @var Contact $target */
+        $target = $this->getContactService()->findContactById($this->params('targetId'));
+
+        if (($source === null) || ($target === null)) {
+            return $this->notFoundAction();
+        }
+
+        if ($request->isPost()) {
+            $data = $request->getPost()->toArray();
+
+            // Cancel the merge
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $target->getId()],
+                    ['fragment' => 'merge']
+                );
+            }
+
+            // Swap source and destination
+            if (isset($data['swap'])) {
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact-admin/merge',
+                    ['sourceId' => $target->getId(), 'targetId' => $source->getId()]
+                );
+            }
+
+            // Perform the merge
+            if (isset($data['merge'])) {
+                $logPath = ini_get('error_log');
+                $logger = null;
+                if (!empty($logPath)) {
+                    $logger = new Logger();
+                    $logger->addWriter(new Stream($logPath));
+                    $result = $this->mergeContact()->merge($source, $target, $logger);
+                    $logger = null; // Explicit fclose() of the writer
+                } else {
+                    $result = $this->mergeContact()->merge($source, $target);
+                }
+
+                $tab = 'general';
+                if ($result['success']) {
+                    $this->flashMessenger()->setNamespace('success')->addMessage(
+                        $this->translate('txt-contacts-have-been-successfully-merged')
+                    );
+                } else {
+                    $tab = 'merge';
+                    $this->flashMessenger()->setNamespace('error')->addMessage(
+                        $this->translate('txt-contact-merge-failed')
+                    );
+                }
+
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $target->getId()],
+                    ['fragment' => $tab]
+                );
+            }
+        }
+
+        return new ViewModel([
+            'errors'         => $this->mergeContact()->checkMerge($source, $target),
+            'source'         => $source,
+            'target'         => $target,
+            'mergeForm'      => new ContactMerge(),
+            'contactService' => $this->getContactService(),
+        ]);
     }
 }
