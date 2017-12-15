@@ -151,6 +151,21 @@ final class MergeContactTest extends AbstractServiceTest
     }
 
     /**
+     * Test the pre-merge checks failing
+     *
+     * @covers \Contact\Controller\Plugin\MergeContact::checkMerge
+     */
+    public function testCheckMergeFail()
+    {
+        $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
+
+        // Run the merge check
+        $errors = $mergeContact()->checkMerge($this->source, $this->source);
+
+        $this->assertEquals('txt-cant-merge-the-same-contact', $errors[0]);
+    }
+
+    /**
      * Test the actual merge
      *
      * @covers \Contact\Controller\Plugin\MergeContact::merge
@@ -331,8 +346,11 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getBadge()->count());
         $this->assertSame(1, $this->target->getBadge()->first()->getId());
 
-        $this->assertSame(1, $this->target->getBadgeContact()->count());
-        $this->assertSame(1, $this->target->getBadgeContact()->first()->getId());
+        $this->assertSame(2, $this->target->getBadgeContact()->count());
+        $this->assertSame(3, $this->target->getBadgeContact()->get(0)->getBadge()->getId());
+        $this->assertSame(2, $this->target->getBadgeContact()->get(1)->getBadge()->getId());
+        $this->assertSame(2, $this->target->getBadgeContact()->get(0)->getId());
+        $this->assertSame(1, $this->target->getBadgeContact()->get(1)->getId());
 
         $this->assertSame(1, $this->target->getBoothContact()->count());
         $this->assertSame(1, $this->target->getBoothContact()->first()->getId());
@@ -356,14 +374,17 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getSelection()->count());
         $this->assertSame(1, $this->target->getSelection()->first()->getId());
 
-        $this->assertSame(1, $this->target->getSelectionContact()->count());
-        $this->assertSame(1, $this->target->getSelectionContact()->first()->getId());
+        $this->assertSame(2, $this->target->getSelectionContact()->count());
+        $this->assertSame(3, $this->target->getSelectionContact()->get(0)->getSelection()->getId());
+        $this->assertSame(2, $this->target->getSelectionContact()->get(1)->getSelection()->getId());
+        $this->assertSame(2, $this->target->getSelectionContact()->get(0)->getId());
+        $this->assertSame(1, $this->target->getSelectionContact()->get(1)->getId());
 
-        $this->assertSame(1, $this->target->getSelectionContact()->count());
-        $this->assertSame(1, $this->target->getSelectionContact()->first()->getId());
-
-        $this->assertSame(1, $this->target->getMailingContact()->count());
-        $this->assertSame(1, $this->target->getMailingContact()->first()->getId());
+        $this->assertSame(2, $this->target->getMailingContact()->count());
+        $this->assertSame(3, $this->target->getMailingContact()->get(0)->getMailing()->getId());
+        $this->assertSame(2, $this->target->getMailingContact()->get(1)->getMailing()->getId());
+        $this->assertSame(2, $this->target->getMailingContact()->get(0)->getId());
+        $this->assertSame(1, $this->target->getMailingContact()->get(1)->getId());
 
         $this->assertSame(1, $this->target->getMailing()->count());
         $this->assertSame(1, $this->target->getMailing()->first()->getId());
@@ -824,8 +845,11 @@ final class MergeContactTest extends AbstractServiceTest
         $badge->setContact($source);
         $source->setBadge(new ArrayCollection([$badge]));
 
+        $badge2 = new Badge();
+        $badge2->setId(2);
         $badgeContact = new \Event\Entity\Badge\Contact();
         $badgeContact->setId(1);
+        $badgeContact->setBadge($badge2);
         $badgeContact->setContact($source);
         $source->setBadgeContact(new ArrayCollection([$badgeContact]));
 
@@ -859,13 +883,19 @@ final class MergeContactTest extends AbstractServiceTest
         $selection->setContact($source);
         $source->setSelection(new ArrayCollection([$selection]));
 
+        $selection2 = new Selection();
+        $selection2->setId(2);
         $selectionContact = new SelectionContact();
         $selectionContact->setId(1);
+        $selectionContact->setSelection($selection2);
         $selectionContact->setContact($source);
         $source->setSelectionContact(new ArrayCollection([$selectionContact]));
 
+        $mailing2 = new Mailing();
+        $mailing2->setId(2);
         $mailingContact = new \Mailing\Entity\Contact();
         $mailingContact->setId(1);
+        $mailingContact->setMailing($mailing2);
         $mailingContact->setContact($source);
         $source->setMailingContact(new ArrayCollection([$mailingContact]));
 
@@ -1159,6 +1189,22 @@ final class MergeContactTest extends AbstractServiceTest
         $domain->setContact(new ArrayCollection([$target]));
         $target->setDomain(new ArrayCollection([$domain]));
 
+        $selection3 = new Selection();
+        $selection3->setId(3);
+        $selectionContact = new SelectionContact();
+        $selectionContact->setId(2);
+        $selectionContact->setSelection($selection3);
+        $selectionContact->setContact($target);
+        $target->setSelectionContact(new ArrayCollection([$selectionContact]));
+
+        $mailing3 = new Mailing();
+        $mailing3->setId(3);
+        $mailingContact = new \Mailing\Entity\Contact();
+        $mailingContact->setId(2);
+        $mailingContact->setMailing($mailing3);
+        $mailingContact->setContact($target);
+        $target->setMailingContact(new ArrayCollection([$mailingContact]));
+
         $favouriteIdea = new Idea();
         $favouriteIdea->setId(3);
         $favouriteIdea->setFavourite(new ArrayCollection([$target]));
@@ -1173,6 +1219,14 @@ final class MergeContactTest extends AbstractServiceTest
         $associate->setId(3);
         $associate->setAssociate(new ArrayCollection([$target]));
         $target->setAssociate(new ArrayCollection([$associate]));
+
+        $badge3 = new Badge();
+        $badge3->setId(3);
+        $badgeContact = new \Event\Entity\Badge\Contact();
+        $badgeContact->setId(2);
+        $badgeContact->setBadge($badge3);
+        $badgeContact->setContact($target);
+        $target->setBadgeContact(new ArrayCollection([$badgeContact]));
 
         $inviteContact = new Invite();
         $inviteContact->setId(3);

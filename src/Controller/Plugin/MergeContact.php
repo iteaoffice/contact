@@ -25,6 +25,7 @@ use Contact\Entity\Log;
 use Contact\Entity\Note;
 use Contact\Entity\OpenId;
 use Contact\Entity\OptIn;
+use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
@@ -332,9 +333,9 @@ class MergeContact extends AbstractPlugin
 
             // Transfer contact organisation
             if ($target->getContactOrganisation() === null) {
-                $contactorganisation = $source->getContactOrganisation();
-                $contactorganisation->setContact($target);
-                $target->setContactOrganisation($contactorganisation);
+                $contactOrganisation = $source->getContactOrganisation();
+                $contactOrganisation->setContact($target);
+                $target->setContactOrganisation($contactOrganisation);
             }
             $source->setContactOrganisation(null);
 
@@ -543,12 +544,20 @@ class MergeContact extends AbstractPlugin
                 $source->getBadge()->remove($key);
             }
 
-            // Transfer badge contacts (no matching)
-            foreach ($source->getBadgeContact() as $key => $badgeContact) {
-                $badgeContact->setContact($target);
-                $target->getBadgeContact()->add($badgeContact);
-                $source->getBadgeContact()->remove($key);
+            // Transfer badge contacts (one-to-many, with matching)
+            $targetBadges = [];
+            /** @var \Event\Entity\Badge\Contact $badgeContactTarget */
+            foreach ($target->getBadgeContact() as $badgeContactTarget) {
+                $targetBadges[] = $badgeContactTarget->getBadge()->getId();
             }
+            /** @var \Event\Entity\Badge\Contact $badgeContactSource */
+            foreach ($source->getBadgeContact() as $badgeContactSource) {
+                if (!\in_array($badgeContactSource->getBadge()->getId(), $targetBadges)) {
+                    $badgeContactSource->setContact($target);
+                    $target->getBadgeContact()->add($badgeContactSource);
+                }
+            }
+            $source->setBadgeContact(new ArrayCollection());
 
             // Transfer booth contacts (no matching)
             foreach ($source->getBoothContact() as $key => $boothContact) {
@@ -592,21 +601,37 @@ class MergeContact extends AbstractPlugin
                 $source->getSelection()->remove($key);
             }
 
-            // Transfer selection contacts (no matching)
-            foreach ($source->getSelectionContact() as $key => $selectionContact) {
-                $selectionContact->setContact($target);
-                $target->getSelectionContact()->add($selectionContact);
-                $source->getSelectionContact()->remove($key);
+            // Transfer selection contacts (one-to-many, with matching)
+            $targetSelections = [];
+            /** @var SelectionContact $selectionContactTarget */
+            foreach ($target->getSelectionContact() as $selectionContactTarget) {
+                $targetSelections[] = $selectionContactTarget->getSelection()->getId();
             }
-
-            // Transfer mailing contacts (no matching)
-            foreach ($source->getMailingContact() as $key => $mailingContact) {
-                $mailingContact->setContact($target);
-                $target->getMailingContact()->add($mailingContact);
-                $source->getMailingContact()->remove($key);
+            /** @var SelectionContact $selectionContactSource */
+            foreach ($source->getSelectionContact() as $selectionContactSource) {
+                if (!\in_array($selectionContactSource->getSelection()->getId(), $targetSelections)) {
+                    $selectionContactSource->setContact($target);
+                    $target->getSelectionContact()->add($selectionContactSource);
+                }
             }
+            $source->setSelectionContact(new ArrayCollection());
 
-            // Transfer mailing contacts (no matching)
+            // Transfer mailing contacts (one-to-many, with matching)
+            $targetMailings = [];
+            /** @var \Mailing\Entity\Contact $mailingContactTarget */
+            foreach ($target->getMailingContact() as $mailingContactTarget) {
+                $targetMailings[] = $mailingContactTarget->getMailing()->getId();
+            }
+            /** @var \Mailing\Entity\Contact $mailingContactSource */
+            foreach ($source->getMailingContact() as $mailingContactSource) {
+                if (!\in_array($mailingContactSource->getMailing()->getId(), $targetMailings)) {
+                    $mailingContactSource->setContact($target);
+                    $target->getMailingContact()->add($mailingContactSource);
+                }
+            }
+            $source->setMailingContact(new ArrayCollection());
+
+            // Transfer mailings (no matching)
             foreach ($source->getMailing() as $key => $mailing) {
                 $mailing->setContact($target);
                 $target->getMailing()->add($mailing);

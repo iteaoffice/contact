@@ -58,7 +58,7 @@ class SelectionContact extends EntityAbstract
     private $selection;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
-     * @Gedmo\Timestampable(on="update")
+     * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
      *
      * @var \DateTime

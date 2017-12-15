@@ -477,7 +477,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $deeplinkContact;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist"}, mappedBy="contact",  orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Contact\Entity\Profile
      */
