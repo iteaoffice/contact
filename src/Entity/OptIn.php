@@ -235,7 +235,7 @@ class OptIn extends EntityAbstract
      *
      * @return int|string
      */
-    public function getAutoSubscribe($textual = false)
+    public function getAutoSubscribe(bool $textual = false)
     {
         if ($textual) {
             return self::$autoSubscribeTemplates[$this->autoSubscribe];

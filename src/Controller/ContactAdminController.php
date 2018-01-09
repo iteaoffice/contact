@@ -405,7 +405,6 @@ class ContactAdminController extends ContactAbstractController
         $form->remove('deactivate');
 
         if ($request->isPost()) {
-
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute('zfcadmin/contact-admin/list');
             }

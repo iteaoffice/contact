@@ -403,7 +403,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @return int
      */
-    public function getPublic($textual = false)
+    public function getPublic(bool $textual = false)
     {
         if ($textual) {
             return self::$publicTemplates[$this->public];
@@ -489,7 +489,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @return string
      */
-    public function getTitle($textual = false)
+    public function getTitle(bool $textual = false)
     {
         if ($textual) {
             return self::$displayTemplates[$this->title];
@@ -511,7 +511,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @return string
      */
-    public function getSubtitle($textual = false)
+    public function getSubtitle(bool $textual = false)
     {
         if ($textual) {
             return self::$displayTemplates[$this->subtitle];
@@ -533,7 +533,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @return string
      */
-    public function getCanSendMessage($textual = false)
+    public function getCanSendMessage(bool $textual = false)
     {
         if ($textual) {
             return self::$canSendMessageTemplates[$this->canSendMessage];
@@ -571,7 +571,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @return string|int
      */
-    public function getShowEmail($textual = false)
+    public function getShowEmail(bool $textual = false)
     {
         if ($textual) {
             return self::$showEmailTemplates[$this->showEmail];
@@ -593,7 +593,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      *
      * @return string|int
      */
-    public function getShowPhone($textual = false)
+    public function getShowPhone(bool $textual = false)
     {
         if ($textual) {
             return self::$showPhoneTemplates[$this->showPhone];

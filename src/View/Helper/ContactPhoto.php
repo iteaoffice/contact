@@ -43,10 +43,10 @@ class ContactPhoto extends ImageAbstract
         $responsive = false,
         $grayscale = false
     ): string {
-        $photo = $contact->getPhoto()->first();
-
         $this->filter = [];
         $this->classes = [];
+
+        $photo = null === $contact->getPhoto() ? false : $contact->getPhoto()->first();
 
         if (!$photo) {
             return '';

@@ -233,7 +233,7 @@ class Profile extends EntityAbstract
      *
      * @return int
      */
-    public function getHideForOthers($textual = false)
+    public function getHideForOthers(bool $textual = false)
     {
         if ($textual) {
             return $this->hideForOthersTemplates[$this->hideForOthers];
@@ -255,7 +255,7 @@ class Profile extends EntityAbstract
      *
      * @return int
      */
-    public function getHidePhoto($textual = false)
+    public function getHidePhoto(bool $textual = false)
     {
         if ($textual) {
             return $this->hidePhotoTemplates[$this->hidePhoto];
@@ -293,7 +293,7 @@ class Profile extends EntityAbstract
      *
      * @return int
      */
-    public function getVisible($textual = false)
+    public function getVisible(bool $textual = false)
     {
         if ($textual) {
             return $this->visibleTemplates[$this->visible];

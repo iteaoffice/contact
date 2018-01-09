@@ -213,7 +213,7 @@ class HandleImport extends AbstractPlugin
             if (!empty($this->headerKeys['organisation_id'])) {
                 $organisation = $this->getOrganisationService()
                     ->findOrganisationById($this->headerKeys['organisation_id']);
-                if (\is_null($organisation)) {
+                if (null === $organisation) {
                     $this->errors[] = sprintf(
                         "Organisation with ID (%s) in row %s cannot be found",
                         $content[$this->headerKeys['organisation_id']],

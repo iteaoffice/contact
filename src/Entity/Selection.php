@@ -363,7 +363,7 @@ class Selection extends EntityAbstract
     /**
      * @return int
      */
-    public function getPersonal($textual = false)
+    public function getPersonal(bool $textual = false)
     {
         if ($textual) {
             return self::$personalTemplates[$this->personal];
@@ -385,7 +385,7 @@ class Selection extends EntityAbstract
      *
      * @return int
      */
-    public function getPrivate($textual = false)
+    public function getPrivate(bool $textual = false)
     {
         if ($textual) {
             return self::$privateTemplates[$this->private];
