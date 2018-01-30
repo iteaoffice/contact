@@ -27,6 +27,7 @@ use Contact\Entity\Selection;
 use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Query;
 use Event\Entity\Booth\Booth;
 use General\Entity\Country;
 use General\Entity\Gender;
@@ -71,7 +72,7 @@ class ContactService extends ServiceAbstract
         /** @var Contact $contact */
         $contact = $this->getEntityManager()->find(Contact::class, $contactId);
 
-        if (\is_null($contact) && $contact->parseHash() !== $hash) {
+        if (null === $contact && $contact->parseHash() !== $hash) {
             return null;
         }
 
@@ -142,6 +143,33 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * @param $filter
+     *
+     * @return Query
+     */
+    public function findDuplicateContacts($filter): Query
+    {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findDuplicateContacts($filter);
+    }
+
+    /**
+     * @param $filter
+     *
+     * @return Query
+     */
+    public function findInactiveContacts($filter): Query
+    {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->getEntityManager()->getRepository(Contact::class);
+
+        return $repository->findInactiveContacts($filter);
+    }
+
+
+    /**
      * Find all contacts which are active and have a CV.
      *
      * @param  bool $onlyPublic
@@ -163,7 +191,7 @@ class ContactService extends ServiceAbstract
      *
      * @return \Event\Entity\Meeting\Meeting[]
      */
-    public function findUnregisteredMeetingsByContact(Contact $contact)
+    public function findUnregisteredMeetingsByContact(Contact $contact): array
     {
         return $this->getMeetingService()->findUnregisteredMeetingsByContact($contact);
     }
@@ -175,7 +203,7 @@ class ContactService extends ServiceAbstract
      *
      * @return \Event\Entity\Meeting\Meeting[]
      */
-    public function findUpcomingMeetingsByContact(Contact $contact)
+    public function findUpcomingMeetingsByContact(Contact $contact): array
     {
         return $this->getMeetingService()->findUpcomingMeetingByContact($contact);
     }
@@ -187,7 +215,7 @@ class ContactService extends ServiceAbstract
      *
      * @return string
      */
-    public function parseLastName(Contact $contact)
+    public function parseLastName(Contact $contact): string
     {
         return trim(implode(' ', [$contact->getMiddleName(), $contact->getLastName()]));
     }

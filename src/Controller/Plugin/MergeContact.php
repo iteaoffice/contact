@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Contact\Controller\Plugin;
 
 use Affiliation\Entity\Affiliation;
+use Affiliation\Entity\Loi;
 use Contact\Controller\ContactAbstractController;
 use Contact\Entity\Contact;
 use Contact\Entity\Email;
@@ -31,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use Event\Entity\Exhibition\Tour;
 use Program\Entity\Domain;
+use Program\Entity\Nda;
 use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
@@ -40,6 +42,7 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
  * Class MergeContact
+ *
  * @package Contact\Controller\Plugin
  */
 class MergeContact extends AbstractPlugin
@@ -55,8 +58,9 @@ class MergeContact extends AbstractPlugin
 
     /**
      * MergeOrganisation constructor.
+     *
      * @param EntityManagerInterface $entityManager
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface    $translator
      */
     public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
@@ -75,6 +79,7 @@ class MergeContact extends AbstractPlugin
     /**
      * @param Contact $source
      * @param Contact $target
+     *
      * @return array
      */
     public function checkMerge(Contact $source, Contact $target): array
@@ -90,9 +95,10 @@ class MergeContact extends AbstractPlugin
     }
 
     /**
-     * @param Contact $source
-     * @param Contact $target
+     * @param Contact              $source
+     * @param Contact              $target
      * @param LoggerInterface|null $logger
+     *
      * @return array
      */
     public function merge(Contact $source, Contact $target, LoggerInterface $logger = null): array
@@ -283,8 +289,18 @@ class MergeContact extends AbstractPlugin
             }
 
             // Transfer nda (no matching)
+            /**
+             * @var int $key
+             * @var Nda $nda
+             */
             foreach ($source->getNda() as $key => $nda) {
                 $nda->setContact($target);
+
+                //When the NDA is self-approved, already switch the target here
+                if ($nda->getApprover() === $source) {
+                    $nda->setApprover($target);
+                }
+
                 $target->getNda()->add($nda);
                 $source->getNda()->remove($key);
             }
@@ -759,11 +775,11 @@ class MergeContact extends AbstractPlugin
             }
 
             // Transfer pca (no matching)
-//            foreach ($source->getPca() as $key => $pca) {
-//                $pca->setContact($target);
-//                $target->getPca()->add($pca);
-//                $source->getPca()->remove($key);
-//            }
+            foreach ($source->getPca() as $key => $pca) {
+                $pca->setContact($target);
+                $target->getPca()->add($pca);
+                $source->getPca()->remove($key);
+            }
 
             // Transfer invite contacts (many-to-many, with matching)
             $targetInviteContacts = [];
@@ -808,8 +824,18 @@ class MergeContact extends AbstractPlugin
             $source->setIdeaInviteContact(new ArrayCollection());
 
             // Transfer loi (no matching)
+            /**
+             * @var int $key
+             * @var Loi $loi
+             */
             foreach ($source->getLoi() as $key => $loi) {
                 $loi->setContact($target);
+
+                //When the NDA is self-approved, already switch the target here
+                if ($loi->getApprover() === $source) {
+                    $loi->setApprover($target);
+                }
+
                 $target->getLoi()->add($loi);
                 $source->getLoi()->remove($key);
             }
@@ -1054,12 +1080,14 @@ class MergeContact extends AbstractPlugin
         } catch (ORMException $exception) {
             $response = ['success' => false, 'errorMessage' => $exception->getMessage()];
             if ($logger instanceof LoggerInterface) {
-                $logger->err(sprintf(
-                    '%s: %d %s',
-                    $exception->getFile(),
-                    $exception->getLine(),
-                    $exception->getMessage()
-                ));
+                $logger->err(
+                    sprintf(
+                        '%s: %d %s',
+                        $exception->getFile(),
+                        $exception->getLine(),
+                        $exception->getMessage()
+                    )
+                );
             }
         }
 

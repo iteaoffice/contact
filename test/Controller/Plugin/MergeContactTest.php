@@ -79,6 +79,7 @@ use Project\Entity\Idea\Message;
 use Project\Entity\Idea\MessageBoard;
 use Project\Entity\Idea\Partner;
 use Project\Entity\Invite;
+use Project\Entity\Pca;
 use Project\Entity\Project;
 use Project\Entity\Rationale;
 use Project\Entity\Report\EffortSpent;
@@ -248,11 +249,12 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getContractVersion()->count());
         $this->assertSame(1, $this->target->getContractVersion()->first()->getId());
 
-        $this->assertSame(1, $this->target->getNda()->count());
+        $this->assertSame(2, $this->target->getNda()->count());
         $this->assertSame(1, $this->target->getNda()->first()->getId());
+        $this->assertSame(2, $this->target->getNda()->next()->getId());
 
         $this->assertSame(1, $this->target->getNdaApprover()->count());
-        $this->assertSame(2, $this->target->getNdaApprover()->first()->getId());
+        $this->assertSame(3, $this->target->getNdaApprover()->first()->getId());
 
         $this->assertSame(1, $this->target->getRoadmapLog()->count());
         $this->assertSame(1, $this->target->getRoadmapLog()->first()->getId());
@@ -453,11 +455,12 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(3, $this->target->getIdeaInviteContact()->get(0)->getId());
         $this->assertSame(2, $this->target->getIdeaInviteContact()->get(1)->getId());
 
-        $this->assertSame(1, $this->target->getLoi()->count());
+        $this->assertSame(2, $this->target->getLoi()->count());
         $this->assertSame(1, $this->target->getLoi()->first()->getId());
+        $this->assertSame(2, $this->target->getLoi()->next()->getId());
 
         $this->assertSame(1, $this->target->getLoiApprover()->count());
-        $this->assertSame(2, $this->target->getLoiApprover()->first()->getId());
+        $this->assertSame(3, $this->target->getLoiApprover()->first()->getId());
 
         $this->assertSame(1, $this->target->getAffiliationDoa()->count());
         $this->assertSame(1, $this->target->getAffiliationDoa()->first()->getId());
@@ -467,6 +470,9 @@ final class MergeContactTest extends AbstractServiceTest
 
         $this->assertSame(1, $this->target->getSession()->count());
         $this->assertSame(1, $this->target->getSession()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPca()->count());
+        $this->assertSame(1, $this->target->getPca()->first()->getId());
 
         $this->assertSame(2, $this->target->getVoter()->count());
         $this->assertSame(2, $this->target->getVoter()->get(0)->getId());
@@ -693,10 +699,16 @@ final class MergeContactTest extends AbstractServiceTest
         $nda = new Nda();
         $nda->setId(1);
         $nda->setContact($source);
-        $source->setNda(new ArrayCollection([$nda]));
+
+        $selfApprovedNda = new Nda();
+        $selfApprovedNda->setId(2);
+        $selfApprovedNda->setContact($source);
+        $selfApprovedNda->setApprover($source);
+
+        $source->setNda(new ArrayCollection([$nda, $selfApprovedNda]));
 
         $ndaApproved = new Nda();
-        $ndaApproved->setId(2);
+        $ndaApproved->setId(3);
         $ndaApproved->setApprover($source);
         $source->setNdaApprover(new ArrayCollection([$ndaApproved]));
 
@@ -989,10 +1001,10 @@ final class MergeContactTest extends AbstractServiceTest
         $invite->setContact($source);
         $source->setInvite(new ArrayCollection([$invite]));
 
-        /*$pca = new Pca();
+        $pca = new Pca();
         $pca->setId(1);
         $pca->setContact($source);
-        $source->setPca(new ArrayCollection([$pca]));*/
+        $source->setPca(new ArrayCollection([$pca]));
 
         $inviteContact = new Invite();
         $inviteContact->setId(2);
@@ -1017,10 +1029,17 @@ final class MergeContactTest extends AbstractServiceTest
         $loi = new Loi();
         $loi->setId(1);
         $loi->setContact($source);
-        $source->setLoi(new ArrayCollection([$loi]));
+
+        $selfApprovedLoi = new Loi();
+        $selfApprovedLoi->setId(2);
+        $selfApprovedLoi->setContact($source);
+        $selfApprovedLoi->setApprover($source);
+
+
+        $source->setLoi(new ArrayCollection([$loi, $selfApprovedLoi]));
 
         $loiApprover = new Loi();
-        $loiApprover->setId(2);
+        $loiApprover->setId(3);
         $loiApprover->setApprover($source);
         $source->setLoiApprover(new ArrayCollection([$loiApprover]));
 

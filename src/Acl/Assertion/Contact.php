@@ -33,8 +33,12 @@ class Contact extends AssertionAbstract
      *
      * @return bool
      */
-    public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $resource = null, $privilege = null)
-    {
+    public function assert(
+        Acl $acl,
+        RoleInterface $role = null,
+        ResourceInterface $resource = null,
+        $privilege = null
+    ): bool {
         $this->setPrivilege($privilege);
         /*
          * A meeting can be shown when we have a contact
@@ -49,6 +53,8 @@ class Contact extends AssertionAbstract
             case 'impersonate':
             case 'new':
             case 'permit':
+            case 'list-duplicate':
+            case 'list-inactive':
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
             default:
                 return $this->hasContact();

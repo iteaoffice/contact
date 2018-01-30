@@ -27,7 +27,7 @@ return [
                         ],
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'list'        => [
+                            'list'           => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/list[/f-:encodedFilter][/page-:page].html',
@@ -36,7 +36,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'export'      => [
+                            'export'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/export[/q-:encodedFilter].csv',
@@ -46,7 +46,27 @@ return [
                                     ],
                                 ],
                             ],
-                            'new'         => [
+                            'list-duplicate' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/list/duplicate[/f-:encodedFilter][/page-:page].html',
+                                    'defaults' => [
+                                        'action' => 'list-duplicate',
+                                    ],
+                                ],
+                            ],
+                            'list-inactive'  => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/list/inactive[/f-:encodedFilter][/page-:page].html',
+                                    'defaults' => [
+                                        'action' => 'list-inactive',
+                                    ],
+                                ],
+                            ],
+                            'new'            => [
                                 'type'    => 'Literal',
                                 'options' => [
                                     'route'    => '/new.html',
@@ -55,7 +75,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'view'        => [
+                            'view'           => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/view/[:id].html',
@@ -64,7 +84,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'impersonate' => [
+                            'impersonate'    => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/impersonate/[:id].html',
@@ -73,7 +93,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit'        => [
+                            'edit'           => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit/[:id].html',
@@ -82,7 +102,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'permit'      => [
+                            'permit'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/permissions/[:id].html',
@@ -91,7 +111,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'search'      => [
+                            'search'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/search.html',
@@ -100,7 +120,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'import'      => [
+                            'import'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/import.html',
@@ -109,7 +129,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'merge'           => [
+                            'merge'          => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/merge/[:sourceId]/into/[:targetId].html',

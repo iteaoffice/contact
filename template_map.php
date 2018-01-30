@@ -44,6 +44,7 @@ return array(
     'contact/contact-admin/permit'            => __DIR__ . '//view/contact/contact-admin/permit.twig',
     'contact/contact-admin/merge'             => __DIR__ . '//view/contact/contact-admin/merge.twig',
     'contact/contact-admin/view'              => __DIR__ . '//view/contact/contact-admin/view.twig',
+    'contact/contact-admin/list-duplicate'    => __DIR__ . '//view/contact/contact-admin/list-duplicate.twig',
     'contact/contact-admin/tab/cv'            => __DIR__ . '//view/contact/contact-admin/tab/cv.twig',
     'contact/contact-admin/tab/phone'         => __DIR__ . '//view/contact/contact-admin/tab/phone.twig',
     'contact/contact-admin/tab/event'         => __DIR__ . '//view/contact/contact-admin/tab/event.twig',
@@ -58,5 +59,6 @@ return array(
     'contact/contact-admin/tab/mailing'       => __DIR__ . '//view/contact/contact-admin/tab/mailing.twig',
     'contact/contact-admin/import'            => __DIR__ . '//view/contact/contact-admin/import.twig',
     'contact/contact-admin/list'              => __DIR__ . '//view/contact/contact-admin/list.twig',
+    'contact/contact-admin/list-inactive'     => __DIR__ . '//view/contact/contact-admin/list-inactive.twig',
     'contact/contact-admin/statistics'        => __DIR__ . '//view/contact/contact-admin/statistics.twig',
 );

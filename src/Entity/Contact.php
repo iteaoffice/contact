@@ -336,7 +336,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $openId;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      * @var \Contact\Entity\ContactOrganisation
      */
@@ -875,6 +875,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Contact\Entity\Log[]|Collections\Collection
      */
     private $log;
+    /**
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Pageview", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Admin\Entity\Pageview[]|Collections\Collection
+     */
+    private $pageview;
 
 
     /**
@@ -901,11 +908,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->pca = new Collections\ArrayCollection();
         $this->ndaApprover = new Collections\ArrayCollection();
         $this->programDoa = new Collections\ArrayCollection();
-        $this->domain = new Collections\ArrayCollection();
-        $this->technology = new Collections\ArrayCollection();
-        $this->openId = new Collections\ArrayCollection();
         $this->rationale = new Collections\ArrayCollection();
         $this->organisationLog = new Collections\ArrayCollection();
+        $this->pageView = new Collections\ArrayCollection();
         $this->affiliationLog = new Collections\ArrayCollection();
         $this->affiliationDescription = new Collections\ArrayCollection();
         $this->projectLog = new Collections\ArrayCollection();
@@ -987,9 +992,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->workpackageContact = new Collections\ArrayCollection();
         $this->logCreatedBy = new Collections\ArrayCollection();
         $this->log = new Collections\ArrayCollection();
-        $this->affiliationDescription = new Collections\ArrayCollection();
         $this->affiliationVersion = new Collections\ArrayCollection();
         $this->note = new Collections\ArrayCollection();
+        $this->pageView = new Collections\ArrayCollection();
         /**
          * Set these values for legacy reasons
          */
@@ -1550,7 +1555,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     {
         $name = sprintf(
             "%s. %s",
-            substr((string)$this->firstName, 0, 1),
+            mb_substr($this->firstName, 0, 1),
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
@@ -1886,6 +1891,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setContract($contract)
     {
         $this->contract = $contract;
+
         return $this;
     }
 
@@ -1904,6 +1910,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setContractVersion($contractVersion)
     {
         $this->contractVersion = $contractVersion;
+
         return $this;
     }
 
@@ -2664,6 +2671,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setEmailMessage($emailMessage)
     {
         $this->emailMessage = $emailMessage;
+
         return $this;
     }
 
@@ -3757,6 +3765,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setLogCreatedBy($logCreatedBy)
     {
         $this->logCreatedBy = $logCreatedBy;
+
         return $this;
     }
 
@@ -3775,6 +3784,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setLog($log)
     {
         $this->log = $log;
+
         return $this;
     }
 
@@ -3793,6 +3803,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setPca($pca)
     {
         $this->pca = $pca;
+
+        return $this;
+    }
+
+    /**
+     * @return \Admin\Entity\Pageview[]|Collections\Collection
+     */
+    public function getPageview()
+    {
+        return $this->pageview;
+    }
+
+    /**
+     * @param \Admin\Entity\Pageview[]|Collections\Collection $pageView
+     * @return Contact
+     */
+    public function setPageview($pageview): Contact
+    {
+        $this->pageview = $pageview;
 
         return $this;
     }

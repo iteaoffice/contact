@@ -55,6 +55,13 @@
     {% else %}
         <dd>{{ translate("txt-no-access-defined") }}</dd>
     {% endfor %}
+
+    <dt>{{ translate("txt-date-created") }}</dt>
+    <dd>{{ contact.dateCreated|string_date }}</dd>
+    {% if contact.dateUpdated %}
+        <dt>{{ translate("txt-date-updated") }}</dt>
+        <dd>{{ contact.dateUpdated|string_date }}</dd>
+    {% endif %}
 </dl>
 
 <h3>{{ translate("txt-notes") }}</h3>

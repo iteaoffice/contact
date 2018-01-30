@@ -312,6 +312,15 @@ return [
                         'order' => 50,
                         'route' => 'zfcadmin/contact-admin/import',
                     ],
+                    'list-duplicate-contacts' => [
+                        'label' => _("txt-nav-list-duplicate-contacts"),
+                        'order' => 51,
+                        'route' => 'zfcadmin/contact-admin/list-duplicate',
+                    ],  'list-inactive-contacts' => [
+                        'label' => _("txt-nav-list-inactive-contacts"),
+                        'order' => 51,
+                        'route' => 'zfcadmin/contact-admin/list-inactive',
+                    ],
                 ],
             ],
         ],

@@ -46,7 +46,7 @@ class ContactAdminController extends ContactAbstractController
     /**
      * @return ViewModel
      */
-    public function listAction()
+    public function listAction(): ViewModel
     {
         $page = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
@@ -68,6 +68,62 @@ class ContactAdminController extends ContactAbstractController
             'order'          => $filterPlugin->getOrder(),
             'direction'      => $filterPlugin->getDirection(),
             'projectService' => $this->getProjectService(),
+        ]);
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function listDuplicateAction(): ViewModel
+    {
+        $page = $this->params()->fromRoute('page', 1);
+        $filterPlugin = $this->getContactFilter();
+        $organisationQuery = $this->getContactService()
+            ->findDuplicateContacts($filterPlugin->getFilter());
+
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($organisationQuery, false)));
+        $paginator::setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 25);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
+
+        $form = new ContactFilter($this->getEntityManager());
+
+        $form->setData(['filter' => $filterPlugin->getFilter()]);
+
+        return new ViewModel([
+            'paginator'           => $paginator,
+            'form'                => $form,
+            'encodedFilter'       => urlencode($filterPlugin->getHash()),
+            'organisationService' => $this->getOrganisationService(),
+            'order'               => $filterPlugin->getOrder(),
+            'direction'           => $filterPlugin->getDirection(),
+        ]);
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function listInactiveAction(): ViewModel
+    {
+        $page = $this->params()->fromRoute('page', 1);
+        $filterPlugin = $this->getContactFilter();
+        $query = $this->getContactService()->findInactiveContacts($filterPlugin->getFilter());
+
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($query, false)));
+        $paginator::setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 25);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
+
+        $form = new ContactFilter($this->getEntityManager());
+        $form->setData(['filter' => $filterPlugin->getFilter()]);
+
+        return new ViewModel([
+            'paginator'           => $paginator,
+            'form'                => $form,
+            'encodedFilter'       => urlencode($filterPlugin->getHash()),
+            'organisationService' => $this->getOrganisationService(),
+            'order'               => $filterPlugin->getOrder(),
+            'direction'           => $filterPlugin->getDirection(),
         ]);
     }
 
