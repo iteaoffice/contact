@@ -121,7 +121,7 @@ $config = [
         ],
     ],
     'doctrine'           => [
-        'driver'       => [
+        'driver'        => [
             'contact_annotation_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => [
@@ -135,7 +135,7 @@ $config = [
                 ],
             ],
         ],
-        'eventmanager' => [
+        'eventmanager'  => [
             'orm_default' => [
                 'subscribers' => [
                     'Gedmo\Timestampable\TimestampableListener',

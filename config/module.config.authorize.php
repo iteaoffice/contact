@@ -105,7 +105,7 @@ return [
                     'route'     => 'zfcadmin/contact-admin/list-duplicate',
                     'roles'     => [Access::ACCESS_OFFICE],
                     'assertion' => ContactAssertion::class,
-                ],[
+                ], [
                     'route'     => 'zfcadmin/contact-admin/list-inactive',
                     'roles'     => [Access::ACCESS_OFFICE],
                     'assertion' => ContactAssertion::class,
@@ -146,8 +146,8 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/merge',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'route' => 'zfcadmin/contact-admin/merge',
+                    'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
                     'route' => 'zfcadmin/selection/list',

@@ -13,8 +13,8 @@ use Contact\Controller;
 return [
     'router' => [
         'routes' => [
-            'image'    => [
-                'child_routes'  => [
+            'image'     => [
+                'child_routes' => [
                     'contact-photo' => [
                         'type'    => 'Segment',
                         'options' => [

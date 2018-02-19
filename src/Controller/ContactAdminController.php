@@ -517,7 +517,7 @@ class ContactAdminController extends ContactAbstractController
         $handleImport = null;
         if ($request->isPost()) {
             if (isset($data['upload']) && $form->isValid()) {
-                $fileData = file_get_contents($data['file']['tmp_name'], FILE_TEXT);
+                $fileData = file_get_contents($data['file']['tmp_name']);
 
                 $importSession->active = true;
                 $importSession->fileData = $fileData;

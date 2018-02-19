@@ -116,7 +116,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'edit-note'        => [
+                                    'edit-note'           => [
                                         'label'   => _('txt-edit-note'),
                                         'route'   => 'zfcadmin/note/edit',
                                         'visible' => false,
@@ -129,7 +129,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'new-note'         => [
+                                    'new-note'            => [
                                         'label'   => _('txt-new-note'),
                                         'route'   => 'zfcadmin/note/new',
                                         'visible' => false,
@@ -194,7 +194,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'merge'           => [
+                                    'merge'               => [
                                         'label'   => _('txt-nav-merge'),
                                         'route'   => 'zfcadmin/contact-admin/merge',
                                         'visible' => false,
@@ -307,16 +307,16 @@ return [
             ],
             'tools'      => [
                 'pages' => [
-                    'import' => [
+                    'import'                    => [
                         'label' => _("txt-nav-contact-import"),
                         'order' => 50,
                         'route' => 'zfcadmin/contact-admin/import',
                     ],
-                    'list-duplicate-contacts' => [
+                    'list-duplicate-contacts'   => [
                         'label' => _("txt-nav-list-duplicate-contacts"),
                         'order' => 51,
                         'route' => 'zfcadmin/contact-admin/list-duplicate',
-                    ],  'list-inactive-contacts' => [
+                    ], 'list-inactive-contacts' => [
                         'label' => _("txt-nav-list-inactive-contacts"),
                         'order' => 51,
                         'route' => 'zfcadmin/contact-admin/list-inactive',

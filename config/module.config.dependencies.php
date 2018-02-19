@@ -27,7 +27,7 @@ return [
         Plugin\MergeContact::class => [
             EntityManager::class, TranslatorInterface::class
         ],
-        Plugin\GetFilter::class => [
+        Plugin\GetFilter::class    => [
             'Application'
         ],
     ]

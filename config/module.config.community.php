@@ -5,7 +5,7 @@
  * If you have a ./config/autoload/ directory set up for your project, you can
  * drop this config file in it and change the values as you wish.
  */
-if ( ! defined("ITEAOFFICE_HOST")) {
+if (!defined("ITEAOFFICE_HOST")) {
     define('ITEAOFFICE_HOST', 'test');
 }
 $settings = [
