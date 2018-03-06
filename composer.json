@@ -25,7 +25,7 @@
     "zendframework/zendframework": "~3.0"
   },
   "require-dev": {
-    "iteaoffice/testing": "^1.0",
+    "iteaoffice/testing": "dev-master",
     "iteaoffice/general": "^3.0"
   },
   "autoload": {
