@@ -31,7 +31,7 @@ class PhoneManagerController extends ContactAbstractController
          */
         $contact = $this->getContactService()->findContactById($this->params('contact'));
 
-        if (\is_null($contact)) {
+        if (null === $contact) {
             return $this->notFoundAction();
         }
 

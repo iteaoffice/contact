@@ -128,7 +128,7 @@ class ContactController extends ContactAbstractController
 
         $contact = $this->getContactService()->findContactById($contactId);
 
-        if (\is_null($contact)) {
+        if (null === $contact) {
             return $this->notFoundAction();
         }
 

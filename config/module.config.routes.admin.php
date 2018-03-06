@@ -221,31 +221,11 @@ return [
                                 ],
                             ],
                             'export'        => [
-                                'type'         => 'Literal',
-                                'options'      => [
-                                    'route'    => '/export',
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/export/[:type]/[:id].html',
                                     'defaults' => [
                                         'action' => 'export',
-                                    ],
-                                ],
-                                'child_routes' => [
-                                    'csv'   => [
-                                        'type'    => 'Segment',
-                                        'options' => [
-                                            'route'    => '/[:id].csv',
-                                            'defaults' => [
-                                                'action' => 'export-csv',
-                                            ],
-                                        ],
-                                    ],
-                                    'excel' => [
-                                        'type'    => 'Segment',
-                                        'options' => [
-                                            'route'    => '/[:id].xlsx',
-                                            'defaults' => [
-                                                'action' => 'export-excel',
-                                            ],
-                                        ],
                                     ],
                                 ],
                             ],

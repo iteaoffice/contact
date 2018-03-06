@@ -549,7 +549,7 @@ class ContactService extends ServiceAbstract
     {
         //Create the account
         $contact = $this->findContactByEmail($emailAddress);
-        if (\is_null($contact)) {
+        if (null === $contact) {
             return null;
         }
         //Create a target

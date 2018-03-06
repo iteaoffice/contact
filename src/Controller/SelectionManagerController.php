@@ -12,25 +12,29 @@ declare(strict_types=1);
 
 namespace Contact\Controller;
 
+use Contact\Controller\Plugin\SelectionExport;
 use Contact\Entity\Selection;
 use Contact\Form\AddContactToSelection;
 use Contact\Form\SelectionContacts;
 use Contact\Form\SelectionFilter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
+use Zend\Http\Response;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
+ * Class SelectionManagerController
  *
+ * @package Contact\Controller
  */
 class SelectionManagerController extends ContactAbstractController
 {
     /**
      * @return ViewModel
      */
-    public function listAction()
+    public function listAction(): ViewModel
     {
         $page = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
@@ -59,13 +63,13 @@ class SelectionManagerController extends ContactAbstractController
     }
 
     /**
-     * @return array|ViewModel
+     * @return ViewModel
      */
-    public function viewAction()
+    public function viewAction(): ViewModel
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (\is_null($selection)) {
+        if (null === $selection) {
             return $this->notFoundAction();
         }
 
@@ -93,13 +97,13 @@ class SelectionManagerController extends ContactAbstractController
     }
 
     /**
-     * @return array|\Zend\Http\Response|ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function editContactsAction()
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (\is_null($selection)) {
+        if (null === $selection) {
             return $this->notFoundAction();
         }
 
@@ -140,13 +144,13 @@ class SelectionManagerController extends ContactAbstractController
     }
 
     /**
-     * @return array|\Zend\Http\Response|ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function addContactAction()
     {
         $contact = $this->getContactService()->findContactById($this->params('contactId'));
 
-        if (\is_null($contact)) {
+        if (null === $contact) {
             return $this->notFoundAction();
         }
 
@@ -164,14 +168,20 @@ class SelectionManagerController extends ContactAbstractController
             //Find the selection
             $selection = $this->getSelectionService()->findSelectionById($data['selection']);
 
+            if (null === $selection) {
+                throw new \InvalidArgumentException("Selection cannot be found");
+            }
+
             $this->getSelectionService()->addContactToSelection($selection, $contact);
 
             $this->flashMessenger()->setNamespace('success')
-                ->addMessage(sprintf(
-                    $this->translate("txt-contact-%s-has-been-added-to-selection-%s-successfully"),
-                    $contact->parseFullName(),
-                    $selection->getSelection()
-                ));
+                ->addMessage(
+                    sprintf(
+                        $this->translate("txt-contact-%s-has-been-added-to-selection-%s-successfully"),
+                        $contact->parseFullName(),
+                        $selection->getSelection()
+                    )
+                );
 
             /**
              * @var $selection Selection
@@ -188,14 +198,14 @@ class SelectionManagerController extends ContactAbstractController
         );
     }
 
-    /*
-     *
+    /**
+     * @return \Zend\Http\Response|ViewModel
      */
     public function editAction()
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (\is_null($selection)) {
+        if (null === $selection) {
             return $this->notFoundAction();
         }
 
@@ -291,10 +301,12 @@ class SelectionManagerController extends ContactAbstractController
                 $this->getSelectionService()->updateEntity($selection);
 
                 $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(sprintf(
-                        $this->translate("txt-selection-%s-has-been-created-successfully"),
-                        $selection->getSelection()
-                    ));
+                    ->addMessage(
+                        sprintf(
+                            $this->translate("txt-selection-%s-has-been-created-successfully"),
+                            $selection->getSelection()
+                        )
+                    );
 
                 return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
             }
@@ -310,7 +322,7 @@ class SelectionManagerController extends ContactAbstractController
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params()->fromPost('id'));
 
-        if (\is_null($selection)) {
+        if (null === $selection) {
             return $this->notFoundAction();
         }
 
@@ -321,7 +333,7 @@ class SelectionManagerController extends ContactAbstractController
             /*
              * Do a fall-back to the email when the name is empty
              */
-            if (strlen($text) === 0) {
+            if (\strlen($text) === 0) {
                 $text = $contact->getEmail();
             }
 
@@ -340,65 +352,20 @@ class SelectionManagerController extends ContactAbstractController
     }
 
     /**
-     * @return \Zend\Stdlib\ResponseInterface|ViewModel
+     * @return Response
      */
-    public function exportCsvAction()
+    public function exportAction(): Response
     {
         $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
 
-        if (\is_null($selection)) {
-            return $this->notFoundAction();
+        if (null === $selection) {
+            $response = new Response();
+            return $response->setStatusCode(Response::STATUS_CODE_404);
         }
 
-        // Open the output stream
-        $fh = fopen('php://output', 'wb');
 
-        ob_start();
+        $type = $this->params('type') === 'csv' ? SelectionExport::EXPORT_CSV : SelectionExport::EXPORT_EXCEL;
 
-        fputcsv(
-            $fh,
-            [
-                'Email',
-                'Firstname',
-                'Lastname',
-                'Organisation',
-                'Country',
-            ]
-        );
-
-        foreach ($this->getContactService()->findContactsInSelection($selection, true) as $contact) {
-            fputcsv(
-                $fh,
-                [
-                    $contact['email'],
-                    $contact['firstName'],
-                    trim(sprintf("%s %s", $contact['middleName'], $contact['lastName'])),
-                    $contact['contactOrganisation']['organisation']['organisation'] ?? null,
-                    $contact['contactOrganisation']['organisation']['country']['iso3'] ?? null,
-                ]
-            );
-        }
-
-        $string = ob_get_clean();
-
-        // Convert to UTF-16LE
-        $string = mb_convert_encoding($string, 'UTF-16LE', 'UTF-8');
-
-        // Prepend BOM
-        $string = "\xFF\xFE" . $string;
-
-        $response = $this->getResponse();
-        $headers = $response->getHeaders();
-        $headers->addHeaderLine('Content-Type', 'text/csv');
-        $headers->addHeaderLine(
-            'Content-Disposition',
-            "attachment; filename=\"selection_" . $selection->getSelection() . ".csv\""
-        );
-        $headers->addHeaderLine('Accept-Ranges', 'bytes');
-        $headers->addHeaderLine('Content-Length', strlen($string));
-
-        $response->setContent($string);
-
-        return $response;
+        return $this->selectionExport($selection, $type)->parseResponse();
     }
 }

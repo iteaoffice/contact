@@ -103,8 +103,9 @@
         {% endif %}
 
         {{ selectionLink( selection ,'edit-contacts','button') }}
+        <br><br>
         {{ selectionLink( selection ,'export-csv','button') }}
-        {#{{ selectionLink( selection ,'export-excel','button') }}#}
+        {{ selectionLink( selection ,'export-excel','button') }}
     </div>
     <div class="tab-pane" role="tabpanel" id="mailings">
         <h3>{{ translate("txt-mailings") }}</h3>

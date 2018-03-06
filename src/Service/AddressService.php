@@ -17,21 +17,16 @@ use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 
 /**
- * AddressService.
+ * Class AddressService
  *
- * this is a generic wrapper service for all the other services
- *
- * First parameter of all methods (lowercase, underscore_separated)
- * will be used to fetch the correct model service, one exception is the 'linkModel'
- * method.
+ * @package Contact\Service
  */
 class AddressService extends ServiceAbstract
 {
-
     /**
      * @param $id
      *
-     * @return null|Address
+     * @return Address|null|object
      */
     public function findAddressById($id)
     {
@@ -46,7 +41,7 @@ class AddressService extends ServiceAbstract
      *
      * @return Address|null
      */
-    public function findAddressByContactAndType(Contact $contact, AddressType $type)
+    public function findAddressByContactAndType(Contact $contact, AddressType $type):?Address
     {
         /** @var \Contact\Repository\Address $repository */
         $repository = $this->getEntityManager()->getRepository(Address::class);

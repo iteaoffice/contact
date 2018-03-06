@@ -18,6 +18,8 @@ declare(strict_types=1);
 namespace Project;
 
 use Contact\Controller\Plugin;
+use Contact\Service\AddressService;
+use Contact\Service\ContactService;
 use Doctrine\ORM\EntityManager;
 use Zend\I18n\Translator\TranslatorInterface;
 use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
@@ -29,6 +31,11 @@ return [
         ],
         Plugin\GetFilter::class    => [
             'Application'
+        ],
+        Plugin\SelectionExport::class    => [
+            ContactService::class,
+            AddressService::class,
+            TranslatorInterface::class
         ],
     ]
 ];

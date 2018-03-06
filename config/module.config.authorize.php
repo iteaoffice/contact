@@ -174,11 +174,7 @@ return [
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
-                    'route' => 'zfcadmin/selection/export/csv',
-                    'roles' => [Access::ACCESS_OFFICE],
-                ],
-                [
-                    'route' => 'zfcadmin/selection/export/excel',
+                    'route' => 'zfcadmin/selection/export',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [

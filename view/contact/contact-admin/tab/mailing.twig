@@ -1,24 +1,37 @@
 <h2>{{ translate("txt-opt-in") }}</h2>
-<table class="table table-hover table-striped table-condensed table-sm">
-    <thead>
-    <tr>
-        <th>{{ translate("txt-opt-in") }}</th>
-        <th>{{ translate("txt-description") }}</th>
-        <th>{{ translate("txt-auto-subscribe") }}</th>
-        <th>{{ translate("txt-active") }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for optIn in optIn %}
+<form method="post">
+    <table class="table table-hover table-striped table-condensed table-sm">
+        <thead>
         <tr>
-            <td>{{ optIn.optIn }}</td>
-            <td>{{ optIn.description }}</td>
-            <td>{{ translate(optIn.autoSubscribe(true)) }}</td>
-            <td>{% for contactOptIn in contact.optIn if optIn.id == contactOptIn.id %}YES{% endfor %}</td>
+            <th>{{ translate("txt-opt-in") }}</th>
+            <th>{{ translate("txt-description") }}</th>
+            <th>{{ translate("txt-auto-subscribe") }}</th>
+            <th>{{ translate("txt-active") }}</th>
         </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tfoot>
+        <tr>
+            <td colspan="3"></td>
+            <td><input type="submit" name="updateOptIn" value="{{ translate("txt-update-opt-in") }}" class="btn btn-success btn-sm"></td>
+        </tr>
+        </tfoot>
+        <tbody>
+        {% for optIn in optIn %}
+            <tr>
+                <td>{{ optIn.optIn }}</td>
+                <td>{{ optIn.description }}</td>
+                <td>{{ translate(optIn.autoSubscribe(true)) }}</td>
+                <td>
+                    <input type="checkbox" name="optIn[]" value="{{ optIn.id }}"
+                           {% for contactOptIn in contact.optIn if optIn.id == contactOptIn.id %}checked="checked"{% endfor %}
+                    >
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</form>
+
 
 <h2>{{ translate("txt-mailings") }}</h2>
 <table class="table table-hover table-striped table-condensed table-sm">

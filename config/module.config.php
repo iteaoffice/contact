@@ -42,11 +42,13 @@ $config = [
     'controller_plugins' => [
         'aliases'   => [
             'handleImport'     => Controller\Plugin\HandleImport::class,
+            'selectionExport' => Controller\Plugin\SelectionExport::class,
             'getContactFilter' => Controller\Plugin\GetFilter::class,
             'mergeContact'     => Controller\Plugin\MergeContact::class,
         ],
         'factories' => [
             Controller\Plugin\HandleImport::class => Controller\Factory\PluginFactory::class,
+            Controller\Plugin\SelectionExport::class    => ConfigAbstractFactory::class,
             Controller\Plugin\GetFilter::class    => ConfigAbstractFactory::class,
             Controller\Plugin\MergeContact::class => ConfigAbstractFactory::class,
         ],

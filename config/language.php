@@ -33,6 +33,7 @@ _("txt-can-send-message");
 _("txt-cannot-send-message");
 _("txt-can-send-message-explanation");
 _("txt-empty");
+_("txt-no-auto-subscribe");
 
 _('txt-show-email-to-members');
 _('txt-show-email-to-all');

@@ -15,6 +15,7 @@ namespace Contact\Controller;
 use Admin\Service\AdminService;
 use BjyAuthorize\Controller\Plugin\IsAllowed;
 use Contact\Controller\Plugin;
+use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
 use Contact\Service\ContactService;
@@ -43,6 +44,7 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  * @method FlashMessenger flashMessenger()
  * @method IsAllowed isAllowed($resource, $action)
  * @method Plugin\HandleImport handleImport($data, $import, $optIn, $selectionId, $selectionName)
+ * @method Plugin\SelectionExport selectionExport(Selection $selection, int $type)
  * @method Plugin\GetFilter getContactFilter()
  */
 abstract class ContactAbstractController extends AbstractActionController
@@ -430,6 +432,7 @@ abstract class ContactAbstractController extends AbstractActionController
 
     /**
      * @param ProfileSearchService $profileSearchService
+     *
      * @return ContactAbstractController
      */
     public function setProfileSearchService(ProfileSearchService $profileSearchService): ContactAbstractController

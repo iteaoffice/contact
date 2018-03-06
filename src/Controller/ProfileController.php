@@ -52,7 +52,7 @@ class ProfileController extends ContactAbstractController
     {
         $contact = $this->getContactService()->findContactById($this->params('id'));
 
-        if (\is_null($contact) || $contact->parseHash() !== $this->params('hash')) {
+        if (null === $contact || $contact->parseHash() !== $this->params('hash')) {
             return $this->notFoundAction();
         }
 

@@ -119,7 +119,8 @@ class SelectionLink extends LinkAbstract
                 );
                 break;
             case 'export-csv':
-                $this->setRouter('zfcadmin/selection/export/csv');
+                $this->setRouter('zfcadmin/selection/export');
+                $this->addRouterParam('type', 'csv');
                 $this->setText(
                     sprintf(
                         $this->translate('txt-export-selection-to-%s-csv'),
@@ -128,7 +129,8 @@ class SelectionLink extends LinkAbstract
                 );
                 break;
             case 'export-excel':
-                $this->setRouter('zfcadmin/selection/export/excel');
+                $this->setRouter('zfcadmin/selection/export');
+                $this->addRouterParam('type', 'excel');
                 $this->setText(
                     sprintf(
                         $this->translate('txt-export-selection-to-%s-excel'),

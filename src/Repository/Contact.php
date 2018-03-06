@@ -78,6 +78,7 @@ class Contact extends EntityRepository
 
     /**
      * @param array $filter
+     *
      * @return Query
      */
     public function findDuplicateContacts(array $filter): Query
@@ -102,6 +103,7 @@ class Contact extends EntityRepository
 
     /**
      * @param array $filter
+     *
      * @return Query
      */
     public function findInactiveContacts(array $filter): Query
@@ -118,61 +120,60 @@ class Contact extends EntityRepository
         //$queryBuilder->andWhere($queryBuilder->expr()->lt('contact_entity_contact.dateCreated', ':dateCreated'));
         //$queryBuilder->setParameter('dateCreated', $dateCreated);
 
-        $relations =
-            [
-                'project',
-                'projectVersion',
-                'projectDescription',
-                'dnd',
-                'nda',
-                'pca',
-                'ndaApprover',
-                'programDoa',
-                'rationale',
-                'organisationLog',
-                'affiliation',
-                'parent',
-                'parentFinancial',
-                'parentOrganisation',
-                'financial',
-                'invoice',
-                'associate',
-                'registration',
-                'badge',
-                'mailing',
-                'result',
-                'workpackage',
-                'idea',
-                'ideaMessage',
-                'ideaPartner',
-                'evaluation',
-                'calendarContact',
-                'calendarDocument',
-                'calendar',
-                'projectReview',
-                'projectReport',
-                'projectCalendarReview',
-                'projectReportReview',
-                'contract',
-                'invite',
-                'inviteContact',
-                'ideaInvite',
-                'ideaInviteContact',
-                'loi',
-                'affiliationDoa',
-                'parentDoa',
-                //       'session',
-                //       'pageview',
-                'journal',
-                'invoiceLog',
-                'reminder',
-                'achievement',
-                'changeRequestProcess',
-                'versionContact',
-                'workpackageContact',
-                'log',
-                'affiliationVersion',
-            ];
+        $relations = [
+            'project',
+            'projectVersion',
+            'projectDescription',
+            'dnd',
+            'nda',
+            'pca',
+            'ndaApprover',
+            'programDoa',
+            'rationale',
+            'organisationLog',
+            'affiliation',
+            'parent',
+            'parentFinancial',
+            'parentOrganisation',
+            'financial',
+            'invoice',
+            'associate',
+            'registration',
+            'badge',
+            'mailing',
+            'result',
+            'workpackage',
+            'idea',
+            'ideaMessage',
+            'ideaPartner',
+            'evaluation',
+            'calendarContact',
+            'calendarDocument',
+            'calendar',
+            'projectReview',
+            'projectReport',
+            'projectCalendarReview',
+            'projectReportReview',
+            'contract',
+            'invite',
+            'inviteContact',
+            'ideaInvite',
+            'ideaInviteContact',
+            'loi',
+            'affiliationDoa',
+            'parentDoa',
+            //       'session',
+            //       'pageview',
+            'journal',
+            'invoiceLog',
+            'reminder',
+            'achievement',
+            'changeRequestProcess',
+            'versionContact',
+            'workpackageContact',
+            'log',
+            'affiliationVersion',
+        ];
 
 
         foreach ($relations as $relation) {
@@ -211,15 +212,17 @@ class Contact extends EntityRepository
 
     /**
      * @param QueryBuilder $queryBuilder
-     * @param array $filter
-     * @param array $order
+     * @param array        $filter
+     * @param array        $order
+     *
      * @return QueryBuilder
      */
     private function applyContactFilter(QueryBuilder $queryBuilder, array $filter, array $order): QueryBuilder
     {
         $direction = Criteria::ASC;
         if (isset($filter['direction'])
-            && \in_array(strtoupper($filter['direction']), [Criteria::ASC, Criteria::DESC], true)) {
+            && \in_array(strtoupper($filter['direction']), [Criteria::ASC, Criteria::DESC], true)
+        ) {
             $direction = strtoupper($filter['direction']);
         }
 
@@ -229,7 +232,25 @@ class Contact extends EntityRepository
                     $queryBuilder->expr()->like('contact_entity_contact.firstName', ':like'),
                     $queryBuilder->expr()->like('contact_entity_contact.middleName', ':like'),
                     $queryBuilder->expr()->like('contact_entity_contact.lastName', ':like'),
-                    $queryBuilder->expr()->like('contact_entity_contact.email', ':like')
+                    $queryBuilder->expr()->like('contact_entity_contact.email', ':like'),
+                    $queryBuilder->expr()->like(
+                        $queryBuilder->expr()->concat(
+                            'contact_entity_contact.firstName',
+                            $queryBuilder->expr()->literal(' '),
+                            'contact_entity_contact.middleName',
+                            $queryBuilder->expr()->literal(' '),
+                            'contact_entity_contact.lastName'
+                        ),
+                        ':like'
+                    ),
+                    $queryBuilder->expr()->like(
+                        $queryBuilder->expr()->concat(
+                            'contact_entity_contact.firstName',
+                            $queryBuilder->expr()->literal(' '),
+                            'contact_entity_contact.lastName'
+                        ),
+                        ':like'
+                    )
                 )
             );
 
@@ -250,11 +271,13 @@ class Contact extends EntityRepository
 
 
         /** Only when the filter is turned on, omit this extra rule */
-        if (!(array_key_exists('options', $filter) && \in_array(
-            'includeDeactivated',
-            $filter['options'],
-            true
-        )) && (isset($filter['options']) && !\in_array('onlyDeactivated', $filter['options'], true))
+        if (!(array_key_exists('options', $filter)
+                && \in_array(
+                    'includeDeactivated',
+                    $filter['options'],
+                    true
+                ))
+            && (isset($filter['options']) && !\in_array('onlyDeactivated', $filter['options'], true))
         ) {
             $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_contact.dateEnd'));
         }
@@ -338,6 +361,7 @@ class Contact extends EntityRepository
 
     /**
      * @param $projectId
+     *
      * @return array
      */
     public function findContactByProjectId($projectId): array
@@ -411,6 +435,7 @@ class Contact extends EntityRepository
     /**
      * @param $email
      * @param $onlyMain
+     *
      * @return Entity\Contact|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -556,7 +581,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param SelectionSql $sql
-     * @param bool $toArray
+     * @param bool         $toArray
      *
      * @return Entity\Contact[]
      */
@@ -631,6 +656,7 @@ class Contact extends EntityRepository
 
     /**
      * @param Selection $selection
+     *
      * @return int
      */
     public function findAmountOfContactsInSelection(Selection $selection)
@@ -640,9 +666,11 @@ class Contact extends EntityRepository
             $resultSetMap->addEntityResult(Entity\Contact::class, 'contact');
             $resultSetMap->addFieldResult('contact', 'blabla', 'blabla');
 
-            $query =
-                sprintf("SELECT COUNT(contact.contact_id) FROM contact
-            WHERE contact_id IN (%s) AND date_end IS NULL", $selection->getSql()->getQuery());
+            $query = sprintf(
+                "SELECT COUNT(contact.contact_id) FROM contact
+            WHERE contact_id IN (%s) AND date_end IS NULL",
+                $selection->getSql()->getQuery()
+            );
 
             $statement = $this->_em->getConnection()->prepare($query);
             $statement->execute();
@@ -710,7 +738,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Selection $selection
-     * @param bool $toArray
+     * @param bool      $toArray
      *
      * @return Entity\Contact[]
      */
@@ -738,7 +766,7 @@ class Contact extends EntityRepository
 
     /**
      * @param Entity\OptIn $optIn
-     * @param bool $toArray
+     * @param bool         $toArray
      *
      * @return Entity\Contact[]
      */
@@ -763,7 +791,7 @@ class Contact extends EntityRepository
      * Return Contact entities based on a selection SQL using a native SQL query.
      *
      * @param Entity\Contact $contact
-     * @param SelectionSql $sql
+     * @param SelectionSql   $sql
      *
      * @return bool
      */
@@ -788,7 +816,7 @@ class Contact extends EntityRepository
      * This is basic search for contacts (based on the name, and email.
      *
      * @param string $searchItem
-     * @param int $maxResults
+     * @param int    $maxResults
      *
      * @return Entity\Contact[]|array
      */
@@ -898,10 +926,17 @@ class Contact extends EntityRepository
 
     /**
      * @param Entity\Contact $contact
+     *
      * @return Entity\Contact[]
      */
     public function findMergeCandidatesFor(Entity\Contact $contact): array
     {
+        //Short circuit the contact when the firstnamen and lastname are not filled in
+        //The query will case an loop than and will crash
+        if (empty($contact->getFirstName()) && empty($contact->getLastName())) {
+            return [];
+        }
+
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder->select('c');
         $queryBuilder->from(Entity\Contact::class, 'c');
@@ -923,9 +958,6 @@ class Contact extends EntityRepository
         $queryBuilder->setParameter('firstName', '%' . $contact->getFirstName() . '%');
         $queryBuilder->setParameter('lastName', '%' . $contact->getLastName() . '%');
         $queryBuilder->setParameter('email', str_replace('.', '', $contact->getEmail()));
-
-        //var_dump($queryBuilder->getParameters());
-        //die($queryBuilder->getQuery()->getSQL());
 
         return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
