@@ -22,7 +22,10 @@ use Contact\Entity\AddressType;
 use Contact\Entity\Selection;
 use Contact\Service\AddressService;
 use Contact\Service\ContactService;
-use PHPExcel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Zend\Http\Headers;
 use Zend\Http\Response;
 use Zend\I18n\Translator\TranslatorInterface;
@@ -39,7 +42,7 @@ class SelectionExport extends AbstractPlugin
     public const EXPORT_EXCEL = 2;
 
     /**
-     * @var PHPExcel
+     * @var Spreadsheet
      */
     protected $excel;
     /**
@@ -89,7 +92,6 @@ class SelectionExport extends AbstractPlugin
      * @param int       $type
      *
      * @return SelectionExport
-     * @throws \PHPExcel_Exception
      */
     public function __invoke(Selection $selection, int $type): SelectionExport
     {
@@ -159,15 +161,15 @@ class SelectionExport extends AbstractPlugin
 
     /**
      * @return SelectionExport
-     * @throws \PHPExcel_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function exportExcel(): SelectionExport
     {
-        $this->excel = new \PHPExcel();
+        $this->excel = new Spreadsheet();
 
         $exportSheet = $this->excel->getActiveSheet();
         $exportSheet->setTitle($this->translate('txt-selection-export'));
-        $exportSheet->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+        $exportSheet->getPageSetup()->setPaperSize(PageSetup::PAPERSIZE_A4);
         $exportSheet->getPageSetup()->setFitToWidth(1);
         $exportSheet->getPageSetup()->setFitToHeight(0);
 
@@ -283,19 +285,17 @@ class SelectionExport extends AbstractPlugin
 
     /**
      * @return Response
-     * @throws \PHPExcel_Reader_Exception
-     * @throws \PHPExcel_Writer_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function parseExcelResponse(): Response
     {
         $response = new Response();
-        if (!($this->excel instanceof \PHPExcel)) {
+        if (!($this->excel instanceof Spreadsheet)) {
             return $response->setStatusCode(Response::STATUS_CODE_404);
         }
 
-        /** @var \PHPExcel_Writer_Excel2007 $writer */
-        $writer = \PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
-
+        /** @var Xlsx $writer */
+        $writer = IOFactory::createWriter($this->excel, 'Xlsx');
 
         ob_start();
         $gzip = false;
