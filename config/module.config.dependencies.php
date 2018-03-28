@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Project;
+namespace Contact;
 
 use Contact\Controller\Plugin;
 use Contact\Service\AddressService;
@@ -26,16 +26,19 @@ use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 
 return [
     ConfigAbstractFactory::class => [
-        Plugin\MergeContact::class => [
+        Plugin\MergeContact::class             => [
             EntityManager::class, TranslatorInterface::class
         ],
-        Plugin\GetFilter::class    => [
+        Plugin\GetFilter::class                => [
             'Application'
         ],
-        Plugin\SelectionExport::class    => [
+        Plugin\SelectionExport::class          => [
             ContactService::class,
             AddressService::class,
             TranslatorInterface::class
         ],
+        Service\SelectionContactService::class => [
+            EntityManager::class
+        ]
     ]
 ];

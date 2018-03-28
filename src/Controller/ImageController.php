@@ -46,8 +46,8 @@ class ImageController extends ContactAbstractController
 
         $response->getHeaders()
             ->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
-            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")
-            ->addHeaderLine("Pragma: public")
+            ->addHeaderLine('Cache-Control: max-age=36000, must-revalidate')
+            ->addHeaderLine('Pragma: public')
             ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType());
 
         $response->setContent(stream_get_contents($photo->getPhoto()));

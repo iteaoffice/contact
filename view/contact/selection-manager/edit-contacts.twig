@@ -10,10 +10,10 @@
 {{ form().openTag(form)|raw }}
 
 <div class="form-group row">
-    <label class="col-md-3 form-control-label control-label">{{ translate("txt-selection") }}</label>
+    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-selection") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ selectionLink(selection, 'view', 'name') }} {{ selectionLink(selection, 'edit', 'icon') }}</p>
+        <p class="form-control-static form-control-plaintext">{{ selectionLink(selection, 'view', 'name') }} {{ selectionLink(selection, 'edit', 'icon') }}</p>
     </div>
 </div>
 

@@ -42,15 +42,15 @@ $config = [
     'controller_plugins' => [
         'aliases'   => [
             'handleImport'     => Controller\Plugin\HandleImport::class,
-            'selectionExport' => Controller\Plugin\SelectionExport::class,
+            'selectionExport'  => Controller\Plugin\SelectionExport::class,
             'getContactFilter' => Controller\Plugin\GetFilter::class,
             'mergeContact'     => Controller\Plugin\MergeContact::class,
         ],
         'factories' => [
-            Controller\Plugin\HandleImport::class => Controller\Factory\PluginFactory::class,
-            Controller\Plugin\SelectionExport::class    => ConfigAbstractFactory::class,
-            Controller\Plugin\GetFilter::class    => ConfigAbstractFactory::class,
-            Controller\Plugin\MergeContact::class => ConfigAbstractFactory::class,
+            Controller\Plugin\HandleImport::class    => Controller\Factory\PluginFactory::class,
+            Controller\Plugin\SelectionExport::class => ConfigAbstractFactory::class,
+            Controller\Plugin\GetFilter::class       => ConfigAbstractFactory::class,
+            Controller\Plugin\MergeContact::class    => ConfigAbstractFactory::class,
         ],
     ],
     'view_manager'       => [
@@ -103,6 +103,7 @@ $config = [
             Provider\Identity\AuthenticationIdentityProvider::class => Factory\AuthenticationIdentityProviderServiceFactory::class,
             Service\SelectionService::class                         => Factory\SelectionServiceFactory::class,
             Service\ContactService::class                           => Factory\ContactServiceFactory::class,
+            Service\SelectionContactService::class                  => ConfigAbstractFactory::class,
             Service\AddressService::class                           => Factory\AddressServiceFactory::class,
             Service\FormService::class                              => Factory\FormServiceFactory::class,
             Options\ModuleOptions::class                            => Factory\ModuleOptionsFactory::class,

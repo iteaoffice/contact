@@ -255,6 +255,12 @@ class Contact extends EntityRepository
             );
 
             $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
+
+            //Reset the order to order on lastname (if the order is on id)
+            if ($filter['order'] === 'contact_entity_contact.id') {
+                $filter['order'] = 'contact_entity_contact.lastName';
+            }
+
         }
 
         if (array_key_exists('options', $filter)) {
@@ -514,7 +520,7 @@ class Contact extends EntityRepository
     /**
      *  Returns true of false depending if a contact is a community member.
      *
-     * @param Entity\Contact $contact
+     * @param Entity\Contact        $contact
      * @param Options\ModuleOptions $options
      *
      * @return boolean|null

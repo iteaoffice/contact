@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
+use Application\Entity\AbstractEntity;
 use Calendar\Entity\Calendar;
 use Contact\Entity\Address;
 use Contact\Entity\AddressType;
@@ -39,6 +40,7 @@ use Zend\Crypt\Password\Bcrypt;
 
 /**
  * Class ContactService
+ *
  * @package Contact\Service
  */
 class ContactService extends ServiceAbstract
@@ -60,6 +62,7 @@ class ContactService extends ServiceAbstract
      * This function returns the contact by the hash. The hash has as format contactId-CHECKSUM which needs to be checked.
      *
      * @param $hash
+     *
      * @return Contact|null
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -70,7 +73,7 @@ class ContactService extends ServiceAbstract
         list($contactId, $hash) = explode('-', $hash);
 
         /** @var Contact $contact */
-        $contact = $this->getEntityManager()->find(Contact::class, $contactId);
+        $contact = $this->entityManager->find(Contact::class, $contactId);
 
         if (null === $contact && $contact->parseHash() !== $hash) {
             return null;
@@ -86,7 +89,7 @@ class ContactService extends ServiceAbstract
      */
     public function findContactById($id): ?Contact
     {
-        return $this->getEntityManager()->find(Contact::class, $id);
+        return $this->entityManager->find(Contact::class, $id);
     }
 
     /**
@@ -111,7 +114,7 @@ class ContactService extends ServiceAbstract
     public function findAllContacts(): \Doctrine\ORM\Query
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContacts();
     }
@@ -124,7 +127,7 @@ class ContactService extends ServiceAbstract
     public function findContactsWithDateOfBirth(): array
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactsWithDateOfBirth();
     }
@@ -137,7 +140,7 @@ class ContactService extends ServiceAbstract
     public function findContactsWithCV(): array
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactsWithCV();
     }
@@ -150,7 +153,7 @@ class ContactService extends ServiceAbstract
     public function findDuplicateContacts($filter): Query
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findDuplicateContacts($filter);
     }
@@ -163,7 +166,7 @@ class ContactService extends ServiceAbstract
     public function findInactiveContacts($filter): Query
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findInactiveContacts($filter);
     }
@@ -179,7 +182,7 @@ class ContactService extends ServiceAbstract
     public function findContactsWithActiveProfile($onlyPublic = true): array
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactsWithActiveProfile($onlyPublic);
     }
@@ -318,6 +321,7 @@ class ContactService extends ServiceAbstract
      * Find the mail address of a contact.
      *
      * @param Contact $contact
+     *
      * @return Address|null
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -344,7 +348,7 @@ class ContactService extends ServiceAbstract
         /**
          * @var AddressType $addressType
          */
-        $addressType = $this->getEntityManager()->find(AddressType::class, $typeId);
+        $addressType = $this->entityManager->find(AddressType::class, $typeId);
 
         return $this->getAddressService()->findAddressByContactAndType($contact, $addressType);
     }
@@ -408,7 +412,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param Contact $contact
-     * @param int $type
+     * @param int     $type
      *
      * @return null|Phone
      */
@@ -418,7 +422,7 @@ class ContactService extends ServiceAbstract
             throw new \InvalidArgumentException(sprintf("A invalid phone type chosen"));
         }
 
-        return $this->getEntityManager()->getRepository(Phone::class)->findOneBy(
+        return $this->entityManager->getRepository(Phone::class)->findOneBy(
             [
                 'contact' => $contact,
                 'type'    => $type,
@@ -469,7 +473,7 @@ class ContactService extends ServiceAbstract
          * Include all the optIns
          */
         $contact->setOptIn(
-            $this->getEntityManager()->getRepository('Contact\Entity\OptIn')
+            $this->entityManager->getRepository('Contact\Entity\OptIn')
                 ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
         );
         /**
@@ -491,11 +495,12 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param string $emailAddress
-     * @param string $note
+     * @param string      $emailAddress
+     * @param string      $note
      * @param string|null $firstName
      * @param string|null $middleName
      * @param string|null $lastName
+     *
      * @return Contact
      */
     public function createContact(
@@ -524,7 +529,7 @@ class ContactService extends ServiceAbstract
          * Include all the optIns
          */
         $contact->setOptIn(
-            $this->getEntityManager()->getRepository('Contact\Entity\OptIn')
+            $this->entityManager->getRepository('Contact\Entity\OptIn')
                 ->findBy(['autoSubscribe' => OptIn::AUTO_SUBSCRIBE])
         );
 
@@ -541,7 +546,26 @@ class ContactService extends ServiceAbstract
     }
 
     /**
+     * @param string  $text
+     * @param string  $source
+     * @param Contact $contact
+     *
+     * @return Note
+     */
+    public function addNoteToContact(string $text, string $source, Contact $contact): Note
+    {
+        $note = new Note();
+        $note->setNote($text);
+        $note->setContact($contact);
+        $note->setSource($source);
+        $this->newEntity($note);
+
+        return $note;
+    }
+
+    /**
      * @param $emailAddress
+     *
      * @return Contact
      * @throws \Exception
      */
@@ -570,32 +594,16 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param string $text
-     * @param string $source
-     * @param Contact $contact
-     * @return Note
-     */
-    public function addNoteToContact(string $text, string $source, Contact $contact): Note
-    {
-        $note = new Note();
-        $note->setNote($text);
-        $note->setContact($contact);
-        $note->setSource($source);
-        $this->newEntity($note);
-
-        return $note;
-    }
-
-    /**
-     * @param $email
+     * @param      $email
      * @param bool $onlyMain
+     *
      * @return Contact|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findContactByEmail($email, $onlyMain = false): ?Contact
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactByEmail($email, $onlyMain);
     }
@@ -607,7 +615,7 @@ class ContactService extends ServiceAbstract
      */
     public function findSelectionByName($name)
     {
-        return $this->getEntityManager()->getRepository(Selection::class)->findOneBy(
+        return $this->entityManager->getRepository(Selection::class)->findOneBy(
             [
                 'selection' => $name,
             ]
@@ -616,6 +624,7 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param Contact $contact
+     *
      * @return string
      */
     public function parseSignature(Contact $contact): ?string
@@ -642,17 +651,18 @@ class ContactService extends ServiceAbstract
     public function isCommunity(Contact $contact): bool
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findIsCommunityMember($contact, $this->getModuleOptions());
     }
 
 
     /**
-     * @param Contact $contact
+     * @param Contact           $contact
      * @param array|Selection[] $selections
      *
      * @return bool
+     * @deprecated Replaced by new function in SelectionContactService
      */
     public function contactInSelection(Contact $contact, $selections)
     {
@@ -675,15 +685,16 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param Contact $contact
+     * @param Contact   $contact
      * @param Selection $selection
      *
      * @return bool
+     * @deprecated Replaced by new function in SelectionContactService
      */
     public function findContactInSelection(Contact $contact, Selection $selection)
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         if (!\is_null($selection->getSql())) {
             try {
@@ -697,7 +708,7 @@ class ContactService extends ServiceAbstract
          * The selection contains contacts, do an extra query to find the contact
          */
         if (\count($selection->getSelectionContact()) > 0) {
-            $findContact = $this->getEntityManager()->getRepository(SelectionContact::class)->findOneBy(
+            $findContact = $this->entityManager->getRepository(SelectionContact::class)->findOneBy(
                 [
                     'contact'   => $contact,
                     'selection' => $selection,
@@ -706,7 +717,7 @@ class ContactService extends ServiceAbstract
             /*
              * Return true when we found a contact
              */
-            if (!\is_null($findContact)) {
+            if (null !== $findContact) {
                 return true;
             }
         }
@@ -777,7 +788,7 @@ class ContactService extends ServiceAbstract
      * returns true when the contact is in the booth.
      *
      * @param Contact $contact
-     * @param Booth $booth
+     * @param Booth   $booth
      *
      * @return bool
      */
@@ -793,7 +804,7 @@ class ContactService extends ServiceAbstract
     }
 
     /**
-     * @param Contact $contact
+     * @param Contact  $contact
      * @param Facebook $facebook
      *
      * @return bool
@@ -801,42 +812,45 @@ class ContactService extends ServiceAbstract
     public function isContactInFacebook(Contact $contact, Facebook $facebook): bool
     {
         /** @var \Contact\Repository\Facebook $repository */
-        $repository = $this->getEntityManager()->getRepository(Facebook::class);
+        $repository = $this->entityManager->getRepository(Facebook::class);
 
         return $repository->isContactInFacebook($contact, $facebook);
     }
 
     /**
-     * @param Contact $contact
-     * @param         $role
-     * @param         $entity
+     * @param Contact        $contact
+     * @param string         $role
+     * @param AbstractEntity $entity
      *
      * @return bool
      */
-    public function contactHasPermit(Contact $contact, $role, $entity): bool
+    public function contactHasPermit(Contact $contact, string $role, $entity): bool
     {
-        if (\is_null($entity)) {
+        if (null === $entity) {
             throw new \InvalidArgumentException("Permit can only be determined of an existing entity, null given");
         }
 
-        return $this->getAdminService()->contactHasPermit(
-            $contact,
-            $role,
-            str_replace('doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_entity_name'))),
-            $entity->getId()
+        $entityName = str_replace(
+            'doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_entity_name'))
         );
+
+        /** @var \Admin\Repository\Permit\Contact $repository */
+        $repository = $this->entityManager->getRepository(\Admin\Entity\Permit\Contact::class);
+
+        return $repository->contactHasPermit($contact, $role, $entityName, (int)$entity->getId());
     }
 
     /**
      * @param Selection $selection
-     * @param bool $toArray
+     * @param bool      $toArray
      *
      * @return Contact[]
+     * @deprecated Replaced by new fucntion in SelectionContactService
      */
     public function findContactsInSelection(Selection $selection, $toArray = false): array
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
@@ -859,7 +873,7 @@ class ContactService extends ServiceAbstract
     public function findFacebookByContact(Contact $contact): array
     {
         /** @var \Contact\Repository\Facebook $repository */
-        $repository = $this->getEntityManager()->getRepository(Facebook::class);
+        $repository = $this->entityManager->getRepository(Facebook::class);
 
         return $repository->findFacebookByContact($contact);
     }
@@ -873,7 +887,7 @@ class ContactService extends ServiceAbstract
     {
 
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         /*
          * This function has a special feature to fill the array with contacts.
@@ -908,7 +922,7 @@ class ContactService extends ServiceAbstract
      *
      * @return string
      */
-    private function facebookTitleParser($titleGetter, Contact $contact):?string
+    private function facebookTitleParser($titleGetter, Contact $contact): ?string
     {
         if (empty($titleGetter)) {
             return '';
@@ -917,7 +931,7 @@ class ContactService extends ServiceAbstract
         //Format the $getter
         switch ((int)$titleGetter) {
             case Facebook::DISPLAY_ORGANISATION:
-                if (\is_null($contact->getContactOrganisation())) {
+                if (null === $contact->getContactOrganisation()) {
                     return 'Unknown';
                 }
 
@@ -938,7 +952,10 @@ class ContactService extends ServiceAbstract
                  */
                 $projectLink = $this->getServiceLocator()->get('ViewHelperManager')->get('projectLink');
 
-                foreach ($this->getProjectService()->findProjectsByProjectContact($contact) as $project) {
+                /** @var \Project\Repository\Project $repository */
+                $repository = $this->entityManager->getRepository(Project::class);
+
+                foreach ($repository->findProjectsByProjectContact($contact) as $project) {
                     $projects[] = $projectLink($project, 'view', 'name-without-number');
                 }
 
@@ -955,7 +972,7 @@ class ContactService extends ServiceAbstract
      * Update the password for a contact. Check with the current password when given
      * New accounts have no password so this check is not always needed.
      *
-     * @param string $password
+     * @param string  $password
      * @param Contact $contact
      */
     public function updatePasswordForContact(
@@ -981,7 +998,7 @@ class ContactService extends ServiceAbstract
      * $contactOrganisation['country'] > CountryId
      *
      * @param Contact $contact
-     * @param array $contactOrganisation
+     * @param array   $contactOrganisation
      */
     public function updateContactOrganisation(
         Contact $contact,
@@ -1084,8 +1101,8 @@ class ContactService extends ServiceAbstract
 
 
     /**
-     * @param int $optInId
-     * @param bool $enable
+     * @param int     $optInId
+     * @param bool    $enable
      * @param Contact $contact
      */
     public function updateOptInForContact(
@@ -1106,18 +1123,19 @@ class ContactService extends ServiceAbstract
 
     /**
      * @param OptIn $optIn
+     *
      * @return array|Contact[]
      */
     public function findContactsByOptInAsArray(OptIn $optIn): array
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactsByOptIn($optIn, true);
     }
 
     /**
-     * @param int $optInId
+     * @param int     $optInId
      * @param Contact $contact
      *
      * @return bool
@@ -1146,7 +1164,7 @@ class ContactService extends ServiceAbstract
     public function searchContacts($searchItem): array
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->searchContacts($searchItem);
     }
@@ -1297,7 +1315,7 @@ class ContactService extends ServiceAbstract
         }
 
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findPossibleContactByCalendar($calendar);
     }
@@ -1310,7 +1328,7 @@ class ContactService extends ServiceAbstract
     public function findContactsInOrganisation(Organisation $organisation): array
     {
         /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->getEntityManager()->getRepository(Contact::class);
+        $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactsInOrganisation($organisation);
     }

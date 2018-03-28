@@ -57,10 +57,6 @@ final class ContactServiceFactory implements FactoryInterface
         $adminService = $container->get(AdminService::class);
         $contactService->setAdminService($adminService);
 
-        /** @var ProjectService $projectService */
-        $projectService = $container->get(ProjectService::class);
-        $contactService->setProjectService($projectService);
-
         /** @var OrganisationService $organisationService */
         $organisationService = $container->get(OrganisationService::class);
         $contactService->setOrganisationService($organisationService);

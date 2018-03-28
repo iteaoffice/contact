@@ -1,5 +1,9 @@
 <h2>{{ translate("txt-contact-details") }}</h2>
 
+<div class="pull-right">
+    {{ contactPhoto(contact, 150, false, true) }}
+</div>
+
 <dl class="dl-horizontal">
     <dt>{{ translate("txt-first-name") }}</dt>
     <dd>{{ contact.firstName }}</dd>

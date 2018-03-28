@@ -330,7 +330,7 @@ class ContactAdminController extends ContactAbstractController
             $data = $form->getData();
 
             /** @var Target $target */
-            $target = $this->getDeeplinkService()->findEntityById(Target::class, $data['target']);
+            $target = $this->deeplinkService->find(Target::class, (int) $data['target']);
             $key = (!empty($data['key']) ? $data['key'] : null);
             //Create a deeplink for the user which redirects to the profile-page
             $deeplink = $this->getDeeplinkService()->createDeeplink($target, $contact, null, $key);

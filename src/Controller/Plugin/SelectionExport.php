@@ -122,15 +122,13 @@ class SelectionExport extends AbstractPlugin
 
         fputcsv(
             $fh,
-            array_merge(
-                [
-                    'Email',
-                    'First name',
-                    'Last name',
-                    'Organisation',
-                    'Country'
-                ]
-            )
+            [
+                'Email',
+                'First name',
+                'Last name',
+                'Organisation',
+                'Country'
+            ]
         );
 
         foreach ($this->contactService->findContactsInSelection($this->selection, true) as $contact) {
@@ -227,7 +225,7 @@ class SelectionExport extends AbstractPlugin
                 null === $contactAddress ? '' : $contactAddress->getZipCode(),
                 null === $contactAddress ? '' : $contactAddress->getCity(),
                 null === $contactAddress ? '' : $contactAddress->getCountry()->getCountry()
-                ];
+            ];
 
             $column = 'A';
             foreach ($contactRow as $item) {
@@ -240,6 +238,16 @@ class SelectionExport extends AbstractPlugin
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $translate
+     *
+     * @return string
+     */
+    public function translate(string $translate): string
+    {
+        return $this->translator->translate($translate);
     }
 
     /**
@@ -329,15 +337,5 @@ class SelectionExport extends AbstractPlugin
         $response->setHeaders($headers);
 
         return $response;
-    }
-
-    /**
-     * @param string $translate
-     *
-     * @return string
-     */
-    public function translate(string $translate): string
-    {
-        return $this->translator->translate($translate);
     }
 }
