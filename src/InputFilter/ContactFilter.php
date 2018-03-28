@@ -19,12 +19,9 @@ use Organisation\Entity\Organisation;
 use Zend\InputFilter\InputFilter;
 
 /**
- * ITEA Office all rights reserved
+ * Class ContactFilter
  *
- * @category    Contact
- *
- * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @package Contact\InputFilter
  */
 class ContactFilter extends InputFilter
 {
