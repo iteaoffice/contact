@@ -831,7 +831,9 @@ class ContactService extends ServiceAbstract
         }
 
         $entityName = str_replace(
-            'doctrineormmodule_proxy___cg___', '', strtolower($entity->get('underscore_entity_name'))
+            'doctrineormmodule_proxy___cg___',
+            '',
+            strtolower($entity->get('underscore_entity_name'))
         );
 
         /** @var \Admin\Repository\Permit\Contact $repository */

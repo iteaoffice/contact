@@ -260,7 +260,6 @@ class Contact extends EntityRepository
             if ($filter['order'] === 'contact_entity_contact.id') {
                 $filter['order'] = 'contact_entity_contact.lastName';
             }
-
         }
 
         if (array_key_exists('options', $filter)) {

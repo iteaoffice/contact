@@ -225,7 +225,7 @@ class SelectionExport extends AbstractPlugin
                 null === $contactAddress ? '' : $contactAddress->getZipCode(),
                 null === $contactAddress ? '' : $contactAddress->getCity(),
                 null === $contactAddress ? '' : $contactAddress->getCountry()->getCountry()
-            ];
+                ];
 
             $column = 'A';
             foreach ($contactRow as $item) {
