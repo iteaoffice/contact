@@ -278,7 +278,7 @@ class ContactService extends ServiceAbstract
      */
     public function hasOrganisation(Contact $contact): bool
     {
-        return !\is_null($contact->getContactOrganisation());
+        return null !== $contact->getContactOrganisation();
     }
 
     /**
@@ -467,8 +467,8 @@ class ContactService extends ServiceAbstract
 
         $contact->setLastName($lastName);
         //Fix the gender
-        $contact->setGender($this->getGeneralService()->findEntityById(Gender::class, Gender::GENDER_UNKNOWN));
-        $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
+        $contact->setGender($this->getGeneralService()->find(Gender::class, Gender::GENDER_UNKNOWN));
+        $contact->setTitle($this->getGeneralService()->find(Title::class, Title::TITLE_UNKNOWN));
         /*
          * Include all the optIns
          */
@@ -523,8 +523,8 @@ class ContactService extends ServiceAbstract
             $contact->setLastName($lastName);
         }
         //Fix the gender
-        $contact->setGender($this->getGeneralService()->findEntityById(Gender::class, Gender::GENDER_UNKNOWN));
-        $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
+        $contact->setGender($this->generalService->find(Gender::class, Gender::GENDER_UNKNOWN));
+        $contact->setTitle($this->generalService->find(Title::class, Title::TITLE_UNKNOWN));
         /*
          * Include all the optIns
          */
@@ -664,16 +664,16 @@ class ContactService extends ServiceAbstract
      * @return bool
      * @deprecated Replaced by new function in SelectionContactService
      */
-    public function contactInSelection(Contact $contact, $selections)
+    public function contactInSelection(Contact $contact, $selections): bool
     {
-        if (!is_array($selections) && !$selections instanceof PersistentCollection) {
+        if (!\is_array($selections) && !$selections instanceof PersistentCollection) {
             $selections = [$selections];
         }
         foreach ($selections as $selection) {
             if (!$selection instanceof Selection) {
                 throw new \InvalidArgumentException("Selection should be instance of Selection");
             }
-            if (\is_null($selection->getId())) {
+            if (null === $selection->getId()) {
                 throw new \InvalidArgumentException("The given selection cannot be empty");
             }
             if ($this->findContactInSelection($contact, $selection)) {
@@ -768,7 +768,7 @@ class ContactService extends ServiceAbstract
             }
         }
         /*
-         * Add the workpackage leaders
+         * Add the work package leaders
          */
         foreach ($project->getWorkpackage() as $workpackage) {
             $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();
@@ -779,6 +779,13 @@ class ContactService extends ServiceAbstract
          */
         foreach ($project->getRationale() as $rationale) {
             $contacts[$rationale->getContact()->getId()] = $rationale->getContact();
+        }
+
+        /*
+         * Add the proxy project leaders
+         */
+        foreach ($project->getProxyContact() as $contact) {
+            $contacts[$contact->getId()] = $contact;
         }
 
         return $contacts;
@@ -847,7 +854,7 @@ class ContactService extends ServiceAbstract
      * @param bool      $toArray
      *
      * @return Contact[]
-     * @deprecated Replaced by new fucntion in SelectionContactService
+     * @deprecated Replaced by new function in SelectionContactService
      */
     public function findContactsInSelection(Selection $selection, $toArray = false): array
     {
@@ -857,7 +864,7 @@ class ContactService extends ServiceAbstract
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */
-        if (!\is_null($selection->getSql())) {
+        if (null !== $selection->getSql()) {
             //We have a dynamic query, check if the contact is in the selection
             return $repository->findContactsBySelectionSQL($selection->getSql(), $toArray);
         }
@@ -1040,7 +1047,7 @@ class ContactService extends ServiceAbstract
             if (empty($contactOrganisation['organisation'])) {
                 return;
             }
-            $country = $this->getGeneralService()->findEntityById(Country::class, (int)$contactOrganisation['country']);
+            $country = $this->generalService->find(Country::class, (int)$contactOrganisation['country']);
 
             /*
              * Look for the organisation based on the name (without branch) and country + email
@@ -1265,9 +1272,8 @@ class ContactService extends ServiceAbstract
         /*
          * Add the financial contact
          */
-        if (!\is_null($affiliation->getFinancial())) {
-            $contacts[$affiliation->getFinancial()->getContact()->getId()] = $affiliation->getFinancial()
-                ->getContact();
+        if (null !== $affiliation->getFinancial()) {
+            $contacts[$affiliation->getFinancial()->getContact()->getId()] = $affiliation->getFinancial()->getContact();
             $contactRole[$affiliation->getFinancial()->getContact()->getId()][] = 'Financial Contact';
         }
 
@@ -1283,24 +1289,64 @@ class ContactService extends ServiceAbstract
         }
 
         /*
-         * Add the workpackage leaders
+         * Add the project leader
+         */
+        if ($this->contactIsFromOrganisation(
+            $affiliation->getProject()->getContact(), $affiliation->getOrganisation()
+        )
+        ) {
+            $contacts[$affiliation->getProject()->getContact()->getId()] = $affiliation->getProject()->getContact();
+            $contactRole[$affiliation->getProject()->getContact()->getId()][] = 'Project leader';
+        }
+
+        /*
+         * Add the project leader (proxy)
+         */
+        foreach ($affiliation->getProject()->getProxyContact() as $proxyContact) {
+            /*
+             * Add the work package leaders
+             */
+            if ($this->contactIsFromOrganisation($proxyContact, $affiliation->getOrganisation())) {
+                $contacts[$proxyContact->getId()] = $proxyContact;
+                $contactRole[$proxyContact->getId()][] = 'Project leader (proxy)';
+            }
+        }
+
+
+        /*
+         * Add the work package leaders
          */
         foreach ($affiliation->getProject()->getWorkpackage() as $workpackage) {
             /*
              * Add the work package leaders
              */
-            if (!\is_null($workpackage->getContact()->getContactOrganisation())
-                && $workpackage->getContact()->getContactOrganisation()->getOrganisation()->getId()
-                === $affiliation->getOrganisation()->getId()
-            ) {
+            if ($this->contactIsFromOrganisation($workpackage->getContact(), $affiliation->getOrganisation())) {
                 $contacts[$workpackage->getContact()->getId()] = $workpackage->getContact();
-                $contactRole[$workpackage->getContact()->getId()][] = 'Workpackage leader';
+                $contactRole[$workpackage->getContact()->getId()][] = 'Work package leader';
             }
         }
+
 
         $contactRole = array_map('array_unique', $contactRole);
 
         return ['contacts' => $contacts, 'contactRole' => $contactRole];
+    }
+
+    /**
+     * Small helper function which checks if an contact is member of an organisation. It does all the default checks
+     *
+     * @param Contact      $contact
+     * @param Organisation $organisation
+     *
+     * @return bool
+     */
+    private function contactIsFromOrganisation(Contact $contact, Organisation $organisation): bool
+    {
+        if (null === $contact->getContactOrganisation()) {
+            return false;
+        }
+
+        return $contact->getContactOrganisation()->getOrganisation() === $organisation;
     }
 
     /**

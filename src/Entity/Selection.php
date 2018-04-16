@@ -158,13 +158,6 @@ class Selection extends EntityAbstract
      */
     private $selectionContact;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionMailinglist", cascade={"persist"}, mappedBy="selection")
-     * @Annotation\Exclude()
-     *
-     * @var \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection
-     */
-    private $mailingList;
-    /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\SelectionSql", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
@@ -216,7 +209,6 @@ class Selection extends EntityAbstract
         $this->personal = self::NOT_PERSONAL;
 
         $this->selectionContact = new Collections\ArrayCollection();
-        $this->mailingList = new Collections\ArrayCollection();
         $this->mailing = new Collections\ArrayCollection();
         $this->meeting = new Collections\ArrayCollection();
         $this->meetingOptionCost = new Collections\ArrayCollection();
@@ -227,7 +219,7 @@ class Selection extends EntityAbstract
     /**
      * @return array
      */
-    public static function getPersonalTemplates()
+    public static function getPersonalTemplates(): array
     {
         return self::$personalTemplates;
     }
@@ -235,7 +227,7 @@ class Selection extends EntityAbstract
     /**
      * @return array
      */
-    public static function getPrivateTemplates()
+    public static function getPrivateTemplates(): array
     {
         return self::$privateTemplates;
     }

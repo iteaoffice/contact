@@ -73,8 +73,8 @@ class SelectionExport extends AbstractPlugin
     /**
      * SelectionExport constructor.
      *
-     * @param ContactService      $contactService
-     * @param AddressService      $addressService
+     * @param ContactService $contactService
+     * @param AddressService $addressService
      * @param TranslatorInterface $translator
      */
     public function __construct(
@@ -180,6 +180,7 @@ class SelectionExport extends AbstractPlugin
             'Direct phone',
             'Mobile phone',
             'Organisation',
+            'Organisation Type',
             'Organisation Country',
             'Organisation Country (iso3)',
             'Address',
@@ -219,13 +220,15 @@ class SelectionExport extends AbstractPlugin
                 $this->contactService->getDirectPhone($contact),
                 $this->contactService->getMobilePhone($contact),
                 $this->contactService->parseOrganisation($contact),
-                $country,
+                null === $contact->getContactOrganisation() ? ''
+                    : $contact->getContactOrganisation()->getOrganisation()->getType()->getType(),
+                null === $country ? '' : $country->getCountry(),
                 null === $country ? '' : $country->getIso3(),
                 null === $contactAddress ? '' : $contactAddress->getAddress(),
                 null === $contactAddress ? '' : $contactAddress->getZipCode(),
                 null === $contactAddress ? '' : $contactAddress->getCity(),
                 null === $contactAddress ? '' : $contactAddress->getCountry()->getCountry()
-                ];
+            ];
 
             $column = 'A';
             foreach ($contactRow as $item) {

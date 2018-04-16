@@ -240,6 +240,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $project;
     /**
+     * @ORM\ManyToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="proxyContact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Project[]|Collections\ArrayCollection
+     */
+    private $proxyProject;
+    /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Rationale", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Rationale[]|Collections\ArrayCollection
@@ -312,12 +318,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $ndaApprover;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\RoadmapLog", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Program\Entity\RoadmapLog|Collections\ArrayCollection
-     */
-    private $roadmapLog;
-    /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Program\Entity\Doa|Collections\ArrayCollection
@@ -352,11 +352,28 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $domain;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactClosed")
      * @Annotation\Exclude()
      * @var \Project\Entity\Action[]|Collections\ArrayCollection
+     *
+     * This is the user (typically someone of the office who has closed the action
      */
-    private $action;
+    private $actionClosed;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactStatus")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Action[]|Collections\ArrayCollection
+     *
+     * This is the user (typically the PL) which has updated the status of the action
+     */
+    private $actionStatus;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Action\Comment", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Action\Comment[]|Collections\ArrayCollection
+     */
+    private $actionComment;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -621,12 +638,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $calendarDocument;
     /**
-     * @ORM\OneToMany(targetEntity="Calendar\Entity\ScheduleContact", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Calendar\Entity\ScheduleContact[]|Collections\ArrayCollection
-     */
-    private $scheduleContact;
-    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Review\Review[]|Collections\ArrayCollection
@@ -833,6 +844,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $projectLog;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Changelog", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Changelog[]|Collections\ArrayCollection
+     */
+    private $projectChangelog;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Process", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
@@ -901,7 +919,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->projectReportEffortSpent = new Collections\ArrayCollection();
         $this->projectDocument = new Collections\ArrayCollection();
         $this->web = new Collections\ArrayCollection();
-        $this->roadmapLog = new Collections\ArrayCollection();
         $this->address = new Collections\ArrayCollection();
         $this->phone = new Collections\ArrayCollection();
         $this->emailAddress = new Collections\ArrayCollection();
@@ -919,8 +936,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->affiliationLog = new Collections\ArrayCollection();
         $this->affiliationDescription = new Collections\ArrayCollection();
         $this->projectLog = new Collections\ArrayCollection();
+        $this->projectChangelog = new Collections\ArrayCollection();
         $this->affiliation = new Collections\ArrayCollection();
-        $this->action = new Collections\ArrayCollection();
+        $this->actionClosed = new Collections\ArrayCollection();
+        $this->actionStatus = new Collections\ArrayCollection();
+        $this->actionComment = new Collections\ArrayCollection();
         $this->parent = new Collections\ArrayCollection();
         $this->parentFinancial = new Collections\ArrayCollection();
         $this->parentOrganisation = new Collections\ArrayCollection();
@@ -956,7 +976,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->calendarContact = new Collections\ArrayCollection();
         $this->calendarDocument = new Collections\ArrayCollection();
         $this->calendar = new Collections\ArrayCollection();
-        $this->scheduleContact = new Collections\ArrayCollection();
+        $this->proxyProject = new Collections\ArrayCollection();
         $this->projectReview = new Collections\ArrayCollection();
         $this->projectVersionReview = new Collections\ArrayCollection();
         $this->projectReport = new Collections\ArrayCollection();
@@ -1919,19 +1939,58 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return Collections\ArrayCollection|\Project\Entity\Action[]
      */
-    public function getAction()
+    public function getActionClosed()
     {
-        return $this->action;
+        return $this->actionClosed;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Action[] $action
+     * @param Collections\ArrayCollection|\Project\Entity\Action[] $actionClosed
      *
      * @return Contact
      */
-    public function setAction($action): Contact
+    public function setActionClosed($actionClosed): Contact
     {
-        $this->action = $action;
+        $this->actionClosed = $actionClosed;
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Action[]
+     */
+    public function getActionStatus()
+    {
+        return $this->actionStatus;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Action[] $actionStatus
+     *
+     * @return Contact
+     */
+    public function setActionStatus($actionStatus): Contact
+    {
+        $this->actionStatus = $actionStatus;
+        return $this;
+    }
+
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Action\Comment[]
+     */
+    public function getActionComment()
+    {
+        return $this->actionComment;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Action\Comment[] $actionComment
+     *
+     * @return Contact
+     */
+    public function setActionComment($actionComment)
+    {
+        $this->actionComment = $actionComment;
 
         return $this;
     }
@@ -2012,26 +2071,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setNdaApprover($ndaApprover): Contact
     {
         $this->ndaApprover = $ndaApprover;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Program\Entity\RoadmapLog
-     */
-    public function getRoadmapLog()
-    {
-        return $this->roadmapLog;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection|\Program\Entity\RoadmapLog $roadmapLog
-     *
-     * @return Contact
-     */
-    public function setRoadmapLog($roadmapLog): Contact
-    {
-        $this->roadmapLog = $roadmapLog;
 
         return $this;
     }
@@ -2900,26 +2939,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Calendar\Entity\ScheduleContact|Collections\ArrayCollection
-     */
-    public function getScheduleContact()
-    {
-        return $this->scheduleContact;
-    }
-
-    /**
-     * @param  \Calendar\Entity\ScheduleContact|Collections\ArrayCollection $scheduleContact
-     *
-     * @return Contact
-     */
-    public function setScheduleContact($scheduleContact): Contact
-    {
-        $this->scheduleContact = $scheduleContact;
-
-        return $this;
-    }
-
-    /**
      * @return Collections\ArrayCollection|\Project\Entity\Review\Review
      */
     public function getProjectReview()
@@ -3580,6 +3599,26 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
+     * @return Collections\ArrayCollection
+     */
+    public function getProjectChangelog()
+    {
+        return $this->projectChangelog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection $projectChangelog
+     *
+     * @return Contact
+     */
+    public function setProjectChangelog(Collections\ArrayCollection $projectChangelog): Contact
+    {
+        $this->projectChangelog = $projectChangelog;
+
+        return $this;
+    }
+
+    /**
      * @return Collections\ArrayCollection|\Project\Entity\Report\Item[]
      */
     public function getProjectReportItem()
@@ -3898,4 +3937,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
 
         return $this;
     }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Project[]
+     */
+    public function getProxyProject()
+    {
+        return $this->proxyProject;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Project[] $proxyProject
+     *
+     * @return Contact
+     */
+    public function setProxyProject($proxyProject): Contact
+    {
+        $this->proxyProject = $proxyProject;
+        return $this;
+    }
+
+
 }

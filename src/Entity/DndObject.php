@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @category    Contact
  */
-class DndObject //extends EntityAbstract implements ResourceInterface
+class DndObject extends EntityAbstract
 {
     /**
      * @var integer
@@ -47,6 +47,35 @@ class DndObject //extends EntityAbstract implements ResourceInterface
      * @var \Contact\Entity\Dnd;
      */
     private $dnd;
+
+    /**
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        return $this->$property;
+    }
+
+    /**
+     * @param $property
+     * @param $value
+     */
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
+
+    /**
+     * @param $property
+     *
+     * @return bool
+     */
+    public function __isset($property): bool
+    {
+        return isset($this->$property);
+    }
 
     /**
      * @return \Contact\Entity\Dnd

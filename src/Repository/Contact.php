@@ -608,6 +608,12 @@ class Contact extends EntityRepository
             'organisation'
         );
         $resultSetMap->addJoinedEntityResult(
+            'Organisation\Entity\Type',
+            'organisation_type',
+            'organisation',
+            'type'
+        );
+        $resultSetMap->addJoinedEntityResult(
             'General\Entity\Country',
             'country',
             'organisation',
@@ -619,11 +625,15 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('contact', 'firstname', 'firstName');
         $resultSetMap->addFieldResult('contact', 'middlename', 'middleName');
         $resultSetMap->addFieldResult('contact', 'lastname', 'lastName');
+        $resultSetMap->addFieldResult('contact', 'department', 'department');
         $resultSetMap->addFieldResult('contact_organisation', 'contact_organisation_id', 'id');
         $resultSetMap->addFieldResult('organisation', 'organisation_id', 'id');
         $resultSetMap->addFieldResult('organisation', 'organisation', 'organisation');
+        $resultSetMap->addFieldResult('organisation_type', 'type_id', 'id');
+        $resultSetMap->addFieldResult('organisation_type', 'type', 'type');
         $resultSetMap->addFieldResult('country', 'country_id', 'id');
         $resultSetMap->addFieldResult('country', 'iso3', 'iso3');
+        $resultSetMap->addFieldResult('country', 'country', 'country');
 
 
         $query = $this->getEntityManager()->createNativeQuery(
@@ -636,11 +646,15 @@ class Contact extends EntityRepository
                       contact_organisation.contact_organisation_id, 
                       organisation.organisation_id,
                       organisation.organisation,
+                      organisation_type.type_id,
+                      organisation_type.type,
                       country.country_id,
+                      country.country,
                       country.iso3
                 FROM contact
                 LEFT JOIN contact_organisation ON contact_organisation.contact_id = contact.contact_id
                 LEFT JOIN organisation ON contact_organisation.organisation_id = organisation.organisation_id
+                LEFT JOIN organisation_type ON organisation.type_id = organisation_type.type_id
                 LEFT JOIN country ON organisation.country_id = country.country_id
             WHERE contact.contact_id IN (" . $sql->getQuery()
             . ") AND date_end IS NULL ORDER BY lastName",

@@ -22,9 +22,7 @@ use Zend\View\Model\ViewModel;
 class AddressManagerController extends ContactAbstractController
 {
     /**
-     * Create a new address.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function newAction()
     {
@@ -70,9 +68,7 @@ class AddressManagerController extends ContactAbstractController
     }
 
     /**
-     * Edit an address by finding it and call the corresponding form.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @return \Zend\Http\Response|ViewModel
      */
     public function editAction()
     {

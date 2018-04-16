@@ -33,14 +33,10 @@ class ImageController extends ContactAbstractController
         /** @var Response $response */
         $response = $this->getResponse();
 
-        $id = $this->params('id');
-        if (\is_null($id)) {
-            return $response;
-        }
         /** @var Photo $photo */
-        $photo = $this->getOrganisationService()->findEntityById(Photo::class, $id);
+        $photo = $this->getOrganisationService()->findEntityById(Photo::class, (int)$this->params('id'));
 
-        if (\is_null($photo)) {
+        if (null === $photo) {
             return $response;
         }
 

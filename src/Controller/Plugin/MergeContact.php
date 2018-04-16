@@ -312,13 +312,6 @@ class MergeContact extends AbstractPlugin
                 $source->getNdaApprover()->remove($key);
             }
 
-            // Transfer roadmap log (no matching)
-            foreach ($source->getRoadmapLog() as $key => $log) {
-                $log->setContact($target);
-                $target->getRoadmapLog()->add($log);
-                $source->getRoadmapLog()->remove($key);
-            }
-
             // Transfer program doa (no matching)
             foreach ($source->getProgramDoa() as $key => $doa) {
                 $doa->setContact($target);
@@ -715,13 +708,6 @@ class MergeContact extends AbstractPlugin
                 $calendarDocument->setContact($target);
                 $target->getCalendarDocument()->add($calendarDocument);
                 $source->getCalendarDocument()->remove($key);
-            }
-
-            // Transfer schedule contacts (no matching)
-            foreach ($source->getScheduleContact() as $key => $scheduleContact) {
-                $scheduleContact->setContact($target);
-                $target->getScheduleContact()->add($scheduleContact);
-                $source->getScheduleContact()->remove($key);
             }
 
             // Transfer project reviewers (no matching)

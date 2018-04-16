@@ -29,6 +29,7 @@ use Organisation\Entity\Organisation;
 use Organisation\Entity\Type;
 use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
+use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Validator\EmailAddress;
@@ -86,11 +87,11 @@ class HandleImport extends AbstractPlugin
     protected $serviceLocator;
 
     /**
-     * @param                $data
+     * @param       $data
      * @param array $import
-     * @param []           $includeOptIn
-     * @param null $selectionId
-     * @param null $selectionName
+     * @param array $includeOptIn
+     * @param null  $selectionId
+     * @param null  $selectionName
      *
      * @return $this
      */
@@ -114,7 +115,7 @@ class HandleImport extends AbstractPlugin
         if (!$this->hasErrors()) {
             $this->prepareContent();
 
-            if (\count($import) > 0) {
+            if (\is_array($import) && \count($import) > 0) {
                 $this->importContacts($import);
             }
         }
@@ -127,40 +128,39 @@ class HandleImport extends AbstractPlugin
      *
      * @param $data
      */
-    private function setData($data)
+    private function setData($data): void
     {
         $data = utf8_encode($data);
 
         //Explode first on the \n to have the different rows
-        $data = explode(PHP_EOL, $data);
+        $data = \explode(PHP_EOL, $data);
 
         /*
          * Correct first the delimiter, normally a ; but it can be a ;
          */
-        if (strpos($data[0], ';') !== false) {
+        if (\strpos($data[0], ';') !== false) {
             $this->delimiter = "\t";
         }
 
-        $this->header = explode($this->delimiter, $data[0]);
+        $this->header = \explode($this->delimiter, $data[0]);
 
         //Trim all the elements
-        $this->header = array_map('trim', $this->header);
-
+        $this->header = \array_map('trim', $this->header);
         /*
          * Go over the rest of the data and add the rows to the array
          */
         $amount = count($data);
         for ($i = 1; $i < $amount; $i++) {
-            $row = explode($this->delimiter, $data[$i]);
+            $row = \explode($this->delimiter, $data[$i]);
 
             if (\count($row) === count($this->header)) {
                 //Trim all the elements
-                $row = array_map('trim', $row);
+                $row = \array_map('trim', $row);
 
                 $this->content[] = $row;
             } else {
                 $this->warnings[] = sprintf(
-                    "Row %s has been skipped, does not contain %s elements but %s",
+                    'Row %s has been skipped, does not contain %s elements but %s',
                     $i + 1,
                     count($this->header),
                     count($row)
@@ -227,7 +227,7 @@ class HandleImport extends AbstractPlugin
              */
             if (!empty($this->headerKeys['country'])) {
                 $country = $this->getGeneralService()->findCountryByName($content[$this->headerKeys['country']]);
-                if (\is_null($country)) {
+                if (null === $country) {
                     $this->warnings[] = sprintf(
                         "Country (%s) in row %s cannot be found",
                         $content[$this->headerKeys['country']],
@@ -282,7 +282,7 @@ class HandleImport extends AbstractPlugin
      *
      * @return null
      */
-    private function setSelectionFromFromData($selectionId, $selectionName)
+    private function setSelectionFromFromData($selectionId, $selectionName): void
     {
         if (empty($selectionId) && empty($selectionName)) {
             return null;
@@ -291,7 +291,7 @@ class HandleImport extends AbstractPlugin
         /** Parse the $selectionId if not empty */
         if (!empty($selectionId)) {
             $selection = $this->getSelectionService()->findSelectionById($selectionId);
-            if (!\is_null($selection)) {
+            if (null !== $selection) {
                 $this->setSelection($selection);
             }
         }
@@ -299,10 +299,7 @@ class HandleImport extends AbstractPlugin
         if (!empty($selectionName)) {
             $selection = new Selection();
             $selection->setSelection($selectionName);
-            $selection->setContact(
-                $this->getServiceLocator()->get('Application\Authentication\Service')
-                    ->getIdentity()
-            );
+            $selection->setContact($this->getServiceLocator()->get(AuthenticationService::class)->getIdentity());
 
             $this->getContactService()->newEntity($selection);
             $this->setSelection($selection);
@@ -312,7 +309,7 @@ class HandleImport extends AbstractPlugin
     /**
      * @return SelectionService
      */
-    public function getSelectionService()
+    public function getSelectionService(): SelectionService
     {
         return $this->getServiceLocator()->get(SelectionService::class);
     }
@@ -320,7 +317,7 @@ class HandleImport extends AbstractPlugin
     /**
      * @return ContactService
      */
-    public function getContactService()
+    public function getContactService(): ContactService
     {
         return $this->getServiceLocator()->get(ContactService::class);
     }
@@ -330,11 +327,11 @@ class HandleImport extends AbstractPlugin
      *
      * @return null
      */
-    private function setOptInFromFormData($includeOptIn)
+    private function setOptInFromFormData($includeOptIn): void
     {
         foreach ($includeOptIn as $optInId) {
             $optIn = $this->getContactService()->findEntityById(OptIn::class, $optInId);
-            if (!\is_null($optIn)) {
+            if (null !== $optIn) {
                 $this->optIn[] = $optIn;
             }
         }
@@ -343,9 +340,9 @@ class HandleImport extends AbstractPlugin
     /**
      * @return bool
      */
-    public function hasErrors()
+    public function hasErrors():bool
     {
-        return count($this->errors) > 0;
+        return \count($this->errors) > 0;
     }
 
     /**
@@ -357,7 +354,7 @@ class HandleImport extends AbstractPlugin
             //See first if the contact can be found
             $contact = $this->getContactService()->findContactByEmail($content[$this->headerKeys['email']]);
 
-            if (!\is_null($contact)) {
+            if (null !== $contact) {
                 $contact->key = $key;
                 $this->contacts[] = $contact;
                 continue;
@@ -395,22 +392,22 @@ class HandleImport extends AbstractPlugin
                 $contact->setGender($gender);
             }
 
-            if (!\is_null($gender)) {
-                $contact->setGender($gender);
-            } else {
-                $contact->setGender($this->getGeneralService()->findEntityById(Gender::class, Gender::GENDER_UNKNOWN));
+            if (null === $gender) {
+                $gender = $this->getGeneralService()->find(Gender::class, Gender::GENDER_UNKNOWN);
             }
+
+            $contact->setGender($gender);
 
             if (isset($this->headerKeys['title']) && !empty($content[$this->headerKeys['title']])) {
                 $title = $this->getGeneralService()->findTitleByTitle($content[$this->headerKeys['title']]);
                 $contact->setTitle($title);
             }
 
-            if (!\is_null($title)) {
-                $contact->setTitle($title);
-            } else {
-                $contact->setTitle($this->getGeneralService()->findEntityById(Title::class, Title::TITLE_UNKNOWN));
+            if (null === $title) {
+                $title = $this->getGeneralService()->find(Title::class, Title::TITLE_UNKNOWN);
             }
+
+            $contact->setTitle($title);
 
             if (isset($this->headerKeys['phone']) && !empty($content[$this->headerKeys['phone']])) {
                 $contact->setPosition($content[$this->headerKeys['phone']]);
@@ -455,8 +452,9 @@ class HandleImport extends AbstractPlugin
             }
 
             if (\is_null($organisation) && !\is_null($country) && !\is_null($organisationName)) {
-                $organisation = $this->getOrganisationService()
-                    ->findOrganisationByNameCountry($organisationName, $country);
+                $organisation = $this->getOrganisationService()->findOrganisationByNameCountry(
+                    $organisationName, $country
+                );
             }
 
             //If the organisation does not exist, create it
@@ -499,7 +497,7 @@ class HandleImport extends AbstractPlugin
             /**
              * If an organisation is found, add it to the contact
              */
-            if (!\is_null($organisation)) {
+            if (null !== $organisation) {
                 $contactOrganisation = new ContactOrganisation();
                 $contactOrganisation->setOrganisation($organisation);
                 $contactOrganisation->setContact($contact);
@@ -519,7 +517,7 @@ class HandleImport extends AbstractPlugin
     {
         foreach ($this->contacts as $key => $contact) {
             if (\in_array($key, $import)) {
-                if (\is_null($contact->getId())) {
+                if (null === $contact->getId()) {
                     $contact = $this->getContactService()->newEntity($contact);
                 }
 
@@ -530,7 +528,7 @@ class HandleImport extends AbstractPlugin
                 }
                 $contact->addOptIn($contactOptIn);
 
-                if (!$this->getContactService()->contactInSelection($contact, $this->getSelection())) {
+                if (!$this->getContactService()->contactInSelection($contact, [$this->getSelection()])) {
                     $selectionContact = new SelectionContact();
                     $selectionContact->setSelection($this->getSelection());
                     $selectionContact->setContact($contact);

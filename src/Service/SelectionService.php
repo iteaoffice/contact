@@ -66,7 +66,7 @@ class SelectionService extends ServiceAbstract
      */
     public function isSql(Entity\Selection $selection): bool
     {
-        return !\is_null($selection->getSql());
+        return null !== $selection->getSql();
     }
 
     /**
@@ -131,7 +131,7 @@ class SelectionService extends ServiceAbstract
 
     /**
      * @param Entity\Selection $selection
-     * @param array $data
+     * @param array            $data
      *
      * array (size=5)
      * 'type' => string '2' (length=1)
@@ -186,7 +186,7 @@ class SelectionService extends ServiceAbstract
 
     /**
      * @param Entity\Selection $selection
-     * @param Entity\Contact $contact
+     * @param Entity\Contact   $contact
      */
     public function addContactToSelection(Entity\Selection $selection, Entity\Contact $contact): void
     {

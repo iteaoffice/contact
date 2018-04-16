@@ -20,7 +20,6 @@ use Affiliation\Entity\Financial;
 use Affiliation\Entity\Loi;
 use Affiliation\Entity\LoiReminder;
 use Calendar\Entity\Calendar;
-use Calendar\Entity\ScheduleContact;
 use Contact\Controller\ContactAdminController;
 use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Address;
@@ -256,9 +255,6 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getNdaApprover()->count());
         $this->assertSame(3, $this->target->getNdaApprover()->first()->getId());
 
-        $this->assertSame(1, $this->target->getRoadmapLog()->count());
-        $this->assertSame(1, $this->target->getRoadmapLog()->first()->getId());
-
         $this->assertSame(1, $this->target->getProgramDoa()->count());
         $this->assertSame(1, $this->target->getProgramDoa()->first()->getId());
 
@@ -418,9 +414,6 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getCalendarDocument()->count());
         $this->assertSame(1, $this->target->getCalendarDocument()->first()->getId());
 
-        $this->assertSame(1, $this->target->getScheduleContact()->count());
-        $this->assertSame(1, $this->target->getScheduleContact()->first()->getId());
-
         $this->assertSame(1, $this->target->getProjectReview()->count());
         $this->assertSame(1, $this->target->getProjectReview()->first()->getId());
 
@@ -555,7 +548,7 @@ final class MergeContactTest extends AbstractServiceTest
      *
      * @covers \Contact\Controller\Plugin\MergeContact::merge
      */
-    public function testMergeFail()
+    public function testMergeFail(): void
     {
         $entityManagerMock = $this->setUpEntityManagerMock(true);
         $mergeContact = new MergeContact($entityManagerMock, $this->translator);
@@ -711,11 +704,6 @@ final class MergeContactTest extends AbstractServiceTest
         $ndaApproved->setId(3);
         $ndaApproved->setApprover($source);
         $source->setNdaApprover(new ArrayCollection([$ndaApproved]));
-
-        $roadmapLog = new RoadmapLog();
-        $roadmapLog->setId(1);
-        $roadmapLog->setContact($source);
-        $source->setRoadmapLog(new ArrayCollection([$roadmapLog]));
 
         $programDoa = new Doa();
         $programDoa->setId(1);
@@ -960,11 +948,6 @@ final class MergeContactTest extends AbstractServiceTest
         $calendarDocument->setId(1);
         $calendarDocument->setContact($source);
         $source->setCalendarDocument(new ArrayCollection([$calendarDocument]));
-
-        $scheduleContact = new ScheduleContact();
-        $scheduleContact->setId(1);
-        $scheduleContact->setContact($source);
-        $source->setScheduleContact(new ArrayCollection([$scheduleContact]));
 
         $projectReview = new Review();
         $projectReview->setId(1);
