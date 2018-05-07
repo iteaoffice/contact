@@ -1526,6 +1526,8 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     public function setSaltedPassword($saltedPassword): Contact
     {
         $this->saltedPassword = $saltedPassword;
+
+        return $this;
     }
 
     /**

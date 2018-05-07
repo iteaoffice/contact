@@ -49,12 +49,6 @@
             {% endif %}
             <dt>{{ translate("txt-amount-of-contacts") }}</dt>
             <dd>{{ selectionService.getAmountOfContacts(selection) }}</dd>
-            {% if selection.mailingList|length > 0 %}
-                <dt>{{ translate("txt-mailing-lists") }}</dt>
-                {% for mailingList in selection.mailingList %}
-                    <dd>{{ mailingList.alias }}</dd>
-                {% endfor %}
-            {% endif %}
         </dl>
 
         {% if selectionService.isSql(selection) %}
