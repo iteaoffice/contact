@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Contact\Service;
 
 use Affiliation\Entity\Affiliation;
-use Application\Entity\AbstractEntity;
 use Calendar\Entity\Calendar;
 use Contact\Entity\Address;
 use Contact\Entity\AddressType;
@@ -288,7 +287,7 @@ class ContactService extends ServiceAbstract
      */
     public function isFunder(Contact $contact): bool
     {
-        return !\is_null($contact->getFunder());
+        return null !== $contact->getFunder();
     }
 
     /**
@@ -298,7 +297,7 @@ class ContactService extends ServiceAbstract
      */
     public function isActive(Contact $contact): bool
     {
-        return \is_null($contact->getDateEnd());
+        return null === $contact->getDateEnd();
     }
 
     /**
@@ -1292,7 +1291,8 @@ class ContactService extends ServiceAbstract
          * Add the project leader
          */
         if ($this->contactIsFromOrganisation(
-            $affiliation->getProject()->getContact(), $affiliation->getOrganisation()
+            $affiliation->getProject()->getContact(),
+            $affiliation->getOrganisation()
         )
         ) {
             $contacts[$affiliation->getProject()->getContact()->getId()] = $affiliation->getProject()->getContact();

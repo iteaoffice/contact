@@ -40,10 +40,6 @@ use Zend\Validator\EmailAddress;
 class HandleImport extends AbstractPlugin
 {
     /**
-     * @var string
-     */
-    protected $delimiter = "\t";
-    /**
      * @var array
      */
     protected $header = [];
@@ -85,6 +81,10 @@ class HandleImport extends AbstractPlugin
      * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
+    /**
+     * @var string
+     */
+    private $delimiter = "\t";
 
     /**
      * @param       $data
@@ -101,7 +101,7 @@ class HandleImport extends AbstractPlugin
         $includeOptIn = [],
         $selectionId = null,
         $selectionName = null
-    ) {
+    ): self {
         $this->setData($data);
 
         $this->validateData();
@@ -172,7 +172,7 @@ class HandleImport extends AbstractPlugin
     /**
      * With this function we will do some basic testing to see if the least amount of information is available.
      */
-    protected function validateData()
+    protected function validateData(): void
     {
         $minimalRequiredElements = ['email', 'firstname', 'lastname'];
 
@@ -243,7 +243,7 @@ class HandleImport extends AbstractPlugin
     /**
      * @return OrganisationService
      */
-    public function getOrganisationService()
+    public function getOrganisationService(): OrganisationService
     {
         return $this->getServiceLocator()->get(OrganisationService::class);
     }
@@ -251,7 +251,7 @@ class HandleImport extends AbstractPlugin
     /**
      * @return ServiceLocatorInterface
      */
-    public function getServiceLocator()
+    public function getServiceLocator(): ServiceLocatorInterface
     {
         return $this->serviceLocator;
     }
@@ -271,7 +271,7 @@ class HandleImport extends AbstractPlugin
     /**
      * @return GeneralService
      */
-    public function getGeneralService()
+    public function getGeneralService(): GeneralService
     {
         return $this->getServiceLocator()->get(GeneralService::class);
     }
@@ -279,13 +279,11 @@ class HandleImport extends AbstractPlugin
     /**
      * @param $selectionId
      * @param $selectionName
-     *
-     * @return null
      */
     private function setSelectionFromFromData($selectionId, $selectionName): void
     {
         if (empty($selectionId) && empty($selectionName)) {
-            return null;
+            return;
         }
 
         /** Parse the $selectionId if not empty */
@@ -340,7 +338,7 @@ class HandleImport extends AbstractPlugin
     /**
      * @return bool
      */
-    public function hasErrors():bool
+    public function hasErrors(): bool
     {
         return \count($this->errors) > 0;
     }
@@ -451,19 +449,21 @@ class HandleImport extends AbstractPlugin
                     ->findOrganisationById($content[$this->headerKeys['organisation_id']]);
             }
 
-            if (\is_null($organisation) && !\is_null($country) && !\is_null($organisationName)) {
+            if (null === $organisation && null !== $country && null !== $organisationName) {
                 $organisation = $this->getOrganisationService()->findOrganisationByNameCountry(
-                    $organisationName, $country
+                    $organisationName,
+                    $country
                 );
             }
 
             //If the organisation does not exist, create it
-            if (\is_null($organisation) && !\is_null($country) && !\is_null($organisationName)) {
+            if (null === $organisation && null !== $country && null !== $organisationName) {
                 $organisation = new Organisation();
                 $organisation->setOrganisation($organisationName);
                 $organisation->setCountry($country);
 
                 //Add the type
+                /** @var Type $organisationType */
                 $organisationType = $this->getOrganisationService()->findEntityById(Type::class, Type::TYPE_UNKNOWN);
                 $organisation->setType($organisationType);
 
@@ -481,8 +481,8 @@ class HandleImport extends AbstractPlugin
 
                 if (isset($this->headerKeys['website']) && !\is_null($content[$this->headerKeys['website']])) {
                     //Strip the http:// and https://
-                    $website = str_replace('http://', '', $content[$this->headerKeys['website']]);
-                    $website = str_replace('https://', '', $website);
+                    $website = \str_replace('http://', '', $content[$this->headerKeys['website']]);
+                    $website = \str_replace('https://', '', $website);
 
                     $organisationWebsite = new Web();
                     $organisationWebsite->setMain(Web::MAIN);
@@ -513,10 +513,10 @@ class HandleImport extends AbstractPlugin
     /**
      * @param $import
      */
-    private function importContacts($import)
+    private function importContacts($import): void
     {
         foreach ($this->contacts as $key => $contact) {
-            if (\in_array($key, $import)) {
+            if (\in_array($key, $import, false)) {
                 if (null === $contact->getId()) {
                     $contact = $this->getContactService()->newEntity($contact);
                 }
@@ -553,7 +553,7 @@ class HandleImport extends AbstractPlugin
      *
      * @return HandleImport
      */
-    public function setSelection($selection)
+    public function setSelection($selection): HandleImport
     {
         $this->selection = $selection;
 
@@ -571,9 +571,9 @@ class HandleImport extends AbstractPlugin
     /**
      * @return bool
      */
-    public function hasWarnings()
+    public function hasWarnings(): bool
     {
-        return count($this->warnings) > 0;
+        return \count($this->warnings) > 0;
     }
 
     /**

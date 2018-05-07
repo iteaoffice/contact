@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contact\Repository;
 
+use Admin\Entity\Pageview;
 use Calendar\Entity\Calendar;
 use Contact\Entity;
 use Contact\Entity\Selection;
@@ -23,12 +24,15 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
+use DoctrineExtensions\Query\Mysql\Year;
 use Organisation\Entity\Organisation;
 use Project\Entity\Review\Review;
 use Project\Repository\Project;
 
-/**
- * @category    Contact
+/***
+ * Class Contact
+ *
+ * @package Contact\Repository
  */
 class Contact extends EntityRepository
 {
@@ -66,140 +70,6 @@ class Contact extends EntityRepository
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('contact_entity_contact');
         $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-
-        $queryBuilder = $this->applyContactFilter(
-            $queryBuilder,
-            $filter,
-            ['order' => 'contact_entity_contact.id', 'direction' => Criteria::DESC]
-        );
-
-        return $queryBuilder->getQuery();
-    }
-
-    /**
-     * @param array $filter
-     *
-     * @return Query
-     */
-    public function findDuplicateContacts(array $filter): Query
-    {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select(
-            'contact_entity_contact contact',
-            'COUNT(contact_entity_contact) amount'
-        );
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-        $queryBuilder->groupBy('contact_entity_contact.firstName, contact_entity_contact.lastName');
-        $queryBuilder->having('amount > 1');
-
-        $queryBuilder = $this->applyContactFilter(
-            $queryBuilder,
-            $filter,
-            ['order' => 'amount', 'direction' => Criteria::DESC]
-        );
-
-        return $queryBuilder->getQuery();
-    }
-
-    /**
-     * @param array $filter
-     *
-     * @return Query
-     */
-    public function findInactiveContacts(array $filter): Query
-    {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select(
-            'contact_entity_contact'
-        );
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-
-        //We only want PO's here which have been submitted in the last 6 months
-        $dateCreated = new \DateTime();
-        $dateCreated->sub(new \DateInterval("P3M"));
-        //$queryBuilder->andWhere($queryBuilder->expr()->lt('contact_entity_contact.dateCreated', ':dateCreated'));
-        //$queryBuilder->setParameter('dateCreated', $dateCreated);
-
-        $relations = [
-            'project',
-            'projectVersion',
-            'projectDescription',
-            'dnd',
-            'nda',
-            'pca',
-            'ndaApprover',
-            'programDoa',
-            'rationale',
-            'organisationLog',
-            'affiliation',
-            'parent',
-            'parentFinancial',
-            'parentOrganisation',
-            'financial',
-            'invoice',
-            'associate',
-            'registration',
-            'badge',
-            'mailing',
-            'result',
-            'workpackage',
-            'idea',
-            'ideaMessage',
-            'ideaPartner',
-            'evaluation',
-            'calendarContact',
-            'calendarDocument',
-            'calendar',
-            'projectReview',
-            'projectReport',
-            'projectCalendarReview',
-            'projectReportReview',
-            'contract',
-            'invite',
-            'inviteContact',
-            'ideaInvite',
-            'ideaInviteContact',
-            'loi',
-            'affiliationDoa',
-            'parentDoa',
-            //       'session',
-            //       'pageview',
-            'journal',
-            'invoiceLog',
-            'reminder',
-            'achievement',
-            'changeRequestProcess',
-            'versionContact',
-            'workpackageContact',
-            'log',
-            'affiliationVersion',
-        ];
-
-
-        foreach ($relations as $relation) {
-            $queryBuilder->leftJoin('contact_entity_contact.' . $relation, $relation);
-            $queryBuilder->andWhere($queryBuilder->expr()->isNull($relation . '.id'));
-        }
-
-
-        //Exclude the active fixed selections
-        $selectionContact = $this->_em->createQueryBuilder();
-        $selectionContact->select('selectionContact.id');
-        $selectionContact->from(Entity\SelectionContact::class, 'contact_entity_selection_contact');
-        $selectionContact->join('contact_entity_selection_contact.contact', 'selectionContact');
-        $selectionContact->join('contact_entity_selection_contact.selection', 'contact_entity_selection');
-        $selectionContact->andWhere($selectionContact->expr()->isNull('contact_entity_selection.dateDeleted'));
-
-        //Exclude the active fixed mailings
-        $mailingContact = $this->_em->createQueryBuilder();
-        $mailingContact->select('mailingContact.id');
-        $mailingContact->from(\Mailing\Entity\Contact::class, 'mailing_entity_contact');
-        $mailingContact->join('mailing_entity_contact.contact', 'mailingContact');
-        $mailingContact->join('mailing_entity_contact.mailing', 'mailing_entity_mailing');
-        $mailingContact->andWhere($mailingContact->expr()->isNull('mailing_entity_mailing.dateDeleted'));
-
-        //$queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_contact.id', $selectionContact->getDQL()));
-        //$queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_contact.id', $mailingContact->getDQL()));
 
         $queryBuilder = $this->applyContactFilter(
             $queryBuilder,
@@ -362,6 +232,140 @@ class Contact extends EntityRepository
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * @param array $filter
+     *
+     * @return Query
+     */
+    public function findDuplicateContacts(array $filter): Query
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select(
+            'contact_entity_contact contact',
+            'COUNT(contact_entity_contact) amount'
+        );
+        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
+        $queryBuilder->groupBy('contact_entity_contact.firstName, contact_entity_contact.lastName');
+        $queryBuilder->having('amount > 1');
+
+        $queryBuilder = $this->applyContactFilter(
+            $queryBuilder,
+            $filter,
+            ['order' => 'amount', 'direction' => Criteria::DESC]
+        );
+
+        return $queryBuilder->getQuery();
+    }
+
+    /**
+     * @param array $filter
+     *
+     * @return Query
+     */
+    public function findInactiveContacts(array $filter): Query
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select(
+            'contact_entity_contact'
+        );
+        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
+
+        //We only want PO's here which have been submitted in the last 6 months
+        $dateCreated = new \DateTime();
+        $dateCreated->sub(new \DateInterval("P3M"));
+        //$queryBuilder->andWhere($queryBuilder->expr()->lt('contact_entity_contact.dateCreated', ':dateCreated'));
+        //$queryBuilder->setParameter('dateCreated', $dateCreated);
+
+        $relations = [
+            'project',
+            'projectVersion',
+            'projectDescription',
+            'dnd',
+            'nda',
+            'pca',
+            'ndaApprover',
+            'programDoa',
+            'rationale',
+            'organisationLog',
+            'affiliation',
+            'parent',
+            'parentFinancial',
+            'parentOrganisation',
+            'financial',
+            'invoice',
+            'associate',
+            'registration',
+            'badge',
+            'mailing',
+            'result',
+            'workpackage',
+            'idea',
+            'ideaMessage',
+            'ideaPartner',
+            'evaluation',
+            'calendarContact',
+            'calendarDocument',
+            'calendar',
+            'projectReview',
+            'projectReport',
+            'projectCalendarReview',
+            'projectReportReview',
+            'contract',
+            'invite',
+            'inviteContact',
+            'ideaInvite',
+            'ideaInviteContact',
+            'loi',
+            'affiliationDoa',
+            'parentDoa',
+            //       'session',
+            //       'pageview',
+            'journal',
+            'invoiceLog',
+            'reminder',
+            'achievement',
+            'changeRequestProcess',
+            'versionContact',
+            'workpackageContact',
+            'log',
+            'affiliationVersion',
+        ];
+
+
+        foreach ($relations as $relation) {
+            $queryBuilder->leftJoin('contact_entity_contact.' . $relation, $relation);
+            $queryBuilder->andWhere($queryBuilder->expr()->isNull($relation . '.id'));
+        }
+
+
+        //Exclude the active fixed selections
+        $selectionContact = $this->_em->createQueryBuilder();
+        $selectionContact->select('selectionContact.id');
+        $selectionContact->from(Entity\SelectionContact::class, 'contact_entity_selection_contact');
+        $selectionContact->join('contact_entity_selection_contact.contact', 'selectionContact');
+        $selectionContact->join('contact_entity_selection_contact.selection', 'contact_entity_selection');
+        $selectionContact->andWhere($selectionContact->expr()->isNull('contact_entity_selection.dateDeleted'));
+
+        //Exclude the active fixed mailings
+        $mailingContact = $this->_em->createQueryBuilder();
+        $mailingContact->select('mailingContact.id');
+        $mailingContact->from(\Mailing\Entity\Contact::class, 'mailing_entity_contact');
+        $mailingContact->join('mailing_entity_contact.contact', 'mailingContact');
+        $mailingContact->join('mailing_entity_contact.mailing', 'mailing_entity_mailing');
+        $mailingContact->andWhere($mailingContact->expr()->isNull('mailing_entity_mailing.dateDeleted'));
+
+        //$queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_contact.id', $selectionContact->getDQL()));
+        //$queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_contact.id', $mailingContact->getDQL()));
+
+        $queryBuilder = $this->applyContactFilter(
+            $queryBuilder,
+            $filter,
+            ['order' => 'contact_entity_contact.id', 'direction' => Criteria::DESC]
+        );
+
+        return $queryBuilder->getQuery();
     }
 
     /**
@@ -678,7 +682,7 @@ class Contact extends EntityRepository
      *
      * @return int
      */
-    public function findAmountOfContactsInSelection(Selection $selection)
+    public function findAmountOfContactsInSelection(Selection $selection): int
     {
         if (!\is_null($selection->getSql())) {
             $resultSetMap = new ResultSetMapping();
@@ -950,7 +954,7 @@ class Contact extends EntityRepository
      */
     public function findMergeCandidatesFor(Entity\Contact $contact): array
     {
-        //Short circuit the contact when the firstnamen and lastname are not filled in
+        //Short circuit the contact when the first name and lastname are not filled in
         //The query will case an loop than and will crash
         if (empty($contact->getFirstName()) && empty($contact->getLastName())) {
             return [];
@@ -979,5 +983,34 @@ class Contact extends EntityRepository
         $queryBuilder->setParameter('email', str_replace('.', '', $contact->getEmail()));
 
         return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function findNewCommunityMembers(): array
+    {
+        $emConfig = $this->_em->getConfiguration();
+        $emConfig->addCustomDatetimeFunction('YEAR', Year::class);
+
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select(
+            'YEAR(contact_entity_contact.dateCreated) as dateYearCreated',
+            $queryBuilder->expr()->count('contact_entity_contact.id') . ' AS amount'
+        );
+        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
+
+
+        //Limit to the ones which have a pageview
+        $pageViewsQuery = $this->_em->createQueryBuilder();
+        $pageViewsQuery->select('admin_entity_pageview_contact');
+        $pageViewsQuery->from(Pageview::class, 'admin_entity_pageview');
+        $pageViewsQuery->join('admin_entity_pageview.contact', 'admin_entity_pageview_contact');
+
+        $queryBuilder->where($queryBuilder->expr()->in('contact_entity_contact', $pageViewsQuery->getDQL()));
+
+        $queryBuilder->groupBy('dateYearCreated');
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

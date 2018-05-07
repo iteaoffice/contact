@@ -63,7 +63,7 @@ class ContactSearchService extends AbstractSearchService
         $contactDocument->position_search = $contact->getPosition();
         $contactDocument->position_sort = $contact->getPosition();
 
-        if (!\is_null($contact->getProfile())) {
+        if (null !== $contact->getProfile()) {
             $contactDocument->profile = str_replace(
                 PHP_EOL,
                 '',
@@ -86,7 +86,7 @@ class ContactSearchService extends AbstractSearchService
             }
         }
 
-        if (!\is_null($contact->getContactOrganisation())) {
+        if (null !== $contact->getContactOrganisation()) {
             $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
             $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
             $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();

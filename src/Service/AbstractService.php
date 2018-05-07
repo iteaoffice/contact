@@ -20,8 +20,8 @@ namespace Contact\Service;
 use Admin\Entity\Access;
 use Admin\Entity\Permit;
 use Admin\Repository\Permit\Role;
-use Application\Entity\AbstractEntity;
 use Contact\Entity;
+use Contact\Entity\EntityAbstract;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
@@ -65,7 +65,7 @@ abstract class AbstractService
     /**
      * @param string $entity
      *
-     * @return array|AbstractEntity[]
+     * @return array|EntityAbstract[]
      */
     public function findAll(string $entity): array
     {
@@ -76,21 +76,21 @@ abstract class AbstractService
      * @param string $entity
      * @param int    $id
      *
-     * @return null|object|AbstractEntity
+     * @return null|object|EntityAbstract
      */
-    public function find(string $entity, int $id): ?AbstractEntity
+    public function find(string $entity, int $id): ?EntityAbstract
     {
         return $this->entityManager->getRepository($entity)->find($id);
     }
 
     /**
-     * @param AbstractEntity $entity
+     * @param EntityAbstract $entity
      *
-     * @return AbstractEntity
+     * @return EntityAbstract
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function save(AbstractEntity $entity): AbstractEntity
+    public function save(EntityAbstract $entity): EntityAbstract
     {
         if (!$this->entityManager->contains($entity)) {
             $this->entityManager->persist($entity);
@@ -102,24 +102,24 @@ abstract class AbstractService
     }
 
     /**
-     * @param AbstractEntity $abstractEntity
+     * @param EntityAbstract $EntityAbstract
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function delete(AbstractEntity $abstractEntity): void
+    public function delete(EntityAbstract $EntityAbstract): void
     {
-        $this->entityManager->remove($abstractEntity);
+        $this->entityManager->remove($EntityAbstract);
         $this->entityManager->flush();
     }
 
     /**
-     * @param AbstractEntity $abstractEntity
+     * @param EntityAbstract $EntityAbstract
      *
      * @throws \Doctrine\ORM\ORMException
      */
-    public function refresh(AbstractEntity $abstractEntity): void
+    public function refresh(EntityAbstract $EntityAbstract): void
     {
-        $this->entityManager->refresh($abstractEntity);
+        $this->entityManager->refresh($EntityAbstract);
     }
 }

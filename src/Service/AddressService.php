@@ -26,7 +26,7 @@ class AddressService extends ServiceAbstract
     /**
      * @param $id
      *
-     * @return Address|null|object
+     * @return Address|null
      */
     public function findAddressById($id)
     {

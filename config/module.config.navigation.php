@@ -296,15 +296,6 @@ return [
 
                 ],
             ],
-            'management' => [
-                'pages' => [
-                    'permit' => [
-                        'label' => _("txt-nav-permission-list"),
-                        'route' => 'zfcadmin/permit-manager/entity/list',
-                    ],
-
-                ],
-            ],
             'tools'      => [
                 'pages' => [
                     'import'                    => [

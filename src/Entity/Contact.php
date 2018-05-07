@@ -3956,6 +3956,4 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->proxyProject = $proxyProject;
         return $this;
     }
-
-
 }

@@ -30,17 +30,17 @@ class SelectionContactService extends AbstractService
      *
      * @return bool
      */
-    public function contactInSelection(Contact $contact, $selections)
+    public function contactInSelection(Contact $contact, $selections): bool
     {
-        if (!is_array($selections) && !$selections instanceof PersistentCollection) {
+        if (!\is_array($selections) && !$selections instanceof PersistentCollection) {
             $selections = [$selections];
         }
         foreach ($selections as $selection) {
             if (!$selection instanceof Selection) {
-                throw new \InvalidArgumentException("Selection should be instance of Selection");
+                throw new \InvalidArgumentException('Selection should be instance of Selection');
             }
             if (null === $selection->getId()) {
-                throw new \InvalidArgumentException("The given selection cannot be empty");
+                throw new \InvalidArgumentException('The given selection cannot be empty');
             }
             if ($this->findContactInSelection($contact, $selection)) {
                 return true;
