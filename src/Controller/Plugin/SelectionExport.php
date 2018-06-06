@@ -22,6 +22,7 @@ use Contact\Entity\AddressType;
 use Contact\Entity\Selection;
 use Contact\Service\AddressService;
 use Contact\Service\ContactService;
+use Contact\Service\SelectionContactService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
@@ -36,7 +37,7 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
  *
  * @package Contact\Controller\Plugin
  */
-class SelectionExport extends AbstractPlugin
+final class SelectionExport extends AbstractPlugin
 {
     public const EXPORT_CSV = 1;
     public const EXPORT_EXCEL = 2;
@@ -44,55 +45,48 @@ class SelectionExport extends AbstractPlugin
     /**
      * @var Spreadsheet
      */
-    protected $excel;
+    private $excel;
     /**
      * @var string
      */
-    protected $csv;
+    private $csv;
     /**
      * @var ContactService
      */
-    protected $contactService;
+    private $contactService;
+    /**
+     * @var SelectionContactService
+     */
+    private $selectionContactService;
     /**
      * @var  AddressService
      */
-    protected $addressService;
+    private $addressService;
     /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
     /**
      * @var int
      */
-    protected $type = self::EXPORT_CSV;
+    private $type = self::EXPORT_CSV;
     /**
      * @var Selection
      */
-    protected $selection;
+    private $selection;
 
-    /**
-     * SelectionExport constructor.
-     *
-     * @param ContactService $contactService
-     * @param AddressService $addressService
-     * @param TranslatorInterface $translator
-     */
     public function __construct(
         ContactService $contactService,
+        SelectionContactService $selectionContactService,
         AddressService $addressService,
         TranslatorInterface $translator
     ) {
         $this->contactService = $contactService;
+        $this->selectionContactService = $selectionContactService;
         $this->addressService = $addressService;
         $this->translator = $translator;
     }
 
-    /**
-     * @param Selection $selection
-     * @param int       $type
-     *
-     * @return SelectionExport
-     */
     public function __invoke(Selection $selection, int $type): SelectionExport
     {
         $this->type = $type;
@@ -110,9 +104,6 @@ class SelectionExport extends AbstractPlugin
         return $this;
     }
 
-    /**
-     * @return SelectionExport
-     */
     public function exportCSV(): SelectionExport
     {
         // Open the output stream
@@ -131,7 +122,7 @@ class SelectionExport extends AbstractPlugin
             ]
         );
 
-        foreach ($this->contactService->findContactsInSelection($this->selection, true) as $contact) {
+        foreach ($this->selectionContactService->findContactsInSelection($this->selection, true) as $contact) {
             fputcsv(
                 $fh,
                 [
@@ -157,16 +148,12 @@ class SelectionExport extends AbstractPlugin
         return $this;
     }
 
-    /**
-     * @return SelectionExport
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     */
     public function exportExcel(): SelectionExport
     {
         $this->excel = new Spreadsheet();
 
         $exportSheet = $this->excel->getActiveSheet();
-        $exportSheet->setTitle($this->translate('txt-selection-export'));
+        $exportSheet->setTitle($this->translator->translate('txt-selection-export'));
         $exportSheet->getPageSetup()->setPaperSize(PageSetup::PAPERSIZE_A4);
         $exportSheet->getPageSetup()->setFitToWidth(1);
         $exportSheet->getPageSetup()->setFitToHeight(0);
@@ -198,10 +185,10 @@ class SelectionExport extends AbstractPlugin
 
         $row = 2;
 
-        foreach ($this->contactService->findContactsInSelection($this->selection) as $contact) {
+        foreach ($this->selectionContactService->findContactsInSelection($this->selection) as $contact) {
             $country = $this->contactService->parseCountry($contact);
             /** @var AddressType $contactAddress */
-            $contactAddress = $this->addressService->findEntityById(
+            $contactAddress = $this->addressService->find(
                 AddressType::class,
                 AddressType::ADDRESS_TYPE_MAIL
             );
@@ -243,19 +230,11 @@ class SelectionExport extends AbstractPlugin
         return $this;
     }
 
-    /**
-     * @param string $translate
-     *
-     * @return string
-     */
     public function translate(string $translate): string
     {
         return $this->translator->translate($translate);
     }
 
-    /**
-     * @return Response
-     */
     public function parseResponse(): Response
     {
         switch ($this->type) {
@@ -268,9 +247,6 @@ class SelectionExport extends AbstractPlugin
         }
     }
 
-    /**
-     * @return Response
-     */
     public function parseCsvResponse(): Response
     {
         $response = new Response();
@@ -294,10 +270,6 @@ class SelectionExport extends AbstractPlugin
         return $response;
     }
 
-    /**
-     * @return Response
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
     public function parseExcelResponse(): Response
     {
         $response = new Response();

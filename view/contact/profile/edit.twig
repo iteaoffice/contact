@@ -85,15 +85,17 @@
     {{ ztbformelement(profile.get('description')) }}
 </fieldset>
 
+{% if not contact.photo.isEmpty() %}
+    <div class="form-group row">
+        <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-current-photo") }}</label>
 
-<div class="form-group row">
-    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-current-photo") }}</label>
-
-    <div class="col-sm-9">
-        <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
+        <div class="col-sm-9">
+            <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
+        </div>
     </div>
-</div>
 
+    {{ ztbformelement(form.get('removeFile')) }}
+{% endif %}
 {{ ztbformelement(form.get('file')) }}
 
 

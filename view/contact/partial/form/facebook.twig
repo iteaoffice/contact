@@ -1,6 +1,4 @@
 {% do form.prepare() %}
-{% do form.setAttribute('class','form-horizontal') %}
-
 {{ form().openTag(form)|raw }}
 
 
@@ -18,6 +16,8 @@
 {{ ztbformelement(facebook.get('title')) }}
 {{ ztbformelement(facebook.get('subtitle')) }}
 {{ ztbformelement(facebook.get('access')) }}
+
+{{ ztbformelement(form.get('csrf')) }}
 
 <div class="form-group row">
     <div class="offset-md-3 col-sm-offset-3 col-sm-9">

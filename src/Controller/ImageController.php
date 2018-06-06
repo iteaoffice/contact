@@ -16,25 +16,33 @@ declare(strict_types=1);
 namespace Contact\Controller;
 
 use Contact\Entity\Photo;
+use Contact\Service\ContactService;
 use Zend\Http\Response;
 
 /**
- * The index of the system.
+ * Class ImageController
  *
- * @category Content
+ * @package Contact\Controller
  */
-class ImageController extends ContactAbstractController
+final class ImageController extends ContactAbstractController
 {
     /**
-     * @return Response
+     * @var ContactService
      */
+    private $contactService;
+
+    public function __construct(ContactService $contactService)
+    {
+        $this->contactService = $contactService;
+    }
+
     public function contactPhotoAction(): Response
     {
         /** @var Response $response */
         $response = $this->getResponse();
 
         /** @var Photo $photo */
-        $photo = $this->getOrganisationService()->findEntityById(Photo::class, (int)$this->params('id'));
+        $photo = $this->contactService->find(Photo::class, (int)$this->params('id'));
 
         if (null === $photo) {
             return $response;

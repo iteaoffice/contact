@@ -13,60 +13,88 @@ declare(strict_types=1);
 namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
+use Contact\Service\ContactService;
+use Contact\Service\FormService;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  */
-class FacebookManagerController extends ContactAbstractController
+final class FacebookManagerController extends ContactAbstractController
 {
     /**
-     * @return ViewModel
+     * @var ContactService
      */
-    public function listAction()
-    {
-        return new ViewModel(
-            [
-                'facebook' => $this->getContactService()->findAll(Facebook::class),
-            ]
-        );
+    private $contactService;
+    /**
+     * @var FormService
+     */
+    private $formService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        ContactService $contactService,
+        FormService $formService,
+        TranslatorInterface $translator
+    ) {
+        $this->contactService = $contactService;
+        $this->formService = $formService;
+        $this->translator = $translator;
     }
 
-    /**
-     * @return ViewModel
-     */
-    public function viewAction()
+    public function listAction(): ViewModel
     {
-        /**
-         * @var Facebook $facebook
-         */
-        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
+        $facebook = $this->contactService->findAll(Facebook::class);
 
         return new ViewModel(
             [
                 'facebook' => $facebook,
-                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
             ]
         );
     }
 
-    /**
-     * Create a new facebook.
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
+    public function viewAction(): ViewModel
+    {
+        /**
+         * @var Facebook $facebook
+         */
+        $facebook = $this->contactService->find(Facebook::class, (int)$this->params('id'));
+
+        if (null === $facebook) {
+            return $this->notFoundAction();
+        }
+
+        return new ViewModel(
+            [
+                'facebook' => $facebook,
+                'contacts' => $this->contactService->findContactsInFacebook($facebook),
+            ]
+        );
+    }
+
     public function newAction()
     {
         $data = $this->getRequest()->getPost()->toArray();
 
-        $form = $this->getFormService()->prepare(Facebook::class, null, $data);
+        $form = $this->formService->prepare(Facebook::class, $data);
 
         if ($this->getRequest()->isPost() && $form->isValid()) {
             /**
              * @var Facebook $facebook
              */
             $facebook = $form->getData();
-            $facebook = $this->getContactService()->newEntity($facebook);
+            $this->contactService->save($facebook);
+
+            $this->flashMessenger()->addSuccessMessage(
+                sprintf(
+                    $this->translator->translate("txt-facebook-%s-has-successfully-been-deleted"),
+                    $facebook->getFacebook()
+                )
+            );
 
             return $this->redirect()->toRoute('zfcadmin/facebook/view', ['id' => $facebook->getId()]);
         }
@@ -74,36 +102,39 @@ class FacebookManagerController extends ContactAbstractController
         return new ViewModel(['form' => $form]);
     }
 
-    /**
-     * Edit an facebook by finding it and call the corresponding form.
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
     public function editAction()
     {
         /**
          * @var $facebook Facebook
          */
-        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
+        $facebook = $this->contactService->find(Facebook::class, (int)$this->params('id'));
         $data = $this->getRequest()->getPost()->toArray();
-        $form = $this->getFormService()->prepare($facebook, $facebook, $data);
+        $form = $this->formService->prepare($facebook, $data);
 
-        if ($this->getRequest()->isPost() && $form->isValid()) {
+        if ($this->getRequest()->isPost()) {
             if (isset($data['delete'])) {
                 /*
                  * @var Facebook
                  */
                 $facebook = $form->getData();
 
-                $this->getContactService()->removeEntity($facebook);
-                $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(sprintf($this->translate("txt-facebook-has-successfully-been-deleted")));
+                $this->contactService->delete($facebook);
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf($this->translator->translate("txt-facebook-has-successfully-been-deleted"))
+                );
 
                 return $this->redirect()->toRoute('zfcadmin/facebook/list');
             }
 
-            if (!isset($data['cancel'])) {
-                $facebook = $this->getContactService()->updateEntity($facebook);
+            if (!isset($data['cancel']) && $form->isValid()) {
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(
+                        $this->translator->translate("txt-facebook-%s-has-successfully-been-updated"),
+                        $facebook->getFacebook()
+                    )
+                );
+
+                $this->contactService->save($facebook);
             }
 
             return $this->redirect()->toRoute('zfcadmin/facebook/view', ['id' => $facebook->getId()]);

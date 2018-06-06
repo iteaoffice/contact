@@ -21,13 +21,11 @@ use Zend\InputFilter\InputFilter;
 
 /**
  * Class FacebookFilter
+ *
  * @package Contact\InputFilter
  */
 class FacebookFilter extends InputFilter
 {
-    /**
-     * FacebookFilter constructor.
-     */
     public function __construct()
     {
         $inputFilter = new InputFilter();

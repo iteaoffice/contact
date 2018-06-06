@@ -20,52 +20,50 @@ use Zend\Form\Annotation;
  * Optin.
  *
  * @ORM\Table(name="optin")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Contact\Repository\OptIn")
  */
-class OptIn extends EntityAbstract
+class OptIn extends AbstractEntity
 {
-    /**
-     * Feature to decide which opt-ins to enable on registration.
-     */
-    public const AUTO_SUBSCRIBE = 1;
-    public const NO_AUTO_SUBSCRIBE = 0;
+    public const ACTIVE_INACTIVE = 0;
+    public const ACTIVE_ACTIVE = 1;
 
-    /**
-     * @var array
-     */
-    protected static $autoSubscribeTemplates
+    protected static $activeTemplates
         = [
-            self::AUTO_SUBSCRIBE    => "txt-auto-subscribe",
-            self::NO_AUTO_SUBSCRIBE => "txt-no-auto-subscribe",
+            self::ACTIVE_INACTIVE => 'txt-inactive',
+            self::ACTIVE_ACTIVE   => 'txt-active',
         ];
 
     /**
      * @ORM\Column(name="optin_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
      *
-     * @var integer
+     * @var integer|string|null
      */
     private $id;
     /**
      * @ORM\Column(name="optin", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-opt-in"})
-     * @Annotation\Attributes({"class":"span3"})
+     * @Annotation\Options({"label":"txt-opt-in-title-title","help-block": "txt-opt-in-title-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-opt-in-title-placeholder"})
      *
-     * @var string
+     * @var string|null
      */
     private $optIn;
     /**
-     * @ORM\Column(name="auto_subscribe", type="integer", nullable=false)
-     *
+     * @ORM\Column(name="active", type="integer", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Attributes({"array":"activeTemplates"})
+     * @Annotation\Options({"label":"txt-opt-in-active-title","help-block": "txt-opt-in-active-help-block"})
      * @var integer
      */
-    private $autoSubscribe;
+    private $active;
     /**
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-description"})
+     * @Annotation\Options({"label":"txt-opt-in-description-title","help-block": "txt-opt-in-description-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-opt-in-description-placeholder"})
      *
      * @var string
      */
@@ -85,186 +83,127 @@ class OptIn extends EntityAbstract
      */
     private $mailing;
 
-    /**
-     *
-     */
+
     public function __construct()
     {
         $this->contact = new Collections\ArrayCollection();
         $this->mailing = new Collections\ArrayCollection();
-        $this->autoSubscribe = self::AUTO_SUBSCRIBE;
+
+        $this->active = self::ACTIVE_ACTIVE;
     }
 
-    /**
-     * @return array
-     */
-    public static function getAutoSubscribeTemplates(): array
+
+    public static function getActiveTemplates(): array
     {
-        return self::$autoSubscribeTemplates;
+        return self::$activeTemplates;
     }
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     * @return bool
-     */
     public function __isset($property)
     {
         return isset($this->$property);
     }
 
-
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->optIn;
     }
 
-    /**
-     * New function needed to make the hydrator happy.
-     *
-     * @param Collections\Collection $collection
-     */
-    public function addContact(Collections\Collection $collection)
+    public function isActive(): bool
+    {
+        return self::ACTIVE_ACTIVE === $this->active;
+    }
+
+    public function addContact(Collections\Collection $collection): void
     {
         foreach ($collection as $singleContact) {
             $this->contact->add($singleContact);
         }
     }
 
-    /**
-     * @param Collections\Collection $collection
-     */
-    public function removeContact(Collections\Collection $collection)
+    public function removeContact(Collections\Collection $collection): void
     {
         foreach ($collection as $singleContact) {
             $this->contact->removeElement($singleContact);
         }
     }
 
-    /**
-     * @return \Contact\Entity\Contact[]|Collections\Collection
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param \Contact\Entity\Contact[]|Collections\ArrayCollection $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId($id): OptIn
     {
         $this->id = $id;
+        return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getOptIn()
     {
         return $this->optIn;
     }
 
-    /**
-     * @param string $optIn
-     */
-    public function setOptIn($optIn)
+    public function setOptIn(?string $optIn): OptIn
     {
         $this->optIn = $optIn;
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return int|string
-     */
-    public function getAutoSubscribe(bool $textual = false)
+    public function getActive(bool $textual = true)
     {
         if ($textual) {
-            return self::$autoSubscribeTemplates[$this->autoSubscribe];
+            return self::$activeTemplates[$this->active];
         }
 
-        return $this->autoSubscribe;
+        return $this->active;
     }
 
-    /**
-     * @param int $autoSubscribe
-     */
-    public function setAutoSubscribe($autoSubscribe)
+    public function setActive(int $active): OptIn
     {
-        $this->autoSubscribe = $autoSubscribe;
+        $this->active = $active;
+        return $this;
     }
 
-    /**
-     * @return \Mailing\Entity\Mailing[]
-     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): OptIn
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    public function setContact($contact): OptIn
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
     public function getMailing()
     {
         return $this->mailing;
     }
 
-    /**
-     * @param \Mailing\Entity\Mailing[] $mailing
-     */
-    public function setMailing($mailing)
+    public function setMailing($mailing): OptIn
     {
         $this->mailing = $mailing;
+        return $this;
     }
 }

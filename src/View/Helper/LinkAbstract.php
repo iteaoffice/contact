@@ -18,7 +18,7 @@ use BjyAuthorize\Service\Authorize;
 use Contact\Acl\Assertion\AssertionAbstract;
 use Contact\Entity\Address;
 use Contact\Entity\Contact;
-use Contact\Entity\EntityAbstract;
+use Contact\Entity\AbstractEntity;
 use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
@@ -377,13 +377,13 @@ abstract class LinkAbstract extends AbstractViewHelper
     }
 
     /**
-     * @param EntityAbstract $entity
+     * @param AbstractEntity $entity
      * @param string $assertion
      * @param string $action
      *
      * @return bool
      */
-    public function hasAccess(EntityAbstract $entity, $assertion, $action)
+    public function hasAccess(AbstractEntity $entity, $assertion, $action)
     {
         $assertion = $this->getAssertion($assertion);
         if (!\is_null($entity) && !$this->getAuthorizeService()->getAcl()->hasResource($entity)) {
@@ -416,7 +416,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     }
 
     /**
-     * @param null|EntityAbstract $resource
+     * @param null|AbstractEntity $resource
      * @param string $privilege
      *
      * @return bool

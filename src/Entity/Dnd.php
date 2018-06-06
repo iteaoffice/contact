@@ -26,7 +26,7 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class Dnd extends EntityAbstract
+class Dnd extends AbstractEntity
 {
     /**
      * @ORM\Column(name="dnd_id", type="integer", nullable=false)
@@ -95,31 +95,17 @@ class Dnd extends EntityAbstract
      */
     private $program;
 
-    /**
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     *
-     * @return bool
-     */
-    public function __isset($property): bool
+    public function __isset($property)
     {
         return isset($this->$property);
     }

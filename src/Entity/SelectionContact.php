@@ -15,8 +15,6 @@ namespace Contact\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * SelectionContact.
@@ -28,30 +26,25 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @category    Contact
  */
-class SelectionContact extends EntityAbstract
+class SelectionContact extends AbstractEntity
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="selection_contact_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var integer
      */
     private $id;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact",  cascade={"persist"}, inversedBy="selectionContact")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
      *
      * @var \Contact\Entity\Contact
      */
     private $contact;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Selection", cascade={"persist"}, inversedBy="selectionContact")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="selection_id", referencedColumnName="selection_id", nullable=false)
-     * })
      *
      * @var \Contact\Entity\Selection
      */
@@ -59,116 +52,67 @@ class SelectionContact extends EntityAbstract
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="create")
-     * @Annotation\Exclude()
      *
      * @var \DateTime
      */
     private $dateCreated;
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
+    public function __isset($property)
     {
-        throw new \Exception("Setting an inputFilter is currently not supported");
+        return isset($this->$property);
     }
 
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        return new InputFilter();
-    }
-
-    /**
-     * @return \Contact\Entity\Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param \DateTime $dateCreated
-     */
-    public function setDateCreated($dateCreated)
-    {
-        $this->dateCreated = $dateCreated;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): SelectionContact
     {
         $this->id = $id;
+        return $this;
     }
 
-    /**
-     * @return \Contact\Entity\Selection
-     */
-    public function getSelection()
+    public function getContact(): Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(Contact $contact): SelectionContact
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
+    public function getSelection(): Selection
     {
         return $this->selection;
     }
 
-    /**
-     * @param \Contact\Entity\Selection $selection
-     */
-    public function setSelection($selection)
+    public function setSelection(Selection $selection): SelectionContact
     {
         $this->selection = $selection;
+        return $this;
+    }
+
+    public function getDateCreated(): \DateTime
+    {
+        return $this->dateCreated;
+    }
+
+    public function setDateCreated(\DateTime $dateCreated): SelectionContact
+    {
+        $this->dateCreated = $dateCreated;
+        return $this;
     }
 }

@@ -14,7 +14,6 @@ namespace Contact\Search\Service;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Photo;
-use Contact\Entity\Profile;
 use Contact\Service\ContactService;
 use Search\Service\AbstractSearchService;
 use Search\Service\SearchServiceInterface;
@@ -25,20 +24,11 @@ use Solarium\QueryType\Select\Query\Query;
  */
 class ContactSearchService extends AbstractSearchService
 {
-    /**
-     *
-     */
     public const SOLR_CONNECTION = 'contact_contact';
 
     /**
-     * The contact service
-     *
-     * @var ContactService
-     */
-    protected $contactService;
-
-    /**
      * @param Contact $contact
+     *
      * @return \Solarium\QueryType\Update\Result
      */
     public function updateDocument($contact)
@@ -49,7 +39,7 @@ class ContactSearchService extends AbstractSearchService
         $contactDocument = $update->createDocument();
         $contactDocument->id = $contact->getResourceId();
         $contactDocument->contact_id = $contact->getId();
-        $contactDocument->contact_hash = $contact->parseHash();
+        $contactDocument->contact_hash = $contact->getHash();
 
         $contactDocument->fullname = $contact->getDisplayName();
         $contactDocument->fullname_search = $contact->getDisplayName();
@@ -70,9 +60,7 @@ class ContactSearchService extends AbstractSearchService
                 strip_tags((string)$contact->getProfile()->getDescription())
             );
 
-            if (($contact->getProfile()->getHidePhoto() === Profile::NOT_HIDE_PHOTO)
-                && ($contact->getPhoto()->count() > 0)
-            ) {
+            if ($contact->getPhoto()->count() > 0) {
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
                 $contactDocument->photo_url = $this->getUrl(
@@ -88,17 +76,23 @@ class ContactSearchService extends AbstractSearchService
 
         if (null !== $contact->getContactOrganisation()) {
             $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
-            $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
-            $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
+            $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()
+                ->getOrganisation();
+            $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()
+                ->getOrganisation();
             $contactDocument->organisation_type = $contact->getContactOrganisation()->getOrganisation()->getType();
             $contactDocument->organisation_type_sort = $contact->getContactOrganisation()->getOrganisation()->getType();
-            $contactDocument->organisation_type_search = $contact->getContactOrganisation()->getOrganisation()->getType();
-            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
-            $contactDocument->country_sort = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
-            $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry();
+            $contactDocument->organisation_type_search = $contact->getContactOrganisation()->getOrganisation()->getType(
+            );
+            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry(
+            );
+            $contactDocument->country_sort = $contact->getContactOrganisation()->getOrganisation()->getCountry()
+                ->getCountry();
+            $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()
+                ->getCountry();
         }
 
-        if (!\is_null($contact->getCv())) {
+        if (null !== $contact->getCv()) {
             $cv = str_replace(
                 PHP_EOL,
                 '',
@@ -126,29 +120,15 @@ class ContactSearchService extends AbstractSearchService
         $this->updateIndexWithCollection($contacts, $clear);
     }
 
-    /**
-     * @return ContactService
-     */
-    public function getContactService()
-    {
-        return $this->contactService;
-    }
 
-    /**
-     * @param ContactService $contactService
-     *
-     * @return ContactSearchService
-     */
-    public function setContactService(ContactService $contactService): ContactSearchService
+    public function getContactService(): ContactService
     {
-        $this->contactService = $contactService;
-
-        return $this;
+        return $this->serviceLocator->get(ContactService::class);
     }
 
     /**
      * @param string $searchTerm
-     * @param array $searchFields
+     * @param array  $searchFields
      * @param string $order
      * @param string $direction
      *

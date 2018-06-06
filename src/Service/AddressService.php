@@ -21,30 +21,17 @@ use Contact\Entity\Contact;
  *
  * @package Contact\Service
  */
-class AddressService extends ServiceAbstract
+class AddressService extends AbstractService
 {
-    /**
-     * @param $id
-     *
-     * @return Address|null
-     */
-    public function findAddressById($id)
+    public function findAddressById(int $id): ?Address
     {
-        return $this->getEntityManager()->getRepository(Address::class)->find($id);
+        return $this->entityManager->getRepository(Address::class)->find($id);
     }
 
-    /**
-     * Returns the address of a contact, where the addressTypeSort table is used to find alternative addresses.
-     *
-     * @param Contact $contact
-     * @param AddressType $type
-     *
-     * @return Address|null
-     */
-    public function findAddressByContactAndType(Contact $contact, AddressType $type):?Address
+    public function findAddressByContactAndType(Contact $contact, AddressType $type): ?Address
     {
         /** @var \Contact\Repository\Address $repository */
-        $repository = $this->getEntityManager()->getRepository(Address::class);
+        $repository = $this->entityManager->getRepository(Address::class);
 
         return $repository->findAddressByContactAndType($contact, $type);
     }

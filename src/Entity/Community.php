@@ -25,7 +25,7 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class Community extends EntityAbstract
+class Community extends AbstractEntity
 {
     /**
      * @ORM\Column(name="community_id", type="integer", nullable=false)
@@ -91,6 +91,7 @@ class Community extends EntityAbstract
 
     /**
      * @param $property
+     *
      * @return bool
      */
     public function __isset($property)

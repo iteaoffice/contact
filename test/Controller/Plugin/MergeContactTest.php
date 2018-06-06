@@ -28,14 +28,12 @@ use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Entity\Cv;
 use Contact\Entity\Dnd;
-use Contact\Entity\OpenId;
 use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\Photo;
 use Contact\Entity\Profile;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionContact;
-use Contact\Entity\Web;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
@@ -207,9 +205,6 @@ final class MergeContactTest extends AbstractServiceTest
 
         $this->assertSame(1, $this->target->getPhone()->count());
         $this->assertSame(1, $this->target->getPhone()->first()->getId());
-
-        $this->assertSame(1, $this->target->getWeb()->count());
-        $this->assertSame(1, $this->target->getWeb()->first()->getId());
 
         $this->assertSame(2, $this->target->getOptIn()->count());
         $this->assertSame(2, $this->target->getOptIn()->get(0)->getId());
@@ -624,11 +619,6 @@ final class MergeContactTest extends AbstractServiceTest
         $phone->setContact($source);
         $source->setPhone(new ArrayCollection([$phone]));
 
-        $web = new Web();
-        $web->setId(1);
-        $web->setContact($source);
-        $source->setWeb(new ArrayCollection([$web]));
-
         $optIn = new OptIn();
         $optIn->setId(1);
         $optIn->setContact(new ArrayCollection([$source]));
@@ -714,12 +704,6 @@ final class MergeContactTest extends AbstractServiceTest
         $parentDoa->setId(1);
         $parentDoa->setContact($source);
         $source->setParentDoa(new ArrayCollection([$parentDoa]));
-
-        $openId = new OpenId();
-        $openId->setId(1);
-        $openId->setIdentity('xxxxxxxxxx');
-        $openId->setContact($source);
-        $source->setOpenId(new ArrayCollection([$openId]));
 
         $domain = new Domain();
         $domain->setId(1);
@@ -1179,12 +1163,6 @@ final class MergeContactTest extends AbstractServiceTest
         $optIn->setId(2);
         $optIn->setContact(new ArrayCollection([$target]));
         $target->setOptIn(new ArrayCollection([$optIn]));
-
-        $openId = new OpenId();
-        $openId->setId(2);
-        $openId->setIdentity('yyyyyyyyyy');
-        $openId->setContact($target);
-        $target->setOpenId(new ArrayCollection([$openId]));
 
         $domain = new Domain();
         $domain->setId(2);

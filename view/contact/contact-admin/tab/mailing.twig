@@ -5,14 +5,14 @@
         <tr>
             <th>{{ translate("txt-opt-in") }}</th>
             <th>{{ translate("txt-description") }}</th>
-            <th>{{ translate("txt-auto-subscribe") }}</th>
+            <th>{{ translate("txt-opt-in-status") }}</th>
             <th>{{ translate("txt-active") }}</th>
         </tr>
         </thead>
         <tfoot>
         <tr>
             <td colspan="3"></td>
-            <td><input type="submit" name="updateOptIn" value="{{ translate("txt-update-opt-in") }}" class="btn btn-success btn-sm"></td>
+            <td><input type="submit" name="updateOptIn" value="{{ translate("txt-update-opt-in") }}" class="btn btn-primary btn-sm"></td>
         </tr>
         </tfoot>
         <tbody>
@@ -20,7 +20,7 @@
             <tr>
                 <td>{{ optIn.optIn }}</td>
                 <td>{{ optIn.description }}</td>
-                <td>{{ translate(optIn.autoSubscribe(true)) }}</td>
+                <td>{{ translate(optIn.getActive(true)) }}</td>
                 <td>
                     <input type="checkbox" name="optIn[]" value="{{ optIn.id }}"
                            {% for contactOptIn in contact.optIn if optIn.id == contactOptIn.id %}checked="checked"{% endfor %}

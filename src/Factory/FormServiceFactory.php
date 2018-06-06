@@ -24,26 +24,22 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 /**
  * Class FormServiceFactory
  *
- * @package Contact\Factory
+ * @package General\Factory
  */
 final class FormServiceFactory implements FactoryInterface
 {
     /**
+     * Create an instance of the requested class name.
+     *
      * @param ContainerInterface $container
-     * @param string $requestedName
-     * @param array|null $options
+     * @param string             $requestedName
+     * @param null|array         $options
      *
      * @return FormService
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null): FormService
     {
         /** @var FormService $formService */
-        $formService = new $requestedName();
-        $formService->setServiceLocator($container);
-        /** @var EntityManager $entityManager */
-        $entityManager = $container->get(EntityManager::class);
-        $formService->setEntityManager($entityManager);
-
-        return $formService;
+        return new $requestedName($container, $container->get(EntityManager::class));
     }
 }

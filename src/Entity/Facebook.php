@@ -15,7 +15,6 @@ namespace Contact\Entity;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Entity for the Facebook.
@@ -27,7 +26,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  *
  * @category    Contact
  */
-class Facebook extends EntityAbstract implements ResourceInterface
+class Facebook extends AbstractEntity
 {
     public const DISPLAY_NONE = 1;
     public const DISPLAY_ORGANISATION = 2;
@@ -57,11 +56,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * Constant for public = 1 (hidden).
      */
     public const IS_PUBLIC = 1;
-    /**
-     * Textual versions of the display.
-     *
-     * @var array
-     */
+
     protected static $displayTemplates
         = [
             self::DISPLAY_NONE         => 'txt-empty',
@@ -70,22 +65,14 @@ class Facebook extends EntityAbstract implements ResourceInterface
             self::DISPLAY_POSITION     => 'txt-position',
             self::DISPLAY_PROJECTS     => 'txt-projects',
         ];
-    /**
-     * Textual versions of the display.
-     *
-     * @var array
-     */
+
     protected static $showEmailTemplates
         = [
             self::SHOW_EMAIL_NO     => 'txt-hide-email',
             self::SHOW_EMAIL_MEMBER => 'txt-show-email-to-members',
             self::SHOW_EMAIL_ALL    => 'txt-show-email-to-all',
         ];
-    /**
-     * Textual versions of the display.
-     *
-     * @var array
-     */
+
     protected static $showPhoneTemplates
         = [
             self::SHOW_PHONE_NO            => 'txt-hide-phone',
@@ -93,21 +80,13 @@ class Facebook extends EntityAbstract implements ResourceInterface
             self::SHOW_MOBILE_PHONE_MEMBER => 'txt-show-mobile-phone-to-members',
             self::SHOW_PHONE_ALL           => 'txt-show-phone-to-all',
         ];
-    /**
-     * Textual versions of the hideForOthers.
-     *
-     * @var array
-     */
+
     protected static $canSendMessageTemplates
         = [
             self::CAN_NOT_SEND_MESSAGE => 'txt-cannot-send-message',
             self::CAN_SEND_MESSAGE     => 'txt-can-send-message',
         ];
-    /**
-     * Textual versions of the hideForOthers.
-     *
-     * @var array
-     */
+
     protected static $publicTemplates
         = [
             self::NOT_PUBLIC => 'txt-not-public',
@@ -133,8 +112,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="public", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"publicTemplates"})
-     * @Annotation\Attributes({"label":"txt-public", "required":"true"})
-     * @Annotation\Required(true)
+     * @Annotation\Attributes({"label":"txt-public"})
      *
      * @var int
      */
@@ -144,7 +122,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"canSendMessageTemplates"})
      * @Annotation\Attributes({"label":"txt-can-send-message", "required":"true","help-block": "txt-can-send-message-explanation"})
-     * @Annotation\Required(true)
      *
      * @var int
      */
@@ -152,10 +129,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     /**
      * @ORM\Column(name="from_clause", type="string", length=255, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Attributes({
-     * "required":"true",
-     * "class":"form-control",
-     * "placeholder":"txt-from-clause"})
+     * @Annotation\Attributes({"placeholder":"txt-from-clause"})
      * @Annotation\Options({"label":"txt-from-clause","help-block": "txt-from-clause-explanation"})
      *
      * @var string
@@ -164,10 +138,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     /**
      * @ORM\Column(name="where_clause", type="string", length=255, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Attributes({
-     * "required":"true",
-     * "class":"form-control",
-     * "placeholder":"txt-where-clause"})
+     * @Annotation\Attributes({"placeholder":"txt-where-clause"})
      * @Annotation\Options({"label":"txt-where-clause","help-block": "txt-where-clause-explanation"})
      *
      * @var string
@@ -176,10 +147,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     /**
      * @ORM\Column(name="orderby_clause", type="string", length=255, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Attributes({
-     * "required":"true",
-     * "class":"form-control",
-     * "placeholder":"txt-orderby-clause"})
+     * @Annotation\Attributes({"placeholder":"txt-orderby-clause"})
      * @Annotation\Options({"label":"txt-orderby-clause","help-block": "txt-orderby-clause-explanation"})
      *
      * @var string
@@ -188,10 +156,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     /**
      * @ORM\Column(name="contact_key", type="string", length=60, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Attributes({
-     * "required":"true",
-     * "class":"form-control",
-     * "placeholder":"txt-contact-key"})
+     * @Annotation\Attributes({"placeholder":"txt-contact-key"})
      * @Annotation\Options({"label":"txt-contact-key","help-block": "txt-contact-key-explanation"})
      *
      * @var string
@@ -201,7 +166,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="com_extra", type="string", length=255, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
-     * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-title","help-block": "txt-title-explanation"})
      *
      * @var string
@@ -211,7 +175,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="com_sub", type="smallint", length=255, nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
-     * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-sub-title","help-block": "txt-sub-title-explanation"})
      *
      * @var int
@@ -221,7 +184,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="show_email", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"showEmailTemplates"})
-     * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-show-email-title","help-block": "txt-show-email-explanation"})
      *
      * @var string
@@ -231,7 +193,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
      * @ORM\Column(name="show_phone", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"showPhoneTemplates"})
-     * @Annotation\Required(true)
      * @Annotation\Options({"label":"txt-show-phone-title","help-block": "txt-show-phone-explanation"})
      *
      * @var string
@@ -271,82 +232,51 @@ class Facebook extends EntityAbstract implements ResourceInterface
         $this->access = new Collections\ArrayCollection();
     }
 
-    /**
-     * @return array
-     */
-    public static function getDisplayTemplates()
+    public static function getDisplayTemplates(): array
     {
         return self::$displayTemplates;
     }
 
-    /**
-     * @return array
-     */
-    public static function getShowEmailTemplates()
+    public static function getShowEmailTemplates(): array
     {
         return self::$showEmailTemplates;
     }
 
-    /**
-     * @return array
-     */
-    public static function getShowPhoneTemplates()
+    public static function getShowPhoneTemplates(): array
     {
         return self::$showPhoneTemplates;
     }
 
-    /**
-     * @return array
-     */
-    public static function getCanSendMessageTemplates()
+    public static function getCanSendMessageTemplates(): array
     {
         return self::$canSendMessageTemplates;
     }
 
-    /**
-     * @return array
-     */
-    public static function getPublicTemplates()
+    public static function getPublicTemplates(): array
     {
         return self::$publicTemplates;
     }
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
+
+    public function __toString(): string
     {
         return (string)$this->facebook;
     }
 
-    /**
-     * New function needed to make the hydrator happy.
-     *
-     * @param Collections\Collection $collection
-     */
     public function addAccess(Collections\Collection $collection)
     {
         foreach ($collection as $access) {
@@ -354,11 +284,6 @@ class Facebook extends EntityAbstract implements ResourceInterface
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy.
-     *
-     * @param Collections\Collection $collection
-     */
     public function removeAccess(Collections\Collection $collection)
     {
         foreach ($collection as $access) {
@@ -487,7 +412,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     /**
      * @param bool $textual
      *
-     * @return string
+     * @return string|int
      */
     public function getTitle(bool $textual = false)
     {
@@ -509,7 +434,7 @@ class Facebook extends EntityAbstract implements ResourceInterface
     /**
      * @param bool $textual
      *
-     * @return string
+     * @return string|int
      */
     public function getSubtitle(bool $textual = false)
     {

@@ -14,7 +14,7 @@ namespace Contact\Service;
 
 use Admin\Service\AdminService;
 use Contact\Entity\Contact;
-use Contact\Entity\EntityAbstract;
+use Contact\Entity\AbstractEntity;
 use Contact\Entity\Selection;
 use Contact\Options\ModuleOptions;
 use Contact\Search\Service\ContactSearchService;
@@ -32,9 +32,9 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfcUser\Options\UserServiceOptionsInterface;
 
 /**
- * ServiceAbstract.
+ * AbstractService.
  */
-abstract class ServiceAbstract implements ServiceInterface
+abstract class AbstractService implements ServiceInterface
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -101,13 +101,13 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function findAll($entity)
     {
-        return $this->getEntityManager()->getRepository($entity)->findAll();
+        return $this->entityManager->getRepository($entity)->findAll();
     }
 
     /**
      * @return \Doctrine\ORM\EntityManager
      */
-    public function getEntityManager(): \Doctrine\ORM\EntityManager
+    public function entityManager: \Doctrine\ORM\EntityManager
     {
         return $this->entityManager;
     }
@@ -115,7 +115,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param \Doctrine\ORM\EntityManager $entityManager
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setEntityManager($entityManager)
     {
@@ -132,7 +132,7 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function findEntitiesFiltered($entity, $filter)
     {
-        $equipmentList = $this->getEntityManager()->getRepository($entity)
+        $equipmentList = $this->entityManager->getRepository($entity)
             ->findFiltered($filter, AbstractQuery::HYDRATE_SIMPLEOBJECT);
 
         return $equipmentList;
@@ -148,28 +148,28 @@ abstract class ServiceAbstract implements ServiceInterface
      */
     public function findEntityById($entity, $id)
     {
-        return $this->getEntityManager()->find($entity, $id);
+        return $this->entityManager->find($entity, $id);
     }
 
     /**
-     * @param EntityAbstract $entity
+     * @param AbstractEntity $entity
      *
-     * @return EntityAbstract
+     * @return AbstractEntity
      */
-    public function newEntity(EntityAbstract $entity)
+    public function newEntity(AbstractEntity $entity)
     {
         return $this->updateEntity($entity);
     }
 
     /**
-     * @param EntityAbstract $entity
+     * @param AbstractEntity $entity
      *
-     * @return EntityAbstract
+     * @return AbstractEntity
      */
-    public function updateEntity(EntityAbstract $entity)
+    public function updateEntity(AbstractEntity $entity)
     {
-        $this->getEntityManager()->persist($entity);
-        $this->getEntityManager()->flush();
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
 
         // Update the search engine after contact update
         if ($entity instanceof Contact) {
@@ -186,14 +186,14 @@ abstract class ServiceAbstract implements ServiceInterface
     }
 
     /**
-     * @param EntityAbstract $entity
+     * @param AbstractEntity $entity
      *
      * @return bool
      */
-    public function removeEntity(EntityAbstract $entity)
+    public function removeEntity(AbstractEntity $entity)
     {
-        $this->getEntityManager()->remove($entity);
-        $this->getEntityManager()->flush();
+        $this->entityManager->remove($entity);
+        $this->entityManager->flush();
 
         return true;
     }
@@ -209,7 +209,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param ModuleOptions $moduleOptions
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setModuleOptions($moduleOptions)
     {
@@ -229,7 +229,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param DeeplinkService $deeplinkService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setDeeplinkService($deeplinkService)
     {
@@ -249,7 +249,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param ProjectService $projectService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setProjectService($projectService)
     {
@@ -269,7 +269,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param SelectionService $selectionService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setSelectionService($selectionService)
     {
@@ -293,7 +293,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param MeetingService $meetingService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setMeetingService($meetingService)
     {
@@ -313,7 +313,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param ServiceLocatorInterface|ContainerInterface $serviceLocator
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setServiceLocator($serviceLocator)
     {
@@ -333,7 +333,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param OrganisationService $organisationService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setOrganisationService($organisationService)
     {
@@ -353,7 +353,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param GeneralService $generalService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setGeneralService($generalService)
     {
@@ -377,7 +377,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param EmailService $emailService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setEmailService($emailService)
     {
@@ -397,7 +397,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param AdminService $adminService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setAdminService($adminService)
     {
@@ -417,7 +417,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param AddressService $addressService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setAddressService($addressService)
     {
@@ -437,7 +437,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param UserServiceOptionsInterface $zfcUserOptions
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setZfcUserOptions($zfcUserOptions)
     {
@@ -457,7 +457,7 @@ abstract class ServiceAbstract implements ServiceInterface
     /**
      * @param ContactService $contactService
      *
-     * @return ServiceAbstract
+     * @return AbstractService
      */
     public function setContactService($contactService)
     {

@@ -14,51 +14,71 @@ namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
 use Contact\Form\SendMessage;
-use Zend\Mvc\Plugin\FlashMessenger\FlashMessenger;
+use Contact\Service\ContactService;
+use General\Service\EmailService;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\View\Model\ViewModel;
-use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
- * @category    Contact
+ * Class FacebookController
  *
- * @method      ZfcUserAuthentication zfcUserAuthentication()
- * @method      FlashMessenger flashMessenger()
- * @method      bool isAllowed($resource, $action)
+ * @package Contact\Controller
  */
-class FacebookController extends ContactAbstractController
+final class FacebookController extends ContactAbstractController
 {
     /**
-     * @return ViewModel
+     * @var ContactService
      */
-    public function facebookAction()
+    private $contactService;
+    /**
+     * @var EmailService
+     */
+    private $emailService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        ContactService $contactService,
+        EmailService $emailService,
+        TranslatorInterface $translator
+    ) {
+        $this->contactService = $contactService;
+        $this->emailService = $emailService;
+        $this->translator = $translator;
+    }
+
+    public function facebookAction(): ViewModel
     {
         /**
          * @var Facebook $facebook
          */
-        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('facebook'));
+        $facebook = $this->contactService->find(Facebook::class, (int)$this->params('facebook'));
+
+        if (null === $facebook) {
+            return $this->notFoundAction();
+        }
 
         return new ViewModel(
             [
                 'facebook'          => $facebook,
-                'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
-                'contactInFacebook' => $this->getContactService()->isContactInFacebook(
-                    $this->zfcUserAuthentication()
-                        ->getIdentity(),
-                    $facebook
-                ),
+                'contacts'          => $this->contactService->findContactsInFacebook($facebook),
+                'contactInFacebook' => $this->contactService->isContactInFacebook($this->identity(), $facebook),
             ]
         );
     }
 
-    /**
-     * @return \Zend\Http\Response|ViewModel
-     */
     public function sendMessageAction()
     {
         /**
          * @var $facebook Facebook
          */
-        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
+        $facebook = $this->contactService->find(Facebook::class, (int)$this->params('id'));
+
+        if (null === $facebook) {
+            return $this->notFoundAction();
+        }
 
         $data = $this->getRequest()->getPost()->toArray();
 
@@ -80,33 +100,33 @@ class FacebookController extends ContactAbstractController
                 /*
                  * Send the email tot he office
                  */
-                $email = $this->getEmailService()->create();
+                $email = $this->emailService->create();
                 $email->setPersonal(false); //Send 1 email to everyone
-                $email->setFromContact($this->zfcUserAuthentication()->getIdentity());
+                $email->setFromContact($this->identity());
                 /*
                  * Inject the contacts in the email
                  */
-                foreach ($this->getContactService()->findContactsInFacebook($facebook) as $contact) {
+                foreach ($this->contactService->findContactsInFacebook($facebook) as $contact) {
                     $email->addTo($contact['contact']);
                 }
 
                 $email->setSubject(
-                    sprintf(
+                    \sprintf(
                         '[%s] Message received from %s',
                         $facebook->getFacebook(),
-                        $this->zfcUserAuthentication()->getIdentity()->getDisplayName()
+                        $this->identity()->getDisplayName()
                     )
                 );
 
                 $email->setHtmlLayoutName('signature_twig');
                 $email->setMessage(nl2br($form->getData()['message']));
 
-                $this->getEmailService()->send();
+                $this->emailService->send();
 
                 $this->flashMessenger()
                     ->addSuccessMessage(
                         sprintf(
-                            $this->translate("txt-message-to-attendees-for-%s-has-been-sent"),
+                            $this->translator->translate("txt-message-to-attendees-for-%s-has-been-sent"),
                             $facebook->getFacebook()
                         )
                     );
@@ -119,7 +139,7 @@ class FacebookController extends ContactAbstractController
             [
                 'form'     => $form,
                 'facebook' => $facebook,
-                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
+                'contacts' => $this->contactService->findContactsInFacebook($facebook),
             ]
         );
     }

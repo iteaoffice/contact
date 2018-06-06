@@ -17,9 +17,14 @@ use Contact\Entity\Selection;
 use Contact\Form\AddContactToSelection;
 use Contact\Form\SelectionContacts;
 use Contact\Form\SelectionFilter;
+use Contact\Service\ContactService;
+use Contact\Service\FormService;
+use Contact\Service\SelectionContactService;
+use Contact\Service\SelectionService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Zend\Http\Response;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -29,16 +34,49 @@ use Zend\View\Model\ViewModel;
  *
  * @package Contact\Controller
  */
-class SelectionManagerController extends ContactAbstractController
+final class SelectionManagerController extends ContactAbstractController
 {
     /**
-     * @return ViewModel
+     * @var ContactService
      */
+    private $contactService;
+    /**
+     * @var SelectionContactService
+     */
+    private $selectionContactService;
+    /**
+     * @var SelectionService
+     */
+    private $selectionService;
+    /**
+     * @var FormService
+     */
+    private $formService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        ContactService $contactService,
+        SelectionContactService $selectionContactService,
+        SelectionService $selectionService,
+        FormService $formService,
+        TranslatorInterface $translator
+    ) {
+        $this->contactService = $contactService;
+        $this->selectionContactService = $selectionContactService;
+        $this->selectionService = $selectionService;
+        $this->formService = $formService;
+        $this->translator = $translator;
+    }
+
+
     public function listAction(): ViewModel
     {
         $page = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
-        $contactQuery = $this->getContactService()->findEntitiesFiltered(Selection::class, $filterPlugin->getFilter());
+        $contactQuery = $this->contactService->findFiltered(Selection::class, $filterPlugin->getFilter());
 
         $paginator
             = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
@@ -46,7 +84,7 @@ class SelectionManagerController extends ContactAbstractController
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
 
-        $form = new SelectionFilter($this->getSelectionService());
+        $form = new SelectionFilter($this->selectionService);
 
         $form->setData(['filter' => $filterPlugin->getFilter()]);
 
@@ -57,28 +95,21 @@ class SelectionManagerController extends ContactAbstractController
                 'encodedFilter'    => urlencode($filterPlugin->getHash()),
                 'order'            => $filterPlugin->getOrder(),
                 'direction'        => $filterPlugin->getDirection(),
-                'selectionService' => $this->getSelectionService()
+                'selectionService' => $this->selectionService
             ]
         );
     }
 
-    /**
-     * @return ViewModel
-     */
     public function viewAction(): ViewModel
     {
-        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
+        $selection = $this->selectionService->findSelectionById((int)$this->params('id'));
 
         if (null === $selection) {
             return $this->notFoundAction();
         }
 
-        /**
-         * If the query is wrong an exception is thrown now
-         */
-
         try {
-            $contacts = $this->getContactService()->findContactsInSelection($selection, true);
+            $contacts = $this->selectionContactService->findContactsInSelection($selection, true);
 
             $error = false;
         } catch (\Throwable $e) {
@@ -88,7 +119,7 @@ class SelectionManagerController extends ContactAbstractController
 
         return new ViewModel(
             [
-                'selectionService' => $this->getSelectionService(),
+                'selectionService' => $this->selectionService,
                 'selection'        => $selection,
                 'contacts'         => $contacts,
                 'error'            => $error,
@@ -96,12 +127,9 @@ class SelectionManagerController extends ContactAbstractController
         );
     }
 
-    /**
-     * @return \Zend\Http\Response|ViewModel
-     */
     public function editContactsAction()
     {
-        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
+        $selection = $this->selectionService->findSelectionById((int)$this->params('id'));
 
         if (null === $selection) {
             return $this->notFoundAction();
@@ -109,14 +137,14 @@ class SelectionManagerController extends ContactAbstractController
 
         $data = array_merge(
             [
-                'type' => $this->getSelectionService()->isSql($selection) ? Selection::TYPE_SQL : Selection::TYPE_FIXED,
-                'sql'  => $this->getSelectionService()->isSql($selection) ? $selection->getSql()->getQuery() : null,
+                'type' => $this->selectionService->isSql($selection) ? Selection::TYPE_SQL : Selection::TYPE_FIXED,
+                'sql'  => $this->selectionService->isSql($selection) ? $selection->getSql()->getQuery() : null,
             ],
             $this->getRequest()->getPost()->toArray()
         );
 
 
-        $form = new SelectionContacts($this->getSelectionService());
+        $form = new SelectionContacts($this->selectionService);
         $form->setData($data);
 
 
@@ -125,30 +153,23 @@ class SelectionManagerController extends ContactAbstractController
                 return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
             }
 
-            $this->getSelectionService()->updateSelectionContacts($selection, $data);
-
-            /**
-             * @var $selection Selection
-             */
+            $this->selectionService->updateSelectionContacts($selection, $data);
 
             return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
         }
 
         return new ViewModel(
             [
-                'selectionService' => $this->getSelectionService(),
+                'selectionService' => $this->selectionService,
                 'selection'        => $selection,
                 'form'             => $form,
             ]
         );
     }
 
-    /**
-     * @return \Zend\Http\Response|ViewModel
-     */
     public function addContactAction()
     {
-        $contact = $this->getContactService()->findContactById($this->params('contactId'));
+        $contact = $this->contactService->findContactById((int)$this->params('contactId'));
 
         if (null === $contact) {
             return $this->notFoundAction();
@@ -157,7 +178,7 @@ class SelectionManagerController extends ContactAbstractController
         $data = $this->getRequest()->getPost()->toArray();
 
 
-        $form = new AddContactToSelection($this->getSelectionService());
+        $form = new AddContactToSelection($this->selectionService);
         $form->setData($data);
 
         if ($this->getRequest()->isPost()) {
@@ -166,26 +187,21 @@ class SelectionManagerController extends ContactAbstractController
             }
 
             //Find the selection
-            $selection = $this->getSelectionService()->findSelectionById($data['selection']);
+            $selection = $this->selectionService->findSelectionById($data['selection']);
 
             if (null === $selection) {
-                throw new \InvalidArgumentException("Selection cannot be found");
+                throw new \InvalidArgumentException('Selection cannot be found');
             }
 
-            $this->getSelectionService()->addContactToSelection($selection, $contact);
+            $this->selectionService->addContactToSelection($selection, $contact);
 
-            $this->flashMessenger()->setNamespace('success')
-                ->addMessage(
-                    sprintf(
-                        $this->translate("txt-contact-%s-has-been-added-to-selection-%s-successfully"),
-                        $contact->parseFullName(),
-                        $selection->getSelection()
-                    )
-                );
-
-            /**
-             * @var $selection Selection
-             */
+            $this->flashMessenger()->addSuccessMessage(
+                sprintf(
+                    $this->translator->translate("txt-contact-%s-has-been-added-to-selection-%s-successfully"),
+                    $contact->parseFullName(),
+                    $selection->getSelection()
+                )
+            );
 
             return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
         }
@@ -198,12 +214,9 @@ class SelectionManagerController extends ContactAbstractController
         );
     }
 
-    /**
-     * @return \Zend\Http\Response|ViewModel
-     */
     public function editAction()
     {
-        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
+        $selection = $this->selectionService->findSelectionById((int)$this->params('id'));
 
         if (null === $selection) {
             return $this->notFoundAction();
@@ -211,9 +224,9 @@ class SelectionManagerController extends ContactAbstractController
 
         $data = $this->getRequest()->getPost()->toArray();
 
-        $form = $this->getFormService()->prepare($selection, $selection, $data);
+        $form = $this->formService->prepare($selection, $data);
 
-        if (!\is_null($selection->getContact())) {
+        if (null !== $selection->getContact()) {
             $form->get($selection->get('underscore_entity_name'))->get('contact')->injectContact(
                 $selection->getContact()
             );
@@ -232,12 +245,12 @@ class SelectionManagerController extends ContactAbstractController
             }
 
             if (isset($data['delete'])) {
-                $this->getSelectionService()->removeEntity($selection);
+                $this->selectionService->delete($selection);
 
                 $this->flashMessenger()->setNamespace('success')
                     ->addMessage(
                         sprintf(
-                            $this->translate("txt-selection-%s-has-successfully-been-removed"),
+                            $this->translator->translate("txt-selection-%s-has-successfully-been-removed"),
                             $selection->getSelection()
                         )
                     );
@@ -253,7 +266,7 @@ class SelectionManagerController extends ContactAbstractController
                  * @var $selection Selection
                  */
                 $selection = $form->getData();
-                $this->getSelectionService()->updateEntity($selection);
+                $this->selectionService->save($selection);
 
                 return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
             }
@@ -262,51 +275,37 @@ class SelectionManagerController extends ContactAbstractController
         return new ViewModel(
             [
                 'form'             => $form,
-                'selectionService' => $this->getSelectionService(),
+                'selectionService' => $this->selectionService,
                 'selection'        => $selection,
             ]
         );
     }
 
-    /**
-     * @return \Zend\Http\Response|ViewModel
-     */
     public function newAction()
     {
-        $selection = new Selection();
-
         $data = $this->getRequest()->getPost()->toArray();
 
-        $form = $this->getFormService()->prepare($selection, $selection, $data);
+        $form = $this->formService->prepare(Selection::class, $data);
         $form->remove('delete');
 
-        $form->get('contact_entity_selection')->get('contact')->injectContact(
-            $this->zfcUserAuthentication()
-                ->getIdentity()
-        );
+        $form->get('contact_entity_selection')->get('contact')->injectContact($this->identity());
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute('zfcadmin/selection/list');
             }
 
-            /**
-             * Save the form
-             */
             if ($form->isValid()) {
-                /**
-                 * @var $selection Selection
-                 */
+                /** @var Selection $selection */
                 $selection = $form->getData();
-                $this->getSelectionService()->updateEntity($selection);
+                $this->selectionService->save($selection);
 
-                $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(
-                        sprintf(
-                            $this->translate("txt-selection-%s-has-been-created-successfully"),
-                            $selection->getSelection()
-                        )
-                    );
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(
+                        $this->translator->translate("txt-selection-%s-has-been-created-successfully"),
+                        $selection->getSelection()
+                    )
+                );
 
                 return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
             }
@@ -315,25 +314,22 @@ class SelectionManagerController extends ContactAbstractController
         return new ViewModel(['form' => $form]);
     }
 
-    /**
-     * @return JsonModel|ViewModel
-     */
-    public function getContactsAction()
+    public function getContactsAction(): JsonModel
     {
-        $selection = $this->getSelectionService()->findSelectionById($this->params()->fromPost('id'));
+        $selection = $this->selectionService->findSelectionById((int)$this->params()->fromPost('id'));
 
         if (null === $selection) {
-            return $this->notFoundAction();
+            return new JsonModel([]);
         }
 
         $results = [];
-        foreach ($this->getContactService()->findContactsInSelection($selection) as $contact) {
-            $text = trim(sprintf("%s (%s)", $contact->getFormName(), $contact->getEmail()));
+        foreach ($this->selectionContactService->findContactsInSelection($selection) as $contact) {
+            $text = trim(sprintf('%s (%s)', $contact->getFormName(), $contact->getEmail()));
 
             /*
              * Do a fall-back to the email when the name is empty
              */
-            if (\strlen($text) === 0) {
+            if ('' === \strlen($text)) {
                 $text = $contact->getEmail();
             }
 
@@ -343,7 +339,7 @@ class SelectionManagerController extends ContactAbstractController
                 'name'         => $contact->getFormName(),
                 'id'           => $contact->getId(),
                 'email'        => $contact->getEmail(),
-                'organisation' => \is_null($contact->getContactOrganisation())
+                'organisation' => null === $contact->getContactOrganisation()
                     ?: $contact->getContactOrganisation()->getOrganisation()->getOrganisation(),
             ];
         }
@@ -351,12 +347,9 @@ class SelectionManagerController extends ContactAbstractController
         return new JsonModel($results);
     }
 
-    /**
-     * @return Response
-     */
     public function exportAction(): Response
     {
-        $selection = $this->getSelectionService()->findSelectionById($this->params('id'));
+        $selection = $this->selectionService->findSelectionById((int)$this->params('id'));
 
         if (null === $selection) {
             $response = new Response();

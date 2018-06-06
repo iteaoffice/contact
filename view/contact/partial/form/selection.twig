@@ -1,5 +1,4 @@
 {% do form.prepare() %}
-{% do form.setAttribute('class','form-horizontal') %}
 
 {{ form().openTag(form)|raw }}
 
@@ -10,8 +9,9 @@
 {{ ztbformelement(selection.get('tag')) }}
 {{ ztbformelement(selection.get('note')) }}
 {{ contactformelement(selection.get('contact')) }}
-{{ ztbformelement(selection.get('personal')) }}
-{{ ztbformelement(selection.get('private')) }}
+{{ ztbformelement(selection.get('core')) }}
+
+{{ ztbformelement(form.get('csrf')) }}
 
 <div class="form-group row">
     <div class="offset-md-3 col-sm-offset-3 col-sm-9">

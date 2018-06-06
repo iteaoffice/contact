@@ -28,21 +28,11 @@ use Zend\Mvc\MvcEvent;
  */
 class Module implements Feature\ConfigProviderInterface, Feature\BootstrapListenerInterface
 {
-    /**
-     * @return array
-     */
     public function getConfig(): array
     {
         return include __DIR__ . '/../config/module.config.php';
     }
 
-    /**
-     * Listen to the bootstrap event.
-     *
-     * @param EventInterface $e
-     *
-     * @return array
-     */
     public function onBootstrap(EventInterface $e)
     {
         $app = $e->getParam('application');

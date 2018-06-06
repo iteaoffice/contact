@@ -4,21 +4,25 @@
 <h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
 
 <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item active"><a class="nav-link active" role="tab" href="#profile"
-                                   data-toggle="tab">{{ translate("txt-profile")|capitalize }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#organisation"
-                            data-toggle="tab">{{ translate("txt-organisation")|capitalize }} {% if not contact.contactOrganisation %}
-                <i
-                        class="error fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <li class="nav-item active"><a class="nav-link active"
+                                   href="{{ url('community/contact/profile/view') }}">{{ translate("txt-profile")|capitalize }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/organisation') }}">{{ translate("txt-organisation")|capitalize }}
+            {% if not contact.contactOrganisation %}
+                <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>
             {% endif %}</a></li>
-    <li class="nav-item"><a class="nav-link" role="tab" href="#event"
-                            data-toggle="tab">{{ translate("txt-events")|capitalize }}</a></li>
-    <li class="nav-item"><a class="nav-link" role="tab" href="#updates"
-                            data-toggle="tab">{{ translate("txt-updates")|capitalize }}</a></li>
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/events') }}">{{ translate("txt-events")|capitalize }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/privacy') }}">{{ translate("txt-privacy")|capitalize }}</a>
+    </li>
 </ul>
 
-<div class="tab-content">
-    <div class="tab-pane active" role="tabpanel" id="profile">
+<div class="row">
+    <div class="col-md-9">
+
         <h2>{{ translate("txt-personal-profile") }}</h2>
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
@@ -37,7 +41,7 @@
             {% endif %}
             <dt>{{ translate("txt-profile-visibility") }}</dt>
             {% if contact.profile.visible is not null %}
-                <dd>{{ translate(contact.profile.visible(true)) }}</dd>
+                <dd>{{ translate(contact.profile.getVisible(true)) }}</dd>
             {% else %}
                 <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
             {% endif %}
@@ -45,7 +49,7 @@
             <dd>{{ contact.profile.description|nl2br }}</dd>
         </dl>
 
-        {{ contactLink(contact,'edit-profile', 'button') }}
+        {{ profileLink(contact,'edit', 'button') }}
         {{ contactLink(contact,'change-password', 'button') }}
 
         {% if hasNda %}
@@ -60,55 +64,9 @@
 
         {% endif %}
     </div>
-
-
-    <div class="tab-pane" role="tabpanel" id="organisation">
-        <h2>{{ translate("txt-organisation") }}</h2>
-        {% if contact.contactOrganisation %}
-            <dl class="dl-horizontal">
-                <dt>{{ translate("txt-organisation") }}</dt>
-                <dd>{{ contactService.parseOrganisation(contact) }}</dd>
-                <dt>{{ translate("txt-organisation-type") }}</dt>
-                <dd>{{ contact.contactOrganisation.organisation.type.description }}</dd>
-                <dt>{{ translate("txt-country") }}</dt>
-                <dd>{{ contact.contactOrganisation.organisation.country }}</dd>
-                {% if contact.department %}
-                    <dt>{{ translate("txt-department") }}</dt>
-                    <dd>{{ contact.department }}</dd>
-                {% endif %}
-                {% if contact.position %}
-                    <dt>{{ translate("txt-position") }}</dt>
-                    <dd>{{ contact.position }}</dd>
-                {% endif %}
-                {% if contact.contactOrganisation.organisation.description|length > 0 %}
-                    <dt>{{ translate("txt-general-description") }}</dt>
-                    <dd>{{ contact.contactOrganisation.organisation.description|raw }}</dd>
-                {% endif %}
-            </dl>
-        {% else %}
-            {{ ztbalert().danger(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
-        {% endif %}
-        {{ contactLink(contact,'edit-profile', 'button') }}
+    <div class="col-md-3">
+        <br><br>
+        {{ contactPhoto(contact, 150, false, true) }}
     </div>
 
-    <div class="tab-pane" role="tabpanel" id="event">
-        <h2>{{ translate("txt-events") }}</h2>
-
-        {% include 'event/partial/list/meeting-list' %}
-    </div>
-
-
-    <div class="tab-pane" role="tabpanel" id="updates">
-        <h2>{{ translate("txt-updates") }}</h2>
-
-        <p>{{ translate("txt-updates-explanation") }}</p>
-
-        <div ng-app="community">
-            {% for optIn in optIns %}
-                {% include 'contact/partial/optin-button' with {'optIn': optIn} %}
-                <br>
-            {% endfor %}
-        </div>
-
-    </div>
 </div>

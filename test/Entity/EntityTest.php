@@ -10,8 +10,9 @@
 
 namespace ContactTest\Entity;
 
+use Contact\Entity\AbstractEntity;
 use PHPUnit\Framework\TestCase;
-use Project\Entity\EntityAbstract;
+
 use Symfony\Component\Finder\Finder;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element;
@@ -37,7 +38,7 @@ class EntityTest extends TestCase
             $testClass = new \ReflectionClass($className);
 
             if ($testClass->isInstantiable()) {
-                /** @var EntityAbstract $object */
+                /** @var AbstractEntity $object */
                 $object = new $className;
 
                 $this->assertInstanceOf($className, $object);
@@ -78,19 +79,17 @@ class EntityTest extends TestCase
                         $labels[] = $element->getOptions()['placeholder'];
                     }
 
-                    foreach ($testClass->getStaticProperties() as $constant) {
-                        if (\is_array($constant)) {
-                            foreach ($constant as $constantValue) {
-                                $labels[] = $constantValue;
-                            }
-                        }
-                    }
-
                     $this->assertInternalType('array', ($element->getAttributes()));
                     $this->assertInternalType('array', ($element->getOptions()));
-
                 }
 
+                foreach ($testClass->getStaticProperties() as $constant) {
+                    if (\is_array($constant)) {
+                        foreach ($constant as $constantValue) {
+                            $labels[] = $constantValue;
+                        }
+                    }
+                }
             }
         }
 

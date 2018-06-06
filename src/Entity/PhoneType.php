@@ -25,7 +25,7 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class PhoneType extends EntityAbstract
+class PhoneType extends AbstractEntity
 {
     public const PHONE_TYPE_DIRECT = 1;
     public const PHONE_TYPE_MOBILE = 2;
@@ -47,18 +47,10 @@ class PhoneType extends EntityAbstract
     private $type;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="type")
-     * @Annotation\Exclude()
      *
      * @var \Contact\Entity\Phone[]
      */
     private $phone;
-
-    /**
-     * Class constructor.
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * Static array for phone types to enable validation based on types.
@@ -75,43 +67,22 @@ class PhoneType extends EntityAbstract
         ];
     }
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     * @return bool
-     */
     public function __isset($property)
     {
         return isset($this->$property);
     }
 
-
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->type;
     }

@@ -21,7 +21,19 @@ return [
                         'label' => _("txt-account-information"),
                         'route' => 'community/contact/profile/view',
                         'pages' => [
-                            'edit-profile'                => [
+                            'organisation'                => [
+                                'label' => _("txt-profile-organisation"),
+                                'route' => 'community/contact/profile/organisation',
+                            ],
+                            'events'                      => [
+                                'label' => _("txt-profile-events"),
+                                'route' => 'community/contact/profile/events',
+                            ],
+                            'privacy'                     => [
+                                'label' => _("txt-profile-privacy"),
+                                'route' => 'community/contact/profile/privacy',
+                            ],
+                            'edit'                        => [
                                 'label' => _("txt-profile-edit"),
                                 'route' => 'community/contact/profile/edit',
                             ],
@@ -62,7 +74,7 @@ return [
         ],
         'admin'     => [
             // And finally, here is where we define our page hierarchy
-            'contact'    => [
+            'contact' => [
                 'label'    => _("txt-nav-contact"),
                 'route'    => 'zfcadmin/contact-admin/list',
                 'order'    => 10,
@@ -293,10 +305,46 @@ return [
                             ],
                         ],
                     ],
+                    'opt-in'     => [
+                        'label' => _("txt-nav-opt-in-list"),
+                        'route' => 'zfcadmin/opt-in/list',
+                        'order' => 40,
+                        'pages' => [
+                            'view-opt-in' => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/opt-in/view',
+                                'visible' => false,
+                                'params'  => [
+                                    'entities'   => [
+                                        'id' => \Contact\Entity\OptIn::class,
+                                    ],
+                                    'invokables' => [
+                                        Contact\Navigation\Invokable\OptInLabel::class,
+                                    ],
+                                ],
+                                'pages'   => [
+                                    'edit-opt-in' => [
+                                        'label'   => _('txt-edit-opt-in'),
+                                        'route'   => 'zfcadmin/opt-in/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities' => [
+                                                'id' => \Contact\Entity\OptIn::class,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'new-opt-in'  => [
+                                'label' => _('txt-new-opt-in'),
+                                'route' => 'zfcadmin/opt-in/new',
+                            ],
+                        ],
+                    ],
 
                 ],
             ],
-            'tools'      => [
+            'tools'   => [
                 'pages' => [
                     'import'                    => [
                         'label' => _("txt-nav-contact-import"),

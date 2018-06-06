@@ -15,7 +15,6 @@ namespace Contact\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Domain.
@@ -26,7 +25,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  *
  * @category    Contact
  */
-class Note extends EntityAbstract implements ResourceInterface
+class Note extends AbstractEntity
 {
     public const SOURCE_SIGNATURE = 'signature';
 
@@ -69,44 +68,22 @@ class Note extends EntityAbstract implements ResourceInterface
      */
     private $contact;
 
-
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     * @return bool
-     */
     public function __isset($property)
     {
         return isset($this->$property);
     }
 
-
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->getNote();
     }

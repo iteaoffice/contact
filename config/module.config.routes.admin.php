@@ -285,6 +285,60 @@ return [
                             ],
                         ],
                     ],
+                    'opt-in'        => [
+                        'type'          => 'Segment',
+                        'options'       => [
+                            'route'    => '/opt-in',
+                            'defaults' => [
+                                'controller' => Controller\OptInManagerController::class,
+                                'action'     => 'list',
+                                'page'       => 1,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'list' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/list[/f-:encodedFilter][/page-:page].html',
+                                    'defaults' => [
+                                        'action' => 'list',
+                                    ],
+                                ],
+                            ],
+                            'new'  => [
+                                'type'     => 'Literal',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new.html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'view' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/view/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'view',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                     'address'       => [
                         'type'          => 'Segment',
                         'options'       => [

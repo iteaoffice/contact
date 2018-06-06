@@ -15,7 +15,6 @@ namespace Contact\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Entity for a CV.
@@ -27,7 +26,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  *
  * @category    Contact
  */
-class Cv extends EntityAbstract implements ResourceInterface
+class Cv extends AbstractEntity
 {
     /**
      * @ORM\Column(name="cv_id", type="integer", nullable=false)
@@ -74,33 +73,16 @@ class Cv extends EntityAbstract implements ResourceInterface
      */
     private $contact;
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     * @return bool
-     */
     public function __isset($property)
     {
         return isset($this->$property);
@@ -112,7 +94,7 @@ class Cv extends EntityAbstract implements ResourceInterface
     public function parseCV(): string
     {
         rewind($this->cv);
-        return (string) stream_get_contents($this->cv);
+        return (string)stream_get_contents($this->cv);
     }
 
     /**

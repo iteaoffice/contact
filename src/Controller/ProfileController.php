@@ -13,10 +13,16 @@ declare(strict_types=1);
 namespace Contact\Controller;
 
 use Contact\Entity\Contact;
-use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
 use Contact\Form\Profile;
-use Doctrine\Common\Collections\ArrayCollection;
+use Contact\Service\ContactService;
+use Doctrine\ORM\EntityManager;
+use General\Service\GeneralService;
+use Organisation\Service\OrganisationService;
+use Program\Options\ModuleOptions;
+use Program\Service\CallService;
+use Zend\Http\Response;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Validator\File\ImageSize;
 use Zend\Validator\File\MimeType;
 use Zend\View\Model\ViewModel;
@@ -26,59 +32,266 @@ use Zend\View\Model\ViewModel;
  *
  * @package Contact\Controller
  */
-class ProfileController extends ContactAbstractController
+final class ProfileController extends ContactAbstractController
 {
     /**
-     * @return ViewModel
+     * @var ContactService
      */
-    public function viewAction(): ViewModel
+    private $contactService;
+    /**
+     * @var OrganisationService
+     */
+    private $organisationService;
+    /**
+     * @var CallService
+     */
+    private $callService;
+    /**
+     * @var ModuleOptions
+     */
+    private $programModuleOptions;
+    /**
+     * @var GeneralService
+     */
+    private $generalService;
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        ContactService $contactService,
+        OrganisationService $organisationService,
+        CallService $callService,
+        ModuleOptions $programModuleOptions,
+        GeneralService $generalService,
+        EntityManager $entityManager,
+        TranslatorInterface $translator
+    ) {
+        $this->contactService = $contactService;
+        $this->organisationService = $organisationService;
+        $this->callService = $callService;
+        $this->programModuleOptions = $programModuleOptions;
+        $this->generalService = $generalService;
+        $this->entityManager = $entityManager;
+        $this->translator = $translator;
+    }
+
+
+    public function viewAction()
     {
+        if (!$this->identity()->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+            );
+
+            return $this->redirect()->toRoute('community/contact/profile/activate');
+        }
+
         return new ViewModel(
             [
-                'contactService' => $this->getContactService(),
-                'contact'        => $this->zfcUserAuthentication()->getIdentity(),
-                'optIns'         => $this->getContactService()->findAll(OptIn::class),
-                'callService'    => $this->getCallService(),
-                'hasIdentity'    => $this->zfcUserAuthentication()->hasIdentity(),
-                'hasNda'         => $this->getProgramModuleOptions()->getHasNda(),
+                'contactService' => $this->contactService,
+                'contact'        => $this->identity(),
+                'optIns'         => $this->contactService->findActiveOptIns(),
+                'callService'    => $this->callService,
+                'hasIdentity'    => null !== $this->identity(),
+                'hasNda'         => $this->programModuleOptions->getHasNda(),
             ]
         );
     }
 
-    /**
-     * @return ViewModel
-     */
+    public function privacyAction()
+    {
+        if (!$this->identity()->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+            );
+
+            return $this->redirect()->toRoute(
+                'community/contact/profile/activate',
+                ['hash' => $this->identity()->getHash()]
+            );
+        }
+
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost()->toArray();
+
+            $this->contactService->updateOptInForContact($this->identity(), $data['optIn'] ?? []);
+
+            $changelogMessage = sprintf(
+                $this->translator->translate("txt-your-opt-in-settings-been-updated-successfully")
+            );
+
+            $this->flashMessenger()->addSuccessMessage($changelogMessage);
+            $this->contactService->addNoteToContact($changelogMessage, 'office', $this->identity());
+
+            return $this->redirect()->toRoute('community/contact/profile/privacy');
+        }
+
+        return new ViewModel(
+            [
+                'contactService' => $this->contactService,
+                'contact'        => $this->identity(),
+                'optIns'         => $this->contactService->findActiveOptIns(),
+            ]
+        );
+    }
+
+    public function organisationAction()
+    {
+        if (!$this->identity()->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+            );
+
+            return $this->redirect()->toRoute(
+                'community/contact/profile/activate',
+                ['hash' => $this->identity()->getHash()]
+            );
+        }
+
+        return new ViewModel(
+            [
+                'contactService' => $this->contactService,
+                'contact'        => $this->identity(),
+            ]
+        );
+    }
+
+    public function eventsAction()
+    {
+        if (!$this->identity()->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+            );
+
+            return $this->redirect()->toRoute(
+                'community/contact/profile/activate',
+                ['hash' => $this->identity()->getHash()]
+            );
+        }
+
+        return new ViewModel(
+            [
+                'contactService' => $this->contactService,
+                'contact'        => $this->identity(),
+                'callService'    => $this->callService,
+                'hasIdentity'    => null !== $this->identity(),
+                'hasNda'         => $this->programModuleOptions->getHasNda(),
+            ]
+        );
+    }
+
     public function contactAction(): ViewModel
     {
-        $contact = $this->getContactService()->findContactById($this->params('id'));
+        $contact = $this->contactService->findContactByHash((string)$this->params('hash'));
 
-        if (null === $contact || $contact->parseHash() !== $this->params('hash')) {
+        if (null === $contact) {
             return $this->notFoundAction();
         }
 
         return new ViewModel(
             [
-                'contactService' => $this->getContactService(),
+                'contactService' => $this->contactService,
                 'contact'        => $contact,
             ]
         );
     }
 
-    /**
-     * @return \Zend\Http\Response|ViewModel
-     * @throws \Exception
-     */
+    public function activateAction()
+    {
+        $contact = $this->identity();
+
+        if (null === $contact) {
+            return $this->notFoundAction();
+        }
+
+        $data = $this->getRequest()->getPost()->toArray();
+
+        if ($contact->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-your-profile-has-already-been-activated-you-will-be-redirected")
+            );
+
+            return $this->redirect()->toRoute('community/contact/profile/view');
+        }
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['activate'])) {
+                $contact->setDateActivated(new \DateTime());
+                $this->contactService->save($contact);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    $this->translator->translate("txt-your-account-has-been-activated-successfully")
+                );
+
+                return $this->redirect()->toRoute('community/contact/profile/view');
+            }
+
+            if (isset($data['delete'])) {
+                $this->contactService->delete($contact);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    $this->translator->translate("txt-your-account-has-been-removed-successfully")
+                );
+
+                // clear adapters
+                $this->zfcUserAuthentication()->getAuthAdapter()->resetAdapters();
+                $this->zfcUserAuthentication()->getAuthService()->clearIdentity();
+
+
+                return $this->redirect()->toRoute('home');
+            }
+        }
+
+        return new ViewModel(
+            [
+                'contactService' => $this->contactService,
+                'contact'        => $contact,
+            ]
+        );
+    }
+
+    public function autoActivateAction(): Response
+    {
+        $contact = $this->identity();
+
+        if (null === $contact) {
+            return $this->redirect()->toRoute('zfcuser/login');
+        }
+
+        if ($contact->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-your-profile-has-already-been-activated-you-will-be-redirected")
+            );
+
+            return $this->redirect()->toRoute('community/contact/profile/view');
+        }
+
+        $contact->setDateActivated(new \DateTime());
+        $this->contactService->save($contact);
+
+        $this->flashMessenger()->addSuccessMessage(
+            $this->translator->translate("txt-your-account-has-been-activated-successfully")
+        );
+
+        return $this->redirect()->toRoute('community/contact/profile/view');
+    }
+
     public function editAction()
     {
-        $contact = $this->zfcUserAuthentication()->getIdentity();
+        $contact = $this->identity();
         ;
 
-        //Find the amount of possible organisations
-        $organisations = $this->getOrganisationService()->findOrganisationForProfileEditByContact($contact);
+        $organisations = $this->organisationService->findOrganisationForProfileEditByContact($contact);
 
         $branches = [];
-        if ($this->getContactService()->hasOrganisation($contact)) {
-            $branches = $this->getOrganisationService()->findBranchesByOrganisation(
+        if ($this->contactService->hasOrganisation($contact)) {
+            $branches = $this->organisationService->findBranchesByOrganisation(
                 $contact->getContactOrganisation()
                     ->getOrganisation()
             );
@@ -89,7 +302,7 @@ class ProfileController extends ContactAbstractController
             $this->getRequest()->getFiles()->toArray()
         );
 
-        $form = new Profile($this->getEntityManager(), $this->getContactService(), $contact);
+        $form = new Profile($this->entityManager, $this->contactService, $contact);
         $form->bind($contact);
 
         //When we have a valid organisation_id, we do not need the country
@@ -109,6 +322,13 @@ class ProfileController extends ContactAbstractController
             }
 
             if ($form->isValid()) {
+                if (isset($data['removeFile'])) {
+                    foreach ($contact->getPhoto() as $photo) {
+                        $this->contactService->delete($photo);
+                    }
+                }
+
+
                 /** @var Contact $contact */
                 $contact = $form->getData();
                 $fileData = $this->params()->fromFiles();
@@ -121,7 +341,7 @@ class ProfileController extends ContactAbstractController
                     }
                     $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
                     $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
-                    $photo->setContact($this->zfcUserAuthentication()->getIdentity());
+                    $photo->setContact($this->identity());
                     $imageSizeValidator = new ImageSize();
                     $imageSizeValidator->isValid($fileData['file']);
                     $photo->setWidth($imageSizeValidator->width);
@@ -129,29 +349,24 @@ class ProfileController extends ContactAbstractController
 
                     $fileTypeValidator = new MimeType();
                     $fileTypeValidator->isValid($fileData['file']);
-                    $photo->setContentType($this->getGeneralService()->findContentTypeByContentTypeName($fileTypeValidator->type));
+                    $photo->setContentType(
+                        $this->generalService->findContentTypeByContentTypeName($fileTypeValidator->type)
+                    );
 
-                    $this->getContactService()->updateEntity($photo);
+                    $this->contactService->save($photo);
                 }
-                /*
-                 * Remove any unwanted photo's
-                 */
-                foreach ($contact->getPhoto() as $photo) {
-                    if (\is_null($photo->getWidth())) {
-                        $collection = new ArrayCollection();
-                        $collection->add($photo);
-                        $contact->removePhoto($collection);
-                    }
-                };
 
-                $contact = $this->getContactService()->updateEntity($contact);
+
+                $this->contactService->refresh($contact);
+                $contact = $this->contactService->save($contact);
                 /**
                  * The contact_organisation is different and not a drop-down.
                  * we will extract the organisation name from the contact_organisation text-field
                  */
-                $this->getContactService()->updateContactOrganisation($contact, $data['contact_organisation']);
-                $this->flashMessenger()->setNamespace('success')
-                    ->addMessage($this->translate("txt-profile-has-successfully-been-updated"));
+                $this->contactService->updateContactOrganisation($contact, $data['contact_organisation']);
+                $this->flashMessenger()->addSuccessMessage(
+                    $this->translator->translate("txt-profile-has-successfully-been-updated")
+                );
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
             }
@@ -161,7 +376,7 @@ class ProfileController extends ContactAbstractController
             [
                 'form'             => $form,
                 'branches'         => $branches,
-                'contactService'   => $this->getContactService(),
+                'contactService'   => $this->contactService,
                 'contact'          => $contact,
                 'hasOrganisations' => count($organisations) > 1, ///We need to exclude the none of the above :)
                 'fullVersion'      => true,

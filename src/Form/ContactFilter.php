@@ -21,12 +21,9 @@ use Zend\Form\Fieldset;
 use Zend\Form\Form;
 
 /**
- * Jield copyright message placeholder.
+ * Class ContactFilter
  *
- * @category    Contact
- *
- * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @package Contact\Form
  */
 class ContactFilter extends Form
 {

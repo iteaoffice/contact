@@ -24,9 +24,9 @@ class ContactPhotoFieldset extends Fieldset
 {
     /**
      * @param EntityManager $entityManager
-     * @param Entity\EntityAbstract $object
+     * @param Entity\AbstractEntity $object
      */
-    public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
+    public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)
     {
         $photo = new Entity\Photo();
 

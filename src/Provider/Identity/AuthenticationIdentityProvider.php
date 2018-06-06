@@ -27,22 +27,14 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
     /**
      * @var AdminService;
      */
-    protected $adminService;
+    private $adminService;
 
-    /**
-     * AuthenticationIdentityProvider constructor.
-     * @param AuthenticationService $authService
-     * @param AdminService $adminService
-     */
     public function __construct(AuthenticationService $authService, AdminService $adminService)
     {
         parent::__construct($authService);
         $this->adminService = $adminService;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getIdentityRoles(): array
     {
         if (!$identity = $this->authService->getIdentity()) {

@@ -27,15 +27,10 @@ use Zend\Navigation\Page\Mvc;
  */
 class FacebookLabel extends AbstractNavigationInvokable
 {
-    /**
-     * Parse a Funder Facebook label
-     *
-     * @param Mvc $page
-     *
-     * @return void
-     */
     public function __invoke(Mvc $page): void
     {
+        $label = $this->translate('txt-nav-facebook');
+
         if ($this->getEntities()->containsKey(Facebook::class)) {
             /** @var Facebook $facebook */
             $facebook = $this->getEntities()->get(Facebook::class);
@@ -49,8 +44,6 @@ class FacebookLabel extends AbstractNavigationInvokable
                 )
             );
             $label = (string)$facebook->getFacebook();
-        } else {
-            $label = $this->translate('txt-nav-facebook');
         }
         $page->set('label', $label);
     }

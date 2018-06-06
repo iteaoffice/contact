@@ -1,0 +1,33 @@
+{% do headTitle().append(translate("txt-profile")) %}
+{% do headTitle().append(translate("txt-activate")) %}
+
+
+<h1 class="home">{{ translate("txt-activate-your-account") }}</h1>
+
+<div class="alert alert-block alert-info">
+
+    <p>Trallala
+</div>
+
+<p>You can agree with the NDA, also on behalf of your organisation, in two different ways:</p>
+
+<ul>
+    <li>Sign the PDF version and upload it below</li>
+    <li>Sign the online version by ticking the box below</li>
+</ul>
+
+<form method="post" action="">
+
+    <input type="submit" name="activate" class="btn btn-lg btn-primary"
+           value="{{ translate('txt-activate-my-account') }}">
+
+    <input type="submit" name="delete" class="btn btn-lg btn-danger"
+           value="{{ translate('txt-remove-my-account') }}">
+
+</form>
+
+<style type="text/css">
+    .alert-danger {
+        display: none;
+    }
+</style>

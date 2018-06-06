@@ -14,7 +14,6 @@ namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Phone.
@@ -26,7 +25,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  *
  * @category    Contact
  */
-class Phone extends EntityAbstract implements ResourceInterface
+class Phone extends AbstractEntity
 {
     /**
      * @ORM\Column(name="phone_id", type="integer", nullable=false)
@@ -67,50 +66,22 @@ class Phone extends EntityAbstract implements ResourceInterface
      */
     private $type;
 
-    /**
-     * Class constructor.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     * @return bool
-     */
     public function __isset($property)
     {
         return isset($this->$property);
     }
 
-
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->phone;
     }

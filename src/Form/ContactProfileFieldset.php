@@ -23,15 +23,11 @@ use Zend\Form\Fieldset;
 
 class ContactProfileFieldset extends Fieldset
 {
-    /**
-     * @param EntityManager $entityManager
-     * @param Entity\EntityAbstract $object
-     */
-    public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
+    public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
         $profile = new Entity\Profile();
-        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Profile');
+        $doctrineHydrator = new DoctrineHydrator($entityManager, Entity\Profile::class);
         $this->setHydrator($doctrineHydrator)->setObject($profile);
         $builder = new AnnotationBuilder();
         /*

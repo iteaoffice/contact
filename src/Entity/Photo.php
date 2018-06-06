@@ -28,7 +28,7 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class Photo extends EntityAbstract
+class Photo extends AbstractEntity
 {
     /**
      * @ORM\Column(name="photo_id", type="integer", nullable=false)
@@ -82,21 +82,11 @@ class Photo extends EntityAbstract
     private $contentType;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", inversedBy="photo", cascade={"persist"})
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
      *
      * @var \Contact\Entity\Contact
      */
     private $contact;
-
-    /**
-     * Class constructor.
-     */
-    public function __construct()
-    {
-        $this->contentType = null;
-    }
 
     /**
      * Magic Getter.
@@ -123,6 +113,7 @@ class Photo extends EntityAbstract
 
     /**
      * @param $property
+     *
      * @return bool
      */
     public function __isset($property)

@@ -17,13 +17,8 @@ use Contact\Acl\Assertion\Phone as PhoneAssertion;
 
 return [
     'bjyauthorize' => [
-        /* Currently, only controller and route guards exist
-         */
         'guards' => [
-            /* If this guard is specified here (i.e. it is enabled], it will block
-             * access to all routes unless they are specified here.
-             */
-            'BjyAuthorize\Guard\Route' => [
+            \BjyAuthorize\Guard\Route::class => [
                 [
                     'route' => 'image/contact-photo',
                     'roles' => [],
@@ -49,7 +44,27 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'community/contact/profile/organisation',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
+                    'route'     => 'community/contact/profile/events',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
+                    'route'     => 'community/contact/profile/privacy',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
                     'route'     => 'community/contact/profile/contact',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
+                    'route'     => 'community/contact/profile/activate',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
@@ -67,13 +82,6 @@ return [
                     'route'     => 'community/contact/opt-in-update',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,
-                ],
-                [
-                    'route' => 'contact/has-session',
-                    'roles' => [
-                        strtolower(Access::ACCESS_PUBLIC),
-                        strtolower(Access::ACCESS_USER),
-                    ],
                 ],
                 [
                     'route'     => 'community/contact/change-password',
@@ -195,6 +203,22 @@ return [
                 ],
                 [
                     'route' => 'zfcadmin/facebook/view',
+                    'roles' => [Access::ACCESS_OFFICE],
+                ],
+                [
+                    'route' => 'zfcadmin/opt-in/list',
+                    'roles' => [Access::ACCESS_OFFICE],
+                ],
+                [
+                    'route' => 'zfcadmin/opt-in/new',
+                    'roles' => [Access::ACCESS_OFFICE],
+                ],
+                [
+                    'route' => 'zfcadmin/opt-in/edit',
+                    'roles' => [Access::ACCESS_OFFICE],
+                ],
+                [
+                    'route' => 'zfcadmin/opt-in/view',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [

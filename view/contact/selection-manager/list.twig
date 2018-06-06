@@ -35,6 +35,7 @@
                 <tr>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'owner', 'text': translate('txt-owner')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'core', 'text': translate('txt-core')} %}</th>
                     <th>{{ translate("txt-contacts") }}</th>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'date', 'text': translate('txt-date')} %}</th>
                 </tr>
@@ -51,6 +52,7 @@
 
                             {{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}
                         </td>
+                        <td>{{ translate(selection.getCore(true)) }}</td>
                         <td>{{ contactLink(selection.contact,'view-admin','initials') }}</td>
                         <td>{{ selectionService.getAmountOfContacts(selection) }}{% if selectionService.isSql(selection) %}
                                 <i class="fa fa-code fa-help" aria-hidden="true"
@@ -71,6 +73,7 @@
             <fieldset>
 
                 {{ ztbformelement(filter.get('includeDeleted')) }}
+                {{ ztbformelement(filter.get('core')) }}
                 {{ ztbformelement(filter.get('tags')) }}
 
                 <div class="form-group row">

@@ -46,14 +46,9 @@ class ContactLink extends LinkAbstract
         $this->setHash($hash);
         $this->setFragment($fragment);
 
-
-        /*
-         * If the alternativeShow is not null, use it an otherwise take the hash
-         */
-        if (!\is_null($alternativeShow)) {
+        $this->setAlternativeShow($hash);
+        if (null !== $alternativeShow) {
             $this->setAlternativeShow($alternativeShow);
-        } else {
-            $this->setAlternativeShow($hash);
         }
 
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
@@ -65,12 +60,7 @@ class ContactLink extends LinkAbstract
                 'paginator'       => $this->getAlternativeShow(),
                 'alternativeShow' => $this->getAlternativeShow(),
                 'firstname'       => $this->getContact()->getFirstName(),
-                'initials'        => sprintf(
-                    "%s%s%s",
-                    substr((string)$this->getContact()->getFirstName(), 0, 1),
-                    substr((string)$this->getContact()->getMiddleName(), 0, 1),
-                    substr((string)$this->getContact()->getLastName(), 0, 1)
-                ),
+                'initials'        => $this->getContact()->parseInitials(),
                 'name'            => $this->getContact()->getDisplayName(),
             ]
         );
@@ -80,9 +70,6 @@ class ContactLink extends LinkAbstract
         return $this->createLink();
     }
 
-    /**
-     * @throws \Exception
-     */
     public function parseAction(): void
     {
         switch ($this->getAction()) {
@@ -106,28 +93,6 @@ class ContactLink extends LinkAbstract
                         $this->getContact()->getDisplayName()
                     )
                 );
-                break;
-            case 'profile':
-                $this->setRouter('community/contact/profile/view');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-view-profile-of-contact-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
-                break;
-            case 'profile-contact':
-                $this->setRouter('community/contact/profile/contact');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-view-profile-of-contact-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
-                break;
-            case 'signature':
-                $this->setRouter('community/contact/signature');
-                $this->setText($this->translate("txt-signature"));
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-admin/view');
@@ -156,17 +121,13 @@ class ContactLink extends LinkAbstract
                     )
                 );
                 break;
-            case 'edit-profile':
-                $this->setRouter('community/contact/profile/edit');
-                $this->setText($this->translate("txt-edit-your-profile"));
-                break;
             case 'change-password':
                 $this->setRouter('community/contact/change-password');
                 /*
                  * Users can have access without a password (via the deeplink)
                  * We will therefore have the option to set a password
                  */
-                if (\is_null($this->getContact()->getSaltedPassword())) {
+                if (null !== $this->getContact()->getSaltedPassword()) {
                     $this->setText($this->translate("txt-set-your-password"));
                     $this->addClasses('btn-danger');
                 } else {

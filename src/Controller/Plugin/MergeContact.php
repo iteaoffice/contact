@@ -24,7 +24,6 @@ use Contact\Entity\Contact;
 use Contact\Entity\Email;
 use Contact\Entity\Log;
 use Contact\Entity\Note;
-use Contact\Entity\OpenId;
 use Contact\Entity\OptIn;
 use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -45,7 +44,7 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
  *
  * @package Contact\Controller\Plugin
  */
-class MergeContact extends AbstractPlugin
+final class MergeContact extends AbstractPlugin
 {
     /**
      * @var EntityManagerInterface
@@ -56,32 +55,17 @@ class MergeContact extends AbstractPlugin
      */
     private $translator;
 
-    /**
-     * MergeOrganisation constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param TranslatorInterface    $translator
-     */
     public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
         $this->entityManager = $entityManager;
         $this->translator = $translator;
     }
 
-    /**
-     * @return MergeContact
-     */
     public function __invoke(): MergeContact
     {
         return $this;
     }
 
-    /**
-     * @param Contact $source
-     * @param Contact $target
-     *
-     * @return array
-     */
     public function checkMerge(Contact $source, Contact $target): array
     {
         $errors = [];
@@ -94,13 +78,6 @@ class MergeContact extends AbstractPlugin
         return $errors;
     }
 
-    /**
-     * @param Contact              $source
-     * @param Contact              $target
-     * @param LoggerInterface|null $logger
-     *
-     * @return array
-     */
     public function merge(Contact $source, Contact $target, LoggerInterface $logger = null): array
     {
         $response = ['success' => true, 'errorMessage' => ''];
@@ -187,13 +164,6 @@ class MergeContact extends AbstractPlugin
                 $phone->setContact($target);
                 $target->getPhone()->add($phone);
                 $source->getPhone()->remove($key);
-            }
-
-            // Transfer web addresses (no matching)
-            foreach ($source->getWeb() as $key => $web) {
-                $web->setContact($target);
-                $target->getWeb()->add($web);
-                $source->getWeb()->remove($key);
             }
 
             // Transfer opt-in (many-to-many, with matching)
@@ -324,20 +294,6 @@ class MergeContact extends AbstractPlugin
                 $doa->setContact($target);
                 $target->getParentDoa()->add($doa);
                 $source->getParentDoa()->remove($key);
-            }
-
-            // Transfer open ID (with matching)
-            $targetOpenIds = [];
-            /** @var OpenId $openIdTarget */
-            foreach ($target->getOpenId() as $openIdTarget) {
-                $targetOpenIds[] = $openIdTarget->getIdentity();
-            }
-            /** @var OpenId $openIdSource */
-            foreach ($source->getOpenId() as $openIdSource) {
-                if (!\in_array($openIdSource->getIdentity(), $targetOpenIds)) {
-                    $openIdSource->setContact($target);
-                    $target->getOpenId()->add($openIdSource);
-                }
             }
 
             // Transfer contact organisation

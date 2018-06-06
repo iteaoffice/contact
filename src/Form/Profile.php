@@ -30,17 +30,12 @@ use Zend\InputFilter\InputFilterProviderInterface;
 use Zend\Validator\File\IsImage;
 
 /**
+ * Class Profile
  *
+ * @package Contact\Form
  */
 class Profile extends Form implements InputFilterProviderInterface
 {
-    /**
-     * Profile constructor.
-     *
-     * @param EntityManager $entityManager
-     * @param ContactService $contactService
-     * @param Contact $contact
-     */
     public function __construct(EntityManager $entityManager, ContactService $contactService, Contact $contact)
     {
         parent::__construct();
@@ -239,21 +234,21 @@ class Profile extends Form implements InputFilterProviderInterface
                         ],
                     ],
                     'label_generator'           => function (Organisation $organisation) {
-                        if (!\is_null($organisation->getCountry())) {
+                        if (null !== $organisation->getCountry()) {
                             return sprintf(
-                                "%s (%s) [VAT: %s]",
+                                '%s (%s) [VAT: %s]',
                                 $organisation->getOrganisation(),
                                 $organisation->getCountry()->getCountry(),
-                                (!\is_null($organisation->getFinancial()) ? $organisation->getFinancial()->getVat()
+                                (null !== $organisation->getFinancial() ? $organisation->getFinancial()->getVat()
                                     : 'unknown')
                             );
                         }
 
-                        return sprintf("%s", $organisation->getOrganisation());
+                        return sprintf('%s', $organisation->getOrganisation());
                     },
                 ],
                 'attributes' => [
-                    'required' => !\is_null($contact->getContactOrganisation()),
+                    'required' => null !== $contact->getContactOrganisation(),
                     //Only required when a contact has an organisation
                     'id'       => 'organisation',
                 ],
@@ -341,14 +336,14 @@ class Profile extends Form implements InputFilterProviderInterface
          * Produce a list of all phone numbers
          */
         $profileFieldSet = new Fieldset('profile');
-        $profileEntity = new ProfileEntity();
         $profileFieldSet->add(
             [
                 'type'    => 'Zend\Form\Element\Radio',
                 'name'    => 'visible',
                 'options' => [
-                    'label'         => _("txt-visibility"),
-                    'value_options' => $profileEntity->getVisibleTemplates(),
+                    'label'         => _("txt-profile-visibility-label"),
+                    'help-block'    => _("txt-profile-visibility-help-block"),
+                    'value_options' => ProfileEntity::getVisibleTemplates(),
                 ],
             ]
         );
@@ -357,7 +352,8 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => 'Zend\Form\Element\Textarea',
                 'name'       => 'description',
                 'options'    => [
-                    'label' => _("txt-expertise"),
+                    'label'      => _("txt-profile-expertise-label"),
+                    'help-block' => _("txt-profile-expertise-help-block"),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
@@ -374,9 +370,23 @@ class Profile extends Form implements InputFilterProviderInterface
                     "class" => "form-control",
                 ],
                 'options'    => [
-                    "label"      => "txt-photo-file",
+                    "label"      => _("txt-photo-file"),
                     "help-block" => _("txt-photo-requirements"),
                 ],
+            ]
+        );
+        $this->add(
+            [
+                'type'       => '\Zend\Form\Element\MultiCheckbox',
+                'name'       => 'removeFile',
+                'options'    => [
+                    'value_options' => [
+                        'delete' => _("txt-check-to-remove-your-photo")
+                    ],
+                ],
+                'attributes' => [
+                    'label' => 'txt-remove-photo-label',
+                ]
             ]
         );
 
@@ -402,24 +412,24 @@ class Profile extends Form implements InputFilterProviderInterface
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getInputFilterSpecification(): array
     {
         return [
-            'firstName' => [
+            'firstName'  => [
                 'required' => true
             ],
-            'lastName'  => [
+            'lastName'   => [
                 'required' => true
             ],
-            'address'   => [
+            'address'    => [
                 'country' => [
                     'required' => false,
                 ]
             ],
-            'file'      => [
+            'removeFile' => [
+                'required' => false
+            ],
+            'file'       => [
                 'required'   => false,
                 'validators' => [
                     [

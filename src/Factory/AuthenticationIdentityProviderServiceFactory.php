@@ -26,8 +26,8 @@ final class AuthenticationIdentityProviderServiceFactory implements FactoryInter
 {
     /**
      * @param ContainerInterface $container
-     * @param string $requestedName
-     * @param array|null $options
+     * @param string             $requestedName
+     * @param array|null         $options
      *
      * @return AuthenticationIdentityProvider
      */

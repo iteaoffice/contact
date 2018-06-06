@@ -14,22 +14,46 @@ namespace Contact\Controller;
 
 use Contact\Entity\Address;
 use Contact\Entity\Contact;
+use Contact\Service\ContactService;
+use Contact\Service\FormService;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  */
-class AddressManagerController extends ContactAbstractController
+final class AddressManagerController extends ContactAbstractController
 {
     /**
-     * @return \Zend\Http\Response|ViewModel
+     * @var ContactService
      */
+    private $contactService;
+    /**
+     * @var FormService
+     */
+    private $formService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        ContactService $contactService,
+        FormService $formService,
+        TranslatorInterface $translator
+    ) {
+        $this->contactService = $contactService;
+        $this->formService = $formService;
+        $this->translator = $translator;
+    }
+
+
     public function newAction()
     {
         /**
          * @var $contact Contact
          */
-        $contact = $this->getContactService()->findContactById($this->params('contact'));
+        $contact = $this->contactService->findContactById((int)$this->params('contact'));
 
         if (null === $contact) {
             return $this->notFoundAction();
@@ -37,17 +61,19 @@ class AddressManagerController extends ContactAbstractController
 
         $data = $this->getRequest()->getPost()->toArray();
 
-        $form = $this->getFormService()->prepare(Address::class, null, $data);
+        $form = $this->formService->prepare(Address::class, $data);
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
             if (!isset($data['cancel']) && $form->isValid()) {
-                /**
-                 * @var $address Address
-                 */
+                /** @var Address $address */
                 $address = $form->getData();
                 $address->setContact($contact);
-                $this->getContactService()->newEntity($address);
+                $this->contactService->save($address);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf($this->translator->translate("txt-address-has-successfully-been-created"))
+                );
             }
 
             return $this->redirect()
@@ -67,26 +93,24 @@ class AddressManagerController extends ContactAbstractController
         );
     }
 
-    /**
-     * @return \Zend\Http\Response|ViewModel
-     */
     public function editAction()
     {
         /**
          * @var $address Address
          */
-        $address = $this->getContactService()->findEntityById(Address::class, $this->params('id'));
+        $address = $this->contactService->find(Address::class, (int)$this->params('id'));
         $data = $this->getRequest()->getPost()->toArray();
-        $form = $this->getFormService()->prepare($address, $address, $data);
+        $form = $this->formService->prepare($address, $data);
 
         if ($this->getRequest()->isPost()) {
             /**
              * Handle the delete request
              */
             if (isset($data['delete'])) {
-                $this->getContactService()->removeEntity($address);
-                $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(sprintf($this->translate("txt-address-has-successfully-been-deleted")));
+                $this->contactService->delete($address);
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf($this->translator->translate("txt-address-has-successfully-been-deleted"))
+                );
 
                 return $this->redirect()
                     ->toRoute(
@@ -97,11 +121,12 @@ class AddressManagerController extends ContactAbstractController
             }
 
             if (!isset($data['cancel']) && $form->isValid()) {
-                /*
-                * @var Address
-                */
                 $address = $form->getData();
-                $address = $this->getContactService()->updateEntity($address);
+                $this->contactService->save($address);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf($this->translator->translate("txt-address-has-successfully-been-updated"))
+                );
             }
 
             return $this->redirect()->toRoute(

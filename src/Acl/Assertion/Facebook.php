@@ -27,10 +27,10 @@ class Facebook extends AssertionAbstract
      * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
      * privileges, respectively.
      *
-     * @param Acl $acl
-     * @param RoleInterface $role
+     * @param Acl               $acl
+     * @param RoleInterface     $role
      * @param ResourceInterface $facebook
-     * @param string $privilege
+     * @param string            $privilege
      *
      * @return bool
      */
@@ -50,14 +50,14 @@ class Facebook extends AssertionAbstract
         $this->setPrivilege($privilege);
         $id = $this->getId();
 
-        if (!$facebook instanceof FacebookEntity && !\is_null($id)) {
+        if (!$facebook instanceof FacebookEntity && null !== $id) {
             /** @var FacebookEntity $facebook */
-            $facebook = $this->getContactService()->findEntityById(FacebookEntity::class, $id);
+            $facebook = $this->getContactService()->find(FacebookEntity::class, $id);
         }
 
         if (!$facebook instanceof FacebookEntity && $facebook = $this->getRouteMatch()->getParam('facebook')) {
             /** @var FacebookEntity $facebook */
-            $facebook = $this->getContactService()->findEntityById(FacebookEntity::class, $facebook);
+            $facebook = $this->getContactService()->find(FacebookEntity::class, (int)$facebook);
         }
 
         switch ($this->getPrivilege()) {

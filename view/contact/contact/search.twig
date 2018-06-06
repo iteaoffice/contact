@@ -37,13 +37,12 @@
                     <div class="thumbnail contact-box">
                         <div class="information-box-header">
                             <h5>
-                                <a href="{{ url("community/contact/profile/contact", {'id': result.fields.contact_id,'hash': contact.parseHash(result.fields.contact_id)}) }}">{{ result.fields.fullname }}</a>
+                                <a href="{{ url("community/contact/profile/contact", {'hash': result.fields.contact_hash}) }}">{{ result.fields.fullname }}</a>
                             </h5>
                         </div>
                         <div class="contact-box-image">
                             {% if result.fields.photo_url|length == 0 %}
-                                <img src="assets/{{ constant("ITEAOFFICE_HOST") }}/style/image/anonymous.jpg"
-                                     class="img-responsive">
+                                <div style="height: 200px"></div>
                             {% else %}
                                 <img class="img-responsive" src="{{ result.fields.photo_url }}">
                             {% endif %}

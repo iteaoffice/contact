@@ -13,21 +13,32 @@ declare(strict_types=1);
 namespace Contact\Repository;
 
 use Admin\Entity\Pageview;
+use Affiliation\Entity\Affiliation;
 use Calendar\Entity\Calendar;
 use Contact\Entity;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionSql;
-use Contact\Options;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use DoctrineExtensions\Query\Mysql\Year;
 use Organisation\Entity\Organisation;
+use Project\Entity\Achievement;
+use Project\Entity\ChangeRequest\Process;
+use Project\Entity\Contract;
+use Project\Entity\Description\Description;
+use Project\Entity\Evaluation\Evaluation;
+use Project\Entity\Invite;
+use Project\Entity\Log;
+use Project\Entity\Pca;
+use Project\Entity\Project;
+use Project\Entity\Rationale;
+use Project\Entity\Result\Result;
 use Project\Entity\Review\Review;
-use Project\Repository\Project;
+use Project\Entity\Version\Version;
+use Project\Entity\Workpackage\Workpackage;
 
 /***
  * Class Contact
@@ -36,14 +47,7 @@ use Project\Repository\Project;
  */
 class Contact extends EntityRepository
 {
-    /**
-     * Return a list of all contacts.
-     *
-     * @param null $limit
-     *
-     * @return Query
-     */
-    public function findContacts($limit = null): Query
+    public function findContacts(int $limit = null): QueryBuilder
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_contact');
@@ -57,66 +61,54 @@ class Contact extends EntityRepository
             $qb->setMaxResults($limit);
         }
 
-        return $qb->getQuery();
+        return $qb;
     }
 
-    /**
-     * @param array $filter
-     *
-     * @return Query
-     */
-    public function findFiltered(array $filter): Query
+    public function findFiltered(array $filter): QueryBuilder
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_contact');
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
 
-        $queryBuilder = $this->applyContactFilter(
-            $queryBuilder,
+        $qb = $this->applyContactFilter(
+            $qb,
             $filter,
             ['order' => 'contact_entity_contact.id', 'direction' => Criteria::DESC]
         );
 
-        return $queryBuilder->getQuery();
+        return $qb;
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param array        $filter
-     * @param array        $order
-     *
-     * @return QueryBuilder
-     */
-    private function applyContactFilter(QueryBuilder $queryBuilder, array $filter, array $order): QueryBuilder
+    private function applyContactFilter(QueryBuilder $qb, array $filter, array $order): QueryBuilder
     {
         $direction = Criteria::ASC;
         if (isset($filter['direction'])
             && \in_array(strtoupper($filter['direction']), [Criteria::ASC, Criteria::DESC], true)
         ) {
-            $direction = strtoupper($filter['direction']);
+            $direction = \strtoupper($filter['direction']);
         }
 
-        if (array_key_exists('search', $filter)) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->like('contact_entity_contact.firstName', ':like'),
-                    $queryBuilder->expr()->like('contact_entity_contact.middleName', ':like'),
-                    $queryBuilder->expr()->like('contact_entity_contact.lastName', ':like'),
-                    $queryBuilder->expr()->like('contact_entity_contact.email', ':like'),
-                    $queryBuilder->expr()->like(
-                        $queryBuilder->expr()->concat(
+        if (\array_key_exists('search', $filter)) {
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like('contact_entity_contact.firstName', ':like'),
+                    $qb->expr()->like('contact_entity_contact.middleName', ':like'),
+                    $qb->expr()->like('contact_entity_contact.lastName', ':like'),
+                    $qb->expr()->like('contact_entity_contact.email', ':like'),
+                    $qb->expr()->like(
+                        $qb->expr()->concat(
                             'contact_entity_contact.firstName',
-                            $queryBuilder->expr()->literal(' '),
+                            $qb->expr()->literal(' '),
                             'contact_entity_contact.middleName',
-                            $queryBuilder->expr()->literal(' '),
+                            $qb->expr()->literal(' '),
                             'contact_entity_contact.lastName'
                         ),
                         ':like'
                     ),
-                    $queryBuilder->expr()->like(
-                        $queryBuilder->expr()->concat(
+                    $qb->expr()->like(
+                        $qb->expr()->concat(
                             'contact_entity_contact.firstName',
-                            $queryBuilder->expr()->literal(' '),
+                            $qb->expr()->literal(' '),
                             'contact_entity_contact.lastName'
                         ),
                         ':like'
@@ -124,7 +116,7 @@ class Contact extends EntityRepository
                 )
             );
 
-            $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
+            $qb->setParameter('like', sprintf("%%%s%%", $filter['search']));
 
             //Reset the order to order on lastname (if the order is on id)
             if ($filter['order'] === 'contact_entity_contact.id') {
@@ -132,21 +124,21 @@ class Contact extends EntityRepository
             }
         }
 
-        if (array_key_exists('options', $filter)) {
+        if (\array_key_exists('options', $filter)) {
             if (\in_array('hasOrganisation', $filter['options'], false)) {
-                $queryBuilder->innerJoin(
+                $qb->innerJoin(
                     'contact_entity_contact.contactOrganisation',
                     'contact_entity_contact_organisation_for_filter'
                 );
             }
             if (\in_array('onlyDeactivated', $filter['options'], false)) {
-                $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('contact_entity_contact.dateEnd'));
+                $qb->andWhere($qb->expr()->isNotNull('contact_entity_contact.dateEnd'));
             }
         }
 
 
         /** Only when the filter is turned on, omit this extra rule */
-        if (!(array_key_exists('options', $filter)
+        if (!(\array_key_exists('options', $filter)
                 && \in_array(
                     'includeDeactivated',
                     $filter['options'],
@@ -154,37 +146,37 @@ class Contact extends EntityRepository
                 ))
             && (isset($filter['options']) && !\in_array('onlyDeactivated', $filter['options'], true))
         ) {
-            $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_contact.dateEnd'));
+            $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
         }
 
         if (!isset($filter['options'])) {
-            $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_contact.dateEnd'));
+            $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
         }
 
-        if (array_key_exists('gender', $filter)) {
-            $queryBuilder->join('contact_entity_contact.gender', 'general_entity_gender');
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()
+        if (\array_key_exists('gender', $filter)) {
+            $qb->join('contact_entity_contact.gender', 'general_entity_gender');
+            $qb->andWhere(
+                $qb->expr()
                     ->in('general_entity_gender.id', $filter['gender'])
             );
         }
 
 
-        if (array_key_exists('country', $filter) && !empty($filter['country'])) {
-            $queryBuilder->innerJoin(
+        if (\array_key_exists('country', $filter) && !empty($filter['country'])) {
+            $qb->innerJoin(
                 'contact_entity_contact.contactOrganisation',
                 'contact_entity_contact_organisation_for_country'
             );
-            $queryBuilder->innerJoin(
+            $qb->innerJoin(
                 'contact_entity_contact_organisation_for_country.organisation',
                 'contact_entity_contact_organisation_for_country_organisation'
             );
-            $queryBuilder->innerJoin(
+            $qb->innerJoin(
                 'contact_entity_contact_organisation_for_country_organisation.country',
                 'contact_entity_contact_organisation_for_country_organisation_country'
             );
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()
+            $qb->andWhere(
+                $qb->expr()
                     ->in(
                         'contact_entity_contact_organisation_for_country_organisation_country.id',
                         $filter['country']
@@ -193,97 +185,83 @@ class Contact extends EntityRepository
         }
         switch ($filter['order']) {
             case 'amount':
-                $queryBuilder->addOrderBy('amount', $direction);
+                $qb->addOrderBy('amount', $direction);
                 break;
             case 'name':
-                $queryBuilder->addOrderBy('contact_entity_contact.lastName', $direction);
+                $qb->addOrderBy('contact_entity_contact.lastName', $direction);
                 break;
             case 'organisation':
-                $queryBuilder->leftJoin(
+                $qb->leftJoin(
                     'contact_entity_contact.contactOrganisation',
                     'contact_entity_contact_organisation'
                 );
-                $queryBuilder->leftJoin(
+                $qb->leftJoin(
                     'contact_entity_contact_organisation.organisation',
                     'organisation_entity_organisation'
                 );
 
-                $queryBuilder->addOrderBy('organisation_entity_organisation.organisation', $direction);
+                $qb->addOrderBy('organisation_entity_organisation.organisation', $direction);
                 break;
             case 'country':
-                $queryBuilder->leftJoin(
+                $qb->leftJoin(
                     'contact_entity_contact.contactOrganisation',
                     'contact_entity_contact_organisation'
                 );
-                $queryBuilder->leftJoin(
+                $qb->leftJoin(
                     'contact_entity_contact_organisation.organisation',
                     'organisation_entity_organisation'
                 );
-                $queryBuilder->leftJoin(
+                $qb->leftJoin(
                     'organisation_entity_organisation.country',
                     'general_entity_country'
                 );
-                $queryBuilder->addOrderBy('general_entity_country.country', $direction);
-                $queryBuilder->orderBy('organisation_entity_organisation.organisation', $direction);
+                $qb->addOrderBy('general_entity_country.country', $direction);
+                $qb->orderBy('organisation_entity_organisation.organisation', $direction);
                 break;
 
             default:
-                $queryBuilder->addOrderBy($order['order'], $order['direction']);
+                $qb->addOrderBy($order['order'], $order['direction']);
         }
 
-        return $queryBuilder;
+        return $qb;
     }
 
-    /**
-     * @param array $filter
-     *
-     * @return Query
-     */
-    public function findDuplicateContacts(array $filter): Query
+    public function findDuplicateContacts(array $filter): QueryBuilder
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select(
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select(
             'contact_entity_contact contact',
             'COUNT(contact_entity_contact) amount'
         );
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-        $queryBuilder->groupBy('contact_entity_contact.firstName, contact_entity_contact.lastName');
-        $queryBuilder->having('amount > 1');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->groupBy('contact_entity_contact.firstName, contact_entity_contact.lastName');
+        $qb->having('amount > 1');
 
-        $queryBuilder = $this->applyContactFilter(
-            $queryBuilder,
+        $qb = $this->applyContactFilter(
+            $qb,
             $filter,
             ['order' => 'amount', 'direction' => Criteria::DESC]
         );
 
-        return $queryBuilder->getQuery();
+        return $qb;
     }
 
-    /**
-     * @param array $filter
-     *
-     * @return Query
-     */
-    public function findInactiveContacts(array $filter): Query
+    public function findInactiveContacts(array $filter): QueryBuilder
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select(
-            'contact_entity_contact'
-        );
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
 
         //We only want PO's here which have been submitted in the last 6 months
         $dateCreated = new \DateTime();
         $dateCreated->sub(new \DateInterval("P3M"));
-        //$queryBuilder->andWhere($queryBuilder->expr()->lt('contact_entity_contact.dateCreated', ':dateCreated'));
-        //$queryBuilder->setParameter('dateCreated', $dateCreated);
+        //$qb->andWhere($qb->expr()->lt('contact_entity_contact.dateCreated', ':dateCreated'));
+        //$qb->setParameter('dateCreated', $dateCreated);
 
         $relations = [
             'project',
             'projectVersion',
             'projectDescription',
-            'dnd',
-            'nda',
             'pca',
             'ndaApprover',
             'programDoa',
@@ -335,65 +313,184 @@ class Contact extends EntityRepository
 
 
         foreach ($relations as $relation) {
-            $queryBuilder->leftJoin('contact_entity_contact.' . $relation, $relation);
-            $queryBuilder->andWhere($queryBuilder->expr()->isNull($relation . '.id'));
+            $qb->leftJoin('contact_entity_contact.' . $relation, $relation);
+            $qb->andWhere($qb->expr()->isNull($relation . '.id'));
         }
 
-
-        //Exclude the active fixed selections
+        //Exclude the active core selections
         $selectionContact = $this->_em->createQueryBuilder();
         $selectionContact->select('selectionContact.id');
         $selectionContact->from(Entity\SelectionContact::class, 'contact_entity_selection_contact');
         $selectionContact->join('contact_entity_selection_contact.contact', 'selectionContact');
         $selectionContact->join('contact_entity_selection_contact.selection', 'contact_entity_selection');
-        $selectionContact->andWhere($selectionContact->expr()->isNull('contact_entity_selection.dateDeleted'));
+        $selectionContact->andWhere($selectionContact->expr()->eq('contact_entity_selection.core', Selection::CORE));
 
-        //Exclude the active fixed mailings
-        $mailingContact = $this->_em->createQueryBuilder();
-        $mailingContact->select('mailingContact.id');
-        $mailingContact->from(\Mailing\Entity\Contact::class, 'mailing_entity_contact');
-        $mailingContact->join('mailing_entity_contact.contact', 'mailingContact');
-        $mailingContact->join('mailing_entity_contact.mailing', 'mailing_entity_mailing');
-        $mailingContact->andWhere($mailingContact->expr()->isNull('mailing_entity_mailing.dateDeleted'));
+        $qb->andWhere($qb->expr()->notIn('contact_entity_contact.id', $selectionContact->getDQL()));
 
-        //$queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_contact.id', $selectionContact->getDQL()));
-        //$queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_contact.id', $mailingContact->getDQL()));
-
-        $queryBuilder = $this->applyContactFilter(
-            $queryBuilder,
+        $qb = $this->applyContactFilter(
+            $qb,
             $filter,
             ['order' => 'contact_entity_contact.id', 'direction' => Criteria::DESC]
         );
 
-        return $queryBuilder->getQuery();
+        return $qb;
     }
 
-    /**
-     * @param $projectId
-     *
-     * @return array
-     */
-    public function findContactByProjectId($projectId): array
+    public function contactIsActiveInProject(Entity\Contact $contact, int $years = 5, string $which = 'recent'): bool
     {
-        $queryBuilder = $this->findContactByProjectIdQueryBuilder();
-        $queryBuilder->setParameter(1, $projectId);
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->andWhere('contact_entity_contact = :contact');
+        $qb->setParameter('contact', $contact);
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+        $relations = [
+            'project'              => Project::class,
+            'projectVersion'       => Version::class,
+            'projectDescription'   => Description::class,
+            'pca'                  => Pca::class,
+            'rationale'            => Rationale::class,
+            'affiliation'          => Affiliation::class,
+            'result'               => Result::class,
+            'workpackage'          => Workpackage::class,
+            'evaluation'           => Evaluation::class,
+            'contract'             => Contract::class,
+            'invite'               => Invite::class,
+            'achievement'          => Achievement::class,
+            'changeRequestProcess' => Process::class,
+            'log'                  => Log::class,
+        ];
+
+        foreach ($relations as $key => $relation) {
+            $subQuery = $this->_em->createQueryBuilder();
+            $subQuery->select('contact_entity_contact_' . $key);
+            $subQuery->from($relation, $key);
+            $subQuery->join($key . '.contact', 'contact_entity_contact_' . $key);
+            $subQuery->where($qb->expr()->eq('contact_entity_contact_' . $key . '.id', $contact));
+
+            //Project leaders are exempted from this constraint
+            $today = new \DateTime();
+            $yearsAgo = $today->sub(new \DateInterval(sprintf('P%dY', $years)));
+
+            if ($key !== 'project') {
+                $subQuery->join($key . '.project', 'project_entity_project_' . $key);
+
+                if ($which === 'recent') {
+                    $subQuery->andWhere('project_entity_project_' . $key . '.dateEnd > :dateTime');
+                }
+
+                if ($which === 'older') {
+                    $subQuery->andWhere('project_entity_project_' . $key . '.dateEnd < :dateTime');
+                }
+
+                $qb->setParameter('dateTime', $yearsAgo);
+            }
+
+            $qb->andWhere($qb->expr()->notIn('contact_entity_contact', $subQuery->getDQL()));
+        }
+
+        return null === $qb->getQuery()->getOneOrNullResult();
     }
 
-    /**
-     * @return QueryBuilder
-     */
+    public function contactIsReviewer(Entity\Contact $contact): bool
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->andWhere('contact_entity_contact = :contact');
+        $qb->setParameter('contact', $contact);
+
+        $relations = [
+            'projectReview'         => Review::class,
+            'projectCalendarReview' => \Project\Entity\Calendar\Review::class,
+            'projectReportReview'   => \Project\Entity\Report\Review::class,
+            'projectReviewContact'  => \Project\Entity\Review\Contact::class
+        ];
+
+        foreach ($relations as $key => $relation) {
+            $subQuery = $this->_em->createQueryBuilder();
+            $subQuery->select('contact_entity_contact_' . $key);
+            $subQuery->from($relation, $key);
+            $subQuery->join($key . '.contact', 'contact_entity_contact_' . $key);
+            $subQuery->where($qb->expr()->eq('contact_entity_contact_' . $key . '.id', $contact));
+
+            $qb->andWhere($qb->expr()->notIn('contact_entity_contact', $subQuery->getDQL()));
+        }
+
+        return null === $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function contactIsPresentAtEvent(Entity\Contact $contact, int $years = 2, string $which = 'recent'): bool
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->andWhere('contact_entity_contact = :contact');
+        $qb->setParameter('contact', $contact);
+
+        $qb->join('contact_entity_contact.registration', 'event_entity_registration');
+        $qb->join('event_entity_registration.meeting', 'event_entity_meeting');
+
+        if ($which === 'recent') {
+            $qb->andWhere('event_entity_meeting.dateFrom > :dateTime');
+        }
+
+        if ($which === 'older') {
+            $qb->andWhere('event_entity_meeting.dateFrom < :dateTime');
+        }
+
+        $today = new \DateTime();
+        $yearsAgo = $today->sub(new \DateInterval(sprintf('P%dY', $years)));
+        $qb->setParameter('dateTime', $yearsAgo);
+
+        return null !== $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function contactHasIdea(Entity\Contact $contact, int $years = 2, string $which = 'recent'): bool
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->andWhere('contact_entity_contact = :contact');
+        $qb->setParameter('contact', $contact);
+
+        $qb->join('contact_entity_contact.idea', 'project_entity_idea');
+
+
+        if ($which === 'recent') {
+            $qb->andWhere('project_entity_idea.dateCreated > :dateTime');
+        }
+
+        if ($which === 'older') {
+            $qb->andWhere('project_entity_idea.dateCreated < :dateTime');
+        }
+
+
+        $today = new \DateTime();
+        $yearsAgo = $today->sub(new \DateInterval(sprintf('P%dY', $years)));
+        $qb->setParameter('dateTime', $yearsAgo);
+
+        return null !== $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function findContactByProjectId(int $projectId): array
+    {
+        $qb = $this->findContactByProjectIdQueryBuilder();
+        $qb->setParameter(1, $projectId);
+
+        return $qb->getQuery()->useQueryCache(true)->getResult();
+    }
+
     public function findContactByProjectIdQueryBuilder(): QueryBuilder
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_contact');
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-        $queryBuilder->distinct('contact_entity_contact.id');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->distinct('contact_entity_contact.id');
         //Add the associates
         $associates = $this->_em->createQueryBuilder();
         $associates->select('associateContact.id');
-        $associates->from('Affiliation\Entity\Affiliation', 'associateAffiliation');
+        $associates->from(Affiliation::class, 'associateAffiliation');
         $associates->join('associateAffiliation.associate', 'associateContact');
         $associates->join('associateAffiliation.project', 'associateProject');
         $associates->andWhere($associates->expr()->isNull('associateAffiliation.dateEnd'));
@@ -401,7 +498,7 @@ class Contact extends EntityRepository
         //Add the affiliates
         $affiliates = $this->_em->createQueryBuilder();
         $affiliates->select('affiliationContact.id');
-        $affiliates->from('Affiliation\Entity\Affiliation', 'affiliation');
+        $affiliates->from(Affiliation::class, 'affiliation');
         $affiliates->join('affiliation.project', 'affiliationProject');
         $affiliates->join('affiliation.contact', 'affiliationContact');
         $affiliates->andWhere($associates->expr()->isNull('affiliation.dateEnd'));
@@ -409,90 +506,77 @@ class Contact extends EntityRepository
         //Add the workpackage leaders
         $workpackage = $this->_em->createQueryBuilder();
         $workpackage->select('workpackageContact.id');
-        $workpackage->from('Project\Entity\Workpackage\Workpackage', 'workpackage');
+        $workpackage->from(Workpackage::class, 'workpackage');
         $workpackage->join('workpackage.project', 'workpackageProject');
         $workpackage->join('workpackage.contact', 'workpackageContact');
         $workpackage->andWhere('workpackageProject.id = ?1');
         //Add the Rationale
         $rationale = $this->_em->createQueryBuilder();
         $rationale->select('rationaleContact.id');
-        $rationale->from('Project\Entity\Rationale', 'rationale');
+        $rationale->from(Rationale::class, 'rationale');
         $rationale->join('rationale.project', 'rationaleProject');
         $rationale->join('rationale.contact', 'rationaleContact');
         $rationale->andWhere('rationaleProject.id = ?1');
         //Add the project leaders
         $projectLeaders = $this->_em->createQueryBuilder();
         $projectLeaders->select('projectContact.id');
-        $projectLeaders->from('Project\Entity\Project', 'project');
+        $projectLeaders->from(\Project\Entity\Project::class, 'project');
         $projectLeaders->join('project.contact', 'projectContact');
         $projectLeaders->andWhere('project.id = ?1');
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->orX(
-                $queryBuilder->expr()->in('contact_entity_contact.id', $associates->getDQL()),
-                $queryBuilder->expr()->in('contact_entity_contact.id', $affiliates->getDQL()),
-                $queryBuilder->expr()->in('contact_entity_contact.id', $workpackage->getDQL()),
-                $queryBuilder->expr()->in('contact_entity_contact.id', $rationale->getDQL()),
-                $queryBuilder->expr()->in('contact_entity_contact.id', $projectLeaders->getDQL())
+        $qb->andWhere(
+            $qb->expr()->orX(
+                $qb->expr()->in('contact_entity_contact.id', $associates->getDQL()),
+                $qb->expr()->in('contact_entity_contact.id', $affiliates->getDQL()),
+                $qb->expr()->in('contact_entity_contact.id', $workpackage->getDQL()),
+                $qb->expr()->in('contact_entity_contact.id', $rationale->getDQL()),
+                $qb->expr()->in('contact_entity_contact.id', $projectLeaders->getDQL())
             )
         );
 
-        $queryBuilder->addOrderBy('contact_entity_contact.lastName', 'ASC');
+        $qb->addOrderBy('contact_entity_contact.lastName', 'ASC');
 
-        return $queryBuilder;
+        return $qb;
     }
 
-    /**
-     * @param $email
-     * @param $onlyMain
-     *
-     * @return Entity\Contact|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findContactByEmail($email, $onlyMain): ?Entity\Contact
+    public function findContactByEmail(string $email, bool $onlyMain): ?Entity\Contact
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_contact');
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-        $queryBuilder->orWhere('contact_entity_contact.email = ?1');
-        $queryBuilder->setParameter(1, $email);
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->orWhere('contact_entity_contact.email = ?1');
+        $qb->setParameter(1, $email);
 
         if (!$onlyMain) {
-            $queryBuilder->leftJoin('contact_entity_contact.emailAddress', 'contact_entity_email');
-            $queryBuilder->orWhere('contact_entity_email.email = ?2');
-            $queryBuilder->setParameter(2, $email);
+            $qb->leftJoin('contact_entity_contact.emailAddress', 'contact_entity_email');
+            $qb->orWhere('contact_entity_email.email = ?2');
+            $qb->setParameter(2, $email);
         }
 
-        $queryBuilder->setMaxResults(1);
+        $qb->setMaxResults(1);
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getOneOrNullResult();
+        return $qb->getQuery()->useQueryCache(true)->getOneOrNullResult();
     }
 
-    /**
-     * @return Entity\Contact[]
-     */
     public function findContactsWithDateOfBirth(): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_contact');
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_contact.dateEnd'));
-        $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('contact_entity_contact.dateOfBirth'));
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
+        $qb->andWhere($qb->expr()->isNotNull('contact_entity_contact.dateOfBirth'));
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+        return $qb->getQuery()->useQueryCache(true)->getResult();
     }
 
-    /**
-     * @return Entity\Contact[]
-     */
     public function findContactsWithCV(): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_contact');
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_contact.dateEnd'));
-        $queryBuilder->innerJoin('contact_entity_contact.cv', 'cv');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
+        $qb->innerJoin('contact_entity_contact.cv', 'cv');
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+        return $qb->getQuery()->useQueryCache(true)->getResult();
     }
 
     /**
@@ -500,101 +584,27 @@ class Contact extends EntityRepository
      *
      * @return Entity\Contact[]
      */
-    public function findContactsWithActiveProfile($onlyPublic): array
+    public function findContactsWithActiveProfile(bool $onlyPublic): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_contact');
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
-        $queryBuilder->innerJoin('contact_entity_contact.profile', 'p');
-        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_contact.dateEnd'));
-        $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('p.description'));
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->innerJoin('contact_entity_contact.profile', 'p');
+        $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
+        $qb->andWhere($qb->expr()->isNotNull('p.description'));
         //Exclude the empty descriptions
-        $queryBuilder->andWhere('p.description <> ?2');
-        $queryBuilder->setParameter(2, '');
+        $qb->andWhere('p.description <> ?2');
+        $qb->setParameter(2, '');
 
         if ($onlyPublic) {
-            $queryBuilder->andWhere('p.visible <> ?1');
-            $queryBuilder->setParameter(1, Entity\Profile::VISIBLE_HIDDEN);
+            $qb->andWhere('p.visible <> ?1');
+            $qb->setParameter(1, Entity\Profile::VISIBLE_HIDDEN);
         }
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+        return $qb->getQuery()->useQueryCache(true)->getResult();
     }
 
-    /**
-     *  Returns true of false depending if a contact is a community member.
-     *
-     * @param Entity\Contact        $contact
-     * @param Options\ModuleOptions $options
-     *
-     * @return boolean|null
-     */
-    public function findIsCommunityMember(Entity\Contact $contact, Options\ModuleOptions $options): bool
-    {
-        if ($options->getCommunityViaProjectParticipation()) {
-            /** @var Project $projectRepository */
-            $projectRepository = $this->getEntityManager()->getRepository(\Project\Entity\Project::class);
-            /*
-             * Go over the associates first
-             */
-            $queryBuilder = $this->_em->createQueryBuilder();
-            $queryBuilder->select('contact.id');
-            $queryBuilder->from(Entity\Contact::class, 'contact');
-            $queryBuilder->join('contact.associate', 'a');
-            $queryBuilder = $projectRepository->onlyActiveProjectOrRecentPO($queryBuilder);
-            $queryBuilder->andWhere('contact = :contact');
-            $queryBuilder->setParameter('contact', $contact);
-            //If we find a associate, return true, else proceed
-            if (\count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
-                return true;
-            }
-            /*
-             * Go over the affiliations
-             */
-            $queryBuilder = $this->_em->createQueryBuilder();
-            $queryBuilder->select('contact.id');
-            $queryBuilder->from(Entity\Contact::class, 'contact');
-            $queryBuilder->join('contact.contactOrganisation', 'co');
-            $queryBuilder->join('co.organisation', 'organisation');
-            $queryBuilder->join('organisation.affiliation', 'a');
-            $queryBuilder = $projectRepository->onlyActiveProjectOrRecentPO($queryBuilder);
-            $queryBuilder->andWhere('contact = :contact');
-            $queryBuilder->setParameter('contact', $contact);
-            //If we find a associate, return true, else proceed
-            if (\count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
-                return true;
-            }
-            /*
-             * Go over the affiliations via the cluster
-             */
-            $queryBuilder = $this->_em->createQueryBuilder();
-            $queryBuilder->select('contact.id');
-            $queryBuilder->from(Entity\Contact::class, 'contact');
-            $queryBuilder->join('contact.contactOrganisation', 'co');
-            $queryBuilder->join('co.organisation', 'organisation');
-            $queryBuilder->join('organisation.cluster', 'cluster1', 'cluster1.organisation = organisation');
-            $queryBuilder->join('organisation.cluster', 'cluster2', 'cluster1.cluster = cluster2.cluster');
-            $queryBuilder->join('organisation.affiliation', 'a');
-            $queryBuilder = $projectRepository->onlyActiveProjectOrRecentPO($queryBuilder);
-            $queryBuilder->andWhere('contact = :contact');
-            $queryBuilder->setParameter('contact', $contact);
-            //If we find a associate, return true, else proceed
-            if (\count($queryBuilder->getQuery()->useQueryCache(true)->getResult()) > 0) {
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    /**
-     * Return Contact entities based on a selection SQL using a native SQL query.
-     *
-     * @param SelectionSql $sql
-     * @param bool         $toArray
-     *
-     * @return Entity\Contact[]
-     */
-    public function findContactsBySelectionSQL(SelectionSql $sql, $toArray = false): array
+    public function findContactsBySelectionSQL(SelectionSql $sql, bool $toArray = false): array
     {
         $resultSetMap = new ResultSetMapping();
         $resultSetMap->addEntityResult(Entity\Contact::class, 'contact');
@@ -673,18 +683,13 @@ class Contact extends EntityRepository
             return $query->getResult(AbstractQuery::HYDRATE_ARRAY);
         }
 
-        //Note that the contactOrgansiation is always empty
+        //Note that the contactOrganisation is always empty
         return $query->getResult();
     }
 
-    /**
-     * @param Selection $selection
-     *
-     * @return int
-     */
     public function findAmountOfContactsInSelection(Selection $selection): int
     {
-        if (!\is_null($selection->getSql())) {
+        if (null !== $selection->getSql()) {
             $resultSetMap = new ResultSetMapping();
             $resultSetMap->addEntityResult(Entity\Contact::class, 'contact');
             $resultSetMap->addFieldResult('contact', 'blabla', 'blabla');
@@ -714,13 +719,6 @@ class Contact extends EntityRepository
         return (int)$qb->getQuery()->getSingleScalarResult();
     }
 
-    /**
-     * Return Contact entities based on a query generated by the Facebook functionality.
-     *
-     * @param Entity\Facebook $facebook
-     *
-     * @return Entity\Contact[]
-     */
     public function findContactsInFacebook(Entity\Facebook $facebook): array
     {
         $resultSetMap = new ResultSetMapping();
@@ -757,15 +755,7 @@ class Contact extends EntityRepository
         return $query->getResult();
     }
 
-    /**
-     * Return Contact entities based on a selection SQL using a native SQL query.
-     *
-     * @param Selection $selection
-     * @param bool      $toArray
-     *
-     * @return Entity\Contact[]
-     */
-    public function findContactsBySelectionContact(Selection $selection, $toArray = false): array
+    public function findContactsBySelectionContact(Selection $selection, bool $toArray = false): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_contact', 'co', 'o', 'cy');
@@ -787,13 +777,7 @@ class Contact extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * @param Entity\OptIn $optIn
-     * @param bool         $toArray
-     *
-     * @return Entity\Contact[]
-     */
-    public function findContactsByOptIn(Entity\OptIn $optIn, $toArray = false): array
+    public function findContactsByOptIn(Entity\OptIn $optIn, bool $toArray = false): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_contact');
@@ -810,14 +794,6 @@ class Contact extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * Return Contact entities based on a selection SQL using a native SQL query.
-     *
-     * @param Entity\Contact $contact
-     * @param SelectionSql   $sql
-     *
-     * @return bool
-     */
     public function isContactInSelectionSQL(Entity\Contact $contact, SelectionSql $sql): bool
     {
         $resultSetMap = new ResultSetMapping();
@@ -835,15 +811,7 @@ class Contact extends EntityRepository
         return count($query->getResult()) > 0;
     }
 
-    /**
-     * This is basic search for contacts (based on the name, and email.
-     *
-     * @param string $searchItem
-     * @param int    $maxResults
-     *
-     * @return Entity\Contact[]|array
-     */
-    public function searchContacts($searchItem, $maxResults = 12): array
+    public function searchContacts(string $searchItem, int $maxResults = 12): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(
@@ -886,11 +854,6 @@ class Contact extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    /**
-     * @param Organisation $organisation
-     *
-     * @return Entity\Contact[]
-     */
     public function findContactsInOrganisation(Organisation $organisation): array
     {
         $qb = $this->_em->createQueryBuilder();
@@ -913,11 +876,6 @@ class Contact extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * @param Calendar $calendar
-     *
-     * @return Entity\Contact[]
-     */
     public function findPossibleContactByCalendar(Calendar $calendar): array
     {
         /*
@@ -947,11 +905,6 @@ class Contact extends EntityRepository
         return $findContactByProjectIdQueryBuilder->getQuery()->useQueryCache(true)->getResult();
     }
 
-    /**
-     * @param Entity\Contact $contact
-     *
-     * @return Entity\Contact[]
-     */
     public function findMergeCandidatesFor(Entity\Contact $contact): array
     {
         //Short circuit the contact when the first name and lastname are not filled in
@@ -960,45 +913,42 @@ class Contact extends EntityRepository
             return [];
         }
 
-        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
-        $queryBuilder->select('c');
-        $queryBuilder->from(Entity\Contact::class, 'c');
-        $queryBuilder->where($queryBuilder->expr()->neq('c.id', ':contactId'));
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->orX(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->like('c.firstName', ':firstName'),
-                    $queryBuilder->expr()->like('c.lastName', ':lastName')
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('c');
+        $qb->from(Entity\Contact::class, 'c');
+        $qb->where($qb->expr()->neq('c.id', ':contactId'));
+        $qb->andWhere(
+            $qb->expr()->orX(
+                $qb->expr()->andX(
+                    $qb->expr()->like('c.firstName', ':firstName'),
+                    $qb->expr()->like('c.lastName', ':lastName')
                 ),
-                $queryBuilder->expr()->eq("REPLACE(c.email,'.','')", ':email')
+                $qb->expr()->eq("REPLACE(c.email,'.','')", ':email')
             )
         );
-        $queryBuilder->orderBy('c.lastName', Criteria::ASC);
-        $queryBuilder->addOrderBy('c.middleName', Criteria::ASC);
-        $queryBuilder->addOrderBy('c.firstName', Criteria::ASC);
+        $qb->orderBy('c.lastName', Criteria::ASC);
+        $qb->addOrderBy('c.middleName', Criteria::ASC);
+        $qb->addOrderBy('c.firstName', Criteria::ASC);
 
-        $queryBuilder->setParameter('contactId', $contact->getId());
-        $queryBuilder->setParameter('firstName', '%' . $contact->getFirstName() . '%');
-        $queryBuilder->setParameter('lastName', '%' . $contact->getLastName() . '%');
-        $queryBuilder->setParameter('email', str_replace('.', '', $contact->getEmail()));
+        $qb->setParameter('contactId', $contact->getId());
+        $qb->setParameter('firstName', '%' . $contact->getFirstName() . '%');
+        $qb->setParameter('lastName', '%' . $contact->getLastName() . '%');
+        $qb->setParameter('email', str_replace('.', '', $contact->getEmail()));
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+        return $qb->getQuery()->useQueryCache(true)->getResult();
     }
 
-    /**
-     * @return array
-     */
     public function findNewCommunityMembers(): array
     {
         $emConfig = $this->_em->getConfiguration();
         $emConfig->addCustomDatetimeFunction('YEAR', Year::class);
 
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select(
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select(
             'YEAR(contact_entity_contact.dateCreated) as dateYearCreated',
-            $queryBuilder->expr()->count('contact_entity_contact.id') . ' AS amount'
+            $qb->expr()->count('contact_entity_contact.id') . ' AS amount'
         );
-        $queryBuilder->from(Entity\Contact::class, 'contact_entity_contact');
+        $qb->from(Entity\Contact::class, 'contact_entity_contact');
 
 
         //Limit to the ones which have a pageview
@@ -1007,10 +957,10 @@ class Contact extends EntityRepository
         $pageViewsQuery->from(Pageview::class, 'admin_entity_pageview');
         $pageViewsQuery->join('admin_entity_pageview.contact', 'admin_entity_pageview_contact');
 
-        $queryBuilder->where($queryBuilder->expr()->in('contact_entity_contact', $pageViewsQuery->getDQL()));
+        $qb->where($qb->expr()->in('contact_entity_contact', $pageViewsQuery->getDQL()));
 
-        $queryBuilder->groupBy('dateYearCreated');
+        $qb->groupBy('dateYearCreated');
 
-        return $queryBuilder->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
     }
 }

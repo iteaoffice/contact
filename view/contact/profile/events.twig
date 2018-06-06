@@ -1,0 +1,26 @@
+{% do headTitle().append(translate("txt-profile")) %}
+{% do headTitle().append(contact.parseFullName()) %}
+{% do headTitle().append(translate("txt-events")) %}
+
+<h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/view') }}">{{ translate("txt-profile")|capitalize }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/organisation') }}">{{ translate("txt-organisation")|capitalize }}
+            {% if not contact.contactOrganisation %}
+                <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>
+            {% endif %}</a></li>
+    <li class="nav-item active"><a class="nav-link active"
+                                   href="{{ url('community/contact/profile/events') }}">{{ translate("txt-events")|capitalize }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/privacy') }}">{{ translate("txt-privacy")|capitalize }}</a>
+    </li>
+</ul>
+
+<h2>{{ translate("txt-events") }}</h2>
+
+{% include 'event/partial/list/meeting-list' %}

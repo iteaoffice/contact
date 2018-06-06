@@ -22,7 +22,7 @@ use Zend\Form\Annotation;
  * @ORM\Table(name="address_type")
  * @ORM\Entity
  */
-class AddressType extends EntityAbstract
+class AddressType extends AbstractEntity
 {
     public const ADDRESS_TYPE_MAIL = 1;
     public const ADDRESS_TYPE_VISIT = 2;
@@ -73,45 +73,23 @@ class AddressType extends EntityAbstract
         $this->address = new Collections\ArrayCollection();
     }
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     * @return bool
-     */
     public function __isset($property)
     {
         return isset($this->$property);
     }
 
 
-    /**
-     * toString returns the name.
-     *
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->type;
     }

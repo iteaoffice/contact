@@ -23,7 +23,7 @@ use Zend\Form\Annotation;
  * @ORM\Entity
  * @Annotation\Name("contact_log")
  */
-class Log extends EntityAbstract
+class Log extends AbstractEntity
 {
     /**
      * @ORM\Column(name="log_id", type="integer", length=10, options={"unsigned":true}, nullable=false)
@@ -61,31 +61,17 @@ class Log extends EntityAbstract
      */
     private $log;
 
-    /**
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     *
-     * @return bool
-     */
-    public function __isset($property): bool
+    public function __isset($property)
     {
         return isset($this->$property);
     }
@@ -100,6 +86,7 @@ class Log extends EntityAbstract
 
     /**
      * @param int $id
+     *
      * @return Log
      */
     public function setId(int $id): Log
@@ -118,6 +105,7 @@ class Log extends EntityAbstract
 
     /**
      * @param Contact $createdBy
+     *
      * @return Log
      */
     public function setCreatedBy(Contact $createdBy): Log
@@ -136,6 +124,7 @@ class Log extends EntityAbstract
 
     /**
      * @param Contact $contact
+     *
      * @return Log
      */
     public function setContact(Contact $contact): Log
@@ -154,6 +143,7 @@ class Log extends EntityAbstract
 
     /**
      * @param \DateTime $dateCreated
+     *
      * @return Log
      */
     public function setDateCreated(\DateTime $dateCreated): Log
@@ -172,6 +162,7 @@ class Log extends EntityAbstract
 
     /**
      * @param string $log
+     *
      * @return Log
      */
     public function setLog(string $log): Log

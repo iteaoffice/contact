@@ -24,12 +24,6 @@ use Doctrine\ORM\PersistentCollection;
  */
 class SelectionContactService extends AbstractService
 {
-    /**
-     * @param Contact           $contact
-     * @param array|Selection[] $selections
-     *
-     * @return bool
-     */
     public function contactInSelection(Contact $contact, $selections): bool
     {
         if (!\is_array($selections) && !$selections instanceof PersistentCollection) {
@@ -50,15 +44,8 @@ class SelectionContactService extends AbstractService
         return false;
     }
 
-    /**
-     * @param Contact   $contact
-     * @param Selection $selection
-     *
-     * @return bool
-     */
     public function findContactInSelection(Contact $contact, Selection $selection): bool
     {
-        /** @var \Contact\Repository\Contact $repository */
         $repository = $this->entityManager->getRepository(Contact::class);
 
         if (null !== $selection->getSql()) {
@@ -98,9 +85,7 @@ class SelectionContactService extends AbstractService
      */
     public function findContactsInSelection(Selection $selection, $toArray = false): array
     {
-        /** @var \Contact\Repository\Contact $repository */
         $repository = $this->entityManager->getRepository(Contact::class);
-
         /*
          * A selection can have 2 methods, either SQL or a contacts. We need to query both
          */

@@ -75,13 +75,7 @@ class SelectionFilter extends InputFilter
         );
         $inputFilter->add(
             [
-                'name'     => 'personal',
-                'required' => true,
-            ]
-        );
-        $inputFilter->add(
-            [
-                'name'     => 'private',
+                'name'     => 'core',
                 'required' => true,
             ]
         );

@@ -25,11 +25,6 @@ use Zend\InputFilter\InputFilter;
  */
 class ContactFilter extends InputFilter
 {
-    /**
-     * ContactFilter constructor.
-     *
-     * @param EntityManager $entityManager
-     */
     public function __construct(EntityManager $entityManager)
     {
         $inputFilter = new InputFilter();

@@ -14,7 +14,6 @@ namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Entity for the Contact.
@@ -26,7 +25,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  *
  * @category    Contact
  */
-class Address extends EntityAbstract implements ResourceInterface
+class Address extends AbstractEntity
 {
     /**
      * @ORM\Column(name="address_id", type="integer", nullable=false)
@@ -63,9 +62,7 @@ class Address extends EntityAbstract implements ResourceInterface
     private $city;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\AddressType", cascade={"persist"}, inversedBy="address")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false)
-     * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\AddressType"})
      * @Annotation\Attributes({"label":"txt-type"})
@@ -75,9 +72,7 @@ class Address extends EntityAbstract implements ResourceInterface
     private $type;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="address")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * })
      * @Annotation\Type("\Zend\Form\Element\Hidden")
      *
      * @var Contact
@@ -85,9 +80,7 @@ class Address extends EntityAbstract implements ResourceInterface
     private $contact;
     /**
      * @ORM\ManyToOne(targetEntity="General\Entity\Country", cascade={"persist"}, inversedBy="address")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id", nullable=false)
-     * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({
      *      "target_class":"General\Entity\Country",
@@ -105,42 +98,21 @@ class Address extends EntityAbstract implements ResourceInterface
      */
     private $country;
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     * @return bool
-     *
-     */
     public function __isset($property)
     {
         return isset($this->$property);
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return (string)$this->getAddress();

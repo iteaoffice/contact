@@ -1,0 +1,79 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-optin-list")) %}
+
+{{ form().closeTag()|raw }}
+
+{% do form.prepare() %}
+
+{{ form().openTag(form)|raw }}
+
+{% set filter = form.get('filter') %}
+
+<input type="hidden" name="filter[order]" value="{{ order }}">
+<input type="hidden" name="filter[direction]" value="{{ direction }}">
+
+<div class="row">
+
+    <div class="col-md-9">
+
+        <h1 class="display-4">{{ translate("txt-optin-list") }} {{ optInLink(null,'new', 'button') }}</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <p class="lead">{{ translate("txt-optin-list-explanation") }}</p>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    {{ formelement(filter.get('search')) }}
+                    <span class="input-group-btn">{{ formelement(form.get('submit')) }}</span></div>
+            </div>
+        </div>
+
+        {% if paginator.pageRange > 0 %}
+            <table class="table table-hover table-striped table-condensed table-sm">
+                <thead>
+                <tr>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/opt-in/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/opt-in/list', 'criteria': 'description', 'text': translate('txt-description')} %}</th>
+                    <th>{{ translate("txt-active") }}</th>
+                    <th>{{ translate("txt-contacts") }}</th>
+                    <th>{{ translate("txt-mailings") }}</th>
+                </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+                <tbody>
+                {% for optIn in paginator.getCurrentItems() %}
+                    <tr {% if optIn.isActive %}class="success"{% endif %}>
+                        <td>{{ optInLink(optIn,'view', 'name') }} {{ optInLink(optIn,'edit', 'icon') }}</td>
+                        <td>{{ optIn.description }}</td>
+                        <td>{{ translate(optIn.getActive(true)) }}</td>
+                        <td>{{ contactService.getAmountOfContactsInOptIn(optIn) }}</td>
+                        <td>{{ optIn.mailing.count() }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
+        {% else %}
+            {{ ztbalert().info(translate("txt-no-optins-found"))|raw }}
+        {% endif %}
+    </div>
+    <div class="col-md-3">
+        <div class="well well-sm">
+            <fieldset>
+
+                {{ ztbformelement(filter.get('active')) }}
+                <div class="form-group row">
+                    {{ ztbformelement(form.get('submit')) }}
+                    {{ ztbformelement(form.get('clear')) }}
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}
+
+
+

@@ -35,8 +35,8 @@
             <dd>{{ selection.tag|default(translate("txt-not-provided")) }}</dd>
             <dt>{{ translate("txt-note") }}</dt>
             <dd>{{ selection.note|default(translate("txt-not-provided"))|nl2br|raw }}</dd>
-            <dt>{{ translate("txt-personal") }}</dt>
-            <dd>{{ translate(selection.getPersonal(true))|raw }}</dd>
+            <dt>{{ translate("txt-core") }}</dt>
+            <dd>{{ translate(selection.getCore(true)) }}</dd>
             <dt>{{ translate("txt-date-created") }}</dt>
             <dd>{{ selection.dateCreated|string_date }}</dd>
             {% if selection.dateDeleted %}

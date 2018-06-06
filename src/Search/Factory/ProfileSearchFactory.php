@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace Contact\Search\Factory;
 
 use Contact\Search\Service\ProfileSearchService;
-use Contact\Service\ContactService;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
@@ -31,8 +30,8 @@ class ProfileSearchFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
-     * @param string $requestedName
-     * @param array|null|null $options
+     * @param string             $requestedName
+     * @param array|null|null    $options
      *
      * @return ProfileSearchService
      */
@@ -41,10 +40,6 @@ class ProfileSearchFactory implements FactoryInterface
         /** @var ProfileSearchService $searchService */
         $searchService = new $requestedName($options);
         $searchService->setServiceLocator($container);
-
-        /** @var ContactService $contactService */
-        $contactService = $container->get(ContactService::class);
-        $searchService->setContactService($contactService);
 
         return $searchService;
     }

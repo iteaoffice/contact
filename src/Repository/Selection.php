@@ -14,7 +14,7 @@ namespace Contact\Repository;
 
 use Contact\Entity;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class Selection
@@ -23,43 +23,42 @@ use Doctrine\ORM\Query;
  */
 class Selection extends EntityRepository
 {
-    /**
-     * @param array $filter
-     *
-     * @return Query
-     */
-    public function findFiltered(array $filter): Query
+    public function findFiltered(array $filter): QueryBuilder
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_selection');
-        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_selection');
+        $qb->from(Entity\Selection::class, 'contact_entity_selection');
 
         if (array_key_exists('search', $filter)) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->like(
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like(
                         'contact_entity_selection.selection',
                         ':like'
                     ),
-                    $queryBuilder->expr()->like('contact_entity_selection.tag', ':like')
+                    $qb->expr()->like('contact_entity_selection.tag', ':like')
                 )
             );
 
 
-            $queryBuilder->setParameter('like', sprintf("%%%s%%", $filter['search']));
+            $qb->setParameter('like', sprintf("%%%s%%", $filter['search']));
         }
 
         if (array_key_exists('sql', $filter)) {
-            $queryBuilder->join('contact_entity_selection.sql', 'sql');
+            $qb->join('contact_entity_selection.sql', 'sql');
         }
 
         if (array_key_exists('tags', $filter)) {
-            $queryBuilder->andWhere($queryBuilder->expr()->in('contact_entity_selection.tag', $filter['tags']));
+            $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['tags']));
         }
 
         if (!array_key_exists('includeDeleted', $filter)) {
             //Do not show the deleted ones
-            $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
+            $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
+        }
+
+        if (array_key_exists('core', $filter)) {
+            $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['core']));
         }
 
         $direction = 'ASC';
@@ -69,106 +68,90 @@ class Selection extends EntityRepository
 
         switch ($filter['order']) {
             case 'name':
-                $queryBuilder->addOrderBy('contact_entity_selection.selection', $direction);
+                $qb->addOrderBy('contact_entity_selection.selection', $direction);
                 break;
             case 'tag':
-                $queryBuilder->addOrderBy('contact_entity_selection.tag', $direction);
+                $qb->addOrderBy('contact_entity_selection.tag', $direction);
+                break;
+            case 'core':
+                $qb->addOrderBy('contact_entity_selection.core', $direction);
                 break;
             case 'owner':
-                $queryBuilder->join('contact_entity_selection.contact', 'contact');
-                $queryBuilder->addOrderBy('contact.lastName', $direction);
+                $qb->join('contact_entity_selection.contact', 'contact');
+                $qb->addOrderBy('contact.lastName', $direction);
                 break;
             case 'date':
-                $queryBuilder->addOrderBy('contact_entity_selection.dateCreated', $direction);
+                $qb->addOrderBy('contact_entity_selection.dateCreated', $direction);
                 break;
             default:
-                $queryBuilder->addOrderBy('contact_entity_selection.id', $direction);
+                $qb->addOrderBy('contact_entity_selection.id', $direction);
         }
 
-        return $queryBuilder->getQuery();
+        return $qb;
     }
 
-    /**
-     * @return iterable
-     */
-    public function findSqlSelections(): iterable
+    public function findSqlSelections(): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_selection');
-        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
-        $queryBuilder->innerJoin('contact_entity_selection.sql', 'contact_entity_selection_sql');
-        $queryBuilder->orderBy('contact_entity_selection.selection', 'ASC');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_selection');
+        $qb->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb->innerJoin('contact_entity_selection.sql', 'contact_entity_selection_sql');
+        $qb->orderBy('contact_entity_selection.selection', 'ASC');
 
-        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
+        $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
 
-        return $queryBuilder->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
     }
 
-
-    /**
-     * @return iterable
-     */
-    public function findNonSqlSelections(): iterable
+    public function findNonSqlSelections(): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_selection');
-        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
-        $queryBuilder->orderBy('contact_entity_selection.selection', 'ASC');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_selection');
+        $qb->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb->orderBy('contact_entity_selection.selection', 'ASC');
 
         $subSelect = $this->_em->createQueryBuilder();
         $subSelect->select('contact_entity_selection_sub.id');
         $subSelect->from(Entity\SelectionSql::class, 'contact_entity_selection_sql');
         $subSelect->join('contact_entity_selection_sql.selection', 'contact_entity_selection_sub');
 
-        $queryBuilder->andWhere($queryBuilder->expr()->notIn('contact_entity_selection.id', $subSelect->getDQL()));
+        $qb->andWhere($qb->expr()->notIn('contact_entity_selection.id', $subSelect->getDQL()));
 
-        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
+        $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
 
-        return $queryBuilder->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
     }
 
-
-    /**
-     * @return iterable
-     */
-    public function findTags(): iterable
+    public function findTags(): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_selection.tag');
-        $queryBuilder->distinct();
-        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
-        $queryBuilder->orderBy('contact_entity_selection.tag', 'ASC');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_selection.tag');
+        $qb->distinct();
+        $qb->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb->orderBy('contact_entity_selection.tag', 'ASC');
 
-        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
+        $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
 
-        return $queryBuilder->getQuery()->getArrayResult();
+        return $qb->getQuery()->getArrayResult();
     }
 
-    /**
-     * @return iterable
-     */
-    public function findActive(): iterable
+    public function findActive(): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_selection');
-        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
-        $queryBuilder->orderBy('contact_entity_selection.selection', 'ASC');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_selection');
+        $qb->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb->orderBy('contact_entity_selection.selection', 'ASC');
 
-        $queryBuilder->andWhere($queryBuilder->expr()->isNull('contact_entity_selection.dateDeleted'));
+        $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
 
-        return $queryBuilder->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
     }
 
-    /**
-     * @param Entity\Contact $contact
-     *
-     * @return null|Entity\Selection
-     */
-    public function findFixedSelectionsByContact(Entity\Contact $contact)
+    public function findFixedSelectionsByContact(Entity\Contact $contact): array
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('contact_entity_selection');
-        $queryBuilder->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_selection');
+        $qb->from(Entity\Selection::class, 'contact_entity_selection');
 
         $subSelect = $this->_em->createQueryBuilder();
         $subSelect->select('selection.id');
@@ -176,10 +159,10 @@ class Selection extends EntityRepository
         $subSelect->join('contact_entity_selection_contact.contact', 'contact');
         $subSelect->join('contact_entity_selection_contact.selection', 'selection');
         $subSelect->where('contact = :contact');
-        $queryBuilder->setParameter('contact', $contact);
+        $qb->setParameter('contact', $contact);
 
-        $queryBuilder->andWhere($queryBuilder->expr()->in('contact_entity_selection.id', $subSelect->getDQL()));
+        $qb->andWhere($qb->expr()->in('contact_entity_selection.id', $subSelect->getDQL()));
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getResult();
+        return $qb->getQuery()->useQueryCache(true)->getResult();
     }
 }

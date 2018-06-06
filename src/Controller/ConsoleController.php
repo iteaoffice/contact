@@ -17,6 +17,6 @@ namespace Contact\Controller;
  * Class ContactController.
  *
  */
-class ConsoleController extends ContactAbstractController
+final class ConsoleController extends ContactAbstractController
 {
 }

@@ -1,6 +1,4 @@
 {% do form.prepare() %}
-{% do form.setAttribute('class','form-horizontal') %}
-
 {{ form().openTag(form)|raw }}
 
 <div class="form-group row">
@@ -17,6 +15,9 @@
 {{ ztbformelement(address.get('zipCode')) }}
 {{ ztbformelement(address.get('city')) }}
 {{ ztbformelement(address.get('country')) }}
+
+
+{{ ztbformelement(form.get('csrf')) }}
 
 <div class="form-group row">
     <div class="offset-md-3 col-sm-offset-3 col-sm-9">
