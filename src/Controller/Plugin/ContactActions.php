@@ -104,7 +104,7 @@ final class ContactActions extends AbstractPlugin
         $this->contactService->save($contact);
 
         //Create a target
-        $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/auto-activate');
+        $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate');
         //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
         $email = $this->emailService->create();

@@ -244,8 +244,12 @@ class ContactService extends AbstractService
 
         $canAnonymiseContact = [];
 
+//        if (!$this->canDeleteContact($contact)) {
+//            $canAnonymiseContact[] = 'Contact cannot be deleted, so can also not be anonymised';
+//        }
+
         if ($repository->contactIsActiveInProject($contact, 5, 'older')) {
-            $canAnonymiseContact[] = 'Contact is active in a project';
+            $canAnonymiseContact[] = 'Contact is active in a project completed more than 5 years ago';
         }
 
         if ($repository->contactIsReviewer($contact)) {
@@ -253,7 +257,7 @@ class ContactService extends AbstractService
         }
 
         if ($repository->contactIsPresentAtEvent($contact, 2, 'older')) {
-            $canAnonymiseContact[] = 'Contact visited an event less than 2 years ago';
+            $canAnonymiseContact[] = 'Contact visited an event more than 2 years ago';
         }
 
         if ($repository->contactHasIdea($contact, 2, 'older')) {
@@ -297,13 +301,27 @@ class ContactService extends AbstractService
         return '';
     }
 
+    public function parseSignature(Contact $contact): ?string
+    {
+        /*
+         * Go over the notes and find the signature of the contact
+         */
+        foreach ($contact->getNote() as $note) {
+            if ($note->getSource() === Note::SOURCE_SIGNATURE) {
+                return $note->getNote();
+            }
+        }
+
+        return '';
+    }
+
     public function parseOrganisation(Contact $contact): ?string
     {
         if (!$this->hasOrganisation($contact)) {
             return null;
         }
 
-        return $this->organisationService->parseOrganisationWithBranch(
+        return OrganisationService::parseBranch(
             $contact->getContactOrganisation()->getBranch(),
             $contact->getContactOrganisation()->getOrganisation()
         );
@@ -403,6 +421,8 @@ class ContactService extends AbstractService
     public function save(AbstractEntity $contact): AbstractEntity
     {
         parent::save($contact);
+
+        $this->refresh($contact);
 
         if ($contact instanceof Contact) {
             $this->contactSearchService->updateDocument($contact);

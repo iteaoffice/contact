@@ -94,7 +94,7 @@ return [
                                     ],
                                 ],
                                 'child_routes' => [
-                                    'edit'          => [
+                                    'edit'         => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/edit.html',
@@ -103,7 +103,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'view'          => [
+                                    'view'         => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/view.html',
@@ -112,7 +112,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'organisation'          => [
+                                    'organisation' => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/organisation.html',
@@ -121,7 +121,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'events'          => [
+                                    'events'       => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/events.html',
@@ -130,7 +130,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'privacy'          => [
+                                    'privacy'      => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/privacy.html',
@@ -139,7 +139,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'contact'       => [
+                                    'contact'      => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/contact/[:hash].html',
@@ -148,7 +148,16 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'activate'      => [
+                                    'create'     => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/create.html',
+                                            'defaults' => [
+                                                'action' => 'create',
+                                            ],
+                                        ],
+                                    ],
+                                    'activate'     => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/activate.html',
@@ -157,18 +166,9 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'auto-activate' => [
-                                        'type'    => 'Literal',
-                                        'options' => [
-                                            'route'    => '/auto-activate.html',
-                                            'defaults' => [
-                                                'action' => 'auto-activate',
-                                            ],
-                                        ],
-                                    ],
                                 ],
                             ],
-                             'change-password'     => [
+                            'change-password'     => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit/password.html',

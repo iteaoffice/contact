@@ -127,7 +127,7 @@ class ContactLink extends LinkAbstract
                  * Users can have access without a password (via the deeplink)
                  * We will therefore have the option to set a password
                  */
-                if (null !== $this->getContact()->getSaltedPassword()) {
+                if (null === $this->getContact()->getSaltedPassword()) {
                     $this->setText($this->translate("txt-set-your-password"));
                     $this->addClasses('btn-danger');
                 } else {

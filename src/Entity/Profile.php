@@ -32,8 +32,8 @@ class Profile extends AbstractEntity
 
     protected static $visibleTemplates
         = [
-            self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
             self::VISIBLE_COMMUNITY => 'txt-visibility-community',
+            self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
         ];
     /**
      * @ORM\Column(name="profile_id", type="integer", nullable=false)
@@ -70,12 +70,14 @@ class Profile extends AbstractEntity
      */
     private $contact;
 
-    /**
-     * Default value when a new profile is created.
-     */
     public function __construct()
     {
         $this->visible = self::VISIBLE_COMMUNITY;
+    }
+
+    public static function getVisibleTemplates(): array
+    {
+        return self::$visibleTemplates;
     }
 
     public function __get($property)
@@ -91,11 +93,6 @@ class Profile extends AbstractEntity
     public function __isset($property)
     {
         return isset($this->$property);
-    }
-
-    public static function getVisibleTemplates(): array
-    {
-        return self::$visibleTemplates;
     }
 
     public function getId()

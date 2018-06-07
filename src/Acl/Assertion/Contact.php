@@ -40,9 +40,7 @@ class Contact extends AssertionAbstract
         $privilege = null
     ): bool {
         $this->setPrivilege($privilege);
-        /*
-         * A meeting can be shown when we have a contact
-         */
+
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {
             return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }

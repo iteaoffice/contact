@@ -13,11 +13,13 @@ declare(strict_types=1);
 namespace Contact\Form;
 
 use Contact\Entity\Contact;
+use Contact\Entity\OptIn;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Profile as ProfileEntity;
 use Contact\Hydrator\Profile as ProfileHydrator;
 use Contact\Service\ContactService;
 use Doctrine\ORM\EntityManager;
+use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntityRadio;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Country;
@@ -118,7 +120,6 @@ class Profile extends Form implements InputFilterProviderInterface
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'required'    => true,
                     'placeholder' => _("txt-give-your-last-name"),
                 ],
             ]
@@ -362,6 +363,36 @@ class Profile extends Form implements InputFilterProviderInterface
             ]
         );
         $this->add($profileFieldSet);
+
+
+        $this->add(
+            [
+                'type'    => EntityMultiCheckbox::class,
+                'name'    => 'optIn',
+                'options' => [
+                    'target_class'    => OptIn::class,
+                    'object_manager'  => $entityManager,
+                    'find_method'     => [
+                        'name'   => 'findBy',
+                        'params' => [
+                            'criteria' => [
+                                'active' => OptIn::ACTIVE_ACTIVE
+                            ],
+                            'orderBy'  => [
+                                'optIn' => 'ASC']
+                        ]
+                    ],
+                    'label_generator' => function (OptIn $optIn) {
+                        return \sprintf('%s (%s)', $optIn->getOptIn(), $optIn->getDescription());
+                    },
+                    'label'           => _("txt-select-your-opt-in-label"),
+                    'help-block'      => _("txt-select-your-opt-in-help-block"),
+                ],
+
+
+            ]
+        );
+
         $this->add(
             [
                 'type'       => '\Zend\Form\Element\File',
@@ -385,7 +416,7 @@ class Profile extends Form implements InputFilterProviderInterface
                     ],
                 ],
                 'attributes' => [
-                    'label' => 'txt-remove-photo-label',
+                    'label' => _('txt-remove-photo-label'),
                 ]
             ]
         );
@@ -427,6 +458,9 @@ class Profile extends Form implements InputFilterProviderInterface
                 ]
             ],
             'removeFile' => [
+                'required' => false
+            ],
+            'optIn'      => [
                 'required' => false
             ],
             'file'       => [

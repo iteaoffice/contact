@@ -1053,6 +1053,15 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         );
     }
 
+    public function parseFirstName(): string
+    {
+        if (null === $this->firstName) {
+            return '<empty>';
+        }
+
+        return $this->firstName;
+    }
+
     public function isAnonymised(): bool
     {
         return null !== $this->dateAnonymous;

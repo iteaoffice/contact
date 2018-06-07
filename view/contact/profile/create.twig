@@ -1,6 +1,6 @@
-{% do headTitle().append(translate("txt-edit-profile")) %}
-<h1 class="display-4">{{ translate("txt-edit-profile") }}</h1>
-<p class="lead">{{ translate("txt-edit-profile-explanation") }}</p>
+{% do headTitle().append(translate("txt-create-your-account")) %}
+<h1 class="display-4">{{ translate("txt-create-your-account") }}</h1>
+<p>{{ translate("txt-create-your-account-explanation") }}</p>
 
 {% do form.prepare() %}
 
@@ -102,8 +102,8 @@
 
 <div class="form-group row">
     <div class="offset-md-3 col-sm-offset-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ ztbformelement(form.get('submit').setAttribute('value',translate("txt-create-your-account"))) }}
+        {{ ztbformelement(form.get('cancel').setAttribute('value',translate("txt-cancel-registration"))) }}
     </div>
 </div>
 
@@ -158,3 +158,9 @@
 
     });
 </script>
+
+<style type="text/css">
+    .alert-danger {
+        display: none;
+    }
+</style>

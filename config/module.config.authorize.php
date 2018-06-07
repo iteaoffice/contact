@@ -64,6 +64,11 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'community/contact/profile/create',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
                     'route'     => 'community/contact/profile/activate',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,

@@ -159,7 +159,7 @@ class OptIn extends AbstractEntity
         return $this;
     }
 
-    public function getActive(bool $textual = true)
+    public function getActive(bool $textual = false)
     {
         if ($textual) {
             return self::$activeTemplates[$this->active];
