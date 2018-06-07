@@ -303,16 +303,27 @@ class ContactService extends AbstractService
 
     public function parseSignature(Contact $contact): ?string
     {
+        $signature = [];
+
+        if (null !== $contact->getPosition()) {
+            $signature[] = $contact->getPosition();
+        }
+
         /*
          * Go over the notes and find the signature of the contact
          */
         foreach ($contact->getNote() as $note) {
             if ($note->getSource() === Note::SOURCE_SIGNATURE) {
-                return $note->getNote();
+                $signature[] = sprintf('<em>%s</em>', $note->getNote());
             }
         }
 
-        return '';
+        if (\count($signature) === 0) {
+            return null;
+        }
+
+
+        return \implode('<br>', $signature);
     }
 
     public function parseOrganisation(Contact $contact): ?string

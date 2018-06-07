@@ -17,6 +17,7 @@ use Contact\Entity\Photo;
 use Contact\Form\Profile;
 use Contact\Service\ContactService;
 use Doctrine\ORM\EntityManager;
+use Event\Service\MeetingService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
 use Program\Options\ModuleOptions;
@@ -55,6 +56,10 @@ final class ProfileController extends ContactAbstractController
      */
     private $generalService;
     /**
+     * @var MeetingService
+     */
+    private $meetingService;
+    /**
      * @var EntityManager
      */
     private $entityManager;
@@ -63,20 +68,16 @@ final class ProfileController extends ContactAbstractController
      */
     private $translator;
 
-    public function __construct(
-        ContactService $contactService,
-        OrganisationService $organisationService,
-        CallService $callService,
-        ModuleOptions $programModuleOptions,
-        GeneralService $generalService,
-        EntityManager $entityManager,
-        TranslatorInterface $translator
+    public function __construct(ContactService $contactService, OrganisationService $organisationService,
+        CallService $callService, ModuleOptions $programModuleOptions, GeneralService $generalService,
+        MeetingService $meetingService, EntityManager $entityManager, TranslatorInterface $translator
     ) {
         $this->contactService = $contactService;
         $this->organisationService = $organisationService;
         $this->callService = $callService;
         $this->programModuleOptions = $programModuleOptions;
         $this->generalService = $generalService;
+        $this->meetingService = $meetingService;
         $this->entityManager = $entityManager;
         $this->translator = $translator;
     }
@@ -180,6 +181,7 @@ final class ProfileController extends ContactAbstractController
                 'contactService' => $this->contactService,
                 'contact'        => $this->identity(),
                 'callService'    => $this->callService,
+                'meetingService' => $this->meetingService,
                 'hasIdentity'    => null !== $this->identity(),
                 'hasNda'         => $this->programModuleOptions->getHasNda(),
             ]

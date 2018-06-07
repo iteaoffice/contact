@@ -21,6 +21,7 @@ use Admin\Service\AdminService;
 use Contact\Service\FormService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
+use Event\Service\MeetingService;
 use Event\Service\RegistrationService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
@@ -94,6 +95,7 @@ return [
             CallService::class,
             ModuleOptions::class,
             GeneralService::class,
+            MeetingService::class,
             EntityManager::class,
             TranslatorInterface::class
         ],
