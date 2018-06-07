@@ -187,7 +187,7 @@ final class SelectionManagerController extends ContactAbstractController
             }
 
             //Find the selection
-            $selection = $this->selectionService->findSelectionById($data['selection']);
+            $selection = $this->selectionService->findSelectionById((int) $data['selection']);
 
             if (null === $selection) {
                 throw new \InvalidArgumentException('Selection cannot be found');

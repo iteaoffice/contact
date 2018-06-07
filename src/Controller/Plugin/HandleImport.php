@@ -263,7 +263,7 @@ final class HandleImport extends AbstractPlugin
         $selection = null;
         /** Parse the $selectionId if not empty */
         if (null !== $selectionId) {
-            $selection = $this->selectionService->findSelectionById($selectionId);
+            $selection = $this->selectionService->findSelectionById((int) $selectionId);
             if (null !== $selection) {
                 $this->selection = $selection;
             }

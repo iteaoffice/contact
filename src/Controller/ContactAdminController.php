@@ -301,7 +301,7 @@ final class ContactAdminController extends ContactAbstractController
         $data = $request->getPost()->toArray();
         if ($request->isPost() && !empty($data['selection'])) {
             foreach ((array)$data['selection'] as $selectionId) {
-                $selection = $this->selectionService->findSelectionById($selectionId);
+                $selection = $this->selectionService->findSelectionById((int) $selectionId);
                 if (null === $selection) {
                     continue;
                 }
