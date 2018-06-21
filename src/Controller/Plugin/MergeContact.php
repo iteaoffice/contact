@@ -117,9 +117,6 @@ final class MergeContact extends AbstractPlugin
             if ($source->getLastUpdate() > $target->getLastUpdate()) {
                 $target->setLastUpdate($source->getLastUpdate());
             }
-            if ($source->getMessenger() === 1) {
-                $target->setMessenger($source->getMessenger());
-            }
 
             // Transfer access
             $newAccess = new ArrayCollection();
@@ -742,13 +739,6 @@ final class MergeContact extends AbstractPlugin
                 $ideaInvite->setContact($target);
                 $target->getIdeaInvite()->add($ideaInvite);
                 $source->getIdeaInvite()->remove($key);
-            }
-
-            // Transfer idea messageboard (no matching)
-            foreach ($source->getIdeaMessageBoard() as $key => $ideaMessageboard) {
-                $ideaMessageboard->setContact($target);
-                $target->getIdeaMessageBoard()->add($ideaMessageboard);
-                $source->getIdeaMessageBoard()->remove($key);
             }
 
             // Transfer idea invite contacts (many-to-many, with matching)

@@ -20,6 +20,7 @@ namespace Contact\Controller\Plugin;
 use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
 use Contact\Service\ContactService;
+use Deeplink\Entity\Target;
 use Deeplink\Service\DeeplinkService;
 use General\Entity\Gender;
 use General\Entity\Title;
@@ -103,15 +104,15 @@ final class ContactActions extends AbstractPlugin
 
         $this->contactService->save($contact);
 
-        //Create a target
+        /** @var Target $target */
         $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate');
         //Create a deep link for the user which redirects to the profile-page
         $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
-        $email = $this->emailService->create();
-        $this->emailService->setTemplate('/auth/register:mail');
-        $email->setDisplayName($contact->getDisplayName());
-        $email->addTo($emailAddress);
-        $email->setUrl($this->deeplinkService->parseDeeplinkUrl($deeplink));
+
+        $this->emailService->setWebInfo('/auth/register:mail');
+        $this->emailService->addToEmailAddress($emailAddress);
+        $this->emailService->setTemplateVariable('display_name', $contact->getDisplayName());
+        $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
         $this->emailService->send();
 
         return $contact;
@@ -155,23 +156,20 @@ final class ContactActions extends AbstractPlugin
 
     public function lostPassword(string $emailAddress): void
     {
-        //Create the account
+        //Find the contact
         $contact = $this->contactService->findContactByEmail($emailAddress);
         if (null === $contact) {
             return;
         }
-        //Create a target
+
+        /** @var Target $target */
         $target = $this->deeplinkService->createTargetFromRoute('community/contact/change-password');
         //Create a deeplink for the user which redirects to the profile-page
         $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
-        /*
-         * Send the email tot he user
-         */
-        $email = $this->emailService->create();
-        $this->emailService->setTemplate('/auth/forgotpassword:mail');
-        $email->addTo($emailAddress, $contact->parseFullName());
-        $email->setFullname($contact->parseFullName());
-        $email->setUrl($this->deeplinkService->parseDeeplinkUrl($deeplink));
+
+        $this->emailService->setWebInfo('/auth/forgotpassword:mail');
+        $this->emailService->addTo($contact);
+        $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
         $this->emailService->send();
     }
 }

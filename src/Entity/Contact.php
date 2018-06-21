@@ -689,12 +689,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $ideaInvite;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\MessageBoard", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\MessageBoard[]|Collections\ArrayCollection
-     */
-    private $ideaMessageBoard;
-    /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Idea\Invite[]|Collections\ArrayCollection
@@ -954,7 +948,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->favouriteIdea = new Collections\ArrayCollection();
         $this->ideaMessage = new Collections\ArrayCollection();
         $this->ideaPartner = new Collections\ArrayCollection();
-        $this->ideaMessageBoard = new Collections\ArrayCollection();
         $this->blog = new Collections\ArrayCollection();
         $this->blogMessage = new Collections\ArrayCollection();
         $this->evaluation = new Collections\ArrayCollection();
@@ -1354,26 +1347,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return int
-     */
-    public function getMessenger()
-    {
-        return $this->messenger;
-    }
-
-    /**
-     * @param $messenger
-     *
-     * @return Contact
-     */
-    public function setMessenger($messenger): Contact
-    {
-        $this->messenger = $messenger;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getMiddleName(): ?string
@@ -1650,11 +1623,20 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
+     * @param bool $onlyActive
      * @return OptIn[]|Collections\ArrayCollection
      */
-    public function getOptIn()
+    public function getOptIn(bool $onlyActive = false)
     {
-        return $this->optIn;
+        if (!$onlyActive) {
+            return $this->optIn;
+        }
+
+        return $this->optIn->filter(
+            function (OptIn $optIn) {
+                return $optIn->isActive();
+            }
+        );
     }
 
     /**
@@ -1730,7 +1712,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Project\Entity\Version\Version[]
+     * @return \Project\Entity\Version\Version[]|Collections\ArrayCollection
      */
     public function getProjectVersion()
     {
@@ -3374,26 +3356,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function setIdeaPartner($ideaPartner): Contact
     {
         $this->ideaPartner = $ideaPartner;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[]
-     */
-    public function getIdeaMessageBoard()
-    {
-        return $this->ideaMessageBoard;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[] $ideaMessageBoard
-     *
-     * @return Contact
-     */
-    public function setIdeaMessageBoard($ideaMessageBoard): Contact
-    {
-        $this->ideaMessageBoard = $ideaMessageBoard;
 
         return $this;
     }

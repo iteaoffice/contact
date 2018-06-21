@@ -17,7 +17,7 @@ declare(strict_types=1);
 namespace Contact\Navigation\Invokable;
 
 use Admin\Navigation\Invokable\AbstractNavigationInvokable;
-use Contact\Entity\Facebook;
+use Contact\Entity\OptIn;
 use Zend\Navigation\Page\Mvc;
 
 /**
@@ -31,19 +31,19 @@ class OptInLabel extends AbstractNavigationInvokable
     {
         $label = $this->translate('txt-nav-opt-in');
 
-        if ($this->getEntities()->containsKey(OptU::class)) {
-            /** @var Facebook $facebook */
-            $facebook = $this->getEntities()->get(Facebook::class);
+        if ($this->getEntities()->containsKey(OptIn::class)) {
+            /** @var OptIn $optIn */
+            $optIn = $this->getEntities()->get(OptIn::class);
 
             $page->setParams(
                 array_merge(
                     $page->getParams(),
                     [
-                        'id' => $facebook->getId(),
+                        'id' => $optIn->getId(),
                     ]
                 )
             );
-            $label = (string)$facebook->getFacebook();
+            $label = (string)$optIn->getOptIn();
         }
         $page->set('label', $label);
     }

@@ -47,7 +47,7 @@
             {% endif %}
             <dt>{{ translate("txt-expertise") }}</dt>
             <dd>{{ contact.profile.description|nl2br }}</dd>
-            {% for optIn in contact.optIn  %}
+            {% for optIn in contact.optIn(true)  %}
                 {% if loop.first %}<dt>{{ translate("txt-profile-list-opt-in") }}</dt>{% endif %}
                 <dd>{{ optIn.optIn }} ({{ optIn.description }})</dd>
             {% endfor %}

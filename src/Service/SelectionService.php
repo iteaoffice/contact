@@ -133,7 +133,7 @@ class SelectionService extends AbstractService
             //Update the contacts
             if (!empty($data['added'])) {
                 foreach (explode(',', $data['added']) as $contactId) {
-                    $contact = $this->contactService->findContactById($contactId);
+                    $contact = $this->contactService->findContactById((int) $contactId);
 
                     if (null !== $contact) {
                         $this->addContactToSelection($selection, $contact);

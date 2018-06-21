@@ -68,9 +68,15 @@ final class ProfileController extends ContactAbstractController
      */
     private $translator;
 
-    public function __construct(ContactService $contactService, OrganisationService $organisationService,
-        CallService $callService, ModuleOptions $programModuleOptions, GeneralService $generalService,
-        MeetingService $meetingService, EntityManager $entityManager, TranslatorInterface $translator
+    public function __construct(
+        ContactService $contactService,
+        OrganisationService $organisationService,
+        CallService $callService,
+        ModuleOptions $programModuleOptions,
+        GeneralService $generalService,
+        MeetingService $meetingService,
+        EntityManager $entityManager,
+        TranslatorInterface $translator
     ) {
         $this->contactService = $contactService;
         $this->organisationService = $organisationService;
@@ -128,7 +134,7 @@ final class ProfileController extends ContactAbstractController
             );
 
             $this->flashMessenger()->addSuccessMessage($changelogMessage);
-            $this->contactService->addNoteToContact($changelogMessage, 'office', $this->identity());
+            $this->contactService->addNoteToContact($changelogMessage, 'profile', $this->identity());
 
             return $this->redirect()->toRoute('community/contact/profile/privacy');
         }

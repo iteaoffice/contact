@@ -18,20 +18,12 @@ use Contact\Service\SelectionService;
 use Zend\Form\Form;
 
 /**
- * Jield copyright message placeholder.
+ * Class SelectionContacts
  *
- * @category    Contact
- *
- * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @package Contact\Form
  */
 class SelectionContacts extends Form
 {
-    /**
-     * SelectionFilter constructor.
-     *
-     * @param SelectionService $selectionService
-     */
     public function __construct(SelectionService $selectionService)
     {
         parent::__construct();
@@ -40,6 +32,7 @@ class SelectionContacts extends Form
         $this->setAttribute("onsubmit", "return storeChanges();");
 
         $selections = [];
+        /** @var Selection $selection */
         foreach ($selectionService->findAll(Selection::class) as $selection) {
             $selections[$selection->getId()] = $selection->getSelection();
         }

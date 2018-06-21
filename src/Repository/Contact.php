@@ -780,17 +780,17 @@ class Contact extends EntityRepository
     public function findContactsByOptIn(Entity\OptIn $optIn, bool $toArray = false): array
     {
         $qb = $this->_em->createQueryBuilder();
-        $qb->select('contact_entity_contact');
         $qb->from(Entity\Contact::class, 'contact_entity_contact');
-        $qb->join("contact_entity_contact.optIn", 'optIn');
-        $qb->where($qb->expr()->in('optIn.id', $optIn->getId()));
-
-        $qb->orderBy('contact_entity_contact.lastName');
+        $qb->join('contact_entity_contact.optIn', 'optIn');
+        $qb->where($qb->expr()->eq('optIn.id', $optIn->getId()));
 
         if ($toArray) {
+            $qb->select('contact_entity_contact.id');
             return $qb->getQuery()->getArrayResult();
         }
 
+        $qb->select('contact_entity_contact');
+        $qb->orderBy('contact_entity_contact.lastName');
         return $qb->getQuery()->getResult();
     }
 
@@ -800,15 +800,12 @@ class Contact extends EntityRepository
         $resultSetMap->addEntityResult(Entity\Contact::class, 'contact_entity_contact');
         $resultSetMap->addFieldResult('contact_entity_contact', 'contact_id', 'id');
         $query = $this->getEntityManager()->createNativeQuery(
-            "SELECT
-             contact_id
-             FROM contact
-             WHERE contact_id
-             IN (" . $sql->getQuery() . ") AND contact_id = " . $contact->getId(),
+            'SELECT contact_id FROM contact WHERE contact_id IN ('
+            . $sql->getQuery() . ') AND contact_id = ' . $contact->getId(),
             $resultSetMap
         );
 
-        return count($query->getResult()) > 0;
+        return \count($query->getResult()) > 0;
     }
 
     public function searchContacts(string $searchItem, int $maxResults = 12): array

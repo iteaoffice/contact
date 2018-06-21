@@ -27,6 +27,10 @@ use Zend\View\Model\ViewModel;
 final class FacebookController extends ContactAbstractController
 {
     /**
+     * @var array
+     */
+    private $config;
+    /**
      * @var ContactService
      */
     private $contactService;
@@ -40,14 +44,17 @@ final class FacebookController extends ContactAbstractController
     private $translator;
 
     public function __construct(
+        array $config,
         ContactService $contactService,
         EmailService $emailService,
         TranslatorInterface $translator
     ) {
+        $this->config = $config;
         $this->contactService = $contactService;
         $this->emailService = $emailService;
         $this->translator = $translator;
     }
+
 
     public function facebookAction(): ViewModel
     {
@@ -97,36 +104,28 @@ final class FacebookController extends ContactAbstractController
                     return $this->redirect()
                         ->toRoute('community/contact/facebook/facebook', ['id' => $facebook->getId()]);
                 }
-                /*
-                 * Send the email tot he office
-                 */
-                $email = $this->emailService->create();
-                $email->setPersonal(false); //Send 1 email to everyone
-                $email->setFromContact($this->identity());
+
+                $this->emailService->setWebInfo('/contact/facebook/message');
                 /*
                  * Inject the contacts in the email
                  */
                 foreach ($this->contactService->findContactsInFacebook($facebook) as $contact) {
-                    $email->addTo($contact['contact']);
+                    $this->emailService->addTo($contact['contact']);
                 }
 
-                $email->setSubject(
-                    \sprintf(
-                        '[%s] Message received from %s',
-                        $facebook->getFacebook(),
-                        $this->identity()->getDisplayName()
-                    )
-                );
+                $variables = [
+                    'facebook'    => $facebook->getFacebook(),
+                    'message'     => nl2br($form->getData()['message']),
+                    'sender_name' => $this->identity()->parseFullName()
+                ];
 
-                $email->setHtmlLayoutName('signature_twig');
-                $email->setMessage(nl2br($form->getData()['message']));
-
+                $this->emailService->addTemplateVariables($variables);
                 $this->emailService->send();
 
                 $this->flashMessenger()
                     ->addSuccessMessage(
                         sprintf(
-                            $this->translator->translate("txt-message-to-attendees-for-%s-has-been-sent"),
+                            $this->translator->translate("txt-message-to-members-of-facebook-$%s-has-been-sent"),
                             $facebook->getFacebook()
                         )
                     );

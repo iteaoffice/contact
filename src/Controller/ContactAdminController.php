@@ -328,7 +328,7 @@ final class ContactAdminController extends ContactAbstractController
         //Handle the optIn
         if ($request->isPost()) {
             if (isset($data['updateOptIn'])) {
-                $this->contactService->updateOptInForContact($contact, $data['optIn']);
+                $this->contactService->updateOptInForContact($contact, $data['optIn'] ?? []);
 
                 $changelogMessage = sprintf(
                     $this->translator->translate("txt-opt-in-of-contact-%s-has-been-updated-successfully"),

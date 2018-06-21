@@ -73,7 +73,6 @@ use Project\Entity\Document\Document;
 use Project\Entity\Evaluation\Evaluation;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Idea\Message;
-use Project\Entity\Idea\MessageBoard;
 use Project\Entity\Idea\Partner;
 use Project\Entity\Invite;
 use Project\Entity\Pca;
@@ -189,7 +188,6 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame($this->source->getDateOfBirth(), $this->target->getDateOfBirth());
         $this->assertSame($this->source->getDateCreated(), $this->target->getDateCreated());
         $this->assertSame($this->source->getLastUpdate(), $this->target->getLastUpdate());
-        $this->assertSame($this->source->getMessenger(), $this->target->getMessenger());
 
         $this->assertSame(1, $this->target->getAccess()->count());
         $this->assertSame(1, $this->target->getAccess()->first()->getId());
@@ -436,9 +434,6 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getIdeaInvite()->count());
         $this->assertSame(1, $this->target->getIdeaInvite()->first()->getId());
 
-        $this->assertSame(1, $this->target->getIdeaMessageBoard()->count());
-        $this->assertSame(1, $this->target->getIdeaMessageBoard()->first()->getId());
-
         $this->assertSame(2, $this->target->getIdeaInviteContact()->count());
         $this->assertSame(3, $this->target->getIdeaInviteContact()->get(0)->getId());
         $this->assertSame(2, $this->target->getIdeaInviteContact()->get(1)->getId());
@@ -588,7 +583,6 @@ final class MergeContactTest extends AbstractServiceTest
         $source->setDateOfBirth(new \DateTime('1970-01-01'));
         $source->setDateCreated(new \DateTime('2015-01-01'));
         $source->setLastUpdate(new \DateTime());
-        $source->setMessenger(1);
 
         $cv = new Cv();
         $cv->setId(1);
@@ -982,11 +976,6 @@ final class MergeContactTest extends AbstractServiceTest
         $ideaInvite->setId(1);
         $ideaInvite->setContact($source);
         $source->setIdeaInvite(new ArrayCollection([$ideaInvite]));
-
-        $ideaMessageboard = new MessageBoard();
-        $ideaMessageboard->setId(1);
-        $ideaMessageboard->setContact($source);
-        $source->setIdeaMessageboard(new ArrayCollection([$ideaMessageboard]));
 
         $ideaInviteContact = new \Project\Entity\Idea\Invite();
         $ideaInviteContact->setId(2);

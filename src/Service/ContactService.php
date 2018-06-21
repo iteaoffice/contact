@@ -487,6 +487,11 @@ class ContactService extends AbstractService
         return \array_key_exists($contact->getId(), $projectContacts);
     }
 
+    /**
+     * @param Project $project
+     *
+     * @return Contact[]
+     */
     public function findContactsInProject(Project $project): array
     {
         $contacts = [];

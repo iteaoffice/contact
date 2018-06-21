@@ -69,17 +69,17 @@ class OptIn extends AbstractEntity
      */
     private $description;
     /**
-     * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="optIn")
+     * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="optIn", fetch="EXTRA_LAZY")
      * @Annotation\Exclude();
      *
-     * @var \Contact\Entity\Contact[]
+     * @var \Contact\Entity\Contact[]|Collections\ArrayCollection
      */
     private $contact;
     /**
-     * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="optIn")
+     * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="optIn", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      *
-     * @var \Mailing\Entity\Mailing[]
+     * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
 

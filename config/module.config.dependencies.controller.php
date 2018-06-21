@@ -62,6 +62,7 @@ return [
             Search\Service\ProfileSearchService::class
         ],
         Controller\FacebookController::class         => [
+            'Config',
             Service\ContactService::class,
             EmailService::class,
             TranslatorInterface::class
