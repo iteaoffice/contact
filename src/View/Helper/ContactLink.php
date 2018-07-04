@@ -22,16 +22,6 @@ use Contact\Entity\Contact;
  */
 class ContactLink extends LinkAbstract
 {
-    /**
-     * @param Contact|null $contact
-     * @param string $action
-     * @param string $show
-     * @param null $hash
-     * @param null $alternativeShow
-     * @param null $fragment
-     *
-     * @return string
-     */
     public function __invoke(
         Contact $contact = null,
         $action = 'view',

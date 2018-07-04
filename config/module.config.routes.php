@@ -20,7 +20,6 @@ return [
                         'options' => [
                             'route'    => '/c/[:id]-[:last-update].[:ext]',
                             'defaults' => [
-                                //Explicitly add the controller here as the assets are collected
                                 'controller' => Controller\ImageController::class,
                                 'action'     => 'contact-photo',
                             ],
@@ -148,7 +147,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'create'     => [
+                                    'create'       => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/create.html',
