@@ -22,20 +22,11 @@ use Contact\Entity\Contact;
 
 /**
  * Class ContactPhoto
+ *
  * @package Contact\View\Helper
  */
 class ContactPhoto extends ImageAbstract
 {
-    /**
-     * @param Contact $contact
-     * @param null $width
-     * @param bool $onlyUrl
-     * @param bool $responsive
-     * @param bool $grayscale
-     * @return string
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
     public function __invoke(
         Contact $contact,
         $width = null,

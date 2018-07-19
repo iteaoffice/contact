@@ -202,6 +202,10 @@ final class ProfileController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
+        if (!$contact->isVisibleInCommunity()) {
+            return $this->notFoundAction();
+        }
+
         return new ViewModel(
             [
                 'contactService' => $this->contactService,

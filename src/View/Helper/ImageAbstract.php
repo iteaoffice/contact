@@ -56,23 +56,15 @@ abstract class ImageAbstract extends AbstractViewHelper
      */
     protected $filter = [];
 
-    /**
-     * @param bool $onlyUrl
-     *
-     * @return string
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
     public function createImageUrl(bool $onlyUrl = false): string
     {
         /**
          * @var $url Url
          */
         $url = $this->getHelperPluginManager()->get('url');
-        /**
-         * @var $serverUrl ServerUrl
-         */
-        $serverUrl = $this->getHelperPluginManager()->get('serverUrl');
+
+        //Grab the ServerURL from the config to avoid problems with CLI code
+        $serverUrl = $this->getServiceManager()->get("Config")['deeplink']['serverUrl'];
         /**
          * Get the thumber config
          */
@@ -81,7 +73,7 @@ abstract class ImageAbstract extends AbstractViewHelper
         $thumberLink = Builder::construct(
             $config['image']['server'],
             $config['image']['secret'],
-            $serverUrl() . $url($this->router, $this->routerParams)
+            $serverUrl . $url($this->router, $this->routerParams)
         )
             ->fullFitIn($this->width, null)
             ->halign('bottom')
@@ -112,7 +104,7 @@ abstract class ImageAbstract extends AbstractViewHelper
         $thumberLinkFull = Builder::construct(
             $config['image']['server'],
             $config['image']['secret'],
-            $serverUrl() . $url($this->router, $this->routerParams)
+            $serverUrl . $url($this->router, $this->routerParams)
         );
 
 

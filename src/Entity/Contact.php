@@ -1070,6 +1070,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return null !== $this->contactOrganisation;
     }
 
+    public function hasPhoto(): bool
+    {
+        return !$this->photo->isEmpty();
+    }
+
     public function isVisibleInCommunity(): bool
     {
         return null !== $this->profile && $this->profile->getVisible() === Profile::VISIBLE_COMMUNITY;
@@ -1624,6 +1629,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     /**
      * @param bool $onlyActive
+     *
      * @return OptIn[]|Collections\ArrayCollection
      */
     public function getOptIn(bool $onlyActive = false)
