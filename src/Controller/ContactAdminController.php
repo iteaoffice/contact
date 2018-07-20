@@ -54,7 +54,7 @@ use Zend\View\Model\ViewModel;
  * Class ContactManagerController.
  * @method MergeContact mergeContact()
  */
-final class ContactAdminController extends ContactAbstractController
+class ContactAdminController extends ContactAbstractController
 {
     /**
      * @var ContactService
@@ -110,35 +110,34 @@ final class ContactAdminController extends ContactAbstractController
     private $entityManager;
 
     public function __construct(
-        ContactService $contactService,
-        SelectionService $selectionService,
+        ContactService      $contactService,
+        SelectionService    $selectionService,
         OrganisationService $organisationService,
-        CallService $callService,
-        ProjectService $projectService,
-        IdeaService $ideaService,
-        AdminService $adminService,
+        CallService         $callService,
+        ProjectService      $projectService,
+        IdeaService         $ideaService,
+        AdminService        $adminService,
         RegistrationService $registrationService,
-        DeeplinkService $deeplinkService,
-        GeneralService $generalService,
-        FormService $formService,
+        DeeplinkService     $deeplinkService,
+        GeneralService      $generalService,
+        FormService         $formService,
         TranslatorInterface $translator,
-        EntityManager $entityManager
+        EntityManager       $entityManager
     ) {
-        $this->contactService = $contactService;
-        $this->selectionService = $selectionService;
+        $this->contactService      = $contactService;
+        $this->selectionService    = $selectionService;
         $this->organisationService = $organisationService;
-        $this->callService = $callService;
-        $this->projectService = $projectService;
-        $this->ideaService = $ideaService;
-        $this->adminService = $adminService;
+        $this->callService         = $callService;
+        $this->projectService      = $projectService;
+        $this->ideaService         = $ideaService;
+        $this->adminService        = $adminService;
         $this->registrationService = $registrationService;
-        $this->deeplinkService = $deeplinkService;
-        $this->generalService = $generalService;
-        $this->formService = $formService;
-        $this->translator = $translator;
-        $this->entityManager = $entityManager;
+        $this->deeplinkService     = $deeplinkService;
+        $this->generalService      = $generalService;
+        $this->formService         = $formService;
+        $this->translator          = $translator;
+        $this->entityManager       = $entityManager;
     }
-
 
     public function listAction(): ViewModel
     {
@@ -696,11 +695,11 @@ final class ContactAdminController extends ContactAbstractController
      */
     public function importAction()
     {
-        set_time_limit(0);
+        \set_time_limit(0);
 
         /** @var Request $request */
         $request = $this->getRequest();
-        $data = array_merge_recursive(
+        $data = \array_merge_recursive(
             $request->getPost()->toArray(),
             $request->getFiles()->toArray()
         );
@@ -751,10 +750,10 @@ final class ContactAdminController extends ContactAbstractController
 
         $results = [];
         foreach ($this->contactService->searchContacts($search) as $result) {
-            $text = trim(
-                sprintf(
+            $text = \trim(
+                \sprintf(
                     '%s, %s (%s)',
-                    trim(sprintf('%s %s', $result['middleName'], $result['lastName'])),
+                    \trim(\sprintf('%s %s', $result['middleName'], $result['lastName'])),
                     $result['firstName'],
                     $result['email']
                 )
@@ -768,9 +767,9 @@ final class ContactAdminController extends ContactAbstractController
             $results[] = [
                 'value'        => $result['id'],
                 'text'         => $text,
-                'name'         => sprintf(
+                'name'         => \sprintf(
                     '%s, %s',
-                    trim(sprintf('%s %s', $result['middleName'], $result['lastName'])),
+                    \trim(\sprintf('%s %s', $result['middleName'], $result['lastName'])),
                     $result['firstName']
                 ),
                 'id'           => $result['id'],
@@ -787,9 +786,9 @@ final class ContactAdminController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var Contact $source */
-        $source = $this->contactService->findContactById((int)$this->params('sourceId'));
+        $source  = $this->contactService->findContactById((int)$this->params('sourceId'));
         /** @var Contact $target */
-        $target = $this->contactService->findContactById((int)$this->params('targetId'));
+        $target  = $this->contactService->findContactById((int)$this->params('targetId'));
 
         if (($source === null) || ($target === null)) {
             return $this->notFoundAction();
@@ -817,20 +816,10 @@ final class ContactAdminController extends ContactAbstractController
 
             // Perform the merge
             if (isset($data['merge'])) {
-                $logPath = ini_get('error_log');
-                $logger = null;
-                if (!empty($logPath)) {
-                    $logger = new Logger();
-                    $logger->addWriter(new Stream($logPath));
-                    $result = $this->mergeContact()->merge($source, $target, $logger);
-                    $logger = null; // Explicit fclose() of the writer
-                } else {
-                    $result = $this->mergeContact()->merge($source, $target);
-                }
-
-                $tab = 'general';
+                $result = $this->mergeContact()->merge($source, $target);
+                $tab    = 'general';
                 if ($result['success']) {
-                    $this->flashMessenger()->addErrorMessage(
+                    $this->flashMessenger()->addSuccessMessage(
                         $this->translator->translate('txt-contacts-have-been-successfully-merged')
                     );
                 } else {

@@ -24,6 +24,7 @@ use Contact\Service\SelectionContactService;
 use Contact\Service\SelectionService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
+use ErrorHeroModule\Handler\Logging;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
@@ -34,7 +35,8 @@ return [
     ConfigAbstractFactory::class => [
         Plugin\MergeContact::class             => [
             EntityManager::class,
-            TranslatorInterface::class
+            TranslatorInterface::class,
+            Logging::class
         ],
         Plugin\ContactActions::class           => [
             ContactService::class,

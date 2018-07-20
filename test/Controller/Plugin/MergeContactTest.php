@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace ContactTest\Controller\Plugin;
 
 use Admin\Entity\Access;
+use Admin\Entity\Pageview;
+use Admin\Entity\Permit\Role;
 use Admin\Entity\Session;
 use Affiliation\Entity\Affiliation;
 use Affiliation\Entity\DoaReminder;
@@ -40,6 +42,7 @@ use Doctrine\ORM\ORMException;
 use Contact\Entity\Log;
 use Contact\Entity\Note;
 use Contact\Entity\Email;
+use ErrorHeroModule\Handler\Logging;
 use Event\Entity\Badge\Badge;
 use Event\Entity\Exhibition\Tour;
 use Event\Entity\Exhibition\Voter;
@@ -60,7 +63,6 @@ use Program\Entity\Doa;
 use Program\Entity\Domain;
 use Program\Entity\Funder;
 use Program\Entity\Nda;
-use Program\Entity\RoadmapLog;
 use Program\Entity\Technology;
 use Project\Entity\Achievement;
 use Project\Entity\Booth;
@@ -90,9 +92,8 @@ use Publication\Entity\Download;
 use Publication\Entity\Publication;
 use Testing\Util\AbstractServiceTest;
 use Zend\I18n\Translator\Translator;
-use Zend\Log\Logger;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Stdlib\DispatchableInterface;
-use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
  * Class MergeContactTest
@@ -100,13 +101,19 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  */
 final class MergeContactTest extends AbstractServiceTest
 {
-    /** @var Contact */
+    /**
+     * @var Contact
+     */
     private $source;
 
-    /** @var Contact */
+    /**
+     * @var Contact
+     */
     private $target;
 
-    /** @var Translator */
+    /**
+     * @var TranslatorInterface
+     */
     private $translator;
 
     /**
@@ -114,9 +121,9 @@ final class MergeContactTest extends AbstractServiceTest
      */
     public function setUp()
     {
-        $this->source = $this->createSource();
-        $this->target = $this->createTarget();
-        $this->translator = $this->setUpTranslatorMock();
+        $this->source      = $this->createSource();
+        $this->target      = $this->createTarget();
+        $this->translator  = $this->setUpTranslatorMock();
     }
 
     /**
@@ -253,10 +260,6 @@ final class MergeContactTest extends AbstractServiceTest
 
         $this->assertSame(1, $this->target->getParentDoa()->count());
         $this->assertSame(1, $this->target->getParentDoa()->first()->getId());
-
-        $this->assertSame(2, $this->target->getOpenId()->count());
-        $this->assertSame(2, $this->target->getOpenId()->get(0)->getId());
-        $this->assertSame(1, $this->target->getOpenId()->get(1)->getId());
 
         $this->assertSame(1, $this->target->getContactOrganisation()->getId());
 
@@ -526,7 +529,11 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getLogCreatedBy()->first()->getId());
 
         $this->assertSame(2, $this->target->getLog()->count());
-        $this->assertSame(2, $this->target->getLog()->get(0)->getId());
+        $this->assertSame(2, $this->target->getLog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPageview()->count());
+        $this->assertSame(1, $this->target->getPageview()->first()->getId());
+
         $this->assertSame(
             'Merged contact Test von Dummy (1) into Test von Dummy (2)',
             $this->target->getLog()->get(1)->getLog()
@@ -541,21 +548,24 @@ final class MergeContactTest extends AbstractServiceTest
     public function testMergeFail(): void
     {
         $entityManagerMock = $this->setUpEntityManagerMock(true);
-        $mergeContact = new MergeContact($entityManagerMock, $this->translator);
-        $loggerMock = $this->getMockBuilder(Logger::class)
-            ->setMethods(['err'])
-            ->getMock();
 
-        $loggerMock->expects($this->once())
-            ->method('err')
-            ->with($this->stringContains('Oops!'))
-            ->will($this->returnSelf());
-
-        $responseNoLog = $mergeContact()->merge($this->source, $this->target);
-        $responseLog = $mergeContact()->merge($this->source, $this->target, $loggerMock);
-
+        $mergeContactNoLog = new MergeContact($entityManagerMock, $this->translator);
+        $responseNoLog     = $mergeContactNoLog->merge($this->source, $this->target);
         $this->assertEquals(false, $responseNoLog['success']);
         $this->assertEquals('Oops!', $responseNoLog['errorMessage']);
+
+        $errorLoggerMock = $this->getMockBuilder(Logging::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['handleErrorException'])
+            ->getMock();
+
+        $errorLoggerMock->expects($this->once())
+            ->method('handleErrorException')
+            ->with($this->isInstanceOf('Exception'));
+
+        $mergeContactLog = new MergeContact($entityManagerMock, $this->translator, $errorLoggerMock);
+        $responseLog     = $mergeContactLog()->merge($this->source, $this->target);
+
         $this->assertEquals(false, $responseLog['success']);
     }
 
@@ -991,7 +1001,6 @@ final class MergeContactTest extends AbstractServiceTest
         $selfApprovedLoi->setContact($source);
         $selfApprovedLoi->setApprover($source);
 
-
         $source->setLoi(new ArrayCollection([$loi, $selfApprovedLoi]));
 
         $loiApprover = new Loi();
@@ -1004,9 +1013,13 @@ final class MergeContactTest extends AbstractServiceTest
         $affiliationDoa->setContact($source);
         $source->setAffiliationDoa(new ArrayCollection([$affiliationDoa]));
 
+        $role = new Role();
+        $role->setId(1);
         $permitContact = new \Admin\Entity\Permit\Contact();
         $permitContact->setId(1);
         $permitContact->setContact($source);
+        $permitContact->setRole($role);
+        $permitContact->setKeyId(1);
         $source->setPermitContact(new ArrayCollection([$permitContact]));
 
         $session = new Session();
@@ -1117,17 +1130,22 @@ final class MergeContactTest extends AbstractServiceTest
         $workpackageContact = new \Project\Entity\Workpackage\Contact();
         $workpackageContact->setId(1);
         $workpackageContact->setContact($source);
-        $source->setWorkpackageContact(new ArrayCollection([$workpackageContact]));
+        $source->getWorkpackageContact()->add($workpackageContact);
 
         $logCreatedBy = new Log();
         $logCreatedBy->setId(1);
         $logCreatedBy->setCreatedBy($source);
-        $source->setLogCreatedBy(new ArrayCollection([$logCreatedBy]));
+        $source->getLogCreatedBy()->add($logCreatedBy);
 
         $log = new Log();
         $log->setId(2);
         $log->setContact($source);
-        $source->setLog(new ArrayCollection([$log]));
+        $source->getLog()->add($log);
+
+        $pageView = new Pageview();
+        $pageView->setId(1);
+        $pageView->setContact($source);
+        $source->getPageview()->add($pageView);
 
         return $source;
     }
@@ -1249,20 +1267,14 @@ final class MergeContactTest extends AbstractServiceTest
         $contact = new Contact();
         $contact->setId(3);
 
-        $zfcUserAuthenticationMock = $this->getMockBuilder(ZfcUserAuthentication::class)
-            ->setMethods(['getIdentity'])
-            ->getMock();
-        $zfcUserAuthenticationMock->expects($this->once())
-            ->method('getIdentity')
-            ->will($this->returnValue($contact));
-
         $controllerMock = $this->getMockBuilder(ContactAdminController::class)
-            ->setMethods(['zfcUserAuthentication'])
+            ->disableOriginalConstructor()
+            ->setMethods(['identity'])
             ->getMock();
 
         $controllerMock->expects($this->once())
-            ->method('zfcUserAuthentication')
-            ->will($this->returnValue($zfcUserAuthenticationMock));
+            ->method('identity')
+            ->will($this->returnValue($contact));
 
         return $controllerMock;
     }
@@ -1308,8 +1320,8 @@ final class MergeContactTest extends AbstractServiceTest
      */
     public function tearDown()
     {
-        $this->source = null;
-        $this->target = null;
+        $this->source     = null;
+        $this->target     = null;
         $this->translator = null;
     }
 }

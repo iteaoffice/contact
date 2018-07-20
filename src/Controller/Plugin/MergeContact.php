@@ -28,7 +28,7 @@ use Contact\Entity\OptIn;
 use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMException;
+use ErrorHeroModule\Handler\Logging;
 use Event\Entity\Exhibition\Tour;
 use Program\Entity\Domain;
 use Program\Entity\Nda;
@@ -36,7 +36,6 @@ use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
 use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Log\LoggerInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
@@ -50,15 +49,26 @@ final class MergeContact extends AbstractPlugin
      * @var EntityManagerInterface
      */
     private $entityManager;
+
     /**
      * @var TranslatorInterface
      */
     private $translator;
 
-    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
+    /**
+     * @var Logging
+     */
+    private $errorLogger;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        TranslatorInterface    $translator,
+        Logging                $errorLogger = null
+    )
     {
         $this->entityManager = $entityManager;
-        $this->translator = $translator;
+        $this->translator    = $translator;
+        $this->errorLogger   = $errorLogger;
     }
 
     public function __invoke(): MergeContact
@@ -70,7 +80,7 @@ final class MergeContact extends AbstractPlugin
     {
         $errors = [];
 
-        // Can't merge the same organisation
+        // Can't merge the same contact
         if ($source->getId() === $target->getId()) {
             $errors[] = $this->translator->translate('txt-cant-merge-the-same-contact');
         }
@@ -78,7 +88,7 @@ final class MergeContact extends AbstractPlugin
         return $errors;
     }
 
-    public function merge(Contact $source, Contact $target, LoggerInterface $logger = null): array
+    public function merge(Contact $source, Contact $target): array
     {
         $response = ['success' => true, 'errorMessage' => ''];
 
@@ -786,10 +796,28 @@ final class MergeContact extends AbstractPlugin
                 $source->getAffiliationDoa()->remove($key);
             }
 
-            // Transfer permits (no matching)
-            foreach ($source->getPermitContact() as $key => $permitContact) {
-                $permitContact->setContact($target);
-                $target->getPermitContact()->add($permitContact);
+            // Transfer permits, check unique index contact/role/key
+            $targetPermits = [];
+            $keyFormat = '%d-%d';
+            foreach ($target->getPermitContact() as $targetPermitContact) {
+                $key = \sprintf(
+                    $keyFormat,
+                    $targetPermitContact->getRole()->getId(),
+                    $targetPermitContact->getKeyId()
+                );
+                $targetPermits[$key] = true;
+            }
+            foreach ($source->getPermitContact() as $key => $sourcePermitContact) {
+                $key = \sprintf(
+                    $keyFormat,
+                    $sourcePermitContact->getRole()->getId(),
+                    $sourcePermitContact->getKeyId()
+                );
+                // Prevent duplicates
+                if (!isset($targetPermits[$key])) {
+                    $sourcePermitContact->setContact($target);
+                    $target->getPermitContact()->add($sourcePermitContact);
+                }
                 $source->getPermitContact()->remove($key);
             }
 
@@ -975,51 +1003,54 @@ final class MergeContact extends AbstractPlugin
                 $source->getLog()->remove($key);
             }
 
-            // Save main contact, remove the other + flush and update permissions
-            $this->entityManager->remove($source);
-            $this->entityManager->flush();
+            // Transfer pageviews
+            foreach ($source->getPageview() as $key => $pageView) {
+                $pageView->setContact($target);
+                $target->getPageview()->add($pageView);
+                $source->getPageview()->remove($key);
+            }
 
             // Prepare for logging
-            $message = sprintf(
+            $message = \sprintf(
                 'Merged contact %s (%d) into %s (%d)',
                 $source->parseFullName(),
                 $source->getId(),
                 $target->parseFullName(),
                 $target->getId()
             );
+
+            // Save main contact, remove the other + flush and update permissions
+            $this->entityManager->remove($source);
+            $this->entityManager->flush();
+
             /** @var ContactAbstractController $controller */
             $controller = $this->getController();
-            $contact = $controller->zfcUserAuthentication()->getIdentity();
+            $contact = $controller->identity();
 
-            // Log the merge in the target organisation
+            // Log the merge in the target contact
             $contactLog = new Log();
             $contactLog->setContact($target);
             $contactLog->setCreatedBy($contact);
             $contactLog->setLog($message);
             $target->getLog()->add($contactLog);
             $this->entityManager->persist($contactLog);
+
             // Add a note to the target contact about the merge
             $contactNote = new Note();
             $contactNote->setContact($target);
-            $contactNote->setSource('merge');
+            $contactNote->setSource('Account merge');
             $contactNote->setNote($message);
             $notes = $target->getNote()->toArray();
-            array_unshift($notes, $contactNote);
+            \array_unshift($notes, $contactNote);
             $target->setNote(new ArrayCollection($notes));
             $this->entityManager->persist($contactNote);
 
             $this->entityManager->flush();
-        } catch (ORMException $exception) {
+
+        } catch (\Exception $exception) {
             $response = ['success' => false, 'errorMessage' => $exception->getMessage()];
-            if ($logger instanceof LoggerInterface) {
-                $logger->err(
-                    sprintf(
-                        '%s: %d %s',
-                        $exception->getFile(),
-                        $exception->getLine(),
-                        $exception->getMessage()
-                    )
-                );
+            if ($this->errorLogger instanceof Logging) {
+                $this->errorLogger->handleErrorException($exception);
             }
         }
 

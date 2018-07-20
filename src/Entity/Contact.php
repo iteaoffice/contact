@@ -326,7 +326,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $parentDoa;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, orphanRemoval=true, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      * @var \Contact\Entity\ContactOrganisation
      */
@@ -478,7 +478,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $associate;
     /**
-     * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Program\Entity\Funder
      */
