@@ -64,8 +64,7 @@ final class MergeContact extends AbstractPlugin
         EntityManagerInterface $entityManager,
         TranslatorInterface    $translator,
         Logging                $errorLogger = null
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->translator    = $translator;
         $this->errorLogger   = $errorLogger;
@@ -1046,7 +1045,6 @@ final class MergeContact extends AbstractPlugin
             $this->entityManager->persist($contactNote);
 
             $this->entityManager->flush();
-
         } catch (\Exception $exception) {
             $response = ['success' => false, 'errorMessage' => $exception->getMessage()];
             if ($this->errorLogger instanceof Logging) {
