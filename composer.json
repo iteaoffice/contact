@@ -35,7 +35,9 @@
   },
   "require-dev": {
     "iteaoffice/testing": "^1.1.4",
+    "iteaoffice/main":"@stable",
     "iteaoffice/general": "^3.0",
+    "iteaoffice/search": "^1.0",
     "iteaoffice/affiliation": "^3.0"
   },
   "autoload": {
