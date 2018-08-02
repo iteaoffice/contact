@@ -15,12 +15,16 @@ namespace Contact\Controller;
 use Contact\Controller\Plugin\SelectionExport;
 use Contact\Entity\Selection;
 use Contact\Form\AddContactToSelection;
+use Contact\Form\Impersonate;
 use Contact\Form\SelectionContacts;
 use Contact\Form\SelectionFilter;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Contact\Service\SelectionContactService;
 use Contact\Service\SelectionService;
+use Deeplink\Entity\Target;
+use Deeplink\Service\DeeplinkService;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Zend\Http\Response;
@@ -49,9 +53,17 @@ final class SelectionManagerController extends ContactAbstractController
      */
     private $selectionService;
     /**
+     * @var DeeplinkService
+     */
+    private $deeplinkService;
+    /**
      * @var FormService
      */
     private $formService;
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
     /**
      * @var TranslatorInterface
      */
@@ -61,13 +73,17 @@ final class SelectionManagerController extends ContactAbstractController
         ContactService $contactService,
         SelectionContactService $selectionContactService,
         SelectionService $selectionService,
+        DeeplinkService $deeplinkService,
         FormService $formService,
+        EntityManager $entityManager,
         TranslatorInterface $translator
     ) {
         $this->contactService = $contactService;
         $this->selectionContactService = $selectionContactService;
         $this->selectionService = $selectionService;
+        $this->deeplinkService = $deeplinkService;
         $this->formService = $formService;
+        $this->entityManager = $entityManager;
         $this->translator = $translator;
     }
 
@@ -123,6 +139,51 @@ final class SelectionManagerController extends ContactAbstractController
                 'selection'        => $selection,
                 'contacts'         => $contacts,
                 'error'            => $error,
+            ]
+        );
+    }
+
+    public function generateDeeplinksAction(): ViewModel
+    {
+        \set_time_limit(0);
+
+        $selection = $this->selectionService->findSelectionById((int)$this->params('id'));
+
+        if (null === $selection) {
+            return $this->notFoundAction();
+        }
+
+        $form = new Impersonate($this->entityManager);
+
+        $request = $this->getRequest();
+        $data = $request->getPost()->toArray();
+
+        $form->setData($data);
+
+        $deeplinks = [];
+
+        if ($request->isPost() && $form->isValid()) {
+            $data = $form->getData();
+
+            /** @var Target $target */
+            $target = $this->deeplinkService->find(Target::class, (int)$data['target']);
+            $key = (!empty($data['key']) ? $data['key'] : null);
+
+            //Create a deeplink for the user which redirects to the profile-page
+            foreach ($this->selectionContactService->findContactsInSelection($selection) as $contact) {
+                $deeplinks[] = [
+                    'contact'  => $contact,
+                    'deeplink' => $this->deeplinkService->createDeeplink($target, $contact, null, $key)
+                ];
+            }
+        }
+
+
+        return new ViewModel(
+            [
+                'selection' => $selection,
+                'form'      => $form,
+                'deeplinks' => $deeplinks
             ]
         );
     }
@@ -187,7 +248,7 @@ final class SelectionManagerController extends ContactAbstractController
             }
 
             //Find the selection
-            $selection = $this->selectionService->findSelectionById((int) $data['selection']);
+            $selection = $this->selectionService->findSelectionById((int)$data['selection']);
 
             if (null === $selection) {
                 throw new \InvalidArgumentException('Selection cannot be found');
@@ -346,6 +407,7 @@ final class SelectionManagerController extends ContactAbstractController
 
         return new JsonModel($results);
     }
+
 
     public function exportAction(): Response
     {

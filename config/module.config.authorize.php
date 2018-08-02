@@ -171,6 +171,10 @@ return [
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
+                    'route' => 'zfcadmin/selection/generate-deeplinks',
+                    'roles' => [Access::ACCESS_OFFICE],
+                ],
+                [
                     'route' => 'zfcadmin/selection/edit',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],

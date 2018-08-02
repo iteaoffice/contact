@@ -104,7 +104,9 @@ return [
             Service\ContactService::class,
             Service\SelectionContactService::class,
             Service\SelectionService::class,
+            DeeplinkService::class,
             Service\FormService::class,
+            EntityManager::class,
             TranslatorInterface::class
         ],
 

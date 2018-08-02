@@ -1,5 +1,5 @@
 {% do headTitle().append(translate("txt-admin")) %}
-{% do headTitle().append(translate("txt-view-selection-%s")|format(selectionServcie.selection)) %}
+{% do headTitle().append(translate("txt-view-selection-%s")|format(selection)) %}
 {% do headLink().appendStylesheet('//cdn.datatables.net/1.10.9/css/dataTables.bootstrap.min.css') %}
 {% do headScript().appendFile('//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js', 'text/javascript') %}
 {% do headScript().appendFile('//cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js', 'text/javascript') %}
@@ -100,6 +100,7 @@
         <br><br>
         {{ selectionLink( selection ,'export-csv','button') }}
         {{ selectionLink( selection ,'export-excel','button') }}
+        {{ selectionLink( selection ,'generate-deeplinks','button') }}
     </div>
     <div class="tab-pane" role="tabpanel" id="mailings">
         <h3>{{ translate("txt-mailings") }}</h3>

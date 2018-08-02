@@ -47,9 +47,8 @@ return [
                                 ],
                             ],
                             'list-duplicate' => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/list/duplicate[/f-:encodedFilter][/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list-duplicate',
@@ -57,9 +56,8 @@ return [
                                 ],
                             ],
                             'list-inactive'  => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/list/inactive[/f-:encodedFilter][/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list-inactive',
@@ -152,7 +150,7 @@ return [
                         ],
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'list'          => [
+                            'list'               => [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
@@ -166,7 +164,7 @@ return [
                                     'page'   => null,
                                 ],
                             ],
-                            'new'           => [
+                            'new'                => [
                                 'type'    => 'Literal',
                                 'options' => [
                                     'route'    => '/new.html',
@@ -175,7 +173,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'view'          => [
+                            'view'               => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/view/[:id].html',
@@ -184,7 +182,16 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit'          => [
+                            'generate-deeplinks' => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/generate-deeplinks/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'generate-deeplinks',
+                                    ],
+                                ],
+                            ],
+                            'edit'               => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit/[:id].html',
@@ -193,7 +200,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'add-contact'   => [
+                            'add-contact'        => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/add-contact/contact-[:contactId].html',
@@ -202,7 +209,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit-contacts' => [
+                            'edit-contacts'      => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit-contacts/[:id].html',
@@ -211,7 +218,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'get-contacts'  => [
+                            'get-contacts'       => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/get-contacts.html',
@@ -220,7 +227,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'export'        => [
+                            'export'             => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/export/[:type]/[:id].html',

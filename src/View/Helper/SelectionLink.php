@@ -25,11 +25,12 @@ class SelectionLink extends LinkAbstract
 {
     /**
      * @param Selection|null $selection
-     * @param string $action
-     * @param string $show
-     * @param null $page
-     * @param null $alternativeShow
-     * @param Contact $contact
+     * @param string         $action
+     * @param string         $show
+     * @param null           $page
+     * @param null           $alternativeShow
+     * @param Contact        $contact
+     *
      * @return string
      */
     public function __invoke(
@@ -81,7 +82,7 @@ class SelectionLink extends LinkAbstract
                 $this->setText($this->translate('txt-list-selections'));
 
                 foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
-                         $param) {
+                    $param) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
@@ -93,6 +94,14 @@ class SelectionLink extends LinkAbstract
                     sprintf(
                         $this->translate("txt-edit-selection-%s"),
                         $this->getSelection()->getSelection()
+                    )
+                );
+                break;
+            case 'generate-deeplinks':
+                $this->setRouter('zfcadmin/selection/generate-deeplinks');
+                $this->setText(
+                    sprintf(
+                        $this->translate("txt-generate-deeplinks")
                     )
                 );
                 break;

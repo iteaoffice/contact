@@ -261,6 +261,16 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'generate-deeplinks'  => [
+                                        'label'   => _('txt-generate-deeplinks'),
+                                        'route'   => 'zfcadmin/selection/generate-deeplinks',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities' => [
+                                                'id' => \Contact\Entity\Selection::class,
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                             'new-selection' => [
