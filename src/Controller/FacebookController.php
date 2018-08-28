@@ -67,6 +67,10 @@ final class FacebookController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
+        //This is a trick. The FB parser does a query to get the contacts but does not inlude the activation.
+        //By do a check first if the contact is activated we create the identity of the logged in user and overrule the query
+        $this->identity()->isActivated();
+
         return new ViewModel(
             [
                 'facebook'          => $facebook,

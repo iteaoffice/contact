@@ -8,3 +8,5 @@ _("txt-remove");
 _("txt-reset");
 _("txt-select-all");
 _("txt-add");
+_("txt-activate-contact");
+_("txt-de-activate-contact");

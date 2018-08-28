@@ -739,7 +739,7 @@ class Contact extends EntityRepository
 
         $orderBy = null;
         if (null !== $facebook->getOrderbyClause()) {
-            $orderBy = sprintf(" ORDER BY %s", $facebook->getOrderbyClause());
+            $orderBy = \sprintf(" ORDER BY %s", $facebook->getOrderbyClause());
         }
 
         $query = $this->getEntityManager()

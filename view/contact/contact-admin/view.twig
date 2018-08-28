@@ -5,7 +5,7 @@
 <h1 class="display-4">{{ contactService.parseAttention(contact) }} {{ contact.parseFullname() }}</h1>
 
 {% if contact.dateEnd %}
-    {{ ztbalert().danger(translate("txt-%s-has-been-deactivated-on-%s-reactivation-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
+    {{ ztbalert().danger(translate("txt-%s-has-been-deleted-on-%s-undelte-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
 {% endif %}
 
 

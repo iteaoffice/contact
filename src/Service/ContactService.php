@@ -621,16 +621,16 @@ class ContactService extends AbstractService
          * A dedicated array will therefore be created
          */
         $contacts = [];
-        /** @var Contact $contact */
-        foreach ($repository->findContactsInFacebook($facebook) as $contact) {
+        /** @var Contact $facebookContact */
+        foreach ($repository->findContactsInFacebook($facebook) as $facebookContact) {
             $singleContact = [];
 
-            $singleContact['contact'] = $contact;
-            $singleContact['title'] = $this->facebookTitleParser((int)$facebook->getTitle(), $contact);
-            $singleContact['subTitle'] = $this->facebookTitleParser((int)$facebook->getSubtitle(), $contact);
-            $singleContact['email'] = $contact->getEmail();
-            $singleContact['phone'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
-            $singleContact['mobile'] = $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
+            $singleContact['contact'] = $facebookContact;
+            $singleContact['title'] = $this->facebookTitleParser((int)$facebook->getTitle(), $facebookContact);
+            $singleContact['subTitle'] = $this->facebookTitleParser((int)$facebook->getSubtitle(), $facebookContact);
+            $singleContact['email'] = $facebookContact->getEmail();
+            $singleContact['phone'] = $this->getPhoneByContactAndType($facebookContact, PhoneType::PHONE_TYPE_DIRECT);
+            $singleContact['mobile'] = $this->getPhoneByContactAndType($facebookContact, PhoneType::PHONE_TYPE_MOBILE);
 
             $contacts[] = $singleContact;
         }

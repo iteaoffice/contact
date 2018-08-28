@@ -26,6 +26,7 @@ use Organisation\Form\Element\Organisation;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\File;
 use Zend\Form\Element\Radio;
+use Zend\Form\Element\Submit;
 use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
 
@@ -107,6 +108,28 @@ class ContactFieldset extends Fieldset
             [
                 'type'    => File::class,
                 'name'    => 'file',
+                'options' => [
+                    "label"      => _("txt-contact-photo-label"),
+                    "help-block" => _("txt-contact-photo-help-block"),
+                ],
+            ]
+        );
+
+        $this->add(
+            [
+                'type'    => Submit::class,
+                'name'    => 'reactivate',
+                'options' => [
+                    "label"      => _("txt-contact-photo-label"),
+                    "help-block" => _("txt-contact-photo-help-block"),
+                ],
+            ]
+        );
+
+        $this->add(
+            [
+                'type'    => Submit::class,
+                'name'    => 'deactivate',
                 'options' => [
                     "label"      => _("txt-contact-photo-label"),
                     "help-block" => _("txt-contact-photo-help-block"),

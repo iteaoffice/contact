@@ -35,6 +35,7 @@ use Program\Entity\Nda;
 use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
+use Zend\Http\Request;
 use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
@@ -49,12 +50,10 @@ final class MergeContact extends AbstractPlugin
      * @var EntityManagerInterface
      */
     private $entityManager;
-
     /**
      * @var TranslatorInterface
      */
     private $translator;
-
     /**
      * @var Logging
      */
@@ -145,7 +144,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Email $emailSource */
             foreach ($source->getEmailAddress() as $emailSource) {
-                if (!\in_array($emailSource->getEmail(), $targetEmailAddresses)) {
+                if (!\in_array($emailSource->getEmail(), $targetEmailAddresses, false)) {
                     $emailSource->setContact($target);
                     $target->getEmailAddress()->add($emailSource);
                 }
@@ -180,7 +179,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var OptIn $optInSource */
             foreach ($source->getOptIn() as $optInSource) {
-                if (!\in_array($optInSource->getId(), $targetOptIns)) {
+                if (!\in_array($optInSource->getId(), $targetOptIns, false)) {
                     $target->getOptIn()->add($optInSource);
                 }
             }
@@ -580,7 +579,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var SelectionContact $selectionContactSource */
             foreach ($source->getSelectionContact() as $selectionContactSource) {
-                if (!\in_array($selectionContactSource->getSelection()->getId(), $targetSelections)) {
+                if (!\in_array($selectionContactSource->getSelection()->getId(), $targetSelections, false)) {
                     $selectionContactSource->setContact($target);
                     $target->getSelectionContact()->add($selectionContactSource);
                 }
@@ -737,7 +736,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getInviteContact() as $inviteContactSource) {
-                if (!\in_array($inviteContactSource->getId(), $targetInviteContacts)) {
+                if (!\in_array($inviteContactSource->getId(), $targetInviteContacts, false)) {
                     $target->getInviteContact()->add($inviteContactSource);
                 }
             }
@@ -856,7 +855,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getTourContact() as $tourContactSource) {
-                if (!\in_array($tourContactSource->getId(), $targetTourContacts)) {
+                if (!\in_array($tourContactSource->getId(), $targetTourContacts, false)) {
                     $target->getTourContact()->add($tourContactSource);
                 }
             }
@@ -1048,7 +1047,8 @@ final class MergeContact extends AbstractPlugin
         } catch (\Exception $exception) {
             $response = ['success' => false, 'errorMessage' => $exception->getMessage()];
             if ($this->errorLogger instanceof Logging) {
-                $this->errorLogger->handleErrorException($exception);
+                $request = new Request();
+                $this->errorLogger->handleErrorException($exception, $request);
             }
         }
 

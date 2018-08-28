@@ -44,7 +44,7 @@ final class ImageController extends ContactAbstractController
         /** @var Photo $photo */
         $photo = $this->contactService->find(Photo::class, (int)$this->params('id'));
 
-        if (null === $photo) {
+        if (null === $photo || null === $photo->getPhoto()) {
             return $response;
         }
 
@@ -54,7 +54,7 @@ final class ImageController extends ContactAbstractController
             ->addHeaderLine('Pragma: public')
             ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType());
 
-        $response->setContent(stream_get_contents($photo->getPhoto()));
+        $response->setContent(\stream_get_contents($photo->getPhoto()));
 
         return $response;
     }

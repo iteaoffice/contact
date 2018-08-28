@@ -54,7 +54,7 @@ use Zend\View\Model\ViewModel;
  * Class ContactManagerController.
  * @method MergeContact mergeContact()
  */
-class ContactAdminController extends ContactAbstractController
+/*final*/ class ContactAdminController extends ContactAbstractController
 {
     /**
      * @var ContactService
@@ -525,10 +525,10 @@ class ContactAdminController extends ContactAbstractController
 
             /** Deactivate a contact */
             if (isset($data['deactivate'])) {
-                $this->flashMessenger()
-                    ->addSuccessMessage(
-                        sprintf($this->translator->translate("txt-contact-%s-has-been-deactivated"), $contact)
-                    );
+                $changelogMessage = \sprintf($this->translator->translate("txt-contact-%s-has-been-deleted"), $contact->parseFullName());
+                $this->flashMessenger()->addSuccessMessage($changelogMessage);
+
+                $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
 
                 $contact->setDateEnd(new \DateTime());
                 $this->contactService->save($contact);
@@ -538,10 +538,10 @@ class ContactAdminController extends ContactAbstractController
 
             /** Reactivate a contact */
             if (isset($data['reactivate'])) {
-                $this->flashMessenger()
-                    ->addSuccessMessage(
-                        sprintf($this->translator->translate("txt-contact-%s-has-been-reactivated"), $contact)
-                    );
+                $changelogMessage = \sprintf($this->translator->translate("txt-contact-%s-has-been-undeleted"), $contact->parseFullName());
+                $this->flashMessenger()->addSuccessMessage($changelogMessage);
+
+                $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
 
                 $contact->setDateEnd(null);
                 $this->contactService->save($contact);
@@ -690,10 +690,7 @@ class ContactAdminController extends ContactAbstractController
         );
     }
 
-    /**
-     * @return ViewModel
-     */
-    public function importAction()
+    public function importAction(): ViewModel
     {
         \set_time_limit(0);
 

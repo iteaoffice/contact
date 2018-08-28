@@ -121,5 +121,25 @@ class CreateObject extends Form
                 ],
             ]
         );
+        $this->add(
+            [
+                'type'       => Element\Submit::class,
+                'name'       => 'reactivate',
+                'attributes' => [
+                    'class' => "btn btn-warning",
+                    'value' => _("txt-undelete-contact"),
+                ],
+            ]
+        );
+        $this->add(
+            [
+                'type'       => Element\Submit::class,
+                'name'       => 'deactivate',
+                'attributes' => [
+                    'class' => "btn btn-danger",
+                    'value' => _("txt-delete-contact"),
+                ],
+            ]
+        );
     }
 }
