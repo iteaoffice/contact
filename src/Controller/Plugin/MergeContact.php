@@ -35,7 +35,7 @@ use Program\Entity\Nda;
 use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
-use Zend\Http\Request;
+use Zend\Http\PhpEnvironment\Request;
 use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
@@ -61,12 +61,12 @@ final class MergeContact extends AbstractPlugin
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        TranslatorInterface    $translator,
-        Logging                $errorLogger = null
+        TranslatorInterface $translator,
+        Logging $errorLogger = null
     ) {
         $this->entityManager = $entityManager;
-        $this->translator    = $translator;
-        $this->errorLogger   = $errorLogger;
+        $this->translator = $translator;
+        $this->errorLogger = $errorLogger;
     }
 
     public function __invoke(): MergeContact
@@ -263,6 +263,14 @@ final class MergeContact extends AbstractPlugin
                 $source->getContractVersion()->remove($key);
             }
 
+            // Transfer nda approver (no matching). Do this before the real NDA otherwise the
+            //NDA will not be found
+            foreach ($source->getNdaApprover() as $key => $ndaApprover) {
+                $ndaApprover->setContact($target);
+                $target->getNdaApprover()->add($ndaApprover);
+                $source->getNdaApprover()->remove($key);
+            }
+
             // Transfer nda (no matching)
             /**
              * @var int $key
@@ -278,13 +286,6 @@ final class MergeContact extends AbstractPlugin
 
                 $target->getNda()->add($nda);
                 $source->getNda()->remove($key);
-            }
-
-            // Transfer nda approver (no matching)
-            foreach ($source->getNdaApprover() as $key => $ndaApprover) {
-                $ndaApprover->setContact($target);
-                $target->getNdaApprover()->add($ndaApprover);
-                $source->getNdaApprover()->remove($key);
             }
 
             // Transfer program doa (no matching)
@@ -593,13 +594,15 @@ final class MergeContact extends AbstractPlugin
                 $targetMailings[] = $mailingContactTarget->getMailing()->getId();
             }
             /** @var \Mailing\Entity\Contact $mailingContactSource */
-            foreach ($source->getMailingContact() as $mailingContactSource) {
-                if (!\in_array($mailingContactSource->getMailing()->getId(), $targetMailings)) {
+            foreach ($source->getMailingContact() as $key => $mailingContactSource) {
+                if (!\in_array($mailingContactSource->getMailing()->getId(), $targetMailings, false)) {
                     $mailingContactSource->setContact($target);
                     $target->getMailingContact()->add($mailingContactSource);
                 }
+
+                //Explicitly remove the key
+                $source->getMailingContact()->remove($key);
             }
-            $source->setMailingContact(new ArrayCollection());
 
             // Transfer mailings (no matching)
             foreach ($source->getMailing() as $key => $mailing) {

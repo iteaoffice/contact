@@ -209,7 +209,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $cv;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
-     * @@Annotation\ComposedObject("\Contact\Entity\Address")
+     * @Annotation\ComposedObject("\Contact\Entity\Address")
      * @var \Contact\Entity\Address[]|Collections\ArrayCollection
      */
     private $address;
@@ -563,7 +563,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $selectionContact;
     /**
-     * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Mailing\Entity\Contact[]|Collections\ArrayCollection
      */
@@ -1210,20 +1210,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-
-    /**
-     * @return \DateTime
-     */
     public function getDateOfBirth(): ?\DateTime
     {
         return $this->dateOfBirth;
     }
 
-    /**
-     * @param $dateOfBirth
-     *
-     * @return Contact
-     */
     public function setDateOfBirth($dateOfBirth): Contact
     {
         $this->dateOfBirth = $dateOfBirth;
@@ -1231,19 +1222,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     *
-     * @return Contact
-     */
     public function setEmail($email): Contact
     {
         $this->email = $email;
@@ -1251,19 +1234,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param $firstName
-     *
-     * @return $this
-     */
     public function setFirstName($firstName): Contact
     {
         $this->firstName = $firstName;
@@ -1271,19 +1246,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return \General\Entity\Gender
-     */
     public function getGender(): ?\General\Entity\Gender
     {
         return $this->gender;
     }
 
-    /**
-     * @param \General\Entity\Gender $gender
-     *
-     * @return Contact
-     */
     public function setGender($gender): Contact
     {
         $this->gender = $gender;
@@ -1291,9 +1258,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
@@ -1829,7 +1793,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      *
      * @return Contact
      */
-    public function setActionComment($actionComment)
+    public function setActionComment($actionComment): Contact
     {
         $this->actionComment = $actionComment;
 
