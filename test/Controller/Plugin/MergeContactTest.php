@@ -58,7 +58,7 @@ use Mailing\Entity\Mailing;
 use News\Entity\Blog;
 use Organisation\Entity\OParent;
 use Organisation\Entity\Parent\Organisation;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use Program\Entity\Doa;
 use Program\Entity\Domain;
 use Program\Entity\Funder;
@@ -509,6 +509,9 @@ final class MergeContactTest extends AbstractServiceTest
 
         $this->assertSame(1, $this->target->getProjectLog()->count());
         $this->assertSame(1, $this->target->getProjectLog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectChangelog()->count());
+        $this->assertSame(1, $this->target->getProjectChangelog()->first()->getId());
 
         $this->assertSame(1, $this->target->getChangeRequestProcess()->count());
         $this->assertSame(1, $this->target->getChangeRequestProcess()->first()->getId());
@@ -1105,7 +1108,12 @@ final class MergeContactTest extends AbstractServiceTest
         $projectLog = new \Project\Entity\Log();
         $projectLog->setId(1);
         $projectLog->setContact($source);
-        $source->setProjectLog(new ArrayCollection([$projectLog]));
+        $source->setProjectlog(new ArrayCollection([$projectLog]));
+
+        $projectChangeLog = new \Project\Entity\Changelog();
+        $projectChangeLog->setId(1);
+        $projectChangeLog->setContact($source);
+        $source->setProjectChangelog(new ArrayCollection([$projectChangeLog]));
 
         $changeRequestProcess = new Process();
         $changeRequestProcess->setId(1);

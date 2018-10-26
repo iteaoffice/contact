@@ -450,11 +450,12 @@ final class MergeContact extends AbstractPlugin
                 $source->getPublicationDownload()->remove($key);
             }
 
-            // Transfer photos (no matching)
-            foreach ($source->getPhoto() as $key => $photo) {
+            // Transfer photo (database unique constraint on 1 photo per contact!)
+            if (!$target->hasPhoto() && $source->hasPhoto()) {
+                $photo = $source->getPhoto()->first();
                 $photo->setContact($target);
                 $target->getPhoto()->add($photo);
-                $source->getPhoto()->remove($key);
+                $source->setPhoto(new ArrayCollection());
             }
 
             // Transfer associates (many-to-many, with matching)
@@ -600,7 +601,7 @@ final class MergeContact extends AbstractPlugin
                     $target->getMailingContact()->add($mailingContactSource);
                 }
 
-                //Explicitly remove the key
+                // Explicitly remove the key
                 $source->getMailingContact()->remove($key);
             }
 
@@ -913,16 +914,16 @@ final class MergeContact extends AbstractPlugin
                 $source->getJournalEntry()->remove($key);
             }
 
-            // Transfer journals (no matching)
+            // Transfer invoice journals (no matching)
             foreach ($source->getJournal() as $key => $journal) {
                 $journal->setContact($target);
                 $target->getJournal()->add($journal);
                 $source->getJournal()->remove($key);
             }
 
-            // Transfer organisation journals (no matching)
+            // Transfer invoice organisation journals (no matching)
             foreach ($source->getOrganisationJournal() as $key => $organisationJournal) {
-                $organisationJournal->setContact($target);
+                $organisationJournal->setOrganisationContact($target);
                 $target->getOrganisationJournal()->add($organisationJournal);
                 $source->getOrganisationJournal()->remove($key);
             }
@@ -953,6 +954,13 @@ final class MergeContact extends AbstractPlugin
                 $projectLog->setContact($target);
                 $target->getProjectLog()->add($projectLog);
                 $source->getProjectLog()->remove($key);
+            }
+
+            // Transfer project change logs (no matching)
+            foreach ($source->getProjectChangelog() as $key => $projectChangeLog) {
+                $projectChangeLog->setContact($target);
+                $target->getProjectChangelog()->add($projectChangeLog);
+                $source->getProjectChangelog()->remove($key);
             }
 
             // Transfer change request processes (no matching)
@@ -1010,6 +1018,9 @@ final class MergeContact extends AbstractPlugin
                 $target->getPageview()->add($pageView);
                 $source->getPageview()->remove($key);
             }
+
+            // This flush removes all references to $source that have orphanRemoval=true
+            //$this->entityManager->flush();
 
             // Prepare for logging
             $message = \sprintf(
