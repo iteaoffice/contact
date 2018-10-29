@@ -22,8 +22,6 @@ use Zend\View\Helper\Identity;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
- * @category    Contact
- *
  * @method Identity|Contact identity()
  * @method FlashMessenger flashMessenger()
  * @method IsAllowed isAllowed($resource, $action)
@@ -31,6 +29,7 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  * @method Plugin\SelectionExport selectionExport(Selection $selection, int $type)
  * @method Plugin\GetFilter getContactFilter()
  * @method ZfcUserAuthentication zfcUserAuthentication()
+ * @method Plugin\MergeContact mergeContact()
  */
 abstract class ContactAbstractController extends AbstractActionController
 {

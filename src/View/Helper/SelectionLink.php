@@ -23,16 +23,6 @@ use Contact\Entity\Selection;
  */
 class SelectionLink extends LinkAbstract
 {
-    /**
-     * @param Selection|null $selection
-     * @param string         $action
-     * @param string         $show
-     * @param null           $page
-     * @param null           $alternativeShow
-     * @param Contact        $contact
-     *
-     * @return string
-     */
     public function __invoke(
         Selection $selection = null,
         $action = 'view',

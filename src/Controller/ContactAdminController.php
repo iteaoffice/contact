@@ -52,7 +52,6 @@ use Zend\View\Model\ViewModel;
 
 /**
  * Class ContactManagerController.
- * @method MergeContact mergeContact()
  */
 /*final*/ class ContactAdminController extends ContactAbstractController
 {

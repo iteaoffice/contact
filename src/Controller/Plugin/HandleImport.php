@@ -25,6 +25,7 @@ use Contact\Service\SelectionService;
 use Doctrine\Common\Collections\ArrayCollection;
 use General\Entity\Gender;
 use General\Entity\Title;
+use General\Service\CountryService;
 use General\Service\GeneralService;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Type;
@@ -34,7 +35,9 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Validator\EmailAddress;
 
 /**
- * Class HandleImport.
+ * Class HandleImport
+ *
+ * @package Contact\Controller\Plugin
  */
 final class HandleImport extends AbstractPlugin
 {
@@ -86,6 +89,10 @@ final class HandleImport extends AbstractPlugin
      */
     private $generalService;
     /**
+     * @var CountryService
+     */
+    private $countryService;
+    /**
      * @var OrganisationService
      */
     private $organisationService;
@@ -104,12 +111,14 @@ final class HandleImport extends AbstractPlugin
 
     public function __construct(
         GeneralService $generalService,
+        CountryService $countryService,
         OrganisationService $organisationService,
         ContactService $contactService,
         SelectionContactService $selectionContactService,
         SelectionService $selectionService
     ) {
         $this->generalService = $generalService;
+        $this->countryService = $countryService;
         $this->organisationService = $organisationService;
         $this->contactService = $contactService;
         $this->selectionContactService = $selectionContactService;
@@ -244,7 +253,7 @@ final class HandleImport extends AbstractPlugin
              * Validate the country
              */
             if (!empty($this->headerKeys['country'])) {
-                $country = $this->generalService->findCountryByName($content[$this->headerKeys['country']]);
+                $country = $this->countryService->findCountryByName($content[$this->headerKeys['country']]);
                 if (null === $country) {
                     $this->warnings[] = sprintf(
                         'Country (%s) in row %s cannot be found',
@@ -378,7 +387,7 @@ final class HandleImport extends AbstractPlugin
             $country = null;
 
             if (isset($this->headerKeys['country']) && !empty($content[$this->headerKeys['country']])) {
-                $country = $this->generalService->findCountryByName($content[$this->headerKeys['country']]);
+                $country = $this->countryService->findCountryByName($content[$this->headerKeys['country']]);
             }
 
             $organisation = null;
@@ -398,7 +407,7 @@ final class HandleImport extends AbstractPlugin
                 );
             }
 
-            if (null === $organisation && null !== $country && null !== $organisationName) {
+            if (null !== $organisationName && null === $organisation && null !== $country) {
                 $organisation = $this->organisationService->findOrganisationByNameCountry(
                     $organisationName,
                     $country

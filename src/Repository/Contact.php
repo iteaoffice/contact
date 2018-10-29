@@ -591,6 +591,9 @@ class Contact extends EntityRepository
         $qb->from(Entity\Contact::class, 'contact_entity_contact');
         $qb->innerJoin('contact_entity_contact.profile', 'p');
         $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
+        $qb->andWhere($qb->expr()->isNotNull('contact_entity_contact.dateActivated'));
+        $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateAnonymous'));
+
         $qb->andWhere($qb->expr()->isNotNull('p.description'));
         //Exclude the empty descriptions
         $qb->andWhere('p.description <> ?2');

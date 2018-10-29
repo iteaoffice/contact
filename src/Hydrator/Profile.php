@@ -31,7 +31,7 @@ class Profile extends DoctrineObject
      *
      * @return array
      */
-    public function extract($contact)
+    public function extract($contact): array
     {
         $this->prepare($contact);
         $values = $this->extractByValue($contact);
@@ -50,20 +50,19 @@ class Profile extends DoctrineObject
         }
 
         unset($values['profile']);
-        $values['profile']['visible'] = !\is_null($contact->getProfile()) ? $contact->getProfile()->getVisible()
+        $values['profile']['visible'] = null !== $contact->getProfile() ? $contact->getProfile()->getVisible()
             : null;
-        $values['profile']['description'] = !\is_null($contact->getProfile()) ? $contact->getProfile()->getDescription()
+        $values['profile']['description'] = null !== $contact->getProfile() ? $contact->getProfile()->getDescription()
             : null;
         /*
          * Set the contact organisation, this will be taken from the contact_organisation item and can be used
          * to pre-fill the values
          */
-        $organisationService = new OrganisationService();
-        if (!\is_null($contact->getContactOrganisation())) {
-            $values['contact_organisation']['organisation_id'] = $contact->getContactOrganisation()->getOrganisation()
-                ->getId();
+        if ($contact->hasOrganisation()) {
+            $values['contact_organisation']['organisation_id']
+                = $contact->getContactOrganisation()->getOrganisation()->getId();
             $values['contact_organisation']['organisation']
-                = $organisationService->parseOrganisationWithBranch(
+                = OrganisationService::parseBranch(
                     $contact->getContactOrganisation()->getBranch(),
                     $contact->getContactOrganisation()->getOrganisation()
                 );
@@ -77,12 +76,10 @@ class Profile extends DoctrineObject
     }
 
     /**
-     * Hydrate $contact with the provided $data.
-     *
-     * @param array $data
+     * @param array   $data
      * @param Contact $contact
      *
-     * @return object
+     * @return Contact
      */
     public function hydrate(array $data, $contact)
     {
@@ -149,7 +146,9 @@ class Profile extends DoctrineObject
             if (array_key_exists(
                 'address',
                 $addressInfo
-            ) && !empty($addressInfo['address']) && !empty($addressInfo['country'])
+            )
+                && !empty($addressInfo['address'])
+                && !empty($addressInfo['country'])
             ) {
 
                 /** @var AddressType $addressType */

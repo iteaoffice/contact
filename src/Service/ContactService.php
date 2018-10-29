@@ -24,6 +24,7 @@ use Contact\Entity\Note;
 use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
+use Contact\Entity\Photo;
 use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
@@ -36,6 +37,9 @@ use Organisation\Entity\Organisation;
 use Organisation\Service\OrganisationService;
 use Project\Entity\Project;
 use Project\View\Helper\ProjectLink;
+use Search\Service\SearchUpdateInterface;
+use Solarium\Client;
+use Solarium\Core\Query\AbstractQuery;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\View\HelperPluginManager;
@@ -46,11 +50,8 @@ use ZfcUser\Options\ModuleOptions;
  *
  * @package Contact\Service
  */
-class ContactService extends AbstractService
+class ContactService extends AbstractService implements SearchUpdateInterface
 {
-    /**
-     * Constant to determine which affiliations must be taken from the database.
-     */
     public const WHICH_ALL = 1;
     public const WHICH_ONLY_ACTIVE = 2;
     public const WHICH_ONLY_EXPIRED = 3;
@@ -267,14 +268,6 @@ class ContactService extends AbstractService
         return $canAnonymiseContact;
     }
 
-    public function findContactsWithActiveProfile(bool $onlyPublic = true): array
-    {
-        /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->entityManager->getRepository(Contact::class);
-
-        return $repository->findContactsWithActiveProfile($onlyPublic);
-    }
-
     public function parseLastName(Contact $contact): string
     {
         return \trim(\implode(' ', [$contact->getMiddleName(), $contact->getLastName()]));
@@ -417,7 +410,6 @@ class ContactService extends AbstractService
         return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
     }
 
-
     public function addNoteToContact(string $text, string $source, Contact $contact): Note
     {
         $note = new Note();
@@ -436,16 +428,194 @@ class ContactService extends AbstractService
         $this->refresh($contact);
 
         if ($contact instanceof Contact) {
-            $this->contactSearchService->updateDocument($contact);
-
-            if ($contact->isVisibleInCommunity()) {
-                $this->profileSearchService->updateDocument($contact);
-            } else {
-                $this->profileSearchService->deleteDocument($contact);
-            }
+            $this->updateEntityInSearchEngine($contact);
         }
 
         return $contact;
+    }
+
+    /**
+     * @param Contact $contact
+     */
+    public function updateEntityInSearchEngine($contact): void
+    {
+        $contactDocument = $this->prepareSearchUpdate($contact);
+        $profileDocument = $this->prepareProfileSearchUpdate($contact);
+
+        $this->contactSearchService->executeUpdateDocument($contactDocument);
+
+        if ($contact->isVisibleInCommunity()) {
+            $this->profileSearchService->executeUpdateDocument($profileDocument);
+        } else {
+            $this->profileSearchService->deleteDocument($profileDocument);
+        }
+    }
+
+    /**
+     * @param Contact $contact
+     *
+     * @return AbstractQuery
+     */
+    public function prepareSearchUpdate($contact): AbstractQuery
+    {
+        $searchClient = new Client();
+        $update = $searchClient->createUpdate();
+
+        $contactDocument = $update->createDocument();
+        $contactDocument->id = $contact->getResourceId();
+        $contactDocument->contact_id = $contact->getId();
+        $contactDocument->contact_hash = $contact->getHash();
+
+        $contactDocument->fullname = $contact->getDisplayName();
+        $contactDocument->fullname_search = $contact->getDisplayName();
+        $contactDocument->fullname_sort = $contact->getDisplayName();
+
+        $contactDocument->lastname = $contact->getLastName();
+        $contactDocument->lastname_search = $contact->getLastName();
+        $contactDocument->lastname_sort = $contact->getLastName();
+
+        $contactDocument->position = $contact->getPosition();
+        $contactDocument->position_search = $contact->getPosition();
+        $contactDocument->position_sort = $contact->getPosition();
+
+        if (null !== $contact->getProfile()) {
+            $url = $this->viewHelperManager->get('url');
+
+            $contactDocument->profile = \str_replace(
+                PHP_EOL,
+                '',
+                \strip_tags((string)$contact->getProfile()->getDescription())
+            );
+
+            if ($contact->getPhoto()->count() > 0) {
+                /** @var Photo $photo */
+                $photo = $contact->getPhoto()->first();
+                $contactDocument->photo_url = $url(
+                    'image/contact-photo',
+                    [
+                        'ext'         => $photo->getContentType()->getExtension(),
+                        'last-update' => $photo->getDateUpdated()->getTimestamp(),
+                        'id'          => $photo->getId(),
+                    ]
+                );
+            }
+        }
+
+        if (null !== $contact->getContactOrganisation()) {
+            $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
+            $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()
+                ->getOrganisation();
+            $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()
+                ->getOrganisation();
+            $contactDocument->organisation_type = $contact->getContactOrganisation()->getOrganisation()->getType();
+            $contactDocument->organisation_type_sort = $contact->getContactOrganisation()->getOrganisation()->getType();
+            $contactDocument->organisation_type_search = $contact->getContactOrganisation()->getOrganisation()->getType(
+            );
+            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry(
+            );
+            $contactDocument->country_sort = $contact->getContactOrganisation()->getOrganisation()->getCountry()
+                ->getCountry();
+            $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()
+                ->getCountry();
+        }
+
+        if (null !== $contact->getCv()) {
+            $cv = str_replace(
+                PHP_EOL,
+                '',
+                strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
+            );
+
+            $contactDocument->cv = $cv;
+            $contactDocument->cv_search = $cv;
+        }
+
+        $update->addDocument($contactDocument);
+        $update->addCommit();
+
+        return $update;
+    }
+
+    /**
+     * @param Contact $contact
+     *
+     * @return AbstractQuery
+     */
+    public function prepareProfileSearchUpdate($contact): AbstractQuery
+    {
+        $searchClient = new Client();
+        $update = $searchClient->createUpdate();
+
+        $contactDocument = $update->createDocument();
+        $contactDocument->id = $contact->getResourceId();
+        $contactDocument->contact_id = $contact->getId();
+        $contactDocument->contact_hash = $contact->getHash();
+
+        $contactDocument->fullname = $contact->getDisplayName();
+        $contactDocument->fullname_search = $contact->getDisplayName();
+        $contactDocument->fullname_sort = $contact->getDisplayName();
+
+        $contactDocument->lastname = $contact->getLastName();
+        $contactDocument->lastname_search = $contact->getLastName();
+        $contactDocument->lastname_sort = $contact->getLastName();
+
+        $contactDocument->position = $contact->getPosition();
+        $contactDocument->position_search = $contact->getPosition();
+        $contactDocument->position_sort = $contact->getPosition();
+
+        if (null !== $contact->getProfile()) {
+            $description = \strip_tags((string)$contact->getProfile()->getDescription());
+
+            $contactDocument->profile = \str_replace(PHP_EOL, '', $description);
+            $contactDocument->profile_sort = \str_replace(PHP_EOL, '', $description);
+            $contactDocument->profile_search = \str_replace(PHP_EOL, '', $description);
+
+            if ($contact->getPhoto()->count() > 0) {
+                $url = $this->viewHelperManager->get('url');
+
+                /** @var Photo $photo */
+                $photo = $contact->getPhoto()->first();
+
+                $contactDocument->photo_url = $url(
+                    'image/contact-photo',
+                    [
+                        'ext'         => $photo->getContentType()->getExtension(),
+                        'last-update' => $photo->getDateUpdated()->getTimestamp(),
+                        'id'          => $photo->getId(),
+                    ]
+                );
+            }
+        }
+
+        if (null !== $contact->getContactOrganisation()) {
+            $organisation = $contact->getContactOrganisation()->getOrganisation();
+
+            $contactDocument->organisation = $organisation->getOrganisation();
+            $contactDocument->organisation_sort = $organisation->getOrganisation();
+            $contactDocument->organisation_search = $organisation->getOrganisation();
+            $contactDocument->organisation_type = $organisation->getType();
+            $contactDocument->organisation_type_sort = $organisation->getType();
+            $contactDocument->organisation_type_search = $organisation->getType();
+            $contactDocument->country = $organisation->getCountry()->getCountry();
+            $contactDocument->country_sort = $organisation->getCountry()->getCountry();
+            $contactDocument->country_search = $organisation->getCountry()->getCountry();
+        }
+
+        if (null !== $contact->getCv()) {
+            $cv = \str_replace(
+                PHP_EOL,
+                '',
+                \strip_tags((string)\stream_get_contents($contact->getCv()->getCv()))
+            );
+
+            $contactDocument->cv = $cv;
+            $contactDocument->cv_search = $cv;
+        }
+
+        $update->addDocument($contactDocument);
+        $update->addCommit();
+
+        return $update;
     }
 
     public function delete(AbstractEntity $contact): void
@@ -555,13 +725,13 @@ class ContactService extends AbstractService
     }
 
     /**
-     * @param Contact        $contact
-     * @param string         $role
-     * @param AbstractEntity $entity
+     * @param Contact      $contact
+     * @param string|array $role
+     * @param              $entity
      *
      * @return bool
      */
-    public function contactHasPermit(Contact $contact, string $role, $entity): bool
+    public function contactHasPermit(Contact $contact, $role, $entity): bool
     {
         if (null === $entity) {
             throw new \InvalidArgumentException('Permit can only be determined of an existing entity, null given');
@@ -570,10 +740,21 @@ class ContactService extends AbstractService
         $entityName = \str_replace(
             'doctrineormmodule_proxy___cg___',
             '',
-            strtolower($entity->get('underscore_entity_name'))
+            \strtolower($entity->get('underscore_entity_name'))
         );
 
         $repository = $this->entityManager->getRepository(\Admin\Entity\Permit\Contact::class);
+
+        if (\is_array($role)) {
+            foreach ($role as $singleRole) {
+                $hasPermit = $repository->contactHasPermit($contact, $singleRole, $entityName, (int)$entity->getId());
+                if ($hasPermit) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         return $repository->contactHasPermit($contact, $role, $entityName, (int)$entity->getId());
     }
@@ -1004,5 +1185,49 @@ class ContactService extends AbstractService
         $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactsInOrganisation($organisation);
+    }
+
+    public function updateCollectionInSearchEngine(bool $clearIndex = false): void
+    {
+        $contacts = $this->findAll(Contact::class);
+        $collection = [];
+
+        /** @var Contact $contact */
+        foreach ($contacts as $contact) {
+            //Skip the inactive, the not activated and the not anonymised
+            if (!$contact->isActive() || !$contact->isActivated() || $contact->isAnonymised()) {
+                continue;
+            }
+
+            $collection[] = $this->prepareSearchUpdate($contact);
+
+            $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
+        }
+    }
+
+    public function updateProfileCollectionInSearchEngine(bool $clearIndex = false): void
+    {
+        $contacts = $this->findContactsWithActiveProfile(true);
+        $collection = [];
+
+        /** @var Contact $contact */
+        foreach ($contacts as $contact) {
+            //Skip the inactive, the not activated and the not anonymised
+            if (!$contact->isActive() || !$contact->isActivated() || $contact->isAnonymised()) {
+                continue;
+            }
+
+            $collection[] = $this->prepareSearchUpdate($contact);
+
+            $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
+        }
+    }
+
+    public function findContactsWithActiveProfile(bool $onlyPublic = true): array
+    {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->entityManager->getRepository(Contact::class);
+
+        return $repository->findContactsWithActiveProfile($onlyPublic);
     }
 }

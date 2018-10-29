@@ -26,114 +26,6 @@ class ContactSearchService extends AbstractSearchService
 {
     public const SOLR_CONNECTION = 'contact_contact';
 
-    /**
-     * @param Contact $contact
-     *
-     * @return \Solarium\QueryType\Update\Result
-     */
-    public function updateDocument($contact)
-    {
-        // Get an update query instance
-        $update = $this->getSolrClient()->createUpdate();
-
-        $contactDocument = $update->createDocument();
-        $contactDocument->id = $contact->getResourceId();
-        $contactDocument->contact_id = $contact->getId();
-        $contactDocument->contact_hash = $contact->getHash();
-
-        $contactDocument->fullname = $contact->getDisplayName();
-        $contactDocument->fullname_search = $contact->getDisplayName();
-        $contactDocument->fullname_sort = $contact->getDisplayName();
-
-        $contactDocument->lastname = $contact->getLastName();
-        $contactDocument->lastname_search = $contact->getLastName();
-        $contactDocument->lastname_sort = $contact->getLastName();
-
-        $contactDocument->position = $contact->getPosition();
-        $contactDocument->position_search = $contact->getPosition();
-        $contactDocument->position_sort = $contact->getPosition();
-
-        if (null !== $contact->getProfile()) {
-            $contactDocument->profile = str_replace(
-                PHP_EOL,
-                '',
-                strip_tags((string)$contact->getProfile()->getDescription())
-            );
-
-            if ($contact->getPhoto()->count() > 0) {
-                /** @var Photo $photo */
-                $photo = $contact->getPhoto()->first();
-                $contactDocument->photo_url = $this->getUrl(
-                    'image/contact-photo',
-                    [
-                        'ext'         => $photo->getContentType()->getExtension(),
-                        'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                        'id'          => $photo->getId(),
-                    ]
-                );
-            }
-        }
-
-        if (null !== $contact->getContactOrganisation()) {
-            $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
-            $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()
-                ->getOrganisation();
-            $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()
-                ->getOrganisation();
-            $contactDocument->organisation_type = $contact->getContactOrganisation()->getOrganisation()->getType();
-            $contactDocument->organisation_type_sort = $contact->getContactOrganisation()->getOrganisation()->getType();
-            $contactDocument->organisation_type_search = $contact->getContactOrganisation()->getOrganisation()->getType(
-            );
-            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry(
-            );
-            $contactDocument->country_sort = $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                ->getCountry();
-            $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                ->getCountry();
-        }
-
-        if (null !== $contact->getCv()) {
-            $cv = str_replace(
-                PHP_EOL,
-                '',
-                strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
-            );
-
-            $contactDocument->cv = $cv;
-            $contactDocument->cv_search = $cv;
-        }
-
-        $update->addDocument($contactDocument);
-        $update->addCommit();
-
-        return $this->executeUpdateDocument($update);
-    }
-
-    /**
-     * Update the current index and optionally clear all existing data.
-     *
-     * @param boolean $clear
-     */
-    public function updateIndex($clear = false): void
-    {
-        $contacts = $this->getContactService()->findAll(Contact::class);
-        $this->updateIndexWithCollection($contacts, $clear);
-    }
-
-
-    public function getContactService(): ContactService
-    {
-        return $this->serviceLocator->get(ContactService::class);
-    }
-
-    /**
-     * @param string $searchTerm
-     * @param array  $searchFields
-     * @param string $order
-     * @param string $direction
-     *
-     * @return SearchServiceInterface
-     */
     public function setSearch(
         string $searchTerm,
         array $searchFields = [],
@@ -157,7 +49,7 @@ class ContactSearchService extends AbstractSearchService
             )
         );
 
-        $hasTerm = !\in_array($searchTerm, ['*', '']);
+        $hasTerm = !\in_array($searchTerm, ['*', ''], true);
         $hasSort = ($order !== '');
 
         if ($hasSort) {

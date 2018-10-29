@@ -1065,6 +1065,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return null !== $this->dateActivated;
     }
 
+    public function isActive(): bool
+    {
+        return null === $this->dateEnd;
+    }
+
     public function hasOrganisation(): bool
     {
         return null !== $this->contactOrganisation;

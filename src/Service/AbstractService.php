@@ -66,10 +66,9 @@ abstract class AbstractService
         string $entity,
         array  $criteria,
         array  $orderBy = null,
-        ?int   $limit   = null,
-        ?int   $offset  = null
-    ): array
-    {
+        ?int   $limit = null,
+        ?int   $offset = null
+    ): array {
         return $this->entityManager->getRepository($entity)->findBy($criteria, $orderBy, $limit, $offset);
     }
 

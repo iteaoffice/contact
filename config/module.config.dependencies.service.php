@@ -48,6 +48,5 @@ return [
             Service\ContactService::class,
             Service\SelectionContactService::class
         ],
-
     ]
 ];
