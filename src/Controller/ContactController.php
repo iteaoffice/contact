@@ -141,7 +141,7 @@ final class ContactController extends ContactAbstractController
                 foreach ($data['facet'] as $facetField => $values) {
                     $quotedValues = [];
                     foreach ($values as $value) {
-                        $quotedValues[] = sprintf("\"%s\"", $value);
+                        $quotedValues[] = \sprintf('"%s"', $value);
                     }
 
                     $this->profileSearchService->addFilterQuery(
