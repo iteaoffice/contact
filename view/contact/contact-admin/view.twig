@@ -2,70 +2,71 @@
 {% do headTitle().append(contact.parseFullname()) %}
 
 
-<h1>{{ contactService.parseAttention(contact) }} {{ contact.parseFullname() }}</h1>
+<h1 class="display-4">{{ contactService.parseAttention(contact) }} {{ contact.parseFullname() }}</h1>
 
 {% if contact.dateEnd %}
-    {{ ztbalert().danger(translate("txt-%s-has-been-deactivated-on-%s-reactivation-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
+    {{ ztbalert().danger(translate("txt-%s-has-been-deleted-on-%s-undelte-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
 {% endif %}
 
-<div class="row">
 
-    <div class="col-md-9">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#general" data-toggle="tab">{{ translate("txt-general") }}</a></li>
-            <li><a href="#address" data-toggle="tab">{{ translate("txt-address") }}</a></li>
-            <li><a href="#phone" data-toggle="tab">{{ translate("txt-phone") }}</a></li>
-            <li><a href="#selection" data-toggle="tab">{{ translate("txt-selection") }}</a></li>
-            <li><a href="#mailing" data-toggle="tab">{{ translate("txt-mailing") }}</a></li>
-            <li><a href="#idea" data-toggle="tab">{{ translate("txt-idea") }}</a></li>
-            <li><a href="#project" data-toggle="tab">{{ translate("txt-project") }}</a></li>
-            <li><a href="#legal" data-toggle="tab">{{ translate("txt-legal") }}</a></li>
-            <li><a href="#event" data-toggle="tab">{{ translate("txt-event") }}</a></li>
-            <li><a href="#cv" data-toggle="tab">{{ translate("txt-cv") }}</a></li>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab"
+                                   role="tab">{{ translate("txt-general") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#address" data-toggle="tab"
+                            role="tab">{{ translate("txt-address") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#phone" data-toggle="tab" role="tab">{{ translate("txt-phone") }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link" href="#selection" data-toggle="tab"
+                            role="tab">{{ translate("txt-selection") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mailing" data-toggle="tab"
+                            role="tab">{{ translate("txt-mailing") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#idea" data-toggle="tab" role="tab">{{ translate("txt-idea") }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link" href="#project" data-toggle="tab"
+                            role="tab">{{ translate("txt-project") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#legal" data-toggle="tab" role="tab">{{ translate("txt-legal") }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link" href="#event" data-toggle="tab" role="tab">{{ translate("txt-event") }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link" href="#cv" data-toggle="tab" role="tab">{{ translate("txt-cv") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#merge" data-toggle="tab" role="tab">{{ translate("txt-merge") }}</a>
+    </li>
+</ul>
 
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div class="tab-pane active" id="general">
-                {% include 'contact/contact-admin/tab/general' %}
-            </div>
-            <div class="tab-pane" id="address">
-                {% include 'contact/contact-admin/tab/address' %}
-            </div>
-            <div class="tab-pane" id="phone">
-                {% include 'contact/contact-admin/tab/phone' %}
-            </div>
-            <div class="tab-pane" id="selection">
-                {% include 'contact/contact-admin/tab/selection' %}
-            </div>
-            <div class="tab-pane" id="mailing">
-                {% include 'contact/contact-admin/tab/mailing' %}
-            </div>
-            <div class="tab-pane" id="idea">
-                {% include 'contact/contact-admin/tab/idea' %}
-            </div>
-            <div class="tab-pane" id="project">
-                {% include 'contact/contact-admin/tab/project' %}
-            </div>
-            <div class="tab-pane" id="legal">
-                {% include 'contact/contact-admin/tab/legal' %}
-            </div>
-            <div class="tab-pane" id="event">
-                {% include 'contact/contact-admin/tab/event' %}
-            </div>
-            <div class="tab-pane" id="cv">
-                {% include 'contact/contact-admin/tab/cv' %}
-            </div>
-        </div>
-
-        <hr>
-        {{ contactLink(contact,'edit-admin','button') }}
-        {{ contactLink(contact,'permit','button') }}
-        {{ contactLink(contact,'impersonate','button') }}
+<!-- Tab panes -->
+<div class="tab-content">
+    <div class="tab-pane active" id="general">
+        {% include 'contact/contact-admin/tab/general' %}
     </div>
-    <div class="col-md-2">
-        {{ contactPhoto(contact) }}
+    <div class="tab-pane" role="tabpanel" id="address">
+        {% include 'contact/contact-admin/tab/address' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="phone">
+        {% include 'contact/contact-admin/tab/phone' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="selection">
+        {% include 'contact/contact-admin/tab/selection' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="mailing">
+        {% include 'contact/contact-admin/tab/mailing' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="idea">
+        {% include 'contact/contact-admin/tab/idea' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="project">
+        {% include 'contact/contact-admin/tab/project' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="legal">
+        {% include 'contact/contact-admin/tab/legal' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="event">
+        {% include 'contact/contact-admin/tab/event' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="cv">
+        {% include 'contact/contact-admin/tab/cv' %}
+    </div>
+    <div class="tab-pane" role="tabpanel" id="merge">
+        {% include 'contact/contact-admin/tab/merge' %}
     </div>
 </div>

@@ -8,54 +8,73 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
-use Contact\Entity\Contact;
 use Contact\Entity\Note;
+use Contact\Service\ContactService;
+use Contact\Service\FormService;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\View\Model\ViewModel;
 
 /**
  *
  */
-class NoteManagerController extends ContactAbstractController
+final class NoteManagerController extends ContactAbstractController
 {
     /**
-     * Create a new note.
-     *
-     * @return \Zend\View\Model\ViewModel
+     * @var ContactService
      */
+    private $contactService;
+    /**
+     * @var FormService
+     */
+    private $formService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        ContactService $contactService,
+        FormService $formService,
+        TranslatorInterface $translator
+    ) {
+        $this->contactService = $contactService;
+        $this->formService = $formService;
+        $this->translator = $translator;
+    }
+
     public function newAction()
     {
-        /**
-         * @var $contact Contact
-         */
-        $contact = $this->getContactService()->findContactById($this->params('contact'));
+        $contact = $this->contactService->findContactById((int)$this->params('contact'));
 
-        if (is_null($contact)) {
+        if (null === $contact) {
             return $this->notFoundAction();
         }
 
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
 
-        $form = $this->getFormService()->prepare(Note::class, null, $data);
+        $form = $this->formService->prepare(Note::class, $data);
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (! isset($data['cancel']) && $form->isValid()) {
+            if (!isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $note Note
                  */
                 $note = $form->getData();
                 $note->setContact($contact);
-                $this->getContactService()->newEntity($note);
+                $this->contactService->save($note);
             }
 
             return $this->redirect()
-                        ->toRoute(
-                            'zfcadmin/contact-admin/view',
-                            ['id' => $contact->getId()],
-                            ['fragment' => 'general']
-                        );
+                ->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $contact->getId()],
+                    ['fragment' => 'general']
+                );
         }
 
         return new ViewModel(
@@ -67,28 +86,21 @@ class NoteManagerController extends ContactAbstractController
         );
     }
 
-    /**
-     * Edit an note by finding it and call the corresponding form.
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
     public function editAction()
     {
         /**
          * @var $note Note
          */
-        $note = $this->getContactService()->findEntityById(Note::class, $this->params('id'));
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
-        $form = $this->getFormService()->prepare($note, $note, $data);
+        $note = $this->contactService->find(Note::class, (int)$this->params('id'));
+        $data = $this->getRequest()->getPost()->toArray();
+        $form = $this->formService->prepare($note, $data);
 
         if ($this->getRequest()->isPost()) {
-            /**
-             * Handle the delete request
-             */
             if (isset($data['delete'])) {
-                $this->getContactService()->removeEntity($note);
-                $this->flashMessenger()->setNamespace('success')
-                     ->addMessage(sprintf($this->translate("txt-note-has-successfully-been-deleted")));
+                $this->contactService->delete($note);
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf($this->translator->translate("txt-note-has-successfully-been-deleted"))
+                );
 
                 return $this->redirect()->toRoute(
                     'zfcadmin/contact-admin/view',
@@ -98,12 +110,13 @@ class NoteManagerController extends ContactAbstractController
             }
 
 
-            if (! isset($data['cancel']) && $form->isValid()) {
-                /**
-                 * @var Note $note
-                 */
+            if (!isset($data['cancel']) && $form->isValid()) {
                 $note = $form->getData();
-                $note = $this->getContactService()->updateEntity($note);
+                $note = $this->contactService->save($note);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf($this->translator->translate("txt-note-has-successfully-been-updated"))
+                );
             }
 
             return $this->redirect()->toRoute(

@@ -1,5 +1,5 @@
 {% do headTitle().append(translate("txt-edit-profile")) %}
-<h1>{{ translate("txt-edit-profile") }}</h1>
+<h1 class="display-4">{{ translate("txt-edit-profile") }}</h1>
 <p class="lead">{{ translate("txt-edit-profile-explanation") }}</p>
 
 {% do form.prepare() %}
@@ -12,11 +12,11 @@
 {{ ztbformelement(form.get('middleName')) }}
 {{ ztbformelement(form.get('lastName')) }}
 
-<div class="form-group">
-    <label class="col-sm-3 control-label">{{ translate("txt-email-address") }}</label>
+<div class="form-group row">
+    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-email-address") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ contact.email }}</p>
+        <p class="form-control-static form-control-plaintext">{{ contact.email }}</p>
     </div>
 </div>
 
@@ -50,7 +50,7 @@
 
         <div class="form-group {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}hidden{% endif %}"
              id="branch">
-            <label class="col-sm-3 control-label">{{ translate("txt-branch-form-label") }}</label>
+            <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-branch-form-label") }}</label>
 
             <div class="col-sm-9">
                 <select class="form-control" name="contact_organisation[branch]">
@@ -85,20 +85,23 @@
     {{ ztbformelement(profile.get('description')) }}
 </fieldset>
 
+{% if not contact.photo.isEmpty() %}
+    <div class="form-group row">
+        <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-current-photo") }}</label>
 
-<div class="form-group">
-    <label class="col-sm-3 control-label">{{ translate("txt-current-photo") }}</label>
-
-    <div class="col-sm-9">
-        <p class="form-control-static">{{ contactPhoto(contact) }}</p>
+        <div class="col-sm-9">
+            <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
+        </div>
     </div>
-</div>
 
+    {{ ztbformelement(form.get('removeFile')) }}
+{% endif %}
 {{ ztbformelement(form.get('file')) }}
 
+{{ ztbformelement(form.get('optIn')) }}
 
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
+<div class="form-group row">
+    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
     </div>

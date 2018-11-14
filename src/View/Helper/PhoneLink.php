@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Phone as PhoneAssertion;
@@ -22,9 +24,9 @@ use Contact\Entity\Phone;
 class PhoneLink extends LinkAbstract
 {
     /**
-     * @param Phone|null   $phone
-     * @param string       $action
-     * @param string       $show
+     * @param Phone|null $phone
+     * @param string $action
+     * @param string $show
      * @param Contact|null $contact
      *
      * @return string
@@ -40,7 +42,7 @@ class PhoneLink extends LinkAbstract
         $this->setShow($show);
         $this->setContact($contact);
 
-        if (! $this->hasAccess($this->getPhone(), PhoneAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($this->getPhone(), PhoneAssertion::class, $this->getAction())) {
             return '';
         }
 
@@ -58,19 +60,19 @@ class PhoneLink extends LinkAbstract
     /**
      * @throws \Exception
      */
-    public function parseAction()
+    public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
-                if (is_null($this->getContact())) {
+                if (\is_null($this->getContact())) {
                     throw new \Exception(sprintf("A contact is needed for a new phone"));
                 }
 
-                $this->setRouter('zfcadmin/phone-manager/new');
+                $this->setRouter('zfcadmin/phone/new');
                 $this->setText($this->translate("txt-new-phone"));
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/phone-manager/edit');
+                $this->setRouter('zfcadmin/phone/edit');
                 $this->setText(sprintf($this->translate("txt-edit-phone-%s"), $this->getPhone()->getPhone()));
                 break;
             default:

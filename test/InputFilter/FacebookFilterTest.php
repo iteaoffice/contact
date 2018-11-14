@@ -1,0 +1,54 @@
+<?php
+/**
+ * ITEA Office all rights reserved
+ *
+ * @category    Contact
+ *
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ */
+
+namespace ContactTest\Service;
+
+use Contact\InputFilter\FacebookFilter;
+use Testing\Util\AbstractInputFilterTest;
+
+/**
+ * Class FacebookFilterTest
+ * @package ContactTest\Service
+ */
+class FacebookFilterTest extends AbstractInputFilterTest
+{
+    /**
+     * Set up basic properties
+     */
+    public function setUp()
+    {
+    }
+
+    /**
+     *
+     */
+    public function testCanCreateFacebookFilterInputFilter()
+    {
+        $facebookFilter = new FacebookFilter($this->getEntityManagerMock());
+
+        $this->assertInstanceOf(FacebookFilter::class, $facebookFilter);
+    }
+
+
+    /**
+     *
+     */
+    public function testContactInputFilterHasElements()
+    {
+        $facebookFilter = new FacebookFilter($this->getEntityManagerMock());
+
+        $this->assertInstanceOf(FacebookFilter::class, $facebookFilter);
+
+        $this->assertNotNull($facebookFilter->get('contact_entity_facebook'));
+        $this->assertNotNull($facebookFilter->get('contact_entity_facebook')->get('facebook'));
+        $this->assertNotNull($facebookFilter->get('contact_entity_facebook')->get('public'));
+        $this->assertNotNull($facebookFilter->get('contact_entity_facebook')->get('canSendMessage'));
+    }
+}

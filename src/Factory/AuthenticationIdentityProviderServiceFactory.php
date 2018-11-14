@@ -8,6 +8,8 @@
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Contact\Factory;
 
 use Admin\Service\AdminService;
@@ -40,7 +42,7 @@ final class AuthenticationIdentityProviderServiceFactory implements FactoryInter
         $adminService = $container->get(AdminService::class);
         /** @var AuthenticationIdentityProvider $simpleIdentityProvider */
         $simpleIdentityProvider = new $requestedName($user->getAuthService(), $adminService, $options);
-        $config                 = $container->get('BjyAuthorize\Config');
+        $config = $container->get('BjyAuthorize\Config');
         $simpleIdentityProvider->setDefaultRole($config['default_role']);
         $simpleIdentityProvider->setAuthenticatedRole($config['authenticated_role']);
 

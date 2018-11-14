@@ -1,0 +1,170 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-merge-contact-%s")|format(target.parseFullName())) %}
+
+{% do mergeForm.prepare() %}
+
+{{ form().openTag(mergeForm)|raw }}
+<h1>{{ translate("txt-merge-contact-%s")|format(target.parseFullName()) }}</h1>
+<p>{{ translate("txt-merge-contact-explanation") }}</p>
+<p>{{ ztbformelement(mergeForm.get('swap')) }}</p>
+{% if errors|length > 0 %}
+    <div class="alert alert-danger">
+        <strong>{{ translate("txt-contacts-cannot-be-merged-because") }}</strong>
+        <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-5 col-sm-6">
+        <h3>{{ translate("txt-source") }} ({{ translate("txt-will-be-deleted") }})</h3>
+        <hr>
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-id") }}</dt>
+            <dd>{{ source.id }}</dd>
+            <dt>{{ translate("txt-first-name") }}</dt>
+            <dd>{{ source.firstName }}</dd>
+            <dt>{{ translate("txt-last-name") }}</dt>
+            <dd>{{ source.lastName }} {% if source.middleName %}({{ source.middleName }}){% endif %}</dd>
+            <dt>{{ translate("txt-gender") }}</dt>
+            <dd>{{ source.gender.name }} ({{ source.gender }})</dd>
+            {% if source.title.name %}
+                <dt>{{ translate("txt-title") }}</dt>
+                <dd>{{ source.title }} ({{ contactService.parseAttention(source) }})</dd>
+            {% endif %}
+            <dt>{{ translate("txt-primary-email") }}</dt>
+            <dd>{{ source.email }} <a href="mailto:{{ source.email }}"><i class="fa fa-envelope-o"></i></a></dd>
+            {% for email in source.emailAddress if email.email != source.email %}
+                {% if loop.first %}
+                    <dt>{{ translate("txt-alternative-email") }}</dt>
+                {% endif %}
+                <dd>{{ email.email }} <a href="mailto:{{ email.email }}"><i
+                                class="fa fa-envelope-o"></i></a></dd>
+            {% endfor %}
+            <dt>{{ translate("txt-organisation") }}</dt>
+            {% if contactService.hasOrganisation(source) %}
+                <dd>{{ organisationLink(
+                        source.contactOrganisation.organisation,'view-admin', 'name',source.contactOrganisation.branch
+                    ) }} ({{ source.contactOrganisation.organisation.type }}),
+                    {{ countryLink(source.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-organisation-provided") }}</dd>
+            {% endif %}
+
+            <dt>{{ translate("txt-profile-visibility") }}</dt>
+            {% if source.profile.visible is not null %}
+                <dd>{{ translate(source.profile.visible(true)) }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
+            {% endif %}
+            {% if source.profile.description %}
+                <dt>{{ translate("txt-expertise") }}</dt>
+                <dd>{{ source.profile.description|nl2br }}</dd>
+            {% endif %}
+
+            <dt>{{ translate("txt-department") }}</dt>
+            <dd>{{ source.department|default(translate("txt-unknown")) }}</dd>
+            <dt>{{ translate("txt-position") }}</dt>
+            <dd>{{ source.position|default(translate("txt-unknown")) }}</dd>
+            <dt>{{ translate("txt-access") }}</dt>
+            {% for access in source.access %}
+                <dd>{{ accessLink(access,'view','name') }} {% if not access.selection.isEmpty() %}*{% endif %}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-access-defined") }}</dd>
+            {% endfor %}
+            {% if source.getDateCreated() %}
+                <dt>{{ translate("txt-date-created") }}</dt>
+                <dd>{{ source.getDateCreated()|string_date }}</dd>
+            {% endif %}
+            {% if source.getDateUpdated() %}
+                <dt>{{ translate("txt-last-update") }}</dt>
+                <dd>{{ source.getDateUpdated()|string_date }}</dd>
+            {% endif %}
+        </dl>
+        {{ contactLink(source, 'view-admin', 'button') }}
+    </div>
+
+    <div class="col-md-2 hidden-sm hidden-xs text-center" style="margin-top:200px;">
+        <h2><i class="fa fa-arrow-circle-right fa-2x"></i></h2>
+    </div>
+    <div class="hidden-lg hidden-md hidden-sm text-center">
+        <h2><i class="fa fa-arrow-circle-down fa-2x"></i></h2>
+    </div>
+
+    <div class="col-md-5 col-sm-6">
+        <h3>{{ translate("txt-target") }} ({{ translate("txt-will-remain-active") }})</h3>
+        <hr>
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-id") }}</dt>
+            <dd>{{ target.id }}</dd>
+            <dt>{{ translate("txt-first-name") }}</dt>
+            <dd>{{ target.firstName }}</dd>
+            <dt>{{ translate("txt-last-name") }}</dt>
+            <dd>{{ target.lastName }} {% if target.middleName %}({{ target.middleName }}){% endif %}</dd>
+            <dt>{{ translate("txt-gender") }}</dt>
+            <dd>{{ target.gender.name }} ({{ target.gender }})</dd>
+            {% if target.title.name %}
+                <dt>{{ translate("txt-title") }}</dt>
+                <dd>{{ target.title }} ({{ contactService.parseAttention(target) }})</dd>
+            {% endif %}
+            <dt>{{ translate("txt-primary-email") }}</dt>
+            <dd>{{ target.email }} <a href="mailto:{{ target.email }}"><i class="fa fa-envelope-o"></i></a></dd>
+            {% for email in target.emailAddress if email.email != target.email %}
+                {% if loop.first %}
+                    <dt>{{ translate("txt-alternative-email") }}</dt>
+                {% endif %}
+                <dd>{{ email.email }} <a href="mailto:{{ email.email }}"><i
+                                class="fa fa-envelope-o"></i></a></dd>
+            {% endfor %}
+            <dt>{{ translate("txt-organisation") }}</dt>
+            {% if contactService.hasOrganisation(target) %}
+                <dd>{{ organisationLink(
+                        target.contactOrganisation.organisation,'view-admin', 'name',target.contactOrganisation.branch
+                    ) }} ({{ target.contactOrganisation.organisation.type }}),
+                    {{ countryLink(target.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-organisation-provided") }}</dd>
+            {% endif %}
+
+            <dt>{{ translate("txt-profile-visibility") }}</dt>
+            {% if target.profile.visible is not null %}
+                <dd>{{ translate(target.profile.visible(true)) }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
+            {% endif %}
+            {% if target.profile.description %}
+                <dt>{{ translate("txt-expertise") }}</dt>
+                <dd>{{ target.profile.description|nl2br }}</dd>
+            {% endif %}
+
+            <dt>{{ translate("txt-department") }}</dt>
+            <dd>{{ target.department|default(translate("txt-unknown")) }}</dd>
+            <dt>{{ translate("txt-position") }}</dt>
+            <dd>{{ target.position|default(translate("txt-unknown")) }}</dd>
+            <dt>{{ translate("txt-access") }}</dt>
+            {% for access in target.access %}
+                <dd>{{ accessLink(access,'view','name') }} {% if not access.selection.isEmpty() %}*{% endif %}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-access-defined") }}</dd>
+            {% endfor %}
+            {% if target.getDateCreated() %}
+                <dt>{{ translate("txt-date-created") }}</dt>
+                <dd>{{ target.getDateCreated()|string_date }}</dd>
+            {% endif %}
+            {% if target.getDateUpdated() %}
+                <dt>{{ translate("txt-last-update") }}</dt>
+                <dd>{{ target.getDateUpdated()|string_date }}</dd>
+            {% endif %}
+        </dl>
+    </div>
+</div>
+<hr>
+{% if errors|length == 0 %}
+    {{ ztbformelement(mergeForm.get('merge')) }}
+{% endif %}
+
+{{ ztbformelement(mergeForm.get('cancel')) }}
+{{ form().closeTag()|raw }}

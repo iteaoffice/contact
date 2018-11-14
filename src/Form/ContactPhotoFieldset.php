@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity;
@@ -21,10 +23,10 @@ use Zend\Form\Fieldset;
 class ContactPhotoFieldset extends Fieldset
 {
     /**
-     * @param EntityManager         $entityManager
-     * @param Entity\EntityAbstract $object
+     * @param EntityManager $entityManager
+     * @param Entity\AbstractEntity $object
      */
-    public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
+    public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)
     {
         $photo = new Entity\Photo();
 

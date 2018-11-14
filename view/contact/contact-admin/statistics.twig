@@ -1,11 +1,11 @@
-<h1>{{ translate("txt-statistics") }}</h1>
+<h1 class="display-4">{{ translate("txt-statistics") }}</h1>
 
 {% do form.prepare() %}
 
 {{ form().openTag(form)|raw }}
 
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
+<div class="form-group row">
+    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
         <label for="exampleInputEmail1">Selections</label>
 
         {% for i in 0..2 %}
@@ -20,8 +20,8 @@
 </div>
 
 
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
+<div class="form-group row">
+    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
     </div>
@@ -32,11 +32,11 @@
 {{ contacts|length }}
 
 {% if contacts|length > 0 %}
-    <table class="table table-hover table-striped table-condensed">
+    <table class="table table-hover table-striped table-condensed table-sm">
         <thead>
         <tr>
-            <th class="col-md-2">{{ translate("txt-name") }}</th>
-            <th class="col-md-2">{{ translate("txt-email") }}</th>
+            <th>{{ translate("txt-name") }}</th>
+            <th>{{ translate("txt-email") }}</th>
             <th>{{ translate("txt-organisation") }}</th>
             <th>{{ translate("txt-projects") }}</th>
         </tr>

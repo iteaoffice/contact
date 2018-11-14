@@ -1,0 +1,17 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-optin-%s")|format(optIn)) %}
+
+<h1 class="display-4">{{ translate("txt-opt-in-%s")|format(optIn) }} {{ optInLink(optIn,'edit','button') }}</h1>
+
+<dl class="dl-horizontal">
+    <dt>{{ translate("txt-name") }}</dt>
+    <dd>{{ optIn.optIn }}</dd>
+    <dt>{{ translate("txt-description") }}</dt>
+    <dd>{{ optIn.description }}</dd>
+    <dt>{{ translate("txt-is-active") }}</dt>
+    <dd>{{ translate(optIn.getActive(true)) }}</dd>
+    <dt>{{ translate("txt-mailings") }}</dt>
+    <dd>{{ translate(optIn.mailing.count()) }}</dd>
+    <dt>{{ translate("txt-contacts-in-opt-in") }}</dt>
+    <dd>{{ contactService.getAmountOfContactsInOptIn(optIn) }}</dd>
+</dl>

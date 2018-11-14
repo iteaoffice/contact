@@ -8,14 +8,12 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
-use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Phone.
@@ -27,12 +25,12 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @category    Contact
  */
-class PhoneType extends EntityAbstract
+class PhoneType extends AbstractEntity
 {
-    const PHONE_TYPE_DIRECT = 1;
-    const PHONE_TYPE_MOBILE = 2;
-    const PHONE_TYPE_HOME = 3;
-    const PHONE_TYPE_FAX = 4;
+    public const PHONE_TYPE_DIRECT = 1;
+    public const PHONE_TYPE_MOBILE = 2;
+    public const PHONE_TYPE_HOME = 3;
+    public const PHONE_TYPE_FAX = 4;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
@@ -49,26 +47,17 @@ class PhoneType extends EntityAbstract
     private $type;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="type")
-     * @Annotation\Exclude()
      *
      * @var \Contact\Entity\Phone[]
      */
     private $phone;
 
     /**
-     * Class constructor.
-     */
-    public function __construct()
-    {
-        $this->address = new Collections\ArrayCollection();
-    }
-
-    /**
      * Static array for phone types to enable validation based on types.
      *
      * @return array
      */
-    public static function getPhoneTypes()
+    public static function getPhoneTypes(): array
     {
         return [
             self::PHONE_TYPE_DIRECT,
@@ -78,98 +67,22 @@ class PhoneType extends EntityAbstract
         ];
     }
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
+    public function __isset($property)
     {
-        throw new \Exception("Setting an inputFilter is currently not supported");
+        return isset($this->$property);
     }
 
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (! $this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'       => 'type',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
-                        ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 100,
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
-    /**
-     * Needed for the hydration of form elements.
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return [
-            'type' => $this->type,
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->type;
     }

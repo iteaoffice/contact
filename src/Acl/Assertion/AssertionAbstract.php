@@ -11,6 +11,8 @@
  * @link       https://itea3.org
  */
 
+declare(strict_types=1);
+
 namespace Contact\Acl\Assertion;
 
 use Admin\Service\AdminService;
@@ -18,7 +20,7 @@ use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 use Interop\Container\ContainerInterface;
 use Zend\Http\PhpEnvironment\Request;
-use Zend\Mvc\Router\RouteMatch;
+use Zend\Router\Http\RouteMatch;
 use Zend\Permissions\Acl\Assertion\AssertionInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -78,9 +80,9 @@ abstract class AssertionAbstract implements AssertionInterface
         /**
          * When the privilege is_null (not given by the isAllowed helper), get it from the routeMatch
          */
-        if (is_null($privilege) && $this->hasRouteMatch()) {
+        if (\is_null($privilege) && $this->hasRouteMatch()) {
             $this->privilege = $this->getRouteMatch()
-                                    ->getParam('privilege', $this->getRouteMatch()->getParam('action'));
+                ->getParam('privilege', $this->getRouteMatch()->getParam('action'));
         } else {
             $this->privilege = $privilege;
         }
@@ -93,7 +95,7 @@ abstract class AssertionAbstract implements AssertionInterface
      */
     public function hasRouteMatch()
     {
-        return ! is_null($this->getRouteMatch());
+        return !\is_null($this->getRouteMatch());
     }
 
     /**
@@ -129,13 +131,13 @@ abstract class AssertionAbstract implements AssertionInterface
      */
     public function getId()
     {
-        if (! is_null($id = $this->getRequest()->getPost('id'))) {
+        if (!\is_null($id = $this->getRequest()->getPost('id'))) {
             return (int)$id;
         }
-        if (is_null($this->getRouteMatch())) {
+        if (\is_null($this->getRouteMatch())) {
             return null;
         }
-        if (! is_null($id = $this->getRouteMatch()->getParam('id'))) {
+        if (!\is_null($id = $this->getRouteMatch()->getParam('id'))) {
             return (int)$id;
         }
 
@@ -181,14 +183,14 @@ abstract class AssertionAbstract implements AssertionInterface
      */
     protected function rolesHaveAccess($roles)
     {
-        if (! is_array($roles)) {
+        if (!is_array($roles)) {
             $roles = [$roles];
         }
 
         $roles = array_map('strtolower', $roles);
 
         foreach ($this->getAccessRoles() as $access) {
-            if (in_array(strtolower($access), $roles)) {
+            if (\in_array(strtolower($access), $roles)) {
                 return true;
             }
         }
@@ -213,7 +215,7 @@ abstract class AssertionAbstract implements AssertionInterface
      */
     public function hasContact()
     {
-        return ! $this->getContact()->isEmpty();
+        return !$this->getContact()->isEmpty();
     }
 
     /**
@@ -221,7 +223,7 @@ abstract class AssertionAbstract implements AssertionInterface
      */
     public function getContact()
     {
-        if (is_null($this->contact)) {
+        if (\is_null($this->contact)) {
             $this->contact = new Contact();
         }
 

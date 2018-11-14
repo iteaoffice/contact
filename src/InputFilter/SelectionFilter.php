@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\InputFilter;
 
 use Contact\Entity\Selection;
@@ -73,13 +75,7 @@ class SelectionFilter extends InputFilter
         );
         $inputFilter->add(
             [
-                'name'     => 'personal',
-                'required' => true,
-            ]
-        );
-        $inputFilter->add(
-            [
-                'name'     => 'private',
+                'name'     => 'core',
                 'required' => true,
             ]
         );

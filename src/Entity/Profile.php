@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -23,62 +25,16 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class Profile extends EntityAbstract
+class Profile extends AbstractEntity
 {
-    /**
-     * Constant for hideForOthers = 0 (not hidden).
-     */
-    const NOT_HIDE_FOR_OTHERS = 0;
-    /**
-     * Constant for hideForOthers = 1 (hidden).
-     */
-    const HIDE_FOR_OTHERS = 1;
-    /**
-     * Constant for hidePhoto = 0 (not hidden).
-     */
-    const NOT_HIDE_PHOTO = 0;
-    /**
-     * Constant for hidePhoto = 1 (hidden).
-     */
-    const HIDE_PHOTO = 1;
-    /**
-     * Constant for visible = 0 (hidden).
-     */
-    const VISIBLE_HIDDEN = 0;
-    /**
-     * Constant for visible = 1 (community).
-     */
-    const VISIBLE_COMMUNITY = 1;
-    /**
-     * Textual versions of the hideForOthers.
-     *
-     * @var array
-     */
-    protected $hideForOthersTemplates
-        = array(
-            self::NOT_HIDE_FOR_OTHERS => 'txt-not-hide-for-others',
-            self::HIDE_FOR_OTHERS     => 'txt-hide-for-others',
-        );
-    /**
-     * Textual versions of the hideForOthers.
-     *
-     * @var array
-     */
-    protected $hidePhotoTemplates
-        = array(
-            self::NOT_HIDE_PHOTO => 'txt-not-hide-photo',
-            self::HIDE_PHOTO     => 'txt-hide-photo',
-        );
-    /**
-     * Textual versions of the visibility.
-     *
-     * @var array
-     */
-    protected $visibleTemplates
-        = array(
-            self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
+    public const VISIBLE_HIDDEN = 0;
+    public const VISIBLE_COMMUNITY = 1;
+
+    protected static $visibleTemplates
+        = [
             self::VISIBLE_COMMUNITY => 'txt-visibility-community',
-        );
+            self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
+        ];
     /**
      * @ORM\Column(name="profile_id", type="integer", nullable=false)
      * @ORM\Id
@@ -88,27 +44,6 @@ class Profile extends EntityAbstract
      * @var integer
      */
     private $id;
-    /**
-     * @ORM\Column(name="hide_for_others", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
-     * @Annotation\Attributes({"array":"hideForOthersTemplates"})
-     * @Annotation\Attributes({"label":"txt-hide-for-others", "required":"true"})
-     * @Annotation\Required(true)
-     * @deprecated
-     *
-     * @var integer
-     */
-    private $hideForOthers;
-    /**
-     * @ORM\Column(name="hide_photo", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
-     * @Annotation\Attributes({"array":"hidePhotoTemplates"})
-     * @Annotation\Attributes({"label":"txt-hide-photo", "required":"true"})
-     * @Annotation\Required(true)
-     *
-     * @var integer
-     */
-    private $hidePhoto;
     /**
      * @ORM\Column(name="description", type="text", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
@@ -121,190 +56,89 @@ class Profile extends EntityAbstract
      * @ORM\Column(name="visible", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"visibleTemplates"})
-     * @Annotation\Attributes({"label":"txt-visibility", "required":"true"})
-     * @Annotation\Required(true)
+     * @Annotation\Attributes({"label":"txt-visibility"})
      *
      * @var integer
      */
     private $visible;
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\Contact", cascade="persist", inversedBy="profile")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
      * @Annotation\Type("\Zend\Form\Element\Hidden")
      *
      * @var \Contact\Entity\Contact
      */
     private $contact;
 
-    /**
-     * Default value when a new profile is created.
-     */
     public function __construct()
     {
-        $this->hideForOthers = self::NOT_HIDE_FOR_OTHERS;
-        $this->hidePhoto     = self::NOT_HIDE_PHOTO;
+        $this->visible = self::VISIBLE_COMMUNITY;
     }
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
+    public static function getVisibleTemplates(): array
+    {
+        return self::$visibleTemplates;
+    }
+
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @return array
-     */
-    public function getHideForOthersTemplates()
+    public function __isset($property)
     {
-        return $this->hideForOthersTemplates;
+        return isset($this->$property);
     }
 
-    /**
-     * @return array
-     */
-    public function getHidePhotoTemplates()
-    {
-        return $this->hidePhotoTemplates;
-    }
-
-    /**
-     * @return array
-     */
-    public function getVisibleTemplates()
-    {
-        return $this->visibleTemplates;
-    }
-
-    /**
-     * @return \Contact\Entity\Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @param bool $textual
-     *
-     * @return int
-     */
-    public function getHideForOthers($textual = false)
-    {
-        if ($textual) {
-            return $this->hideForOthersTemplates[$this->hideForOthers];
-        }
-
-        return $this->hideForOthers;
-    }
-
-    /**
-     * @param int $hideForOthers
-     */
-    public function setHideForOthers($hideForOthers)
-    {
-        $this->hideForOthers = $hideForOthers;
-    }
-
-    /**
-     * @param $textual
-     *
-     * @return int
-     */
-    public function getHidePhoto($textual = false)
-    {
-        if ($textual) {
-            return $this->hidePhotoTemplates[$this->hidePhoto];
-        }
-
-        return $this->hidePhoto;
-    }
-
-    /**
-     * @param int $hidePhoto
-     */
-    public function setHidePhoto($hidePhoto)
-    {
-        $this->hidePhoto = $hidePhoto;
-    }
-
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId($id): Profile
     {
         $this->id = $id;
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return int
-     */
-    public function getVisible($textual = false)
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): Profile
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getVisible(bool $textual = false)
     {
         if ($textual) {
-            return $this->visibleTemplates[$this->visible];
+            return self::$visibleTemplates[$this->visible];
         }
-
         return $this->visible;
     }
 
-    /**
-     * @param int $visible
-     */
-    public function setVisible($visible)
+    public function setVisible(int $visible): Profile
     {
         $this->visible = $visible;
+        return $this;
+    }
+
+    public function getContact(): ?Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(Contact $contact): Profile
+    {
+        $this->contact = $contact;
+        return $this;
     }
 }

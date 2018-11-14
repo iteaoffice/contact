@@ -8,14 +8,13 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * AddressType.
@@ -23,13 +22,13 @@ use Zend\InputFilter\InputFilterInterface;
  * @ORM\Table(name="address_type")
  * @ORM\Entity
  */
-class AddressType extends EntityAbstract
+class AddressType extends AbstractEntity
 {
-    const ADDRESS_TYPE_MAIL = 1;
-    const ADDRESS_TYPE_VISIT = 2;
-    const ADDRESS_TYPE_FINANCIAL = 3;
-    const ADDRESS_TYPE_HOME = 4;
-    const ADDRESS_TYPE_BOOTH_FINANCIAL = 5;
+    public const ADDRESS_TYPE_MAIL = 1;
+    public const ADDRESS_TYPE_VISIT = 2;
+    public const ADDRESS_TYPE_FINANCIAL = 3;
+    public const ADDRESS_TYPE_HOME = 4;
+    public const ADDRESS_TYPE_BOOTH_FINANCIAL = 5;
     /**
      * @ORM\Column(name="type_id", type="integer", nullable=false)
      * @ORM\Id
@@ -74,102 +73,25 @@ class AddressType extends EntityAbstract
         $this->address = new Collections\ArrayCollection();
     }
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * toString returns the name.
-     *
-     * @return string
-     */
-    public function __toString()
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
+
+
+    public function __toString(): string
     {
         return $this->type;
-    }
-
-    /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (! $this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    [
-                        'name'       => 'type',
-                        'required'   => true,
-                        'filters'    => [
-                            ['name' => 'StripTags'],
-                            ['name' => 'StringTrim'],
-                        ],
-                        'validators' => [
-                            [
-                                'name'    => 'StringLength',
-                                'options' => [
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 1,
-                                    'max'      => 100,
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
-    /**
-     * Needed for the hydration of form elements.
-     *
-     * @return array
-     */
-    public function getArrayCopy()
-    {
-        return [
-            'type' => $this->type,
-        ];
     }
 
     /**

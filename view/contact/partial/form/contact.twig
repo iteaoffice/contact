@@ -6,37 +6,54 @@
 
 {{ form().openTag(form)|raw }}
 
-{% set contact = form.get('contact_entity_contact') %}
+{% set contactFieldset = form.get('contact_entity_contact') %}
 
-{{ formelement(contact.get('id')) }}
+{{ formelement(contactFieldset.get('id')) }}
 
 <fieldset>
     <legend>{{ translate("txt-contact-information") }}</legend>
 
-    {{ ztbformelement(contact.get('firstName')) }}
-    {{ ztbformelement(contact.get('middleName')) }}
-    {{ ztbformelement(contact.get('lastName')) }}
-    {{ ztbformelement(contact.get('email')) }}
-    {{ ztbformelement(contact.get('gender')) }}
-    {{ ztbformelement(contact.get('title')) }}
-    {{ ztbformelement(contact.get('dateOfBirth')) }}
+    {{ ztbformelement(contactFieldset.get('firstName')) }}
+    {{ ztbformelement(contactFieldset.get('middleName')) }}
+    {{ ztbformelement(contactFieldset.get('lastName')) }}
+    {{ ztbformelement(contactFieldset.get('email')) }}
+    {{ ztbformelement(contactFieldset.get('gender')) }}
+    {{ ztbformelement(contactFieldset.get('title')) }}
+    {{ ztbformelement(contactFieldset.get('dateOfBirth')) }}
 </fieldset>
 
 <fieldset>
     <legend>{{ translate("txt-organisation-information") }}</legend>
-    {{ organisationformelement(contact.get('organisation')) }}
-    {{ ztbformelement(contact.get('branch')) }}
-    {{ ztbformelement(contact.get('department')) }}
-    {{ ztbformelement(contact.get('position')) }}
+    {{ organisationformelement(contactFieldset.get('organisation')) }}
+    {{ ztbformelement(contactFieldset.get('branch')) }}
+    {{ ztbformelement(contactFieldset.get('department')) }}
+    {{ ztbformelement(contactFieldset.get('position')) }}
 </fieldset>
+
+{% if contact.id %}
+    <fieldset>
+        <legend>{{ translate("txt-photo") }}</legend>
+        <div class="form-group row">
+            <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-current-photo") }}</label>
+
+            <div class="col-sm-9">
+                <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 400) }}</p>
+            </div>
+        </div>
+    </fieldset>
+{% endif %}
+
+{{ ztbformelement(contactFieldset.get('file')) }}
 
 <fieldset>
     <legend>{{ translate("txt-access-information") }}</legend>
-    {{ ztbformelement(contact.get('access')) }}
+    {{ ztbformelement(contactFieldset.get('access')) }}
 </fieldset>
 
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
+{{ ztbformelement(form.get('csrf')) }}
+
+<div class="form-group row">
+    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
         {% if form.has('deactivate') %}

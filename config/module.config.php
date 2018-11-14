@@ -19,32 +19,41 @@ use Contact\Provider;
 use Contact\Search;
 use Contact\Service;
 use Contact\View;
+use DoctrineExtensions\Query\Mysql\Replace;
+use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Zend\Stdlib;
 
 $config = [
     'controllers'        => [
         'factories' => [
-            Controller\AddressManagerController::class   => Controller\Factory\ControllerFactory::class,
-            Controller\ConsoleController::class          => Controller\Factory\ControllerFactory::class,
-            Controller\ContactAdminController::class     => Controller\Factory\ControllerFactory::class,
-            Controller\ContactController::class          => Controller\Factory\ControllerFactory::class,
-            Controller\ContactManagerController::class   => Controller\Factory\ControllerFactory::class,
-            Controller\FacebookController::class         => Controller\Factory\ControllerFactory::class,
-            Controller\FacebookManagerController::class  => Controller\Factory\ControllerFactory::class,
-            Controller\NoteManagerController::class      => Controller\Factory\ControllerFactory::class,
-            Controller\PhoneManagerController::class     => Controller\Factory\ControllerFactory::class,
-            Controller\ProfileController::class          => Controller\Factory\ControllerFactory::class,
-            Controller\SelectionManagerController::class => Controller\Factory\ControllerFactory::class,
+            Controller\AddressManagerController::class   => ConfigAbstractFactory::class,
+            Controller\ConsoleController::class          => ConfigAbstractFactory::class,
+            Controller\ContactAdminController::class     => ConfigAbstractFactory::class,
+            Controller\ContactController::class          => ConfigAbstractFactory::class,
+            Controller\FacebookController::class         => ConfigAbstractFactory::class,
+            Controller\ImageController::class            => ConfigAbstractFactory::class,
+            Controller\FacebookManagerController::class  => ConfigAbstractFactory::class,
+            Controller\NoteManagerController::class      => ConfigAbstractFactory::class,
+            Controller\PhoneManagerController::class     => ConfigAbstractFactory::class,
+            Controller\ProfileController::class          => ConfigAbstractFactory::class,
+            Controller\OptInManagerController::class     => ConfigAbstractFactory::class,
+            Controller\SelectionManagerController::class => ConfigAbstractFactory::class,
         ],
     ],
     'controller_plugins' => [
         'aliases'   => [
             'handleImport'     => Controller\Plugin\HandleImport::class,
+            'selectionExport'  => Controller\Plugin\SelectionExport::class,
             'getContactFilter' => Controller\Plugin\GetFilter::class,
+            'mergeContact'     => Controller\Plugin\MergeContact::class,
+            'contactActions'   => Controller\Plugin\ContactActions::class
         ],
         'factories' => [
-            Controller\Plugin\HandleImport::class => Controller\Factory\PluginFactory::class,
-            Controller\Plugin\GetFilter::class    => Controller\Factory\PluginFactory::class,
+            Controller\Plugin\HandleImport::class    => ConfigAbstractFactory::class,
+            Controller\Plugin\SelectionExport::class => ConfigAbstractFactory::class,
+            Controller\Plugin\GetFilter::class       => ConfigAbstractFactory::class,
+            Controller\Plugin\MergeContact::class    => ConfigAbstractFactory::class,
+            Controller\Plugin\ContactActions::class  => ConfigAbstractFactory::class,
         ],
     ],
     'view_manager'       => [
@@ -52,31 +61,31 @@ $config = [
     ],
     'view_helpers'       => [
         'aliases'    => [
-            'communityLink'          => View\Helper\CommunityLink::class,
-            'createContactFromArray' => View\Helper\CreateContactFromArray::class,
-            'contactHandler'         => View\Helper\ContactHandler::class,
-            'contactLink'            => View\Helper\ContactLink::class,
-            'selectionLink'          => View\Helper\SelectionLink::class,
-            'facebookLink'           => View\Helper\FacebookLink::class,
-            'addressLink'            => View\Helper\AddressLink::class,
-            'noteLink'               => View\Helper\NoteLink::class,
-            'phoneLink'              => View\Helper\PhoneLink::class,
-            'contactPhoto'           => View\Helper\ContactPhoto::class,
+            'communityLink' => View\Helper\CommunityLink::class,
+            'contactLink'   => View\Helper\ContactLink::class,
+            'profileLink'   => View\Helper\ProfileLink::class,
+            'selectionLink' => View\Helper\SelectionLink::class,
+            'facebookLink'  => View\Helper\FacebookLink::class,
+            'optInLink'     => View\Helper\OptInLink::class,
+            'addressLink'   => View\Helper\AddressLink::class,
+            'noteLink'      => View\Helper\NoteLink::class,
+            'phoneLink'     => View\Helper\PhoneLink::class,
+            'contactPhoto'  => View\Helper\ContactPhoto::class,
         ],
         'invokables' => [
             'contactformelement' => Form\View\Helper\ContactFormElement::class,
         ],
         'factories'  => [
-            View\Helper\CommunityLink::class          => View\Factory\ViewHelperFactory::class,
-            View\Helper\CreateContactFromArray::class => View\Factory\ViewHelperFactory::class,
-            View\Helper\ContactHandler::class         => View\Factory\ViewHelperFactory::class,
-            View\Helper\ContactLink::class            => View\Factory\ViewHelperFactory::class,
-            View\Helper\SelectionLink::class          => View\Factory\ViewHelperFactory::class,
-            View\Helper\FacebookLink::class           => View\Factory\ViewHelperFactory::class,
-            View\Helper\AddressLink::class            => View\Factory\ViewHelperFactory::class,
-            View\Helper\NoteLink::class               => View\Factory\ViewHelperFactory::class,
-            View\Helper\PhoneLink::class              => View\Factory\ViewHelperFactory::class,
-            View\Helper\ContactPhoto::class           => View\Factory\ViewHelperFactory::class,
+            View\Helper\CommunityLink::class => View\Factory\ViewHelperFactory::class,
+            View\Helper\ContactLink::class   => View\Factory\ViewHelperFactory::class,
+            View\Helper\ProfileLink::class   => View\Factory\ViewHelperFactory::class,
+            View\Helper\SelectionLink::class => View\Factory\ViewHelperFactory::class,
+            View\Helper\FacebookLink::class  => View\Factory\ViewHelperFactory::class,
+            View\Helper\OptInLink::class     => View\Factory\ViewHelperFactory::class,
+            View\Helper\AddressLink::class   => View\Factory\ViewHelperFactory::class,
+            View\Helper\NoteLink::class      => View\Factory\ViewHelperFactory::class,
+            View\Helper\PhoneLink::class     => View\Factory\ViewHelperFactory::class,
+            View\Helper\ContactPhoto::class  => View\Factory\ViewHelperFactory::class,
         ],
     ],
     'form_elements'      => [
@@ -90,22 +99,25 @@ $config = [
     'service_manager'    => [
         'factories' => [
             Navigation\Service\ContactNavigationService::class      => Navigation\Factory\ContactNavigationServiceFactory::class,
-            Navigation\Invokable\ContactLabel::class                => Navigation\Factory\NavigationInvokableFactory::class,
-            Navigation\Invokable\FacebookLabel::class               => Navigation\Factory\NavigationInvokableFactory::class,
-            Navigation\Invokable\SelectionLabel::class              => Navigation\Factory\NavigationInvokableFactory::class,
-            Navigation\Invokable\AddressLabel::class                => Navigation\Factory\NavigationInvokableFactory::class,
-            Navigation\Invokable\PhoneLabel::class                  => Navigation\Factory\NavigationInvokableFactory::class,
+            Navigation\Invokable\ContactLabel::class                => Factory\InvokableFactory::class,
+            Navigation\Invokable\FacebookLabel::class               => Factory\InvokableFactory::class,
+            Navigation\Invokable\OptInLabel::class                  => Factory\InvokableFactory::class,
+            Navigation\Invokable\SelectionLabel::class              => Factory\InvokableFactory::class,
+            Navigation\Invokable\AddressLabel::class                => Factory\InvokableFactory::class,
+            Navigation\Invokable\NoteLabel::class                   => Factory\InvokableFactory::class,
+            Navigation\Invokable\PhoneLabel::class                  => Factory\InvokableFactory::class,
             Provider\Identity\AuthenticationIdentityProvider::class => Factory\AuthenticationIdentityProviderServiceFactory::class,
-            Service\SelectionService::class                         => Factory\SelectionServiceFactory::class,
-            Service\ContactService::class                           => Factory\ContactServiceFactory::class,
-            Service\AddressService::class                           => Factory\AddressServiceFactory::class,
+            Service\SelectionService::class                         => ConfigAbstractFactory::class,
+            Service\ContactService::class                           => ConfigAbstractFactory::class,
+            Service\SelectionContactService::class                  => ConfigAbstractFactory::class,
+            Service\AddressService::class                           => ConfigAbstractFactory::class,
             Service\FormService::class                              => Factory\FormServiceFactory::class,
-            Options\ModuleOptions::class                            => Factory\ModuleOptionsFactory::class,
             InputFilter\FacebookFilter::class                       => Factory\InputFilterFactory::class,
             InputFilter\ContactFilter::class                        => Factory\InputFilterFactory::class,
+            InputFilter\OptInFilter::class                          => Factory\InputFilterFactory::class,
             InputFilter\SelectionFilter::class                      => Factory\InputFilterFactory::class,
-            Search\Service\ContactSearchService::class              => Search\Factory\ContactSearchFactory::class,
-            Search\Service\ProfileSearchService::class              => Search\Factory\ProfileSearchFactory::class,
+            Search\Service\ContactSearchService::class              => ConfigAbstractFactory::class,
+            Search\Service\ProfileSearchService::class              => ConfigAbstractFactory::class,
             Acl\Assertion\Address::class                            => Acl\Factory\AssertionFactory::class,
             Acl\Assertion\Contact::class                            => Acl\Factory\AssertionFactory::class,
             Acl\Assertion\Facebook::class                           => Acl\Factory\AssertionFactory::class,
@@ -118,7 +130,7 @@ $config = [
         ],
     ],
     'doctrine'           => [
-        'driver'       => [
+        'driver'        => [
             'contact_annotation_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => [
@@ -132,7 +144,7 @@ $config = [
                 ],
             ],
         ],
-        'eventmanager' => [
+        'eventmanager'  => [
             'orm_default' => [
                 'subscribers' => [
                     'Gedmo\Timestampable\TimestampableListener',
@@ -140,6 +152,13 @@ $config = [
                     'Gedmo\SoftDeleteable\SoftDeleteableListener',
                 ],
             ],
+        ],
+        'configuration' => [
+            'orm_default' => [
+                'string_functions' => [
+                    'replace' => Replace::class
+                ]
+            ]
         ],
     ],
 ];

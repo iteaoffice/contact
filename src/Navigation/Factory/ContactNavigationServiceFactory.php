@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Navigation\Factory;
 
 use Contact\Navigation\Service\ContactNavigationService;
@@ -25,8 +27,8 @@ final class ContactNavigationServiceFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param array|null         $options
+     * @param string $requestedName
+     * @param array|null $options
      *
      * @return ContactNavigationService
      */
@@ -49,16 +51,14 @@ final class ContactNavigationServiceFactory implements FactoryInterface
         if ($container->get('Application\Authentication\Service')->hasIdentity()) {
             $contactNavigationService->setContact(
                 $container->get('Application\Authentication\Service')
-                          ->getIdentity()
+                    ->getIdentity()
             );
         }
 
+        $config = $container->get('Config');
+
         /* @var $navigation Navigation */
-        $navigation = $container->get('Zend\Navigation\Community');
-        //This is a nastry trick, but currently I do not have a better solution
-        if (defined("ITEAOFFICE_HOST") && ITEAOFFICE_HOST === 'aeneas') {
-            $navigation = $container->get('Zend\Navigation\Project-community');
-        }
+        $navigation = $container->get($config['admin_option']['community_navigation_container']);
         $contactNavigationService->setNavigation($navigation);
 
         return $contactNavigationService;

@@ -8,14 +8,17 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use BjyAuthorize\Provider\Role\ProviderInterface;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use General\Entity\EmailMessage;
 use Zend\Form\Annotation;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
+use Zend\Math\Rand;
 use ZfcUser\Entity\UserInterface;
 
 /**
@@ -29,29 +32,13 @@ use ZfcUser\Entity\UserInterface;
  * @category    Contact
  * @package     Entity
  */
-class Contact extends EntityAbstract implements ResourceInterface, ProviderInterface, UserInterface
+class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 {
     /**
      * Key needed for the encryption and decryption of the Keys
      */
-    const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
-    /**
-     * Constant for messenger;
-     */
-    const MESSENGER_ACTIVE = 1;
-    /**
-     * Value for messenger
-     */
-    const MESSENGER_ACTIVE_VALUE = "txt-messenger-active";
-    /**
-     * Templates for the constant status
-     *
-     * @var array
-     */
-    protected $messengerTemplates
-        = [
-            self::MESSENGER_ACTIVE => self::MESSENGER_ACTIVE_VALUE,
-        ];
+    public const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
+
     /**
      * @ORM\Column(name="contact_id", type="integer", nullable=false)
      * @ORM\Id
@@ -63,34 +50,39 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @ORM\Column(name="firstname", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-first-name"})
+     * @Annotation\Options({"label":"txt-contact-first-name-label","help-block":"txt-contact-first-name-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-contact-first-name-placeholder"})
      * @var string
      */
     private $firstName;
     /**
-     * @ORM\Column(name="middlename", type="string", length=20, nullable=true)
+     * @ORM\Column(name="middlename", type="string",nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-middle-name"})
+     * @Annotation\Options({"label":"txt-contact-middle-name-label","help-block":"txt-contact-middle-name-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-contact-middle-name-placeholder"})
      * @var string
      */
     private $middleName;
     /**
      * @ORM\Column(name="lastname", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-last-name"})
+     * @Annotation\Options({"label":"txt-contact-last-name-label","help-block":"txt-contact-last-name-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-contact-last-name-placeholder"})
      * @var string
      */
     private $lastName;
     /**
-     * @ORM\Column(name="email",type="string",length=60,nullable=false, unique=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-email"})
+     * @ORM\Column(name="email",type="string",nullable=false, unique=true)
+     * @Annotation\Type("\Zend\Form\Element\Email")
+     * @Annotation\Options({"label":"txt-contact-email-address-label","help-block":"txt-contact-email-address-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-contact-email-address-placeholder"})
      * @var string
      */
     private $email;
     /**
      * @ORM\Column(name="password", type="string", nullable=true)
      * @Annotation\Exclude()
+     * @deprecated
      * @var string
      */
     private $password;
@@ -105,7 +97,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @ORM\JoinColumn(name="gender_id", referencedColumnName="gender_id", nullable=false)
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Gender"})
-     * @Annotation\Attributes({"label":"txt-attention"})
+     * @Annotation\Options({"label":"txt-contact-gender-label","help-block":"txt-contact-gender-help-block"})
      * @var \General\Entity\Gender
      */
     private $gender;
@@ -114,28 +106,30 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @ORM\JoinColumn(name="title_id", referencedColumnName="title_id", nullable=false)
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Title"})
-     * @Annotation\Attributes({"label":"txt-title"})
+     * @Annotation\Options({"label":"txt-contact-title-label","help-block":"txt-contact-title-help-block"})
      * @var \General\Entity\Title
      */
     private $title;
     /**
      * @ORM\Column(name="position", type="string", length=60, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-position"})
+     * @Annotation\Options({"label":"txt-contact-position-label","help-block":"txt-contact-position-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-contact-position-placeholder"})
      * @var string
      */
     private $position;
     /**
      * @ORM\Column(name="department", type="string", length=80, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-department"})
+     * @Annotation\Options({"label":"txt-contact-department-label","help-block":"txt-contact-department-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-contact-department-placeholder"})
      * @var string
      */
     private $department;
     /**
      * @ORM\Column(name="date_birth", type="date", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Date")
-     * @Annotation\Options({"label":"txt-date-of-birth"})
+     * @Annotation\Options({"label":"txt-contact-date-of-birth-label","help-block":"txt-contact-date-of-birth-help-block"})
      * @var \DateTime
      */
     private $dateOfBirth;
@@ -143,28 +137,40 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
-     * @var \datetime
+     * @var \DateTime
      */
     private $dateCreated;
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
-     * @var \datetime
+     * @var \DateTime
      */
     private $lastUpdate;
     /**
      * @ORM\Column(name="date_end", type="datetime", nullable=true)
      * @Annotation\Exclude()
-     * @var \datetime
+     * @var \DateTime
      */
     private $dateEnd;
     /**
-     * @ORM\Column(name="messenger", type="smallint", nullable=false)
+     * @ORM\Column(name="date_anonymous", type="datetime", nullable=true)
      * @Annotation\Exclude()
-     * @var int
+     * @var \DateTime
      */
-    private $messenger;
+    private $dateAnonymous;
+    /**
+     * @ORM\Column(name="date_activated", type="datetime", nullable=true)
+     * @Annotation\Exclude()
+     * @var \DateTime
+     */
+    private $dateActivated;
+    /**
+     * @ORM\Column(name="hash", type="string", nullable=true)
+     * @Annotation\Exclude()
+     * @var string|null
+     */
+    private $hash;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, inversedBy="contact", fetch="EXTRA_LAZY")
      * @ORM\JoinTable(name="contact_access",
@@ -185,7 +191,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *          }
      *      }
      * )
-     * @Annotation\Attributes({"label":"txt-access","help-block":"txt-access-help-block"})
+     * @Annotation\Attributes({"label":"txt-contact-access-label","help-block":"txt-contact-access-help-block"})
      * @var \Admin\Entity\Access[]|Collections\ArrayCollection
      */
     private $access;
@@ -203,7 +209,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     private $cv;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
-     * @@Annotation\ComposedObject("\Contact\Entity\Address")
+     * @Annotation\ComposedObject("\Contact\Entity\Address")
      * @var \Contact\Entity\Address[]|Collections\ArrayCollection
      */
     private $address;
@@ -213,13 +219,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Contact\Entity\Phone[]|Collections\ArrayCollection
      */
     private $phone;
-    /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Web", cascade={"persist"}, mappedBy="contact")
-     * Annotation\ComposedObject("\Contact\Entity\Web")
-     *
-     * @var \Contact\Entity\Web[]|Collections\ArrayCollection
-     */
-    private $web;
     /**
      * @ORM\ManyToMany(targetEntity="Contact\Entity\OptIn", cascade={"persist"},inversedBy="contact")
      * @ORM\JoinTable(name="contact_optin",
@@ -236,6 +235,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Project\Entity\Project[]|Collections\ArrayCollection
      */
     private $project;
+    /**
+     * @ORM\ManyToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="proxyContact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Project[]|Collections\ArrayCollection
+     */
+    private $proxyProject;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Rationale", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -275,27 +280,39 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Document\Document[]\Document|Collections\ArrayCollection
+     * @var \Project\Entity\Document\Document[]|Collections\ArrayCollection
      */
     private $projectDocument;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Dnd", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Contact\Entity\Dnd", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\Dnd|Collections\ArrayCollection
      */
     private $dnd;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Contract", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Program\Entity\Nda|Collections\ArrayCollection
+     * @var \Project\Entity\Contract[]|Collections\ArrayCollection
+     */
+    private $contract;
+    /**
+     * @ORM\OneToMany(targetEntity="\Project\Entity\Contract\Version", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Contract[]|Collections\ArrayCollection
+     */
+    private $contractVersion;
+    /**
+     * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist","remove"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Program\Entity\Nda[]|Collections\ArrayCollection
      */
     private $nda;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\RoadmapLog", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="approver")
      * @Annotation\Exclude()
-     * @var \Program\Entity\RoadmapLog|Collections\ArrayCollection
+     * @var \Program\Entity\Nda[]|Collections\ArrayCollection
      */
-    private $roadmapLog;
+    private $ndaApprover;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -309,13 +326,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $parentDoa;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\OpenId", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Contact\Entity\OpenId|Collections\ArrayCollection
-     */
-    private $openId;
-    /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, orphanRemoval=true, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      * @var \Contact\Entity\ContactOrganisation
      */
@@ -330,6 +341,29 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Program\Entity\Domain[]|Collections\ArrayCollection
      */
     private $domain;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactClosed")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Action[]|Collections\ArrayCollection
+     *
+     * This is the user (typically someone of the office who has closed the action
+     */
+    private $actionClosed;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactStatus")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Action[]|Collections\ArrayCollection
+     *
+     * This is the user (typically the PL) which has updated the status of the action
+     */
+    private $actionStatus;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Action\Comment", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Action\Comment[]|Collections\ArrayCollection
+     */
+    private $actionComment;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -444,25 +478,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $associate;
     /**
-     * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Program\Entity\Funder
      */
     private $funder;
     /**
-     * @ORM\OneToMany(targetEntity="Deeplink\Entity\Contact", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Deeplink\Entity\Contact", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Deeplink\Entity\Contact|Collections\ArrayCollection
      */
     private $deeplinkContact;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist"}, mappedBy="contact",  orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Contact\Entity\Profile
      */
     private $profile;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Contact\Entity\Community|Collections\ArrayCollection
      */
@@ -529,7 +563,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $selectionContact;
     /**
-     * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Mailing\Entity\Contact[]|Collections\ArrayCollection
      */
@@ -594,12 +628,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $calendarDocument;
     /**
-     * @ORM\OneToMany(targetEntity="Calendar\Entity\ScheduleContact", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Calendar\Entity\ScheduleContact[]|Collections\ArrayCollection
-     */
-    private $scheduleContact;
-    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Review\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Review\Review[]|Collections\ArrayCollection
@@ -643,6 +671,12 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $invite;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Pca", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Pca[]|Collections\ArrayCollection
+     */
+    private $pca;
+    /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Invite[]|Collections\ArrayCollection
@@ -654,12 +688,6 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Project\Entity\Idea\Invite[]|Collections\ArrayCollection
      */
     private $ideaInvite;
-    /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\MessageBoard", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\MessageBoard[]|Collections\ArrayCollection
-     */
-    private $ideaMessageBoard;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
@@ -673,19 +701,25 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $loi;
     /**
+     * @ORM\OneToMany(targetEntity="\Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="approver")
+     * @Annotation\Exclude()
+     * @var \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     */
+    private $loiApprover;
+    /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Affiliation\Entity\Doa[]|Collections\ArrayCollection
      */
     private $affiliationDoa;
     /**
-     * @ORM\OneToMany(targetEntity="Admin\Entity\Permit\Contact", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Permit\Contact", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Admin\Entity\Permit\Contact[]|Collections\ArrayCollection
      */
     private $permitContact;
     /**
-     * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Admin\Entity\Session[]|Collections\ArrayCollection
      */
@@ -794,26 +828,33 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      */
     private $projectLog;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Changelog", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Project\Entity\Changelog[]|Collections\ArrayCollection
+     */
+    private $projectChangelog;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Process", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
      * @var \Project\Entity\ChangeRequest\Process
      */
-    private $changerequestProcess;
+    private $changeRequestProcess;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\CostChange", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
      * @var \Project\Entity\ChangeRequest\CostChange
      */
-    private $changerequestCostChange;
+    private $changeRequestCostChange;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Country", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
      * @var \Project\Entity\ChangeRequest\Country
      */
-    private $changerequestCountry;
+    private $changeRequestCountry;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Version\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -828,18 +869,35 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      * @var \Project\Entity\Workpackage\Contact
      */
     private $workpackageContact;
-
     /**
-     * Class constructor
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Log", cascade={"persist"}, mappedBy="createdBy")
+     * @Annotation\Exclude()
+     *
+     * @var \Contact\Entity\Log[]|Collections\Collection
      */
+    private $logCreatedBy;
+    /**
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Log", cascade={"persist","remove"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Contact\Entity\Log[]|Collections\Collection
+     */
+    private $log;
+    /**
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Pageview", cascade={"persist","remove"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Admin\Entity\Pageview[]|Collections\Collection
+     */
+    private $pageview;
+
     public function __construct()
     {
         $this->project = new Collections\ArrayCollection();
         $this->projectVersion = new Collections\ArrayCollection();
         $this->projectDescription = new Collections\ArrayCollection();
+        $this->projectReportEffortSpent = new Collections\ArrayCollection();
         $this->projectDocument = new Collections\ArrayCollection();
-        $this->web = new Collections\ArrayCollection();
-        $this->roadmapLog = new Collections\ArrayCollection();
         $this->address = new Collections\ArrayCollection();
         $this->phone = new Collections\ArrayCollection();
         $this->emailAddress = new Collections\ArrayCollection();
@@ -849,16 +907,19 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->technology = new Collections\ArrayCollection();
         $this->dnd = new Collections\ArrayCollection();
         $this->nda = new Collections\ArrayCollection();
+        $this->pca = new Collections\ArrayCollection();
+        $this->ndaApprover = new Collections\ArrayCollection();
         $this->programDoa = new Collections\ArrayCollection();
-        $this->domain = new Collections\ArrayCollection();
-        $this->technology = new Collections\ArrayCollection();
-        $this->openId = new Collections\ArrayCollection();
         $this->rationale = new Collections\ArrayCollection();
         $this->organisationLog = new Collections\ArrayCollection();
         $this->affiliationLog = new Collections\ArrayCollection();
         $this->affiliationDescription = new Collections\ArrayCollection();
         $this->projectLog = new Collections\ArrayCollection();
+        $this->projectChangelog = new Collections\ArrayCollection();
         $this->affiliation = new Collections\ArrayCollection();
+        $this->actionClosed = new Collections\ArrayCollection();
+        $this->actionStatus = new Collections\ArrayCollection();
+        $this->actionComment = new Collections\ArrayCollection();
         $this->parent = new Collections\ArrayCollection();
         $this->parentFinancial = new Collections\ArrayCollection();
         $this->parentOrganisation = new Collections\ArrayCollection();
@@ -873,6 +934,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->registration = new Collections\ArrayCollection();
         $this->badge = new Collections\ArrayCollection();
         $this->badgeContact = new Collections\ArrayCollection();
+        $this->boothContact = new Collections\ArrayCollection();
         $this->boothFinancial = new Collections\ArrayCollection();
         $this->selection = new Collections\ArrayCollection();
         $this->selectionContact = new Collections\ArrayCollection();
@@ -886,14 +948,13 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->favouriteIdea = new Collections\ArrayCollection();
         $this->ideaMessage = new Collections\ArrayCollection();
         $this->ideaPartner = new Collections\ArrayCollection();
-        $this->ideaMessageBoard = new Collections\ArrayCollection();
         $this->blog = new Collections\ArrayCollection();
         $this->blogMessage = new Collections\ArrayCollection();
         $this->evaluation = new Collections\ArrayCollection();
         $this->calendarContact = new Collections\ArrayCollection();
         $this->calendarDocument = new Collections\ArrayCollection();
         $this->calendar = new Collections\ArrayCollection();
-        $this->scheduleContact = new Collections\ArrayCollection();
+        $this->proxyProject = new Collections\ArrayCollection();
         $this->projectReview = new Collections\ArrayCollection();
         $this->projectVersionReview = new Collections\ArrayCollection();
         $this->projectReport = new Collections\ArrayCollection();
@@ -901,9 +962,14 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
         $this->projectCalendarReview = new Collections\ArrayCollection();
         $this->projectReportReview = new Collections\ArrayCollection();
+        $this->contract = new Collections\ArrayCollection();
+        $this->contractVersion = new Collections\ArrayCollection();
         $this->invite = new Collections\ArrayCollection();
         $this->inviteContact = new Collections\ArrayCollection();
+        $this->ideaInvite = new Collections\ArrayCollection();
+        $this->ideaInviteContact = new Collections\ArrayCollection();
         $this->loi = new Collections\ArrayCollection();
+        $this->loiApprover = new Collections\ArrayCollection();
         $this->affiliationDoa = new Collections\ArrayCollection();
         $this->parentDoa = new Collections\ArrayCollection();
         $this->permitContact = new Collections\ArrayCollection();
@@ -923,104 +989,114 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         $this->invoiceLog = new Collections\ArrayCollection();
         $this->reminder = new Collections\ArrayCollection();
         $this->achievement = new Collections\ArrayCollection();
-        $this->changerequestProcess = new  Collections\ArrayCollection();
-        $this->changerequestCostChange = new  Collections\ArrayCollection();
-        $this->changerequestCountry = new  Collections\ArrayCollection();
-        $this->versionContact = new  Collections\ArrayCollection();
-        $this->workpackageContact = new  Collections\ArrayCollection();
-        /**
-         * Set these values for legacy reasons
-         */
-        $this->messenger = self::MESSENGER_ACTIVE;
+        $this->changeRequestProcess = new Collections\ArrayCollection();
+        $this->changeRequestCostChange = new Collections\ArrayCollection();
+        $this->changeRequestCountry = new Collections\ArrayCollection();
+        $this->versionContact = new Collections\ArrayCollection();
+        $this->workpackageContact = new Collections\ArrayCollection();
+        $this->logCreatedBy = new Collections\ArrayCollection();
+        $this->log = new Collections\ArrayCollection();
+        $this->affiliationVersion = new Collections\ArrayCollection();
+        $this->note = new Collections\ArrayCollection();
+        $this->pageview = new Collections\ArrayCollection();
+
+        $this->hash = hash('sha256', Rand::getString(100) . self::HASH_KEY);
     }
 
-    /**
-     * Although an alternative does not have a clear hash, we can create one based on the id;
-     * Don't use the elements from underlying objects since this gives confusion
-     *
-     * @return string
-     */
-    public function parseHash(): string
-    {
-        return hash('sha1', $this->id . self::HASH_KEY);
-    }
 
-    /**
-     * Magic Getter
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter
-     *
-     * @param $property
-     * @param $value
-     *
-     * @return void
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @param $property
-     *
-     * @return bool
-     */
     public function __isset($property)
     {
         return isset($this->$property);
     }
 
-    /**
-     * toString returns the id (for form population)
-     * Revert to the contactService to have the full parsed name
-     *
-     * @return string
-     */
     public function __toString(): string
     {
         return (string)$this->id;
     }
 
-    /**
-     * Proxythe full name of a project.
-     *
-     * @return string
-     */
     public function parseFullName(): string
     {
         return $this->getDisplayName();
     }
 
-    /**
-     * Get displayName, or the emailaddress
-     *
-     * @return string
-     */
     public function getDisplayName(): string
     {
-        $name = sprintf("%s %s", $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
+        $name = sprintf('%s %s', $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return !empty(trim($name)) ? (string)$name : (string)$this->email;
+        return (string)(!empty(trim($name)) ? $name : $this->email);
     }
 
-    /**
-     * Returns the string identifier of the Role.
-     * We return the access here since that entity keeps the access roles
-     *
-     * We return only the name of the roles as this is sufficient
-     *
-     * @return array
-     */
+    public function parseInitials(): string
+    {
+        $initials = \explode('-', (string) $this->firstName);
+        if ('' !== $this->middleName && null !== $this->middleName) {
+            $initials[] = $this->middleName;
+        }
+        $initials[] = (string) $this->lastName;
+
+        $initialString = '';
+        foreach ($initials as $initial) {
+            $initialString .= \substr($initial, 0, 1);
+        }
+
+        return $initialString;
+    }
+
+    public function parseFirstName(): string
+    {
+        if (null === $this->firstName) {
+            return '<empty>';
+        }
+
+        return $this->firstName;
+    }
+
+    public function isAnonymised(): bool
+    {
+        return null !== $this->dateAnonymous;
+    }
+
+    public function isActivated(): bool
+    {
+        return null !== $this->dateActivated;
+    }
+
+    public function isActive(): bool
+    {
+        return null === $this->dateEnd;
+    }
+
+    public function hasOrganisation(): bool
+    {
+        return null !== $this->contactOrganisation;
+    }
+
+    public function hasPhoto(): bool
+    {
+        return !$this->photo->isEmpty();
+    }
+
+    public function hasProfile(): bool
+    {
+        return null !== $this->profile;
+    }
+
+    public function isVisibleInCommunity(): bool
+    {
+        return null !== $this->profile && $this->profile->getVisible() === Profile::VISIBLE_COMMUNITY;
+    }
+
+
     public function getRoles(): array
     {
         $accessRoles = ['user'];
@@ -1031,344 +1107,254 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
         return $accessRoles;
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $optInCollection
-     */
-    public function addOptIn(Collections\Collection $optInCollection)
+    public function addOptIn(Collections\Collection $optInCollection): void
     {
         foreach ($optInCollection as $optIn) {
             $this->optIn->add($optIn);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $optInCollection
-     */
-    public function removeOptIn(Collections\Collection $optInCollection)
+    public function removeOptIn(Collections\Collection $optInCollection): void
     {
         foreach ($optInCollection as $optIn) {
             $this->optIn->removeElement($optIn);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $accessCollection
-     */
-    public function addAccess(Collections\Collection $accessCollection)
+    public function addAccess(Collections\Collection $accessCollection): void
     {
         foreach ($accessCollection as $access) {
             $this->access->add($access);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $accessCollection
-     */
-    public function removeAccess(Collections\Collection $accessCollection)
+    public function removeAccess(Collections\Collection $accessCollection): void
     {
         foreach ($accessCollection as $single) {
             $this->access->removeElement($single);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $addressCollection
-     */
-    public function addAddress(Collections\Collection $addressCollection)
+    public function addAddress(Collections\Collection $addressCollection): void
     {
         foreach ($addressCollection as $address) {
             $this->address->add($address);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $addressCollection
-     */
-    public function removeAddress(Collections\Collection $addressCollection)
+    public function removeAddress(Collections\Collection $addressCollection): void
     {
         foreach ($addressCollection as $single) {
             $this->address->removeElement($single);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $phoneCollection
-     */
-    public function addPhone(Collections\Collection $phoneCollection)
+    public function addPhone(Collections\Collection $phoneCollection): void
     {
         foreach ($phoneCollection as $phone) {
             $this->phone->add($phone);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $phoneCollection
-     */
-    public function removePhone(Collections\Collection $phoneCollection)
+    public function removePhone(Collections\Collection $phoneCollection): void
     {
         foreach ($phoneCollection as $single) {
             $this->phone->removeElement($single);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $photoCollection
-     */
-    public function addPhoto(Collections\Collection $photoCollection)
+    public function addPhoto(Collections\Collection $photoCollection): void
     {
         foreach ($photoCollection as $photo) {
             $this->photo->add($photo);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $photoCollection
-     */
-    public function removePhoto(Collections\Collection $photoCollection)
+    public function removePhoto(Collections\Collection $photoCollection): void
     {
         foreach ($photoCollection as $single) {
             $this->photo->removeElement($single);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $communityCollection
-     */
-    public function addCommunity(Collections\Collection $communityCollection)
+    public function addCommunity(Collections\Collection $communityCollection): void
     {
         foreach ($communityCollection as $community) {
             $this->community->add($community);
         }
     }
 
-    /**
-     * New function needed to make the hydrator happy
-     *
-     * @param Collections\Collection $communityCollection
-     */
-    public function removeCommunity(Collections\Collection $communityCollection)
+    public function removeCommunity(Collections\Collection $communityCollection): void
     {
         foreach ($communityCollection as $single) {
             $this->community->removeElement($single);
         }
     }
 
-    /**
-     * @return \datetime
-     */
-    public function getDateCreated()
+    public function getDateCreated(): ?\DateTime
     {
         return $this->dateCreated;
     }
 
-    /**
-     * @param \datetime $dateCreated
-     */
-    public function setDateCreated($dateCreated)
+    public function setDateCreated($dateCreated): Contact
     {
         $this->dateCreated = $dateCreated;
+
+        return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateEnd()
+    public function getDateEnd(): ?\DateTime
     {
         return $this->dateEnd;
     }
 
-    /**
-     * @param \DateTime $dateEnd
-     */
-    public function setDateEnd($dateEnd)
+    public function setDateEnd($dateEnd): Contact
     {
         $this->dateEnd = $dateEnd;
+
+        return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateOfBirth()
+    public function getDateAnonymous(): ?\DateTime
+    {
+        return $this->dateAnonymous;
+    }
+
+    public function setDateAnonymous(?\DateTime $dateAnonymous): Contact
+    {
+        $this->dateAnonymous = $dateAnonymous;
+        return $this;
+    }
+
+    public function getDateOfBirth(): ?\DateTime
     {
         return $this->dateOfBirth;
     }
 
-    /**
-     * @param \DateTime $dateOfBirth
-     */
-    public function setDateOfBirth($dateOfBirth)
+    public function setDateOfBirth($dateOfBirth): Contact
     {
         $this->dateOfBirth = $dateOfBirth;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     *
-     * @return Contact
-     */
-    public function setEmail($email)
+    public function setEmail($email): Contact
     {
         $this->email = $email;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param $firstName
-     *
-     * @return $this
-     */
-    public function setFirstName($firstName)
+    public function setFirstName($firstName): Contact
     {
         $this->firstName = $firstName;
 
         return $this;
     }
 
-    /**
-     * @return \General\Entity\Gender
-     */
-    public function getGender()
+    public function getGender(): ?\General\Entity\Gender
     {
         return $this->gender;
     }
 
-    /**
-     * @param \General\Entity\Gender $gender
-     *
-     * @return Contact
-     */
-    public function setGender($gender)
+    public function setGender($gender): Contact
     {
         $this->gender = $gender;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
     /**
-     * @param  int $id
+     * @param int $id
      *
-     * @return void|UserInterface
+     * @return Contact
      */
-    public function setId($id)
+    public function setId($id): Contact
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getLastName()
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
     /**
-     * @param string $lastName
+     * @param $lastName
+     *
+     * @return Contact
      */
-    public function setLastName($lastName)
+    public function setLastName($lastName): Contact
     {
         $this->lastName = $lastName;
+
+        return $this;
     }
 
     /**
-     * @return \datetime
+     * @return \DateTime|null
      */
-    public function getLastUpdate()
+    public function getLastUpdate(): ?\DateTime
     {
         return $this->lastUpdate;
     }
 
     /**
-     * @param \datetime $lastUpdate
+     * @param $lastUpdate
+     *
+     * @return Contact
      */
-    public function setLastUpdate($lastUpdate)
+    public function setLastUpdate($lastUpdate): Contact
     {
         $this->lastUpdate = $lastUpdate;
-    }
 
-    /**
-     * @return int
-     */
-    public function getMessenger()
-    {
-        return $this->messenger;
-    }
-
-    /**
-     * @param int $messenger
-     */
-    public function setMessenger($messenger)
-    {
-        $this->messenger = $messenger;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getMiddleName()
+    public function getMiddleName(): ?string
     {
         return $this->middleName;
     }
 
     /**
-     * @param string $middleName
+     * @param $middleName
+     *
+     * @return Contact
      */
-    public function setMiddleName($middleName)
+    public function setMiddleName($middleName): Contact
     {
         $this->middleName = $middleName;
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -1378,7 +1364,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setPassword($password)
+    public function setPassword($password): Contact
     {
         $this->password = $password;
 
@@ -1388,39 +1374,47 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return string
      */
-    public function getSaltedPassword()
+    public function getSaltedPassword(): ?string
     {
         return $this->saltedPassword;
     }
 
     /**
-     * @param string $saltedPassword
+     * @param $saltedPassword
+     *
+     * @return Contact
      */
-    public function setSaltedPassword($saltedPassword)
+    public function setSaltedPassword($saltedPassword): Contact
     {
         $this->saltedPassword = $saltedPassword;
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getPosition()
+    public function getPosition(): ?string
     {
         return $this->position;
     }
 
     /**
-     * @param string $position
+     * @param $position
+     *
+     * @return Contact
      */
-    public function setPosition($position)
+    public function setPosition($position): Contact
     {
         $this->position = $position;
+
+        return $this;
     }
 
     /**
      * @return \General\Entity\Title
      */
-    public function getTitle()
+    public function getTitle(): ?\General\Entity\Title
     {
         return $this->title;
     }
@@ -1430,7 +1424,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setTitle($title)
+    public function setTitle($title): Contact
     {
         $this->title = $title;
 
@@ -1440,19 +1434,17 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @param  int $state
      *
-     * @return null|UserInterface
+     * @return void
      */
-    public function setState($state)
+    public function setState($state): void
     {
-        return;
     }
 
     /**
-     * @return int
+     *
      */
-    public function getState()
+    public function getState(): void
     {
-        return;
     }
 
     /**
@@ -1460,96 +1452,64 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return string
      */
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * Set username.
-     *
-     * @param string $username
-     *
-     * @return UserInterface
-     */
-    public function setUsername($username)
+    public function setUsername($username): Contact
     {
         $this->email = $username;
+
+        return $this;
     }
 
-    /**
-     * Get displayName, or the emailaddress
-     *
-     * @return string
-     */
-    public function getShortName()
+    public function getShortName(): string
     {
         $name = sprintf(
-            "%s. %s",
-            substr($this->firstName, 0, 1),
+            '%s. %s',
+            mb_substr($this->firstName, 0, 1),
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
         return !empty($name) ? $name : $this->email;
     }
 
-    /**
-     * Get displayName, or the email address
-     *
-     * @return string
-     */
-    public function getFormName()
+    public function getFormName(): string
     {
-        $name = sprintf("%s, %s", trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
+        $name = sprintf('%s, %s', trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
         return !empty($name) ? $name : $this->email;
     }
 
-    /**
-     * Although an alternative does not have a clear hash, we can create one based on the id;
-     * Don't use the elements from underlying objects since this gives confusion.
-     *
-     * @return string
-     */
-    public function getHash()
+    public function getHash(): ?string
     {
-        return hash('sha512', $this->id . self::HASH_KEY);
+        return $this->hash;
     }
 
-    /**
-     * @param string $displayName
-     *
-     * @return boolean
-     */
-    public function setDisplayName($displayName)
+    public function setHash(?string $hash): Contact
+    {
+        $this->hash = $hash;
+        return $this;
+    }
+
+    public function setDisplayName($displayName): bool
     {
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public function getDepartment()
+    public function getDepartment(): ?string
     {
         return $this->department;
     }
 
-    /**
-     * @param  string $department
-     *
-     * @return Contact
-     */
-    public function setDepartment($department)
+    public function setDepartment($department): Contact
     {
         $this->department = $department;
 
         return $this;
     }
 
-
-    /**
-     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
-     */
     public function getAccess()
     {
         return $this->access;
@@ -1560,7 +1520,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAccess($access)
+    public function setAccess($access): Contact
     {
         $this->access = $access;
 
@@ -1580,7 +1540,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setEmailAddress($emailAddress)
+    public function setEmailAddress($emailAddress): Contact
     {
         $this->emailAddress = $emailAddress;
 
@@ -1588,19 +1548,19 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return CV
+     * @return Cv
      */
-    public function getCv()
+    public function getCv(): ?Cv
     {
         return $this->cv;
     }
 
     /**
-     * @param  CV $cv
+     * @param  Cv $cv
      *
      * @return Contact
      */
-    public function setCv($cv)
+    public function setCv($cv): Contact
     {
         $this->cv = $cv;
 
@@ -1608,7 +1568,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Address|Collections\ArrayCollection
+     * @return Address[]|Collections\ArrayCollection
      */
     public function getAddress()
     {
@@ -1620,7 +1580,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAddress($address)
+    public function setAddress($address): Contact
     {
         $this->address = $address;
 
@@ -1628,7 +1588,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Phone|Collections\ArrayCollection
+     * @return Phone[]|Collections\ArrayCollection
      */
     public function getPhone()
     {
@@ -1640,7 +1600,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setPhone($phone)
+    public function setPhone($phone): Contact
     {
         $this->phone = $phone;
 
@@ -1648,31 +1608,21 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Web|Collections\ArrayCollection
-     */
-    public function getWeb()
-    {
-        return $this->web;
-    }
-
-    /**
-     * @param  Web|Collections\ArrayCollection $web
+     * @param bool $onlyActive
      *
-     * @return Contact
-     */
-    public function setWeb($web)
-    {
-        $this->web = $web;
-
-        return $this;
-    }
-
-    /**
      * @return OptIn[]|Collections\ArrayCollection
      */
-    public function getOptIn()
+    public function getOptIn(bool $onlyActive = false)
     {
-        return $this->optIn;
+        if (!$onlyActive) {
+            return $this->optIn;
+        }
+
+        return $this->optIn->filter(
+            function (OptIn $optIn) {
+                return $optIn->isActive();
+            }
+        );
     }
 
     /**
@@ -1680,7 +1630,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setOptIn($optIn)
+    public function setOptIn($optIn): Contact
     {
         $this->optIn = $optIn;
 
@@ -1688,7 +1638,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Project
+     * @return Collections\ArrayCollection|\Project\Entity\Project[]
      */
     public function getProject()
     {
@@ -1696,11 +1646,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Project $project
+     * @param  Collections\ArrayCollection|\Project\Entity\Project[] $project
      *
      * @return Contact
      */
-    public function setProject($project)
+    public function setProject($project): Contact
     {
         $this->project = $project;
 
@@ -1720,7 +1670,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setRationale($rationale)
+    public function setRationale($rationale): Contact
     {
         $this->rationale = $rationale;
 
@@ -1740,7 +1690,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectDescription($projectDescription)
+    public function setProjectDescription($projectDescription): Contact
     {
         $this->projectDescription = $projectDescription;
 
@@ -1748,7 +1698,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Version\Version
+     * @return \Project\Entity\Version\Version[]|Collections\ArrayCollection
      */
     public function getProjectVersion()
     {
@@ -1760,7 +1710,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectVersion($projectVersion)
+    public function setProjectVersion($projectVersion): Contact
     {
         $this->projectVersion = $projectVersion;
 
@@ -1780,7 +1730,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectDocument($projectDocument)
+    public function setProjectDocument($projectDocument): Contact
     {
         $this->projectDocument = $projectDocument;
 
@@ -1800,9 +1750,108 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setDnd($dnd)
+    public function setDnd($dnd): Contact
     {
         $this->dnd = $dnd;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Action[]
+     */
+    public function getActionClosed()
+    {
+        return $this->actionClosed;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Action[] $actionClosed
+     *
+     * @return Contact
+     */
+    public function setActionClosed($actionClosed): Contact
+    {
+        $this->actionClosed = $actionClosed;
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Action[]
+     */
+    public function getActionStatus()
+    {
+        return $this->actionStatus;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Action[] $actionStatus
+     *
+     * @return Contact
+     */
+    public function setActionStatus($actionStatus): Contact
+    {
+        $this->actionStatus = $actionStatus;
+        return $this;
+    }
+
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Action\Comment[]
+     */
+    public function getActionComment()
+    {
+        return $this->actionComment;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Action\Comment[] $actionComment
+     *
+     * @return Contact
+     */
+    public function setActionComment($actionComment): Contact
+    {
+        $this->actionComment = $actionComment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Contract[]
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Contract[] $contract
+     *
+     * @return Contact
+     */
+    public function setContract($contract): Contact
+    {
+        $this->contract = $contract;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Contract[]
+     */
+    public function getContractVersion()
+    {
+        return $this->contractVersion;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Contract[] $contractVersion
+     *
+     * @return Contact
+     */
+    public function setContractVersion($contractVersion): Contact
+    {
+        $this->contractVersion = $contractVersion;
 
         return $this;
     }
@@ -1820,7 +1869,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setNda($nda)
+    public function setNda($nda): Contact
     {
         $this->nda = $nda;
 
@@ -1828,21 +1877,21 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Program\Entity\RoadmapLog
+     * @return Collections\ArrayCollection|\Program\Entity\Nda[]
      */
-    public function getRoadmapLog()
+    public function getNdaApprover()
     {
-        return $this->roadmapLog;
+        return $this->ndaApprover;
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Program\Entity\RoadmapLog $roadmapLog
+     * @param Collections\ArrayCollection|\Program\Entity\Nda[] $ndaApprover
      *
      * @return Contact
      */
-    public function setRoadmapLog($roadmapLog)
+    public function setNdaApprover($ndaApprover): Contact
     {
-        $this->roadmapLog = $roadmapLog;
+        $this->ndaApprover = $ndaApprover;
 
         return $this;
     }
@@ -1860,29 +1909,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProgramDoa($programDoa)
+    public function setProgramDoa($programDoa): Contact
     {
         $this->programDoa = $programDoa;
-
-        return $this;
-    }
-
-    /**
-     * @return OpenId|Collections\ArrayCollection
-     */
-    public function getOpenId()
-    {
-        return $this->openId;
-    }
-
-    /**
-     * @param  OpenId|Collections\ArrayCollection $openId
-     *
-     * @return Contact
-     */
-    public function setOpenId($openId)
-    {
-        $this->openId = $openId;
 
         return $this;
     }
@@ -1900,7 +1929,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setContactOrganisation($contactOrganisation)
+    public function setContactOrganisation($contactOrganisation): Contact
     {
         $this->contactOrganisation = $contactOrganisation;
 
@@ -1920,7 +1949,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setDomain($domain)
+    public function setDomain($domain): Contact
     {
         $this->domain = $domain;
 
@@ -1940,7 +1969,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setIdea($idea)
+    public function setIdea($idea): Contact
     {
         $this->idea = $idea;
 
@@ -1960,7 +1989,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setFavouriteIdea($favouriteIdea)
+    public function setFavouriteIdea($favouriteIdea): Contact
     {
         $this->favouriteIdea = $favouriteIdea;
 
@@ -1980,7 +2009,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setTechnology($technology)
+    public function setTechnology($technology): Contact
     {
         $this->technology = $technology;
 
@@ -2000,7 +2029,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setOrganisationLog($organisationLog)
+    public function setOrganisationLog($organisationLog): Contact
     {
         $this->organisationLog = $organisationLog;
 
@@ -2020,7 +2049,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAffiliation($affiliation)
+    public function setAffiliation($affiliation): Contact
     {
         $this->affiliation = $affiliation;
 
@@ -2040,7 +2069,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAffiliationLog($affiliationLog)
+    public function setAffiliationLog($affiliationLog): Contact
     {
         $this->affiliationLog = $affiliationLog;
 
@@ -2060,7 +2089,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setFinancial($financial)
+    public function setFinancial($financial): Contact
     {
         $this->financial = $financial;
 
@@ -2080,7 +2109,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAffiliationDescription($affiliationDescription)
+    public function setAffiliationDescription($affiliationDescription): Contact
     {
         $this->affiliationDescription = $affiliationDescription;
 
@@ -2100,7 +2129,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAffiliationVersion($affiliationVersion)
+    public function setAffiliationVersion($affiliationVersion): Contact
     {
         $this->affiliationVersion = $affiliationVersion;
 
@@ -2120,7 +2149,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setInvoice($invoice)
+    public function setInvoice($invoice): Contact
     {
         $this->invoice = $invoice;
 
@@ -2140,7 +2169,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setPublication($publication)
+    public function setPublication($publication): Contact
     {
         $this->publication = $publication;
 
@@ -2160,7 +2189,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setPublicationDownload($publicationDownload)
+    public function setPublicationDownload($publicationDownload): Contact
     {
         $this->publicationDownload = $publicationDownload;
 
@@ -2183,7 +2212,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setPhoto($photo)
+    public function setPhoto($photo): Contact
     {
         $this->photo = $photo;
 
@@ -2203,7 +2232,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAssociate($associate)
+    public function setAssociate($associate): Contact
     {
         $this->associate = $associate;
 
@@ -2213,37 +2242,24 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return \Program\Entity\Funder
      */
-    public function getFunder()
+    public function getFunder(): ?\Program\Entity\Funder
     {
         return $this->funder;
     }
 
-    /**
-     * @param  \Program\Entity\Funder $funder
-     *
-     * @return Contact
-     */
-    public function setFunder($funder)
+    public function setFunder($funder): Contact
     {
         $this->funder = $funder;
 
         return $this;
     }
 
-    /**
-     * @return \Deeplink\Entity\Contact|Collections\ArrayCollection
-     */
     public function getDeeplinkContact()
     {
         return $this->deeplinkContact;
     }
 
-    /**
-     * @param  \Deeplink\Entity\Contact|Collections\ArrayCollection $deeplinkContact
-     *
-     * @return Contact
-     */
-    public function setDeeplinkContact($deeplinkContact)
+    public function setDeeplinkContact($deeplinkContact): Contact
     {
         $this->deeplinkContact = $deeplinkContact;
 
@@ -2253,7 +2269,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     /**
      * @return Profile
      */
-    public function getProfile()
+    public function getProfile(): ?Profile
     {
         return $this->profile;
     }
@@ -2263,7 +2279,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProfile($profile)
+    public function setProfile($profile): Contact
     {
         $this->profile = $profile;
 
@@ -2271,7 +2287,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Community|Collections\ArrayCollection
+     * @return Community[]|Collections\ArrayCollection
      */
     public function getCommunity()
     {
@@ -2283,7 +2299,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setCommunity($community)
+    public function setCommunity($community): Contact
     {
         $this->community = $community;
 
@@ -2291,7 +2307,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Registration
+     * @return Collections\ArrayCollection|\Event\Entity\Registration[]
      */
     public function getRegistration()
     {
@@ -2303,7 +2319,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setRegistration($registration)
+    public function setRegistration($registration): Contact
     {
         $this->registration = $registration;
 
@@ -2311,7 +2327,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Badge\Badge
+     * @return Collections\ArrayCollection|\Event\Entity\Badge\Badge[]
      */
     public function getBadge()
     {
@@ -2323,7 +2339,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setBadge($badge)
+    public function setBadge($badge): Contact
     {
         $this->badge = $badge;
 
@@ -2331,7 +2347,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Badge\Contact
+     * @return Collections\ArrayCollection|\Event\Entity\Badge\Contact[]
      */
     public function getBadgeContact()
     {
@@ -2343,7 +2359,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setBadgeContact($badgeContact)
+    public function setBadgeContact($badgeContact): Contact
     {
         $this->badgeContact = $badgeContact;
 
@@ -2363,7 +2379,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setBoothContact($boothContact)
+    public function setBoothContact($boothContact): Contact
     {
         $this->boothContact = $boothContact;
 
@@ -2383,7 +2399,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectBooth($projectBooth)
+    public function setProjectBooth($projectBooth): Contact
     {
         $this->projectBooth = $projectBooth;
 
@@ -2403,7 +2419,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setOrganisationBooth($organisationBooth)
+    public function setOrganisationBooth($organisationBooth): Contact
     {
         $this->organisationBooth = $organisationBooth;
 
@@ -2423,7 +2439,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setBoothFinancial($boothFinancial)
+    public function setBoothFinancial($boothFinancial): Contact
     {
         $this->boothFinancial = $boothFinancial;
 
@@ -2443,7 +2459,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setNote($note)
+    public function setNote($note): Contact
     {
         $this->note = $note;
 
@@ -2463,7 +2479,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setSelection($selection)
+    public function setSelection($selection): Contact
     {
         $this->selection = $selection;
 
@@ -2483,7 +2499,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setSelectionContact($selectionContact)
+    public function setSelectionContact($selectionContact): Contact
     {
         $this->selectionContact = $selectionContact;
 
@@ -2503,7 +2519,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setMailingContact($mailingContact)
+    public function setMailingContact($mailingContact): Contact
     {
         $this->mailingContact = $mailingContact;
 
@@ -2523,9 +2539,29 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setMailing($mailing)
+    public function setMailing($mailing): Contact
     {
         $this->mailing = $mailing;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\Collection|EmailMessage[]
+     */
+    public function getEmailMessage()
+    {
+        return $this->emailMessage;
+    }
+
+    /**
+     * @param Collections\Collection|EmailMessage[] $emailMessage
+     *
+     * @return Contact
+     */
+    public function setEmailMessage($emailMessage): Contact
+    {
+        $this->emailMessage = $emailMessage;
 
         return $this;
     }
@@ -2543,7 +2579,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setResult($result)
+    public function setResult($result): Contact
     {
         $this->result = $result;
 
@@ -2563,7 +2599,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setWorkpackage($workpackage)
+    public function setWorkpackage($workpackage): Contact
     {
         $this->workpackage = $workpackage;
 
@@ -2583,7 +2619,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setWorkpackageDocument($workpackageDocument)
+    public function setWorkpackageDocument($workpackageDocument): Contact
     {
         $this->workpackageDocument = $workpackageDocument;
 
@@ -2603,7 +2639,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setIdeaMessage($ideaMessage)
+    public function setIdeaMessage($ideaMessage): Contact
     {
         $this->ideaMessage = $ideaMessage;
 
@@ -2623,7 +2659,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setEvaluation($evaluation)
+    public function setEvaluation($evaluation): Contact
     {
         $this->evaluation = $evaluation;
 
@@ -2643,7 +2679,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setCalendar($calendar)
+    public function setCalendar($calendar): Contact
     {
         $this->calendar = $calendar;
 
@@ -2663,7 +2699,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setCalendarContact($calendarContact)
+    public function setCalendarContact($calendarContact): Contact
     {
         $this->calendarContact = $calendarContact;
 
@@ -2683,29 +2719,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setCalendarDocument($calendarDocument)
+    public function setCalendarDocument($calendarDocument): Contact
     {
         $this->calendarDocument = $calendarDocument;
-
-        return $this;
-    }
-
-    /**
-     * @return \Calendar\Entity\ScheduleContact|Collections\ArrayCollection
-     */
-    public function getScheduleContact()
-    {
-        return $this->scheduleContact;
-    }
-
-    /**
-     * @param  \Calendar\Entity\ScheduleContact|Collections\ArrayCollection $scheduleContact
-     *
-     * @return Contact
-     */
-    public function setScheduleContact($scheduleContact)
-    {
-        $this->scheduleContact = $scheduleContact;
 
         return $this;
     }
@@ -2723,7 +2739,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectReview($projectReview)
+    public function setProjectReview($projectReview): Contact
     {
         $this->projectReview = $projectReview;
 
@@ -2743,7 +2759,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectReviewContact($projectReviewContact)
+    public function setProjectReviewContact($projectReviewContact): Contact
     {
         $this->projectReviewContact = $projectReviewContact;
 
@@ -2763,7 +2779,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectVersionReview($projectVersionReview)
+    public function setProjectVersionReview($projectVersionReview): Contact
     {
         $this->projectVersionReview = $projectVersionReview;
 
@@ -2783,7 +2799,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectReport($projectReport)
+    public function setProjectReport($projectReport): Contact
     {
         $this->projectReport = $projectReport;
 
@@ -2803,7 +2819,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectCalendarReview($projectCalendarReview)
+    public function setProjectCalendarReview($projectCalendarReview): Contact
     {
         $this->projectCalendarReview = $projectCalendarReview;
 
@@ -2823,7 +2839,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectReportReview($projectReportReview)
+    public function setProjectReportReview($projectReportReview): Contact
     {
         $this->projectReportReview = $projectReportReview;
 
@@ -2843,7 +2859,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setInvite($invite)
+    public function setInvite($invite): Contact
     {
         $this->invite = $invite;
 
@@ -2863,7 +2879,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setInviteContact($inviteContact)
+    public function setInviteContact($inviteContact): Contact
     {
         $this->inviteContact = $inviteContact;
 
@@ -2883,7 +2899,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setIdeaInvite($ideaInvite)
+    public function setIdeaInvite($ideaInvite): Contact
     {
         $this->ideaInvite = $ideaInvite;
 
@@ -2903,7 +2919,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setIdeaInviteContact($ideaInviteContact)
+    public function setIdeaInviteContact($ideaInviteContact): Contact
     {
         $this->ideaInviteContact = $ideaInviteContact;
 
@@ -2923,9 +2939,29 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setLoi($loi)
+    public function setLoi($loi): Contact
     {
         $this->loi = $loi;
+
+        return $this;
+    }
+
+    /**
+     * @return \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     */
+    public function getLoiApprover()
+    {
+        return $this->loiApprover;
+    }
+
+    /**
+     * @param \Affiliation\Entity\Loi[]|Collections\ArrayCollection $loiApprover
+     *
+     * @return Contact
+     */
+    public function setLoiApprover($loiApprover): Contact
+    {
+        $this->loiApprover = $loiApprover;
 
         return $this;
     }
@@ -2943,7 +2979,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAffiliationDoa($affiliationDoa)
+    public function setAffiliationDoa($affiliationDoa): Contact
     {
         $this->affiliationDoa = $affiliationDoa;
 
@@ -2951,7 +2987,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Admin\Entity\Permit\Contact
+     * @return \Admin\Entity\Permit\Contact[]|Collections\ArrayCollection
      */
     public function getPermitContact()
     {
@@ -2959,11 +2995,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  \Admin\Entity\Permit\Contact $permitContact
+     * @param  \Admin\Entity\Permit\Contact[]|Collections\Collection $permitContact
      *
      * @return Contact
      */
-    public function setPermitContact($permitContact)
+    public function setPermitContact($permitContact): Contact
     {
         $this->permitContact = $permitContact;
 
@@ -2971,7 +3007,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Admin\Entity\Session[]
+     * @return \Admin\Entity\Session[]|Collections\Collection
      */
     public function getSession()
     {
@@ -2979,11 +3015,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param  \Admin\Entity\Session $session
+     * @param  \Admin\Entity\Session[]|Collections\Collection $session
      *
      * @return Contact
      */
-    public function setSession($session)
+    public function setSession($session): Contact
     {
         $this->session = $session;
 
@@ -3003,7 +3039,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setVoter($voter)
+    public function setVoter($voter): Contact
     {
         $this->voter = $voter;
 
@@ -3023,7 +3059,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setTour($tour)
+    public function setTour($tour): Contact
     {
         $this->tour = $tour;
 
@@ -3043,7 +3079,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setTourContact($tourContact)
+    public function setTourContact($tourContact): Contact
     {
         $this->tourContact = $tourContact;
 
@@ -3063,7 +3099,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setDoaReminderReceiver($doaReminderReceiver)
+    public function setDoaReminderReceiver($doaReminderReceiver): Contact
     {
         $this->doaReminderReceiver = $doaReminderReceiver;
 
@@ -3083,7 +3119,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setDoaReminderSender($doaReminderSender)
+    public function setDoaReminderSender($doaReminderSender): Contact
     {
         $this->doaReminderSender = $doaReminderSender;
 
@@ -3103,7 +3139,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setLoiReminderReceiver($loiReminderReceiver)
+    public function setLoiReminderReceiver($loiReminderReceiver): Contact
     {
         $this->loiReminderReceiver = $loiReminderReceiver;
 
@@ -3123,7 +3159,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setLoiReminderSender($loiReminderSender)
+    public function setLoiReminderSender($loiReminderSender): Contact
     {
         $this->loiReminderSender = $loiReminderSender;
 
@@ -3143,7 +3179,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setBlog($blog)
+    public function setBlog($blog): Contact
     {
         $this->blog = $blog;
 
@@ -3163,7 +3199,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setBlogMessage($blogMessage)
+    public function setBlogMessage($blogMessage): Contact
     {
         $this->blogMessage = $blogMessage;
 
@@ -3183,7 +3219,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setJournalEntry($journalEntry)
+    public function setJournalEntry($journalEntry): Contact
     {
         $this->journalEntry = $journalEntry;
 
@@ -3203,7 +3239,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setJournal($journal)
+    public function setJournal($journal): Contact
     {
         $this->journal = $journal;
 
@@ -3223,7 +3259,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setOrganisationJournal($organisationJournal)
+    public function setOrganisationJournal($organisationJournal): Contact
     {
         $this->organisationJournal = $organisationJournal;
 
@@ -3243,7 +3279,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setInvoiceLog($invoiceLog)
+    public function setInvoiceLog($invoiceLog): Contact
     {
         $this->invoiceLog = $invoiceLog;
 
@@ -3263,7 +3299,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setReminder($reminder)
+    public function setReminder($reminder): Contact
     {
         $this->reminder = $reminder;
 
@@ -3283,7 +3319,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setAchievement($achievement)
+    public function setAchievement($achievement): Contact
     {
         $this->achievement = $achievement;
 
@@ -3303,29 +3339,9 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setIdeaPartner($ideaPartner)
+    public function setIdeaPartner($ideaPartner): Contact
     {
         $this->ideaPartner = $ideaPartner;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[]
-     */
-    public function getIdeaMessageBoard()
-    {
-        return $this->ideaMessageBoard;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\MessageBoard[] $ideaMessageBoard
-     *
-     * @return Contact
-     */
-    public function setIdeaMessageBoard($ideaMessageBoard)
-    {
-        $this->ideaMessageBoard = $ideaMessageBoard;
 
         return $this;
     }
@@ -3343,9 +3359,29 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectLog($projectLog)
+    public function setProjectLog($projectLog): Contact
     {
         $this->projectLog = $projectLog;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection
+     */
+    public function getProjectChangelog()
+    {
+        return $this->projectChangelog;
+    }
+
+    /**
+     * @param Collections\ArrayCollection $projectChangelog
+     *
+     * @return Contact
+     */
+    public function setProjectChangelog(Collections\ArrayCollection $projectChangelog): Contact
+    {
+        $this->projectChangelog = $projectChangelog;
 
         return $this;
     }
@@ -3363,7 +3399,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setProjectReportItem($projectReportItem)
+    public function setProjectReportItem($projectReportItem): Contact
     {
         $this->projectReportItem = $projectReportItem;
 
@@ -3371,7 +3407,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\Item[]
+     * @return Collections\ArrayCollection|\Project\Entity\Report\EffortSpent[]
      */
     public function getProjectReportEffortSpent()
     {
@@ -3379,11 +3415,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\Item[] $projectReportEffortSpent
+     * @param Collections\ArrayCollection|\Project\Entity\Report\EffortSpent[] $projectReportEffortSpent
      *
      * @return Contact
      */
-    public function setProjectReportEffortSpent($projectReportEffortSpent)
+    public function setProjectReportEffortSpent($projectReportEffortSpent): Contact
     {
         $this->projectReportEffortSpent = $projectReportEffortSpent;
 
@@ -3391,63 +3427,67 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\Process
+     * @return \Project\Entity\ChangeRequest\Process[]|Collections\Collection
      */
     public function getChangeRequestProcess()
     {
-        return $this->changerequestProcess;
+        return $this->changeRequestProcess;
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\Process $changerequestProcess
+     * @param \Project\Entity\ChangeRequest\Process[]|Collections\Collection $changerequestProcess
      *
      * @return Contact
      */
-    public function setChangeRequestProcess($changerequestProcess)
+    public function setChangeRequestProcess($changerequestProcess): Contact
     {
-        $this->changerequestProcess = $changerequestProcess;
+        $this->changeRequestProcess = $changerequestProcess;
 
         return $this;
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\CostChange
+     * @return \Project\Entity\ChangeRequest\CostChange[]|Collections\Collection
      */
     public function getChangeRequestCostChange()
     {
-        return $this->changerequestCostChange;
+        return $this->changeRequestCostChange;
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\CostChange $changerequestCostChange
+     * @param \Project\Entity\ChangeRequest\CostChange[]|Collections\Collection $changerequestCostChange
      *
      * @return Contact
      */
-    public function setChangeRequestCostChange($changerequestCostChange)
+    public function setChangeRequestCostChange($changerequestCostChange): Contact
     {
-        $this->changerequestCostChange = $changerequestCostChange;
+        $this->changeRequestCostChange = $changerequestCostChange;
 
         return $this;
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\Country
+     * @return \Project\Entity\ChangeRequest\Country[]|Collections\Collection
      */
     public function getChangeRequestCountry()
     {
-        return $this->changerequestCountry;
+        return $this->changeRequestCountry;
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\Country $changerequestCountry
+     * @param $changerequestCountry
+     *
+     * @return Contact
      */
-    public function setChangeRequestCountry($changerequestCountry)
+    public function setChangeRequestCountry($changerequestCountry): Contact
     {
-        $this->changerequestCountry = $changerequestCountry;
+        $this->changeRequestCountry = $changerequestCountry;
+
+        return $this;
     }
 
     /**
-     * @return \Project\Entity\Version\Contact
+     * @return \Project\Entity\Version\Contact[]|Collections\Collection
      */
     public function getVersionContact()
     {
@@ -3455,11 +3495,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param \Project\Entity\Version\Contact $versionContact
+     * @param \Project\Entity\Version\Contact[]|Collections\Collection $versionContact
      *
      * @return Contact
      */
-    public function setVersionContact($versionContact)
+    public function setVersionContact($versionContact): Contact
     {
         $this->versionContact = $versionContact;
 
@@ -3467,7 +3507,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return \Project\Entity\Workpackage\Contact
+     * @return \Project\Entity\Workpackage\Contact[]|Collections\Collection
      */
     public function getWorkpackageContact()
     {
@@ -3475,11 +3515,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param \Project\Entity\Workpackage\Contact $workpackageContact
+     * @param \Project\Entity\Workpackage\Contact[]|Collections\Collection $workpackageContact
      *
      * @return Contact
      */
-    public function setWorkpackageContact($workpackageContact)
+    public function setWorkpackageContact($workpackageContact): Contact
     {
         $this->workpackageContact = $workpackageContact;
 
@@ -3487,7 +3527,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[]
+     * @return Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[]|Collections\Collection
      */
     public function getProjectReportWorkpackageDescription()
     {
@@ -3495,11 +3535,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[] $projectReportWorkpackageDescription
+     * @param Collections\Collection|\Project\Entity\Report\WorkpackageDescription[] $projectReportWorkpackageDescription
      *
      * @return Contact
      */
-    public function setProjectReportWorkpackageDescription($projectReportWorkpackageDescription)
+    public function setProjectReportWorkpackageDescription($projectReportWorkpackageDescription): Contact
     {
         $this->projectReportWorkpackageDescription = $projectReportWorkpackageDescription;
 
@@ -3507,7 +3547,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]
+     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]|Collections\Collection
      */
     public function getParentDoa()
     {
@@ -3515,11 +3555,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[] $parentDoa
+     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]|Collections\Collection $parentDoa
      *
      * @return Contact
      */
-    public function setParentDoa($parentDoa)
+    public function setParentDoa($parentDoa): Contact
     {
         $this->parentDoa = $parentDoa;
 
@@ -3527,7 +3567,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\OParent[]
+     * @return Collections\ArrayCollection|\Organisation\Entity\OParent[]|Collections\Collection
      */
     public function getParent()
     {
@@ -3535,11 +3575,11 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\OParent[] $parent
+     * @param Collections\ArrayCollection|\Organisation\Entity\OParent[]|Collections\Collection $parent
      *
      * @return Contact
      */
-    public function setParent($parent)
+    public function setParent($parent): Contact
     {
         $this->parent = $parent;
 
@@ -3559,7 +3599,7 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setParentFinancial($parentFinancial)
+    public function setParentFinancial($parentFinancial): Contact
     {
         $this->parentFinancial = $parentFinancial;
 
@@ -3579,10 +3619,120 @@ class Contact extends EntityAbstract implements ResourceInterface, ProviderInter
      *
      * @return Contact
      */
-    public function setParentOrganisation($parentOrganisation)
+    public function setParentOrganisation($parentOrganisation): Contact
     {
         $this->parentOrganisation = $parentOrganisation;
 
+        return $this;
+    }
+
+    /**
+     * @return Log[]|Collections\Collection
+     */
+    public function getLogCreatedBy()
+    {
+        return $this->logCreatedBy;
+    }
+
+    /**
+     * @param Collections\Collection $logCreatedBy
+     *
+     * @return Contact
+     */
+    public function setLogCreatedBy($logCreatedBy): Contact
+    {
+        $this->logCreatedBy = $logCreatedBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Log[]|Collections\Collection
+     */
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * @param Collections\Collection $log
+     *
+     * @return Contact
+     */
+    public function setLog($log): Contact
+    {
+        $this->log = $log;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Pca[]
+     */
+    public function getPca()
+    {
+        return $this->pca;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Pca[] $pca
+     *
+     * @return Contact
+     */
+    public function setPca($pca): Contact
+    {
+        $this->pca = $pca;
+
+        return $this;
+    }
+
+    /**
+     * @return \Admin\Entity\Pageview[]|Collections\Collection
+     */
+    public function getPageview()
+    {
+        return $this->pageview;
+    }
+
+    /**
+     * @param \Admin\Entity\Pageview[]|Collections\Collection $pageView
+     *
+     * @return Contact
+     */
+    public function setPageview($pageview): Contact
+    {
+        $this->pageview = $pageview;
+
+        return $this;
+    }
+
+    /**
+     * @return Collections\ArrayCollection|\Project\Entity\Project[]
+     */
+    public function getProxyProject()
+    {
+        return $this->proxyProject;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Project\Entity\Project[] $proxyProject
+     *
+     * @return Contact
+     */
+    public function setProxyProject($proxyProject): Contact
+    {
+        $this->proxyProject = $proxyProject;
+        return $this;
+    }
+
+    public function getDateActivated(): ?\DateTime
+    {
+        return $this->dateActivated;
+    }
+
+    public function setDateActivated(?\DateTime $dateActivated): Contact
+    {
+        $this->dateActivated = $dateActivated;
         return $this;
     }
 }

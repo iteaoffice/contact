@@ -8,14 +8,18 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity\Contact;
+use Contact\Entity\OptIn;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Profile as ProfileEntity;
 use Contact\Hydrator\Profile as ProfileHydrator;
 use Contact\Service\ContactService;
 use Doctrine\ORM\EntityManager;
+use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntityRadio;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Country;
@@ -24,19 +28,16 @@ use Organisation\Entity\Type;
 use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
+use Zend\Validator\File\IsImage;
 
 /**
+ * Class Profile
  *
+ * @package Contact\Form
  */
-class Profile extends Form
+class Profile extends Form implements InputFilterProviderInterface
 {
-    /**
-     * Profile constructor.
-     *
-     * @param EntityManager  $entityManager
-     * @param ContactService $contactService
-     * @param Contact        $contact
-     */
     public function __construct(EntityManager $entityManager, ContactService $contactService, Contact $contact)
     {
         parent::__construct();
@@ -58,9 +59,9 @@ class Profile extends Form
         );
         $this->add(
             [
-                'type'       => EntitySelect::class,
-                'name'       => 'gender',
-                'options'    => [
+                'type'    => EntitySelect::class,
+                'name'    => 'gender',
+                'options' => [
                     'label'          => _("txt-attention"),
                     'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Gender',
@@ -68,25 +69,19 @@ class Profile extends Form
                         'name' => 'findAll',
                     ],
                 ],
-                'attributes' => [
-                    'required' => true,
-                ],
             ]
         );
         $this->add(
             [
-                'type'       => EntitySelect::class,
-                'name'       => 'title',
-                'options'    => [
+                'type'    => EntitySelect::class,
+                'name'    => 'title',
+                'options' => [
                     'label'          => _("txt-title"),
                     'object_manager' => $entityManager,
                     'target_class'   => 'General\Entity\Title',
                     'find_method'    => [
                         'name' => 'findAll',
                     ],
-                ],
-                'attributes' => [
-                    'required' => true,
                 ],
             ]
         );
@@ -99,7 +94,6 @@ class Profile extends Form
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'required'    => true,
                     'placeholder' => _("txt-give-your-first-name"),
                 ],
             ]
@@ -126,7 +120,6 @@ class Profile extends Form
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'required'    => true,
                     'placeholder' => _("txt-give-your-last-name"),
                 ],
             ]
@@ -137,7 +130,7 @@ class Profile extends Form
         $phoneFieldSet = new Fieldset('phone');
         /** @var PhoneType $phoneType */
         foreach ($contactService->findAll(PhoneType::class) as $phoneType) {
-            if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE])) {
+            if (\in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE], true)) {
                 $fieldSet = new Fieldset($phoneType->getId());
                 $fieldSet->add(
                     [
@@ -242,21 +235,21 @@ class Profile extends Form
                         ],
                     ],
                     'label_generator'           => function (Organisation $organisation) {
-                        if (! is_null($organisation->getCountry())) {
+                        if (null !== $organisation->getCountry()) {
                             return sprintf(
-                                "%s (%s) [VAT: %s]",
+                                '%s (%s) [VAT: %s]',
                                 $organisation->getOrganisation(),
                                 $organisation->getCountry()->getCountry(),
-                                (! is_null($organisation->getFinancial()) ? $organisation->getFinancial()->getVat()
+                                (null !== $organisation->getFinancial() ? $organisation->getFinancial()->getVat()
                                     : 'unknown')
                             );
-                        } else {
-                            return sprintf("%s", $organisation->getOrganisation());
                         }
+
+                        return sprintf('%s', $organisation->getOrganisation());
                     },
                 ],
                 'attributes' => [
-                    'required' => ! is_null($contact->getContactOrganisation()),
+                    'required' => null !== $contact->getContactOrganisation(),
                     //Only required when a contact has an organisation
                     'id'       => 'organisation',
                 ],
@@ -344,14 +337,14 @@ class Profile extends Form
          * Produce a list of all phone numbers
          */
         $profileFieldSet = new Fieldset('profile');
-        $profileEntity   = new ProfileEntity();
         $profileFieldSet->add(
             [
                 'type'    => 'Zend\Form\Element\Radio',
                 'name'    => 'visible',
                 'options' => [
-                    'label'         => _("txt-visibility"),
-                    'value_options' => $profileEntity->getVisibleTemplates(),
+                    'label'         => _("txt-profile-visibility-label"),
+                    'help-block'    => _("txt-profile-visibility-help-block"),
+                    'value_options' => ProfileEntity::getVisibleTemplates(),
                 ],
             ]
         );
@@ -360,7 +353,8 @@ class Profile extends Form
                 'type'       => 'Zend\Form\Element\Textarea',
                 'name'       => 'description',
                 'options'    => [
-                    'label' => _("txt-expertise"),
+                    'label'      => _("txt-profile-expertise-label"),
+                    'help-block' => _("txt-profile-expertise-help-block"),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
@@ -369,6 +363,36 @@ class Profile extends Form
             ]
         );
         $this->add($profileFieldSet);
+
+
+        $this->add(
+            [
+                'type'    => EntityMultiCheckbox::class,
+                'name'    => 'optIn',
+                'options' => [
+                    'target_class'    => OptIn::class,
+                    'object_manager'  => $entityManager,
+                    'find_method'     => [
+                        'name'   => 'findBy',
+                        'params' => [
+                            'criteria' => [
+                                'active' => OptIn::ACTIVE_ACTIVE
+                            ],
+                            'orderBy'  => [
+                                'optIn' => 'ASC']
+                        ]
+                    ],
+                    'label_generator' => function (OptIn $optIn) {
+                        return \sprintf('%s (%s)', $optIn->getOptIn(), $optIn->getDescription());
+                    },
+                    'label'           => _("txt-select-your-opt-in-label"),
+                    'help-block'      => _("txt-select-your-opt-in-help-block"),
+                ],
+
+
+            ]
+        );
+
         $this->add(
             [
                 'type'       => '\Zend\Form\Element\File',
@@ -377,9 +401,23 @@ class Profile extends Form
                     "class" => "form-control",
                 ],
                 'options'    => [
-                    "label"      => "txt-photo-file",
+                    "label"      => _("txt-photo-file"),
                     "help-block" => _("txt-photo-requirements"),
                 ],
+            ]
+        );
+        $this->add(
+            [
+                'type'       => '\Zend\Form\Element\MultiCheckbox',
+                'name'       => 'removeFile',
+                'options'    => [
+                    'value_options' => [
+                        'delete' => _("txt-check-to-remove-your-photo")
+                    ],
+                ],
+                'attributes' => [
+                    'label' => _('txt-remove-photo-label'),
+                ]
             ]
         );
 
@@ -403,5 +441,36 @@ class Profile extends Form
                 ],
             ]
         );
+    }
+
+    public function getInputFilterSpecification(): array
+    {
+        return [
+            'firstName'  => [
+                'required' => true
+            ],
+            'lastName'   => [
+                'required' => true
+            ],
+            'address'    => [
+                'country' => [
+                    'required' => false,
+                ]
+            ],
+            'removeFile' => [
+                'required' => false
+            ],
+            'optIn'      => [
+                'required' => false
+            ],
+            'file'       => [
+                'required'   => false,
+                'validators' => [
+                    [
+                        'name' => IsImage::class
+                    ]
+                ]
+            ]
+        ];
     }
 }

@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -26,12 +28,8 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class Photo extends EntityAbstract
+class Photo extends AbstractEntity
 {
-    /**
-     * Key needed for the encryption and decryption of the Keys.
-     */
-    const HASH_KEY = 'afc26c5daef5373cf4acb7ee107d423f';
     /**
      * @ORM\Column(name="photo_id", type="integer", nullable=false)
      * @ORM\Id
@@ -84,21 +82,11 @@ class Photo extends EntityAbstract
     private $contentType;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", inversedBy="photo", cascade={"persist"})
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
      *
      * @var \Contact\Entity\Contact
      */
     private $contact;
-
-    /**
-     * Class constructor.
-     */
-    public function __construct()
-    {
-        $this->contentType = null;
-    }
 
     /**
      * Magic Getter.
@@ -125,41 +113,12 @@ class Photo extends EntityAbstract
 
     /**
      * @param $property
+     *
      * @return bool
      */
     public function __isset($property)
     {
         return isset($this->$property);
-    }
-
-    /**
-     * Remove all the cached images of a user.
-     *
-     * @ORM\PreUpdate
-     */
-    public function removeCachedImageFile()
-    {
-        if (file_exists($this->getCacheFileName())) {
-            unlink($this->getCacheFileName());
-        }
-    }
-
-    /**
-     * @param null $width
-     * @return string
-     */
-    public function getCacheFileName($width = null): string
-    {
-        $cacheDir = __DIR__ . '/../../../../../public' . DIRECTORY_SEPARATOR . 'assets' .
-            DIRECTORY_SEPARATOR . ITEAOFFICE_HOST . DIRECTORY_SEPARATOR . 'contact-photo';
-
-        return $cacheDir . DIRECTORY_SEPARATOR . sprintf(
-            '%s-%s-%s.%s',
-            $this->getId(),
-            $this->getHash(),
-            $width,
-            $this->getContentType()->getExtension()
-        );
     }
 
     /**
@@ -176,17 +135,6 @@ class Photo extends EntityAbstract
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * Although an alternative does not have a clear hash, we can create one based on the id;
-     * Don't use the elements from underlying objects since this gives confusion.
-     *
-     * @return string
-     */
-    public function getHash(): string
-    {
-        return hash('sha512', $this->id . self::HASH_KEY);
     }
 
     /**

@@ -15,7 +15,7 @@ return [
         'routes' => [
             'zfcadmin' => [
                 'child_routes' => [
-                    'contact-admin'     => [
+                    'contact-admin' => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/contact',
@@ -27,7 +27,7 @@ return [
                         ],
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'list'        => [
+                            'list'           => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/list[/f-:encodedFilter][/page-:page].html',
@@ -36,7 +36,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'export'      => [
+                            'export'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/export[/q-:encodedFilter].csv',
@@ -46,7 +46,25 @@ return [
                                     ],
                                 ],
                             ],
-                            'new'         => [
+                            'list-duplicate' => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/list/duplicate[/f-:encodedFilter][/page-:page].html',
+                                    'defaults' => [
+                                        'action' => 'list-duplicate',
+                                    ],
+                                ],
+                            ],
+                            'list-inactive'  => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/list/inactive[/f-:encodedFilter][/page-:page].html',
+                                    'defaults' => [
+                                        'action' => 'list-inactive',
+                                    ],
+                                ],
+                            ],
+                            'new'            => [
                                 'type'    => 'Literal',
                                 'options' => [
                                     'route'    => '/new.html',
@@ -55,7 +73,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'view'        => [
+                            'view'           => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/view/[:id].html',
@@ -64,7 +82,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'impersonate' => [
+                            'impersonate'    => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/impersonate/[:id].html',
@@ -73,7 +91,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit'        => [
+                            'edit'           => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit/[:id].html',
@@ -82,7 +100,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'permit'      => [
+                            'permit'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/permissions/[:id].html',
@@ -91,7 +109,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'search'      => [
+                            'search'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/search.html',
@@ -100,7 +118,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'import'      => [
+                            'import'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/import.html',
@@ -109,9 +127,18 @@ return [
                                     ],
                                 ],
                             ],
+                            'merge'          => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/merge/[:sourceId]/into/[:targetId].html',
+                                    'defaults' => [
+                                        'action' => 'merge',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
-                    'selection-manager' => [
+                    'selection'     => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/selection',
@@ -123,7 +150,7 @@ return [
                         ],
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'list'          => [
+                            'list'               => [
                                 'type'     => 'Segment',
                                 'priority' => 1000,
                                 'options'  => [
@@ -137,7 +164,7 @@ return [
                                     'page'   => null,
                                 ],
                             ],
-                            'new'           => [
+                            'new'                => [
                                 'type'    => 'Literal',
                                 'options' => [
                                     'route'    => '/new.html',
@@ -146,7 +173,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'view'          => [
+                            'view'               => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/view/[:id].html',
@@ -155,7 +182,16 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit'          => [
+                            'generate-deeplinks' => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/generate-deeplinks/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'generate-deeplinks',
+                                    ],
+                                ],
+                            ],
+                            'edit'               => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit/[:id].html',
@@ -164,7 +200,16 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit-contacts' => [
+                            'add-contact'        => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/add-contact/contact-[:contactId].html',
+                                    'defaults' => [
+                                        'action' => 'add-contact',
+                                    ],
+                                ],
+                            ],
+                            'edit-contacts'      => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit-contacts/[:id].html',
@@ -173,7 +218,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'get-contacts'  => [
+                            'get-contacts'       => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/get-contacts.html',
@@ -182,38 +227,18 @@ return [
                                     ],
                                 ],
                             ],
-                            'export'        => [
-                                'type'         => 'Literal',
-                                'options'      => [
-                                    'route'    => '/export',
+                            'export'             => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/export/[:type]/[:id].html',
                                     'defaults' => [
                                         'action' => 'export',
-                                    ],
-                                ],
-                                'child_routes' => [
-                                    'csv'   => [
-                                        'type'    => 'Segment',
-                                        'options' => [
-                                            'route'    => '/[:id].csv',
-                                            'defaults' => [
-                                                'action' => 'export-csv',
-                                            ],
-                                        ],
-                                    ],
-                                    'excel' => [
-                                        'type'    => 'Segment',
-                                        'options' => [
-                                            'route'    => '/[:id].xlsx',
-                                            'defaults' => [
-                                                'action' => 'export-excel',
-                                            ],
-                                        ],
                                     ],
                                 ],
                             ],
                         ],
                     ],
-                    'facebook-manager'  => [
+                    'facebook'      => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/facebook',
@@ -267,7 +292,61 @@ return [
                             ],
                         ],
                     ],
-                    'address-manager'   => [
+                    'opt-in'        => [
+                        'type'          => 'Segment',
+                        'options'       => [
+                            'route'    => '/opt-in',
+                            'defaults' => [
+                                'controller' => Controller\OptInManagerController::class,
+                                'action'     => 'list',
+                                'page'       => 1,
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'list' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/list[/f-:encodedFilter][/page-:page].html',
+                                    'defaults' => [
+                                        'action' => 'list',
+                                    ],
+                                ],
+                            ],
+                            'new'  => [
+                                'type'     => 'Literal',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/new.html',
+                                    'defaults' => [
+                                        'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'view' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/view/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'view',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type'     => 'Segment',
+                                'priority' => 1000,
+                                'options'  => [
+                                    'route'    => '/edit/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'address'       => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/address',
@@ -299,7 +378,7 @@ return [
                             ],
                         ],
                     ],
-                    'phone-manager'     => [
+                    'phone'         => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/phone',
@@ -331,7 +410,7 @@ return [
                             ],
                         ],
                     ],
-                    'note-manager'      => [
+                    'note'          => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/note',

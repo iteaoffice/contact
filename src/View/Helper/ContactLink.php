@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Contact as ContactAssertion;
@@ -20,16 +22,6 @@ use Contact\Entity\Contact;
  */
 class ContactLink extends LinkAbstract
 {
-    /**
-     * @param Contact|null $contact
-     * @param string $action
-     * @param string $show
-     * @param null $hash
-     * @param null $alternativeShow
-     * @param null $fragment
-     *
-     * @return string
-     */
     public function __invoke(
         Contact $contact = null,
         $action = 'view',
@@ -44,14 +36,9 @@ class ContactLink extends LinkAbstract
         $this->setHash($hash);
         $this->setFragment($fragment);
 
-
-        /*
-         * If the alternativeShow is not null, use it an otherwise take the hash
-         */
-        if (!is_null($alternativeShow)) {
+        $this->setAlternativeShow($hash);
+        if (null !== $alternativeShow) {
             $this->setAlternativeShow($alternativeShow);
-        } else {
-            $this->setAlternativeShow($hash);
         }
 
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
@@ -63,12 +50,7 @@ class ContactLink extends LinkAbstract
                 'paginator'       => $this->getAlternativeShow(),
                 'alternativeShow' => $this->getAlternativeShow(),
                 'firstname'       => $this->getContact()->getFirstName(),
-                'initials'        => sprintf(
-                    "%s%s%s",
-                    substr($this->getContact()->getFirstName(), 0, 1),
-                    substr($this->getContact()->getMiddleName(), 0, 1),
-                    substr($this->getContact()->getLastName(), 0, 1)
-                ),
+                'initials'        => $this->getContact()->parseInitials(),
                 'name'            => $this->getContact()->getDisplayName(),
             ]
         );
@@ -78,10 +60,7 @@ class ContactLink extends LinkAbstract
         return $this->createLink();
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function parseAction()
+    public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
@@ -104,28 +83,6 @@ class ContactLink extends LinkAbstract
                         $this->getContact()->getDisplayName()
                     )
                 );
-                break;
-            case 'profile':
-                $this->setRouter('community/contact/profile/view');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-view-profile-of-contact-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
-                break;
-            case 'profile-contact':
-                $this->setRouter('community/contact/profile/contact');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-view-profile-of-contact-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
-                break;
-            case 'signature':
-                $this->setRouter('community/contact/signature');
-                $this->setText($this->translate("txt-signature"));
                 break;
             case 'view-admin':
                 $this->setRouter('zfcadmin/contact-admin/view');
@@ -154,17 +111,13 @@ class ContactLink extends LinkAbstract
                     )
                 );
                 break;
-            case 'edit-profile':
-                $this->setRouter('community/contact/profile/edit');
-                $this->setText($this->translate("txt-edit-your-profile"));
-                break;
             case 'change-password':
                 $this->setRouter('community/contact/change-password');
                 /*
                  * Users can have access without a password (via the deeplink)
                  * We will therefore have the option to set a password
                  */
-                if (is_null($this->getContact()->getSaltedPassword())) {
+                if (null === $this->getContact()->getSaltedPassword()) {
                     $this->setText($this->translate("txt-set-your-password"));
                     $this->addClasses('btn-danger');
                 } else {

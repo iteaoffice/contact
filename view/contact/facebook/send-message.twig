@@ -1,25 +1,25 @@
 {% do headTitle().append(translate("txt-contacts")) %}
 {% do headTitle().append(translate("txt-send-message")) %}
-<h1>{{ translate("txt-send-message-to-contacts-in-%s")|format(facebook) }}</h1>
+<h1 class="display-4">{{ translate("txt-send-message-to-contacts-in-%s")|format(facebook) }}</h1>
 
 {% do form.prepare() %}
 
 {{ form().openTag(form)|raw }}
 
-<div class="form-group">
-    <label class="col-sm-3 control-label">{{ translate("txt-name") }}</label>
+<div class="form-group row">
+    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-name") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ facebook }}</p>
+        <p class="form-control-static form-control-plaintext">{{ facebook }}</p>
     </div>
 </div>
 
 
-<div class="form-group">
-    <label class="col-sm-3 control-label">{{ translate("txt-recipients") }}</label>
+<div class="form-group row">
+    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-recipients") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">
+        <p class="form-control-static form-control-plaintext">
             {% for contact in contacts %}
                 {{ contact['contact'].displayName }}{% if not loop.last %}, {% endif %}
             {% endfor %}
@@ -31,8 +31,8 @@
 
 <hr>
 
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
+<div class="form-group row">
+    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
     </div>

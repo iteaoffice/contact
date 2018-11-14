@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 Jield BV (http://jield.nl)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form\View\Helper;
 
 use Zend\Form\Element\Select;
@@ -15,18 +17,18 @@ use Zend\Form\ElementInterface;
 use ZfcTwitterBootstrap\Form\View\Helper\FormElement;
 
 /**
- * Form Element.
+ * Class ContactFormElement
+ *
+ * @package Contact\Form\View\Helper
  */
 class ContactFormElement extends FormElement
 {
     /**
-     * Magical Invoke.
+     * @param ElementInterface|null $element
+     * @param null                  $groupWrapper
+     * @param null                  $controlWrapper
      *
-     * @param \Zend\Form\ElementInterface $element
-     * @param string $groupWrapper
-     * @param string $controlWrapper
-     *
-     * @return string|self
+     * @return self|string
      */
     public function __invoke(
         ElementInterface $element = null,
@@ -36,17 +38,16 @@ class ContactFormElement extends FormElement
         //Inject the javascript in the header
         $this->view->headLink()
             ->appendStylesheet('/assets/css/bootstrap-select.min.css');
-        $this->view->headScript()
-            ->appendFile(
-                '/assets/js/bootstrap-select.min.js',
-                'text/javascript'
-            );
-        $this->view->headScript()
-            ->appendFile(
-                '/assets/js/ajax-bootstrap-select.min.js',
-                'text/javascript'
-            );
-
+        $this->view->headLink()
+            ->appendStylesheet('/assets/css/ajax-bootstrap-select.min.css');
+        $this->view->headScript()->appendFile(
+            '/assets/js/bootstrap-select.min.js',
+            'text/javascript'
+        );
+        $this->view->headScript()->appendFile(
+            '/assets/js/ajax-bootstrap-select.min.js',
+            'text/javascript'
+        );
 
         $this->view->inlineScript()->appendScript(
             "var options = {
@@ -78,8 +79,8 @@ class ContactFormElement extends FormElement
      * Render.
      *
      * @param Select|ElementInterface $element
-     * @param string $groupWrapper
-     * @param string $controlWrapper
+     * @param string                  $groupWrapper
+     * @param string                  $controlWrapper
      *
      * @return string
      */
@@ -110,7 +111,7 @@ class ContactFormElement extends FormElement
         if ($label && !$element->getOption('skipLabel')) {
             $controlLabel .= $labelHelper->openTag(
                 [
-                    'class' => 'col-lg-3 ' . ($element->getOption('wrapCheckboxInLabel') ? 'checkbox'
+                    'class' => 'col-md-3 ' . ($element->getOption('wrapCheckboxInLabel') ? 'checkbox'
                             : 'control-label'),
                 ] + ($element->hasAttribute('id') ? ['for' => $id] : [])
             );

@@ -13,6 +13,8 @@
  * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
 
+declare(strict_types=1);
+
 namespace Contact\View\Helper;
 
 use Interop\Container\ContainerInterface;
@@ -48,9 +50,9 @@ abstract class AbstractViewHelper extends AbstractHelper
      *
      * @return RouteMatch.
      */
-    public function getRouteMatch()
+    public function getRouteMatch(): ?RouteMatch
     {
-        if (is_null($this->routeMatch)) {
+        if (null === $this->routeMatch) {
             $this->routeMatch = $this->getServiceManager()->get('application')->getMvcEvent()->getRouteMatch();
         }
 
@@ -60,17 +62,17 @@ abstract class AbstractViewHelper extends AbstractHelper
     /**
      * @return ContainerInterface
      */
-    public function getServiceManager()
+    public function getServiceManager(): ContainerInterface
     {
         return $this->serviceManager;
     }
 
     /**
-     * @param ContainerInterface|ServiceLocatorInterface $serviceManager
+     * @param ContainerInterface $serviceManager
      *
      * @return AbstractViewHelper
      */
-    public function setServiceManager($serviceManager)
+    public function setServiceManager($serviceManager): AbstractViewHelper
     {
         $this->serviceManager = $serviceManager;
 
@@ -90,7 +92,7 @@ abstract class AbstractViewHelper extends AbstractHelper
      *
      * @return string
      */
-    public function translate($string)
+    public function translate($string): string
     {
         return $this->getHelperPluginManager()->get('translate')->__invoke($string);
     }
@@ -98,7 +100,7 @@ abstract class AbstractViewHelper extends AbstractHelper
     /**
      * @return HelperPluginManager
      */
-    public function getHelperPluginManager()
+    public function getHelperPluginManager(): HelperPluginManager
     {
         return $this->helperPluginManager;
     }
@@ -108,7 +110,7 @@ abstract class AbstractViewHelper extends AbstractHelper
      *
      * @return AbstractViewHelper
      */
-    public function setHelperPluginManager($helperPluginManager)
+    public function setHelperPluginManager($helperPluginManager): AbstractViewHelper
     {
         $this->helperPluginManager = $helperPluginManager;
 

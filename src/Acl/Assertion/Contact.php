@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Acl\Assertion;
 
 use Admin\Entity\Access;
@@ -31,12 +33,14 @@ class Contact extends AssertionAbstract
      *
      * @return bool
      */
-    public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $resource = null, $privilege = null)
-    {
+    public function assert(
+        Acl $acl,
+        RoleInterface $role = null,
+        ResourceInterface $resource = null,
+        $privilege = null
+    ): bool {
         $this->setPrivilege($privilege);
-        /*
-         * A meeting can be shown when we have a contact
-         */
+
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {
             return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }
@@ -47,6 +51,8 @@ class Contact extends AssertionAbstract
             case 'impersonate':
             case 'new':
             case 'permit':
+            case 'list-duplicate':
+            case 'list-inactive':
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
             default:
                 return $this->hasContact();

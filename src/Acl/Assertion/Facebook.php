@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Acl\Assertion;
 
 use Admin\Entity\Access;
@@ -32,8 +34,12 @@ class Facebook extends AssertionAbstract
      *
      * @return bool
      */
-    public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $facebook = null, $privilege = null)
-    {
+    public function assert(
+        Acl $acl,
+        RoleInterface $role = null,
+        ResourceInterface $facebook = null,
+        $privilege = null
+    ): bool {
         /*
          * A meeting can be shown when we have a contact
          */
@@ -44,11 +50,14 @@ class Facebook extends AssertionAbstract
         $this->setPrivilege($privilege);
         $id = $this->getId();
 
-        if (! $facebook instanceof FacebookEntity && ! is_null($id)) {
-            /*
-             * @var FacebookEntity
-             */
-            $facebook = $this->getContactService()->findEntityById(FacebookEntity::class, $id);
+        if (!$facebook instanceof FacebookEntity && null !== $id) {
+            /** @var FacebookEntity $facebook */
+            $facebook = $this->getContactService()->find(FacebookEntity::class, $id);
+        }
+
+        if (!$facebook instanceof FacebookEntity && $facebook = $this->getRouteMatch()->getParam('facebook')) {
+            /** @var FacebookEntity $facebook */
+            $facebook = $this->getContactService()->find(FacebookEntity::class, (int)$facebook);
         }
 
         switch ($this->getPrivilege()) {
@@ -61,7 +70,7 @@ class Facebook extends AssertionAbstract
                 return $this->rolesHaveAccess($facebook->getAccess()->toArray());
             case 'send-message':
                 return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
-                       && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
+                    && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
             default:
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }

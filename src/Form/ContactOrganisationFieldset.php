@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity;
@@ -18,36 +20,36 @@ use Zend\Form\Fieldset;
 class ContactOrganisationFieldset extends Fieldset
 {
     /**
-     * @param EntityManager         $entityManager
-     * @param Entity\EntityAbstract $object
+     * @param EntityManager $entityManager
+     * @param Entity\AbstractEntity $object
      */
-    public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
+    public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
         $contactOrganisation = new Entity\ContactOrganisation();
-        $doctrineHydrator    = new DoctrineHydrator($entityManager, 'Contact\Entity\ContactOrganisation');
+        $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\ContactOrganisation');
         $this->setHydrator($doctrineHydrator)->setObject($contactOrganisation);
         $this->add(
-            array(
+            [
                 'type'       => 'Zend\Form\Element\Text',
                 'name'       => 'organisation',
-                'attributes' => array(
+                'attributes' => [
                     'label' => _("txt-organisation"),
-                ),
-            )
+                ],
+            ]
         );
         $this->add(
-            array(
+            [
                 'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
                 'name'       => 'country',
-                'options'    => array(
+                'options'    => [
                     'target_class'   => 'General\Entity\Country',
                     'object_manager' => $entityManager,
-                ),
-                'attributes' => array(
+                ],
+                'attributes' => [
                     'label' => _("txt-country"),
-                ),
-            )
+                ],
+            ]
         );
     }
 }

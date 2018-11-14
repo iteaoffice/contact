@@ -8,12 +8,12 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * SelectionSql.
@@ -25,7 +25,7 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @category    Contact
  */
-class SelectionSql extends EntityAbstract
+class SelectionSql extends AbstractEntity
 {
     /**
      * @ORM\Column(name="sql_id", type="integer", nullable=false)
@@ -37,110 +37,63 @@ class SelectionSql extends EntityAbstract
     private $id;
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\Selection", cascade={"persist"}, inversedBy="sql")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="selection_id", referencedColumnName="selection_id", nullable=false)
-     * })
      *
      * @var \Contact\Entity\Selection
      */
     private $selection;
     /**
      * @ORM\Column(name="sql_query", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-query"})
      *
      * @var string
      */
     private $query;
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * Set input filter.
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
+    public function __isset($property)
     {
-        throw new \Exception("Setting an inputFilter is currently not supported");
+        return isset($this->$property);
     }
 
-    /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        return new InputFilter();
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): SelectionSql
     {
         $this->id = $id;
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getQuery()
-    {
-        return $this->query;
-    }
-
-    /**
-     * @param string $query
-     */
-    public function setQuery($query)
-    {
-        $this->query = $query;
-    }
-
-    /**
-     * @return \Contact\Entity\Selection
-     */
-    public function getSelection()
+    public function getSelection(): Selection
     {
         return $this->selection;
     }
 
-    /**
-     * @param \Contact\Entity\Selection $selection
-     */
-    public function setSelection($selection)
+    public function setSelection(Selection $selection): SelectionSql
     {
         $this->selection = $selection;
+        return $this;
+    }
+
+    public function getQuery(): string
+    {
+        return $this->query;
+    }
+
+    public function setQuery(string $query): SelectionSql
+    {
+        $this->query = $query;
+        return $this;
     }
 }

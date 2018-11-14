@@ -1,6 +1,6 @@
 {% do headTitle().append(translate("txt-contacts")) %}
 {% do headTitle().append(facebook.facebook) %}
-<h1>{{ facebook }}</h1>
+<h1 class="display-4">{{ facebook }}</h1>
 
 {% if  contacts|length > 0 %}
     <div class="row">
@@ -10,8 +10,8 @@
                 <div class="information-box-header">
                     <h5>{{ contact.contact.displayName }}</h5>
                 </div>
-                <div class="contact-box-image">
-                    {{ contactPhoto(contact.contact, null, true) }}
+                <div class="contact-box-image" style="height: 152px;">
+                    {{ contactPhoto(contact.contact, null, false, true) }}
                 </div>
                 <div class="caption caption-relative">
                     {% if contact.title|length > 0 %}{{ contact.title|raw }}<br>{% endif %}
@@ -23,7 +23,7 @@
                     contactInFacebook
                     ) %}
                         <i class="fa fa-envelope-o"></i>&nbsp;<a
-                            href="mailto:{{ contact.email }}">{{ contact.email }}</a><br>
+                            href="mailto:{{ contact.email }}">{{ translate("txt-email") }}</a><br>
                     {% endif %}
                     {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER") %}
                         {% if contactInFacebook and contact.mobile|length > 0 %}

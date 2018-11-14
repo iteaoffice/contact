@@ -13,6 +13,8 @@
  * @link        https://itea3.org
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity\OptIn;
@@ -25,23 +27,12 @@ use Zend\Validator\File\MimeType;
 use Zend\Validator\File\Size;
 
 /**
- * Create a link to an contact.
+ * Class Import
  *
- * @category   Contact
- *
- * @author     Johan van der Heide <johan.van.der.heide@itea3.org>
- * @license    https://itea3.org/licence.txt proprietary
- *
- * @link       https://itea3.org
+ * @package Contact\Form
  */
 class Import extends Form implements InputFilterProviderInterface
 {
-    /**
-     * Import constructor.
-     *
-     * @param ContactService   $contactService
-     * @param SelectionService $selectionService
-     */
     public function __construct(ContactService $contactService, SelectionService $selectionService)
     {
         parent::__construct();
@@ -50,9 +41,10 @@ class Import extends Form implements InputFilterProviderInterface
         $this->setAttribute('class', 'form-horizontal');
 
         $selections = [];
+        /** @var Selection $selection */
         foreach ($selectionService->findAll(Selection::class) as $selection) {
             /** @var $selection Selection */
-            if (is_null($selection->getSql())) {
+            if (null !== $selection->getSql()) {
                 $selections[$selection->getId()] = $selection->getSelection();
             }
         }
@@ -72,8 +64,8 @@ class Import extends Form implements InputFilterProviderInterface
         );
 
         $optins = [];
+        /** @var OptIn $optin */
         foreach ($contactService->findAll(OptIn::class) as $optin) {
-            /** @var $optin OptIn */
             $optins[$optin->getId()] = $optin->getOptIn();
         }
 
@@ -133,13 +125,7 @@ class Import extends Form implements InputFilterProviderInterface
         );
     }
 
-    /**
-     * Should return an array specification compatible with
-     * {@link Zend\InputFilter\Factory::createInputFilter()}.
-     *
-     * @return array
-     */
-    public function getInputFilterSpecification()
+    public function getInputFilterSpecification(): array
     {
         return [
             'file'         => [

@@ -1,5 +1,5 @@
 {% if hasIdentity %}
-    <div {% if includeAngularApp %}ng-app="community"{% endif %} ng-controller="OptinController as optin">
+    {{ optIn.optIn }}
         <button type="button"
                 ng-init="getOptIn({{ optIn.id }})"
                 ng-mouseenter="hover = true"
@@ -21,7 +21,4 @@
                 </div>
             </div>
         </button>
-    </div>
-{% else %}
-    <a class="btn btn-primary" href="community/contact/profile/view.html#updates">{{ translate("txt-subscribe") }}</a>
 {% endif %}

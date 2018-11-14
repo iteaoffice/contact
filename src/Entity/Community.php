@@ -8,13 +8,12 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * ContactCommunity.
@@ -26,7 +25,7 @@ use Zend\InputFilter\InputFilterInterface;
  *
  * @category    Contact
  */
-class Community extends EntityAbstract
+class Community extends AbstractEntity
 {
     /**
      * @ORM\Column(name="community_id", type="integer", nullable=false)
@@ -90,68 +89,14 @@ class Community extends EntityAbstract
         $this->$property = $value;
     }
 
-    /** Set input filter
-     *
-     * @param InputFilterInterface $inputFilter
-     *
-     * @throws \Exception
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter)
-    {
-        throw new \Exception("Setting an inputFilter is currently not supported");
-    }
-
     /**
-     * @return \Zend\InputFilter\InputFilter|\Zend\InputFilter\InputFilterInterface
-     */
-    public function getInputFilter()
-    {
-        if (! $this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'community',
-                        'required' => false,
-                        'filters'  => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                    )
-                )
-            );
-            $inputFilter->add(
-                $factory->createInput(
-                    array(
-                        'name'     => 'type',
-                        'required' => false,
-                    )
-                )
-            );
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
-
-    public function populate()
-    {
-        return $this->getArrayCopy();
-    }
-
-    /**
-     * Needed for the hydration of form elements.
+     * @param $property
      *
-     * @return array
+     * @return bool
      */
-    public function getArrayCopy()
+    public function __isset($property)
     {
-        return array(
-            'community' => $this->community,
-            'contact'   => $this->contact,
-            'type'      => $this->type,
-        );
+        return isset($this->$property);
     }
 
     /**

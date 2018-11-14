@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
@@ -26,49 +28,24 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class Selection extends EntityAbstract
+class Selection extends AbstractEntity
 {
-    const SELECTION_INVOICE_CORE = 1;
-    const SELECTION_PROJECT_MANAGEMENT = 219;
-    /**
-     * Constant for notPersonal = 0 (not personal).
-     */
-    const NOT_PERSONAL = 0;
-    /**
-     * Constant for notPersonal = 1 (personal).
-     */
-    const PERSONAL = 1;
-    /**
-     * Constant for private = 0 (not private).
-     */
-    const NOT_PRIVATE = 0;
-    /**
-     * Constant for private = 1 (hidden).
-     */
-    const IS_PRIVATE = 1;
-    const TYPE_SQL = 1;
-    const TYPE_FIXED = 2;
+    public const SELECTION_INVOICE_CORE       = 1;
+    public const SELECTION_BSG                = 46;
+    public const SELECTION_STG                = 47;
+    public const SELECTION_PROJECT_MANAGEMENT = 219;
 
-    /**
-     * Textual versions of the hideForOthers.
-     *
-     * @var array
-     */
-    protected static $personalTemplates
-        = [
-            self::NOT_PERSONAL => 'txt-not-personal',
-            self::PERSONAL     => 'txt-personal',
-        ];
-    /**
-     * Textual versions of the hideForOthers.
-     *
-     * @var array
-     */
-    protected static $privateTemplates
-        = [
-            self::NOT_PRIVATE => 'txt-not-private',
-            self::IS_PRIVATE  => 'txt-private',
-        ];
+    public const NOT_CORE = 0;
+    public const CORE     = 1;
+
+    public const TYPE_SQL   = 1;
+    public const TYPE_FIXED = 2;
+
+    protected static $coreTemplates = [
+        self::NOT_CORE => 'txt-not-core',
+        self::CORE     => 'txt-core',
+    ];
+
     /**
      * @ORM\Column(name="selection_id", type="integer", nullable=false)
      * @ORM\Id
@@ -112,41 +89,30 @@ class Selection extends EntityAbstract
     /**
      * @ORM\Column(name="note", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
-     * @Annotation\Options({"label":"txt-note"})
+     * @Annotation\Options({"label":"txt-selection-note-label","help-block":"txt-selection-note-help-block"})
+     * @Annotation\Attributes({"placeholder":"txt-selection-note-placeholder"})
      *
      * @var string
      */
     private $note;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="selection")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
      * @Annotation\Type("Contact\Form\Element\Contact")
-     * @Annotation\Options({"label":"txt-owner"})
+     * @Annotation\Options({"label":"txt-selection-owner-label","help-block":"txt-selection-owner-help-block"})
      *
      * @var Contact
      */
     private $contact;
     /**
-     * @ORM\Column(name="personal", type="smallint", nullable=false)
+     * @ORM\Column(name="core", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
-     * @Annotation\Attributes({"array":"personalTemplates"})
-     * @Annotation\Attributes({"label":"txt-personal"})
+     * @Annotation\Attributes({"array":"coreTemplates"})
+     * @Annotation\Options({"label":"txt-selection-core-label","help-block":"txt-selection-core-help-block"})
      *
      * @var int
      */
-    private $personal;
-    /**
-     * @ORM\Column(name="private", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
-     * @Annotation\Attributes({"array":"privateTemplates"})
-     * @Annotation\Attributes({"label":"txt-private", "required":"true"})
-     * @Annotation\Required(true)
-     *
-     * @var int
-     */
-    private $private;
+    private $core;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
@@ -154,13 +120,6 @@ class Selection extends EntityAbstract
      * @var \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
      */
     private $selectionContact;
-    /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionMailinglist", cascade={"persist"}, mappedBy="selection")
-     * @Annotation\Exclude()
-     *
-     * @var \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection
-     */
-    private $mailingList;
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\SelectionSql", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
@@ -204,116 +163,46 @@ class Selection extends EntityAbstract
      */
     private $access;
 
-    /**
-     * Class constructor.
-     */
     public function __construct()
     {
-        $this->private  = self::NOT_PRIVATE;
-        $this->personal = self::NOT_PERSONAL;
+        $this->core = self::NOT_CORE;
 
-        $this->selectionContact  = new Collections\ArrayCollection();
-        $this->mailingList       = new Collections\ArrayCollection();
-        $this->mailing           = new Collections\ArrayCollection();
-        $this->meeting           = new Collections\ArrayCollection();
+        $this->selectionContact = new Collections\ArrayCollection();
+        $this->mailing = new Collections\ArrayCollection();
+        $this->meeting = new Collections\ArrayCollection();
         $this->meetingOptionCost = new Collections\ArrayCollection();
-        $this->meetingCost       = new Collections\ArrayCollection();
-        $this->access            = new Collections\ArrayCollection();
+        $this->meetingCost = new Collections\ArrayCollection();
+        $this->access = new Collections\ArrayCollection();
     }
 
-    /**
-     * @return array
-     */
-    public static function getPersonalTemplates()
+    public static function getCoreTemplates(): array
     {
-        return self::$personalTemplates;
+        return self::$coreTemplates;
     }
 
-    /**
-     * @return array
-     */
-    public static function getPrivateTemplates()
-    {
-        return self::$privateTemplates;
-    }
-
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
     public function __get($property)
     {
         return $this->$property;
     }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
     public function __set($property, $value)
     {
         $this->$property = $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
+
+    public function __toString(): string
     {
         return (string)$this->selection;
     }
 
-    /**
-     * @return \Contact\Entity\Contact
-     */
-    public function getContact()
+    public function isCore(): bool
     {
-        return $this->contact;
-    }
-
-    /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param \DateTime $dateCreated
-     */
-    public function setDateCreated($dateCreated)
-    {
-        $this->dateCreated = $dateCreated;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateDeleted()
-    {
-        return $this->dateDeleted;
-    }
-
-    /**
-     * @param \DateTime $dateDeleted
-     */
-    public function setDateDeleted($dateDeleted)
-    {
-        $this->dateDeleted = $dateDeleted;
+        return $this->core === self::CORE;
     }
 
     /**
@@ -326,68 +215,13 @@ class Selection extends EntityAbstract
 
     /**
      * @param int $id
+     *
+     * @return Selection
      */
-    public function setId($id)
+    public function setId(int $id): Selection
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNote()
-    {
-        return $this->note;
-    }
-
-    /**
-     * @param string $note
-     */
-    public function setNote($note)
-    {
-        $this->note = $note;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPersonal($textual = false)
-    {
-        if ($textual) {
-            return self::$personalTemplates[$this->personal];
-        }
-
-        return $this->personal;
-    }
-
-    /**
-     * @param int $personal
-     */
-    public function setPersonal($personal)
-    {
-        $this->personal = $personal;
-    }
-
-    /**
-     * @param bool $textual
-     *
-     * @return int
-     */
-    public function getPrivate($textual = false)
-    {
-        if ($textual) {
-            return self::$privateTemplates[$this->private];
-        }
-
-        return $this->private;
-    }
-
-    /**
-     * @param int $private
-     */
-    public function setPrivate($private)
-    {
-        $this->private = $private;
+        return $this;
     }
 
     /**
@@ -400,10 +234,13 @@ class Selection extends EntityAbstract
 
     /**
      * @param string $selection
+     *
+     * @return Selection
      */
-    public function setSelection($selection)
+    public function setSelection(string $selection): Selection
     {
         $this->selection = $selection;
+        return $this;
     }
 
     /**
@@ -416,14 +253,112 @@ class Selection extends EntityAbstract
 
     /**
      * @param string $tag
+     *
+     * @return Selection
      */
-    public function setTag($tag)
+    public function setTag(?string $tag): Selection
     {
         $this->tag = $tag;
+        return $this;
     }
 
     /**
-     * @return \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return Selection
+     */
+    public function setDateCreated(\DateTime $dateCreated): Selection
+    {
+        $this->dateCreated = $dateCreated;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateDeleted()
+    {
+        return $this->dateDeleted;
+    }
+
+    /**
+     * @param \DateTime $dateDeleted
+     *
+     * @return Selection
+     */
+    public function setDateDeleted(\DateTime $dateDeleted): Selection
+    {
+        $this->dateDeleted = $dateDeleted;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     *
+     * @return Selection
+     */
+    public function setNote(string $note): Selection
+    {
+        $this->note = $note;
+        return $this;
+    }
+
+    /**
+     * @return Contact
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param Contact $contact
+     *
+     * @return Selection
+     */
+    public function setContact(Contact $contact): Selection
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
+    public function getCore(bool $textual = false)
+    {
+        if ($textual) {
+            return self::$coreTemplates[$this->core];
+        }
+        return $this->core;
+    }
+
+    /**
+     * @param int $core
+     *
+     * @return Selection
+     */
+    public function setCore(int $core): Selection
+    {
+        $this->core = $core;
+        return $this;
+    }
+
+    /**
+     * @return SelectionContact[]|Collections\ArrayCollection
      */
     public function getSelectionContact()
     {
@@ -431,31 +366,18 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\SelectionContact[]|Collections\ArrayCollection $selectionContact
+     * @param SelectionContact[]|Collections\ArrayCollection $selectionContact
+     *
+     * @return Selection
      */
     public function setSelectionContact($selectionContact)
     {
         $this->selectionContact = $selectionContact;
+        return $this;
     }
 
     /**
-     * @return \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection
-     */
-    public function getMailingList()
-    {
-        return $this->mailingList;
-    }
-
-    /**
-     * @param \Contact\Entity\SelectionMailingList[]|Collections\ArrayCollection $mailingList
-     */
-    public function setMailingList($mailingList)
-    {
-        $this->mailingList = $mailingList;
-    }
-
-    /**
-     * @return \Contact\Entity\SelectionSql
+     * @return SelectionSql
      */
     public function getSql()
     {
@@ -463,15 +385,18 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Contact\Entity\SelectionSql $sql
+     * @param SelectionSql $sql
+     *
+     * @return Selection
      */
-    public function setSql($sql)
+    public function setSql(SelectionSql $sql): Selection
     {
         $this->sql = $sql;
+        return $this;
     }
 
     /**
-     * @return \Mailing\Entity\Mailing[]|Collections\ArrayCollection
+     * @return Collections\ArrayCollection|\Mailing\Entity\Mailing[]
      */
     public function getMailing()
     {
@@ -479,11 +404,14 @@ class Selection extends EntityAbstract
     }
 
     /**
-     * @param \Mailing\Entity\Mailing[]|Collections\ArrayCollection $mailing
+     * @param Collections\ArrayCollection|\Mailing\Entity\Mailing[] $mailing
+     *
+     * @return Selection
      */
     public function setMailing($mailing)
     {
         $this->mailing = $mailing;
+        return $this;
     }
 
     /**
@@ -502,43 +430,6 @@ class Selection extends EntityAbstract
     public function setMeetingOptionCost($meetingOptionCost)
     {
         $this->meetingOptionCost = $meetingOptionCost;
-
-        return $this;
-    }
-
-    /**
-     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
-     */
-    public function getAccess()
-    {
-        return $this->access;
-    }
-
-    /**
-     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
-     */
-    public function setAccess($access)
-    {
-        $this->access = $access;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
-     */
-    public function getMeetingCost()
-    {
-        return $this->meetingCost;
-    }
-
-    /**
-     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingCost
-     *
-     * @return Selection
-     */
-    public function setMeetingCost($meetingCost)
-    {
-        $this->meetingCost = $meetingCost;
-
         return $this;
     }
 
@@ -558,7 +449,44 @@ class Selection extends EntityAbstract
     public function setMeeting($meeting)
     {
         $this->meeting = $meeting;
+        return $this;
+    }
 
+    /**
+     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
+     */
+    public function getMeetingCost()
+    {
+        return $this->meetingCost;
+    }
+
+    /**
+     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingCost
+     *
+     * @return Selection
+     */
+    public function setMeetingCost($meetingCost)
+    {
+        $this->meetingCost = $meetingCost;
+        return $this;
+    }
+
+    /**
+     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
+     */
+    public function getAccess()
+    {
+        return $this->access;
+    }
+
+    /**
+     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
+     *
+     * @return Selection
+     */
+    public function setAccess($access)
+    {
+        $this->access = $access;
         return $this;
     }
 }

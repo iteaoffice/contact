@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +26,7 @@ use Zend\Form\Annotation;
  *
  * @category    Contact
  */
-class Dnd //extends EntityAbstract implements ResourceInterface
+class Dnd extends AbstractEntity
 {
     /**
      * @ORM\Column(name="dnd_id", type="integer", nullable=false)
@@ -92,6 +94,21 @@ class Dnd //extends EntityAbstract implements ResourceInterface
      * @var \Program\Entity\Program
      */
     private $program;
+
+    public function __get($property)
+    {
+        return $this->$property;
+    }
+
+    public function __set($property, $value)
+    {
+        $this->$property = $value;
+    }
+
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
 
     /**
      * @return Contact

@@ -1,25 +1,50 @@
 <h2>{{ translate("txt-selections") }}</h2>
 
-<table class="table table-hover table-striped table-condensed">
-    <thead>
-    <tr>
-        <th>{{ translate("txt-no") }}</th>
-        <th>{{ translate("txt-id") }}</th>
-        <th>{{ translate("txt-selection") }}</th>
-        <th>{{ translate("txt-type") }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for selection in selections %}
-        <tr {% if selection.dateDeleted %}class="danger"{% endif %}>
-            <td>{{ loop.index }} {% if selection.dateDeleted %}
-                    <i class="fa fa-trash"
-                       title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")) }}"></i>
-                {% endif %}</td>
-            <td>{{ selection.id }}</td>
-            <td>{{ selectionLink(selection,'view','name') }}</td>
-            <td>{% if selection.sql %}{{ translate('txt-sql') }}{% else %}{{ translate("txt-fixed") }}{% endif %}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% if selections|length > 0 %}
+    <form method="post">
+        <table class="table table-hover table-striped table-condensed table-sm">
+            <thead>
+            <tr>
+                <th><i class="fa fa-trash"></i>
+                </th>
+                <th>{{ translate("txt-no") }}</th>
+                <th>{{ translate("txt-id") }}</th>
+                <th>{{ translate("txt-selection") }}</th>
+                <th>{{ translate("txt-core") }}</th>
+                <th>{{ translate("txt-type") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for selection in selections if not selection.dateDeleted %}
+                <tr>
+                    <td>{% if not selectionService.isSql(selection) %}<input type="checkbox" name="selection"
+                                                                             value="{{ selection.id }}">{% endif %}</td>
+                    <td>{{ loop.index }} {% if selection.dateDeleted %}
+                            <i class="fa fa-trash"
+                               title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")) }}"></i>
+                        {% endif %}</td>
+                    <td>{{ selection.id }}</td>
+                    <td>{{ selectionLink(selection,'view','name') }}</td>
+                    <td>{% if selection.isCore() %}{{ translate("txt-core") }}{% endif %}</td>
+                    <td>{% if selection.sql %}{{ translate("txt-sql") }}{% else %}{{ translate("txt-fixed") }}{% endif %}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2">{{ translate("txt-deleted-selections") }}</td>
+                <td colspan="3">
+                    {% for selection in selections if selection.dateDeleted %}
+                        {{ selectionLink(selection,'view','name') }},
+                    {% endfor %}
+                </td>
+            </tbody>
+        </table>
+
+        <input type="submit" value="{{ translate("txt-remove-from-selection") }}" class="btn btn-danger">
+        {{ selectionLink(null, 'add-contact', 'button', null, null, contact) }}
+    </form>
+{% else %}
+    {{ ztbalert().info(translate("txt-contact-%s-is-not-active-in-any-selection"))|raw }}
+    {{ selectionLink(null, 'add-contact', 'button', null, null, contact) }}
+{% endif %}
+
+

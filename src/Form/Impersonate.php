@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Doctrine\ORM\EntityManager;
@@ -46,7 +48,7 @@ class Impersonate extends Form
                     'help-block'     => _("txt-deeplink-target-form-element-explanation"),
                 ],
                 'attributes' => [
-                    'label' => ucfirst(_("txt-target")),
+                    'label' => _("txt-target"),
                     'class' => 'form-control',
                     'id'    => "target",
                 ],
@@ -60,7 +62,7 @@ class Impersonate extends Form
                     'help-block' => _("txt-deeplink-key-form-element-explanation"),
                 ],
                 'attributes' => [
-                    'label'       => ucfirst(_("txt-key")),
+                    'label'       => _("txt-key"),
                     'class'       => 'form-control',
                     'id'          => "key",
                     'placeholder' => _("txt-key"),

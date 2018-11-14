@@ -1,0 +1,82 @@
+{% do headTitle().append(translate("txt-duplicate-contacts")) %}
+
+{% do form.prepare() %}
+
+{{ form().openTag(form)|raw }}
+
+{% set filter = form.get('filter') %}
+
+
+<input type="hidden" name="filter[order]" value="{{ order }}">
+<input type="hidden" name="filter[direction]" value="{{ direction }}">
+
+<div class="row">
+
+    <div class="col-md-9">
+
+        <h1 class="display-4">{{ translate("txt-duplicate-contacts") }}</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <p>{{ translate("txt-duplicate-contacts-explanation") }}</p>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    {{ formelement(filter.get('search')) }}
+                    <span class="input-group-btn">{{ formelement(form.get('submit')) }}</span></div>
+            </div>
+        </div>
+
+        {% if paginator.pageRange > 0 %}
+            <table class="table table-hover table-striped table-condensed table-sm">
+                <thead>
+                <tr>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
+                    <th>{{ translate('txt-email') }}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
+                    <th>{{ translate("txt-amount") }}</th>
+                </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+                <tbody>
+                {% for contactAndAmount in paginator.getCurrentItems() %}
+
+                    {% set contact = contactAndAmount['contact'] %}
+
+                    <tr>
+                        <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
+                        <td><a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
+                                        class="fa fa-envelope-o"></i> </a></td>
+                        <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
+                        <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
+                        <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
+                        <td>{{ contactAndAmount['amount'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% include 'contact/partial/pagination-control' %}
+        {% else %}
+            {{ ztbalert().info(translate("txt-no-contacts-found"))|raw }}
+        {% endif %}
+    </div>
+    <div class="col-md-3">
+        <div class="well well-sm">
+            <fieldset>
+                {{ ztbformelement(filter.get('options')) }}
+                {{ ztbformelement(filter.get('gender')) }}
+                {{ ztbformelement(filter.get('country')) }}
+
+                <div class="form-group row">
+                    {{ ztbformelement(form.get('submit')) }}
+                    {{ ztbformelement(form.get('clear')) }}
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}

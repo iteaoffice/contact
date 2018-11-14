@@ -8,36 +8,34 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Repository;
 
 use Contact\Entity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * @category    Contact
+ * Class Address
+ *
+ * @package Contact\Repository
  */
 class Address extends EntityRepository
 {
-    /**
-     * @param Entity\Contact     $contact
-     * @param Entity\AddressType $type
-     *
-     * @return null|Entity\Address
-     */
     public function findAddressByContactAndType(Entity\Contact $contact, Entity\AddressType $type)
     {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('a');
-        $queryBuilder->from('Contact\Entity\Address', 'a');
-        $queryBuilder->join('a.type', 't');
-        $queryBuilder->join('t.subSort', 's');
-        $queryBuilder->where('a.contact = ?1');
-        $queryBuilder->andWhere('s.mainType = ?2');
-        $queryBuilder->setParameter(1, $contact);
-        $queryBuilder->setParameter(2, $type);
-        $queryBuilder->orderBy('s.sort', 'ASC');
-        $queryBuilder->setMaxResults(1);
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_address');
+        $qb->from(Entity\Address::class, 'contact_entity_address');
+        $qb->join('contact_entity_address.type', 'contact_entity_address_type');
+        $qb->join('contact_entity_address_type.subSort', 'contact_entity_address_type_subsort');
+        $qb->where('contact_entity_address.contact = :contact');
+        $qb->andWhere('contact_entity_address_type_subsort.mainType = :maintype');
+        $qb->setParameter('contact', $contact);
+        $qb->setParameter('maintype', $type);
+        $qb->orderBy('contact_entity_address_type_subsort.sort', 'ASC');
+        $qb->setMaxResults(1);
 
-        return $queryBuilder->getQuery()->useQueryCache(true)->getOneOrNullResult();
+        return $qb->getQuery()->useQueryCache(true)->getOneOrNullResult();
     }
 }

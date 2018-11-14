@@ -8,61 +8,90 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\Facebook;
 use Contact\Form\SendMessage;
-use Zend\Mvc\Controller\Plugin\FlashMessenger;
+use Contact\Service\ContactService;
+use General\Service\EmailService;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\View\Model\ViewModel;
-use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
- * @category    Contact
+ * Class FacebookController
  *
- * @method      ZfcUserAuthentication zfcUserAuthentication()
- * @method      FlashMessenger flashMessenger()
- * @method      bool isAllowed($resource, $action)
+ * @package Contact\Controller
  */
-class FacebookController extends ContactAbstractController
+final class FacebookController extends ContactAbstractController
 {
     /**
-     * @return ViewModel
+     * @var array
      */
-    public function facebookAction()
+    private $config;
+    /**
+     * @var ContactService
+     */
+    private $contactService;
+    /**
+     * @var EmailService
+     */
+    private $emailService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(
+        array $config,
+        ContactService $contactService,
+        EmailService $emailService,
+        TranslatorInterface $translator
+    ) {
+        $this->config = $config;
+        $this->contactService = $contactService;
+        $this->emailService = $emailService;
+        $this->translator = $translator;
+    }
+
+
+    public function facebookAction(): ViewModel
     {
         /**
          * @var Facebook $facebook
          */
-        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
-        $view     = new ViewModel(
+        $facebook = $this->contactService->find(Facebook::class, (int)$this->params('facebook'));
+
+        if (null === $facebook) {
+            return $this->notFoundAction();
+        }
+
+        //This is a trick. The FB parser does a query to get the contacts but does not inlude the activation.
+        //By do a check first if the contact is activated we create the identity of the logged in user and overrule the query
+        $this->identity()->isActivated();
+
+        return new ViewModel(
             [
                 'facebook'          => $facebook,
-                'contacts'          => $this->getContactService()->findContactsInFacebook($facebook),
-                'contactInFacebook' => $this->getContactService()->isContactInFacebook(
-                    $this->zfcUserAuthentication()
-                         ->getIdentity(),
-                    $facebook
-                ),
+                'contacts'          => $this->contactService->findContactsInFacebook($facebook),
+                'contactInFacebook' => $this->contactService->isContactInFacebook($this->identity(), $facebook),
             ]
         );
-        $view->setTemplate($this->getContactService()->getFacebookTemplate());
-
-        return $view;
     }
 
-    /**
-     * Special action which produces an HTML version of the review calendar.
-     *
-     * @return ViewModel
-     */
     public function sendMessageAction()
     {
         /**
          * @var $facebook Facebook
          */
-        $facebook = $this->getContactService()->findEntityById(Facebook::class, $this->params('id'));
+        $facebook = $this->contactService->find(Facebook::class, (int)$this->params('id'));
 
-        $data = array_merge_recursive($this->getRequest()->getPost()->toArray());
+        if (null === $facebook) {
+            return $this->notFoundAction();
+        }
+
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form = new SendMessage();
         $form->setData($data);
@@ -77,41 +106,33 @@ class FacebookController extends ContactAbstractController
 
                 if (isset($formValues['cancel'])) {
                     return $this->redirect()
-                                ->toRoute('community/contact/facebook/facebook', ['id' => $facebook->getId()]);
+                        ->toRoute('community/contact/facebook/facebook', ['id' => $facebook->getId()]);
                 }
-                /*
-                 * Send the email tot he office
-                 */
-                $email = $this->getEmailService()->create();
-                $email->setPersonal(false); //Send 1 email to everyone
-                $email->setFromContact($this->zfcUserAuthentication()->getIdentity());
+
+                $this->emailService->setWebInfo('/contact/facebook/message');
                 /*
                  * Inject the contacts in the email
                  */
-                foreach ($this->getContactService()->findContactsInFacebook($facebook) as $contact) {
-                    $email->addTo($contact['contact']);
+                foreach ($this->contactService->findContactsInFacebook($facebook) as $contact) {
+                    $this->emailService->addTo($contact['contact']);
                 }
 
-                $email->setSubject(
-                    sprintf(
-                        '[%s] Message received from %s',
-                        $facebook->getFacebook(),
-                        $this->zfcUserAuthentication()->getIdentity()->getDisplayName()
-                    )
-                );
+                $variables = [
+                    'facebook'    => $facebook->getFacebook(),
+                    'message'     => nl2br($form->getData()['message']),
+                    'sender_name' => $this->identity()->parseFullName()
+                ];
 
-                $email->setHtmlLayoutName('signature_twig');
-                $email->setMessage(nl2br($form->getData()['message']));
-
-                $this->getEmailService()->send();
+                $this->emailService->addTemplateVariables($variables);
+                $this->emailService->send();
 
                 $this->flashMessenger()
-                     ->addSuccessMessage(
-                         sprintf(
-                             $this->translate("txt-message-to-attendees-for-%s-has-been-sent"),
-                             $facebook->getFacebook()
-                         )
-                     );
+                    ->addSuccessMessage(
+                        sprintf(
+                            $this->translator->translate("txt-message-to-members-of-facebook-$%s-has-been-sent"),
+                            $facebook->getFacebook()
+                        )
+                    );
 
                 return $this->redirect()->toRoute('community/contact/facebook/facebook', ['id' => $facebook->getId()]);
             }
@@ -121,7 +142,7 @@ class FacebookController extends ContactAbstractController
             [
                 'form'     => $form,
                 'facebook' => $facebook,
-                'contacts' => $this->getContactService()->findContactsInFacebook($facebook),
+                'contacts' => $this->contactService->findContactsInFacebook($facebook),
             ]
         );
     }

@@ -16,7 +16,7 @@
 
     <div class="col-md-9">
 
-        <h1>{{ translate("txt-selection-list") }} {{ selectionLink(null,'new', 'button') }}</h1>
+        <h1 class="display-4">{{ translate("txt-selection-list") }} {{ selectionLink(null,'new', 'button') }}</h1>
 
         <div class="row">
             <div class="col-md-6">
@@ -30,14 +30,14 @@
         </div>
 
         {% if paginator.pageRange > 0 %}
-            <table class="table table-hover table-striped table-condensed">
+            <table class="table table-hover table-striped table-condensed table-sm">
                 <thead>
                 <tr>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'owner', 'text': translate('txt-owner')} %}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'tag', 'text': translate('txt-tag')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'owner', 'text': translate('txt-owner')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'core', 'text': translate('txt-core')} %}</th>
                     <th>{{ translate("txt-contacts") }}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection-manager/list', 'criteria': 'date', 'text': translate('txt-date')} %}</th>
+                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'date', 'text': translate('txt-date')} %}</th>
                 </tr>
                 </thead>
                 <tfoot>
@@ -52,9 +52,12 @@
 
                             {{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}
                         </td>
-                        <td>{{ contactLink(selection.contact,'view-admin','name') }}</td>
-                        <td>{{ selection.tag }}</td>
-                        <td>{% if selection.sql %}-/-{% else %}{{ selection.selectionContact.count }}{% endif %}</td>
+                        <td>{{ translate(selection.getCore(true)) }}</td>
+                        <td>{{ contactLink(selection.contact,'view-admin','initials') }}</td>
+                        <td>{{ selectionService.getAmountOfContacts(selection) }}{% if selectionService.isSql(selection) %}
+                                <i class="fa fa-code fa-help" aria-hidden="true"
+                                   title="{{ translate("txt-selection-is-sql") }}"></i>
+                            {% endif %}</td>
                         <td>{{ selection.dateCreated|string_date }}</td>
                     </tr>
                 {% endfor %}
@@ -70,9 +73,10 @@
             <fieldset>
 
                 {{ ztbformelement(filter.get('includeDeleted')) }}
+                {{ ztbformelement(filter.get('core')) }}
                 {{ ztbformelement(filter.get('tags')) }}
 
-                <div class="form-group">
+                <div class="form-group row">
                     {{ ztbformelement(form.get('submit')) }}
                     {{ ztbformelement(form.get('clear')) }}
                 </div>

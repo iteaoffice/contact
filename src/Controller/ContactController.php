@@ -8,16 +8,21 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Controller;
 
 use Contact\Entity\AddressType;
-use Contact\Entity\Photo;
+use Contact\Entity\Contact;
 use Contact\Form\Password;
 use Contact\InputFilter\PasswordFilter;
-use PHPThumb\GD;
+use Contact\Search\Service\ProfileSearchService;
+use Contact\Service\ContactService;
 use Search\Form\SearchResult;
 use Search\Paginator\Adapter\SolariumPaginator;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
+use Zend\Http\Request;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -27,179 +32,77 @@ use Zend\View\Model\ViewModel;
  *
  * @package Contact\Controller
  */
-class ContactController extends ContactAbstractController
+final class ContactController extends ContactAbstractController
 {
-    /**
-     * @return ViewModel
+    /***
+     * @var ContactService
      */
-    public function signatureAction()
-    {
-        return new ViewModel(
-            [
-                'contactService' => $this->getContactService(),
-                'contact'        => $this->zfcUserAuthentication()->getIdentity(),
-            ]
-        );
+    private $contactService;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+    /**
+     * @var ProfileSearchService
+     */
+    private $profileSearchService;
+
+    public function __construct(
+        ContactService $contactService,
+        TranslatorInterface $translator,
+        ProfileSearchService $profileSearchService
+    ) {
+        $this->contactService = $contactService;
+        $this->translator = $translator;
+        $this->profileSearchService = $profileSearchService;
     }
 
-    /**
-     * @return array|\Zend\Http\PhpEnvironment\Response|\Zend\Stdlib\ResponseInterface
-     */
-    public function photoAction()
-    {
-        /**
-         * @var $photo Photo
-         */
-        $photo = $this->getContactService()->findEntityById(Photo::class, $this->params('id'));
-
-        /*
-         * Do a check if the given has is correct to avoid guessing the image
-         */
-        if (is_null($photo) || is_null($photo->getPhoto())
-            || $this->params('hash') !== $photo->getHash()
-        ) {
-            return $this->notFoundAction();
-        }
-
-        $file = stream_get_contents($photo->getPhoto());
-        $width = $this->params('width', null);
-
-        /*
-         * Check if the file is cached and if not, create it
-         */
-        if (!file_exists($photo->getCacheFileName($width))) {
-            /*
-             * The file exists, but is it not updated?
-             */
-            file_put_contents($photo->getCacheFileName($width), $file);
-
-            //Start the resize-action based on the width
-            if (!is_null($width)) {
-                $thumb = new GD($photo->getCacheFileName($width));
-                $thumb->resize($width);
-                $thumb->save($photo->getCacheFileName($width));
-            }
-        }
-
-
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 36000))
-            ->addHeaderLine("Cache-Control: max-age=36000, must-revalidate")->addHeaderLine("Pragma: public")
-            ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType())
-            ->addHeaderLine('Content-Length: ' . (string)strlen(file_get_contents($photo->getCacheFileName($width))));
-        $response->setContent(file_get_contents($photo->getCacheFileName($width)));
-
-        return $response;
-    }
-
-    /**
-     * Ajax controller to update the OptIn.
-     *
-     * @return \Zend\View\Model\JsonModel
-     */
-    public function optInUpdateAction()
-    {
-        $optInId = (int)$this->params()->fromQuery('optInId');
-
-        /*
-         * We do not specify the enable, so we give the result
-         */
-        if (is_null($enable = $this->params()->fromQuery('enable'))) {
-            return new JsonModel(
-                [
-                    'enable' => $this->getContactService()
-                                     ->hasOptInEnabledByContact(
-                                         $optInId,
-                                         $this->zfcUserAuthentication()->getIdentity()
-                                     ),
-                    'id'     => $optInId,
-                ]
-            );
-        }
-
-        //Make a boolean value of $enable
-        $enable = ($enable === 'true');
-
-        $this->getContactService()
-             ->updateOptInForContact($optInId, $enable, $this->zfcUserAuthentication()->getIdentity());
-
-        return new JsonModel(
-            [
-                'enable' => $enable,
-                'id'     => $optInId,
-            ]
-        );
-    }
-
-    /**
-     * Dedicated function which checks if the user has an active session.
-     */
-    public function hasSessionAction()
-    {
-        $viewModel = new ViewModel(['hasSession' => $this->zfcUserAuthentication()->getIdentity()]);
-        $viewModel->setTerminal(true);
-
-        return $viewModel;
-    }
-
-    /**
-     * Function to save the password of the user.
-     */
     public function changePasswordAction()
     {
         $form = new Password();
         $form->setInputFilter(new PasswordFilter());
         $form->setAttribute('class', 'form-horizontal');
 
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray(),
-            $this->getRequest()->getFiles()->toArray()
-        );
+        $data = $this->getRequest()->getPost()->toArray();
 
         $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
             $formData = $form->getData();
-            if ($this->getContactService()
-                     ->updatePasswordForContact($formData['password'], $this->zfcUserAuthentication()->getIdentity())
-            ) {
-                $this->flashMessenger()->setNamespace('success')
-                     ->addMessage($this->translate("txt-password-successfully-been-updated"));
+            $this->contactService->updatePasswordForContact($formData['password'], $this->identity());
 
-                return $this->redirect()->toRoute('community/contact/profile/view');
-            }
+            $this->flashMessenger()->addSuccessMessage($this->translator->translate("txt-password-successfully-been-updated"));
+
+            return $this->redirect()->toRoute('community/contact/profile/view');
         }
 
         return new ViewModel(['form' => $form]);
     }
 
-    /**
-     * @return array|JsonModel
-     */
-    public function getAddressByTypeAction()
+    public function getAddressByTypeAction(): JsonModel
     {
         $contactId = (int)$this->getEvent()->getRequest()->getQuery()->get('id');
-        $typeId    = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
+        $typeId = (int)$this->getEvent()->getRequest()->getQuery()->get('typeId');
 
-        $contact = $this->getContactService()->findContactById($contactId);
+        $contact = $this->contactService->findContactById($contactId);
 
-        if (is_null($contact)) {
-            return $this->notFoundAction();
+        if (null === $contact) {
+            return new JsonModel([]);
         }
 
         switch ($typeId) {
             case AddressType::ADDRESS_TYPE_FINANCIAL:
-                $address = $this->getContactService()
-                                ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
+                $address = $this->contactService
+                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
                 break;
             case AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL:
-                $address = $this->getContactService()
-                                ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+                $address = $this->contactService
+                    ->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
                 break;
             default:
-                return $this->notFoundAction();
+                return new JsonModel([]);
         }
 
-        if (is_null($address)) {
+        if (null === $address) {
             return new JsonModel();
         }
 
@@ -213,27 +116,34 @@ class ContactController extends ContactAbstractController
         );
     }
 
-    /**
-     * @return ViewModel
-     */
-    public function searchAction()
+    public function searchAction(): ViewModel
     {
-        $searchService = $this->getProfileSearchService();
-        $page          = $this->params('page', 1);
+        /** @var Request $request */
+        $request = $this->getRequest();
+        $page = $this->params('page', 1);
 
         $form = new SearchResult();
-        $data = array_merge(['query' => '*', 'facet' => []], $this->getRequest()->getQuery()->toArray());
+        $data = array_merge(['query' => '', 'facet' => []], $request->getQuery()->toArray());
+        $searchFields = [
+            'fullname_search',
+            'position_search',
+            'profile_search',
+            'organisation_search',
+            'organisation_type_search',
+            'country_search',
+            'cv_search',
+        ];
 
-        if ($this->getRequest()->isGet()) {
-            $searchService->setSearch($data['query']);
+        if ($request->isGet()) {
+            $this->profileSearchService->setSearch($data['query'], $searchFields);
             if (isset($data['facet'])) {
                 foreach ($data['facet'] as $facetField => $values) {
                     $quotedValues = [];
                     foreach ($values as $value) {
-                        $quotedValues[] = sprintf("\"%s\"", $value);
+                        $quotedValues[] = \sprintf('"%s"', $value);
                     }
 
-                    $searchService->addFilterQuery(
+                    $this->profileSearchService->addFilterQuery(
                         $facetField,
                         implode(' ' . SolariumQuery::QUERY_OPERATOR_OR . ' ', $quotedValues)
                     );
@@ -241,13 +151,15 @@ class ContactController extends ContactAbstractController
             }
 
             $form->addSearchResults(
-                $searchService->getQuery()->getFacetSet(),
-                $searchService->getResultSet()->getFacetSet()
+                $this->profileSearchService->getQuery()->getFacetSet(),
+                $this->profileSearchService->getResultSet()->getFacetSet()
             );
             $form->setData($data);
         }
 
-        $paginator = new Paginator(new SolariumPaginator($searchService->getSolrClient(), $searchService->getQuery()));
+        $paginator = new Paginator(
+            new SolariumPaginator($this->profileSearchService->getSolrClient(), $this->profileSearchService->getQuery())
+        );
         $paginator::setDefaultItemCountPerPage(($page === 'all') ? 1000000 : 16);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
@@ -261,6 +173,7 @@ class ContactController extends ContactAbstractController
                 'params'                 => $this->getEvent()->getRouteMatch()->getParams(),
                 'currentPage'            => $page,
                 'lastPage'               => $paginator->getPageRange(),
+                'contact'                => new Contact(),
                 'showAlwaysFirstAndLast' => true,
             ]
         );

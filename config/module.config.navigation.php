@@ -21,13 +21,21 @@ return [
                         'label' => _("txt-account-information"),
                         'route' => 'community/contact/profile/view',
                         'pages' => [
-                            'edit-profile'                => [
+                            'organisation'                => [
+                                'label' => _("txt-profile-organisation"),
+                                'route' => 'community/contact/profile/organisation',
+                            ],
+                            'events'                      => [
+                                'label' => _("txt-profile-events"),
+                                'route' => 'community/contact/profile/events',
+                            ],
+                            'privacy'                     => [
+                                'label' => _("txt-profile-privacy"),
+                                'route' => 'community/contact/profile/privacy',
+                            ],
+                            'edit'                        => [
                                 'label' => _("txt-profile-edit"),
                                 'route' => 'community/contact/profile/edit',
-                            ],
-                            'view-signature'              => [
-                                'label' => _("txt-view-signature"),
-                                'route' => 'community/contact/signature',
                             ],
                             'change-password'             => [
                                 'label' => _("txt-change-password"),
@@ -45,7 +53,6 @@ return [
                         ],
                     ],
                 ],
-
             ],
             'idea'    => [
                 'pages' => [
@@ -67,7 +74,7 @@ return [
         ],
         'admin'     => [
             // And finally, here is where we define our page hierarchy
-            'contact'    => [
+            'contact' => [
                 'label'    => _("txt-nav-contact"),
                 'route'    => 'zfcadmin/contact-admin/list',
                 'order'    => 10,
@@ -121,9 +128,35 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'edit-note'           => [
+                                        'label'   => _('txt-edit-note'),
+                                        'route'   => 'zfcadmin/note/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Note::class,
+                                            ],
+                                            'invokables' => [
+                                                Contact\Navigation\Invokable\NoteLabel::class,
+                                            ],
+                                        ],
+                                    ],
+                                    'new-note'            => [
+                                        'label'   => _('txt-new-note'),
+                                        'route'   => 'zfcadmin/note/new',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'contact',
+                                            ],
+                                        ],
+                                    ],
                                     'edit-address'        => [
                                         'label'   => _('txt-edit-address'),
-                                        'route'   => 'zfcadmin/address-manager/edit',
+                                        'route'   => 'zfcadmin/address/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -136,7 +169,7 @@ return [
                                     ],
                                     'new-address'         => [
                                         'label'   => _('txt-new-address'),
-                                        'route'   => 'zfcadmin/address-manager/new',
+                                        'route'   => 'zfcadmin/address/new',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -149,7 +182,7 @@ return [
                                     ],
                                     'edit-phone'          => [
                                         'label'   => _('txt-edit-phone'),
-                                        'route'   => 'zfcadmin/phone-manager/edit',
+                                        'route'   => 'zfcadmin/phone/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -162,7 +195,7 @@ return [
                                     ],
                                     'new-phone'           => [
                                         'label'   => _('txt-new-phone'),
-                                        'route'   => 'zfcadmin/phone-manager/new',
+                                        'route'   => 'zfcadmin/phone/new',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -173,23 +206,31 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'merge'               => [
+                                        'label'   => _('txt-nav-merge'),
+                                        'route'   => 'zfcadmin/contact-admin/merge',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'targetId',
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],
                     ],
-                    'import'     => [
-                        'label' => _("txt-nav-contact-import"),
-                        'order' => 50,
-                        'route' => 'zfcadmin/contact-admin/import',
-                    ],
                     'selections' => [
                         'label' => _("txt-nav-selection-list"),
                         'order' => 20,
-                        'route' => 'zfcadmin/selection-manager/list',
+                        'route' => 'zfcadmin/selection/list',
                         'pages' => [
                             'view'          => [
                                 'label'   => _('txt-view'),
-                                'route'   => 'zfcadmin/selection-manager/view',
+                                'route'   => 'zfcadmin/selection/view',
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
@@ -202,7 +243,7 @@ return [
                                 'pages'   => [
                                     'edit-selection' => [
                                         'label'   => _('txt-edit-selection'),
-                                        'route'   => 'zfcadmin/selection-manager/edit',
+                                        'route'   => 'zfcadmin/selection/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -212,7 +253,17 @@ return [
                                     ],
                                     'edit-contacts'  => [
                                         'label'   => _('txt-edit-contacts'),
-                                        'route'   => 'zfcadmin/selection-manager/edit-contacts',
+                                        'route'   => 'zfcadmin/selection/edit-contacts',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities' => [
+                                                'id' => \Contact\Entity\Selection::class,
+                                            ],
+                                        ],
+                                    ],
+                                    'generate-deeplinks'  => [
+                                        'label'   => _('txt-generate-deeplinks'),
+                                        'route'   => 'zfcadmin/selection/generate-deeplinks',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -222,20 +273,24 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit-contacts' => [
+                            'new-selection' => [
                                 'label' => _('txt-new-selection'),
-                                'route' => 'zfcadmin/selection-manager/new',
+                                'route' => 'zfcadmin/selection/new',
+                            ],
+                            'add-contact'   => [
+                                'label' => _('txt-add-contact-to-selection'),
+                                'route' => 'zfcadmin/selection/add-contact',
                             ],
                         ],
                     ],
                     'facebook'   => [
                         'label' => _("txt-nav-facebook-list"),
-                        'route' => 'zfcadmin/facebook-manager/list',
+                        'route' => 'zfcadmin/facebook/list',
                         'order' => 40,
                         'pages' => [
                             'view-facebook' => [
                                 'label'   => _('txt-view'),
-                                'route'   => 'zfcadmin/facebook-manager/view',
+                                'route'   => 'zfcadmin/facebook/view',
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
@@ -248,7 +303,7 @@ return [
                                 'pages'   => [
                                     'edit-facebook' => [
                                         'label'   => _('txt-edit-facebook'),
-                                        'route'   => 'zfcadmin/facebook-manager/edit',
+                                        'route'   => 'zfcadmin/facebook/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -260,16 +315,61 @@ return [
                             ],
                         ],
                     ],
+                    'opt-in'     => [
+                        'label' => _("txt-nav-opt-in-list"),
+                        'route' => 'zfcadmin/opt-in/list',
+                        'order' => 40,
+                        'pages' => [
+                            'view-opt-in' => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/opt-in/view',
+                                'visible' => false,
+                                'params'  => [
+                                    'entities'   => [
+                                        'id' => \Contact\Entity\OptIn::class,
+                                    ],
+                                    'invokables' => [
+                                        Contact\Navigation\Invokable\OptInLabel::class,
+                                    ],
+                                ],
+                                'pages'   => [
+                                    'edit-opt-in' => [
+                                        'label'   => _('txt-edit-opt-in'),
+                                        'route'   => 'zfcadmin/opt-in/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities' => [
+                                                'id' => \Contact\Entity\OptIn::class,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'new-opt-in'  => [
+                                'label' => _('txt-new-opt-in'),
+                                'route' => 'zfcadmin/opt-in/new',
+                            ],
+                        ],
+                    ],
 
                 ],
             ],
-            'management' => [
+            'tools'   => [
                 'pages' => [
-                    'permit' => [
-                        'label' => _("txt-nav-permission-list"),
-                        'route' => 'zfcadmin/permit-manager/entity/list',
+                    'import'                    => [
+                        'label' => _("txt-nav-contact-import"),
+                        'order' => 50,
+                        'route' => 'zfcadmin/contact-admin/import',
                     ],
-
+                    'list-duplicate-contacts'   => [
+                        'label' => _("txt-nav-list-duplicate-contacts"),
+                        'order' => 51,
+                        'route' => 'zfcadmin/contact-admin/list-duplicate',
+                    ], 'list-inactive-contacts' => [
+                        'label' => _("txt-nav-list-inactive-contacts"),
+                        'order' => 51,
+                        'route' => 'zfcadmin/contact-admin/list-inactive',
+                    ],
                 ],
             ],
         ],

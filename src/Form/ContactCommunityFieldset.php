@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
 use Contact\Entity;
@@ -22,13 +24,13 @@ use Zend\Form\Fieldset;
 class ContactCommunityFieldset extends Fieldset
 {
     /**
-     * @param EntityManager         $entityManager
-     * @param Entity\EntityAbstract $object
+     * @param EntityManager $entityManager
+     * @param Entity\AbstractEntity $object
      */
-    public function __construct(EntityManager $entityManager, Entity\EntityAbstract $object)
+    public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-        $community        = new Entity\Community();
+        $community = new Entity\Community();
         $doctrineHydrator = new DoctrineHydrator($entityManager, 'Contact\Entity\Community');
         $this->setHydrator($doctrineHydrator)->setObject($community);
         $builder = new AnnotationBuilder();
@@ -41,18 +43,18 @@ class ContactCommunityFieldset extends Fieldset
              */
             if ($element instanceof EntitySelect || $element instanceof EntityMultiCheckbox) {
                 $element->setOptions(
-                    array(
+                    [
                         'object_manager' => $entityManager,
-                    )
+                    ]
                 );
             }
             if ($element instanceof Radio) {
-                $attributes        = $element->getAttributes();
+                $attributes = $element->getAttributes();
                 $valueOptionsArray = 'get' . ucfirst($attributes['array']);
                 $element->setOptions(
-                    array(
+                    [
                         'value_options' => $object->$valueOptionsArray(),
-                    )
+                    ]
                 );
             }
             //Add only when a type is provided

@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-edit-selection-%s")|format(selection)) %}
 
-<h1>{{ translate("txt-edit-contacts-selection-%s")|format(selection) }} </h1>
+<h1 class="display-4">{{ translate("txt-edit-contacts-selection-%s")|format(selection) }} </h1>
 
 
 {% do form.prepare() %}
@@ -9,11 +9,11 @@
 
 {{ form().openTag(form)|raw }}
 
-<div class="form-group">
-    <label class="col-sm-3 control-label">{{ translate("txt-selection") }}</label>
+<div class="form-group row">
+    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-selection") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static">{{ selectionLink(selection, 'view', 'name') }} {{ selectionLink(selection, 'edit', 'icon') }}</p>
+        <p class="form-control-static form-control-plaintext">{{ selectionLink(selection, 'view', 'name') }} {{ selectionLink(selection, 'edit', 'icon') }}</p>
     </div>
 </div>
 
@@ -30,7 +30,7 @@
         <div class="col-md-6">
             <h2>{{ translate("txt-current-selection") }}</h2>
 
-            <table class="table table-hover table-striped" id="inselection"></table>
+            <table class="table table-hover table-striped table-condensed table-sm" id="inselection"></table>
 
 
             <input type="button" class="btn btn-info" onclick="Selection.SelectAll()"
@@ -64,7 +64,7 @@
 
 
             <h3>{{ translate("txt-search-results") }}</h3>
-            <table class="table table-hover table-striped" id="contacts"></table>
+            <table class="table table-hover table-striped table-condensed table-sm" id="contacts"></table>
 
 
             <input type="button" class="btn btn-info" onclick="Contacts.SelectAll()"
@@ -78,13 +78,13 @@
 
 <div id="pane-sql" {% if not selectionService.isSql(selection) %}style="display: none"{% endif %}>
     {{ ztbformelement(form.get('sql')) }}
-    <div class="form-group">
-        <div class="col-lg-9" id="sql"></div>
+    <div class="form-group row">
+        <div class="col-md-9" id="sql"></div>
     </div>
 </div>
 
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
+<div class="form-group row">
+    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
         {% if form.has('delete') %}
@@ -348,7 +348,7 @@
 
         $.ajax({
             method: 'post',
-            url: '{{ url('zfcadmin/selection-manager/get-contacts') }}',
+            url: '{{ url('zfcadmin/selection/get-contacts') }}',
             dataType: 'json',
             data: {
                 id: q

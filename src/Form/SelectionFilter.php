@@ -9,27 +9,22 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
+declare(strict_types=1);
+
 namespace Contact\Form;
 
+use Contact\Entity\Selection;
 use Contact\Service\SelectionService;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
 
 /**
- * Jield copyright message placeholder.
+ * Class SelectionFilter
  *
- * @category    Contact
- *
- * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @package Contact\Form
  */
 class SelectionFilter extends Form
 {
-    /**
-     * SelectionFilter constructor.
-     *
-     * @param SelectionService $selectionService
-     */
     public function __construct(SelectionService $selectionService)
     {
         parent::__construct();
@@ -65,7 +60,7 @@ class SelectionFilter extends Form
 
         $tags = [];
         foreach ($selectionService->findTags() as $tag) {
-            if (! empty($tag['tag'])) {
+            if (!empty($tag['tag'])) {
                 $tags[$tag['tag']] = $tag['tag'];
             }
         }
@@ -80,6 +75,20 @@ class SelectionFilter extends Form
                 ],
                 'attributes' => [
                     'label' => _("txt-filter-on-tags"),
+                ],
+            ]
+        );
+
+        $filterFieldset->add(
+            [
+                'type'       => 'Zend\Form\Element\MultiCheckbox',
+                'name'       => 'core',
+                'options'    => [
+                    'value_options' => Selection::getCoreTemplates(),
+                    'inline'        => true,
+                ],
+                'attributes' => [
+                    'label' => _("txt-filter-on-core-selections"),
                 ],
             ]
         );

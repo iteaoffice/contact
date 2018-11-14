@@ -13,24 +13,15 @@ use Contact\Controller;
 return [
     'router' => [
         'routes' => [
-            'assets'    => [
-                'type'          => 'Literal',
-                'priority'      => 1000,
-                'options'       => [
-                    'route'    => '/assets/' . (defined("ITEAOFFICE_HOST") ? ITEAOFFICE_HOST : 'test'),
-                    'defaults' => [
-                        'controller' => Controller\ContactController::class,
-                    ],
-                ],
-                'may_terminate' => true,
-                'child_routes'  => [
+            'image'     => [
+                'child_routes' => [
                     'contact-photo' => [
                         'type'    => 'Segment',
                         'options' => [
-                            'route'    => "/contact-photo/[:id]-[:hash]-[:width].[:ext]",
+                            'route'    => '/c/[:id]-[:last-update].[:ext]',
                             'defaults' => [
-                                'controller' => Controller\ContactController::class,
-                                'action'     => 'photo',
+                                'controller' => Controller\ImageController::class,
+                                'action'     => 'contact-photo',
                             ],
                         ],
                     ],
@@ -44,7 +35,6 @@ return [
                         'options'       => [
                             'route'    => '/contact',
                             'defaults' => [
-                                'namespace'  => 'contact',
                                 'controller' => Controller\ContactController::class,
                                 'action'     => 'index',
                             ],
@@ -60,15 +50,6 @@ return [
                                     ],
                                 ],
                             ],
-                            'signature'           => [
-                                'type'    => 'Literal',
-                                'options' => [
-                                    'route'    => '/signature.html',
-                                    'defaults' => [
-                                        'action' => 'signature',
-                                    ],
-                                ],
-                            ],
                             'facebook'            => [
                                 'type'         => 'Segment',
                                 'options'      => [
@@ -79,11 +60,12 @@ return [
                                     ],
                                 ],
                                 'child_routes' => [
-                                    'facebook'     => [
+                                    'view'         => [
                                         'type'     => 'Segment',
                                         'priority' => 1000,
                                         'options'  => [
-                                            'route'    => '/[:id].html',
+                                            'route'    => '/facebook-[:facebook].html',
+                                            //No id, because it gives issues with the dynamic menu
                                             'defaults' => [
                                                 'action' => 'facebook',
                                             ],
@@ -111,8 +93,8 @@ return [
                                     ],
                                 ],
                                 'child_routes' => [
-                                    'edit'    => [
-                                        'type'    => 'Segment',
+                                    'edit'         => [
+                                        'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/edit.html',
                                             'defaults' => [
@@ -120,8 +102,8 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'view'    => [
-                                        'type'    => 'Segment',
+                                    'view'         => [
+                                        'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/view.html',
                                             'defaults' => [
@@ -129,32 +111,59 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'contact' => [
+                                    'organisation' => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/organisation.html',
+                                            'defaults' => [
+                                                'action' => 'organisation',
+                                            ],
+                                        ],
+                                    ],
+                                    'events'       => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/events.html',
+                                            'defaults' => [
+                                                'action' => 'events',
+                                            ],
+                                        ],
+                                    ],
+                                    'privacy'      => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/privacy.html',
+                                            'defaults' => [
+                                                'action' => 'privacy',
+                                            ],
+                                        ],
+                                    ],
+                                    'contact'      => [
                                         'type'    => 'Segment',
                                         'options' => [
-                                            'route'    => '/contact/[:id]-[:hash].html',
+                                            'route'    => '/contact/[:hash].html',
                                             'defaults' => [
                                                 'action' => 'contact',
                                             ],
                                         ],
                                     ],
-                                ],
-                            ],
-                            'opt-in-update'       => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/update/opt-in.html',
-                                    'defaults' => [
-                                        'action' => 'opt-in-update',
+                                    'create'       => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/create.html',
+                                            'defaults' => [
+                                                'action' => 'create',
+                                            ],
+                                        ],
                                     ],
-                                ],
-                            ],
-                            'has-session'         => [
-                                'type'    => 'Segment',
-                                'options' => [
-                                    'route'    => '/has-session.html',
-                                    'defaults' => [
-                                        'action' => 'has-session',
+                                    'activate'     => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/activate.html',
+                                            'defaults' => [
+                                                'action' => 'activate',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],
