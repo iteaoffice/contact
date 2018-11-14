@@ -34,10 +34,10 @@
     "zf-commons/zfc-user": "^3.0.0"
   },
   "require-dev": {
-    "iteaoffice/testing": "^1.1.4",
-    "iteaoffice/general": "^3.0",
-    "iteaoffice/search": "^1.0",
-    "iteaoffice/affiliation": "^3.1"
+    "iteaoffice/testing": "^1.2",
+    "iteaoffice/general": "^4.1",
+    "iteaoffice/search": "^1.1",
+    "iteaoffice/affiliation": "^4.1"
   },
   "autoload": {
     "psr-4": {
