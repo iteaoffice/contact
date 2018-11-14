@@ -58,16 +58,11 @@ abstract class ImageAbstract extends AbstractViewHelper
 
     public function createImageUrl(bool $onlyUrl = false): string
     {
-        /**
-         * @var $url Url
-         */
-        $url = $this->getHelperPluginManager()->get('url');
+        $url = $this->getHelperPluginManager()->get(Url::class);
 
         //Grab the ServerURL from the config to avoid problems with CLI code
         $serverUrl = $this->getServiceManager()->get("Config")['deeplink']['serverUrl'];
-        /**
-         * Get the thumber config
-         */
+
         $config = $this->getServiceManager()->get('content_module_config');
 
         $thumberLink = Builder::construct(

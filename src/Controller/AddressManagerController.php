@@ -20,7 +20,9 @@ use Zend\I18n\Translator\TranslatorInterface;
 use Zend\View\Model\ViewModel;
 
 /**
+ * Class AddressManagerController
  *
+ * @package Contact\Controller
  */
 final class AddressManagerController extends ContactAbstractController
 {

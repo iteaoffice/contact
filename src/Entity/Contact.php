@@ -1038,12 +1038,18 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function parseInitials(): string
     {
-        return sprintf(
-            '%s%s%s',
-            \substr((string)$this->firstName, 0, 1),
-            \substr((string)$this->middleName, 0, 1),
-            \substr((string)$this->lastName, 0, 1)
-        );
+        $initials = \explode('-', (string) $this->firstName);
+        if ('' !== $this->middleName && null !== $this->middleName) {
+            $initials[] = $this->middleName;
+        }
+        $initials[] = (string) $this->lastName;
+
+        $initialString = '';
+        foreach ($initials as $initial) {
+            $initialString .= \substr($initial, 0, 1);
+        }
+
+        return $initialString;
     }
 
     public function parseFirstName(): string
@@ -1078,6 +1084,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function hasPhoto(): bool
     {
         return !$this->photo->isEmpty();
+    }
+
+    public function hasProfile(): bool
+    {
+        return null !== $this->profile;
     }
 
     public function isVisibleInCommunity(): bool

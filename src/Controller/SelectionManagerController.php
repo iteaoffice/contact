@@ -308,13 +308,12 @@ final class SelectionManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->selectionService->delete($selection);
 
-                $this->flashMessenger()->setNamespace('success')
-                    ->addMessage(
-                        sprintf(
-                            $this->translator->translate("txt-selection-%s-has-successfully-been-removed"),
-                            $selection->getSelection()
-                        )
-                    );
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(
+                        $this->translator->translate("txt-selection-%s-has-successfully-been-removed"),
+                        $selection->getSelection()
+                    )
+                );
 
                 return $this->redirect()->toRoute('zfcadmin/selection/list');
             }

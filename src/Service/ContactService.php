@@ -40,8 +40,10 @@ use Project\View\Helper\ProjectLink;
 use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
+use Solarium\QueryType\Update\Query\Document\Document;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Mvc\Exception\RuntimeException;
+use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
 use ZfcUser\Options\ModuleOptions;
 
@@ -461,73 +463,106 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $searchClient = new Client();
         $update = $searchClient->createUpdate();
 
+        /** @var Document $contactDocument */
         $contactDocument = $update->createDocument();
-        $contactDocument->id = $contact->getResourceId();
-        $contactDocument->contact_id = $contact->getId();
-        $contactDocument->contact_hash = $contact->getHash();
 
-        $contactDocument->fullname = $contact->getDisplayName();
-        $contactDocument->fullname_search = $contact->getDisplayName();
-        $contactDocument->fullname_sort = $contact->getDisplayName();
+        $contactDocument->setField('id', $contact->getResourceId());
+        $contactDocument->setField('contact_id', $contact->getId());
+        $contactDocument->setField('contact_hash', $contact->getHash());
 
-        $contactDocument->lastname = $contact->getLastName();
-        $contactDocument->lastname_search = $contact->getLastName();
-        $contactDocument->lastname_sort = $contact->getLastName();
+        $contactDocument->setField('fullname', $contact->getDisplayName());
+        $contactDocument->setField('fullname_search', $contact->getDisplayName());
+        $contactDocument->setField('fullname_sort', $contact->getDisplayName());
 
-        $contactDocument->position = $contact->getPosition();
-        $contactDocument->position_search = $contact->getPosition();
-        $contactDocument->position_sort = $contact->getPosition();
+        $contactDocument->setField('lastname', $contact->getLastName());
+        $contactDocument->setField('lastname_search', $contact->getLastName());
+        $contactDocument->setField('lastname_sort', $contact->getLastName());
+
+        $contactDocument->setField('position', $contact->getPosition());
+        $contactDocument->setField('position_search', $contact->getPosition());
+        $contactDocument->setField('position_sort', $contact->getPosition());
 
         if (null !== $contact->getProfile()) {
-            $url = $this->viewHelperManager->get('url');
+            $url = $this->viewHelperManager->get(Url::class);
 
-            $contactDocument->profile = \str_replace(
-                PHP_EOL,
-                '',
-                \strip_tags((string)$contact->getProfile()->getDescription())
+            $contactDocument->setField(
+                'profile',
+                \str_replace(
+                    PHP_EOL,
+                    '',
+                    \strip_tags((string)$contact->getProfile()->getDescription())
+                )
             );
 
             if ($contact->getPhoto()->count() > 0) {
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
-                $contactDocument->photo_url = $url(
-                    'image/contact-photo',
-                    [
-                        'ext'         => $photo->getContentType()->getExtension(),
-                        'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                        'id'          => $photo->getId(),
-                    ]
+                $contactDocument->setField(
+                    'photo_url',
+                    $url(
+                        'image/contact-photo',
+                        [
+                            'ext'         => $photo->getContentType()->getExtension(),
+                            'last-update' => $photo->getDateUpdated()->getTimestamp(),
+                            'id'          => $photo->getId(),
+                        ]
+                    )
                 );
             }
         }
 
         if (null !== $contact->getContactOrganisation()) {
-            $contactDocument->organisation = $contact->getContactOrganisation()->getOrganisation()->getOrganisation();
-            $contactDocument->organisation_sort = $contact->getContactOrganisation()->getOrganisation()
-                ->getOrganisation();
-            $contactDocument->organisation_search = $contact->getContactOrganisation()->getOrganisation()
-                ->getOrganisation();
-            $contactDocument->organisation_type = $contact->getContactOrganisation()->getOrganisation()->getType();
-            $contactDocument->organisation_type_sort = $contact->getContactOrganisation()->getOrganisation()->getType();
-            $contactDocument->organisation_type_search = $contact->getContactOrganisation()->getOrganisation()->getType(
+            $contactDocument->setField(
+                'organisation',
+                $contact->getContactOrganisation()->getOrganisation()->getOrganisation()
             );
-            $contactDocument->country = $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry(
+            $contactDocument->setField(
+                'organisation_sort',
+                $contact->getContactOrganisation()->getOrganisation()
+                ->getOrganisation()
             );
-            $contactDocument->country_sort = $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                ->getCountry();
-            $contactDocument->country_search = $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                ->getCountry();
+            $contactDocument->setField(
+                'organisation_search',
+                $contact->getContactOrganisation()->getOrganisation()
+                ->getOrganisation()
+            );
+            $contactDocument->setField(
+                'organisation_type',
+                $contact->getContactOrganisation()->getOrganisation()->getType()
+            );
+            $contactDocument->setField(
+                'organisation_type_sort',
+                $contact->getContactOrganisation()->getOrganisation()->getType()
+            );
+            $contactDocument->setField(
+                'organisation_type_search',
+                $contact->getContactOrganisation()->getOrganisation()->getType()
+            );
+            $contactDocument->setField(
+                'country',
+                $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry()
+            );
+            $contactDocument->setField(
+                'country_sort',
+                $contact->getContactOrganisation()->getOrganisation()->getCountry()
+                ->getCountry()
+            );
+            $contactDocument->setField(
+                'country_search',
+                $contact->getContactOrganisation()->getOrganisation()->getCountry()
+                ->getCountry()
+            );
         }
 
         if (null !== $contact->getCv()) {
-            $cv = str_replace(
+            $cv = \str_replace(
                 PHP_EOL,
                 '',
                 strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
             );
 
-            $contactDocument->cv = $cv;
-            $contactDocument->cv_search = $cv;
+            $contactDocument->setField('cv', $cv);
+            $contactDocument->setField('cv_search', $cv);
         }
 
         $update->addDocument($contactDocument);
@@ -546,43 +581,48 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $searchClient = new Client();
         $update = $searchClient->createUpdate();
 
+        /** @var Document $contactDocument */
         $contactDocument = $update->createDocument();
-        $contactDocument->id = $contact->getResourceId();
-        $contactDocument->contact_id = $contact->getId();
-        $contactDocument->contact_hash = $contact->getHash();
 
-        $contactDocument->fullname = $contact->getDisplayName();
-        $contactDocument->fullname_search = $contact->getDisplayName();
-        $contactDocument->fullname_sort = $contact->getDisplayName();
+        $contactDocument->setField('id', $contact->getResourceId());
+        $contactDocument->setField('contact_id', $contact->getId());
+        $contactDocument->setField('contact_hash', $contact->getHash());
 
-        $contactDocument->lastname = $contact->getLastName();
-        $contactDocument->lastname_search = $contact->getLastName();
-        $contactDocument->lastname_sort = $contact->getLastName();
+        $contactDocument->setField('fullname', $contact->getDisplayName());
+        $contactDocument->setField('fullname_search', $contact->getDisplayName());
+        $contactDocument->setField('fullname_sort', $contact->getDisplayName());
 
-        $contactDocument->position = $contact->getPosition();
-        $contactDocument->position_search = $contact->getPosition();
-        $contactDocument->position_sort = $contact->getPosition();
+        $contactDocument->setField('lastname', $contact->getLastName());
+        $contactDocument->setField('lastname_search', $contact->getLastName());
+        $contactDocument->setField('lastname_sort', $contact->getLastName());
+
+        $contactDocument->setField('position', $contact->getPosition());
+        $contactDocument->setField('position_search', $contact->getPosition());
+        $contactDocument->setField('position_sort', $contact->getPosition());
 
         if (null !== $contact->getProfile()) {
             $description = \strip_tags((string)$contact->getProfile()->getDescription());
 
-            $contactDocument->profile = \str_replace(PHP_EOL, '', $description);
-            $contactDocument->profile_sort = \str_replace(PHP_EOL, '', $description);
-            $contactDocument->profile_search = \str_replace(PHP_EOL, '', $description);
+            $contactDocument->setField('profile', \str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_sort', \str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_search', \str_replace(PHP_EOL, '', $description));
 
             if ($contact->getPhoto()->count() > 0) {
-                $url = $this->viewHelperManager->get('url');
+                $url = $this->viewHelperManager->get(Url::class);
 
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
 
-                $contactDocument->photo_url = $url(
-                    'image/contact-photo',
-                    [
-                        'ext'         => $photo->getContentType()->getExtension(),
-                        'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                        'id'          => $photo->getId(),
-                    ]
+                $contactDocument->setField(
+                    'photo_url',
+                    $url(
+                        'image/contact-photo',
+                        [
+                            'ext'         => $photo->getContentType()->getExtension(),
+                            'last-update' => $photo->getDateUpdated()->getTimestamp(),
+                            'id'          => $photo->getId(),
+                        ]
+                    )
                 );
             }
         }
@@ -590,15 +630,15 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         if (null !== $contact->getContactOrganisation()) {
             $organisation = $contact->getContactOrganisation()->getOrganisation();
 
-            $contactDocument->organisation = $organisation->getOrganisation();
-            $contactDocument->organisation_sort = $organisation->getOrganisation();
-            $contactDocument->organisation_search = $organisation->getOrganisation();
-            $contactDocument->organisation_type = $organisation->getType();
-            $contactDocument->organisation_type_sort = $organisation->getType();
-            $contactDocument->organisation_type_search = $organisation->getType();
-            $contactDocument->country = $organisation->getCountry()->getCountry();
-            $contactDocument->country_sort = $organisation->getCountry()->getCountry();
-            $contactDocument->country_search = $organisation->getCountry()->getCountry();
+            $contactDocument->setField('organisation', $organisation->getOrganisation());
+            $contactDocument->setField('organisation_sort', $organisation->getOrganisation());
+            $contactDocument->setField('organisation_search', $organisation->getOrganisation());
+            $contactDocument->setField('organisation_type', $organisation->getType());
+            $contactDocument->setField('organisation_type_sort', $organisation->getType());
+            $contactDocument->setField('organisation_type_search', $organisation->getType());
+            $contactDocument->setField('country', $organisation->getCountry()->getCountry());
+            $contactDocument->setField('country_sort', $organisation->getCountry()->getCountry());
+            $contactDocument->setField('country_search', $organisation->getCountry()->getCountry());
         }
 
         if (null !== $contact->getCv()) {
@@ -608,8 +648,8 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 \strip_tags((string)\stream_get_contents($contact->getCv()->getCv()))
             );
 
-            $contactDocument->cv = $cv;
-            $contactDocument->cv_search = $cv;
+            $contactDocument->setField('cv', $cv);
+            $contactDocument->setField('cv_search', $cv);
         }
 
         $update->addDocument($contactDocument);
@@ -725,9 +765,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     }
 
     /**
-     * @param Contact      $contact
-     * @param string|array $role
-     * @param              $entity
+     * @param Contact        $contact
+     * @param string|array   $role
+     * @param AbstractEntity $entity
      *
      * @return bool
      */
@@ -935,6 +975,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $organisation = false;
 
             //First go over the organisations and try to see if we can find one with the same name and stop if we find one
+            /** @var Organisation $foundOrganisation */
             foreach ($organisations as $foundOrganisation) {
                 if (!$organisation //Continue until the organisation is found
                     && $foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
@@ -1001,37 +1042,37 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $totalWeight = 0;
         $totalWeight += 10;
         if (null === $contact->getFirstName()) {
-            $inCompleteness['firstName']['message'] = _("txt-first-name-is-missing");
+            $inCompleteness['firstName']['message'] = _('txt-first-name-is-missing');
             $inCompleteness['firstName']['weight'] = 10;
         }
         $totalWeight += 10;
         if (null === $contact->getLastName()) {
-            $inCompleteness['lastName']['message'] = _("txt-last-name-is-missing");
+            $inCompleteness['lastName']['message'] = _('txt-last-name-is-missing');
             $inCompleteness['lastName']['weight'] = 10;
         }
         $totalWeight += 10;
         if (\count($contact->getPhone()) === 0) {
-            $inCompleteness['phone']['message'] = _("txt-no-telephone-number-known");
+            $inCompleteness['phone']['message'] = _('txt-no-telephone-number-known');
             $inCompleteness['phone']['weight'] = 10;
         }
         $totalWeight += 10;
         if (\count($contact->getAddress()) === 0) {
-            $inCompleteness['address']['message'] = _("txt-no-address-known");
+            $inCompleteness['address']['message'] = _('txt-no-address-known');
             $inCompleteness['address']['weight'] = 10;
         }
         $totalWeight += 10;
         if (\count($contact->getPhoto()) === 0) {
-            $inCompleteness['photo']['message'] = _("txt-no-profile-photo-given");
+            $inCompleteness['photo']['message'] = _('txt-no-profile-photo-given');
             $inCompleteness['photo']['weight'] = 10;
         }
         $totalWeight += 10;
         if (null === $contact->getSaltedPassword()) {
-            $inCompleteness['password']['message'] = _("txt-no-password-given");
+            $inCompleteness['password']['message'] = _('txt-no-password-given');
             $inCompleteness['password']['weight'] = 10;
         }
         $totalWeight += 20;
         if (null === $contact->getContactOrganisation()) {
-            $inCompleteness['organisation']['message'] = _("txt-no-organisation-known");
+            $inCompleteness['organisation']['message'] = _('txt-no-organisation-known');
             $inCompleteness['organisation']['weight'] = 20;
         }
         /*

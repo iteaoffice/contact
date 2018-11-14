@@ -31,7 +31,6 @@
     "zendframework/zend-navigation": "^2.9.0",
     "jield-webdev/bjy-authorize": "^1.4.0",
     "doctrine/doctrine-orm-module": "@stable",
-    "mailjet/mailjet-apiv3-php": "1.2.*",
     "zf-commons/zfc-user": "^3.0.0"
   },
   "require-dev": {
