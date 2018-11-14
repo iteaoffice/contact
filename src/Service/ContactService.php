@@ -449,7 +449,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         if ($contact->isVisibleInCommunity()) {
             $this->profileSearchService->executeUpdateDocument($profileDocument);
         } else {
-            $this->profileSearchService->deleteDocument($profileDocument);
+            $this->profileSearchService->deleteDocument($contact);
         }
     }
 
