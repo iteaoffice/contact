@@ -519,12 +519,12 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $contactDocument->setField(
                 'organisation_sort',
                 $contact->getContactOrganisation()->getOrganisation()
-                ->getOrganisation()
+                    ->getOrganisation()
             );
             $contactDocument->setField(
                 'organisation_search',
                 $contact->getContactOrganisation()->getOrganisation()
-                ->getOrganisation()
+                    ->getOrganisation()
             );
             $contactDocument->setField(
                 'organisation_type',
@@ -545,12 +545,12 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $contactDocument->setField(
                 'country_sort',
                 $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                ->getCountry()
+                    ->getCountry()
             );
             $contactDocument->setField(
                 'country_search',
                 $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                ->getCountry()
+                    ->getCountry()
             );
         }
 
@@ -765,9 +765,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     }
 
     /**
-     * @param Contact        $contact
-     * @param string|array   $role
-     * @param AbstractEntity $entity
+     * @param Contact      $contact
+     * @param string|array $role
+     * @param              $entity
      *
      * @return bool
      */
