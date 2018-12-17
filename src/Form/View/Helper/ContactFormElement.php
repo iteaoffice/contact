@@ -21,15 +21,13 @@ use ZfcTwitterBootstrap\Form\View\Helper\FormElement;
  *
  * @package Contact\Form\View\Helper
  */
-class ContactFormElement extends FormElement
+final class ContactFormElement extends FormElement
 {
     /**
-     * @param ElementInterface|null $element
-     * @param null                  $groupWrapper
-     * @param null                  $controlWrapper
-     *
-     * @return self|string
+     * @var string
      */
+    protected $groupWrapper = '<div class="form-group row %s" id="control-group-%s">%s</div>';
+
     public function __invoke(
         ElementInterface $element = null,
         $groupWrapper = null,
@@ -75,15 +73,6 @@ class ContactFormElement extends FormElement
         return $this;
     }
 
-    /**
-     * Render.
-     *
-     * @param Select|ElementInterface $element
-     * @param string                  $groupWrapper
-     * @param string                  $controlWrapper
-     *
-     * @return string
-     */
     public function render(ElementInterface $element, $groupWrapper = null, $controlWrapper = null): string
     {
         $labelHelper = $this->getLabelHelper();
@@ -112,7 +101,7 @@ class ContactFormElement extends FormElement
             $controlLabel .= $labelHelper->openTag(
                 [
                     'class' => 'col-md-3 ' . ($element->getOption('wrapCheckboxInLabel') ? 'checkbox'
-                            : 'control-label'),
+                            : 'control-label col-form-label'),
                 ] + ($element->hasAttribute('id') ? ['for' => $id] : [])
             );
 
@@ -157,6 +146,8 @@ class ContactFormElement extends FormElement
             $elementErrorHelper->render($element)
         );
         $addtClass = ($element->getMessages()) ? ' has-error' : '';
+
+
 
         return sprintf($groupWrapper, $addtClass, $id, $html);
     }

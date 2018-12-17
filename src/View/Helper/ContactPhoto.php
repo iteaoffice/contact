@@ -29,10 +29,11 @@ class ContactPhoto extends ImageAbstract
 {
     public function __invoke(
         Contact $contact,
-        $width = null,
-        $onlyUrl = false,
-        $responsive = false,
-        $grayscale = false
+        int $width = null,
+        int $height = null,
+        bool $onlyUrl = false,
+        bool $responsive = false,
+        bool $grayscale = false
     ): string {
         $this->filter = [];
         $this->classes = [];
@@ -58,7 +59,12 @@ class ContactPhoto extends ImageAbstract
             $this->addClasses('img-responsive img-fluid');
         }
 
-        $this->setWidth($width);
+        if (null !== $width) {
+            $this->setWidth($width);
+        }
+        if (null !== $height) {
+            $this->setHeight($height);
+        }
 
         return $this->createImageUrl($onlyUrl);
     }

@@ -70,9 +70,9 @@
                 <dd>{% if contact.dateActivated %}{{ contact.dateActivated|string_date }}  <input type="submit"
                                                                                                   name="deactivate"
                                                                                                   value="{{ translate("txt-de-activate-contact") }}"
-                                                                                                  class="btn btn-warning btn-xs">{% else %}{{ translate("txt-contact-is-not-activated-yet") }}
+                                                                                                  class="btn btn-warning btn-sm">{% else %}{{ translate("txt-contact-is-not-activated-yet") }}
                         <input type="submit" name="activate" value="{{ translate("txt-activate-contact") }}"
-                               class="btn btn-primary btn-xs">{% endif %}
+                               class="btn btn-primary btn-sm">{% endif %}
 
                 </dd>
 
@@ -82,7 +82,7 @@
             </dl>
         </div>
         <div class="col-md-4">
-            {{ contactPhoto(contact, 150, false, true) }}
+            {{ contactPhoto(contact, 150, null, false, true) }}
         </div>
     </div>
 

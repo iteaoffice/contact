@@ -38,9 +38,6 @@ class ContactNavigationService extends NavigationServiceAbstract
     }
 
 
-    /**
-     * Update the navigation for a publication.
-     */
     public function includeFacebooksInNavigation(): void
     {
         $navigation = $this->getNavigation()->findOneBy('id', 'community/contact');

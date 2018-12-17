@@ -19,7 +19,6 @@ declare(strict_types=1);
 namespace Contact\View\Helper;
 
 use Thumbor\Url\Builder;
-use Zend\View\Helper\ServerUrl;
 use Zend\View\Helper\Url;
 
 /**
@@ -48,9 +47,13 @@ abstract class ImageAbstract extends AbstractViewHelper
      */
     protected $lightBox = false;
     /**
-     * @var int
+     * @var int|int
      */
     protected $width;
+    /**
+     * @var int|null
+     */
+    protected $height;
     /**
      * @var array
      */
@@ -70,8 +73,8 @@ abstract class ImageAbstract extends AbstractViewHelper
             $config['image']['secret'],
             $serverUrl . $url($this->router, $this->routerParams)
         )
-            ->fullFitIn($this->width, null)
-            ->halign('bottom')
+            ->resize($this->width, $this->height)
+            ->halign('center')
             ->smartCrop(false);
 
         foreach ($this->filter as $filter) {
@@ -107,77 +110,47 @@ abstract class ImageAbstract extends AbstractViewHelper
             . $image . '</a>';
     }
 
-    /**
-     * Add a parameter to the list of parameters for the router.
-     *
-     * @param string $key
-     * @param        $value
-     * @param bool   $allowNull
-     */
     public function addRouterParam($key, $value, $allowNull = true): void
     {
         if (!$allowNull && null === $value) {
-            throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
+            throw new \InvalidArgumentException(sprintf('null is not allowed for %s', $key));
         }
         if (null !== $value) {
             $this->routerParams[$key] = $value;
         }
     }
 
-    /**
-     * @param string $filter
-     */
     public function addFilter(string $filter): void
     {
         $this->filter[] = $filter;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getRouter()
+    public function getRouter():?string
     {
         return $this->router;
     }
 
-    /**
-     * @param string $router
-     */
-    public function setRouter($router): void
+    public function setRouter(string $router): void
     {
         $this->router = $router;
     }
 
-    /**
-     * @return array
-     */
-    public function getRouterParams()
+    public function getRouterParams(): array
     {
         return $this->routerParams;
     }
 
-    /**
-     * @return string
-     */
     public function getImageId()
     {
         return $this->imageId;
     }
 
-    /**
-     * @param string $imageId
-     */
     public function setImageId($imageId): void
     {
         $this->imageId = $imageId;
     }
 
-    /**
-     * @param string $classes
-     *
-     * @return $this
-     */
     public function addClasses($classes): ImageAbstract
     {
         foreach ((array)$classes as $class) {
@@ -187,47 +160,41 @@ abstract class ImageAbstract extends AbstractViewHelper
         return $this;
     }
 
-    /**
-     * @param boolean $lightBox
-     */
-    public function setLightBox($lightBox): void
+    public function setLightBox(bool $lightBox): void
     {
         $this->lightBox = $lightBox;
     }
 
-    /**
-     * @return array
-     */
     public function getClasses(): array
     {
         return $this->classes;
     }
 
-    /**
-     * @param array $classes
-     */
-    public function setClasses($classes): void
+    public function setClasses(array $classes): void
     {
         $this->classes = $classes;
     }
 
-    /**
-     * @return int
-     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @param int $width
-     *
-     * @return ImageAbstract
-     */
     public function setWidth($width): ImageAbstract
     {
         $this->width = $width;
 
+        return $this;
+    }
+
+    public function getHeight():?int
+    {
+        return $this->height;
+    }
+
+    public function setHeight(?int $height): ImageAbstract
+    {
+        $this->height = $height;
         return $this;
     }
 }

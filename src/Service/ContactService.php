@@ -28,6 +28,7 @@ use Contact\Entity\Photo;
 use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
+use Contact\View\Helper\ContactPhoto;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Event\Entity\Booth\Booth;
@@ -483,7 +484,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $contactDocument->setField('position_sort', $contact->getPosition());
 
         if (null !== $contact->getProfile()) {
-            $url = $this->viewHelperManager->get(Url::class);
+            $contactPhoto = $this->viewHelperManager->get(ContactPhoto::class);
 
             $contactDocument->setField(
                 'profile',
@@ -494,18 +495,14 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 )
             );
 
-            if ($contact->getPhoto()->count() > 0) {
-                /** @var Photo $photo */
-                $photo = $contact->getPhoto()->first();
+            if ($contact->hasPhoto()) {
                 $contactDocument->setField(
                     'photo_url',
-                    $url(
-                        'image/contact-photo',
-                        [
-                            'ext'         => $photo->getContentType()->getExtension(),
-                            'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                            'id'          => $photo->getId(),
-                        ]
+                    $contactPhoto(
+                        $contact,
+                        250,
+                        200,
+                        true
                     )
                 );
             }

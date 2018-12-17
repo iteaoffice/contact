@@ -25,13 +25,6 @@ use Zend\ServiceManager\Factory\FactoryInterface;
  */
 final class ContactNavigationServiceFactory implements FactoryInterface
 {
-    /**
-     * @param ContainerInterface $container
-     * @param string $requestedName
-     * @param array|null $options
-     *
-     * @return ContactNavigationService
-     */
     public function __invoke(
         ContainerInterface $container,
         $requestedName,

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use Admin\Entity\Access;
 use BjyAuthorize\Provider\Role\ProviderInterface;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
@@ -1038,11 +1039,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function parseInitials(): string
     {
-        $initials = \explode('-', (string) $this->firstName);
+        $initials = \explode('-', (string)$this->firstName);
         if ('' !== $this->middleName && null !== $this->middleName) {
             $initials[] = $this->middleName;
         }
-        $initials[] = (string) $this->lastName;
+        $initials[] = (string)$this->lastName;
 
         $initialString = '';
         foreach ($initials as $initial) {
@@ -1059,6 +1060,21 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         }
 
         return $this->firstName;
+    }
+
+    public function isOffice(): bool
+    {
+        return \in_array(\strtolower(Access::ACCESS_OFFICE), $this->getRoles(), true);
+    }
+
+    public function getRoles(): array
+    {
+        $accessRoles = ['user'];
+        foreach ($this->access as $access) {
+            $accessRoles[] = strtolower($access->getAccess());
+        }
+
+        return $accessRoles;
     }
 
     public function isAnonymised(): bool
@@ -1094,17 +1110,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function isVisibleInCommunity(): bool
     {
         return null !== $this->profile && $this->profile->getVisible() === Profile::VISIBLE_COMMUNITY;
-    }
-
-
-    public function getRoles(): array
-    {
-        $accessRoles = ['user'];
-        foreach ($this->access as $access) {
-            $accessRoles[] = strtolower($access->getAccess());
-        }
-
-        return $accessRoles;
     }
 
     public function addOptIn(Collections\Collection $optInCollection): void
