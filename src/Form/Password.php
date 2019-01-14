@@ -16,13 +16,12 @@ use Zend\Form\Element;
 use Zend\Form\Form;
 
 /**
+ * Class Password
  *
+ * @package Contact\Form
  */
 class Password extends Form
 {
-    /**
-     * Class constructor.
-     */
     public function __construct()
     {
         parent::__construct();

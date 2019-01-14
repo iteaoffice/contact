@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-import-contacts")) %}
 
-<h1 class="display-4">{{ translate("txt-import-contacts") }}</h1>
+<h1>{{ translate("txt-import-contacts") }}</h1>
 
 {% do form.prepare() %}
 
@@ -13,7 +13,7 @@
  {{ ztbformelement(form.get('file')) }}
 
 <div class="form-group row">
-    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+    <div class="offset-sm-3 col-sm-9">
         {% if handleImport.hasErrors() %}
             <div class="alert alert-danger" role="alert">
                 <ul>
@@ -40,7 +40,7 @@
 
 
 <div class="form-group row">
-    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+    <div class="offset-sm-3 col-sm-9">
         {{ ztbformelement(form.get('upload')) }}
         {{ ztbformelement(form.get('import')) }}
     </div>
@@ -52,7 +52,7 @@
 
 
     {% if  handleImport.getContacts()|length > 0 %}
-        <table class="table table-hover table-striped table-condensed table-sm">
+        <table class="table table-hover table-striped table-sm">
             <thead>
             <tr>
                 <th></th>
@@ -106,7 +106,7 @@
         </table>
 
         <div class="form-group row">
-            <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+            <div class="offset-sm-3 col-sm-9">
                 {{ ztbformelement(form.get('import')) }}
             </div>
         </div>

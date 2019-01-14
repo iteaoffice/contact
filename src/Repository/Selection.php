@@ -29,7 +29,7 @@ class Selection extends EntityRepository
         $qb->select('contact_entity_selection');
         $qb->from(Entity\Selection::class, 'contact_entity_selection');
 
-        if (array_key_exists('search', $filter)) {
+        if (\array_key_exists('search', $filter)) {
             $qb->andWhere(
                 $qb->expr()->orX(
                     $qb->expr()->like(
@@ -44,21 +44,21 @@ class Selection extends EntityRepository
             $qb->setParameter('like', sprintf("%%%s%%", $filter['search']));
         }
 
-        if (array_key_exists('sql', $filter)) {
+        if (\array_key_exists('sql', $filter)) {
             $qb->join('contact_entity_selection.sql', 'sql');
         }
 
-        if (array_key_exists('tags', $filter)) {
+        if (\array_key_exists('tags', $filter)) {
             $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['tags']));
         }
 
-        if (!array_key_exists('includeDeleted', $filter)) {
+        if (!\array_key_exists('includeDeleted', $filter)) {
             //Do not show the deleted ones
             $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
         }
 
-        if (array_key_exists('core', $filter)) {
-            $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['core']));
+        if (\array_key_exists('core', $filter)) {
+            $qb->andWhere($qb->expr()->in('contact_entity_selection.core', $filter['core']));
         }
 
         $direction = 'ASC';

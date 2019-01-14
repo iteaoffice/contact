@@ -14,7 +14,7 @@
 
     <div class="col-md-9">
 
-        <h1 class="display-4">{{ translate("txt-inactive-contacts") }}</h1>
+        <h1>{{ translate("txt-inactive-contacts") }}</h1>
 
         <div class="row">
             <div class="col-md-6">
@@ -31,7 +31,7 @@
         </div>
 
         {% if paginator.pageRange > 0 %}
-            <table class="table table-hover table-striped table-condensed table-sm">
+            <table class="table table-hover table-striped table-sm">
                 <thead>
                 <tr>
                     <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
@@ -64,14 +64,12 @@
     <div class="col-md-3">
         <div class="well well-sm">
             <fieldset>
-                {{ ztbformelement(filter.get('options')) }}
-                {{ ztbformelement(filter.get('gender')) }}
-                {{ ztbformelement(filter.get('country')) }}
+                {{ ztbformelement(filter.get('options'), true) }}
+                {{ ztbformelement(filter.get('gender'), true) }}
+                {{ ztbformelement(filter.get('country'), true) }}
 
-                <div class="form-group row">
-                    {{ ztbformelement(form.get('submit')) }}
+                                   {{ ztbformelement(form.get('submit')) }}
                     {{ ztbformelement(form.get('clear')) }}
-                </div>
             </fieldset>
         </div>
     </div>

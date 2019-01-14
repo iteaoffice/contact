@@ -165,6 +165,15 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'activate-optin'     => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/activate/optin.html',
+                                            'defaults' => [
+                                                'action' => 'activate-optin',
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                             'change-password'     => [

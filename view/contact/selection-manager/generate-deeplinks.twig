@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-generate-deeplinks-for-selection-%s")|format(selection)) %}
 
-<h1 class="display-4">{{ selection }}</h1>
+<h1>{{ selection }}</h1>
 
 <p>{{ translate("txt-selection-generate-deeplinks-for-contacts-in-selection") }}</p>
 
@@ -15,7 +15,7 @@
 {{ ztbformelement(form.get('key')) }}
 
 <div class="form-group row">
-    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+    <div class="offset-sm-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
     </div>
 </div>
@@ -25,7 +25,7 @@
 
 {% if deeplinks|length > 0 %}
     <h2>{{ translate("txt-deeplinks") }}</h2>
-    <table class="table table-hover table-striped table-condensed table-sm">
+    <table class="table table-hover table-striped table-sm">
         <thead>
         <tr>
             <th>{{ translate("txt-contact") }}</th>

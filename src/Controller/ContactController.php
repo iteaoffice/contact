@@ -61,7 +61,6 @@ final class ContactController extends ContactAbstractController
     {
         $form = new Password();
         $form->setInputFilter(new PasswordFilter());
-        $form->setAttribute('class', 'form-horizontal');
 
         $data = $this->getRequest()->getPost()->toArray();
 

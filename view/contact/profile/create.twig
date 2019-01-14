@@ -1,5 +1,5 @@
 {% do headTitle().append(translate("txt-create-your-account")) %}
-<h1 class="display-4">{{ translate("txt-create-your-account") }}</h1>
+<h1>{{ translate("txt-create-your-account") }}</h1>
 <p>{{ translate("txt-create-your-account-explanation") }}</p>
 
 {% do form.prepare() %}
@@ -13,7 +13,7 @@
 {{ ztbformelement(form.get('lastName')) }}
 
 <div class="form-group row">
-    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-email-address") }}</label>
+    <label class="col-sm-3 col-form-label">{{ translate("txt-email-address") }}</label>
 
     <div class="col-sm-9">
         <p class="form-control-static form-control-plaintext">{{ contact.email }}</p>
@@ -50,7 +50,7 @@
 
         <div class="form-group {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}hidden{% endif %}"
              id="branch">
-            <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-branch-form-label") }}</label>
+            <label class="col-sm-3 col-form-label">{{ translate("txt-branch-form-label") }}</label>
 
             <div class="col-sm-9">
                 <select class="form-control" name="contact_organisation[branch]">
@@ -87,7 +87,7 @@
 
 {% if not contact.photo.isEmpty() %}
     <div class="form-group row">
-        <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-current-photo") }}</label>
+        <label class="col-sm-3 col-form-label">{{ translate("txt-current-photo") }}</label>
 
         <div class="col-sm-9">
             <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
@@ -101,13 +101,13 @@
 {{ ztbformelement(form.get('optIn')) }}
 
 <div class="form-group row">
-    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+    <div class="offset-sm-3 col-sm-9">
         <p class="help-block">{{ translate("txt-please-read-our-privacy-policy-for-create-account") }}</p>
     </div>
 </div>
 
 <div class="form-group row">
-    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+    <div class="offset-sm-3 col-sm-9">
         {{ ztbformelement(form.get('submit').setAttribute('value',translate("txt-create-your-account"))) }}
         {{ ztbformelement(form.get('cancel').setAttribute('value',translate("txt-cancel-registration"))) }}
     </div>

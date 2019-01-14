@@ -118,6 +118,54 @@ final class ContactActions extends AbstractPlugin
         return $contact;
     }
 
+    public function subscribe(
+        string $emailAddress,
+        string $firstName,
+        string $middleName,
+        string $lastName
+    ): Contact {
+        //Create the account
+        $contact = new Contact();
+        $contact->setEmail($emailAddress);
+        $contact->setFirstName($firstName);
+        if (\strlen($middleName) > 0) {
+            $contact->setMiddleName($middleName);
+        }
+
+        $contact->setLastName($lastName);
+
+        /** @var Gender $gender */
+        $gender = $this->generalService->find(Gender::class, Gender::GENDER_UNKNOWN);
+        $contact->setGender($gender);
+
+        /** @var Title $title */
+        $title = $this->generalService->find(Title::class, Title::TITLE_UNKNOWN);
+        $contact->setTitle($title);
+
+        /** @var OptIn $optIn */
+        foreach ($this->contactService->findAll(OptIn::class) as $optIn) {
+            if (!$optIn->isActive()) {
+                continue;
+            }
+            $contact->getOptIn()->add($optIn);
+        }
+
+        $this->contactService->save($contact);
+
+        /** @var Target $target */
+        $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate-optin');
+        //Create a deep link for the user which redirects to the profile-page
+        $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
+
+        $this->emailService->setWebInfo('/auth/subscribe:mail');
+        $this->emailService->addToEmailAddress($emailAddress);
+        $this->emailService->setTemplateVariable('display_name', $contact->getDisplayName());
+        $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
+        $this->emailService->send();
+
+        return $contact;
+    }
+
     public function createContact(
         string $emailAddress,
         string $note = '',

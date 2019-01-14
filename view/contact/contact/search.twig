@@ -1,5 +1,5 @@
 {% do headTitle().append(translate("txt-partner-search")) %}
-<h1 class="display-4">{{ translate("txt-partner-search") }}</h1>
+<h1>{{ translate("txt-partner-search") }}</h1>
 
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
@@ -75,7 +75,7 @@
     <div class="col-md-2">
         {% set facets = form.get('facet') %}
         {% for facet in facets %}
-            {{ ztbformelement(facet, null, '%s%s%s') }}
+            {{ ztbformelement(facet, true) }}
         {% endfor %}
     </div>
 

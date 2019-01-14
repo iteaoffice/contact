@@ -74,6 +74,11 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'community/contact/profile/activate-optin',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
                     'route'     => 'community/contact/search',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,

@@ -356,6 +356,32 @@ final class ProfileController extends ContactAbstractController
         return $this->redirect()->toRoute('community/contact/profile/view');
     }
 
+    public function activateOptInAction(): Response
+    {
+        $contact = $this->identity();
+
+        if (null === $contact) {
+            return $this->redirect()->toRoute('zfcuser/login');
+        }
+
+        if ($contact->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-your-profile-has-already-been-activated-you-will-be-redirected")
+            );
+
+            return $this->redirect()->toRoute('community/contact/profile/view');
+        }
+
+        $contact->setDateActivated(new \DateTime());
+        $this->contactService->save($contact);
+
+        $this->flashMessenger()->addSuccessMessage(
+            $this->translator->translate("txt-your-newsletter-subscription-has-has-been-activated-successfully")
+        );
+
+        return $this->redirect()->toRoute('community/contact/profile/view');
+    }
+
     public function editAction()
     {
         $contact = $this->identity();
