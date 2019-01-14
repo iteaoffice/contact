@@ -71,8 +71,7 @@ class SelectionLink extends LinkAbstract
                 $this->setRouter('zfcadmin/selection/list');
                 $this->setText($this->translate('txt-list-selections'));
 
-                foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
-                    $param) {
+                foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key => $param) {
                     $this->addQueryParam($key, $param);
                 }
                 $this->addQueryParam('page', $this->getPage());
