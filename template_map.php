@@ -65,4 +65,5 @@ return array(
     'contact/contact-admin/list'                   => __DIR__ . '//view/contact/contact-admin/list.twig',
     'contact/contact-admin/list-inactive'          => __DIR__ . '//view/contact/contact-admin/list-inactive.twig',
     'contact/contact-admin/statistics'             => __DIR__ . '//view/contact/contact-admin/statistics.twig',
+    'contact/contact-admin/add-project'            => __DIR__ . '//view/contact/contact-admin/add-project.twig',
 );

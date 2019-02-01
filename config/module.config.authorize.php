@@ -168,6 +168,10 @@ return [
                     'roles' => [Access::ACCESS_OFFICE],
                 ],
                 [
+                    'route' => 'zfcadmin/contact-admin/add-project',
+                    'roles' => [Access::ACCESS_OFFICE],
+                ],
+                [
                     'route' => 'zfcadmin/selection/list',
                     'roles' => [Access::ACCESS_OFFICE],
                 ],

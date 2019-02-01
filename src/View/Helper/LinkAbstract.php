@@ -193,6 +193,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                         $this->addLinkContent('<i class="fa fa-envelope"></i>');
                         break;
                     case 'new':
+                    case 'add-project':
                         $this->addLinkContent('<i class="fa fa-plus"></i>');
                         break;
                     case 'edit':

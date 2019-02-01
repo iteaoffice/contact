@@ -23,3 +23,5 @@
 {% else %}
     {{ ztbalert().info(translate("txt-contact-is-not-active-in-a-project"))|raw }}
 {% endif %}
+
+{{ contactLink(contact,'add-project','button') }}

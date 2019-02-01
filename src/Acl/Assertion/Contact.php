@@ -39,6 +39,7 @@ class Contact extends AssertionAbstract
             case 'permit':
             case 'list-duplicate':
             case 'list-inactive':
+            case 'add-project':
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
             default:
                 return $this->hasContact();

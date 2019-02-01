@@ -44,16 +44,14 @@ class ContactLink extends LinkAbstract
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
             return '';
         }
-        $this->setShowOptions(
-            [
-                'email'           => $this->getContact()->getEmail(),
-                'paginator'       => $this->getAlternativeShow(),
-                'alternativeShow' => $this->getAlternativeShow(),
-                'firstname'       => $this->getContact()->getFirstName(),
-                'initials'        => $this->getContact()->parseInitials(),
-                'name'            => $this->getContact()->getDisplayName(),
-            ]
-        );
+        $this->setShowOptions([
+            'email'           => $this->getContact()->getEmail(),
+            'paginator'       => $this->getAlternativeShow(),
+            'alternativeShow' => $this->getAlternativeShow(),
+            'firstname'       => $this->getContact()->getFirstName(),
+            'initials'        => $this->getContact()->parseInitials(),
+            'name'            => $this->getContact()->getDisplayName(),
+        ]);
         $this->addRouterParam('hash', $hash);
         $this->addRouterParam('id', $this->getContact()->getId());
 
@@ -123,6 +121,13 @@ class ContactLink extends LinkAbstract
                 } else {
                     $this->setText($this->translate("txt-update-your-password"));
                 }
+                break;
+            case 'add-project':
+                $this->setRouter('zfcadmin/contact-admin/add-project');
+                $this->setText(sprintf(
+                    $this->translate("txt-add-%s-to-a-project"),
+                    $this->getContact()->getDisplayName()
+                ));
                 break;
             default:
                 throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));

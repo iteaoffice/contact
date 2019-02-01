@@ -136,6 +136,15 @@ return [
                                     ],
                                 ],
                             ],
+                            'add-project'          => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/add-project/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'add-project',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'selection'     => [

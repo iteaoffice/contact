@@ -19,6 +19,7 @@ use Contact\Entity\ContactOrganisation;
 use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
 use Contact\Entity\Profile;
+use Contact\Form\AddProject;
 use Contact\Form\ContactFilter;
 use Contact\Form\ContactMerge;
 use Contact\Form\Impersonate;
@@ -842,5 +843,38 @@ use Zend\View\Model\ViewModel;
                 'contactService' => $this->contactService,
             ]
         );
+    }
+
+    public function addProjectAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        $contact = $this->contactService->findContactById((int)$this->params('id'));
+
+        if ($contact === null) {
+            return $this->notFoundAction();
+        }
+
+        $form = new AddProject($this->projectService);
+
+        if ($request->isPost()) {
+            $data = $request->getPost()->toArray();
+
+            // Cancel the merge
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact-admin/view',
+                    ['id' => $contact->getId()],
+                    ['fragment' => 'project']
+                );
+            }
+        }
+
+        // Add a contact to a project as technical contact/reviewer/associate
+
+        return new ViewModel([
+            'contact' => $contact,
+            'form'    => $form
+        ]);
     }
 }
