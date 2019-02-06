@@ -327,7 +327,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $parentDoa;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, orphanRemoval=true, mappedBy="contact", fetch="EXTRA_LAZY")
+     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, orphanRemoval=true, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Contact\Entity\ContactOrganisation
      */
@@ -467,7 +467,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $publicationDownload;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\Photo", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Photo", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Contact\Entity\Photo|Collections\ArrayCollection
      */
@@ -558,13 +558,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $selection;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
      */
     private $selectionContact;
     /**
-     * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Mailing\Entity\Contact", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var \Mailing\Entity\Contact[]|Collections\ArrayCollection
      */
@@ -2212,11 +2212,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this->photo;
     }
 
-    /**
-     * @param  Photo|Collections\ArrayCollection $photo
-     *
-     * @return Contact
-     */
     public function setPhoto($photo): Contact
     {
         $this->photo = $photo;
@@ -2224,9 +2219,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection
-     */
     public function getAssociate()
     {
         return $this->associate;
@@ -2491,19 +2483,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return SelectionContact|Collections\ArrayCollection
-     */
     public function getSelectionContact()
     {
         return $this->selectionContact;
     }
 
-    /**
-     * @param  SelectionContact|Collections\ArrayCollection $selectionContact
-     *
-     * @return Contact
-     */
     public function setSelectionContact($selectionContact): Contact
     {
         $this->selectionContact = $selectionContact;
@@ -2511,9 +2495,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Mailing\Entity\Contact
-     */
     public function getMailingContact()
     {
         return $this->mailingContact;

@@ -14,7 +14,9 @@ namespace Contact\Controller;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Photo;
+use Contact\Form\Password;
 use Contact\Form\Profile;
+use Contact\InputFilter\PasswordFilter;
 use Contact\Service\ContactService;
 use Doctrine\ORM\EntityManager;
 use Event\Service\MeetingService;
@@ -93,7 +95,7 @@ final class ProfileController extends ContactAbstractController
     {
         if (!$this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+                $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
 
             return $this->redirect()->toRoute('community/contact/profile/activate');
@@ -115,7 +117,7 @@ final class ProfileController extends ContactAbstractController
     {
         if (!$this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+                $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
 
             return $this->redirect()->toRoute(
@@ -129,8 +131,8 @@ final class ProfileController extends ContactAbstractController
 
             $this->contactService->updateOptInForContact($this->identity(), $data['optIn'] ?? []);
 
-            $changelogMessage = sprintf(
-                $this->translator->translate("txt-your-opt-in-settings-been-updated-successfully")
+            $changelogMessage = \sprintf(
+                $this->translator->translate('txt-your-opt-in-settings-been-updated-successfully')
             );
 
             $this->flashMessenger()->addSuccessMessage($changelogMessage);
@@ -152,7 +154,7 @@ final class ProfileController extends ContactAbstractController
     {
         if (!$this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+                $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
 
             return $this->redirect()->toRoute(
@@ -173,7 +175,7 @@ final class ProfileController extends ContactAbstractController
     {
         if (!$this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-your-profile-has-not-been-activated-yet-active-your-pofile-first")
+                $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
 
             return $this->redirect()->toRoute(
@@ -250,7 +252,7 @@ final class ProfileController extends ContactAbstractController
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
                 $this->flashMessenger()->addInfoMessage(
-                    $this->translator->translate("txt-your-account-registration-has-been-cancelled")
+                    $this->translator->translate('txt-your-account-registration-has-been-cancelled')
                 );
                 // clear adapters
                 $this->zfcUserAuthentication()->getAuthAdapter()->resetAdapters();
@@ -310,7 +312,7 @@ final class ProfileController extends ContactAbstractController
                  */
                 $this->contactService->updateContactOrganisation($contact, $data['contact_organisation']);
                 $this->flashMessenger()->addSuccessMessage(
-                    $this->translator->translate("txt-your-account-has-been-registered-successfully")
+                    $this->translator->translate('txt-your-account-has-been-registered-successfully')
                 );
 
                 return $this->redirect()->toRoute('community/contact/profile/view');
@@ -333,14 +335,13 @@ final class ProfileController extends ContactAbstractController
     {
         $contact = $this->identity();
 
-
         if (null === $contact) {
             return $this->redirect()->toRoute('zfcuser/login');
         }
 
         if ($contact->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-your-profile-has-already-been-activated-you-will-be-redirected")
+                $this->translator->translate('txt-your-profile-has-already-been-activated-you-will-be-redirected')
             );
 
             return $this->redirect()->toRoute('community/contact/profile/view');
@@ -350,7 +351,7 @@ final class ProfileController extends ContactAbstractController
         $this->contactService->save($contact);
 
         $this->flashMessenger()->addSuccessMessage(
-            $this->translator->translate("txt-your-account-has-been-activated-successfully")
+            $this->translator->translate('txt-your-account-has-been-activated-successfully')
         );
 
         return $this->redirect()->toRoute('community/contact/profile/view');
@@ -366,7 +367,7 @@ final class ProfileController extends ContactAbstractController
 
         if ($contact->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-your-profile-has-already-been-activated-you-will-be-redirected")
+                $this->translator->translate('txt-your-profile-has-already-been-activated-you-will-be-redirected')
             );
 
             return $this->redirect()->toRoute('community/contact/profile/view');
@@ -376,10 +377,52 @@ final class ProfileController extends ContactAbstractController
         $this->contactService->save($contact);
 
         $this->flashMessenger()->addSuccessMessage(
-            $this->translator->translate("txt-your-newsletter-subscription-has-has-been-activated-successfully")
+            $this->translator->translate('txt-your-newsletter-subscription-has-has-been-activated-successfully')
         );
 
         return $this->redirect()->toRoute('community/contact/profile/view');
+    }
+
+    public function manageExternalAction()
+    {
+        $form = new Password();
+        $form->setInputFilter(new PasswordFilter());
+
+        $data = $this->getRequest()->getPost()->toArray();
+
+        $form->setData($data);
+        if ($this->getRequest()->isPost() && $form->isValid()) {
+            $formData = $form->getData();
+            $this->contactService->updatePasswordForContact($formData['password'], $this->identity());
+
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-password-successfully-been-updated")
+            );
+        }
+
+        return new ViewModel(['form' => $form]);
+    }
+
+    public function manageBodyAction()
+    {
+        $form = new Password();
+        $form->setInputFilter(new PasswordFilter());
+
+        $data = $this->getRequest()->getPost()->toArray();
+
+        $form->setData($data);
+        if ($this->getRequest()->isPost() && $form->isValid()) {
+            $formData = $form->getData();
+            $this->contactService->updatePasswordForContact($formData['password'], $this->identity());
+
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate("txt-password-successfully-been-updated")
+            );
+
+            return $this->redirect()->toRoute('community/contact/profile/view');
+        }
+
+        return new ViewModel(['form' => $form]);
     }
 
     public function editAction()
@@ -396,7 +439,7 @@ final class ProfileController extends ContactAbstractController
             );
         }
 
-        $data = array_merge_recursive(
+        $data = \array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
         );
@@ -466,7 +509,7 @@ final class ProfileController extends ContactAbstractController
                  */
                 $this->contactService->updateContactOrganisation($contact, $data['contact_organisation']);
                 $this->flashMessenger()->addSuccessMessage(
-                    $this->translator->translate("txt-profile-has-successfully-been-updated")
+                    $this->translator->translate('txt-profile-has-successfully-been-updated')
                 );
 
                 return $this->redirect()->toRoute('community/contact/profile/view');

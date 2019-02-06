@@ -205,7 +205,7 @@ final class SelectionManagerController extends ContactAbstractController
         );
 
 
-        $form = new SelectionContacts($this->selectionService);
+        $form = new SelectionContacts($this->entityManager);
         $form->setData($data);
 
 

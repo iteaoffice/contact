@@ -21,14 +21,8 @@ use Zend\Form\Form;
  *
  * @package Organisation\Form
  */
-class ContactMerge extends Form
+final class ContactMerge extends Form
 {
-    /**
-     * OrganisationMerge constructor.
-     *
-     * @param EntityManager $entityManager
-     * @param Contact       $target
-     */
     public function __construct(EntityManager $entityManager = null, Contact $target = null)
     {
         parent::__construct('contact_merge');

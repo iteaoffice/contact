@@ -30,21 +30,22 @@ use Zend\Form\Annotation;
  */
 class Selection extends AbstractEntity
 {
-    public const SELECTION_INVOICE_CORE       = 1;
-    public const SELECTION_BSG                = 46;
-    public const SELECTION_STG                = 47;
+    public const SELECTION_INVOICE_CORE = 1;
+    public const SELECTION_BSG = 46;
+    public const SELECTION_STG = 47;
     public const SELECTION_PROJECT_MANAGEMENT = 219;
 
     public const NOT_CORE = 0;
-    public const CORE     = 1;
+    public const CORE = 1;
 
-    public const TYPE_SQL   = 1;
+    public const TYPE_SQL = 1;
     public const TYPE_FIXED = 2;
 
-    protected static $coreTemplates = [
-        self::NOT_CORE => 'txt-not-core',
-        self::CORE     => 'txt-core',
-    ];
+    protected static $coreTemplates
+        = [
+            self::NOT_CORE => 'txt-not-core',
+            self::CORE     => 'txt-core',
+        ];
 
     /**
      * @ORM\Column(name="selection_id", type="integer", nullable=false)
@@ -203,6 +204,11 @@ class Selection extends AbstractEntity
     public function isCore(): bool
     {
         return $this->core === self::CORE;
+    }
+
+    public function isActive(): bool
+    {
+        return null === $this->dateDeleted;
     }
 
     /**

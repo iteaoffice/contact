@@ -31,7 +31,7 @@ use Zend\Validator\File\Size;
  *
  * @package Contact\Form
  */
-class Import extends Form implements InputFilterProviderInterface
+final class Import extends Form implements InputFilterProviderInterface
 {
     public function __construct(ContactService $contactService, SelectionService $selectionService)
     {
@@ -44,7 +44,7 @@ class Import extends Form implements InputFilterProviderInterface
         /** @var Selection $selection */
         foreach ($selectionService->findAll(Selection::class) as $selection) {
             /** @var $selection Selection */
-            if (null !== $selection->getSql()) {
+            if ($selection->isActive() && null === $selection->getSql()) {
                 $selections[$selection->getId()] = $selection->getSelection();
             }
         }
@@ -57,7 +57,7 @@ class Import extends Form implements InputFilterProviderInterface
                 'options' => [
                     "value_options" => $selections,
                     'empty_option'  => '-- Append to existing selection',
-                    "label"         => "txt-append-to-selection",
+                    "label"         => _("txt-append-to-selection"),
                     "help-block"    => _("txt-contact-import-append-to-selection-name-help-block"),
                 ],
             ]

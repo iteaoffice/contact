@@ -36,8 +36,8 @@
             <table class="table table-hover table-striped table-sm">
                 <thead>
                 <tr>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/opt-in/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/opt-in/list', 'criteria': 'description', 'text': translate('txt-description')} %}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/opt-in/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/opt-in/list', 'criteria': 'description', 'text': translate('txt-description')} %}</th>
                     <th>{{ translate("txt-active") }}</th>
                     <th>{{ translate("txt-contacts") }}</th>
                     <th>{{ translate("txt-mailings") }}</th>
@@ -57,7 +57,7 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% include 'contact/partial/pagination-control' with {'paginator': paginator} %}
+            {% include 'application/partial/pagination-control' with {'paginator': paginator} %}
         {% else %}
             {{ ztbalert().info(translate("txt-no-optins-found"))|raw }}
         {% endif %}

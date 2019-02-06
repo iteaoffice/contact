@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Contact\Form;
 
 use Contact\Entity\Selection;
-use Contact\Service\SelectionService;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManager;
+use DoctrineORMModule\Form\Element\EntitySelect;
 use Zend\Form\Form;
 
 /**
@@ -24,33 +26,33 @@ use Zend\Form\Form;
  */
 class SelectionContacts extends Form
 {
-    public function __construct(SelectionService $selectionService)
+    public function __construct(EntityManager $entityManager)
     {
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('action', '');
         $this->setAttribute("onsubmit", "return storeChanges();");
 
-        $selections = [];
-        /** @var Selection $selection */
-        foreach ($selectionService->findAll(Selection::class) as $selection) {
-            $selections[$selection->getId()] = $selection->getSelection();
-        }
-
-        asort($selections);
-
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Select',
+                'type'       => EntitySelect::class,
                 'name'       => 'selection',
                 'options'    => [
-                    'inline'        => true,
-                    'value_options' => $selections,
+                    'target_class'   => Selection::class,
+                    'object_manager' => $entityManager,
+                    'help-block'     => _("txt-form-calendar-contacts-selection-help-block"),
+                    'find_method'    => [
+                        'name'   => 'findActive',
+                        'params' => [
+                            'criteria' => [],
+                            'orderBy'  => [],
+                        ],
+                    ],
                 ],
                 'attributes' => [
-                    'id'    => 'selection',
-                    'class' => 'form-control',
-                ],
+                    'id' => 'selection',
+                    'class' => 'form-control'
+                ]
             ]
         );
 

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Organisation\Entity\Organisation;
 use Zend\Form\Annotation;
 
 /**
@@ -28,11 +29,10 @@ use Zend\Form\Annotation;
 class ContactOrganisation extends AbstractEntity
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="contact_organisation_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var integer
      */
     private $id;
     /**
@@ -43,19 +43,14 @@ class ContactOrganisation extends AbstractEntity
     private $branch;
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\Contact",  cascade={"persist"}, inversedBy="contactOrganisation")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
      *
      * @var \Contact\Entity\Contact
      */
     private $contact;
     /**
-     * @ORM\ManyToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"},
-     * fetch="EAGER")
-     * @ORM\JoinColumns({
+     * @ORM\ManyToOne(targetEntity="Organisation\Entity\Organisation", inversedBy="contactOrganisation", cascade={"persist"})
      * @ORM\JoinColumn(name="organisation_id", referencedColumnName="organisation_id", nullable=false)
-     * })
      *
      * @var \Organisation\Entity\Organisation
      */
@@ -76,66 +71,42 @@ class ContactOrganisation extends AbstractEntity
         return isset($this->$property);
     }
 
-    /**
-     * @return string
-     */
-    public function getBranch()
+    public function getBranch(): ?string
     {
         return $this->branch;
     }
 
-    /**
-     * @param string $branch
-     */
-    public function setBranch($branch)
+    public function setBranch($branch): void
     {
         $this->branch = $branch;
     }
 
-    /**
-     * @return \Contact\Entity\Contact
-     */
-    public function getContact()
+    public function getContact(): ?Contact
     {
         return $this->contact;
     }
 
-    /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
+    public function setContact($contact): void
     {
         $this->contact = $contact;
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return \Organisation\Entity\Organisation
-     */
-    public function getOrganisation()
+    public function getOrganisation(): ?Organisation
     {
         return $this->organisation;
     }
 
-    /**
-     * @param \Organisation\Entity\Organisation $organisation
-     */
-    public function setOrganisation($organisation)
+    public function setOrganisation($organisation): void
     {
         $this->organisation = $organisation;
     }

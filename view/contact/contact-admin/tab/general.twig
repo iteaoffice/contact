@@ -37,6 +37,11 @@
                     <dd>{{ translate("txt-no-organisation-provided") }}</dd>
                 {% endif %}
 
+                {% if contact.contactOrganisation.branch %}
+                    <dt>{{ translate("txt-branch") }}</dt>
+                    <dd><code>{{ contact.contactOrganisation.branch }}</code></dd>
+                {% endif %}
+
                 <dt>{{ translate("txt-profile-visibility") }}</dt>
                 {% if contact.profile.visible is not null %}
                     <dd>{{ translate(contact.profile.visible(true)) }}</dd>

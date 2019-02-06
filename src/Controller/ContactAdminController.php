@@ -497,7 +497,7 @@ use Zend\View\Model\ViewModel;
         if ($this->contactService->hasOrganisation($contact)) {
             $data = array_merge(
                 [
-                    'contact' => [
+                    'contact_entity_contact' => [
                         'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
                         'branch'       => $contact->getContactOrganisation()->getBranch(),
                     ],
@@ -660,6 +660,7 @@ use Zend\View\Model\ViewModel;
             if ($form->isValid()) {
                 /** @var Contact $contact */
                 $contact = $form->getData();
+                $contact->setDateActivated(new \DateTime());
                 $contact = $this->contactService->save($contact);
 
                 if (isset($data['contact_entity_contact']['organisation'])) {
@@ -774,7 +775,7 @@ use Zend\View\Model\ViewModel;
                 'organisation' => $result['organisation'],
             ];
         }
-
+        https://dev1.itea4.org/admin/contact/merge/20388/into/32540.html
         return new JsonModel($results);
     }
 
@@ -822,7 +823,7 @@ use Zend\View\Model\ViewModel;
                 } else {
                     $tab = 'merge';
                     $this->flashMessenger()->addErrorMessage(
-                        $this->translator->translate('txt-contact-merge-failed')
+                        \sprintf($this->translator->translate('txt-contact-merge-failed-%s'), $result['errorMessage'])
                     );
                 }
 

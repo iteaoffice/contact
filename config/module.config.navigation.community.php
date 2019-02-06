@@ -39,6 +39,14 @@ return [
                                         'label' => _("txt-profile-edit"),
                                         'route' => 'community/contact/profile/edit',
                                     ],
+                                    'manage-body'                 => [
+                                        'label' => _("txt-manage-profile-body"),
+                                        'route' => 'community/contact/profile/manage-body',
+                                    ],
+                                    'manage-external'             => [
+                                        'label' => _("txt-manage-profile-external"),
+                                        'route' => 'community/contact/profile/manage-external',
+                                    ],
                                     'change-password'             => [
                                         'label' => _("txt-manage-password"),
                                         'route' => 'community/contact/change-password',

@@ -79,6 +79,16 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'community/contact/profile/manage-body',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
+                    'route'     => 'community/contact/profile/manage-external',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
                     'route'     => 'community/contact/search',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,

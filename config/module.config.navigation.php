@@ -219,6 +219,19 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'upload-nda'               => [
+                                        'label'   => _('txt-upload-nda'),
+                                        'route'   => 'zfcadmin/nda/upload',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'contactId',
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],

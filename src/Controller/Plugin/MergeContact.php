@@ -25,6 +25,7 @@ use Contact\Entity\Email;
 use Contact\Entity\Log;
 use Contact\Entity\Note;
 use Contact\Entity\OptIn;
+use Contact\Entity\Photo;
 use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -318,7 +319,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Domain $domainSource */
             foreach ($source->getDomain() as $domainSource) {
-                if (!\in_array($domainSource->getId(), $targetDomains)) {
+                if (!\in_array($domainSource->getId(), $targetDomains, true)) {
                     $target->getDomain()->add($domainSource);
                 }
             }
@@ -473,7 +474,7 @@ final class MergeContact extends AbstractPlugin
             $source->setAssociate(new ArrayCollection());
 
             // Transfer funder (one-to-one)
-            if (($target->getFunder() === null) && ($source->getFunder() !== null)) {
+            if ($target->getFunder() === null && $source->getFunder() !== null) {
                 $funder = $source->getFunder();
                 $funder->setContact($target);
                 $target->setFunder($funder);
@@ -488,12 +489,21 @@ final class MergeContact extends AbstractPlugin
             }
 
             // Transfer profile (one-to-one)
-            if (($target->getProfile() === null) && ($source->getProfile() !== null)) {
+            if ($target->getProfile() === null && $source->getProfile() !== null) {
                 $profile = $source->getProfile();
                 $profile->setContact($target);
                 $target->setProfile($profile);
             }
             $source->setProfile(null);
+
+            // Transfer photo (many-to-one)
+            if ($target->getPhoto()->isEmpty() === null && !$source->getPhoto()->isEmpty()) {
+                /** @var Photo $photo */
+                $photo = $source->getPhoto()->first();
+                $photo->setContact($target);
+                $target->getPhoto()->add($photo);
+            }
+            $source->setPhoto([]);
 
             // Transfer community (no matching)
             foreach ($source->getCommunity() as $key => $community) {
@@ -524,7 +534,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var \Event\Entity\Badge\Contact $badgeContactSource */
             foreach ($source->getBadgeContact() as $badgeContactSource) {
-                if (!\in_array($badgeContactSource->getBadge()->getId(), $targetBadges)) {
+                if (!\in_array($badgeContactSource->getBadge()->getId(), $targetBadges, true)) {
                     $badgeContactSource->setContact($target);
                     $target->getBadgeContact()->add($badgeContactSource);
                 }
@@ -580,11 +590,14 @@ final class MergeContact extends AbstractPlugin
                 $targetSelections[] = $selectionContactTarget->getSelection()->getId();
             }
             /** @var SelectionContact $selectionContactSource */
-            foreach ($source->getSelectionContact() as $selectionContactSource) {
+            foreach ($source->getSelectionContact() as $key => $selectionContactSource) {
                 if (!\in_array($selectionContactSource->getSelection()->getId(), $targetSelections, false)) {
                     $selectionContactSource->setContact($target);
                     $target->getSelectionContact()->add($selectionContactSource);
                 }
+
+                // Explicitly remove the key
+                $source->getSelectionContact()->remove($key);
             }
             $source->setSelectionContact(new ArrayCollection());
 
@@ -652,6 +665,27 @@ final class MergeContact extends AbstractPlugin
                 $evaluation->setContact($target);
                 $target->getEvaluation()->add($evaluation);
                 $source->getEvaluation()->remove($key);
+            }
+
+            //Transfer actions (closed statements)
+            foreach ($source->getActionClosed() as $key => $actionClosed) {
+                $actionClosed->setContactClosed($target);
+                $target->getActionClosed()->add($actionClosed);
+                $source->getActionClosed()->remove($key);
+            }
+
+            //Transfer actions (status updates)
+            foreach ($source->getActionStatus() as $key => $actionStatus) {
+                $actionStatus->setContactStatus($target);
+                $target->getActionStatus()->add($actionStatus);
+                $source->getActionStatus()->remove($key);
+            }
+
+            //Transfer actions (closed comments)
+            foreach ($source->getActionComment() as $key => $actionComment) {
+                $actionComment->setContact($target);
+                $target->getActionComment()->add($actionComment);
+                $source->getActionComment()->remove($key);
             }
 
             // Transfer calendars (no matching)
@@ -761,7 +795,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getIdeaInviteContact() as $ideaInviteContactSource) {
-                if (!\in_array($ideaInviteContactSource->getId(), $targetIdeaInviteContacts)) {
+                if (!\in_array($ideaInviteContactSource->getId(), $targetIdeaInviteContacts, true)) {
                     $target->getIdeaInviteContact()->add($ideaInviteContactSource);
                 }
             }
@@ -1020,7 +1054,7 @@ final class MergeContact extends AbstractPlugin
             }
 
             // This flush removes all references to $source that have orphanRemoval=true
-            //$this->entityManager->flush();
+            $this->entityManager->flush();
 
             // Prepare for logging
             $message = \sprintf(
@@ -1032,6 +1066,7 @@ final class MergeContact extends AbstractPlugin
             );
 
             // Save main contact, remove the other + flush and update permissions
+
             $this->entityManager->remove($source);
             $this->entityManager->flush();
 

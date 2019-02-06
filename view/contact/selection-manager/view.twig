@@ -34,7 +34,7 @@
             <dt>{{ translate("txt-group-tag") }}</dt>
             <dd>{{ selection.tag|default(translate("txt-not-provided")) }}</dd>
             <dt>{{ translate("txt-note") }}</dt>
-            <dd>{{ selection.note|default(translate("txt-not-provided"))|nl2br|raw }}</dd>
+            <dd>{{ selection.note|default(translate("txt-not-provided"))|raw|nl2br }}</dd>
             <dt>{{ translate("txt-core") }}</dt>
             <dd>{{ translate(selection.getCore(true)) }}</dd>
             <dt>{{ translate("txt-date-created") }}</dt>

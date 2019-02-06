@@ -24,7 +24,7 @@
         <hr>
 
         {% if paginator.adapter.count > 0 %}
-            {% include 'contact/partial/pagination-control' with {'paginator': paginator,'showTotal' :false} %}
+            {% include 'application/partial/pagination-control' with {'paginator': paginator,'showTotal' :false} %}
 
             <div class="clearfix"></div>
 
@@ -64,7 +64,7 @@
                 {% endfor %}
             </div>
 
-            {% include 'contact/partial/pagination-control' with {'paginator': paginator,'showTotal':true} %}
+            {% include 'application/partial/pagination-control' with {'paginator': paginator,'showTotal':true} %}
 
 
         {% else %}
