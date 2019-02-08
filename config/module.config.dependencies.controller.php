@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Contact;
 
 use Admin\Service\AdminService;
+use Affiliation\Service\AffiliationService;
 use Contact\Service\FormService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
@@ -52,6 +53,7 @@ return [
             RegistrationService::class,
             DeeplinkService::class,
             GeneralService::class,
+            AffiliationService::class,
             FormService::class,
             TranslatorInterface::class,
             EntityManager::class

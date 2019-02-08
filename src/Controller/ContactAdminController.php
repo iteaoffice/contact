@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Contact\Controller;
 
 use Admin\Service\AdminService;
+use Affiliation\Entity\Affiliation;
+use Affiliation\Service\AffiliationService;
 use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
@@ -37,6 +39,7 @@ use Event\Service\RegistrationService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
 use Program\Service\CallService;
+use Project\Entity\Project;
 use Project\Service\IdeaService;
 use Project\Service\ProjectService;
 use Zend\Http\Request;
@@ -97,6 +100,10 @@ use Zend\View\Model\ViewModel;
      */
     private $generalService;
     /**
+     * @var AffiliationService
+     */
+    private $affiliationService;
+    /**
      * @var FormService
      */
     private $formService;
@@ -120,6 +127,7 @@ use Zend\View\Model\ViewModel;
         RegistrationService $registrationService,
         DeeplinkService     $deeplinkService,
         GeneralService      $generalService,
+        AffiliationService  $affiliationService,
         FormService         $formService,
         TranslatorInterface $translator,
         EntityManager       $entityManager
@@ -134,6 +142,7 @@ use Zend\View\Model\ViewModel;
         $this->registrationService = $registrationService;
         $this->deeplinkService     = $deeplinkService;
         $this->generalService      = $generalService;
+        $this->affiliationService  = $affiliationService;
         $this->formService         = $formService;
         $this->translator          = $translator;
         $this->entityManager       = $entityManager;
@@ -856,12 +865,15 @@ use Zend\View\Model\ViewModel;
             return $this->notFoundAction();
         }
 
-        $form = new AddProject($this->projectService);
+        $form             = new AddProject($this->projectService, $contact);
+        $project          = null;
+        $affiliations     = null;
+        $associateIn      = null;
 
         if ($request->isPost()) {
             $data = $request->getPost()->toArray();
 
-            // Cancel the merge
+            // Cancel
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute(
                     'zfcadmin/contact-admin/view',
@@ -869,13 +881,60 @@ use Zend\View\Model\ViewModel;
                     ['fragment' => 'project']
                 );
             }
+
+            // Show project affiliations
+            if (isset($data['project'])) {
+                $project          = $this->projectService->findProjectById((int) $data['project']);
+                $associateIn      = new ArrayCollection();
+                if ($project instanceof Project) {
+                    $affiliations = $project->getAffiliation();
+                    foreach ($affiliations as $key => $affiliation) {
+                        if ($affiliation->getAssociate()->contains($contact)) {
+                            $associateIn->add($affiliation);
+                            $affiliations->remove($key);
+                        }
+                    }
+                }
+            }
+
+            // Save selected affiliation
+            if (isset($data['affiliation'])) {
+                if ($data['affiliation'] === 'add') {
+                    $affiliation = new Affiliation();
+                    $affiliation->setProject($project);
+                    $affiliation->setContact($contact);
+                    $affiliation->setOrganisation($contact->getContactOrganisation()->getOrganisation());
+                    $affiliation->setBranch($contact->getContactOrganisation()->getBranch());
+                } else {
+                    $affiliation = $this->affiliationService->find(Affiliation::class, (int) $data['affiliation']);
+                }
+                if (!$affiliation->getAssociate()->contains($contact)) {
+                    $affiliation->addAssociate($contact);
+                }
+                $this->affiliationService->save($affiliation);
+                $this->affiliationService->refreshAccessRolesByContact($contact);
+
+                $this->flashMessenger()->addSuccessMessage(\sprintf(
+                    $this->translator->translate('txt-contact-successfully-added-to-%s'),
+                    $project->parseFullName()
+                ));
+                
+                return $this->redirect()->toRoute(
+                    'zfcadmin/affiliation/view',
+                    ['id' => $affiliation->getId()],
+                    ['fragment' => 'associates']
+                );
+            }
         }
 
         // Add a contact to a project as technical contact/reviewer/associate
 
         return new ViewModel([
-            'contact' => $contact,
-            'form'    => $form
+            'contact'      => $contact,
+            'form'         => $form,
+            'affiliations' => $affiliations,
+            'associateIn'  => $associateIn,
+            'project'      => $project
         ]);
     }
 }

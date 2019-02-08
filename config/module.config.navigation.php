@@ -232,6 +232,16 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'add-project'               => [
+                                        'label'   => _('txt-add-project'),
+                                        'route'   => 'zfcadmin/contact-admin/add-project',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],
