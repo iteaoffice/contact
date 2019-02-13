@@ -865,10 +865,10 @@ use Zend\View\Model\ViewModel;
             return $this->notFoundAction();
         }
 
-        $form             = new AddProject($this->projectService, $contact);
-        $project          = null;
-        $affiliations     = null;
-        $associateIn      = null;
+        $form         = new AddProject($this->projectService, $contact);
+        $project      = null;
+        $affiliations = null;
+        $associateIn  = null;
 
         if ($request->isPost()) {
             $data = $request->getPost()->toArray();
@@ -882,24 +882,10 @@ use Zend\View\Model\ViewModel;
                 );
             }
 
-            // Show project affiliations
-            if (isset($data['project'])) {
-                $project          = $this->projectService->findProjectById((int) $data['project']);
-                $associateIn      = new ArrayCollection();
-                if ($project instanceof Project) {
-                    $affiliations = $project->getAffiliation();
-                    foreach ($affiliations as $key => $affiliation) {
-                        if ($affiliation->getAssociate()->contains($contact)) {
-                            $associateIn->add($affiliation);
-                            $affiliations->remove($key);
-                        }
-                    }
-                }
-            }
-
             // Save selected affiliation
             if (isset($data['affiliation'])) {
                 if ($data['affiliation'] === 'add') {
+                    $project     = $this->projectService->findProjectById((int) $data['project']);
                     $affiliation = new Affiliation();
                     $affiliation->setProject($project);
                     $affiliation->setContact($contact);
@@ -916,14 +902,29 @@ use Zend\View\Model\ViewModel;
 
                 $this->flashMessenger()->addSuccessMessage(\sprintf(
                     $this->translator->translate('txt-contact-successfully-added-to-%s'),
-                    $project->parseFullName()
+                    $affiliation->getProject()->parseFullName()
                 ));
-                
+
                 return $this->redirect()->toRoute(
                     'zfcadmin/affiliation/view',
                     ['id' => $affiliation->getId()],
                     ['fragment' => 'associates']
                 );
+            }
+
+            // Show project affiliations
+            if (isset($data['project'])) {
+                $project     = $this->projectService->findProjectById((int) $data['project']);
+                $associateIn = new ArrayCollection();
+                if ($project instanceof Project) {
+                    $affiliations = $project->getAffiliation();
+                    foreach ($affiliations as $key => $affiliation) {
+                        if ($affiliation->getAssociate()->contains($contact)) {
+                            $associateIn->add($affiliation);
+                            $affiliations->remove($key);
+                        }
+                    }
+                }
             }
         }
 
