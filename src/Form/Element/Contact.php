@@ -22,13 +22,6 @@ use Zend\Form\Element;
  */
 class Contact extends Element\Select
 {
-
-    /**
-     * Contact constructor.
-     *
-     * @param null $name
-     * @param array $options
-     */
     public function __construct($name = null, $options = [])
     {
         parent::__construct($name, $options);
@@ -36,10 +29,7 @@ class Contact extends Element\Select
         $this->setDisableInArrayValidator(true);
     }
 
-    /**
-     * @param Entity\Contact $contact
-     */
-    public function injectContact(Entity\Contact $contact)
+    public function injectContact(Entity\Contact $contact): void
     {
         $this->valueOptions[$contact->getId()] = $contact->getFormName();
     }

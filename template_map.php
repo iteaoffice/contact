@@ -46,6 +46,7 @@ return array(
     'contact/contact-admin/impersonate'            => __DIR__ . '//view/contact/contact-admin/impersonate.twig',
     'contact/contact-admin/edit'                   => __DIR__ . '//view/contact/contact-admin/edit.twig',
     'contact/contact-admin/new'                    => __DIR__ . '//view/contact/contact-admin/new.twig',
+    'contact/contact-admin/add-project'            => __DIR__ . '//view/contact/contact-admin/add-project.twig',
     'contact/contact-admin/permit'                 => __DIR__ . '//view/contact/contact-admin/permit.twig',
     'contact/contact-admin/merge'                  => __DIR__ . '//view/contact/contact-admin/merge.twig',
     'contact/contact-admin/view'                   => __DIR__ . '//view/contact/contact-admin/view.twig',
@@ -65,5 +66,4 @@ return array(
     'contact/contact-admin/list'                   => __DIR__ . '//view/contact/contact-admin/list.twig',
     'contact/contact-admin/list-inactive'          => __DIR__ . '//view/contact/contact-admin/list-inactive.twig',
     'contact/contact-admin/statistics'             => __DIR__ . '//view/contact/contact-admin/statistics.twig',
-    'contact/contact-admin/add-project'            => __DIR__ . '//view/contact/contact-admin/add-project.twig',
 );

@@ -1,0 +1,28 @@
+{% if identity().saltedPassword %}
+    <h1>{{ translate("txt-change-password") }}</h1>
+    {% do headTitle().append(translate("txt-change-password")) %}
+{% else %}
+    <h1>{{ translate("txt-set-password") }}</h1>
+    {% do headTitle().append(translate("txt-set-password")) %}
+{% endif %}
+
+
+{% do form.prepare() %}
+{% do form.setAttribute('method', 'post') %}
+{% do form.setAttribute('class', 'form-horizontal') %}
+
+{% do form.get('submit').setAttribute('class','btn btn-primary') %}
+
+{{ form().openTag(form)|raw }}
+
+{{ ztbformelement(form.get('password')) }}
+{{ ztbformelement(form.get('passwordVerify')) }}
+
+
+<div class="form-group row">
+    <div class="offset-sm-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}
