@@ -44,14 +44,16 @@ class ContactLink extends LinkAbstract
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
             return '';
         }
-        $this->setShowOptions([
-            'email'           => $this->getContact()->getEmail(),
-            'paginator'       => $this->getAlternativeShow(),
-            'alternativeShow' => $this->getAlternativeShow(),
-            'firstname'       => $this->getContact()->getFirstName(),
-            'initials'        => $this->getContact()->parseInitials(),
-            'name'            => $this->getContact()->getDisplayName(),
-        ]);
+        $this->setShowOptions(
+            [
+                'email'           => $this->getContact()->getEmail(),
+                'paginator'       => $this->getAlternativeShow(),
+                'alternativeShow' => $this->getAlternativeShow(),
+                'firstname'       => $this->getContact()->getFirstName(),
+                'initials'        => $this->getContact()->parseInitials(),
+                'name'            => $this->getContact()->getDisplayName(),
+            ]
+        );
         $this->addRouterParam('hash', $hash);
         $this->addRouterParam('id', $this->getContact()->getId());
 
@@ -63,21 +65,25 @@ class ContactLink extends LinkAbstract
         switch ($this->getAction()) {
             case 'new':
                 $this->setRouter('zfcadmin/contact-admin/new');
-                $this->setText($this->translate("txt-new-contact"));
+                $this->setText($this->translate('txt-new-contact'));
                 break;
             case 'list':
                 $this->setRouter('zfcadmin/contact-admin/list');
-                $this->setText($this->translate("txt-list-contacts"));
+                $this->setText($this->translate('txt-list-contacts'));
+                break;
+            case 'list-old':
+                $this->setRouter('zfcadmin/contact-admin/list-old');
+                $this->setText($this->translate('txt-list-contacts-legacy'));
                 break;
             case 'import':
                 $this->setRouter('zfcadmin/contact-admin/import');
-                $this->setText($this->translate("txt-import-contacts"));
+                $this->setText($this->translate('txt-import-contacts'));
                 break;
             case 'edit-admin':
                 $this->setRouter('zfcadmin/contact-admin/edit');
                 $this->setText(
                     sprintf(
-                        $this->translate("txt-edit-contact-in-admin-%s"),
+                        $this->translate('txt-edit-contact-in-admin-%s'),
                         $this->getContact()->getDisplayName()
                     )
                 );
@@ -86,7 +92,7 @@ class ContactLink extends LinkAbstract
                 $this->setRouter('zfcadmin/contact-admin/view');
                 $this->setText(
                     sprintf(
-                        $this->translate("txt-view-contact-in-admin-%s"),
+                        $this->translate('txt-view-contact-in-admin-%s'),
                         $this->getContact()->getDisplayName()
                     )
                 );
@@ -95,7 +101,7 @@ class ContactLink extends LinkAbstract
                 $this->setRouter('zfcadmin/contact-admin/impersonate');
                 $this->setText(
                     sprintf(
-                        $this->translate("txt-impersonate-contact-%s"),
+                        $this->translate('txt-impersonate-contact-%s'),
                         $this->getContact()->getDisplayName()
                     )
                 );
@@ -104,7 +110,7 @@ class ContactLink extends LinkAbstract
                 $this->setRouter('zfcadmin/contact-admin/permit');
                 $this->setText(
                     sprintf(
-                        $this->translate("txt-permit-of-contact-%s"),
+                        $this->translate('txt-permit-of-contact-%s'),
                         $this->getContact()->getDisplayName()
                     )
                 );
@@ -116,21 +122,21 @@ class ContactLink extends LinkAbstract
                  * We will therefore have the option to set a password
                  */
                 if (null === $this->getContact()->getSaltedPassword()) {
-                    $this->setText($this->translate("txt-set-your-password"));
+                    $this->setText($this->translate('txt-set-your-password'));
                     $this->addClasses('btn-danger');
                 } else {
-                    $this->setText($this->translate("txt-update-your-password"));
+                    $this->setText($this->translate('txt-update-your-password'));
                 }
                 break;
             case 'add-project':
                 $this->setRouter('zfcadmin/contact-admin/add-project');
-                $this->setText(sprintf(
-                    $this->translate("txt-add-%s-to-a-project"),
-                    $this->getContact()->getDisplayName()
-                ));
+                $this->setText(
+                    sprintf(
+                        $this->translate('txt-add-%s-to-a-project'),
+                        $this->getContact()->getDisplayName()
+                    )
+                );
                 break;
-            default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
     }
 }

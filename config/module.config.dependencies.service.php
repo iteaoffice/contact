@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Contact;
 
 
+use Admin\Service\AdminService;
 use Contact\Service\SelectionContactService;
 use Doctrine\ORM\EntityManager;
 use General\Service\GeneralService;
@@ -37,6 +38,7 @@ return [
             Search\Service\ProfileSearchService::class,
             OrganisationService::class,
             GeneralService::class,
+            AdminService::class,
             'ViewHelperManager',
             'zfcuser_module_options'
         ],

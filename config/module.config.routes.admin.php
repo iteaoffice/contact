@@ -36,6 +36,15 @@ return [
                                     ],
                                 ],
                             ],
+                            'list-old'       => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/list-old/[/f-:encodedFilter][/page-:page].html',
+                                    'defaults' => [
+                                        'action' => 'list-old',
+                                    ],
+                                ],
+                            ],
                             'export'         => [
                                 'type'    => 'Segment',
                                 'options' => [
@@ -136,7 +145,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'add-project'          => [
+                            'add-project'    => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/add-project/[:id].html',

@@ -19,6 +19,7 @@ namespace Contact;
 
 use Admin\Service\AdminService;
 use Affiliation\Service\AffiliationService;
+use Contact\Search\Service\ContactSearchService;
 use Contact\Service\FormService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
@@ -44,6 +45,7 @@ return [
         Controller\ConsoleController::class          => [],
         Controller\ContactAdminController::class     => [
             Service\ContactService::class,
+            ContactSearchService::class,
             Service\SelectionService::class,
             OrganisationService::class,
             CallService::class,

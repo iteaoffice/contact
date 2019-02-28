@@ -399,7 +399,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var \Project\Entity\Idea\Partner[]|Collections\ArrayCollection
      */
     private $ideaPartner;
-
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -1090,6 +1089,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function isActive(): bool
     {
         return null === $this->dateEnd;
+    }
+
+    public function isFunder(): bool
+    {
+        return null !== $this->funder;
     }
 
     public function hasOrganisation(): bool

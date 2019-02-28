@@ -15,7 +15,6 @@ namespace Contact\Controller;
 use Admin\Service\AdminService;
 use Affiliation\Entity\Affiliation;
 use Affiliation\Service\AffiliationService;
-use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Entity\OptIn;
@@ -26,6 +25,7 @@ use Contact\Form\ContactFilter;
 use Contact\Form\ContactMerge;
 use Contact\Form\Impersonate;
 use Contact\Form\Import;
+use Contact\Search\Service\ContactSearchService;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Contact\Service\SelectionService;
@@ -42,11 +42,12 @@ use Program\Service\CallService;
 use Project\Entity\Project;
 use Project\Service\IdeaService;
 use Project\Service\ProjectService;
+use Search\Form\SearchResult;
+use Search\Paginator\Adapter\SolariumPaginator;
+use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Log\Logger;
-use Zend\Log\Writer\Stream;
 use Zend\Paginator\Paginator;
 use Zend\Session\Container;
 use Zend\Validator\File\ImageSize;
@@ -57,12 +58,18 @@ use Zend\View\Model\ViewModel;
 /**
  * Class ContactManagerController.
  */
-/*final*/ class ContactAdminController extends ContactAbstractController
+/*final*/
+
+class ContactAdminController extends ContactAbstractController
 {
     /**
      * @var ContactService
      */
     private $contactService;
+    /**
+     * @var ContactSearchService
+     */
+    private $contactSearchService;
     /**
      * @var SelectionService
      */
@@ -117,38 +124,107 @@ use Zend\View\Model\ViewModel;
     private $entityManager;
 
     public function __construct(
-        ContactService      $contactService,
-        SelectionService    $selectionService,
+        ContactService $contactService,
+        ContactSearchService $contactSearchService,
+        SelectionService $selectionService,
         OrganisationService $organisationService,
-        CallService         $callService,
-        ProjectService      $projectService,
-        IdeaService         $ideaService,
-        AdminService        $adminService,
+        CallService $callService,
+        ProjectService $projectService,
+        IdeaService $ideaService,
+        AdminService $adminService,
         RegistrationService $registrationService,
-        DeeplinkService     $deeplinkService,
-        GeneralService      $generalService,
-        AffiliationService  $affiliationService,
-        FormService         $formService,
+        DeeplinkService $deeplinkService,
+        GeneralService $generalService,
+        AffiliationService $affiliationService,
+        FormService $formService,
         TranslatorInterface $translator,
-        EntityManager       $entityManager
+        EntityManager $entityManager
     ) {
-        $this->contactService      = $contactService;
-        $this->selectionService    = $selectionService;
+        $this->contactService = $contactService;
+        $this->contactSearchService = $contactSearchService;
+        $this->selectionService = $selectionService;
         $this->organisationService = $organisationService;
-        $this->callService         = $callService;
-        $this->projectService      = $projectService;
-        $this->ideaService         = $ideaService;
-        $this->adminService        = $adminService;
+        $this->callService = $callService;
+        $this->projectService = $projectService;
+        $this->ideaService = $ideaService;
+        $this->adminService = $adminService;
         $this->registrationService = $registrationService;
-        $this->deeplinkService     = $deeplinkService;
-        $this->generalService      = $generalService;
-        $this->affiliationService  = $affiliationService;
-        $this->formService         = $formService;
-        $this->translator          = $translator;
-        $this->entityManager       = $entityManager;
+        $this->deeplinkService = $deeplinkService;
+        $this->generalService = $generalService;
+        $this->affiliationService = $affiliationService;
+        $this->formService = $formService;
+        $this->translator = $translator;
+        $this->entityManager = $entityManager;
     }
 
     public function listAction(): ViewModel
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        $page = $this->params('page', 1);
+        $form = new SearchResult();
+        $data = array_merge(
+            [
+                'order'     => '',
+                'direction' => '',
+                'query'     => '',
+                'facet'     => [],
+            ],
+            $request->getQuery()->toArray()
+        );
+        $searchFields = [
+            'country',
+            'country_search',
+            'country_iso3',
+            'country_cd',
+        ];
+
+        if ($request->isGet()) {
+            $this->contactSearchService->setSearch($data['query'], $searchFields, $data['order'], $data['direction']);
+            if (isset($data['facet'])) {
+                foreach ($data['facet'] as $facetField => $values) {
+                    $quotedValues = [];
+                    foreach ($values as $value) {
+                        $quotedValues[] = \sprintf('"%s"', $value);
+                    }
+
+                    $this->contactSearchService->addFilterQuery(
+                        $facetField,
+                        \implode(' ' . SolariumQuery::QUERY_OPERATOR_OR . ' ', $quotedValues)
+                    );
+                }
+            }
+
+            $form->addSearchResults(
+                $this->contactSearchService->getQuery()->getFacetSet(),
+                $this->contactSearchService->getResultSet()->getFacetSet()
+            );
+            $form->setData($data);
+        }
+
+        $paginator = new Paginator(
+            new SolariumPaginator($this->contactSearchService->getSolrClient(), $this->contactSearchService->getQuery())
+        );
+        $paginator::setDefaultItemCountPerPage(($page === 'all') ? 1000 : 25);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
+
+
+        return new ViewModel(
+            [
+                'form'           => $form,
+                'order'          => $data['order'],
+                'direction'      => $data['direction'],
+                'query'          => $data['query'],
+                'badges'         => $form->getBadges(),
+                'arguments'      => \http_build_query($form->getFilteredData()),
+                'paginator'      => $paginator,
+                'contactService' => $this->contactService
+            ]
+        );
+    }
+
+    public function listOldAction(): ViewModel
     {
         $page = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
@@ -309,7 +385,7 @@ use Zend\View\Model\ViewModel;
         $data = $request->getPost()->toArray();
         if ($request->isPost() && !empty($data['selection'])) {
             foreach ((array)$data['selection'] as $selectionId) {
-                $selection = $this->selectionService->findSelectionById((int) $selectionId);
+                $selection = $this->selectionService->findSelectionById((int)$selectionId);
                 if (null === $selection) {
                     continue;
                 }
@@ -534,7 +610,10 @@ use Zend\View\Model\ViewModel;
 
             /** Deactivate a contact */
             if (isset($data['deactivate'])) {
-                $changelogMessage = \sprintf($this->translator->translate("txt-contact-%s-has-been-deleted"), $contact->parseFullName());
+                $changelogMessage = \sprintf(
+                    $this->translator->translate("txt-contact-%s-has-been-deleted"),
+                    $contact->parseFullName()
+                );
                 $this->flashMessenger()->addSuccessMessage($changelogMessage);
 
                 $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
@@ -547,7 +626,10 @@ use Zend\View\Model\ViewModel;
 
             /** Reactivate a contact */
             if (isset($data['reactivate'])) {
-                $changelogMessage = \sprintf($this->translator->translate("txt-contact-%s-has-been-undeleted"), $contact->parseFullName());
+                $changelogMessage = \sprintf(
+                    $this->translator->translate("txt-contact-%s-has-been-undeleted"),
+                    $contact->parseFullName()
+                );
                 $this->flashMessenger()->addSuccessMessage($changelogMessage);
 
                 $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
@@ -793,9 +875,9 @@ use Zend\View\Model\ViewModel;
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var Contact $source */
-        $source  = $this->contactService->findContactById((int)$this->params('sourceId'));
+        $source = $this->contactService->findContactById((int)$this->params('sourceId'));
         /** @var Contact $target */
-        $target  = $this->contactService->findContactById((int)$this->params('targetId'));
+        $target = $this->contactService->findContactById((int)$this->params('targetId'));
 
         if (($source === null) || ($target === null)) {
             return $this->notFoundAction();
@@ -824,7 +906,7 @@ use Zend\View\Model\ViewModel;
             // Perform the merge
             if (isset($data['merge'])) {
                 $result = $this->mergeContact()->merge($source, $target);
-                $tab    = 'general';
+                $tab = 'general';
                 if ($result['success']) {
                     $this->flashMessenger()->addSuccessMessage(
                         $this->translator->translate('txt-contacts-have-been-successfully-merged')
@@ -865,10 +947,10 @@ use Zend\View\Model\ViewModel;
             return $this->notFoundAction();
         }
 
-        $form         = new AddProject($this->projectService, $contact);
-        $project      = null;
+        $form = new AddProject($this->projectService);
+        $project = null;
         $affiliations = null;
-        $associateIn  = null;
+        $associateIn = null;
 
         if ($request->isPost()) {
             $data = $request->getPost()->toArray();
@@ -885,14 +967,14 @@ use Zend\View\Model\ViewModel;
             // Save selected affiliation
             if (isset($data['affiliation'])) {
                 if ($data['affiliation'] === 'add') {
-                    $project     = $this->projectService->findProjectById((int) $data['project']);
+                    $project = $this->projectService->findProjectById((int)$data['project']);
                     $affiliation = new Affiliation();
                     $affiliation->setProject($project);
                     $affiliation->setContact($contact);
                     $affiliation->setOrganisation($contact->getContactOrganisation()->getOrganisation());
                     $affiliation->setBranch($contact->getContactOrganisation()->getBranch());
                 } else {
-                    $affiliation = $this->affiliationService->find(Affiliation::class, (int) $data['affiliation']);
+                    $affiliation = $this->affiliationService->find(Affiliation::class, (int)$data['affiliation']);
                 }
                 if (!$affiliation->getAssociate()->contains($contact)) {
                     $affiliation->addAssociate($contact);
@@ -900,10 +982,12 @@ use Zend\View\Model\ViewModel;
                 $this->affiliationService->save($affiliation);
                 $this->affiliationService->refreshAccessRolesByContact($contact);
 
-                $this->flashMessenger()->addSuccessMessage(\sprintf(
-                    $this->translator->translate('txt-contact-successfully-added-to-%s'),
-                    $affiliation->getProject()->parseFullName()
-                ));
+                $this->flashMessenger()->addSuccessMessage(
+                    \sprintf(
+                        $this->translator->translate('txt-contact-successfully-added-to-%s'),
+                        $affiliation->getProject()->parseFullName()
+                    )
+                );
 
                 return $this->redirect()->toRoute(
                     'zfcadmin/affiliation/view',
@@ -914,7 +998,7 @@ use Zend\View\Model\ViewModel;
 
             // Show project affiliations
             if (isset($data['project'])) {
-                $project     = $this->projectService->findProjectById((int) $data['project']);
+                $project = $this->projectService->findProjectById((int)$data['project']);
                 $associateIn = new ArrayCollection();
                 if ($project instanceof Project) {
                     $affiliations = $project->getAffiliation();
@@ -930,12 +1014,14 @@ use Zend\View\Model\ViewModel;
 
         // Add a contact to a project as technical contact/reviewer/associate
 
-        return new ViewModel([
-            'contact'      => $contact,
-            'form'         => $form,
-            'affiliations' => $affiliations,
-            'associateIn'  => $associateIn,
-            'project'      => $project
-        ]);
+        return new ViewModel(
+            [
+                'contact'      => $contact,
+                'form'         => $form,
+                'affiliations' => $affiliations,
+                'associateIn'  => $associateIn,
+                'project'      => $project
+            ]
+        );
     }
 }

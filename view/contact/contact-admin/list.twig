@@ -7,80 +7,58 @@
 
 {{ form().openTag(form)|raw }}
 
-{% set filter = form.get('filter') %}
+<h1>{{ translate("txt-contact-list") }} {{ contactLink(null,'new', 'button') }}  {{ contactLink(null,'list-old', 'button') }} {{ contactLink(null,'import', 'button') }}</h1>
+
+{{ filterbarelement(form) }}
+{% include('application/partial/form-badges') %}
+<p class="text-muted">{{ translate("txt-%s-items-on-%s-pages")|format(paginator.adapter.count,paginator.pageRange) }}</p>
 
 
-<input type="hidden" name="filter[order]" value="{{ order }}">
-<input type="hidden" name="filter[direction]" value="{{ direction }}">
+{% if paginator.pageRange > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'email', 'text': translate('txt-email')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'projects', 'text': translate('txt-projects')} %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for contactResult in paginator.getCurrentItems() %}
 
-<div class="row">
+            <tr {% if not contactResult.fields.is_active %}class="table-danger"{% endif %}>
+                <td>
+                    <a href="{{ url('zfcadmin/contact-admin/view',{'id': contactResult.fields.contact_id}) }}">{{ contactResult.fields.fullname }}</a>
+                    <a href="{{ url('zfcadmin/contact-admin/edit',{'id': contactResult.fields.contact_id}) }}"><i
+                                class="fa fa-pencil-square-o"></i></a></td>
+                <td><a href="mailto:{{ contactResult.fields.email }}"
+                       title="{{ contact.email }}">{{ contactResult.fields.email }}</a></td>
+                <td>{% if not contactResult.fields.has_organiation %}<a
+                        href="{{ url('zfcadmin/organisation/view',{'id': contactResult.fields.organisation_id}) }}">{{ contactResult.fields.organisation }}</a>{% endif %}
+                <td>{% if not contactResult.fields.has_organiation %}<a
+                        href="{{ url('zfcadmin/country/view',{'id': contactResult.fields.country_id}) }}">{{ contactResult.fields.country_iso3 }}</a>{% endif %}
+                <td>
+                    <a href="{{ url('zfcadmin/contact-admin/view',{'id': contactResult.fields.contact_id}) }}#projects">{{ contactResult.fields.projects }}</a>
+                </td>
+                <td>
+                    {% if contactResult.fields.is_funder %}<strong class="text-highlight" title="{{ translate("txt-funder") }}">PA</strong>{% endif %}
+                    {% if contactResult.fields.is_office %}<strong class="text-highlight" title="{{ translate("txt-funder") }}">OFF</strong>{% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-    <div class="col-md-10">
-
-        <h1>{{ translate("txt-contact-list") }} {{ contactLink(null,'new', 'button') }} {{ contactLink(null,'import', 'button') }}</h1>
-
-        <div class="row">
-            <div class="col-md-6">
-
-            </div>
-            <div class="col-md-6">
-                <div class="input-group">
-                    {{ formelement(filter.get('search')) }}
-                    <div class="input-group-append input-group-btn">
-                        {{ formelement(form.get('submit')) }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {% if paginator.pageRange > 0 %}
-            <table class="table table-hover table-striped table-sm">
-                <thead>
-                <tr>
-                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-                    <th>{{ translate('txt-email') }}</th>
-                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
-                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
-                    <th>{{ translate("txt-projects") }}</th>
-                </tr>
-                </thead>
-                <tfoot>
-                </tfoot>
-                <tbody>
-                {% for contact in paginator.getCurrentItems() %}
-                    <tr {% if contact.dateEnd %}class="danger"{% endif %}>
-                        <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
-                        <td><a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
-                                        class="fa fa-envelope-o"></i> </a></td>
-                        <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
-                        <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
-                        <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-            {% include 'application/partial/pagination-control' %}
-            <a href="{{ url('zfcadmin/contact-admin/export',{'encodedFilter': encodedFilter}) }}"
-               class="btn btn-primary btn-sm"><i
-                        class="fa fa-file-excel-o"></i> {{ translate("txt-export-csv") }}</a>
-        {% else %}
-            {{ ztbalert().info(translate("txt-no-contact-found"))|raw }}
-        {% endif %}
-    </div>
-    <div class="col-md-2">
-        <fieldset>
-
-            {{ ztbformelement(filter.get('options'), true) }}
-            {{ ztbformelement(filter.get('gender'), true) }}
-            {{ ztbformelement(filter.get('country'), true) }}
-
-            {{ ztbformelement(form.get('submit')) }}
-            {{ ztbformelement(form.get('clear')) }}
-        </fieldset>
-    </div>
-</div>
-
-{{ form().closeTag()|raw }}
-
+    {% include 'application/partial/pagination-control' %}
+    <a href="{{ url('zfcadmin/contact-admin/export',{'encodedFilter': encodedFilter}) }}"
+       class="btn btn-primary btn-sm"><i
+                class="fa fa-file-excel-o"></i> {{ translate("txt-export-csv") }}</a>
+{% else %}
+    {{ ztbalert().info(translate("txt-no-contact-found"))|raw }}
+{% endif %}
 

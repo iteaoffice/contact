@@ -48,6 +48,7 @@ return array(
     'contact/contact-admin/new'                    => __DIR__ . '//view/contact/contact-admin/new.twig',
     'contact/contact-admin/add-project'            => __DIR__ . '//view/contact/contact-admin/add-project.twig',
     'contact/contact-admin/permit'                 => __DIR__ . '//view/contact/contact-admin/permit.twig',
+    'contact/contact-admin/list-old'               => __DIR__ . '//view/contact/contact-admin/list-old.twig',
     'contact/contact-admin/merge'                  => __DIR__ . '//view/contact/contact-admin/merge.twig',
     'contact/contact-admin/view'                   => __DIR__ . '//view/contact/contact-admin/view.twig',
     'contact/contact-admin/list-duplicate'         => __DIR__ . '//view/contact/contact-admin/list-duplicate.twig',

@@ -18,10 +18,14 @@
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab" role="tab">{{ translate("txt-general") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#contacts" data-toggle="tab" role="tab">{{ translate("txt-contacts") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#mailings" data-toggle="tab" role="tab">{{ translate("txt-mailings") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#access" data-toggle="tab" role="tab">{{ translate("txt-access") }}</a></li>
+    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab"
+                                   role="tab">{{ translate("txt-general") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#contacts" data-toggle="tab"
+                            role="tab">{{ translate("txt-contacts") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mailings" data-toggle="tab"
+                            role="tab">{{ translate("txt-mailings") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#access" data-toggle="tab"
+                            role="tab">{{ translate("txt-access") }}</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -37,8 +41,10 @@
             <dd>{{ selection.note|default(translate("txt-not-provided"))|raw|nl2br }}</dd>
             <dt>{{ translate("txt-core") }}</dt>
             <dd>{{ translate(selection.getCore(true)) }}</dd>
-            <dt>{{ translate("txt-date-created") }}</dt>
-            <dd>{{ selection.dateCreated|string_date }}</dd>
+            {% if selection.dateCreated %}
+                <dt>{{ translate("txt-date-created") }}</dt>
+                <dd>{{ selection.dateCreated|string_date }}</dd>
+            {% endif %}
             {% if selection.dateDeleted %}
                 <dt>{{ translate("txt-date-deleted") }}</dt>
                 <dd><i class="fa fa-trash"></i> {{ selection.dateDeleted|string_date }}</dd>

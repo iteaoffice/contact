@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contact\Service;
 
+use Admin\Entity\Access;
+use Admin\Service\AdminService;
 use Affiliation\Entity\Affiliation;
 use Calendar\Entity\Calendar;
 use Contact\Entity\AbstractEntity;
@@ -19,6 +21,7 @@ use Contact\Entity\Address;
 use Contact\Entity\AddressType;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
+use Contact\Entity\Email;
 use Contact\Entity\Facebook;
 use Contact\Entity\Note;
 use Contact\Entity\OptIn;
@@ -28,7 +31,6 @@ use Contact\Entity\Photo;
 use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
-use Contact\View\Helper\ContactPhoto;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Event\Entity\Booth\Booth;
@@ -87,6 +89,10 @@ class ContactService extends AbstractService implements SearchUpdateInterface
      */
     private $generalService;
     /**
+     * @var AdminService
+     */
+    private $adminService;
+    /**
      * @var HelperPluginManager
      */
     private $viewHelperManager;
@@ -103,6 +109,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         ProfileSearchService $profileSearchService,
         OrganisationService $organisationService,
         GeneralService $generalService,
+        AdminService $adminService,
         HelperPluginManager $viewHelperManager,
         ModuleOptions $userOptions
     ) {
@@ -114,6 +121,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $this->profileSearchService = $profileSearchService;
         $this->organisationService = $organisationService;
         $this->generalService = $generalService;
+        $this->adminService = $adminService;
         $this->viewHelperManager = $viewHelperManager;
         $this->userOptions = $userOptions;
     }
@@ -336,7 +344,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function hasOrganisation(Contact $contact): bool
     {
-        return null !== $contact->getContactOrganisation();
+        return $contact->hasOrganisation();
     }
 
     public function isFunder(Contact $contact): bool
@@ -479,78 +487,76 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $contactDocument->setField('lastname_search', $contact->getLastName());
         $contactDocument->setField('lastname_sort', $contact->getLastName());
 
+        $contactDocument->setField('email', $contact->getEmail());
+        $contactDocument->setField('email_sort', $contact->getEmail());
+
+        //Create a collection of emails
+        $emails = [$contact->getEmail()];
+        /** @var Email $emailAddress */
+        foreach ($contact->getEmailAddress() as $emailAddress) {
+            $emails[] = $emailAddress->getEmail();
+        }
+        $contactDocument->setField('email_search', $emails);
+
+        $contactDocument->setField('gender', $contact->getGender()->getName());
+        $contactDocument->setField('gender_search', $contact->getGender()->getName());
+        $contactDocument->setField('gender_sort', $contact->getGender()->getName());
+
+        $contactDocument->setField('title', $contact->getTitle()->getName());
+        $contactDocument->setField('title_search', $contact->getTitle()->getName());
+        $contactDocument->setField('title_sort', $contact->getTitle()->getName());
+
         $contactDocument->setField('position', $contact->getPosition());
         $contactDocument->setField('position_search', $contact->getPosition());
         $contactDocument->setField('position_sort', $contact->getPosition());
 
+        $contactDocument->setField('department', $contact->getDepartment());
+        $contactDocument->setField('department_search', $contact->getDepartment());
+        $contactDocument->setField('department_sort', $contact->getDepartment());
+
+
+        //Create a collection of opt ins
+        $optInList = [];
+        /** @var OptIn $optIn */
+        foreach ($contact->getOptIn() as $optIn) {
+            $optInList[] = $optIn->getOptIn();
+        }
+        $contactDocument->setField('optin', $optInList);
+
+        //Create a collection of access groups
+        $accessList = [];
+        /** @var Access $access */
+        foreach ($contact->getAccess() as $access) {
+            $accessList[] = $access->getAccess();
+        }
+        $contactDocument->setField('access', $accessList);
+
         if (null !== $contact->getProfile()) {
-            $contactPhoto = $this->viewHelperManager->get(ContactPhoto::class);
+            $description = \strip_tags((string)$contact->getProfile()->getDescription());
 
-            $contactDocument->setField(
-                'profile',
-                \str_replace(
-                    PHP_EOL,
-                    '',
-                    \strip_tags((string)$contact->getProfile()->getDescription())
-                )
-            );
+            $contactDocument->setField('profile', \str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_sort', \str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_search', \str_replace(PHP_EOL, '', $description));
 
-            if ($contact->hasPhoto()) {
+            if ($contact->getPhoto()->count() > 0) {
+                $url = $this->viewHelperManager->get(Url::class);
+
+                /** @var Photo $photo */
+                $photo = $contact->getPhoto()->first();
+
                 $contactDocument->setField(
                     'photo_url',
-                    $contactPhoto(
-                        $contact,
-                        250,
-                        200,
-                        true
+                    $url(
+                        'image/contact-photo',
+                        [
+                            'ext'         => $photo->getContentType()->getExtension(),
+                            'last-update' => $photo->getDateUpdated()->getTimestamp(),
+                            'id'          => $photo->getId(),
+                        ]
                     )
                 );
             }
         }
-
-        if (null !== $contact->getContactOrganisation()) {
-            $contactDocument->setField(
-                'organisation',
-                $contact->getContactOrganisation()->getOrganisation()->getOrganisation()
-            );
-            $contactDocument->setField(
-                'organisation_sort',
-                $contact->getContactOrganisation()->getOrganisation()
-                    ->getOrganisation()
-            );
-            $contactDocument->setField(
-                'organisation_search',
-                $contact->getContactOrganisation()->getOrganisation()
-                    ->getOrganisation()
-            );
-            $contactDocument->setField(
-                'organisation_type',
-                $contact->getContactOrganisation()->getOrganisation()->getType()
-            );
-            $contactDocument->setField(
-                'organisation_type_sort',
-                $contact->getContactOrganisation()->getOrganisation()->getType()
-            );
-            $contactDocument->setField(
-                'organisation_type_search',
-                $contact->getContactOrganisation()->getOrganisation()->getType()
-            );
-            $contactDocument->setField(
-                'country',
-                $contact->getContactOrganisation()->getOrganisation()->getCountry()->getCountry()
-            );
-            $contactDocument->setField(
-                'country_sort',
-                $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                    ->getCountry()
-            );
-            $contactDocument->setField(
-                'country_search',
-                $contact->getContactOrganisation()->getOrganisation()->getCountry()
-                    ->getCountry()
-            );
-        }
-
         if (null !== $contact->getCv()) {
             $cv = \str_replace(
                 PHP_EOL,
@@ -561,6 +567,53 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $contactDocument->setField('cv', $cv);
             $contactDocument->setField('cv_search', $cv);
         }
+
+        $contactDocument->setField('has_organisation', $this->hasOrganisation($contact));
+        $contactDocument->setField('has_organisation_text', $this->hasOrganisation($contact) ? 'Yes' : 'No');
+
+        if ($this->hasOrganisation($contact)) {
+            /** @var Organisation $organisation */
+            $organisation = $contact->getContactOrganisation()->getOrganisation();
+
+            $contactDocument->setField('organisation', $organisation->getOrganisation());
+            $contactDocument->setField('organisation_id', $organisation->getId());
+            $contactDocument->setField('organisation_sort', $organisation->getOrganisation());
+            $contactDocument->setField('organisation_search', $organisation->getOrganisation());
+            $contactDocument->setField('organisation_type', $organisation->getType());
+            $contactDocument->setField('organisation_type_sort', $organisation->getType());
+            $contactDocument->setField('organisation_type_search', $organisation->getType());
+            $contactDocument->setField('country', $organisation->getCountry()->getCountry());
+            $contactDocument->setField('country_id', $organisation->getCountry()->getId());
+            $contactDocument->setField('country_iso3', $organisation->getCountry()->getIso3());
+            $contactDocument->setField('country_sort', $organisation->getCountry()->getCountry());
+            $contactDocument->setField('country_search', $organisation->getCountry()->getCountry());
+        }
+
+        $contactDocument->setField('is_active', $contact->isActive());
+        $contactDocument->setField('is_active_text', $contact->isActive() ? 'Yes' : 'No');
+
+        $contactDocument->setField('is_activated', $contact->isActivated());
+        $contactDocument->setField('is_activated_text', $contact->isActivated() ? 'Yes' : 'No');
+
+        $contactDocument->setField('is_anonymised', $contact->isActivated());
+        $contactDocument->setField('is_anonymised_text', $contact->isActivated() ? 'Yes' : 'No');
+        $contactDocument->setField('is_office', $contact->isOffice());
+        $contactDocument->setField('is_office_text', $contact->isOffice() ? 'Yes' : 'No');
+
+
+        $contactDocument->setField('is_funder', $contact->isFunder());
+        $contactDocument->setField('is_funder_text', $contact->isFunder() ? 'Yes' : 'No');
+
+        if ($contact->isFunder()) {
+            $contactDocument->setField('funder_country', $contact->getFunder()->getCountry()->getCountry());
+            $contactDocument->setField('funder_country_sort', $contact->getFunder()->getCountry()->getCountry());
+            $contactDocument->setField('funder_country_search', $contact->getFunder()->getCountry()->getCountry());
+        }
+
+        $projects = !$contact->getProject()->isEmpty();
+        $contactDocument->setField('projects', $contact->getProject()->count());
+        $contactDocument->setField('has_projects', $projects > 0 ? 'Yes' : 'No');
+        $contactDocument->setField('has_projects_text', $projects > 0 ? 'Yes' : 'No');
 
         $update->addDocument($contactDocument);
         $update->addCommit();
@@ -625,6 +678,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         if (null !== $contact->getContactOrganisation()) {
+            /** @var Organisation $organisation */
             $organisation = $contact->getContactOrganisation()->getOrganisation();
 
             $contactDocument->setField('organisation', $organisation->getOrganisation());
@@ -1228,19 +1282,15 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     public function updateCollectionInSearchEngine(bool $clearIndex = false): void
     {
         $contacts = $this->findAll(Contact::class);
+
         $collection = [];
 
         /** @var Contact $contact */
         foreach ($contacts as $contact) {
-            //Skip the inactive, the not activated and the not anonymised
-            if (!$contact->isActive() || !$contact->isActivated() || $contact->isAnonymised()) {
-                continue;
-            }
-
             $collection[] = $this->prepareSearchUpdate($contact);
-
-            $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
         }
+
+        $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
     }
 
     public function updateProfileCollectionInSearchEngine(bool $clearIndex = false): void
@@ -1256,9 +1306,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             }
 
             $collection[] = $this->prepareSearchUpdate($contact);
-
-            $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
         }
+
+        $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
     }
 
     public function findContactsWithActiveProfile(bool $onlyPublic = true): array

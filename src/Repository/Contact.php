@@ -216,7 +216,7 @@ class Contact extends EntityRepository
                     'general_entity_country'
                 );
                 $qb->addOrderBy('general_entity_country.country', $direction);
-                $qb->orderBy('organisation_entity_organisation.organisation', $direction);
+                $qb->addOrderBy('contact_entity_contact.lastName', $direction);
                 break;
 
             default:

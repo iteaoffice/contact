@@ -123,6 +123,9 @@ return [
                     'route'     => 'zfcadmin/contact-admin/list',
                     'roles'     => [Access::ACCESS_OFFICE],
                     'assertion' => ContactAssertion::class,
+                ], [
+                    'route' => 'zfcadmin/contact-admin/list-old',
+                    'roles' => [Access::ACCESS_OFFICE]
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/export',
