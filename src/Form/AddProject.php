@@ -19,7 +19,7 @@ use Zend\Form\Element;
 use Zend\Form\Form;
 
 /**
- * Class SelectionContacts
+ * Class AddProject
  *
  * @package Contact\Form
  */
