@@ -18,8 +18,6 @@ use General\Entity\ContentType;
 use Zend\Form\Annotation;
 
 /**
- * Domain.
- *
  * @ORM\Table(name="contact_photo")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
@@ -31,7 +29,7 @@ use Zend\Form\Annotation;
 class Photo extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="photo_id", type="integer", nullable=false)
+     * @ORM\Column(name="photo_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

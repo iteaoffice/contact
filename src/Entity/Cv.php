@@ -29,7 +29,7 @@ use Zend\Form\Annotation;
 class Cv extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="cv_id", type="integer", nullable=false)
+     * @ORM\Column(name="cv_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()

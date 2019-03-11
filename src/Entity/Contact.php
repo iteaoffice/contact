@@ -41,7 +41,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public const HASH_KEY = 'rdkfj43es39f9xv8s9sf9sdwer0cv';
 
     /**
-     * @ORM\Column(name="contact_id", type="integer", nullable=false)
+     * @ORM\Column(name="contact_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
@@ -112,7 +112,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $title;
     /**
-     * @ORM\Column(name="position", type="string", length=60, nullable=true)
+     * @ORM\Column(name="position", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-contact-position-label","help-block":"txt-contact-position-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-position-placeholder"})
@@ -120,7 +120,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $position;
     /**
-     * @ORM\Column(name="department", type="string", length=80, nullable=true)
+     * @ORM\Column(name="department", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-contact-department-label","help-block":"txt-contact-department-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-department-placeholder"})
@@ -333,16 +333,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $contactOrganisation;
     /**
-     * @ORM\ManyToMany(targetEntity="Program\Entity\Domain", cascade={"persist"}, inversedBy="contact")
-     * @ORM\JoinTable(name="contact_domain",
-     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
-     *    inverseJoinColumns={@ORM\JoinColumn(name="domain_id", referencedColumnName="domain_id")}
-     * )
-     * @Annotation\Exclude()
-     * @var \Program\Entity\Domain[]|Collections\ArrayCollection
-     */
-    private $domain;
-    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactClosed")
      * @Annotation\Exclude()
      * @var \Project\Entity\Action[]|Collections\ArrayCollection
@@ -377,16 +367,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var \Project\Entity\Idea\Idea[]|Collections\ArrayCollection
      */
     private $favouriteIdea;
-    /**
-     * @ORM\ManyToMany(targetEntity="Program\Entity\Technology", cascade={"persist"}, inversedBy="contact")
-     * @ORM\JoinTable(name="contact_technology",
-     *    joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")},
-     *    inverseJoinColumns={@ORM\JoinColumn(name="technology_id", referencedColumnName="technology_id")}
-     * )
-     * @Annotation\Exclude()
-     * @var \Program\Entity\Technology[]|Collections\ArrayCollection
-     */
-    private $technology;
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -495,12 +475,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var \Contact\Entity\Profile
      */
     private $profile;
-    /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\Community", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
-     * @Annotation\Exclude()
-     * @var \Contact\Entity\Community|Collections\ArrayCollection
-     */
-    private $community;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Registration", cascade={"persist"}, mappedBy="contact")
      * @ORM\OrderBy({"id" = "DESC"})
@@ -903,8 +877,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->emailAddress = new Collections\ArrayCollection();
         $this->access = new Collections\ArrayCollection();
         $this->optIn = new Collections\ArrayCollection();
-        $this->domain = new Collections\ArrayCollection();
-        $this->technology = new Collections\ArrayCollection();
         $this->dnd = new Collections\ArrayCollection();
         $this->nda = new Collections\ArrayCollection();
         $this->pca = new Collections\ArrayCollection();
@@ -930,7 +902,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->photo = new Collections\ArrayCollection();
         $this->associate = new Collections\ArrayCollection();
         $this->deeplinkContact = new Collections\ArrayCollection();
-        $this->community = new Collections\ArrayCollection();
         $this->registration = new Collections\ArrayCollection();
         $this->badge = new Collections\ArrayCollection();
         $this->badgeContact = new Collections\ArrayCollection();
@@ -1183,20 +1154,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     {
         foreach ($photoCollection as $single) {
             $this->photo->removeElement($single);
-        }
-    }
-
-    public function addCommunity(Collections\Collection $communityCollection): void
-    {
-        foreach ($communityCollection as $community) {
-            $this->community->add($community);
-        }
-    }
-
-    public function removeCommunity(Collections\Collection $communityCollection): void
-    {
-        foreach ($communityCollection as $single) {
-            $this->community->removeElement($single);
         }
     }
 
@@ -1946,26 +1903,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Program\Entity\Domain
-     */
-    public function getDomain()
-    {
-        return $this->domain;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection|\Program\Entity\Domain $domain
-     *
-     * @return Contact
-     */
-    public function setDomain($domain): Contact
-    {
-        $this->domain = $domain;
-
-        return $this;
-    }
-
-    /**
      * @return Collections\ArrayCollection|\Project\Entity\Idea\Idea
      */
     public function getIdea()
@@ -2001,26 +1938,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function setFavouriteIdea($favouriteIdea): Contact
     {
         $this->favouriteIdea = $favouriteIdea;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Program\Entity\Technology
-     */
-    public function getTechnology()
-    {
-        return $this->technology;
-    }
-
-    /**
-     * @param  Collections\ArrayCollection|\Program\Entity\Technology $technology
-     *
-     * @return Contact
-     */
-    public function setTechnology($technology): Contact
-    {
-        $this->technology = $technology;
 
         return $this;
     }
@@ -2287,39 +2204,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Community[]|Collections\ArrayCollection
-     */
-    public function getCommunity()
-    {
-        return $this->community;
-    }
-
-    /**
-     * @param  Community|Collections\ArrayCollection $community
-     *
-     * @return Contact
-     */
-    public function setCommunity($community): Contact
-    {
-        $this->community = $community;
-
-        return $this;
-    }
-
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Registration[]
-     */
     public function getRegistration()
     {
         return $this->registration;
     }
 
-    /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Registration $registration
-     *
-     * @return Contact
-     */
     public function setRegistration($registration): Contact
     {
         $this->registration = $registration;

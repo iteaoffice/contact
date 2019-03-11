@@ -29,7 +29,7 @@ use Zend\Form\Annotation;
 class Dnd extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="dnd_id", type="integer", nullable=false)
+     * @ORM\Column(name="dnd_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
@@ -54,7 +54,7 @@ class Dnd extends AbstractEntity
      */
     private $dateUpdated;
     /**
-     * @ORM\Column(name="size", type="integer", nullable=false)
+     * @ORM\Column(name="size", type="integer", options={"unsigned":true})
      * @Annotation\Exclude()
      *
      * @var integer

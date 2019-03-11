@@ -60,10 +60,8 @@ use Organisation\Entity\OParent;
 use Organisation\Entity\Parent\Organisation;
 use PHPUnit\Framework\MockObject\MockObject;
 use Program\Entity\Doa;
-use Program\Entity\Domain;
 use Program\Entity\Funder;
 use Program\Entity\Nda;
-use Program\Entity\Technology;
 use Project\Entity\Achievement;
 use Project\Entity\Booth;
 use Project\Entity\ChangeRequest\CostChange;
@@ -263,20 +261,12 @@ final class MergeContactTest extends AbstractServiceTest
 
         $this->assertSame(1, $this->target->getContactOrganisation()->getId());
 
-        $this->assertSame(2, $this->target->getDomain()->count());
-        $this->assertSame(2, $this->target->getDomain()->get(0)->getId());
-        $this->assertSame(1, $this->target->getDomain()->get(1)->getId());
-
         $this->assertSame(1, $this->target->getIdea()->count());
         $this->assertSame(1, $this->target->getIdea()->first()->getId());
 
         $this->assertSame(2, $this->target->getFavouriteIdea()->count());
         $this->assertSame(3, $this->target->getFavouriteIdea()->get(0)->getId());
         $this->assertSame(2, $this->target->getFavouriteIdea()->get(1)->getId());
-
-        $this->assertSame(2, $this->target->getTechnology()->count());
-        $this->assertSame(2, $this->target->getTechnology()->get(0)->getId());
-        $this->assertSame(1, $this->target->getTechnology()->get(1)->getId());
 
         $this->assertSame(1, $this->target->getOrganisationLog()->count());
         $this->assertSame(1, $this->target->getOrganisationLog()->first()->getId());
@@ -712,11 +702,6 @@ final class MergeContactTest extends AbstractServiceTest
         $parentDoa->setContact($source);
         $source->setParentDoa(new ArrayCollection([$parentDoa]));
 
-        $domain = new Domain();
-        $domain->setId(1);
-        $domain->setContact(new ArrayCollection([$source]));
-        $source->setDomain(new ArrayCollection([$domain]));
-
         $idea = new Idea();
         $idea->setId(1);
         $idea->setContact($source);
@@ -726,11 +711,6 @@ final class MergeContactTest extends AbstractServiceTest
         $favouriteIdea->setId(2);
         $favouriteIdea->setFavourite(new ArrayCollection([$source]));
         $source->setFavouriteIdea(new ArrayCollection([$favouriteIdea]));
-
-        $technology = new Technology();
-        $technology->setId(1);
-        $technology->setContact(new ArrayCollection([$source]));
-        $source->setTechnology(new ArrayCollection([$technology]));
 
         $organisationLog = new \Organisation\Entity\Log();
         $organisationLog->setId(1);
@@ -1179,11 +1159,6 @@ final class MergeContactTest extends AbstractServiceTest
         $optIn->setContact(new ArrayCollection([$target]));
         $target->setOptIn(new ArrayCollection([$optIn]));
 
-        $domain = new Domain();
-        $domain->setId(2);
-        $domain->setContact(new ArrayCollection([$target]));
-        $target->setDomain(new ArrayCollection([$domain]));
-
         $selection3 = new Selection();
         $selection3->setId(3);
         $selectionContact = new SelectionContact();
@@ -1204,11 +1179,6 @@ final class MergeContactTest extends AbstractServiceTest
         $favouriteIdea->setId(3);
         $favouriteIdea->setFavourite(new ArrayCollection([$target]));
         $target->setFavouriteIdea(new ArrayCollection([$favouriteIdea]));
-
-        $technology = new Technology();
-        $technology->setId(2);
-        $technology->setContact(new ArrayCollection([$target]));
-        $target->setTechnology(new ArrayCollection([$technology]));
 
         $associate = new Affiliation();
         $associate->setId(3);

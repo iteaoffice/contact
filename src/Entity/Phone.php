@@ -28,7 +28,7 @@ use Zend\Form\Annotation;
 class Phone extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="phone_id", type="integer", nullable=false)
+     * @ORM\Column(name="phone_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")

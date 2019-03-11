@@ -34,7 +34,7 @@ class OptIn extends AbstractEntity
         ];
 
     /**
-     * @ORM\Column(name="optin_id", type="integer", nullable=false)
+     * @ORM\Column(name="optin_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
@@ -52,7 +52,7 @@ class OptIn extends AbstractEntity
      */
     private $optIn;
     /**
-     * @ORM\Column(name="active", type="integer", nullable=false)
+     * @ORM\Column(name="active", type="integer", options={"unsigned":true})
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"activeTemplates"})
      * @Annotation\Options({"label":"txt-opt-in-active-title","help-block": "txt-opt-in-active-help-block"})
@@ -60,7 +60,7 @@ class OptIn extends AbstractEntity
      */
     private $active;
     /**
-     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="description", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-opt-in-description-title","help-block": "txt-opt-in-description-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-opt-in-description-placeholder"})

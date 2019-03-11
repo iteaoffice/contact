@@ -27,7 +27,7 @@ class DndObject extends AbstractEntity
     /**
      * @var integer
      *
-     * @ORM\Column(name="object_id", type="integer", nullable=false)
+     * @ORM\Column(name="object_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

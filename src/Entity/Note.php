@@ -17,8 +17,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
 
 /**
- * Domain.
- *
  * @ORM\Table(name="contact_note")
  * @ORM\Entity
  * @Annotation\Name("contact_note")
@@ -30,7 +28,7 @@ class Note extends AbstractEntity
     public const SOURCE_SIGNATURE = 'signature';
 
     /**
-     * @ORM\Column(name="note_id", type="integer", nullable=false)
+     * @ORM\Column(name="note_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -38,7 +36,7 @@ class Note extends AbstractEntity
      */
     private $id;
     /**
-     * @ORM\Column(name="note", type="string", length=255, nullable=true)
+     * @ORM\Column(name="note", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-note"})
      *

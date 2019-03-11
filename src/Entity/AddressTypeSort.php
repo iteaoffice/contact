@@ -27,7 +27,7 @@ class AddressTypeSort extends AbstractEntity
     public const ADDRESS_TYPE_FINANCIAL = 3;
     public const ADDRESS_TYPE_HOME = 4;
     /**
-     * @ORM\Column(name="sort_id", type="integer", nullable=false)
+     * @ORM\Column(name="sort_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

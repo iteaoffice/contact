@@ -29,7 +29,7 @@ use Zend\Form\Annotation;
 class SelectionContact extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="selection_contact_id", type="integer", nullable=false)
+     * @ORM\Column(name="selection_contact_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @var integer

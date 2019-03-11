@@ -28,7 +28,7 @@ use Zend\Form\Annotation;
 class SelectionSql extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="sql_id", type="integer", nullable=false)
+     * @ORM\Column(name="sql_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -43,7 +43,7 @@ class SelectionSql extends AbstractEntity
      */
     private $selection;
     /**
-     * @ORM\Column(name="sql_query", type="string", nullable=false)
+     * @ORM\Column(name="sql_query", type="text", nullable=false)
      *
      * @var string
      */

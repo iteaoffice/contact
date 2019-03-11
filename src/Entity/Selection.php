@@ -48,7 +48,7 @@ class Selection extends AbstractEntity
         ];
 
     /**
-     * @ORM\Column(name="selection_id", type="integer", nullable=false)
+     * @ORM\Column(name="selection_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
@@ -57,7 +57,7 @@ class Selection extends AbstractEntity
      */
     private $id;
     /**
-     * @ORM\Column(name="selection", type="string", length=80, nullable=true)
+     * @ORM\Column(name="selection", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-selection"})
      *
@@ -65,7 +65,7 @@ class Selection extends AbstractEntity
      */
     private $selection;
     /**
-     * @ORM\Column(name="tag", type="string", length=20, nullable=true)
+     * @ORM\Column(name="tag", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-tag"})
      *
@@ -73,7 +73,7 @@ class Selection extends AbstractEntity
      */
     private $tag;
     /**
-     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     * @ORM\Column(name="date_created", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
      *
@@ -88,7 +88,7 @@ class Selection extends AbstractEntity
      */
     private $dateDeleted;
     /**
-     * @ORM\Column(name="note", type="string", nullable=true)
+     * @ORM\Column(name="note", type="text", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-selection-note-label","help-block":"txt-selection-note-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-selection-note-placeholder"})
@@ -98,7 +98,7 @@ class Selection extends AbstractEntity
     private $note;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="selection")
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=true)
      * @Annotation\Type("Contact\Form\Element\Contact")
      * @Annotation\Options({"label":"txt-selection-owner-label","help-block":"txt-selection-owner-help-block"})
      *

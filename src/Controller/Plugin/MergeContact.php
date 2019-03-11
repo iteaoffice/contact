@@ -31,9 +31,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorHeroModule\Handler\Logging;
 use Event\Entity\Exhibition\Tour;
-use Program\Entity\Domain;
 use Program\Entity\Nda;
-use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
 use Zend\Http\PhpEnvironment\Request;
@@ -311,20 +309,6 @@ final class MergeContact extends AbstractPlugin
             }
             $source->setContactOrganisation(null);
 
-            // Transfer domain (many-to-many, with matching)
-            $targetDomains = [];
-            /** @var Domain $domainTarget */
-            foreach ($target->getDomain() as $domainTarget) {
-                $targetDomains[] = $domainTarget->getId();
-            }
-            /** @var Domain $domainSource */
-            foreach ($source->getDomain() as $domainSource) {
-                if (!\in_array($domainSource->getId(), $targetDomains, true)) {
-                    $target->getDomain()->add($domainSource);
-                }
-            }
-            $source->setDomain(new ArrayCollection());
-
             // Transfer ideas (no matching)
             foreach ($source->getIdea() as $key => $idea) {
                 $idea->setContact($target);
@@ -345,20 +329,6 @@ final class MergeContact extends AbstractPlugin
                 }
             }
             $source->setFavouriteIdea(new ArrayCollection());
-
-            // Transfer technologies (many-to-many, with matching)
-            $targetTechnologies = [];
-            /** @var Technology $technologyTarget */
-            foreach ($target->getTechnology() as $technologyTarget) {
-                $targetTechnologies[$technologyTarget->getId()] = $technologyTarget->getId();
-            }
-            /** @var Technology $technologySource */
-            foreach ($source->getTechnology() as $technologySource) {
-                if (!isset($targetTechnologies[$technologySource->getId()])) {
-                    $target->getTechnology()->add($technologySource);
-                }
-            }
-            $source->setTechnology(new ArrayCollection());
 
             // Transfer organisation logs (no matching)
             foreach ($source->getOrganisationLog() as $key => $log) {

@@ -28,7 +28,7 @@ use Zend\Form\Annotation;
 class Address extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="address_id", type="integer", nullable=false)
+     * @ORM\Column(name="address_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
@@ -37,7 +37,7 @@ class Address extends AbstractEntity
      */
     private $id;
     /**
-     * @ORM\Column(name="address", type="string", length=255, nullable=true)
+     * @ORM\Column(name="address", type="string", length=1000, nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-address"})
      *
@@ -45,7 +45,7 @@ class Address extends AbstractEntity
      */
     private $address;
     /**
-     * @ORM\Column(name="zipcode", type="string", length=20, nullable=true)
+     * @ORM\Column(name="zipcode", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-zip-code"})
      *

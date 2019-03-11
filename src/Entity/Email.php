@@ -28,7 +28,7 @@ use Zend\Form\Annotation;
 class Email extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="email_id", type="integer", nullable=false)
+     * @ORM\Column(name="email_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
@@ -37,7 +37,7 @@ class Email extends AbstractEntity
      */
     private $id;
     /**
-     * @ORM\Column(name="email", type="string", length=60, nullable=false)
+     * @ORM\Column(name="email", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-cv-file"})
      * @Annotation\Exclude()

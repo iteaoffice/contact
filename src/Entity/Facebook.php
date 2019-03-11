@@ -93,7 +93,7 @@ class Facebook extends AbstractEntity
             self::IS_PUBLIC  => 'txt-public',
         ];
     /**
-     * @ORM\Column(name="facebook_id", type="integer", nullable=false)
+     * @ORM\Column(name="facebook_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -101,7 +101,7 @@ class Facebook extends AbstractEntity
      */
     private $id;
     /**
-     * @ORM\Column(name="facebook", type="string", length=80, nullable=true)
+     * @ORM\Column(name="facebook", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-facebook"})
      *
@@ -127,7 +127,7 @@ class Facebook extends AbstractEntity
      */
     private $canSendMessage;
     /**
-     * @ORM\Column(name="from_clause", type="string", length=255, nullable=false)
+     * @ORM\Column(name="from_clause", type="text", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-from-clause"})
      * @Annotation\Options({"label":"txt-from-clause","help-block": "txt-from-clause-explanation"})
@@ -136,7 +136,7 @@ class Facebook extends AbstractEntity
      */
     private $fromClause;
     /**
-     * @ORM\Column(name="where_clause", type="string", length=255, nullable=true)
+     * @ORM\Column(name="where_clause", type="text", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-where-clause"})
      * @Annotation\Options({"label":"txt-where-clause","help-block": "txt-where-clause-explanation"})
@@ -145,7 +145,7 @@ class Facebook extends AbstractEntity
      */
     private $whereClause;
     /**
-     * @ORM\Column(name="orderby_clause", type="string", length=255, nullable=true)
+     * @ORM\Column(name="orderby_clause", type="text", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-orderby-clause"})
      * @Annotation\Options({"label":"txt-orderby-clause","help-block": "txt-orderby-clause-explanation"})
@@ -154,7 +154,7 @@ class Facebook extends AbstractEntity
      */
     private $orderbyClause;
     /**
-     * @ORM\Column(name="contact_key", type="string", length=60, nullable=true)
+     * @ORM\Column(name="contact_key", type="string", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-contact-key"})
      * @Annotation\Options({"label":"txt-contact-key","help-block": "txt-contact-key-explanation"})
@@ -163,7 +163,7 @@ class Facebook extends AbstractEntity
      */
     private $contactKey;
     /**
-     * @ORM\Column(name="com_extra", type="string", length=255, nullable=false)
+     * @ORM\Column(name="com_extra", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Options({"label":"txt-title","help-block": "txt-title-explanation"})
@@ -172,7 +172,7 @@ class Facebook extends AbstractEntity
      */
     private $title;
     /**
-     * @ORM\Column(name="com_sub", type="smallint", length=255, nullable=false)
+     * @ORM\Column(name="com_sub", type="smallint", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Options({"label":"txt-sub-title","help-block": "txt-sub-title-explanation"})
@@ -224,9 +224,6 @@ class Facebook extends AbstractEntity
      */
     private $access;
 
-    /**
-     * Class constructor.
-     */
     public function __construct()
     {
         $this->access = new Collections\ArrayCollection();

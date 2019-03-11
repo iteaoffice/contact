@@ -32,7 +32,7 @@ class PhoneType extends AbstractEntity
     public const PHONE_TYPE_HOME = 3;
     public const PHONE_TYPE_FAX = 4;
     /**
-     * @ORM\Column(name="type_id", type="integer", nullable=false)
+     * @ORM\Column(name="type_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -40,7 +40,7 @@ class PhoneType extends AbstractEntity
      */
     private $id;
     /**
-     * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     * @ORM\Column(name="type", type="string", nullable=false)
      *
      * @var string
      */

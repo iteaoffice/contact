@@ -36,7 +36,7 @@ class Profile extends AbstractEntity
             self::VISIBLE_HIDDEN    => 'txt-visibility-hidden',
         ];
     /**
-     * @ORM\Column(name="profile_id", type="integer", nullable=false)
+     * @ORM\Column(name="profile_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
