@@ -82,12 +82,6 @@ class SelectionContactService extends AbstractService
         return false;
     }
 
-    /**
-     * @param Selection $selection
-     * @param bool      $toArray
-     *
-     * @return Contact[]
-     */
     public function findContactsInSelection(Selection $selection, bool $toArray = false): array
     {
         $repository = $this->entityManager->getRepository(Contact::class);
