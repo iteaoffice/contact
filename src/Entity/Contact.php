@@ -1039,7 +1039,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function getRoles(): array
     {
-        $accessRoles = ['user'];
+        $accessRoles = [];
         foreach ($this->access as $access) {
             $accessRoles[] = strtolower($access->getAccess());
         }
@@ -1398,7 +1398,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  int $state
+     * @param int $state
      *
      * @return void
      */
@@ -1482,7 +1482,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Admin\Entity\Access[]|Collections\ArrayCollection $access
+     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
      *
      * @return Contact
      */
@@ -1502,7 +1502,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Email|Collections\ArrayCollection $emailAddress
+     * @param Email|Collections\ArrayCollection $emailAddress
      *
      * @return Contact
      */
@@ -1522,7 +1522,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Cv $cv
+     * @param Cv $cv
      *
      * @return Contact
      */
@@ -1542,7 +1542,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Address|Collections\ArrayCollection $address
+     * @param Address|Collections\ArrayCollection $address
      *
      * @return Contact
      */
@@ -1562,7 +1562,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Phone|Collections\ArrayCollection $phone
+     * @param Phone|Collections\ArrayCollection $phone
      *
      * @return Contact
      */
@@ -1592,7 +1592,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  OptIn[]|Collections\ArrayCollection $optIn
+     * @param OptIn[]|Collections\ArrayCollection $optIn
      *
      * @return Contact
      */
@@ -1612,7 +1612,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Project[] $project
+     * @param Collections\ArrayCollection|\Project\Entity\Project[] $project
      *
      * @return Contact
      */
@@ -1632,7 +1632,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Rationale[] $rationale
+     * @param Collections\ArrayCollection|\Project\Entity\Rationale[] $rationale
      *
      * @return Contact
      */
@@ -1652,7 +1652,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Description\Description $projectDescription
+     * @param Collections\ArrayCollection|\Project\Entity\Description\Description $projectDescription
      *
      * @return Contact
      */
@@ -1672,7 +1672,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Version\Version $projectVersion
+     * @param Collections\ArrayCollection|\Project\Entity\Version\Version $projectVersion
      *
      * @return Contact
      */
@@ -1692,7 +1692,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Document\Document $projectDocument
+     * @param Collections\ArrayCollection|\Project\Entity\Document\Document $projectDocument
      *
      * @return Contact
      */
@@ -1712,7 +1712,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Dnd|Collections\ArrayCollection $dnd
+     * @param Dnd|Collections\ArrayCollection $dnd
      *
      * @return Contact
      */
@@ -1831,7 +1831,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Program\Entity\Nda $nda
+     * @param Collections\ArrayCollection|\Program\Entity\Nda $nda
      *
      * @return Contact
      */
@@ -1871,7 +1871,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Program\Entity\Doa $programDoa
+     * @param Collections\ArrayCollection|\Program\Entity\Doa $programDoa
      *
      * @return Contact
      */
@@ -1891,7 +1891,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  ContactOrganisation $contactOrganisation
+     * @param ContactOrganisation $contactOrganisation
      *
      * @return Contact
      */
@@ -1911,7 +1911,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Idea $idea
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $idea
      *
      * @return Contact
      */
@@ -1931,7 +1931,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Idea $favouriteIdea
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $favouriteIdea
      *
      * @return Contact
      */
@@ -1951,7 +1951,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Organisation\Entity\Log $organisationLog
+     * @param Collections\ArrayCollection|\Organisation\Entity\Log $organisationLog
      *
      * @return Contact
      */
@@ -1971,7 +1971,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection $affiliation
+     * @param \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection $affiliation
      *
      * @return Contact
      */
@@ -1991,7 +1991,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Log|Collections\ArrayCollection $affiliationLog
+     * @param \Affiliation\Entity\Log|Collections\ArrayCollection $affiliationLog
      *
      * @return Contact
      */
@@ -2011,7 +2011,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Financial[]|Collections\ArrayCollection $financial
+     * @param \Affiliation\Entity\Financial[]|Collections\ArrayCollection $financial
      *
      * @return Contact
      */
@@ -2031,7 +2031,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Description|Collections\ArrayCollection $affiliationDescription
+     * @param \Affiliation\Entity\Description|Collections\ArrayCollection $affiliationDescription
      *
      * @return Contact
      */
@@ -2051,7 +2051,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Version|Collections\ArrayCollection $affiliationVersion
+     * @param \Affiliation\Entity\Version|Collections\ArrayCollection $affiliationVersion
      *
      * @return Contact
      */
@@ -2071,7 +2071,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Invoice\Entity\Invoice $invoice
+     * @param Collections\ArrayCollection|\Invoice\Entity\Invoice $invoice
      *
      * @return Contact
      */
@@ -2091,7 +2091,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Publication\Entity\Publication $publication
+     * @param Collections\ArrayCollection|\Publication\Entity\Publication $publication
      *
      * @return Contact
      */
@@ -2111,7 +2111,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Publication\Entity\Download $publicationDownload
+     * @param Collections\ArrayCollection|\Publication\Entity\Download $publicationDownload
      *
      * @return Contact
      */
@@ -2146,7 +2146,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection $associate
+     * @param \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection $associate
      *
      * @return Contact
      */
@@ -2193,7 +2193,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Profile $profile
+     * @param Profile $profile
      *
      * @return Contact
      */
@@ -2225,7 +2225,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Badge\Badge $badge
+     * @param Collections\ArrayCollection|\Event\Entity\Badge\Badge $badge
      *
      * @return Contact
      */
@@ -2245,7 +2245,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Badge\Contact $badgeContact
+     * @param Collections\ArrayCollection|\Event\Entity\Badge\Contact $badgeContact
      *
      * @return Contact
      */
@@ -2265,7 +2265,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Booth\Contact[] $boothContact
+     * @param Collections\ArrayCollection|\Event\Entity\Booth\Contact[] $boothContact
      *
      * @return Contact
      */
@@ -2285,7 +2285,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Booth[] $projectBooth
+     * @param Collections\ArrayCollection|\Project\Entity\Booth[] $projectBooth
      *
      * @return Contact
      */
@@ -2305,7 +2305,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
+     * @param Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
      *
      * @return Contact
      */
@@ -2325,7 +2325,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Booth\Financial $boothFinancial
+     * @param Collections\ArrayCollection|\Event\Entity\Booth\Financial $boothFinancial
      *
      * @return Contact
      */
@@ -2345,7 +2345,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Note[]|Collections\ArrayCollection $note
+     * @param Note[]|Collections\ArrayCollection $note
      *
      * @return Contact
      */
@@ -2365,7 +2365,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Selection[]|Collections\ArrayCollection $selection
+     * @param Selection[]|Collections\ArrayCollection $selection
      *
      * @return Contact
      */
@@ -2394,7 +2394,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Mailing\Entity\Contact $mailingContact
+     * @param Collections\ArrayCollection|\Mailing\Entity\Contact $mailingContact
      *
      * @return Contact
      */
@@ -2414,7 +2414,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Mailing\Entity\Mailing $mailing
+     * @param Collections\ArrayCollection|\Mailing\Entity\Mailing $mailing
      *
      * @return Contact
      */
@@ -2454,7 +2454,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Result\Result $result
+     * @param Collections\ArrayCollection|\Project\Entity\Result\Result $result
      *
      * @return Contact
      */
@@ -2474,7 +2474,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage[] $workpackage
+     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage[] $workpackage
      *
      * @return Contact
      */
@@ -2494,7 +2494,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Workpackage\Document $workpackageDocument
+     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Document $workpackageDocument
      *
      * @return Contact
      */
@@ -2514,7 +2514,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Message $ideaMessage
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Message $ideaMessage
      *
      * @return Contact
      */
@@ -2534,7 +2534,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation $evaluation
+     * @param Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation $evaluation
      *
      * @return Contact
      */
@@ -2554,7 +2554,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Calendar\Entity\Calendar|Collections\ArrayCollection $calendar
+     * @param \Calendar\Entity\Calendar|Collections\ArrayCollection $calendar
      *
      * @return Contact
      */
@@ -2574,7 +2574,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Calendar\Entity\Contact|Collections\ArrayCollection $calendarContact
+     * @param \Calendar\Entity\Contact|Collections\ArrayCollection $calendarContact
      *
      * @return Contact
      */
@@ -2594,7 +2594,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Calendar\Entity\Document|Collections\ArrayCollection $calendarDocument
+     * @param \Calendar\Entity\Document|Collections\ArrayCollection $calendarDocument
      *
      * @return Contact
      */
@@ -2614,7 +2614,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Review\Review $projectReview
+     * @param Collections\ArrayCollection|\Project\Entity\Review\Review $projectReview
      *
      * @return Contact
      */
@@ -2654,7 +2654,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Review\Review $projectVersionReview
+     * @param Collections\ArrayCollection|\Project\Entity\Review\Review $projectVersionReview
      *
      * @return Contact
      */
@@ -2674,7 +2674,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Report\Report $projectReport
+     * @param Collections\ArrayCollection|\Project\Entity\Report\Report $projectReport
      *
      * @return Contact
      */
@@ -2694,7 +2694,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Calendar\Review $projectCalendarReview
+     * @param Collections\ArrayCollection|\Project\Entity\Calendar\Review $projectCalendarReview
      *
      * @return Contact
      */
@@ -2734,7 +2734,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Invite[] $invite
+     * @param Collections\ArrayCollection|\Project\Entity\Invite[] $invite
      *
      * @return Contact
      */
@@ -2754,7 +2754,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Invite[] $inviteContact
+     * @param Collections\ArrayCollection|\Project\Entity\Invite[] $inviteContact
      *
      * @return Contact
      */
@@ -2774,7 +2774,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInvite
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInvite
      *
      * @return Contact
      */
@@ -2794,7 +2794,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInviteContact
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInviteContact
      *
      * @return Contact
      */
@@ -2814,7 +2814,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Loi[]|Collections\ArrayCollection $loi
+     * @param \Affiliation\Entity\Loi[]|Collections\ArrayCollection $loi
      *
      * @return Contact
      */
@@ -2854,7 +2854,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\Doa[]|Collections\ArrayCollection $affiliationDoa
+     * @param \Affiliation\Entity\Doa[]|Collections\ArrayCollection $affiliationDoa
      *
      * @return Contact
      */
@@ -2874,7 +2874,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Admin\Entity\Permit\Contact[]|Collections\Collection $permitContact
+     * @param \Admin\Entity\Permit\Contact[]|Collections\Collection $permitContact
      *
      * @return Contact
      */
@@ -2894,7 +2894,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Admin\Entity\Session[]|Collections\Collection $session
+     * @param \Admin\Entity\Session[]|Collections\Collection $session
      *
      * @return Contact
      */
@@ -2914,7 +2914,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
      *
      * @return Contact
      */
@@ -2934,7 +2934,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
      *
      * @return Contact
      */
@@ -2954,7 +2954,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
+     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
      *
      * @return Contact
      */
@@ -2974,7 +2974,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
+     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
      *
      * @return Contact
      */
@@ -2994,7 +2994,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderSender
+     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderSender
      *
      * @return Contact
      */
@@ -3014,7 +3014,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
+     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
      *
      * @return Contact
      */
@@ -3034,7 +3034,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderSender
+     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderSender
      *
      * @return Contact
      */
@@ -3054,7 +3054,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\News\Entity\Blog $blog
+     * @param Collections\ArrayCollection|\News\Entity\Blog $blog
      *
      * @return Contact
      */
@@ -3074,7 +3074,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\News\Entity\Message $blogMessage
+     * @param Collections\ArrayCollection|\News\Entity\Message $blogMessage
      *
      * @return Contact
      */
@@ -3094,7 +3094,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[] $journalEntry
+     * @param Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[] $journalEntry
      *
      * @return Contact
      */
@@ -3114,7 +3114,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Invoice\Entity\Journal[] $journal
+     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $journal
      *
      * @return Contact
      */
@@ -3134,7 +3134,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Invoice\Entity\Journal[] $organisationJournal
+     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $organisationJournal
      *
      * @return Contact
      */
@@ -3154,7 +3154,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Invoice\Entity\Log[] $invoiceLog
+     * @param Collections\ArrayCollection|\Invoice\Entity\Log[] $invoiceLog
      *
      * @return Contact
      */
@@ -3174,7 +3174,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Invoice\Entity\Reminder[] $reminder
+     * @param Collections\ArrayCollection|\Invoice\Entity\Reminder[] $reminder
      *
      * @return Contact
      */
@@ -3194,7 +3194,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Achievement[] $achievement
+     * @param Collections\ArrayCollection|\Project\Entity\Achievement[] $achievement
      *
      * @return Contact
      */
@@ -3214,7 +3214,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param  Collections\ArrayCollection|\Project\Entity\Idea\Partner $ideaPartner
+     * @param Collections\ArrayCollection|\Project\Entity\Idea\Partner $ideaPartner
      *
      * @return Contact
      */
