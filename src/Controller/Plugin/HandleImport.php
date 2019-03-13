@@ -395,7 +395,7 @@ final class HandleImport extends AbstractPlugin
 
             if (isset($this->headerKeys['organisation']) && !empty($content[$this->headerKeys['organisation']])) {
                 //Try to find the organisation
-                $organisationName = $content[$this->headerKeys['organisation']];
+                $organisationName = (string) $content[$this->headerKeys['organisation']];
             }
 
 
@@ -422,7 +422,7 @@ final class HandleImport extends AbstractPlugin
 
                 //Add the type
                 /** @var Type $organisationType */
-                $organisationType = $this->organisationService->findEntityById(Type::class, Type::TYPE_UNKNOWN);
+                $organisationType = $this->organisationService->find(Type::class, Type::TYPE_UNKNOWN);
                 $organisation->setType($organisationType);
 
                 //Add the domain
