@@ -48,6 +48,11 @@ class SelectionContactService extends AbstractService
     {
         $repository = $this->entityManager->getRepository(Contact::class);
 
+        //A contact is never in an inactive selection
+        if (!$selection->isActive()) {
+            return false;
+        }
+
         if (null !== $selection->getSql()) {
             try {
                 //We have a dynamic query, check if the contact is in the selection
@@ -77,12 +82,6 @@ class SelectionContactService extends AbstractService
         return false;
     }
 
-    /**
-     * @param Selection $selection
-     * @param bool      $toArray
-     *
-     * @return Contact[]
-     */
     public function findContactsInSelection(Selection $selection, bool $toArray = false): array
     {
         $repository = $this->entityManager->getRepository(Contact::class);

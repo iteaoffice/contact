@@ -660,7 +660,6 @@ class ContactAdminController extends ContactAbstractController
                 $contact = $this->contactService->save($contact);
 
                 //Reset the roles of this contact
-                $this->adminService->refreshAccessRolesByContact($contact);
                 $this->adminService->resetCachedAccessRolesByContact($contact);
 
                 /** Update the organisation if there is any */
@@ -980,7 +979,6 @@ class ContactAdminController extends ContactAbstractController
                     $affiliation->addAssociate($contact);
                 }
                 $this->affiliationService->save($affiliation);
-                $this->affiliationService->refreshAccessRolesByContact($contact);
 
                 $this->flashMessenger()->addSuccessMessage(
                     \sprintf(
