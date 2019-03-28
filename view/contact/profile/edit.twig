@@ -81,6 +81,7 @@
 <fieldset>
     <legend>{{ translate("txt-profile") }}</legend>
     {% set profile = form.get('profile') %}
+    {{ formelement(profile.get('id')) }}
     {{ ztbformelement(profile.get('visible')) }}
     {{ ztbformelement(profile.get('description')) }}
 </fieldset>

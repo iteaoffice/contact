@@ -2184,19 +2184,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Profile
-     */
     public function getProfile(): ?Profile
     {
         return $this->profile;
     }
 
-    /**
-     * @param Profile $profile
-     *
-     * @return Contact
-     */
     public function setProfile($profile): Contact
     {
         $this->profile = $profile;

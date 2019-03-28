@@ -339,6 +339,12 @@ class Profile extends Form implements InputFilterProviderInterface
         $profileFieldSet = new Fieldset('profile');
         $profileFieldSet->add(
             [
+                'type' => 'Zend\Form\Element\Hidden',
+                'name' => 'id',
+            ]
+        );
+        $profileFieldSet->add(
+            [
                 'type'    => 'Zend\Form\Element\Radio',
                 'name'    => 'visible',
                 'options' => [

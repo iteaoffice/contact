@@ -52,6 +52,8 @@ class Profile extends DoctrineObject
         unset($values['profile']);
         $values['profile']['visible'] = null !== $contact->getProfile() ? $contact->getProfile()->getVisible()
             : null;
+        $values['profile']['id'] = null !== $contact->getProfile() ? $contact->getProfile()->getId()
+            : null;
         $values['profile']['description'] = null !== $contact->getProfile() ? $contact->getProfile()->getDescription()
             : null;
         /*
@@ -75,12 +77,6 @@ class Profile extends DoctrineObject
         return $values;
     }
 
-    /**
-     * @param array   $data
-     * @param Contact $contact
-     *
-     * @return Contact
-     */
     public function hydrate(array $data, $contact)
     {
         unset($data['contact_organisation']);
@@ -168,7 +164,6 @@ class Profile extends DoctrineObject
 
                 $contact->getAddress()->add($mailAddress);
             }
-
 
             $contact->getProfile()->setContact($contact);
 

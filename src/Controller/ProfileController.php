@@ -428,7 +428,6 @@ final class ProfileController extends ContactAbstractController
     public function editAction()
     {
         $contact = $this->identity();
-
         $organisations = $this->organisationService->findOrganisationForProfileEditByContact($contact);
 
         $branches = [];
@@ -470,7 +469,6 @@ final class ProfileController extends ContactAbstractController
                     }
                 }
 
-
                 /** @var Contact $contact */
                 $contact = $form->getData();
 
@@ -499,7 +497,7 @@ final class ProfileController extends ContactAbstractController
                     $this->contactService->save($photo);
                 }
 
-                $contact = $this->contactService->save($contact);
+                $this->contactService->save($contact);
 
                 $this->contactService->updateOptInForContact($this->identity(), $data['optIn'] ?? []);
 
