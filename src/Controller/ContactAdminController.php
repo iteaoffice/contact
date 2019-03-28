@@ -811,7 +811,7 @@ class ContactAdminController extends ContactAbstractController
                     null,
                     $data['optIn'] ?? [],
                     null !== $data['selection_id'] ? (int)$data['selection_id'] : null,
-                    $data['selection']
+                    '' !== $data['selection'] ? $data['selection'] : null
                 );
             }
 
@@ -822,7 +822,7 @@ class ContactAdminController extends ContactAbstractController
                     $data['key'],
                     $data['optIn'] ?? [],
                     null !== $data['selection_id'] ? (int)$data['selection_id'] : null,
-                    $data['selection']
+                    '' !== $data['selection'] ? $data['selection'] : null
                 );
             }
         }

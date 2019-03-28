@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace Contact\Repository;
 
+use Admin\Entity\Access;
 use Contact\Entity;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
+use function array_merge;
 
 /**
  * @category    Contact
@@ -32,7 +34,7 @@ class Facebook extends EntityRepository
 
         $qb->andWhere(
             $qb->expr()->orX(
-                $qb->expr()->in('admin_entity_access.access', $contact->getRoles()),
+                $qb->expr()->in('admin_entity_access.access', array_merge([Access::ACCESS_USER], $contact->getRoles())),
                 $qb->expr()->in('contact_entity_facebook.public', [Entity\Facebook::IS_PUBLIC])
             )
         );

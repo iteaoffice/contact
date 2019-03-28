@@ -272,7 +272,7 @@ final class HandleImport extends AbstractPlugin
         $selection = null;
         /** Parse the $selectionId if not empty */
         if (null !== $selectionId) {
-            $selection = $this->selectionService->findSelectionById((int) $selectionId);
+            $selection = $this->selectionService->findSelectionById((int)$selectionId);
             if (null !== $selection) {
                 $this->selection = $selection;
             }
@@ -291,7 +291,7 @@ final class HandleImport extends AbstractPlugin
     private function setOptInFromFormData(array $includeOptIn): void
     {
         foreach ($includeOptIn as $optInId) {
-            $optIn = $this->contactService->find(OptIn::class, (int) $optInId);
+            $optIn = $this->contactService->find(OptIn::class, (int)$optInId);
             if (null !== $optIn) {
                 $this->optIn[] = $optIn;
             }
@@ -395,7 +395,7 @@ final class HandleImport extends AbstractPlugin
 
             if (isset($this->headerKeys['organisation']) && !empty($content[$this->headerKeys['organisation']])) {
                 //Try to find the organisation
-                $organisationName = (string) $content[$this->headerKeys['organisation']];
+                $organisationName = (string)$content[$this->headerKeys['organisation']];
             }
 
 
@@ -503,5 +503,10 @@ final class HandleImport extends AbstractPlugin
     public function getImportedContacts(): array
     {
         return $this->importedContacts;
+    }
+
+    public function getContacts(): array
+    {
+        return $this->contacts;
     }
 }
