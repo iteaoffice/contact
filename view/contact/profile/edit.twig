@@ -48,7 +48,7 @@
         {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
 
 
-        <div class="form-group {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}hidden{% endif %}"
+        <div class="form-group row {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}hidden{% endif %}"
              id="branch">
             <label class="col-sm-3 col-form-label">{{ translate("txt-branch-form-label") }}</label>
 
