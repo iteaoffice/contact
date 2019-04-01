@@ -1,29 +1,25 @@
 imports:
-- php
+    - php
 build:
-    nodes:
-        analysis:
-            dependencies:
-                before:
-                - composer clear-cache
     environment:
         php:
             version: 7.3
+            pecl_extensions:
+                - zip
     tests:
         override:
-        - php-scrutinizer-run --enable-security-analysis
-        -
-            command: ./vendor/bin/phpunit --coverage-clover=coverage
-            coverage:
-                file: coverage
-                format: php-clover
+            -
+                command: ./vendor/bin/phpunit --coverage-clover=coverage
+                coverage:
+                    file: coverage
+                    format: php-clover
 checks:
     php:
         code_rating: true
         duplication: true
 filter:
     excluded_paths:
-    - 'test/*'
+        - 'test/*'
 tools:
     php_changetracking: true
     php_sim: true
