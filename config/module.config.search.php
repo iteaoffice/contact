@@ -13,22 +13,18 @@ return [
             'contact_contact' => [
                 'endpoint' => [
                     'server' => [
-                        'host'     => '10.213.157.15',
+                        'host'     => 'search',
                         'port'     => '8983',
-                        'path'     => '/solr/contact_contact',
-                        'username' => 'jvdheide',
-                        'password' => 'jvdheide1',
+                        'path'     => '/solr/contact_contact'
                     ],
                 ],
             ],
             'contact_profile' => [
                 'endpoint' => [
                     'server' => [
-                        'host'     => '10.213.157.15',
+                        'host'     => 'search',
                         'port'     => '8983',
-                        'path'     => '/solr/contact_profile',
-                        'username' => 'jvdheide',
-                        'password' => 'jvdheide1',
+                        'path'     => '/solr/contact_profile'
                     ],
                 ],
             ],

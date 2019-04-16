@@ -61,7 +61,6 @@ $config = [
     ],
     'view_helpers'       => [
         'aliases'    => [
-            'communityLink' => View\Helper\CommunityLink::class,
             'contactLink'   => View\Helper\ContactLink::class,
             'profileLink'   => View\Helper\ProfileLink::class,
             'selectionLink' => View\Helper\SelectionLink::class,
@@ -76,7 +75,6 @@ $config = [
             'contactformelement' => Form\View\Helper\ContactFormElement::class,
         ],
         'factories'  => [
-            View\Helper\CommunityLink::class => View\Factory\ViewHelperFactory::class,
             View\Helper\ContactLink::class   => View\Factory\ViewHelperFactory::class,
             View\Helper\ProfileLink::class   => View\Factory\ViewHelperFactory::class,
             View\Helper\SelectionLink::class => View\Factory\ViewHelperFactory::class,
