@@ -22,11 +22,8 @@ class ContactNavigationService extends NavigationServiceAbstract
     /**
      * @var Contact
      */
-    protected $contact;
+    private $contact;
 
-    /**
-     * Add the dedicated pages to the navigation.
-     */
     public function update(): void
     {
         /*
@@ -42,7 +39,7 @@ class ContactNavigationService extends NavigationServiceAbstract
     {
         $navigation = $this->getNavigation()->findOneBy('id', 'community/contact');
 
-        if (\is_null($navigation)) {
+        if (null === $navigation) {
             return;
         }
         /*
@@ -66,18 +63,11 @@ class ContactNavigationService extends NavigationServiceAbstract
         }
     }
 
-    /**
-     * @return Contact|null
-     */
     public function getContact(): ?Contact
     {
         return $this->contact;
     }
 
-    /**
-     * @param Contact $contact
-     * @return ContactNavigationService
-     */
     public function setContact(Contact $contact): ContactNavigationService
     {
         $this->contact = $contact;

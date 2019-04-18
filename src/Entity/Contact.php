@@ -13,11 +13,70 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Admin\Entity\Access;
+use Admin\Entity\Pageview;
+use Admin\Entity\Session;
+use Affiliation\Entity\Affiliation;
+use Affiliation\Entity\Description;
+use Affiliation\Entity\DoaReminder;
+use Affiliation\Entity\Loi;
+use Affiliation\Entity\LoiReminder;
+use Affiliation\Entity\Version;
 use BjyAuthorize\Provider\Role\ProviderInterface;
+use Calendar\Entity\Calendar;
+use Calendar\Entity\Document;
+use DateTime;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
+use Event\Entity\Badge\Badge;
+use Event\Entity\Exhibition\Tour;
+use Event\Entity\Exhibition\Voter;
+use Event\Entity\Registration;
+use function explode;
 use Gedmo\Mapping\Annotation as Gedmo;
 use General\Entity\EmailMessage;
+use General\Entity\Gender;
+use General\Entity\Title;
+use function in_array;
+use Invoice\Entity\Invoice;
+use Invoice\Entity\Journal;
+use Invoice\Entity\Journal\Entry;
+use Invoice\Entity\Reminder;
+use Mailing\Entity\Mailing;
+use News\Entity\Blog;
+use News\Entity\Message;
+use Organisation\Entity\Booth;
+use Organisation\Entity\OParent;
+use Organisation\Entity\Parent\Doa;
+use Organisation\Entity\Parent\Financial;
+use Organisation\Entity\Parent\Organisation;
+use Program\Entity\Funder;
+use Program\Entity\Nda;
+use Project\Entity\Achievement;
+use Project\Entity\Action;
+use Project\Entity\Action\Comment;
+use Project\Entity\Changelog;
+use Project\Entity\ChangeRequest\CostChange;
+use Project\Entity\ChangeRequest\Country;
+use Project\Entity\ChangeRequest\Process;
+use Project\Entity\Contract;
+use Project\Entity\Evaluation\Evaluation;
+use Project\Entity\Idea\Idea;
+use Project\Entity\Idea\Invite;
+use Project\Entity\Idea\Partner;
+use Project\Entity\Pca;
+use Project\Entity\Project;
+use Project\Entity\Rationale;
+use Project\Entity\Report\EffortSpent;
+use Project\Entity\Report\Item;
+use Project\Entity\Report\Report;
+use Project\Entity\Report\Review;
+use Project\Entity\Report\WorkpackageDescription;
+use Project\Entity\Result\Result;
+use Project\Entity\Workpackage\Workpackage;
+use Publication\Entity\Download;
+use Publication\Entity\Publication;
+use function strtolower;
+use function substr;
 use Zend\Form\Annotation;
 use Zend\Math\Rand;
 use ZfcUser\Entity\UserInterface;
@@ -99,7 +158,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Gender"})
      * @Annotation\Options({"label":"txt-contact-gender-label","help-block":"txt-contact-gender-help-block"})
-     * @var \General\Entity\Gender
+     * @var Gender
      */
     private $gender;
     /**
@@ -108,7 +167,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"General\Entity\Title"})
      * @Annotation\Options({"label":"txt-contact-title-label","help-block":"txt-contact-title-help-block"})
-     * @var \General\Entity\Title
+     * @var Title
      */
     private $title;
     /**
@@ -131,39 +190,39 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\Column(name="date_birth", type="date", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Date")
      * @Annotation\Options({"label":"txt-contact-date-of-birth-label","help-block":"txt-contact-date-of-birth-help-block"})
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateOfBirth;
     /**
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateCreated;
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="update")
      * @Annotation\Exclude()
-     * @var \DateTime
+     * @var DateTime
      */
     private $lastUpdate;
     /**
      * @ORM\Column(name="date_end", type="datetime", nullable=true)
      * @Annotation\Exclude()
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateEnd;
     /**
      * @ORM\Column(name="date_anonymous", type="datetime", nullable=true)
      * @Annotation\Exclude()
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateAnonymous;
     /**
      * @ORM\Column(name="date_activated", type="datetime", nullable=true)
      * @Annotation\Exclude()
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateActivated;
     /**
@@ -233,19 +292,19 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Project[]|Collections\ArrayCollection
+     * @var Project[]|Collections\ArrayCollection
      */
     private $project;
     /**
      * @ORM\ManyToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="proxyContact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Project[]|Collections\ArrayCollection
+     * @var Project[]|Collections\ArrayCollection
      */
     private $proxyProject;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Rationale", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Rationale[]|Collections\ArrayCollection
+     * @var Rationale[]|Collections\ArrayCollection
      */
     private $rationale;
     /**
@@ -263,19 +322,19 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Report\Item", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Report\Item[]|Collections\ArrayCollection
+     * @var Item[]|Collections\ArrayCollection
      */
     private $projectReportItem;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Report\WorkpackageDescription", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Report\WorkpackageDescription[]|Collections\ArrayCollection
+     * @var WorkpackageDescription[]|Collections\ArrayCollection
      */
     private $projectReportWorkpackageDescription;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Report\EffortSpent", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Report\Item[]|Collections\ArrayCollection
+     * @var Item[]|Collections\ArrayCollection
      */
     private $projectReportEffortSpent;
     /**
@@ -293,25 +352,25 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Contract", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Contract[]|Collections\ArrayCollection
+     * @var Contract[]|Collections\ArrayCollection
      */
     private $contract;
     /**
      * @ORM\OneToMany(targetEntity="\Project\Entity\Contract\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Contract[]|Collections\ArrayCollection
+     * @var Contract[]|Collections\ArrayCollection
      */
     private $contractVersion;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Program\Entity\Nda[]|Collections\ArrayCollection
+     * @var Nda[]|Collections\ArrayCollection
      */
     private $nda;
     /**
      * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="approver")
      * @Annotation\Exclude()
-     * @var \Program\Entity\Nda[]|Collections\ArrayCollection
+     * @var Nda[]|Collections\ArrayCollection
      */
     private $ndaApprover;
     /**
@@ -323,7 +382,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="\Organisation\Entity\Parent\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Organisation\Entity\Parent\Doa[]|Collections\ArrayCollection
+     * @var Doa[]|Collections\ArrayCollection
      */
     private $parentDoa;
     /**
@@ -335,7 +394,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactClosed")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Action[]|Collections\ArrayCollection
+     * @var Action[]|Collections\ArrayCollection
      *
      * This is the user (typically someone of the office who has closed the action
      */
@@ -343,7 +402,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactStatus")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Action[]|Collections\ArrayCollection
+     * @var Action[]|Collections\ArrayCollection
      *
      * This is the user (typically the PL) which has updated the status of the action
      */
@@ -352,19 +411,19 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToMany(targetEntity="Project\Entity\Action\Comment", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\Action\Comment[]|Collections\ArrayCollection
+     * @var Comment[]|Collections\ArrayCollection
      */
     private $actionComment;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Idea[]|Collections\ArrayCollection
+     * @var Idea[]|Collections\ArrayCollection
      */
     private $idea;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Idea", cascade={"persist"}, mappedBy="favourite")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Idea[]|Collections\ArrayCollection
+     * @var Idea[]|Collections\ArrayCollection
      */
     private $favouriteIdea;
     /**
@@ -376,13 +435,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Partner", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Partner[]|Collections\ArrayCollection
+     * @var Partner[]|Collections\ArrayCollection
      */
     private $ideaPartner;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection
+     * @var Affiliation[]|Collections\ArrayCollection
      */
     private $affiliation;
     /**
@@ -400,49 +459,49 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Description|Collections\ArrayCollection
+     * @var Description|Collections\ArrayCollection
      */
     private $affiliationDescription;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Version[]|Collections\ArrayCollection
+     * @var Version[]|Collections\ArrayCollection
      */
     private $affiliationVersion;
     /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Invoice", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Invoice\Entity\Invoice[]|Collections\ArrayCollection
+     * @var Invoice[]|Collections\ArrayCollection
      */
     private $invoice;
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\OParent", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Organisation\Entity\OParent[]|Collections\ArrayCollection
+     * @var OParent[]|Collections\ArrayCollection
      */
     private $parent;
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\Parent\Financial", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude();
-     * @var \Organisation\Entity\Parent\Financial[]|Collections\ArrayCollection
+     * @var Financial[]|Collections\ArrayCollection
      */
     private $parentFinancial;
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\Parent\Organisation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Organisation\Entity\Parent\Organisation[]|Collections\ArrayCollection
+     * @var Organisation[]|Collections\ArrayCollection
      */
     private $parentOrganisation;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Publication", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Publication\Entity\Publication[]|Collections\ArrayCollection
+     * @var Publication[]|Collections\ArrayCollection
      */
     private $publication;
     /**
      * @ORM\OneToMany(targetEntity="Publication\Entity\Download", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Publication\Entity\Download[]|Collections\ArrayCollection
+     * @var Download[]|Collections\ArrayCollection
      */
     private $publicationDownload;
     /**
@@ -454,13 +513,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\ManyToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="associate")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection
+     * @var Affiliation[]|Collections\ArrayCollection
      */
     private $associate;
     /**
      * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
-     * @var \Program\Entity\Funder
+     * @var Funder
      */
     private $funder;
     /**
@@ -479,13 +538,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToMany(targetEntity="Event\Entity\Registration", cascade={"persist"}, mappedBy="contact")
      * @ORM\OrderBy({"id" = "DESC"})
      * @Annotation\Exclude()
-     * @var \Event\Entity\Registration|Collections\ArrayCollection
+     * @var Registration|Collections\ArrayCollection
      */
     private $registration;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Badge\Badge", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Badge\Badge[]|Collections\ArrayCollection
+     * @var Badge[]|Collections\ArrayCollection
      */
     private $badge;
     /**
@@ -509,7 +568,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Organisation\Entity\Booth", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Organisation\Entity\Booth[]|Collections\ArrayCollection
+     * @var Booth[]|Collections\ArrayCollection
      */
     private $organisationBooth;
     /**
@@ -545,7 +604,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
+     * @var Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
     /**
@@ -556,13 +615,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Result\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Result\Result[]|Collections\ArrayCollection
+     * @var Result[]|Collections\ArrayCollection
      */
     private $result;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Workpackage", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Workpackage\Workpackage[]|Collections\ArrayCollection
+     * @var Workpackage[]|Collections\ArrayCollection
      */
     private $workpackage;
     /**
@@ -580,13 +639,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Evaluation\Evaluation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Evaluation\Evaluation[]|Collections\ArrayCollection
+     * @var Evaluation[]|Collections\ArrayCollection
      */
     private $evaluation;
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Calendar", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Calendar\Entity\Calendar[]|Collections\ArrayCollection
+     * @var Calendar[]|Collections\ArrayCollection
      */
     private $calendar;
     /**
@@ -598,7 +657,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Calendar\Entity\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Calendar\Entity\Document[]|Collections\ArrayCollection
+     * @var Document[]|Collections\ArrayCollection
      */
     private $calendarDocument;
     /**
@@ -623,7 +682,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Report\Report", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Report\Report[]|Collections\ArrayCollection
+     * @var Report[]|Collections\ArrayCollection
      */
     private $projectReport;
     /**
@@ -635,7 +694,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Report\Review", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Report\Review[]|Collections\ArrayCollection
+     * @var Review[]|Collections\ArrayCollection
      */
     private $projectReportReview;
     /**
@@ -647,7 +706,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Pca", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Pca[]|Collections\ArrayCollection
+     * @var Pca[]|Collections\ArrayCollection
      */
     private $pca;
     /**
@@ -659,25 +718,25 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Invite", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Invite[]|Collections\ArrayCollection
+     * @var Invite[]|Collections\ArrayCollection
      */
     private $ideaInvite;
     /**
      * @ORM\ManyToMany(targetEntity="Project\Entity\Idea\Invite", cascade={"persist"}, mappedBy="inviteContact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Idea\Invite[]|Collections\ArrayCollection
+     * @var Invite[]|Collections\ArrayCollection
      */
     private $ideaInviteContact;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     * @var Loi[]|Collections\ArrayCollection
      */
     private $loi;
     /**
      * @ORM\OneToMany(targetEntity="\Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="approver")
      * @Annotation\Exclude()
-     * @var \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     * @var Loi[]|Collections\ArrayCollection
      */
     private $loiApprover;
     /**
@@ -695,82 +754,82 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Admin\Entity\Session[]|Collections\ArrayCollection
+     * @var Session[]|Collections\ArrayCollection
      */
     private $session;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Exhibition\Voter", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude();
-     * @var \Event\Entity\Exhibition\Voter[]|Collections\ArrayCollection
+     * @var Voter[]|Collections\ArrayCollection
      */
     private $voter;
     /**
      * @ORM\OneToMany(targetEntity="Event\Entity\Exhibition\Tour", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Event\Entity\Exhibition\Tour|Collections\ArrayCollection
+     * @var Tour|Collections\ArrayCollection
      */
     private $tour;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Exhibition\Tour", cascade={"persist"}, mappedBy="tourContact")
      * @Annotation\Exclude();
-     * @var \Event\Entity\Exhibition\Tour[]|Collections\ArrayCollection
+     * @var Tour[]|Collections\ArrayCollection
      */
     private $tourContact;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="receiver")
      * @Annotation\Exclude();
-     * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     * @var DoaReminder[]|Collections\ArrayCollection
      */
     private $doaReminderReceiver;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="sender")
      * @Annotation\Exclude();
-     * @var \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     * @var DoaReminder[]|Collections\ArrayCollection
      */
     private $doaReminderSender;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="receiver")
      * @Annotation\Exclude();
-     * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     * @var LoiReminder[]|Collections\ArrayCollection
      */
     private $loiReminderReceiver;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="sender")
      * @Annotation\Exclude();
-     * @var \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     * @var LoiReminder[]|Collections\ArrayCollection
      */
     private $loiReminderSender;
     /**
      * @ORM\OneToMany(targetEntity="News\Entity\Blog", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \News\Entity\Blog[]|Collections\ArrayCollection
+     * @var Blog[]|Collections\ArrayCollection
      */
     private $blog;
     /**
      * @ORM\OneToMany(targetEntity="News\Entity\Message", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \News\Entity\Message[]|Collections\ArrayCollection
+     * @var Message[]|Collections\ArrayCollection
      */
     private $blogMessage;
     /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal\Entry", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Invoice\Entity\Journal\Entry[]|Collections\ArrayCollection
+     * @var Entry[]|Collections\ArrayCollection
      */
     private $journalEntry;
     /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Invoice\Entity\Journal[]|Collections\ArrayCollection
+     * @var Journal[]|Collections\ArrayCollection
      */
     private $journal;
     /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal", cascade={"persist"}, mappedBy="organisationContact")
      * @Annotation\Exclude()
      *
-     * @var \Invoice\Entity\Journal[]|Collections\ArrayCollection
+     * @var Journal[]|Collections\ArrayCollection
      */
     private $organisationJournal;
     /**
@@ -784,14 +843,14 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Reminder", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Invoice\Entity\Reminder[]|Collections\ArrayCollection
+     * @var Reminder[]|Collections\ArrayCollection
      */
     private $reminder;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Achievement", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\Achievement[]|Collections\ArrayCollection
+     * @var Achievement[]|Collections\ArrayCollection
      */
     private $achievement;
     /**
@@ -805,28 +864,28 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToMany(targetEntity="Project\Entity\Changelog", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\Changelog[]|Collections\ArrayCollection
+     * @var Changelog[]|Collections\ArrayCollection
      */
     private $projectChangelog;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Process", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\ChangeRequest\Process
+     * @var Process
      */
     private $changeRequestProcess;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\CostChange", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\ChangeRequest\CostChange
+     * @var CostChange
      */
     private $changeRequestCostChange;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\ChangeRequest\Country", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\ChangeRequest\Country
+     * @var Country
      */
     private $changeRequestCountry;
     /**
@@ -861,7 +920,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToMany(targetEntity="Admin\Entity\Pageview", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Admin\Entity\Pageview[]|Collections\Collection
+     * @var Pageview[]|Collections\Collection
      */
     private $pageview;
 
@@ -1009,7 +1068,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function parseInitials(): string
     {
-        $initials = \explode('-', (string)$this->firstName);
+        $initials = explode('-', (string)$this->firstName);
         if ('' !== $this->middleName && null !== $this->middleName) {
             $initials[] = $this->middleName;
         }
@@ -1017,7 +1076,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
         $initialString = '';
         foreach ($initials as $initial) {
-            $initialString .= \substr($initial, 0, 1);
+            $initialString .= substr($initial, 0, 1);
         }
 
         return $initialString;
@@ -1034,7 +1093,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function isOffice(): bool
     {
-        return \in_array(\strtolower(Access::ACCESS_OFFICE), $this->getRoles(), true);
+        return in_array(strtolower(Access::ACCESS_OFFICE), $this->getRoles(), true);
     }
 
     public function getRoles(): array
@@ -1157,7 +1216,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         }
     }
 
-    public function getDateCreated(): ?\DateTime
+    public function getDateCreated(): ?DateTime
     {
         return $this->dateCreated;
     }
@@ -1169,7 +1228,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    public function getDateEnd(): ?\DateTime
+    public function getDateEnd(): ?DateTime
     {
         return $this->dateEnd;
     }
@@ -1181,18 +1240,18 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    public function getDateAnonymous(): ?\DateTime
+    public function getDateAnonymous(): ?DateTime
     {
         return $this->dateAnonymous;
     }
 
-    public function setDateAnonymous(?\DateTime $dateAnonymous): Contact
+    public function setDateAnonymous(?DateTime $dateAnonymous): Contact
     {
         $this->dateAnonymous = $dateAnonymous;
         return $this;
     }
 
-    public function getDateOfBirth(): ?\DateTime
+    public function getDateOfBirth(): ?DateTime
     {
         return $this->dateOfBirth;
     }
@@ -1228,7 +1287,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    public function getGender(): ?\General\Entity\Gender
+    public function getGender(): ?Gender
     {
         return $this->gender;
     }
@@ -1278,9 +1337,9 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getLastUpdate(): ?\DateTime
+    public function getLastUpdate(): ?DateTime
     {
         return $this->lastUpdate;
     }
@@ -1378,15 +1437,15 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \General\Entity\Title
+     * @return Title
      */
-    public function getTitle(): ?\General\Entity\Title
+    public function getTitle(): ?Title
     {
         return $this->title;
     }
 
     /**
-     * @param \General\Entity\Title $title
+     * @param Title $title
      *
      * @return Contact
      */
@@ -1604,7 +1663,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Project[]
+     * @return Collections\ArrayCollection|Project[]
      */
     public function getProject()
     {
@@ -1612,7 +1671,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Project[] $project
+     * @param Collections\ArrayCollection|Project[] $project
      *
      * @return Contact
      */
@@ -1624,7 +1683,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Rationale[]
+     * @return Collections\ArrayCollection|Rationale[]
      */
     public function getRationale()
     {
@@ -1632,7 +1691,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Rationale[] $rationale
+     * @param Collections\ArrayCollection|Rationale[] $rationale
      *
      * @return Contact
      */
@@ -1724,7 +1783,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Action[]
+     * @return Collections\ArrayCollection|Action[]
      */
     public function getActionClosed()
     {
@@ -1732,7 +1791,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Action[] $actionClosed
+     * @param Collections\ArrayCollection|Action[] $actionClosed
      *
      * @return Contact
      */
@@ -1743,7 +1802,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Action[]
+     * @return Collections\ArrayCollection|Action[]
      */
     public function getActionStatus()
     {
@@ -1751,7 +1810,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Action[] $actionStatus
+     * @param Collections\ArrayCollection|Action[] $actionStatus
      *
      * @return Contact
      */
@@ -1763,7 +1822,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Action\Comment[]
+     * @return Collections\ArrayCollection|Comment[]
      */
     public function getActionComment()
     {
@@ -1771,7 +1830,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Action\Comment[] $actionComment
+     * @param Collections\ArrayCollection|Comment[] $actionComment
      *
      * @return Contact
      */
@@ -1783,7 +1842,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Contract[]
+     * @return Collections\ArrayCollection|Contract[]
      */
     public function getContract()
     {
@@ -1791,7 +1850,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Contract[] $contract
+     * @param Collections\ArrayCollection|Contract[] $contract
      *
      * @return Contact
      */
@@ -1803,7 +1862,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Contract[]
+     * @return Collections\ArrayCollection|Contract[]
      */
     public function getContractVersion()
     {
@@ -1811,7 +1870,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Contract[] $contractVersion
+     * @param Collections\ArrayCollection|Contract[] $contractVersion
      *
      * @return Contact
      */
@@ -1823,7 +1882,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Program\Entity\Nda
+     * @return Collections\ArrayCollection|Nda
      */
     public function getNda()
     {
@@ -1831,7 +1890,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Program\Entity\Nda $nda
+     * @param Collections\ArrayCollection|Nda $nda
      *
      * @return Contact
      */
@@ -1843,7 +1902,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Program\Entity\Nda[]
+     * @return Collections\ArrayCollection|Nda[]
      */
     public function getNdaApprover()
     {
@@ -1851,7 +1910,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Program\Entity\Nda[] $ndaApprover
+     * @param Collections\ArrayCollection|Nda[] $ndaApprover
      *
      * @return Contact
      */
@@ -1903,7 +1962,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\Idea
+     * @return Collections\ArrayCollection|Idea
      */
     public function getIdea()
     {
@@ -1911,7 +1970,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $idea
+     * @param Collections\ArrayCollection|Idea $idea
      *
      * @return Contact
      */
@@ -1923,7 +1982,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\Idea
+     * @return Collections\ArrayCollection|Idea
      */
     public function getFavouriteIdea()
     {
@@ -1931,7 +1990,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Idea $favouriteIdea
+     * @param Collections\ArrayCollection|Idea $favouriteIdea
      *
      * @return Contact
      */
@@ -1963,7 +2022,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection
+     * @return Affiliation[]|Collections\ArrayCollection
      */
     public function getAffiliation()
     {
@@ -1971,7 +2030,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection $affiliation
+     * @param Affiliation[]|Collections\ArrayCollection $affiliation
      *
      * @return Contact
      */
@@ -2023,7 +2082,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\Description|Collections\ArrayCollection
+     * @return Description|Collections\ArrayCollection
      */
     public function getAffiliationDescription()
     {
@@ -2031,7 +2090,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\Description|Collections\ArrayCollection $affiliationDescription
+     * @param Description|Collections\ArrayCollection $affiliationDescription
      *
      * @return Contact
      */
@@ -2043,7 +2102,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\Version|Collections\ArrayCollection
+     * @return Version|Collections\ArrayCollection
      */
     public function getAffiliationVersion()
     {
@@ -2051,7 +2110,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\Version|Collections\ArrayCollection $affiliationVersion
+     * @param Version|Collections\ArrayCollection $affiliationVersion
      *
      * @return Contact
      */
@@ -2063,7 +2122,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Invoice\Entity\Invoice
+     * @return Collections\ArrayCollection|Invoice
      */
     public function getInvoice()
     {
@@ -2071,7 +2130,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Invoice $invoice
+     * @param Collections\ArrayCollection|Invoice $invoice
      *
      * @return Contact
      */
@@ -2083,7 +2142,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Publication\Entity\Publication
+     * @return Collections\ArrayCollection|Publication
      */
     public function getPublication()
     {
@@ -2091,7 +2150,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Publication\Entity\Publication $publication
+     * @param Collections\ArrayCollection|Publication $publication
      *
      * @return Contact
      */
@@ -2103,7 +2162,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Publication\Entity\Download
+     * @return Collections\ArrayCollection|Download
      */
     public function getPublicationDownload()
     {
@@ -2111,7 +2170,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Publication\Entity\Download $publicationDownload
+     * @param Collections\ArrayCollection|Download $publicationDownload
      *
      * @return Contact
      */
@@ -2146,7 +2205,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\Affiliation[]|Collections\ArrayCollection $associate
+     * @param Affiliation[]|Collections\ArrayCollection $associate
      *
      * @return Contact
      */
@@ -2158,9 +2217,9 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Program\Entity\Funder
+     * @return Funder
      */
-    public function getFunder(): ?\Program\Entity\Funder
+    public function getFunder(): ?Funder
     {
         return $this->funder;
     }
@@ -2209,7 +2268,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Badge\Badge[]
+     * @return Collections\ArrayCollection|Badge[]
      */
     public function getBadge()
     {
@@ -2217,7 +2276,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Badge\Badge $badge
+     * @param Collections\ArrayCollection|Badge $badge
      *
      * @return Contact
      */
@@ -2289,7 +2348,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\Booth[]
+     * @return Collections\ArrayCollection|Booth[]
      */
     public function getOrganisationBooth()
     {
@@ -2297,7 +2356,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Booth[] $organisationBooth
+     * @param Collections\ArrayCollection|Booth[] $organisationBooth
      *
      * @return Contact
      */
@@ -2398,7 +2457,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Mailing\Entity\Mailing
+     * @return Collections\ArrayCollection|Mailing
      */
     public function getMailing()
     {
@@ -2406,7 +2465,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Mailing\Entity\Mailing $mailing
+     * @param Collections\ArrayCollection|Mailing $mailing
      *
      * @return Contact
      */
@@ -2438,7 +2497,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Result\Result
+     * @return Collections\ArrayCollection|Result
      */
     public function getResult()
     {
@@ -2446,7 +2505,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Result\Result $result
+     * @param Collections\ArrayCollection|Result $result
      *
      * @return Contact
      */
@@ -2458,7 +2517,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage[]
+     * @return Collections\ArrayCollection|Workpackage[]
      */
     public function getWorkpackage()
     {
@@ -2466,7 +2525,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Workpackage[] $workpackage
+     * @param Collections\ArrayCollection|Workpackage[] $workpackage
      *
      * @return Contact
      */
@@ -2518,7 +2577,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation
+     * @return Collections\ArrayCollection|Evaluation
      */
     public function getEvaluation()
     {
@@ -2526,7 +2585,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Evaluation\Evaluation $evaluation
+     * @param Collections\ArrayCollection|Evaluation $evaluation
      *
      * @return Contact
      */
@@ -2538,7 +2597,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Calendar\Entity\Calendar|Collections\ArrayCollection
+     * @return Calendar|Collections\ArrayCollection
      */
     public function getCalendar()
     {
@@ -2546,7 +2605,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Calendar\Entity\Calendar|Collections\ArrayCollection $calendar
+     * @param Calendar|Collections\ArrayCollection $calendar
      *
      * @return Contact
      */
@@ -2578,7 +2637,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Calendar\Entity\Document|Collections\ArrayCollection
+     * @return Document|Collections\ArrayCollection
      */
     public function getCalendarDocument()
     {
@@ -2586,7 +2645,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Calendar\Entity\Document|Collections\ArrayCollection $calendarDocument
+     * @param Document|Collections\ArrayCollection $calendarDocument
      *
      * @return Contact
      */
@@ -2658,7 +2717,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\Report
+     * @return Collections\ArrayCollection|Report
      */
     public function getProjectReport()
     {
@@ -2666,7 +2725,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\Report $projectReport
+     * @param Collections\ArrayCollection|Report $projectReport
      *
      * @return Contact
      */
@@ -2698,7 +2757,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\Review[]
+     * @return Collections\ArrayCollection|Review[]
      */
     public function getProjectReportReview()
     {
@@ -2706,7 +2765,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\Review[] $projectReportReview
+     * @param Collections\ArrayCollection|Review[] $projectReportReview
      *
      * @return Contact
      */
@@ -2758,7 +2817,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\Invite[]
+     * @return Collections\ArrayCollection|Invite[]
      */
     public function getIdeaInvite()
     {
@@ -2766,7 +2825,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInvite
+     * @param Collections\ArrayCollection|Invite[] $ideaInvite
      *
      * @return Contact
      */
@@ -2778,7 +2837,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\Invite[]
+     * @return Collections\ArrayCollection|Invite[]
      */
     public function getIdeaInviteContact()
     {
@@ -2786,7 +2845,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Invite[] $ideaInviteContact
+     * @param Collections\ArrayCollection|Invite[] $ideaInviteContact
      *
      * @return Contact
      */
@@ -2798,7 +2857,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     * @return Loi[]|Collections\ArrayCollection
      */
     public function getLoi()
     {
@@ -2806,7 +2865,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\Loi[]|Collections\ArrayCollection $loi
+     * @param Loi[]|Collections\ArrayCollection $loi
      *
      * @return Contact
      */
@@ -2818,7 +2877,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\Loi[]|Collections\ArrayCollection
+     * @return Loi[]|Collections\ArrayCollection
      */
     public function getLoiApprover()
     {
@@ -2826,7 +2885,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\Loi[]|Collections\ArrayCollection $loiApprover
+     * @param Loi[]|Collections\ArrayCollection $loiApprover
      *
      * @return Contact
      */
@@ -2878,7 +2937,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Admin\Entity\Session[]|Collections\Collection
+     * @return Session[]|Collections\Collection
      */
     public function getSession()
     {
@@ -2886,7 +2945,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Admin\Entity\Session[]|Collections\Collection $session
+     * @param Session[]|Collections\Collection $session
      *
      * @return Contact
      */
@@ -2898,7 +2957,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[]
+     * @return Collections\ArrayCollection|Voter[]
      */
     public function getVoter()
     {
@@ -2906,7 +2965,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Voter[] $voter
+     * @param Collections\ArrayCollection|Voter[] $voter
      *
      * @return Contact
      */
@@ -2918,7 +2977,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour
+     * @return Collections\ArrayCollection|Tour
      */
     public function getTour()
     {
@@ -2926,7 +2985,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour $tour
+     * @param Collections\ArrayCollection|Tour $tour
      *
      * @return Contact
      */
@@ -2938,7 +2997,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[]
+     * @return Collections\ArrayCollection|Tour[]
      */
     public function getTourContact()
     {
@@ -2946,7 +3005,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Event\Entity\Exhibition\Tour[] $tourContact
+     * @param Collections\ArrayCollection|Tour[] $tourContact
      *
      * @return Contact
      */
@@ -2958,7 +3017,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     * @return DoaReminder[]|Collections\ArrayCollection
      */
     public function getDoaReminderReceiver()
     {
@@ -2966,7 +3025,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
+     * @param DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
      *
      * @return Contact
      */
@@ -2978,7 +3037,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection
+     * @return DoaReminder[]|Collections\ArrayCollection
      */
     public function getDoaReminderSender()
     {
@@ -2986,7 +3045,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\DoaReminder[]|Collections\ArrayCollection $doaReminderSender
+     * @param DoaReminder[]|Collections\ArrayCollection $doaReminderSender
      *
      * @return Contact
      */
@@ -2998,7 +3057,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     * @return LoiReminder[]|Collections\ArrayCollection
      */
     public function getLoiReminderReceiver()
     {
@@ -3006,7 +3065,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
+     * @param LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
      *
      * @return Contact
      */
@@ -3018,7 +3077,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection
+     * @return LoiReminder[]|Collections\ArrayCollection
      */
     public function getLoiReminderSender()
     {
@@ -3026,7 +3085,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Affiliation\Entity\LoiReminder[]|Collections\ArrayCollection $loiReminderSender
+     * @param LoiReminder[]|Collections\ArrayCollection $loiReminderSender
      *
      * @return Contact
      */
@@ -3038,7 +3097,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\News\Entity\Blog
+     * @return Collections\ArrayCollection|Blog
      */
     public function getBlog()
     {
@@ -3046,7 +3105,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\News\Entity\Blog $blog
+     * @param Collections\ArrayCollection|Blog $blog
      *
      * @return Contact
      */
@@ -3058,7 +3117,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\News\Entity\Message
+     * @return Collections\ArrayCollection|Message
      */
     public function getBlogMessage()
     {
@@ -3066,7 +3125,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\News\Entity\Message $blogMessage
+     * @param Collections\ArrayCollection|Message $blogMessage
      *
      * @return Contact
      */
@@ -3078,7 +3137,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[]
+     * @return Collections\ArrayCollection|Entry[]
      */
     public function getJournalEntry()
     {
@@ -3086,7 +3145,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Journal\Entry[] $journalEntry
+     * @param Collections\ArrayCollection|Entry[] $journalEntry
      *
      * @return Contact
      */
@@ -3098,7 +3157,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Invoice\Entity\Journal[]
+     * @return Collections\ArrayCollection|Journal[]
      */
     public function getJournal()
     {
@@ -3106,7 +3165,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $journal
+     * @param Collections\ArrayCollection|Journal[] $journal
      *
      * @return Contact
      */
@@ -3118,7 +3177,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Invoice\Entity\Journal[]
+     * @return Collections\ArrayCollection|Journal[]
      */
     public function getOrganisationJournal()
     {
@@ -3126,7 +3185,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Journal[] $organisationJournal
+     * @param Collections\ArrayCollection|Journal[] $organisationJournal
      *
      * @return Contact
      */
@@ -3158,7 +3217,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Invoice\Entity\Reminder[]
+     * @return Collections\ArrayCollection|Reminder[]
      */
     public function getReminder()
     {
@@ -3166,7 +3225,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Reminder[] $reminder
+     * @param Collections\ArrayCollection|Reminder[] $reminder
      *
      * @return Contact
      */
@@ -3178,7 +3237,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Achievement[]
+     * @return Collections\ArrayCollection|Achievement[]
      */
     public function getAchievement()
     {
@@ -3186,7 +3245,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Achievement[] $achievement
+     * @param Collections\ArrayCollection|Achievement[] $achievement
      *
      * @return Contact
      */
@@ -3198,7 +3257,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\Partner
+     * @return Collections\ArrayCollection|Partner
      */
     public function getIdeaPartner()
     {
@@ -3206,7 +3265,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Partner $ideaPartner
+     * @param Collections\ArrayCollection|Partner $ideaPartner
      *
      * @return Contact
      */
@@ -3258,7 +3317,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\Item[]
+     * @return Collections\ArrayCollection|Item[]
      */
     public function getProjectReportItem()
     {
@@ -3266,7 +3325,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\Item[] $projectReportItem
+     * @param Collections\ArrayCollection|Item[] $projectReportItem
      *
      * @return Contact
      */
@@ -3278,7 +3337,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\EffortSpent[]
+     * @return Collections\ArrayCollection|EffortSpent[]
      */
     public function getProjectReportEffortSpent()
     {
@@ -3286,7 +3345,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Report\EffortSpent[] $projectReportEffortSpent
+     * @param Collections\ArrayCollection|EffortSpent[] $projectReportEffortSpent
      *
      * @return Contact
      */
@@ -3298,7 +3357,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\Process[]|Collections\Collection
+     * @return Process[]|Collections\Collection
      */
     public function getChangeRequestProcess()
     {
@@ -3306,7 +3365,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\Process[]|Collections\Collection $changerequestProcess
+     * @param Process[]|Collections\Collection $changerequestProcess
      *
      * @return Contact
      */
@@ -3318,7 +3377,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\CostChange[]|Collections\Collection
+     * @return CostChange[]|Collections\Collection
      */
     public function getChangeRequestCostChange()
     {
@@ -3326,7 +3385,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Project\Entity\ChangeRequest\CostChange[]|Collections\Collection $changerequestCostChange
+     * @param CostChange[]|Collections\Collection $changerequestCostChange
      *
      * @return Contact
      */
@@ -3338,7 +3397,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Project\Entity\ChangeRequest\Country[]|Collections\Collection
+     * @return Country[]|Collections\Collection
      */
     public function getChangeRequestCountry()
     {
@@ -3398,7 +3457,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Report\WorkpackageDescription[]|Collections\Collection
+     * @return Collections\ArrayCollection|WorkpackageDescription[]|Collections\Collection
      */
     public function getProjectReportWorkpackageDescription()
     {
@@ -3406,7 +3465,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\Collection|\Project\Entity\Report\WorkpackageDescription[] $projectReportWorkpackageDescription
+     * @param Collections\Collection|WorkpackageDescription[] $projectReportWorkpackageDescription
      *
      * @return Contact
      */
@@ -3418,7 +3477,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]|Collections\Collection
+     * @return Collections\ArrayCollection|Doa[]|Collections\Collection
      */
     public function getParentDoa()
     {
@@ -3426,7 +3485,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Doa[]|Collections\Collection $parentDoa
+     * @param Collections\ArrayCollection|Doa[]|Collections\Collection $parentDoa
      *
      * @return Contact
      */
@@ -3438,7 +3497,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\OParent[]|Collections\Collection
+     * @return Collections\ArrayCollection|OParent[]|Collections\Collection
      */
     public function getParent()
     {
@@ -3446,7 +3505,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\OParent[]|Collections\Collection $parent
+     * @param Collections\ArrayCollection|OParent[]|Collections\Collection $parent
      *
      * @return Contact
      */
@@ -3458,7 +3517,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Financial[]
+     * @return Collections\ArrayCollection|Financial[]
      */
     public function getParentFinancial()
     {
@@ -3466,7 +3525,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Financial[] $parentFinancial
+     * @param Collections\ArrayCollection|Financial[] $parentFinancial
      *
      * @return Contact
      */
@@ -3478,7 +3537,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Organisation\Entity\Parent\Organisation[]
+     * @return Collections\ArrayCollection|Organisation[]
      */
     public function getParentOrganisation()
     {
@@ -3486,7 +3545,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Organisation\Entity\Parent\Organisation[] $parentOrganisation
+     * @param Collections\ArrayCollection|Organisation[] $parentOrganisation
      *
      * @return Contact
      */
@@ -3538,7 +3597,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Pca[]
+     * @return Collections\ArrayCollection|Pca[]
      */
     public function getPca()
     {
@@ -3546,7 +3605,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Pca[] $pca
+     * @param Collections\ArrayCollection|Pca[] $pca
      *
      * @return Contact
      */
@@ -3558,7 +3617,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return \Admin\Entity\Pageview[]|Collections\Collection
+     * @return Pageview[]|Collections\Collection
      */
     public function getPageview()
     {
@@ -3566,7 +3625,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param \Admin\Entity\Pageview[]|Collections\Collection $pageView
+     * @param Pageview[]|Collections\Collection $pageView
      *
      * @return Contact
      */
@@ -3578,7 +3637,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Project[]
+     * @return Collections\ArrayCollection|Project[]
      */
     public function getProxyProject()
     {
@@ -3586,7 +3645,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Project[] $proxyProject
+     * @param Collections\ArrayCollection|Project[] $proxyProject
      *
      * @return Contact
      */
@@ -3596,12 +3655,12 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    public function getDateActivated(): ?\DateTime
+    public function getDateActivated(): ?DateTime
     {
         return $this->dateActivated;
     }
 
-    public function setDateActivated(?\DateTime $dateActivated): Contact
+    public function setDateActivated(?DateTime $dateActivated): Contact
     {
         $this->dateActivated = $dateActivated;
         return $this;

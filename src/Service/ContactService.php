@@ -15,6 +15,7 @@ namespace Contact\Service;
 use Admin\Entity\Access;
 use Admin\Service\AdminService;
 use Affiliation\Entity\Affiliation;
+use function array_key_exists;
 use Calendar\Entity\Calendar;
 use Contact\Entity\AbstractEntity;
 use Contact\Entity\Address;
@@ -31,11 +32,16 @@ use Contact\Entity\Photo;
 use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
+use function count;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Event\Entity\Booth\Booth;
 use General\Entity\Country;
 use General\Service\GeneralService;
+use function implode;
+use function in_array;
+use InvalidArgumentException;
+use function is_array;
 use Organisation\Entity\Organisation;
 use Organisation\Service\OrganisationService;
 use Project\Entity\Project;
@@ -44,6 +50,11 @@ use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
 use Solarium\QueryType\Update\Query\Document\Document;
+use function str_replace;
+use function stream_get_contents;
+use function strip_tags;
+use function strtolower;
+use function trim;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\View\Helper\Url;
@@ -158,11 +169,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $repository->findContacts();
     }
 
-    /**
-     * Find all contacts which are active and have a date of birth.
-     *
-     * @return Contact[]
-     */
     public function findContactsWithDateOfBirth(): array
     {
         /** @var \Contact\Repository\Contact $repository */
@@ -171,11 +177,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $repository->findContactsWithDateOfBirth();
     }
 
-    /**
-     * Find all contacts which are active and have a CV.
-     *
-     * @return Contact[]
-     */
     public function findContactsWithCV(): array
     {
         /** @var \Contact\Repository\Contact $repository */
@@ -202,7 +203,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function canDeleteContact(Contact $contact): bool
     {
-        return \count($this->cannotDeleteContact($contact)) === 0;
+        return count($this->cannotDeleteContact($contact)) === 0;
     }
 
     public function cannotDeleteContact(Contact $contact): array
@@ -247,7 +248,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function canAnonymiseContact(Contact $contact): bool
     {
-        return \count($this->canAnonymiseContactReasons($contact)) > 0;
+        return count($this->canAnonymiseContactReasons($contact)) > 0;
     }
 
     public function canAnonymiseContactReasons(Contact $contact): array
@@ -281,7 +282,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function parseLastName(Contact $contact): string
     {
-        return \trim(\implode(' ', [$contact->getMiddleName(), $contact->getLastName()]));
+        return trim(implode(' ', [$contact->getMiddleName(), $contact->getLastName()]));
     }
 
     public function parseAttention(Contact $contact): string
@@ -322,12 +323,12 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             }
         }
 
-        if (\count($signature) === 0) {
+        if (count($signature) === 0) {
             return null;
         }
 
 
-        return \implode('<br>', $signature);
+        return implode('<br>', $signature);
     }
 
     public function parseOrganisation(Contact $contact): ?string
@@ -404,8 +405,8 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     private function getPhoneByContactAndType(Contact $contact, int $type): ?Phone
     {
-        if (!\in_array($type, PhoneType::getPhoneTypes(), true)) {
-            throw new \InvalidArgumentException(sprintf('A invalid phone type chosen'));
+        if (!in_array($type, PhoneType::getPhoneTypes(), true)) {
+            throw new InvalidArgumentException(sprintf('A invalid phone type chosen'));
         }
 
         return $this->entityManager->getRepository(Phone::class)->findOneBy(
@@ -532,11 +533,11 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $contactDocument->setField('access', $accessList);
 
         if (null !== $contact->getProfile()) {
-            $description = \strip_tags((string)$contact->getProfile()->getDescription());
+            $description = strip_tags((string)$contact->getProfile()->getDescription());
 
-            $contactDocument->setField('profile', \str_replace(PHP_EOL, '', $description));
-            $contactDocument->setField('profile_sort', \str_replace(PHP_EOL, '', $description));
-            $contactDocument->setField('profile_search', \str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_sort', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_search', str_replace(PHP_EOL, '', $description));
 
             if ($contact->getPhoto()->count() > 0) {
                 $url = $this->viewHelperManager->get(Url::class);
@@ -558,7 +559,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             }
         }
         if (null !== $contact->getCv()) {
-            $cv = \str_replace(
+            $cv = str_replace(
                 PHP_EOL,
                 '',
                 strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
@@ -651,11 +652,11 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $contactDocument->setField('position_sort', $contact->getPosition());
 
         if (null !== $contact->getProfile()) {
-            $description = \strip_tags((string)$contact->getProfile()->getDescription());
+            $description = strip_tags((string)$contact->getProfile()->getDescription());
 
-            $contactDocument->setField('profile', \str_replace(PHP_EOL, '', $description));
-            $contactDocument->setField('profile_sort', \str_replace(PHP_EOL, '', $description));
-            $contactDocument->setField('profile_search', \str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_sort', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_search', str_replace(PHP_EOL, '', $description));
 
             if ($contact->getPhoto()->count() > 0) {
                 $url = $this->viewHelperManager->get(Url::class);
@@ -693,10 +694,10 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         if (null !== $contact->getCv()) {
-            $cv = \str_replace(
+            $cv = str_replace(
                 PHP_EOL,
                 '',
-                \strip_tags((string)\stream_get_contents($contact->getCv()->getCv()))
+                strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
             );
 
             $contactDocument->setField('cv', $cv);
@@ -745,7 +746,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     {
         $projectContacts = $this->findContactsInProject($project);
 
-        return \array_key_exists($contact->getId(), $projectContacts);
+        return array_key_exists($contact->getId(), $projectContacts);
     }
 
     /**
@@ -825,18 +826,18 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     public function contactHasPermit(Contact $contact, $role, $entity): bool
     {
         if (null === $entity) {
-            throw new \InvalidArgumentException('Permit can only be determined of an existing entity, null given');
+            throw new InvalidArgumentException('Permit can only be determined of an existing entity, null given');
         }
 
-        $entityName = \str_replace(
+        $entityName = str_replace(
             'doctrineormmodule_proxy___cg___',
             '',
-            \strtolower($entity->get('underscore_entity_name'))
+            strtolower($entity->get('underscore_entity_name'))
         );
 
         $repository = $this->entityManager->getRepository(\Admin\Entity\Permit\Contact::class);
 
-        if (\is_array($role)) {
+        if (is_array($role)) {
             foreach ($role as $singleRole) {
                 $hasPermit = $repository->contactHasPermit($contact, $singleRole, $entityName, (int)$entity->getId());
                 if ($hasPermit) {
@@ -862,7 +863,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $cannotDeleteOptIn[] = 'This Opt In still has mailings';
         }
 
-        return \count($cannotDeleteOptIn) === 0;
+        return count($cannotDeleteOptIn) === 0;
     }
 
     /**
@@ -879,7 +880,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     {
         $repository = $this->entityManager->getRepository(Facebook::class);
 
-        return $repository->findFacebookByContact($contact);
+        $roles = $this->adminService->findAccessRolesByContactAsArray($contact);
+
+        return $repository->findFacebookByRoles($roles);
     }
 
     public function findContactsInFacebook(Facebook $facebook): array
@@ -1102,17 +1105,17 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $inCompleteness['lastName']['weight'] = 10;
         }
         $totalWeight += 10;
-        if (\count($contact->getPhone()) === 0) {
+        if (count($contact->getPhone()) === 0) {
             $inCompleteness['phone']['message'] = _('txt-no-telephone-number-known');
             $inCompleteness['phone']['weight'] = 10;
         }
         $totalWeight += 10;
-        if (\count($contact->getAddress()) === 0) {
+        if (count($contact->getAddress()) === 0) {
             $inCompleteness['address']['message'] = _('txt-no-address-known');
             $inCompleteness['address']['weight'] = 10;
         }
         $totalWeight += 10;
-        if (\count($contact->getPhoto()) === 0) {
+        if (count($contact->getPhoto()) === 0) {
             $inCompleteness['photo']['message'] = _('txt-no-profile-photo-given');
             $inCompleteness['photo']['weight'] = 10;
         }
@@ -1233,7 +1236,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         /** Remove first the optIns which are not present in the optIn array */
         $contactOpIn = $contact->getOptIn();
         foreach ($contact->getOptIn() as $optIn) {
-            if (!isset($data['optIn']) || !\in_array($optIn->getId(), $optInOptions, false)) {
+            if (!isset($data['optIn']) || !in_array($optIn->getId(), $optInOptions, false)) {
                 $contactOpIn->removeElement($optIn);
             }
         }

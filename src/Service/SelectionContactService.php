@@ -15,7 +15,11 @@ namespace Contact\Service;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionContact;
+use function count;
 use Doctrine\ORM\PersistentCollection;
+use InvalidArgumentException;
+use function is_array;
+use Throwable;
 
 /**
  * Class SelectionContactService
@@ -26,15 +30,15 @@ class SelectionContactService extends AbstractService
 {
     public function contactInSelection(Contact $contact, $selections): bool
     {
-        if (!\is_array($selections) && !$selections instanceof PersistentCollection) {
+        if (!is_array($selections) && !$selections instanceof PersistentCollection) {
             $selections = [$selections];
         }
         foreach ($selections as $selection) {
             if (!$selection instanceof Selection) {
-                throw new \InvalidArgumentException('Selection should be instance of Selection');
+                throw new InvalidArgumentException('Selection should be instance of Selection');
             }
             if (null === $selection->getId()) {
-                throw new \InvalidArgumentException('The given selection cannot be empty');
+                throw new InvalidArgumentException('The given selection cannot be empty');
             }
             if ($this->findContactInSelection($contact, $selection)) {
                 return true;
@@ -57,14 +61,14 @@ class SelectionContactService extends AbstractService
             try {
                 //We have a dynamic query, check if the contact is in the selection
                 return $repository->isContactInSelectionSQL($contact, $selection->getSql());
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 print sprintf('Selection %s is giving troubles (%s)', $selection->getId(), $e->getMessage());
             }
         }
         /*
          * The selection contains contacts, do an extra query to find the contact
          */
-        if (\count($selection->getSelectionContact()) > 0) {
+        if (count($selection->getSelectionContact()) > 0) {
             $findContact = $this->entityManager->getRepository(SelectionContact::class)->findOneBy(
                 [
                     'contact'   => $contact,

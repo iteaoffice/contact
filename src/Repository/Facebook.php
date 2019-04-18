@@ -12,19 +12,19 @@ declare(strict_types=1);
 
 namespace Contact\Repository;
 
-use Admin\Entity\Access;
 use Contact\Entity;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
-use function array_merge;
 
 /**
- * @category    Contact
+ * Class Facebook
+ *
+ * @package Contact\Repository
  */
-class Facebook extends EntityRepository
+final class Facebook extends EntityRepository
 {
-    public function findFacebookByContact(Entity\Contact $contact): array
+    public function findFacebookByRoles(array $roles): array
     {
         //Select projects based on a type
         $qb = $this->_em->createQueryBuilder();
@@ -34,7 +34,7 @@ class Facebook extends EntityRepository
 
         $qb->andWhere(
             $qb->expr()->orX(
-                $qb->expr()->in('admin_entity_access.access', array_merge([Access::ACCESS_USER], $contact->getRoles())),
+                $qb->expr()->in('admin_entity_access.access', $roles),
                 $qb->expr()->in('contact_entity_facebook.public', [Entity\Facebook::IS_PUBLIC])
             )
         );
@@ -66,10 +66,6 @@ class Facebook extends EntityRepository
             ),
             $resultSetMap
         );
-
-        /*
-         * Use a simple array hydration to avoid a complex mapping of objects
-         */
 
         return count($query->getResult(AbstractQuery::HYDRATE_ARRAY)) > 0;
     }
