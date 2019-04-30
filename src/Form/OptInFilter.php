@@ -17,6 +17,8 @@ use Contact\Entity\OptIn;
 use Zend\Form\Element\MultiCheckbox;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
+use Zend\Form\Element\Submit;
+use Zend\Form\Element\Text;
 
 /**
  * Class OptInFilter
@@ -35,7 +37,7 @@ class OptInFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'search',
                 'attributes' => [
                     'class'       => 'form-control',
@@ -60,7 +62,7 @@ class OptInFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
                     'id'    => 'submit',
@@ -72,7 +74,7 @@ class OptInFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'clear',
                 'attributes' => [
                     'id'    => 'cancel',

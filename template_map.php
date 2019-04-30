@@ -9,6 +9,7 @@ return array(
     'contact/profile/organisation'                 => __DIR__ . '//view/contact/profile/organisation.twig',
     'contact/profile/contact'                      => __DIR__ . '//view/contact/profile/contact.twig',
     'contact/profile/edit'                         => __DIR__ . '//view/contact/profile/edit.twig',
+    'contact/profile/manage-hlg'                   => __DIR__ . '//view/contact/profile/manage-hlg.twig',
     'contact/profile/events'                       => __DIR__ . '//view/contact/profile/events.twig',
     'contact/contact/search'                       => __DIR__ . '//view/contact/contact/search.twig',
     'contact/contact/change-password'              => __DIR__ . '//view/contact/contact/change-password.twig',

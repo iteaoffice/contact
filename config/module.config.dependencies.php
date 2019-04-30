@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Contact;
 
 use Contact\Controller\Plugin;
+use Contact\Form\View\Helper\ContactFormElement;
 use Contact\Service\AddressService;
 use Contact\Service\ContactService;
 use Contact\Service\SelectionContactService;
@@ -67,6 +68,10 @@ return [
         ],
         Search\Service\ProfileSearchService::class => [
             'Config'
-        ]
+        ],
+        ContactFormElement::class                  => [
+            'ViewHelperManager',
+            TranslatorInterface::class
+        ],
     ]
 ];

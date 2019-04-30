@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contact\Search\Service;
 
+use function in_array;
 use Search\Service\AbstractSearchService;
 use Search\Service\SearchServiceInterface;
 use Solarium\QueryType\Select\Query\Query;
@@ -46,7 +47,7 @@ class ContactSearchService extends AbstractSearchService
             )
         );
 
-        $hasTerm = !\in_array($searchTerm, ['*', ''], true);
+        $hasTerm = !in_array($searchTerm, ['*', ''], true);
         $hasSort = ($order !== '');
 
         if ($hasSort) {

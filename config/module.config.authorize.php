@@ -84,6 +84,11 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'community/contact/profile/manage-hlg',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
                     'route'     => 'community/contact/profile/manage-external',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,

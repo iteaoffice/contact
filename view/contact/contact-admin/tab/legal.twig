@@ -57,7 +57,7 @@
     {% for loi in contact.loi %}
         <tr>
             {% set project = loi.affiliation.project %}
-            <td>{{ translate("txt-loi") }} {{ loiLink(loi,'download','icon') }} {{ loiLink(loi,'view-admin','icon') }}</td>
+            <td>{{ translate("txt-loi") }} {% if loi.hasObject() %}{{ loiLink(loi,'download','icon') }}{% endif %} {{ loiLink(loi,'view-admin','icon') }}</td>
             <td>{{ projectLink(project,'view-admin','name') }}</td>
             <td>{{ callLink(project.call,'view-admin','name') }}</td>
             <td>{{ project.call.program }}</td>

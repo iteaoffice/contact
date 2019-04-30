@@ -183,6 +183,15 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'manage-hlg'    => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/manage/hlg-npc.html',
+                                            'defaults' => [
+                                                'action' => 'manage-hlg',
+                                            ],
+                                        ],
+                                    ],
                                     'manage-external' => [
                                         'type'    => 'Literal',
                                         'options' => [

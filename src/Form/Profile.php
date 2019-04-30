@@ -23,13 +23,23 @@ use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntityRadio;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Country;
+use General\Entity\Gender;
+use General\Entity\Title;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Type;
+use Zend\Form\Element\File;
+use Zend\Form\Element\Hidden;
+use Zend\Form\Element\MultiCheckbox;
+use Zend\Form\Element\Radio;
+use Zend\Form\Element\Submit;
 use Zend\Form\Element\Text;
+use Zend\Form\Element\Textarea;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 use Zend\Validator\File\IsImage;
+use function in_array;
+use function sprintf;
 
 /**
  * Class Profile
@@ -53,7 +63,7 @@ class Profile extends Form implements InputFilterProviderInterface
          */
         $this->add(
             [
-                'type' => 'Zend\Form\Element\Hidden',
+                'type' => Hidden::class,
                 'name' => 'id',
             ]
         );
@@ -62,9 +72,9 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'    => EntitySelect::class,
                 'name'    => 'gender',
                 'options' => [
-                    'label'          => _("txt-attention"),
+                    'label'          => _('txt-attention'),
                     'object_manager' => $entityManager,
-                    'target_class'   => 'General\Entity\Gender',
+                    'target_class'   => Gender::class,
                     'find_method'    => [
                         'name' => 'findAll',
                     ],
@@ -76,9 +86,9 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'    => EntitySelect::class,
                 'name'    => 'title',
                 'options' => [
-                    'label'          => _("txt-title"),
+                    'label'          => _('txt-title'),
                     'object_manager' => $entityManager,
-                    'target_class'   => 'General\Entity\Title',
+                    'target_class'   => Title::class,
                     'find_method'    => [
                         'name' => 'findAll',
                     ],
@@ -90,11 +100,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'firstName',
                 'options'    => [
-                    'label' => _("txt-first-name"),
+                    'label' => _('txt-first-name'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-first-name"),
+                    'placeholder' => _('txt-give-your-first-name'),
                 ],
             ]
         );
@@ -103,11 +113,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'middleName',
                 'options'    => [
-                    'label' => _("txt-middle-name"),
+                    'label' => _('txt-middle-name'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-middle-name"),
+                    'placeholder' => _('txt-give-your-middle-name'),
                 ],
             ]
         );
@@ -116,11 +126,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'lastName',
                 'options'    => [
-                    'label' => _("txt-last-name"),
+                    'label' => _('txt-last-name'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-last-name"),
+                    'placeholder' => _('txt-give-your-last-name'),
                 ],
             ]
         );
@@ -130,18 +140,18 @@ class Profile extends Form implements InputFilterProviderInterface
         $phoneFieldSet = new Fieldset('phone');
         /** @var PhoneType $phoneType */
         foreach ($contactService->findAll(PhoneType::class) as $phoneType) {
-            if (\in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE], true)) {
+            if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE], true)) {
                 $fieldSet = new Fieldset($phoneType->getId());
                 $fieldSet->add(
                     [
                         'type'       => Text::class,
                         'name'       => 'phone',
                         'options'    => [
-                            'label' => sprintf(_("%s Phone number"), $phoneType->getType()),
+                            'label' => sprintf(_('%s Phone number'), $phoneType->getType()),
                         ],
                         'attributes' => [
                             'class'       => 'form-control',
-                            'placeholder' => sprintf(_("Give %s phone number"), $phoneType->getType()),
+                            'placeholder' => sprintf(_('Give %s phone number'), $phoneType->getType()),
                         ],
                     ]
                 );
@@ -158,11 +168,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'address',
                 'options'    => [
-                    'label' => _("txt-address"),
+                    'label' => _('txt-address'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-address"),
+                    'placeholder' => _('txt-address'),
                 ],
             ]
         );
@@ -171,11 +181,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'zipCode',
                 'options'    => [
-                    'label' => _("txt-zip-code"),
+                    'label' => _('txt-zip-code'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-zip-code"),
+                    'placeholder' => _('txt-zip-code'),
                 ],
             ]
         );
@@ -184,11 +194,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'city',
                 'options'    => [
-                    'label' => _("txt-city"),
+                    'label' => _('txt-city'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-city"),
+                    'placeholder' => _('txt-city'),
                 ],
             ]
         );
@@ -197,7 +207,7 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'    => EntitySelect::class,
                 'name'    => 'country',
                 'options' => [
-                    'label'          => _("txt-country"),
+                    'label'          => _('txt-country'),
                     'object_manager' => $entityManager,
                     'target_class'   => Country::class,
                     'find_method'    => [
@@ -219,7 +229,7 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => EntityRadio::class,
                 'name'       => 'organisation_id',
                 'options'    => [
-                    'label'                     => _("txt-organisation"),
+                    'label'                     => _('txt-organisation'),
                     'label_options'             => [
                         'disable_html_escape' => true,
                     ],
@@ -234,7 +244,7 @@ class Profile extends Form implements InputFilterProviderInterface
                             'contact'  => $contact,
                         ],
                     ],
-                    'label_generator'           => function (Organisation $organisation) {
+                    'label_generator'           => static function (Organisation $organisation) {
                         if (null !== $organisation->getCountry()) {
                             return sprintf(
                                 '%s (%s) [VAT: %s]',
@@ -261,12 +271,12 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'organisation',
                 'options'    => [
-                    'label'      => _("txt-organisation"),
-                    'help-block' => _("txt-organisation-form-element-description"),
+                    'label'      => _('txt-organisation'),
+                    'help-block' => _('txt-organisation-form-element-description'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-organisation"),
+                    'placeholder' => _('txt-give-your-organisation'),
                 ],
             ]
         );
@@ -275,7 +285,7 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'    => EntitySelect::class,
                 'name'    => 'type',
                 'options' => [
-                    'label'          => _("txt-organisation-type"),
+                    'label'          => _('txt-organisation-type'),
                     'object_manager' => $entityManager,
                     'target_class'   => Type::class,
                     'find_method'    => [
@@ -293,7 +303,7 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'    => EntitySelect::class,
                 'name'    => 'country',
                 'options' => [
-                    'label'          => _("txt-country"),
+                    'label'          => _('txt-country'),
                     'object_manager' => $entityManager,
                     'target_class'   => Country::class,
                     'find_method'    => [
@@ -312,11 +322,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'department',
                 'options'    => [
-                    'label' => _("txt-department"),
+                    'label' => _('txt-department'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-department"),
+                    'placeholder' => _('txt-give-your-department'),
                 ],
             ]
         );
@@ -325,11 +335,11 @@ class Profile extends Form implements InputFilterProviderInterface
                 'type'       => Text::class,
                 'name'       => 'position',
                 'options'    => [
-                    'label' => _("txt-position"),
+                    'label' => _('txt-position'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-position"),
+                    'placeholder' => _('txt-give-your-position'),
                 ],
             ]
         );
@@ -339,32 +349,32 @@ class Profile extends Form implements InputFilterProviderInterface
         $profileFieldSet = new Fieldset('profile');
         $profileFieldSet->add(
             [
-                'type' => 'Zend\Form\Element\Hidden',
+                'type' => Hidden::class,
                 'name' => 'id',
             ]
         );
         $profileFieldSet->add(
             [
-                'type'    => 'Zend\Form\Element\Radio',
+                'type'    => Radio::class,
                 'name'    => 'visible',
                 'options' => [
-                    'label'         => _("txt-profile-visibility-label"),
-                    'help-block'    => _("txt-profile-visibility-help-block"),
+                    'label'         => _('txt-profile-visibility-label'),
+                    'help-block'    => _('txt-profile-visibility-help-block'),
                     'value_options' => ProfileEntity::getVisibleTemplates(),
                 ],
             ]
         );
         $profileFieldSet->add(
             [
-                'type'       => 'Zend\Form\Element\Textarea',
+                'type'       => Textarea::class,
                 'name'       => 'description',
                 'options'    => [
-                    'label'      => _("txt-profile-expertise-label"),
-                    'help-block' => _("txt-profile-expertise-help-block"),
+                    'label'      => _('txt-profile-expertise-label'),
+                    'help-block' => _('txt-profile-expertise-help-block'),
                 ],
                 'attributes' => [
                     'class'       => 'form-control',
-                    'placeholder' => _("txt-give-your-expertise"),
+                    'placeholder' => _('txt-give-your-expertise'),
                 ],
             ]
         );
@@ -388,11 +398,11 @@ class Profile extends Form implements InputFilterProviderInterface
                                 'optIn' => 'ASC']
                         ]
                     ],
-                    'label_generator' => function (OptIn $optIn) {
-                        return \sprintf('%s (%s)', $optIn->getOptIn(), $optIn->getDescription());
+                    'label_generator' => static function (OptIn $optIn) {
+                        return sprintf('%s (%s)', $optIn->getOptIn(), $optIn->getDescription());
                     },
-                    'label'           => _("txt-select-your-opt-in-label"),
-                    'help-block'      => _("txt-select-your-opt-in-help-block"),
+                    'label'           => _('txt-select-your-opt-in-label'),
+                    'help-block'      => _('txt-select-your-opt-in-help-block'),
                 ],
 
 
@@ -401,24 +411,24 @@ class Profile extends Form implements InputFilterProviderInterface
 
         $this->add(
             [
-                'type'       => '\Zend\Form\Element\File',
+                'type'       => File::class,
                 'name'       => 'file',
                 'attributes' => [
-                    "class" => "form-control",
+                    'class' => 'form-control',
                 ],
                 'options'    => [
-                    "label"      => _("txt-photo-file"),
-                    "help-block" => _("txt-photo-requirements"),
+                    'label'      => _('txt-photo-file'),
+                    'help-block' => _('txt-photo-requirements'),
                 ],
             ]
         );
         $this->add(
             [
-                'type'       => '\Zend\Form\Element\MultiCheckbox',
+                'type'       => MultiCheckbox::class,
                 'name'       => 'removeFile',
                 'options'    => [
                     'value_options' => [
-                        'delete' => _("txt-check-to-remove-your-photo")
+                        'delete' => _('txt-check-to-remove-your-photo')
                     ],
                 ],
                 'attributes' => [
@@ -429,21 +439,21 @@ class Profile extends Form implements InputFilterProviderInterface
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
-                    'class' => "btn btn-primary",
-                    'value' => _("txt-update"),
+                    'class' => 'btn btn-primary',
+                    'value' => _('txt-update'),
                 ],
             ]
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'cancel',
                 'attributes' => [
-                    'class' => "btn btn-warning",
-                    'value' => _("txt-cancel"),
+                    'class' => 'btn btn-warning',
+                    'value' => _('txt-cancel'),
                 ],
             ]
         );

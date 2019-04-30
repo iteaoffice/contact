@@ -15,7 +15,6 @@ namespace Contact\Service;
 use Admin\Entity\Access;
 use Admin\Service\AdminService;
 use Affiliation\Entity\Affiliation;
-use function array_key_exists;
 use Calendar\Entity\Calendar;
 use Contact\Entity\AbstractEntity;
 use Contact\Entity\Address;
@@ -32,16 +31,12 @@ use Contact\Entity\Photo;
 use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
-use function count;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Event\Entity\Booth\Booth;
 use General\Entity\Country;
 use General\Service\GeneralService;
-use function implode;
-use function in_array;
 use InvalidArgumentException;
-use function is_array;
 use Organisation\Entity\Organisation;
 use Organisation\Service\OrganisationService;
 use Project\Entity\Project;
@@ -50,16 +45,21 @@ use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
 use Solarium\QueryType\Update\Query\Document\Document;
-use function str_replace;
-use function stream_get_contents;
-use function strip_tags;
-use function strtolower;
-use function trim;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
 use ZfcUser\Options\ModuleOptions;
+use function array_key_exists;
+use function count;
+use function implode;
+use function in_array;
+use function is_array;
+use function str_replace;
+use function stream_get_contents;
+use function strip_tags;
+use function strtolower;
+use function trim;
 
 /**
  * Class ContactService
@@ -611,10 +611,29 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $contactDocument->setField('funder_country_search', $contact->getFunder()->getCountry()->getCountry());
         }
 
-        $projects = !$contact->getProject()->isEmpty();
-        $contactDocument->setField('projects', $contact->getProject()->count());
-        $contactDocument->setField('has_projects', $projects > 0 ? 'Yes' : 'No');
-        $contactDocument->setField('has_projects_text', $projects > 0 ? 'Yes' : 'No');
+        $projects = [];
+        foreach ($contact->getProject() as $project) {
+            $projectId = $project->getId();
+            $projects[$projectId] = $projectId;
+        }
+        foreach ($contact->getAffiliation() as $affiliation) {
+            $projectId = $affiliation->getProject()->getId();
+            $projects[$projectId] = $projectId;
+        }
+        foreach ($contact->getWorkpackage() as $workpackage) {
+            $projectId = $workpackage->getProject()->getId();
+            $projects[$projectId] = $projectId;
+        }
+        foreach ($contact->getRationale() as $rationale) {
+            $projectId = $rationale->getProject()->getId();
+            $projects[$projectId] = $projectId;
+        }
+
+        $projectCount = count($projects);
+
+        $contactDocument->setField('projects', $projectCount);
+        $contactDocument->setField('has_projects', $projectCount > 0 ? 'Yes' : 'No');
+        $contactDocument->setField('has_projects_text', $projectCount > 0 ? 'Yes' : 'No');
 
         $update->addDocument($contactDocument);
         $update->addCommit();

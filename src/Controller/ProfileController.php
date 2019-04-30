@@ -13,11 +13,12 @@ declare(strict_types=1);
 namespace Contact\Controller;
 
 use Contact\Entity\Contact;
+use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
-use Contact\Form\Password;
 use Contact\Form\Profile;
-use Contact\InputFilter\PasswordFilter;
+use Contact\Form\ProfileBody;
 use Contact\Service\ContactService;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Event\Service\MeetingService;
 use General\Service\GeneralService;
@@ -29,6 +30,9 @@ use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Validator\File\ImageSize;
 use Zend\Validator\File\MimeType;
 use Zend\View\Model\ViewModel;
+use function array_merge_recursive;
+use function count;
+use function sprintf;
 
 /**
  * Class ProfileController
@@ -131,7 +135,7 @@ final class ProfileController extends ContactAbstractController
 
             $this->contactService->updateOptInForContact($this->identity(), $data['optIn'] ?? []);
 
-            $changelogMessage = \sprintf(
+            $changelogMessage = sprintf(
                 $this->translator->translate('txt-your-opt-in-settings-been-updated-successfully')
             );
 
@@ -300,7 +304,7 @@ final class ProfileController extends ContactAbstractController
                 }
 
                 //Activate the account
-                $contact->setDateActivated(new \DateTime());
+                $contact->setDateActivated(new DateTime());
 
                 $contact = $this->contactService->save($contact);
 
@@ -325,7 +329,7 @@ final class ProfileController extends ContactAbstractController
                 'branches'         => $branches,
                 'contactService'   => $this->contactService,
                 'contact'          => $contact,
-                'hasOrganisations' => \count($organisations) > 1, ///We need to exclude the none of the above :)
+                'hasOrganisations' => count($organisations) > 1, ///We need to exclude the none of the above :)
                 'fullVersion'      => true,
             ]
         );
@@ -347,7 +351,7 @@ final class ProfileController extends ContactAbstractController
             return $this->redirect()->toRoute('community/contact/profile/view');
         }
 
-        $contact->setDateActivated(new \DateTime());
+        $contact->setDateActivated(new DateTime());
         $this->contactService->save($contact);
 
         $this->flashMessenger()->addSuccessMessage(
@@ -373,7 +377,7 @@ final class ProfileController extends ContactAbstractController
             return $this->redirect()->toRoute('community/contact/profile/view');
         }
 
-        $contact->setDateActivated(new \DateTime());
+        $contact->setDateActivated(new DateTime());
         $this->contactService->save($contact);
 
         $this->flashMessenger()->addSuccessMessage(
@@ -383,21 +387,69 @@ final class ProfileController extends ContactAbstractController
         return $this->redirect()->toRoute('community/contact/profile/view');
     }
 
-    public function manageExternalAction()
+    public function manageHlgAction()
     {
-        $form = new Password();
-        $form->setInputFilter(new PasswordFilter());
+        $contact = $this->identity();
+        $contact->setDateActivated(new DateTime());
+        $this->contactService->save($contact);
+
+        $form = new ProfileBody($this->entityManager);
+        $form->getInputFilter()->get('password')->setRequired(false);
+        $form->getInputFilter()->get('passwordVerify')->setRequired(false);
+
+        $form->get('optIn')->setValue(
+            $contact->getOptIn()->map(
+                static function (OptIn $optIn) {
+                    return $optIn->getId();
+                }
+            )->toArray()
+        );
 
         $data = $this->getRequest()->getPost()->toArray();
 
         $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            $formData = $form->getData();
-            $this->contactService->updatePasswordForContact($formData['password'], $this->identity());
+            $this->contactService->updateOptInForContact($contact, $data['optIn'] ?? []);
 
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-password-successfully-been-updated")
+                $this->translator->translate('txt-newsletter-subscription-have-been-updated-successfully')
             );
+
+            return $this->redirect()->toRoute('community/contact/profile/manage-hlg');
+        }
+
+        return new ViewModel(['form' => $form]);
+    }
+
+    public function manageExternalAction()
+    {
+        $contact = $this->identity();
+        $contact->setDateActivated(new DateTime());
+        $this->contactService->save($contact);
+
+        $form = new ProfileBody($this->entityManager);
+        $form->getInputFilter()->get('password')->setRequired(false);
+        $form->getInputFilter()->get('passwordVerify')->setRequired(false);
+
+        $form->get('optIn')->setValue(
+            $contact->getOptIn()->map(
+                static function (OptIn $optIn) {
+                    return $optIn->getId();
+                }
+            )->toArray()
+        );
+
+        $data = $this->getRequest()->getPost()->toArray();
+
+        $form->setData($data);
+        if ($this->getRequest()->isPost() && $form->isValid()) {
+            $this->contactService->updateOptInForContact($contact, $data['optIn'] ?? []);
+
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate('txt-newsletter-subscription-have-been-updated-successfully')
+            );
+
+            return $this->redirect()->toRoute('community/contact/profile/manage-external');
         }
 
         return new ViewModel(['form' => $form]);
@@ -405,19 +457,36 @@ final class ProfileController extends ContactAbstractController
 
     public function manageBodyAction()
     {
-        $form = new Password();
-        $form->setInputFilter(new PasswordFilter());
+        $contact = $this->identity();
+        $contact->setDateActivated(new DateTime());
+        $this->contactService->save($contact);
+
+        $form = new ProfileBody($this->entityManager);
+
+        $form->get('optIn')->setValue(
+            $contact->getOptIn()->map(
+                static function (OptIn $optIn) {
+                    return $optIn->getId();
+                }
+            )->toArray()
+        );
 
         $data = $this->getRequest()->getPost()->toArray();
 
         $form->setData($data);
         if ($this->getRequest()->isPost() && $form->isValid()) {
-            $formData = $form->getData();
-            $this->contactService->updatePasswordForContact($formData['password'], $this->identity());
+            $this->contactService->updatePasswordForContact($data['password'], $contact);
 
             $this->flashMessenger()->addSuccessMessage(
-                $this->translator->translate("txt-password-successfully-been-updated")
+                $this->translator->translate('txt-password-successfully-been-updated')
             );
+
+            $this->contactService->updateOptInForContact($contact, $data['optIn'] ?? []);
+
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate('txt-newsletter-subscription-have-been-updated-successfully')
+            );
+
 
             return $this->redirect()->toRoute('community/contact/profile/view');
         }
@@ -438,7 +507,7 @@ final class ProfileController extends ContactAbstractController
             );
         }
 
-        $data = \array_merge_recursive(
+        $data = array_merge_recursive(
             $this->getRequest()->getPost()->toArray(),
             $this->getRequest()->getFiles()->toArray()
         );
@@ -520,7 +589,7 @@ final class ProfileController extends ContactAbstractController
                 'branches'         => $branches,
                 'contactService'   => $this->contactService,
                 'contact'          => $contact,
-                'hasOrganisations' => \count($organisations) > 1, ///We need to exclude the none of the above :)
+                'hasOrganisations' => count($organisations) > 1, ///We need to exclude the none of the above :)
                 'fullVersion'      => true,
             ]
         );

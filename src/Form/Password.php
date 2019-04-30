@@ -12,15 +12,10 @@ declare(strict_types=1);
 
 namespace Contact\Form;
 
-use Zend\Form\Element;
+use Zend\Form\Element\Submit;
 use Zend\Form\Form;
 
-/**
- * Class Password
- *
- * @package Contact\Form
- */
-class Password extends Form
+final class Password extends Form
 {
     public function __construct()
     {
@@ -31,8 +26,8 @@ class Password extends Form
             [
                 'name'       => 'password',
                 'options'    => [
-                    'label'      => _("txt-new-password"),
-                    'help-block' => _("txt-new-password-form-help"),
+                    'label'      => _('txt-new-password'),
+                    'help-block' => _('txt-new-password-form-help'),
                 ],
                 'attributes' => [
                     'type' => 'password',
@@ -43,27 +38,20 @@ class Password extends Form
             [
                 'name'       => 'passwordVerify',
                 'options'    => [
-                    'label' => _("txt-new-password-verify"),
+                    'label' => _('txt-new-password-verify'),
                 ],
                 'attributes' => [
                     'type' => 'password',
                 ],
             ]
         );
-        $submitElement = new Element\Button('submit');
-        $submitElement->setLabel(_("txt-submit"))->setAttributes(
-            [
-                'type' => 'submit',
-            ]
-        );
-
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
-                    'class' => "btn btn-primary",
-                    'value' => _("txt-submit"),
+                    'class' => 'btn btn-primary',
+                    'value' => _('txt-submit'),
                 ],
             ]
         );

@@ -29,6 +29,7 @@ use Contact\Search\Service\ContactSearchService;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Contact\Service\SelectionService;
+use DateTime;
 use Deeplink\Entity\Target;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,6 +55,13 @@ use Zend\Validator\File\ImageSize;
 use Zend\Validator\File\MimeType;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use function array_merge_recursive;
+use function http_build_query;
+use function implode;
+use function set_time_limit;
+use function sprintf;
+use function strlen;
+use function trim;
 
 /**
  * Class ContactManagerController.
@@ -185,12 +193,12 @@ class ContactAdminController extends ContactAbstractController
                 foreach ($data['facet'] as $facetField => $values) {
                     $quotedValues = [];
                     foreach ($values as $value) {
-                        $quotedValues[] = \sprintf('"%s"', $value);
+                        $quotedValues[] = sprintf('"%s"', $value);
                     }
 
                     $this->contactSearchService->addFilterQuery(
                         $facetField,
-                        \implode(' ' . SolariumQuery::QUERY_OPERATOR_OR . ' ', $quotedValues)
+                        implode(' ' . SolariumQuery::QUERY_OPERATOR_OR . ' ', $quotedValues)
                     );
                 }
             }
@@ -217,7 +225,7 @@ class ContactAdminController extends ContactAbstractController
                 'direction'      => $data['direction'],
                 'query'          => $data['query'],
                 'badges'         => $form->getBadges(),
-                'arguments'      => \http_build_query($form->getFilteredData()),
+                'arguments'      => http_build_query($form->getFilteredData()),
                 'paginator'      => $paginator,
                 'contactService' => $this->contactService
             ]
@@ -424,7 +432,7 @@ class ContactAdminController extends ContactAbstractController
             }
 
             if (isset($data['activate'])) {
-                $contact->setDateActivated(new \DateTime());
+                $contact->setDateActivated(new DateTime());
 
                 $this->contactService->save($contact);
 
@@ -454,7 +462,7 @@ class ContactAdminController extends ContactAbstractController
             }
 
             if (isset($data['anonymise'])) {
-                $contact->setDateAnonymous(new \DateTime());
+                $contact->setDateAnonymous(new DateTime());
                 $contact->setFirstName(null);
                 $contact->setMiddleName(null);
                 $contact->setLastName(null);
@@ -610,7 +618,7 @@ class ContactAdminController extends ContactAbstractController
 
             /** Deactivate a contact */
             if (isset($data['deactivate'])) {
-                $changelogMessage = \sprintf(
+                $changelogMessage = sprintf(
                     $this->translator->translate("txt-contact-%s-has-been-deleted"),
                     $contact->parseFullName()
                 );
@@ -618,7 +626,7 @@ class ContactAdminController extends ContactAbstractController
 
                 $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
 
-                $contact->setDateEnd(new \DateTime());
+                $contact->setDateEnd(new DateTime());
                 $this->contactService->save($contact);
 
                 return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
@@ -626,7 +634,7 @@ class ContactAdminController extends ContactAbstractController
 
             /** Reactivate a contact */
             if (isset($data['reactivate'])) {
-                $changelogMessage = \sprintf(
+                $changelogMessage = sprintf(
                     $this->translator->translate("txt-contact-%s-has-been-undeleted"),
                     $contact->parseFullName()
                 );
@@ -750,7 +758,7 @@ class ContactAdminController extends ContactAbstractController
             if ($form->isValid()) {
                 /** @var Contact $contact */
                 $contact = $form->getData();
-                $contact->setDateActivated(new \DateTime());
+                $contact->setDateActivated(new DateTime());
                 $contact = $this->contactService->save($contact);
 
                 if (isset($data['contact_entity_contact']['organisation'])) {
@@ -758,7 +766,7 @@ class ContactAdminController extends ContactAbstractController
                     $contactOrganisation->setContact($contact);
 
                     $contactOrganisation->setBranch(
-                        \strlen($data['contact_entity_contact']['branch']) === 0 ? null
+                        strlen($data['contact_entity_contact']['branch']) === 0 ? null
                             : $data['contact_entity_contact']['branch']
                     );
                     $contactOrganisation->setOrganisation(
@@ -783,11 +791,11 @@ class ContactAdminController extends ContactAbstractController
 
     public function importAction(): ViewModel
     {
-        \set_time_limit(0);
+        set_time_limit(0);
 
         /** @var Request $request */
         $request = $this->getRequest();
-        $data = \array_merge_recursive(
+        $data = array_merge_recursive(
             $request->getPost()->toArray(),
             $request->getFiles()->toArray()
         );
@@ -834,14 +842,14 @@ class ContactAdminController extends ContactAbstractController
     {
         /** @var Request $request */
         $request = $this->getRequest();
-        $search = $request->getPost()->get('search');
+        $search = $request->getPost()->get('q');
 
         $results = [];
         foreach ($this->contactService->searchContacts($search) as $result) {
-            $text = \trim(
-                \sprintf(
+            $text = trim(
+                sprintf(
                     '%s, %s (%s)',
-                    \trim(\sprintf('%s %s', $result['middleName'], $result['lastName'])),
+                    trim(sprintf('%s %s', $result['middleName'], $result['lastName'])),
                     $result['firstName'],
                     $result['email']
                 )
@@ -855,9 +863,9 @@ class ContactAdminController extends ContactAbstractController
             $results[] = [
                 'value'        => $result['id'],
                 'text'         => $text,
-                'name'         => \sprintf(
+                'name'         => sprintf(
                     '%s, %s',
-                    \trim(\sprintf('%s %s', $result['middleName'], $result['lastName'])),
+                    trim(sprintf('%s %s', $result['middleName'], $result['lastName'])),
                     $result['firstName']
                 ),
                 'id'           => $result['id'],
@@ -865,7 +873,7 @@ class ContactAdminController extends ContactAbstractController
                 'organisation' => $result['organisation'],
             ];
         }
-        https://dev1.itea4.org/admin/contact/merge/20388/into/32540.html
+
         return new JsonModel($results);
     }
 
@@ -913,7 +921,7 @@ class ContactAdminController extends ContactAbstractController
                 } else {
                     $tab = 'merge';
                     $this->flashMessenger()->addErrorMessage(
-                        \sprintf($this->translator->translate('txt-contact-merge-failed-%s'), $result['errorMessage'])
+                        sprintf($this->translator->translate('txt-contact-merge-failed-%s'), $result['errorMessage'])
                     );
                 }
 
@@ -981,7 +989,7 @@ class ContactAdminController extends ContactAbstractController
                 $this->affiliationService->save($affiliation);
 
                 $this->flashMessenger()->addSuccessMessage(
-                    \sprintf(
+                    sprintf(
                         $this->translator->translate('txt-contact-successfully-added-to-%s'),
                         $affiliation->getProject()->parseFullName()
                     )
