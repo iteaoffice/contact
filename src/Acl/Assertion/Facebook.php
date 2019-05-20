@@ -18,31 +18,14 @@ use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\Permissions\Acl\Role\RoleInterface;
 
-class Facebook extends AssertionAbstract
+final class Facebook extends AbstractAssertion
 {
-    /**
-     * Returns true if and only if the assertion conditions are met.
-     *
-     * This method is passed the ACL, Role, Resource, and privilege to which the authorization query applies. If the
-     * $role, $resource, or $privilege parameters are null, it means that the query applies to all Roles, Resources, or
-     * privileges, respectively.
-     *
-     * @param Acl               $acl
-     * @param RoleInterface     $role
-     * @param ResourceInterface $facebook
-     * @param string            $privilege
-     *
-     * @return bool
-     */
     public function assert(
         Acl $acl,
         RoleInterface $role = null,
         ResourceInterface $facebook = null,
         $privilege = null
     ): bool {
-        /*
-         * A meeting can be shown when we have a contact
-         */
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {
             return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }
@@ -52,12 +35,12 @@ class Facebook extends AssertionAbstract
 
         if (!$facebook instanceof FacebookEntity && null !== $id) {
             /** @var FacebookEntity $facebook */
-            $facebook = $this->getContactService()->find(FacebookEntity::class, $id);
+            $facebook = $this->contactService->find(FacebookEntity::class, $id);
         }
 
         if (!$facebook instanceof FacebookEntity && $facebook = $this->getRouteMatch()->getParam('facebook')) {
             /** @var FacebookEntity $facebook */
-            $facebook = $this->getContactService()->find(FacebookEntity::class, (int)$facebook);
+            $facebook = $this->contactService->find(FacebookEntity::class, (int)$facebook);
         }
 
         switch ($this->getPrivilege()) {
@@ -70,7 +53,7 @@ class Facebook extends AssertionAbstract
                 return $this->rolesHaveAccess($facebook->getAccess()->toArray());
             case 'send-message':
                 return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
-                    && $this->getContactService()->isContactInFacebook($this->getContact(), $facebook);
+                    && $this->contactService->isContactInFacebook($this->contact, $facebook);
             default:
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
         }

@@ -5,15 +5,13 @@
 
 
 {% do form.prepare() %}
-{% do form.setAttribute('class','form-horizontal') %}
-
 {{ form().openTag(form)|raw }}
 
 <div class="form-group row">
     <label class="col-sm-3 col-form-label">{{ translate("txt-selection") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static form-control-plaintext">{{ selectionLink(selection, 'view', 'name') }} {{ selectionLink(selection, 'edit', 'icon') }}</p>
+        <p class="form-control-plaintext">{{ selectionLink(selection, 'view', 'name') }} {{ selectionLink(selection, 'edit', 'icon') }}</p>
     </div>
 </div>
 
@@ -312,13 +310,12 @@
 
 
     function getContacts(q) {
-
         $.ajax({
             method: 'post',
             url: '{{ url('zfcadmin/contact-admin/search') }}',
             dataType: 'json',
             data: {
-                search: q
+                q: q
             },
             success: function (result, status) {
                 Contacts.items.length = 0;

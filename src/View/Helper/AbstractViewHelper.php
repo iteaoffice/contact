@@ -19,7 +19,6 @@ namespace Contact\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Zend\Router\Http\RouteMatch;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\HelperPluginManager;
 use ZfcTwig\View\TwigRenderer;
@@ -44,12 +43,6 @@ abstract class AbstractViewHelper extends AbstractHelper
      */
     protected $routeMatch = null;
 
-    /**
-     * RouteInterface match returned by the router.
-     * Use a test on is_null to have the possibility to overrule the serviceLocator lookup for unit tets reasons.
-     *
-     * @return RouteMatch.
-     */
     public function getRouteMatch(): ?RouteMatch
     {
         if (null === $this->routeMatch) {

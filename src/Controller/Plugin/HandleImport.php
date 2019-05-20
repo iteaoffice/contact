@@ -33,6 +33,13 @@ use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Validator\EmailAddress;
+use function array_map;
+use function count;
+use function explode;
+use function in_array;
+use function is_array;
+use function str_replace;
+use function strpos;
 
 /**
  * Class HandleImport
@@ -149,7 +156,7 @@ final class HandleImport extends AbstractPlugin
         if (!$this->hasErrors()) {
             $this->prepareContent();
 
-            if (\is_array($import) && \count($import) > 0) {
+            if (is_array($import) && count($import) > 0) {
                 $this->importContacts($import);
             }
         }
@@ -159,40 +166,38 @@ final class HandleImport extends AbstractPlugin
 
     private function setData(string $sourceData): void
     {
-        $sourceData = utf8_encode($sourceData);
-
         //Explode first on the \n to have the different rows
-        $data = \explode(PHP_EOL, $sourceData);
+        $data = explode(PHP_EOL, $sourceData);
 
         /*
          * Correct first the delimiter, normally a ; but it can be a ;
          */
-        if (\strpos($data[0], ';') !== false) {
+        if (strpos($data[0], ';') !== false) {
             $this->delimiter = "\t";
         }
 
-        $this->header = \explode($this->delimiter, $data[0]);
+        $this->header = explode($this->delimiter, $data[0]);
 
         //Trim all the elements
-        $this->header = \array_map('trim', $this->header);
+        $this->header = array_map('trim', $this->header);
         /*
          * Go over the rest of the data and add the rows to the array
          */
         $amount = count($data);
         for ($i = 1; $i < $amount; $i++) {
-            $row = \explode($this->delimiter, $data[$i]);
+            $row = explode($this->delimiter, $data[$i]);
 
-            if (\count($row) === count($this->header)) {
+            if (count($row) === count($this->header)) {
                 //Trim all the elements
-                $row = \array_map('trim', $row);
+                $row = array_map('trim', $row);
 
                 $this->content[] = $row;
             } else {
                 $this->warnings[] = sprintf(
                     'Row %s has been skipped, does not contain %s elements but %s',
                     $i + 1,
-                    \count($this->header),
-                    \count($row)
+                    count($this->header),
+                    count($row)
                 );
             }
         }
@@ -206,8 +211,8 @@ final class HandleImport extends AbstractPlugin
          * Go over all elements and check if the required elements are present
          */
         foreach ($minimalRequiredElements as $element) {
-            if (!\in_array(strtolower($element), $this->header, true)) {
-                $this->errors[] = sprintf("Element %s is missing in the file", $element);
+            if (!in_array(strtolower($element), $this->header, true)) {
+                $this->errors[] = sprintf('Element %s is missing in the file', $element);
             }
         }
 
@@ -221,9 +226,6 @@ final class HandleImport extends AbstractPlugin
          */
         $counter = 2;
         foreach ($this->content as $content) {
-            /**
-             * Validate the email addresses
-             */
             $validate = new EmailAddress();
             if (!$validate->isValid($content[$this->headerKeys['email']])) {
                 $this->errors[] = sprintf(
@@ -233,9 +235,6 @@ final class HandleImport extends AbstractPlugin
                 );
             }
 
-            /**
-             * Validate the organisation_id
-             */
             if (!empty($this->headerKeys['organisation_id'])) {
                 $organisation = $this->organisationService->findOrganisationById(
                     (int)$this->headerKeys['organisation_id']
@@ -249,9 +248,6 @@ final class HandleImport extends AbstractPlugin
                 }
             }
 
-            /**
-             * Validate the country
-             */
             if (!empty($this->headerKeys['country'])) {
                 $country = $this->countryService->findCountryByName($content[$this->headerKeys['country']]);
                 if (null === $country) {
@@ -300,7 +296,7 @@ final class HandleImport extends AbstractPlugin
 
     public function hasErrors(): bool
     {
-        return \count($this->errors) > 0;
+        return count($this->errors) > 0;
     }
 
     private function prepareContent(): void
@@ -439,7 +435,7 @@ final class HandleImport extends AbstractPlugin
 
                 if (isset($this->headerKeys['website']) && null !== $content[$this->headerKeys['website']]) {
                     //Strip the http:// and https://
-                    $website = \str_replace(['http://', 'https://'], '', $content[$this->headerKeys['website']]);
+                    $website = str_replace(['http://', 'https://'], '', $content[$this->headerKeys['website']]);
 
                     $organisationWebsite = new Web();
                     $organisationWebsite->setMain(Web::MAIN);
@@ -470,7 +466,7 @@ final class HandleImport extends AbstractPlugin
     private function importContacts(array $import = []): void
     {
         foreach ($this->contacts as $key => $contact) {
-            if (\in_array($key, $import, false)) {
+            if (in_array($key, $import, false)) {
                 if (null === $contact->getId()) {
                     $contact = $this->contactService->save($contact);
                 }
@@ -496,9 +492,13 @@ final class HandleImport extends AbstractPlugin
 
     public function hasWarnings(): bool
     {
-        return \count($this->warnings) > 0;
+        return count($this->warnings) > 0;
     }
 
+    public function getWarnings(): array
+    {
+        return $this->warnings;
+    }
 
     public function getImportedContacts(): array
     {

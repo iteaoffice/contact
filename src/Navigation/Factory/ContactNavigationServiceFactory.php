@@ -15,6 +15,7 @@ namespace Contact\Navigation\Factory;
 use Contact\Navigation\Service\ContactNavigationService;
 use Contact\Service\ContactService;
 use Interop\Container\ContainerInterface;
+use Zend\Authentication\AuthenticationService;
 use Zend\Navigation\Navigation;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
@@ -32,18 +33,15 @@ final class ContactNavigationServiceFactory implements FactoryInterface
     ): ContactNavigationService {
         $contactNavigationService = new ContactNavigationService();
 
-        /**
-         * @var $contactService ContactService
-         */
         $contactService = $container->get(ContactService::class);
         $contactNavigationService->setContactService($contactService);
         $application = $container->get('application');
         $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());
         $contactNavigationService->setRouter($application->getMvcEvent()->getRouter());
 
-        if ($container->get('Application\Authentication\Service')->hasIdentity()) {
+        if ($container->get(AuthenticationService::class)->hasIdentity()) {
             $contactNavigationService->setContact(
-                $container->get('Application\Authentication\Service')
+                $container->get(AuthenticationService::class)
                     ->getIdentity()
             );
         }

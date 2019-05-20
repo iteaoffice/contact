@@ -3,7 +3,6 @@
 <p>{{ translate("txt-create-your-account-explanation") }}</p>
 
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
 {{ ztbformelement(form.get('gender')) }}
@@ -16,7 +15,7 @@
     <label class="col-sm-3 col-form-label">{{ translate("txt-email-address") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static form-control-plaintext">{{ contact.email }}</p>
+        <p class="form-control-plaintext">{{ contact.email }}</p>
     </div>
 </div>
 
@@ -90,7 +89,7 @@
         <label class="col-sm-3 col-form-label">{{ translate("txt-current-photo") }}</label>
 
         <div class="col-sm-9">
-            <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
+            <p class="form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
         </div>
     </div>
 

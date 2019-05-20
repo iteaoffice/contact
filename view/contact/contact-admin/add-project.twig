@@ -2,7 +2,6 @@
 {% do headTitle().append(translate("txt-add-%s-to-a-project")|format(contact.displayName)) %}
 
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
 {% if affiliations is null %}

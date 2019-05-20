@@ -3,14 +3,13 @@
 <h1>{{ translate("txt-send-message-to-contacts-in-%s")|format(facebook) }}</h1>
 
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
 <div class="form-group row">
     <label class="col-sm-3 col-form-label">{{ translate("txt-name") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static form-control-plaintext">{{ facebook }}</p>
+        <p class="form-control-plaintext">{{ facebook }}</p>
     </div>
 </div>
 
@@ -19,7 +18,7 @@
     <label class="col-sm-3 col-form-label">{{ translate("txt-recipients") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static form-control-plaintext">
+        <p class="form-control-plaintext">
             {% for contact in contacts %}
                 {{ contact['contact'].displayName }}{% if not loop.last %}, {% endif %}
             {% endfor %}

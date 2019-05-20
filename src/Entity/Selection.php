@@ -12,21 +12,22 @@ declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use Admin\Entity\Access;
+use DateTime;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
+use Event\Entity\Meeting\Meeting;
+use Event\Entity\Meeting\OptionCost;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Mailing\Entity\Mailing;
 use Zend\Form\Annotation;
 
 /**
- * Entity for the Selection.
- *
  * @ORM\Table(name="selection")
  * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
  * @Gedmo\SoftDeleteable(fieldName="dateDeleted")
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_selection")
- *
- * @category    Contact
  */
 class Selection extends AbstractEntity
 {
@@ -77,14 +78,14 @@ class Selection extends AbstractEntity
      * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateCreated;
     /**
      * @ORM\Column(name="date_deleted", type="datetime", nullable=true)
      * @Annotation\Exclude()
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateDeleted;
     /**
@@ -132,35 +133,35 @@ class Selection extends AbstractEntity
      * @ORM\ManyToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
+     * @var Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\OptionCost", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Event\Entity\Meeting\OptionCost[]|Collections\ArrayCollection
+     * @var OptionCost[]|Collections\ArrayCollection
      */
     private $meetingOptionCost;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Meeting", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Event\Entity\Meeting\Meeting[]|Collections\ArrayCollection
+     * @var Meeting[]|Collections\ArrayCollection
      */
     private $meeting;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Cost", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Event\Entity\Meeting\OptionCost[]|Collections\ArrayCollection
+     * @var OptionCost[]|Collections\ArrayCollection
      */
     private $meetingCost;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude();
      *
-     * @var \Admin\Entity\Access[]|Collections\ArrayCollection
+     * @var Access[]|Collections\ArrayCollection
      */
     private $access;
 
@@ -211,133 +212,77 @@ class Selection extends AbstractEntity
         return null === $this->dateDeleted;
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return Selection
-     */
     public function setId(int $id): Selection
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSelection()
+    public function getSelection(): ?string
     {
         return $this->selection;
     }
 
-    /**
-     * @param string $selection
-     *
-     * @return Selection
-     */
     public function setSelection(string $selection): Selection
     {
         $this->selection = $selection;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTag()
     {
         return $this->tag;
     }
 
-    /**
-     * @param string $tag
-     *
-     * @return Selection
-     */
     public function setTag(?string $tag): Selection
     {
         $this->tag = $tag;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
+    public function getDateCreated(): ?DateTime
     {
         return $this->dateCreated;
     }
 
-    /**
-     * @param \DateTime $dateCreated
-     *
-     * @return Selection
-     */
-    public function setDateCreated(\DateTime $dateCreated): Selection
+    public function setDateCreated(DateTime $dateCreated): Selection
     {
         $this->dateCreated = $dateCreated;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateDeleted()
+    public function getDateDeleted(): ?DateTime
     {
         return $this->dateDeleted;
     }
 
-    /**
-     * @param \DateTime $dateDeleted
-     *
-     * @return Selection
-     */
-    public function setDateDeleted(\DateTime $dateDeleted): Selection
+    public function setDateDeleted(DateTime $dateDeleted): Selection
     {
         $this->dateDeleted = $dateDeleted;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNote()
+    public function getNote(): ?string
     {
         return $this->note;
     }
 
-    /**
-     * @param string $note
-     *
-     * @return Selection
-     */
     public function setNote(string $note): Selection
     {
         $this->note = $note;
         return $this;
     }
 
-    /**
-     * @return Contact
-     */
-    public function getContact()
+    public function getContact(): ?Contact
     {
         return $this->contact;
     }
 
-    /**
-     * @param Contact $contact
-     *
-     * @return Selection
-     */
     public function setContact(Contact $contact): Selection
     {
         $this->contact = $contact;
@@ -352,145 +297,85 @@ class Selection extends AbstractEntity
         return $this->core;
     }
 
-    /**
-     * @param int $core
-     *
-     * @return Selection
-     */
     public function setCore(int $core): Selection
     {
         $this->core = $core;
         return $this;
     }
 
-    /**
-     * @return SelectionContact[]|Collections\ArrayCollection
-     */
     public function getSelectionContact()
     {
         return $this->selectionContact;
     }
 
-    /**
-     * @param SelectionContact[]|Collections\ArrayCollection $selectionContact
-     *
-     * @return Selection
-     */
     public function setSelectionContact($selectionContact)
     {
         $this->selectionContact = $selectionContact;
         return $this;
     }
 
-    /**
-     * @return SelectionSql
-     */
-    public function getSql()
+    public function getSql(): ?SelectionSql
     {
         return $this->sql;
     }
 
-    /**
-     * @param SelectionSql $sql
-     *
-     * @return Selection
-     */
     public function setSql(SelectionSql $sql): Selection
     {
         $this->sql = $sql;
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Mailing\Entity\Mailing[]
-     */
     public function getMailing()
     {
         return $this->mailing;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Mailing\Entity\Mailing[] $mailing
-     *
-     * @return Selection
-     */
-    public function setMailing($mailing)
+    public function setMailing($mailing): Selection
     {
         $this->mailing = $mailing;
+
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
-     */
     public function getMeetingOptionCost()
     {
         return $this->meetingOptionCost;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingOptionCost
-     *
-     * @return Selection
-     */
-    public function setMeetingOptionCost($meetingOptionCost)
+    public function setMeetingOptionCost($meetingOptionCost): Selection
     {
         $this->meetingOptionCost = $meetingOptionCost;
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Meeting\Meeting[]
-     */
     public function getMeeting()
     {
         return $this->meeting;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Event\Entity\Meeting\Meeting[] $meeting
-     *
-     * @return Selection
-     */
-    public function setMeeting($meeting)
+    public function setMeeting($meeting): Selection
     {
         $this->meeting = $meeting;
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
-     */
     public function getMeetingCost()
     {
         return $this->meetingCost;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingCost
-     *
-     * @return Selection
-     */
-    public function setMeetingCost($meetingCost)
+    public function setMeetingCost($meetingCost): Selection
     {
         $this->meetingCost = $meetingCost;
         return $this;
     }
 
-    /**
-     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
-     */
     public function getAccess()
     {
         return $this->access;
     }
 
-    /**
-     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
-     *
-     * @return Selection
-     */
-    public function setAccess($access)
+    public function setAccess($access): Selection
     {
         $this->access = $access;
         return $this;

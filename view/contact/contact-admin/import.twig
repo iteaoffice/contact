@@ -4,7 +4,6 @@
 <h1>{{ translate("txt-import-contacts") }}</h1>
 
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
  {{ ztbformelement(form.get('selection_id')) }}

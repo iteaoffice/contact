@@ -17,7 +17,7 @@ use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Zend\Permissions\Acl\Role\RoleInterface;
 
-class Contact extends AssertionAbstract
+final class Contact extends AbstractAssertion
 {
     public function assert(
         Acl $acl,

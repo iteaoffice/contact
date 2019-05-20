@@ -4,7 +4,6 @@
 {{ form().closeTag()|raw }}
 
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
 <h1>{{ translate("txt-contact-list") }} {{ contactLink(null,'new', 'button') }}  {{ contactLink(null,'list-old', 'button') }} {{ contactLink(null,'import', 'button') }}</h1>

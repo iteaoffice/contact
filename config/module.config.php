@@ -19,7 +19,12 @@ use Contact\Provider;
 use Contact\Search;
 use Contact\Service;
 use Contact\View;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\DriverChain;
 use DoctrineExtensions\Query\Mysql\Replace;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\Timestampable\TimestampableListener;
 use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Zend\Stdlib;
 
@@ -115,12 +120,12 @@ $config = [
             InputFilter\SelectionFilter::class                      => Factory\InputFilterFactory::class,
             Search\Service\ContactSearchService::class              => ConfigAbstractFactory::class,
             Search\Service\ProfileSearchService::class              => ConfigAbstractFactory::class,
-            Acl\Assertion\Address::class                            => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Contact::class                            => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Facebook::class                           => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Note::class                               => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Phone::class                              => Acl\Factory\AssertionFactory::class,
-            Acl\Assertion\Selection::class                          => Acl\Factory\AssertionFactory::class,
+            Acl\Assertion\Address::class                            => Factory\InvokableFactory::class,
+            Acl\Assertion\Contact::class                            => Factory\InvokableFactory::class,
+            Acl\Assertion\Facebook::class                           => Factory\InvokableFactory::class,
+            Acl\Assertion\Note::class                               => Factory\InvokableFactory::class,
+            Acl\Assertion\Phone::class                              => Factory\InvokableFactory::class,
+            Acl\Assertion\Selection::class                          => Factory\InvokableFactory::class,
         ],
         'shared'    => [
             Service\ContactService::class => false,
@@ -129,13 +134,13 @@ $config = [
     'doctrine'           => [
         'driver'        => [
             'contact_annotation_driver' => [
-                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'class' => AnnotationDriver::class,
                 'paths' => [
                     __DIR__ . '/../src/Entity/',
                 ],
             ],
             'orm_default'               => [
-                'class'   => 'Doctrine\ORM\Mapping\Driver\DriverChain',
+                'class'   => DriverChain::class,
                 'drivers' => [
                     __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
                 ],
@@ -144,9 +149,9 @@ $config = [
         'eventmanager'  => [
             'orm_default' => [
                 'subscribers' => [
-                    'Gedmo\Timestampable\TimestampableListener',
-                    'Gedmo\Sluggable\SluggableListener',
-                    'Gedmo\SoftDeleteable\SoftDeleteableListener',
+                    TimestampableListener::class,
+                    SluggableListener::class,
+                    SoftDeleteableListener::class,
                 ],
             ],
         ],

@@ -1,11 +1,11 @@
 <?php
 /**
- * ITEA copyright message placeholder
+ * Jield BV all rights reserved
  *
- * @category    ProjectTest
- * @package     Entity
- * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @author      Dr. ir. Johan van der Heide <info@jield.nl>
+ * @copyright   Copyright (c) 2004-2017 Jield BV (https://jield.nl)
+ * @license     https://jield.net/license.txt proprietary
+ * @link        https://jield.net
  */
 
 declare(strict_types=1);
@@ -17,6 +17,7 @@ use Testing\Util\AbstractServiceTest;
 use Zend\Mvc\Application;
 use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Zend\View\HelperPluginManager;
+use function is_string;
 
 /**
  * Class ModuleTest
@@ -30,7 +31,6 @@ class ModuleTest extends AbstractServiceTest
         $module = new Module();
         $config = $module->getConfig();
 
-        $this->assertInternalType('array', $config);
         $this->assertArrayHasKey('service_manager', $config);
         $this->assertArrayHasKey(ConfigAbstractFactory::class, $config);
     }
@@ -43,27 +43,37 @@ class ModuleTest extends AbstractServiceTest
         $abstractFacories = $config[ConfigAbstractFactory::class] ?? [];
 
         foreach ($abstractFacories as $service => $dependencies) {
+            //Skip the Filters
+            if (strpos($service, 'Filter') !== false) {
+                continue;
+            }
+            if (strpos($service, 'Handler') !== false) {
+                continue;
+            }
 
             $instantiatedDependencies = [];
             foreach ($dependencies as $dependency) {
-
                 if ($dependency === 'Application') {
-                    $dependency = $this->getMockBuilder(Application::class)->disableOriginalConstructor()->getMock();
+                    $dependency = Application::class;
                 }
                 if ($dependency === 'Config') {
                     $dependency = [];
                 }
                 if ($dependency === 'ViewHelperManager') {
-                    $dependency = $this->getMockBuilder(HelperPluginManager::class)->disableOriginalConstructor()
-                        ->getMock();
+                    $dependency = HelperPluginManager::class;
                 }
-                $instantiatedDependencies[] = $dependency;
+
+                if (is_string($dependency)) {
+                    $instantiatedDependencies[] = $this->getMockBuilder($dependency)->disableOriginalConstructor()
+                        ->getMock();
+                } else {
+                    $instantiatedDependencies[] = [];
+                }
             }
 
             $instance = new $service(...$instantiatedDependencies);
 
             $this->assertInstanceOf($service, $instance);
         }
-
     }
 }

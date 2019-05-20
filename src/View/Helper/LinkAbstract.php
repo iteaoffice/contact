@@ -35,7 +35,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     /**
      * @var HelperPluginManager
      */
-    protected $serviceLocator;
+    protected $container;
     /**
      * @var RouteMatch
      */
