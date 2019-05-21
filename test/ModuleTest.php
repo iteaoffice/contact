@@ -17,6 +17,7 @@ use Testing\Util\AbstractServiceTest;
 use Zend\Mvc\Application;
 use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Zend\View\HelperPluginManager;
+use ZfcUser\Options\ModuleOptions;
 use function is_string;
 
 /**
@@ -50,6 +51,9 @@ class ModuleTest extends AbstractServiceTest
             if (strpos($service, 'Handler') !== false) {
                 continue;
             }
+            if (strpos($service, 'FormElement') !== false) {
+                continue;
+            }
 
             $instantiatedDependencies = [];
             foreach ($dependencies as $dependency) {
@@ -62,7 +66,9 @@ class ModuleTest extends AbstractServiceTest
                 if ($dependency === 'ViewHelperManager') {
                     $dependency = HelperPluginManager::class;
                 }
-
+                if ($dependency === 'zfcuser_module_options') {
+                    $dependency = ModuleOptions::class;
+                }
                 if (is_string($dependency)) {
                     $instantiatedDependencies[] = $this->getMockBuilder($dependency)->disableOriginalConstructor()
                         ->getMock();

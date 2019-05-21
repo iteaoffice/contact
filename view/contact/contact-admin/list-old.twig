@@ -46,7 +46,7 @@
                 </tfoot>
                 <tbody>
                 {% for contact in paginator.getCurrentItems() %}
-                    <tr {% if contact.dateEnd %}class="danger"{% endif %}>
+                    <tr {% if contact.dateEnd %}class="table-danger"{% endif %}>
                         <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
                         <td><a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
                                         class="fa fa-envelope-o"></i> </a></td>

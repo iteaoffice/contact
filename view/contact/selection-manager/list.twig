@@ -45,7 +45,7 @@
                 </tfoot>
                 <tbody>
                 {% for selection in paginator.getCurrentItems() %}
-                    <tr {% if selection.dateDeleted %}class="danger"{% endif %}>
+                    <tr {% if selection.dateDeleted %}class="table-danger"{% endif %}>
                         <td>
                             {% if selection.dateDeleted %}
                                 <i class="fa fa-trash" title="{{ selection.dateDeleted|string_date }}"></i>

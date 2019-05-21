@@ -36,6 +36,8 @@ use Contact\Entity\Photo;
 use Contact\Entity\Profile;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionContact;
+use function count;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
@@ -64,6 +66,7 @@ use Program\Entity\Funder;
 use Program\Entity\Nda;
 use Project\Entity\Achievement;
 use Project\Entity\Booth;
+use Project\Entity\Changelog;
 use Project\Entity\ChangeRequest\CostChange;
 use Project\Entity\ChangeRequest\Country;
 use Project\Entity\ChangeRequest\Process;
@@ -130,7 +133,7 @@ final class MergeContactTest extends AbstractServiceTest
      * @covers \Contact\Controller\Plugin\MergeContact::__invoke
      * @covers \Contact\Controller\Plugin\MergeContact::__construct
      */
-    public function testInvoke()
+    public function testInvoke(): void
     {
         $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
         $instance = $mergeContact();
@@ -142,7 +145,7 @@ final class MergeContactTest extends AbstractServiceTest
      *
      * @covers \Contact\Controller\Plugin\MergeContact::checkMerge
      */
-    public function testCheckMerge()
+    public function testCheckMerge(): void
     {
         $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
 
@@ -157,7 +160,7 @@ final class MergeContactTest extends AbstractServiceTest
      *
      * @covers \Contact\Controller\Plugin\MergeContact::checkMerge
      */
-    public function testCheckMergeFail()
+    public function testCheckMergeFail(): void
     {
         $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
 
@@ -172,7 +175,7 @@ final class MergeContactTest extends AbstractServiceTest
      *
      * @covers \Contact\Controller\Plugin\MergeContact::merge
      */
-    public function testMerge()
+    public function testMerge(): void
     {
         /** @var DispatchableInterface $controllerMock */
         $controllerMock = $this->setUpControllerMock();
@@ -320,9 +323,6 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getDeeplinkContact()->first()->getId());
 
         $this->assertSame(1, $this->target->getProfile()->getId());
-
-        $this->assertSame(1, $this->target->getCommunity()->count());
-        $this->assertSame(1, $this->target->getCommunity()->first()->getId());
 
         $this->assertSame(1, $this->target->getRegistration()->count());
         $this->assertSame(1, $this->target->getRegistration()->first()->getId());
@@ -583,9 +583,9 @@ final class MergeContactTest extends AbstractServiceTest
         $source->setTitle($title);
         $source->setPosition('Tester');
         $source->setDepartment('Test department');
-        $source->setDateOfBirth(new \DateTime('1970-01-01'));
-        $source->setDateCreated(new \DateTime('2015-01-01'));
-        $source->setLastUpdate(new \DateTime());
+        $source->setDateOfBirth(new DateTime('1970-01-01'));
+        $source->setDateCreated(new DateTime('2015-01-01'));
+        $source->setLastUpdate(new DateTime());
 
         $cv = new Cv();
         $cv->setId(1);
@@ -800,11 +800,6 @@ final class MergeContactTest extends AbstractServiceTest
         $profile->setId(1);
         $profile->setContact($source);
         $source->setProfile($profile);
-
-        $community = new Community();
-        $community->setId(1);
-        $community->setContact($source);
-        $source->setCommunity(new ArrayCollection([$community]));
 
         $registration = new Registration();
         $registration->setId(1);
@@ -1090,7 +1085,7 @@ final class MergeContactTest extends AbstractServiceTest
         $projectLog->setContact($source);
         $source->setProjectlog(new ArrayCollection([$projectLog]));
 
-        $projectChangeLog = new \Project\Entity\Changelog();
+        $projectChangeLog = new Changelog();
         $projectChangeLog->setId(1);
         $projectChangeLog->setContact($source);
         $source->setProjectChangelog(new ArrayCollection([$projectChangeLog]));
@@ -1145,8 +1140,8 @@ final class MergeContactTest extends AbstractServiceTest
     {
         $target = new Contact();
         $target->setId(2);
-        $target->setDateCreated(new \DateTime('2017-01-01'));
-        $target->setLastUpdate(new \DateTime('2017-01-01'));
+        $target->setDateCreated(new DateTime('2017-01-01'));
+        $target->setLastUpdate(new DateTime('2017-01-01'));
 
         $emailAddress = new Email();
         $emailAddress->setId(2);
@@ -1252,7 +1247,7 @@ final class MergeContactTest extends AbstractServiceTest
 
         $controllerMock->expects($this->once())
             ->method('identity')
-            ->will($this->returnValue($contact));
+            ->willReturn($contact);
 
         return $controllerMock;
     }
@@ -1286,9 +1281,9 @@ final class MergeContactTest extends AbstractServiceTest
             [$this->isInstanceOf(Note::class)],
         ];
 
-        $entityManagerMock->expects($this->exactly(\count($params)))->method('persist')->withConsecutive(...$params);
+        $entityManagerMock->expects($this->exactly(count($params)))->method('persist')->withConsecutive(...$params);
         $entityManagerMock->expects($this->once())->method('remove')->with($this->source);
-        $entityManagerMock->expects($this->exactly(2))->method('flush');
+        $entityManagerMock->expects($this->exactly(3))->method('flush');
 
         return $entityManagerMock;
     }

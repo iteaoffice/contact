@@ -47,7 +47,7 @@
     </thead>
     <tbody>
     {% for mailingContact in contact.mailingContact %}
-        <tr {% if mailingContact.mailing.dateDeleted %}class="danger"{% endif %}>
+        <tr {% if mailingContact.mailing.dateDeleted %}class="table-danger"{% endif %}>
             <td>{{ loop.index }}</td>
             <td>{{ mailingContact.mailing.id }}
                 {% if mailingContact.mailing.dateDeleted %}

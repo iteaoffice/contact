@@ -45,7 +45,7 @@
                 </tfoot>
                 <tbody>
                 {% for optIn in paginator.getCurrentItems() %}
-                    <tr {% if optIn.isActive %}class="success"{% endif %}>
+                    <tr {% if optIn.isActive %}class="table-success"{% endif %}>
                         <td>{{ optInLink(optIn,'view', 'name') }} {{ optInLink(optIn,'edit', 'icon') }}</td>
                         <td>{{ optIn.description }}</td>
                         <td>{{ translate(optIn.getActive(true)) }}</td>
