@@ -116,146 +116,146 @@ return [
 
                 [
                     'route'     => 'zfcadmin/contact-admin',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/new',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/list',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ], [
                     'route' => 'zfcadmin/contact-admin/list-old',
-                    'roles' => [Access::ACCESS_OFFICE]
+                    'roles' => ['office']
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/export',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/list-duplicate',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ], [
                     'route'     => 'zfcadmin/contact-admin/list-inactive',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/edit',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/permit',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/view',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/impersonate',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/statistics',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/import',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route'     => 'zfcadmin/contact-admin/search',
-                    'roles'     => [Access::ACCESS_OFFICE],
+                    'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
                     'route' => 'zfcadmin/contact-admin/merge',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/contact-admin/add-project',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/list',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/new',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/generate-deeplinks',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/edit',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/add-contact',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/edit-contacts',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/get-contacts',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/export',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/selection/view',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/facebook/list',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/facebook/new',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/facebook/edit',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/facebook/view',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/opt-in/list',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/opt-in/new',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/opt-in/edit',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/opt-in/view',
-                    'roles' => [Access::ACCESS_OFFICE],
+                    'roles' => ['office'],
                 ],
                 [
                     'route'     => 'zfcadmin/address/edit',
