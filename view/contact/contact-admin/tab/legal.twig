@@ -1,87 +1,96 @@
 <h2>{{ translate("txt-legal") }}</h2>
 
-{% set contact = contact %}
+{% if not (
+    contact.nda.isEmpty() and
+    contact.dnd.isEmpty() and
+    contact.affiliationDoa.isEmpty() and
+    contact.loi.isEmpty() and
+    contact.programDoa.isEmpty()
+    ) %}
 
-<table class="table table-hover table-striped table-sm">
-    <thead>
-    <tr>
-        <th>{{ translate("txt-type") }}</th>
-        <th>{{ translate("txt-project") }}</th>
-        <th>{{ translate("txt-call") }}</th>
-        <th>{{ translate("txt-program") }}</th>
-        <th>{{ translate("txt-date-created") }}</th>
-        <th>{{ translate("txt-date-signed") }}</th>
-        <th>{{ translate("txt-date-approved") }}</th>
-        <th>{{ translate("txt-approved-by") }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for nda in contact.nda %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
         <tr>
-            <td>{{ ndaLink(nda,'view-admin','name') }} {% if not nda.object.isEmpty() %}{{ ndaLink(nda,'download','icon') }}{% endif %} {{ ndaLink(nda,'edit-admin','icon') }}</td>
-            <td></td>
-            <td>{% if nda.hasCall %}{{ callLink(nda.parseCall, 'view-admin','name') }}{% endif %}</td>
-            <td>{% if nda.hasCall %}{{ nda.parseCall.program }}{% endif %}</td>
-            <td>{{ nda.dateCreated|string_date }}</td>
-            <td>{{ nda.dateSigned|string_date }}</td>
-            <td>{{ nda.dateApproved|string_date }}</td>
-            <td>{{ nda.approver.displayName }}</td>
+            <th>{{ translate("txt-type") }}</th>
+            <th>{{ translate("txt-project") }}</th>
+            <th>{{ translate("txt-call") }}</th>
+            <th>{{ translate("txt-program") }}</th>
+            <th>{{ translate("txt-date-created") }}</th>
+            <th>{{ translate("txt-date-signed") }}</th>
+            <th>{{ translate("txt-date-approved") }}</th>
+            <th>{{ translate("txt-approved-by") }}</th>
         </tr>
-    {% endfor %}
-    {% for dnd in contact.dnd %}
-        <tr>
-            <td>{{ translate("txt-dnd") }}</td>
-            <td></td>
-            <td></td>
-            <td>{{ dnd.program }}</td>
-            <td>{{ dnd.dateCreated|string_date }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    {% endfor %}
-    {% for affiliationDoa in contact.affiliationDoa %}
-        <tr>
-            {% set project = affiliationDoa.affiliation.project %}
-            <td>{{ translate("txt-project-doa") }} {{ doaLink(affiliationDoa,'download','icon') }}{{ doaLink(affiliationDoa,'view-admin','icon') }}</td>
-            <td>{{ projectLink(project,'view-admin','name') }}</td>
-            <td>{{ callLink(project.call,'view-admin','name') }}</td>
-            <td>{{ project.call.program }}</td>
+        </thead>
+        <tbody>
+        {% for nda in contact.nda %}
+            <tr>
+                <td>{{ ndaLink(nda,'view-admin','name') }} {% if not nda.object.isEmpty() %}{{ ndaLink(nda,'download','icon') }}{% endif %} {{ ndaLink(nda,'edit-admin','icon') }}</td>
+                <td></td>
+                <td>{% if nda.hasCall %}{{ callLink(nda.parseCall, 'view-admin','name') }}{% endif %}</td>
+                <td>{% if nda.hasCall %}{{ nda.parseCall.program }}{% endif %}</td>
+                <td>{{ nda.dateCreated|string_date }}</td>
+                <td>{{ nda.dateSigned|string_date }}</td>
+                <td>{{ nda.dateApproved|string_date }}</td>
+                <td>{{ nda.approver.displayName }}</td>
+            </tr>
+        {% endfor %}
+        {% for dnd in contact.dnd %}
+            <tr>
+                <td>{{ translate("txt-dnd") }} {{ dndLink(dnd, 'edit','icon') }} {{ dndLink(dnd, 'download','icon') }}</td>
+                <td></td>
+                <td></td>
+                <td>{{ dnd.program }}</td>
+                <td>{{ dnd.dateCreated|string_date }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        {% for affiliationDoa in contact.affiliationDoa %}
+            <tr>
+                {% set project = affiliationDoa.affiliation.project %}
+                <td>{{ translate("txt-project-doa") }} {{ doaLink(affiliationDoa,'download','icon') }}{{ doaLink(affiliationDoa,'view-admin','icon') }}</td>
+                <td>{{ projectLink(project,'view-admin','name') }}</td>
+                <td>{{ callLink(project.call,'view-admin','name') }}</td>
+                <td>{{ project.call.program }}</td>
 
-            <td>{{ affiliationDoa.dateCreated|string_date }}</td>
-            <td>{{ affiliationDoa.dateSigned|string_date }}</td>
-            <td>{{ affiliationDoa.dateApproved|string_date }}</td>
-            <td>-</td>
-        </tr>
-    {% endfor %}
-    {% for loi in contact.loi %}
-        <tr>
-            {% set project = loi.affiliation.project %}
-            <td>{{ translate("txt-loi") }} {% if loi.hasObject() %}{{ loiLink(loi,'download','icon') }}{% endif %} {{ loiLink(loi,'view-admin','icon') }}</td>
-            <td>{{ projectLink(project,'view-admin','name') }}</td>
-            <td>{{ callLink(project.call,'view-admin','name') }}</td>
-            <td>{{ project.call.program }}</td>
+                <td>{{ affiliationDoa.dateCreated|string_date }}</td>
+                <td>{{ affiliationDoa.dateSigned|string_date }}</td>
+                <td>{{ affiliationDoa.dateApproved|string_date }}</td>
+                <td>-</td>
+            </tr>
+        {% endfor %}
+        {% for loi in contact.loi %}
+            <tr>
+                {% set project = loi.affiliation.project %}
+                <td>{{ translate("txt-loi") }} {% if loi.hasObject() %}{{ loiLink(loi,'download','icon') }}{% endif %} {{ loiLink(loi,'view-admin','icon') }}</td>
+                <td>{{ projectLink(project,'view-admin','name') }}</td>
+                <td>{{ callLink(project.call,'view-admin','name') }}</td>
+                <td>{{ project.call.program }}</td>
 
-            <td></td>
-            <td>{{ loi.dateSigned|string_date }}</td>
-            <td>{{ loi.dateApproved|string_date }}</td>
-            <td></td>
-        </tr>
-    {% endfor %}
-    {% for programDoa in contact.programDoa %}
-        <tr>
-            <td>{{ translate("txt-program-doa") }} {{ programDoaLink(programDoa,'download','icon') }}</td>
-            <td></td>
-            <td></td>
-            <td>{{ programDoa.program }}</td>
+                <td></td>
+                <td>{{ loi.dateSigned|string_date }}</td>
+                <td>{{ loi.dateApproved|string_date }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        {% for programDoa in contact.programDoa %}
+            <tr>
+                <td>{{ translate("txt-program-doa") }} {{ programDoaLink(programDoa,'download','icon') }}</td>
+                <td></td>
+                <td></td>
+                <td>{{ programDoa.program }}</td>
 
-            <td>{{ programDoa.dateCreated|string_date }}</td>
-            <td>{{ programDoa.dateSigned|string_date }}</td>
-            <td>{{ programDoa.dateApproved|string_date }}</td>
-            <td></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
+                <td>{{ programDoa.dateCreated|string_date }}</td>
+                <td>{{ programDoa.dateSigned|string_date }}</td>
+                <td>{{ programDoa.dateApproved|string_date }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-no-legal-document-could-be-found"))|raw }}
+{% endif %}
 {{ ndaLink(null, 'upload-admin','button', null, contact) }}
+{{ dndLink(null, 'new','button', contact) }}

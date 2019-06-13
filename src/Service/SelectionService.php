@@ -43,6 +43,33 @@ class SelectionService extends AbstractService
         $this->selectionContactService = $selectionContactService;
     }
 
+    public function canRemoveSelection(Entity\Selection $selection): bool
+    {
+        $cannotRemoveSelection = [];
+
+        if (!$selection->getMailing()->isEmpty()) {
+            $cannotRemoveSelection[] = 'This selection has mailings';
+        }
+
+        if (!$selection->getAccess()->isEmpty()) {
+            $cannotRemoveSelection[] = 'This selection has access';
+        }
+
+        if (!$selection->getMeeting()->isEmpty()) {
+            $cannotRemoveSelection[] = 'This selection has meetings';
+        }
+
+        if (!$selection->getMeetingCost()->isEmpty()) {
+            $cannotRemoveSelection[] = 'This selection has meeting costs';
+        }
+
+        if (!$selection->getMeetingOptionCost()->isEmpty()) {
+            $cannotRemoveSelection[] = 'This selection has meeting option costs';
+        }
+
+        return count($cannotRemoveSelection) === 0;
+    }
+
     public function findSelectionById(int $id): ?Entity\Selection
     {
         return $this->entityManager->getRepository(Entity\Selection::class)->find($id);
@@ -82,13 +109,6 @@ class SelectionService extends AbstractService
         return $repository->findTags();
     }
 
-    /**
-     * Selections can be fixed (via the selection_contact) or dynamic (via de SQL).
-     *
-     * @param Entity\Contact $contact
-     *
-     * @return Entity\Selection[]
-     */
     public function findSelectionsByContact(Entity\Contact $contact): array
     {
         /** @var Repository\Selection $repository */
@@ -113,10 +133,9 @@ class SelectionService extends AbstractService
             }
         }
 
-        $result = array_combine($selections, $selections);
-        ksort($result);
+        ksort($selections);
 
-        return $result;
+        return $selections;
     }
 
     public function updateSelectionContacts(Entity\Selection $selection, array $data): void
@@ -133,7 +152,7 @@ class SelectionService extends AbstractService
             //Update the contacts
             if (!empty($data['added'])) {
                 foreach (explode(',', $data['added']) as $contactId) {
-                    $contact = $this->contactService->findContactById((int) $contactId);
+                    $contact = $this->contactService->findContactById((int)$contactId);
 
                     if (null !== $contact) {
                         $this->addContactToSelection($selection, $contact);

@@ -44,7 +44,7 @@ use Project\View\Helper\ProjectLink;
 use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
-use Solarium\QueryType\Update\Query\Document\Document;
+use Solarium\QueryType\Update\Query\Document;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Mvc\Exception\RuntimeException;
 use Zend\View\Helper\Url;
@@ -145,11 +145,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $repository->findOneBy(['hash' => $hash]);
     }
 
-    public function findContactById(int $id): ?Contact
-    {
-        return $this->find(Contact::class, $id);
-    }
-
     public function toFormValueOptions(array $contacts): array
     {
         $return = [];
@@ -193,17 +188,17 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $repository->findDuplicateContacts($filter);
     }
 
-    public function findInactiveContacts(array $filter): QueryBuilder
+    public function canDeleteContact(Contact $contact): bool
+    {
+        return count($this->cannotDeleteContact($contact)) === 0;
+    }
+
+    public function contactWillBeAutoDelete(Contact $contact): bool
     {
         /** @var \Contact\Repository\Contact $repository */
         $repository = $this->entityManager->getRepository(Contact::class);
 
-        return $repository->findInactiveContacts($filter);
-    }
-
-    public function canDeleteContact(Contact $contact): bool
-    {
-        return count($this->cannotDeleteContact($contact)) === 0;
+        return $repository->isInactiveContact($contact);
     }
 
     public function cannotDeleteContact(Contact $contact): array
@@ -211,6 +206,18 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $cannotDeleteContact = [];
 
         $repository = $this->entityManager->getRepository(Contact::class);
+
+        if (!$this->contactWillBeAutoDelete($contact)) {
+            $cannotDeleteContact[] = 'Contact is asdfsafsd in a project';
+        }
+
+        if ($repository->contactIsActiveInProject($contact)) {
+            $cannotDeleteContact[] = 'Contact is active in a project';
+        }
+
+        if ($repository->contactIsActiveInProject($contact)) {
+            $cannotDeleteContact[] = 'Contact is active in a project';
+        }
 
         if ($repository->contactIsActiveInProject($contact)) {
             $cannotDeleteContact[] = 'Contact is active in a project';
@@ -257,10 +264,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
         $canAnonymiseContact = [];
 
-//        if (!$this->canDeleteContact($contact)) {
-//            $canAnonymiseContact[] = 'Contact cannot be deleted, so can also not be anonymised';
-//        }
-
         if ($repository->contactIsActiveInProject($contact, 5, 'older')) {
             $canAnonymiseContact[] = 'Contact is active in a project completed more than 5 years ago';
         }
@@ -280,157 +283,17 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $canAnonymiseContact;
     }
 
-    public function parseLastName(Contact $contact): string
+    public function resetAccessRoles(): void
     {
-        return trim(implode(' ', [$contact->getMiddleName(), $contact->getLastName()]));
-    }
+        $contacts = $this->entityManager->getRepository(Contact::class)->findBy(['triggerUpdate' => true]);
 
-    public function parseAttention(Contact $contact): string
-    {
-        if (null === $contact->getTitle()) {
-            return '';
+        foreach ($contacts as $contact) {
+            $contact->setTriggerUpdate(false);
+            $this->save($contact);
+
+            $this->adminService->resetCachedAccessRolesByContact($contact);
+            $this->adminService->flushPermitsByContact($contact);
         }
-
-        if (null === $contact->getGender()) {
-            return '';
-        }
-
-        if (null !== $contact->getTitle()->getAttention()) {
-            return $contact->getTitle()->getAttention();
-        }
-
-        if ((int)$contact->getGender()->getId() !== 0) {
-            return $contact->getGender()->getAttention();
-        }
-
-        return '';
-    }
-
-    public function parseSignature(Contact $contact): ?string
-    {
-        $signature = [];
-
-        if (null !== $contact->getPosition()) {
-            $signature[] = $contact->getPosition();
-        }
-
-        /*
-         * Go over the notes and find the signature of the contact
-         */
-        foreach ($contact->getNote() as $note) {
-            if ($note->getSource() === Note::SOURCE_SIGNATURE) {
-                $signature[] = sprintf('<em>%s</em>', $note->getNote());
-            }
-        }
-
-        if (count($signature) === 0) {
-            return null;
-        }
-
-
-        return implode('<br>', $signature);
-    }
-
-    public function parseOrganisation(Contact $contact): ?string
-    {
-        if (!$this->hasOrganisation($contact)) {
-            return null;
-        }
-
-        return OrganisationService::parseBranch(
-            $contact->getContactOrganisation()->getBranch(),
-            $contact->getContactOrganisation()->getOrganisation()
-        );
-    }
-
-    public function hasOrganisation(Contact $contact): bool
-    {
-        return $contact->hasOrganisation();
-    }
-
-    public function isFunder(Contact $contact): bool
-    {
-        return null !== $contact->getFunder();
-    }
-
-    public function isActive(Contact $contact): bool
-    {
-        return null === $contact->getDateEnd();
-    }
-
-    public function parseCountry(Contact $contact): ?Country
-    {
-        if (!$this->hasOrganisation($contact)) {
-            return null;
-        }
-
-        return $contact->getContactOrganisation()->getOrganisation()->getCountry();
-    }
-
-    public function getMailAddress(Contact $contact): ?Address
-    {
-        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_MAIL);
-    }
-
-    public function getAddressByTypeId(Contact $contact, int $typeId): ?Address
-    {
-        $addressType = $this->entityManager->find(AddressType::class, $typeId);
-
-        if (null === $addressType) {
-            return null;
-        }
-
-        return $this->addressService->findAddressByContactAndType($contact, $addressType);
-    }
-
-    public function getVisitAddress(Contact $contact): ?Address
-    {
-        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_VISIT);
-    }
-
-    public function getFinancialAddress(Contact $contact): ?Address
-    {
-        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
-    }
-
-    public function getBoothFinancialAddress(Contact $contact): ?Address
-    {
-        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
-    }
-
-    public function getDirectPhone(Contact $contact): ?Phone
-    {
-        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
-    }
-
-    private function getPhoneByContactAndType(Contact $contact, int $type): ?Phone
-    {
-        if (!in_array($type, PhoneType::getPhoneTypes(), true)) {
-            throw new InvalidArgumentException(sprintf('A invalid phone type chosen'));
-        }
-
-        return $this->entityManager->getRepository(Phone::class)->findOneBy(
-            [
-                'contact' => $contact,
-                'type'    => $type,
-            ]
-        );
-    }
-
-    public function getMobilePhone(Contact $contact): ?Phone
-    {
-        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
-    }
-
-    public function addNoteToContact(string $text, string $source, Contact $contact): Note
-    {
-        $note = new Note();
-        $note->setNote($text);
-        $note->setContact($contact);
-        $note->setSource($source);
-        $this->save($note);
-
-        return $note;
     }
 
     public function save(AbstractEntity $contact): AbstractEntity
@@ -641,6 +504,11 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $update;
     }
 
+    public function hasOrganisation(Contact $contact): bool
+    {
+        return $contact->hasOrganisation();
+    }
+
     /**
      * @param Contact $contact
      *
@@ -729,6 +597,31 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $update;
     }
 
+    public function removeInactiveContacts(): void
+    {
+        $inactiveContacts = $this->findInactiveContacts();
+
+        foreach ($inactiveContacts as $inactiveContact) {
+            $contact = $this->findContactById($inactiveContact['id']);
+            if (null !== $contact) {
+                $this->delete($contact);
+            }
+        }
+    }
+
+    public function findInactiveContacts(): array
+    {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->entityManager->getRepository(Contact::class);
+
+        return $repository->findInactiveContacts();
+    }
+
+    public function findContactById(int $id): ?Contact
+    {
+        return $this->find(Contact::class, $id);
+    }
+
     public function delete(AbstractEntity $contact): void
     {
         parent::delete($contact);
@@ -737,6 +630,154 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $this->contactSearchService->deleteDocument($contact);
             $this->profileSearchService->deleteDocument($contact);
         }
+    }
+
+    public function parseLastName(Contact $contact): string
+    {
+        return trim(implode(' ', [$contact->getMiddleName(), $contact->getLastName()]));
+    }
+
+    public function parseAttention(Contact $contact): string
+    {
+        if (null === $contact->getTitle()) {
+            return '';
+        }
+
+        if (null === $contact->getGender()) {
+            return '';
+        }
+
+        if (null !== $contact->getTitle()->getAttention()) {
+            return $contact->getTitle()->getAttention();
+        }
+
+        if ((int)$contact->getGender()->getId() !== 0) {
+            return $contact->getGender()->getAttention();
+        }
+
+        return '';
+    }
+
+    public function parseSignature(Contact $contact): ?string
+    {
+        $signature = [];
+
+        if (null !== $contact->getPosition()) {
+            $signature[] = $contact->getPosition();
+        }
+
+        /*
+         * Go over the notes and find the signature of the contact
+         */
+        foreach ($contact->getNote() as $note) {
+            if ($note->getSource() === Note::SOURCE_SIGNATURE) {
+                $signature[] = sprintf('<em>%s</em>', $note->getNote());
+            }
+        }
+
+        if (count($signature) === 0) {
+            return null;
+        }
+
+
+        return implode('<br>', $signature);
+    }
+
+    public function parseOrganisation(Contact $contact): ?string
+    {
+        if (!$this->hasOrganisation($contact)) {
+            return null;
+        }
+
+        return OrganisationService::parseBranch(
+            $contact->getContactOrganisation()->getBranch(),
+            $contact->getContactOrganisation()->getOrganisation()
+        );
+    }
+
+    public function isFunder(Contact $contact): bool
+    {
+        return null !== $contact->getFunder();
+    }
+
+    public function isActive(Contact $contact): bool
+    {
+        return null === $contact->getDateEnd();
+    }
+
+    public function parseCountry(Contact $contact): ?Country
+    {
+        if (!$this->hasOrganisation($contact)) {
+            return null;
+        }
+
+        return $contact->getContactOrganisation()->getOrganisation()->getCountry();
+    }
+
+    public function getMailAddress(Contact $contact): ?Address
+    {
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_MAIL);
+    }
+
+    public function getAddressByTypeId(Contact $contact, int $typeId): ?Address
+    {
+        $addressType = $this->entityManager->find(AddressType::class, $typeId);
+
+        if (null === $addressType) {
+            return null;
+        }
+
+        return $this->addressService->findAddressByContactAndType($contact, $addressType);
+    }
+
+    public function getVisitAddress(Contact $contact): ?Address
+    {
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_VISIT);
+    }
+
+    public function getFinancialAddress(Contact $contact): ?Address
+    {
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
+    }
+
+    public function getBoothFinancialAddress(Contact $contact): ?Address
+    {
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
+    }
+
+    public function getDirectPhone(Contact $contact): ?Phone
+    {
+        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
+    }
+
+    private function getPhoneByContactAndType(Contact $contact, int $type): ?Phone
+    {
+        if (!in_array($type, PhoneType::getPhoneTypes(), true)) {
+            throw new InvalidArgumentException(sprintf('A invalid phone type chosen'));
+        }
+
+        return $this->entityManager->getRepository(Phone::class)->findOneBy(
+            [
+                'contact' => $contact,
+                'type'    => $type,
+            ]
+        );
+    }
+
+    public function getMobilePhone(Contact $contact): ?Phone
+    {
+        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
+    }
+
+    public function addNoteToContact(string $text, string $source, Contact $contact): Note
+    {
+        $note = new Note();
+        $note->setNote($text);
+        $note->setContact($contact);
+        $note->setSource($source);
+        $this->save($note);
+
+        return $note;
     }
 
     public function findContactByEmail(string $email, bool $onlyMain = false): ?Contact

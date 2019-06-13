@@ -43,3 +43,52 @@
 {% endif %}
 
 {{ registrationLink(null, 'add-contact', 'button', null, contact) }}
+
+{% if not (contact.boothContact.isEmpty() and
+    contact.projectBooth.isEmpty() and
+    contact.organisationBooth.isEmpty() and
+    contact.boothFinancial.isEmpty() ) %}
+
+    <h2>{{ translate("txt-booths") }}</h2>
+
+    <table class="table table-hover table-striped table-sm">
+        <tr>
+            <th>{{ translate("txt-booth") }}</th>
+            <th>{{ translate("txt-exhibition") }}</th>
+            <th>{{ translate("txt-type") }}</th>
+            <th>{{ translate("txt-role") }}</th>
+        </tr>
+        {% for boothContact in contact.boothContact %}
+            <tr>
+                <td>{{ boothLink(boothContact.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(boothContact.booth.exhibition) }}</td>
+                <td>{{ boothService.parseBoothType(boothContact.booth) }}</td>
+                <td>{{ translate("txt-booth-crew") }}</td>
+            </tr>
+        {% endfor %}
+        {% for projectBooth in contact.projectBooth %}
+            <tr>
+                <td>{{ boothLink(projectBooth.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(projectBooth.booth.exhibition) }}</td>
+                <td>{{ boothService.parseBoothType(projectBooth.booth) }}</td>
+                <td>{{ translate("txt-project-booth-contact") }}</td>
+            </tr>
+        {% endfor %}
+        {% for organisationBooth in contact.organisationBooth %}
+            <tr>
+                <td>{{ boothLink(organisationBooth.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(organisationBooth.booth.exhibition) }}</td>
+                <td>{{ boothService.parseBoothType(organisationBooth.booth) }}</td>
+                <td>{{ translate("txt-organisation-booth-contact") }}</td>
+            </tr>
+        {% endfor %}
+        {% for boothFinancial in contact.boothFinancial %}
+            <tr>
+                <td>{{ boothLink(boothFinancial.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(boothFinancial.booth.exhibition) }}</td>
+                <td>{{ boothService.parseBoothType(boothFinancial.booth) }}</td>
+                <td>{{ translate("txt-financial-booth-contact") }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}

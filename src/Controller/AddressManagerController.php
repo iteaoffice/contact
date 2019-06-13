@@ -80,7 +80,7 @@ final class AddressManagerController extends ContactAbstractController
 
             return $this->redirect()
                 ->toRoute(
-                    'zfcadmin/contact-admin/view',
+                    'zfcadmin/contact/view',
                     ['id' => $contact->getId()],
                     ['fragment' => 'address']
                 );
@@ -116,7 +116,7 @@ final class AddressManagerController extends ContactAbstractController
 
                 return $this->redirect()
                     ->toRoute(
-                        'zfcadmin/contact-admin/view',
+                        'zfcadmin/contact/view',
                         ['id' => $address->getContact()->getId()],
                         ['fragment' => 'address']
                     );
@@ -132,7 +132,7 @@ final class AddressManagerController extends ContactAbstractController
             }
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact-admin/view',
+                'zfcadmin/contact/view',
                 ['id' => $address->getContact()->getId()],
                 ['fragment' => 'address']
             );

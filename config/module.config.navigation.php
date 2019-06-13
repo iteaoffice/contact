@@ -7,46 +7,47 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
+
 return [
     'navigation' => [
         'community' => [
             // And finally, here is where we define our page hierarchy
             'contact' => [
                 'order' => 60,
-                'label' => _("txt-contacts"),
+                'label' => _('txt-contacts'),
                 'id'    => 'community/contact',
                 'route' => 'community/contact/profile/view',
                 'pages' => [
                     'view-profile' => [
-                        'label' => _("txt-account-information"),
+                        'label' => _('txt-account-information'),
                         'route' => 'community/contact/profile/view',
                         'pages' => [
                             'organisation'                => [
-                                'label' => _("txt-profile-organisation"),
+                                'label' => _('txt-profile-organisation'),
                                 'route' => 'community/contact/profile/organisation',
                             ],
                             'events'                      => [
-                                'label' => _("txt-profile-events"),
+                                'label' => _('txt-profile-events'),
                                 'route' => 'community/contact/profile/events',
                             ],
                             'privacy'                     => [
-                                'label' => _("txt-profile-privacy"),
+                                'label' => _('txt-profile-privacy'),
                                 'route' => 'community/contact/profile/privacy',
                             ],
                             'edit'                        => [
-                                'label' => _("txt-profile-edit"),
+                                'label' => _('txt-profile-edit'),
                                 'route' => 'community/contact/profile/edit',
                             ],
                             'change-password'             => [
-                                'label' => _("txt-change-password"),
+                                'label' => _('txt-change-password'),
                                 'route' => 'community/contact/change-password',
                             ],
                             'community/mailing/subscribe' => [
-                                'label' => _("txt-subscribe"),
+                                'label' => _('txt-subscribe'),
                                 'route' => 'community/mailing/subscribe',
                             ],
                             'manage-subscriptions'        => [
-                                'label' => _("txt-manage-subscriptions"),
+                                'label' => _('txt-manage-subscriptions'),
                                 'route' => 'community/mailing/manage-subscriptions',
                             ],
 
@@ -58,11 +59,11 @@ return [
                 'pages' => [
                     'partner-search' => [
                         'order' => 60,
-                        'label' => _("txt-partner-search"),
+                        'label' => _('txt-partner-search'),
                         'route' => 'community/contact/search',
                         'pages' => [
                             'search-result' => [
-                                'label' => _("txt-contact-profile"),
+                                'label' => _('txt-contact-profile'),
                                 'route' => 'community/contact/profile/contact',
 
                             ],
@@ -75,19 +76,19 @@ return [
         'admin'     => [
             // And finally, here is where we define our page hierarchy
             'contact' => [
-                'label'    => _("txt-nav-contact"),
-                'route'    => 'zfcadmin/contact-admin/list',
+                'label'    => _('txt-nav-contact'),
+                'route'    => 'zfcadmin/contact/list',
                 'order'    => 10,
                 'resource' => 'zfcadmin',
                 'pages'    => [
                     'contacts'   => [
-                        'label' => _("txt-nav-contact-list"),
+                        'label' => _('txt-nav-contact-list'),
                         'order' => 10,
-                        'route' => 'zfcadmin/contact-admin/list',
+                        'route' => 'zfcadmin/contact/list',
                         'pages' => [
                             'view-contact' => [
                                 'label'   => _('txt-view'),
-                                'route'   => 'zfcadmin/contact-admin/view',
+                                'route'   => 'zfcadmin/contact/view',
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
@@ -100,7 +101,7 @@ return [
                                 'pages'   => [
                                     'edit-contact'        => [
                                         'label'   => _('txt-edit-contact'),
-                                        'route'   => 'zfcadmin/contact-admin/edit',
+                                        'route'   => 'zfcadmin/contact/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -110,7 +111,7 @@ return [
                                     ],
                                     'permisssions'        => [
                                         'label'   => _('txt-permissions'),
-                                        'route'   => 'zfcadmin/contact-admin/permit',
+                                        'route'   => 'zfcadmin/contact/permit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -120,7 +121,7 @@ return [
                                     ],
                                     'impersonate-contact' => [
                                         'label'   => _('txt-impersonate'),
-                                        'route'   => 'zfcadmin/contact-admin/impersonate',
+                                        'route'   => 'zfcadmin/contact/impersonate',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
@@ -208,7 +209,7 @@ return [
                                     ],
                                     'merge'               => [
                                         'label'   => _('txt-nav-merge'),
-                                        'route'   => 'zfcadmin/contact-admin/merge',
+                                        'route'   => 'zfcadmin/contact/merge',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
@@ -219,7 +220,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'upload-nda'               => [
+                                    'upload-nda'          => [
                                         'label'   => _('txt-upload-nda'),
                                         'route'   => 'zfcadmin/nda/upload',
                                         'visible' => false,
@@ -232,13 +233,39 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'add-project'               => [
+                                    'add-project'         => [
                                         'label'   => _('txt-add-project'),
-                                        'route'   => 'zfcadmin/contact-admin/add-project',
+                                        'route'   => 'zfcadmin/contact/add-project',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities' => [
+                                                'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                        ],
+                                    ],
+                                    'new-dnd'             => [
+                                        'label'   => _('txt-new-dnd'),
+                                        'route'   => 'zfcadmin/contact/dnd/new',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
                                                 'id' => \Contact\Entity\Contact::class,
+                                            ],
+                                            'routeParam' => [
+                                                'id' => 'contactId',
+                                            ],
+                                        ],
+                                    ],
+                                    'edit-dnd'            => [
+                                        'label'   => _('txt-edit-dnd'),
+                                        'route'   => 'zfcadmin/contact/dnd/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => \Contact\Entity\Dnd::class,
+                                            ],
+                                            'invokables' => [
+                                                Contact\Navigation\Invokable\DndLabel::class,
                                             ],
                                         ],
                                     ],
@@ -247,7 +274,7 @@ return [
                         ],
                     ],
                     'selections' => [
-                        'label' => _("txt-nav-selection-list"),
+                        'label' => _('txt-nav-selection-list'),
                         'order' => 20,
                         'route' => 'zfcadmin/selection/list',
                         'pages' => [
@@ -264,7 +291,7 @@ return [
                                     ],
                                 ],
                                 'pages'   => [
-                                    'edit-selection' => [
+                                    'edit-selection'     => [
                                         'label'   => _('txt-edit-selection'),
                                         'route'   => 'zfcadmin/selection/edit',
                                         'visible' => false,
@@ -274,7 +301,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'edit-contacts'  => [
+                                    'edit-contacts'      => [
                                         'label'   => _('txt-edit-contacts'),
                                         'route'   => 'zfcadmin/selection/edit-contacts',
                                         'visible' => false,
@@ -284,7 +311,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'generate-deeplinks'  => [
+                                    'generate-deeplinks' => [
                                         'label'   => _('txt-generate-deeplinks'),
                                         'route'   => 'zfcadmin/selection/generate-deeplinks',
                                         'visible' => false,
@@ -307,7 +334,7 @@ return [
                         ],
                     ],
                     'facebook'   => [
-                        'label' => _("txt-nav-facebook-list"),
+                        'label' => _('txt-nav-facebook-list'),
                         'route' => 'zfcadmin/facebook/list',
                         'order' => 40,
                         'pages' => [
@@ -339,7 +366,7 @@ return [
                         ],
                     ],
                     'opt-in'     => [
-                        'label' => _("txt-nav-opt-in-list"),
+                        'label' => _('txt-nav-opt-in-list'),
                         'route' => 'zfcadmin/opt-in/list',
                         'order' => 40,
                         'pages' => [
@@ -380,18 +407,18 @@ return [
             'tools'   => [
                 'pages' => [
                     'import'                    => [
-                        'label' => _("txt-nav-contact-import"),
+                        'label' => _('txt-nav-contact-import'),
                         'order' => 50,
-                        'route' => 'zfcadmin/contact-admin/import',
+                        'route' => 'zfcadmin/contact/import',
                     ],
                     'list-duplicate-contacts'   => [
-                        'label' => _("txt-nav-list-duplicate-contacts"),
+                        'label' => _('txt-nav-list-duplicate-contacts'),
                         'order' => 51,
-                        'route' => 'zfcadmin/contact-admin/list-duplicate',
+                        'route' => 'zfcadmin/contact/list-duplicate',
                     ], 'list-inactive-contacts' => [
-                        'label' => _("txt-nav-list-inactive-contacts"),
+                        'label' => _('txt-nav-list-inactive-contacts'),
                         'order' => 51,
-                        'route' => 'zfcadmin/contact-admin/list-inactive',
+                        'route' => 'zfcadmin/contact/list-inactive',
                     ],
                 ],
             ],

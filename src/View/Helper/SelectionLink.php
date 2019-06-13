@@ -57,9 +57,6 @@ class SelectionLink extends LinkAbstract
         return $this->createLink();
     }
 
-    /**
-     * @throws \Exception
-     */
     public function parseAction(): void
     {
         switch ($this->getAction()) {
@@ -70,80 +67,41 @@ class SelectionLink extends LinkAbstract
             case 'list':
                 $this->setRouter('zfcadmin/selection/list');
                 $this->setText($this->translate('txt-list-selections'));
-
-                foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key => $param) {
-                    $this->addQueryParam($key, $param);
-                }
-                $this->addQueryParam('page', $this->getPage());
-
                 break;
             case 'edit':
                 $this->setRouter('zfcadmin/selection/edit');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-edit-selection-%s"),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $this->setText($this->translate('txt-edit-selection'));
                 break;
             case 'generate-deeplinks':
                 $this->setRouter('zfcadmin/selection/generate-deeplinks');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-generate-deeplinks")
-                    )
-                );
+                $this->setText($this->translate('txt-generate-deeplinks'));
                 break;
             case 'add-contact':
-                if (\is_null($this->getContact())) {
-                    throw new \Exception('Contact cannot be empty when adding a contact to a selection');
-                }
-
                 $this->setRouter('zfcadmin/selection/add-contact');
                 $this->setText(
                     sprintf(
-                        $this->translate("txt-add-%s-to-selection"),
+                        $this->translate('txt-add-%s-to-selection'),
                         $this->getContact()->getDisplayName()
                     )
                 );
                 break;
             case 'edit-contacts':
                 $this->setRouter('zfcadmin/selection/edit-contacts');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-edit-contacts-selection-%s'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $this->setText($this->translate('txt-edit-contacts-selection'));
                 break;
             case 'export-csv':
                 $this->setRouter('zfcadmin/selection/export');
                 $this->addRouterParam('type', 'csv');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-export-selection-to-%s-csv'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $this->setText($this->translate('txt-export-selection-to-csv'));
                 break;
             case 'export-excel':
                 $this->setRouter('zfcadmin/selection/export');
                 $this->addRouterParam('type', 'excel');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-export-selection-to-%s-excel'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $this->setText($this->translate('txt-export-selection-to-excel'));
                 break;
             case 'view':
                 $this->setRouter('zfcadmin/selection/view');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-view-selection-%s'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $this->setText($this->translate('txt-view-selection'));
                 break;
             default:
                 throw new \Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));

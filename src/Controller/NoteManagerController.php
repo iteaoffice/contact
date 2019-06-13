@@ -71,7 +71,7 @@ final class NoteManagerController extends ContactAbstractController
 
             return $this->redirect()
                 ->toRoute(
-                    'zfcadmin/contact-admin/view',
+                    'zfcadmin/contact/view',
                     ['id' => $contact->getId()],
                     ['fragment' => 'general']
                 );
@@ -103,7 +103,7 @@ final class NoteManagerController extends ContactAbstractController
                 );
 
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact-admin/view',
+                    'zfcadmin/contact/view',
                     ['id' => $note->getContact()->getId()],
                     ['fragment' => 'general']
                 );
@@ -120,7 +120,7 @@ final class NoteManagerController extends ContactAbstractController
             }
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact-admin/view',
+                'zfcadmin/contact/view',
                 ['id' => $note->getContact()->getId()],
                 ['fragment' => 'general']
             );

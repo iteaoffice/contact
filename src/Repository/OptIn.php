@@ -16,13 +16,15 @@ use Contact\Entity;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use function array_key_exists;
+use function in_array;
 
 /**
  * Class OptIn
  *
  * @package Contact\Repository
  */
-class OptIn extends EntityRepository
+final class OptIn extends EntityRepository
 {
     public function findFiltered(array $filter): QueryBuilder
     {
@@ -30,7 +32,7 @@ class OptIn extends EntityRepository
         $qb->select('contact_entity_optin');
         $qb->from(Entity\OptIn::class, 'contact_entity_optin');
 
-        if (\array_key_exists('search', $filter)) {
+        if (array_key_exists('search', $filter)) {
             $qb->andWhere(
                 $qb->expr()->orX(
                     $qb->expr()->like('contact_entity_optin.optIn', ':like'),
@@ -41,13 +43,13 @@ class OptIn extends EntityRepository
             $qb->setParameter('like', sprintf('%%%s%%', $filter['search']));
         }
 
-        if (\array_key_exists('active', $filter)) {
+        if (array_key_exists('active', $filter)) {
             $qb->andWhere($qb->expr()->in('contact_entity_optin.active', $filter['active']));
         }
 
 
         $direction = Criteria::ASC;
-        if (isset($filter['direction']) && \in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
             $direction = strtoupper($filter['direction']);
         }
 

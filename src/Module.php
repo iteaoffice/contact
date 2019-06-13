@@ -18,15 +18,21 @@ declare(strict_types=1);
 namespace Contact;
 
 use Contact\Navigation\Service\ContactNavigationService;
+use Zend\Console\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManager;
 use Zend\ModuleManager\Feature;
 use Zend\Mvc\MvcEvent;
 
 /**
+ * Class Module
  *
+ * @package Contact
  */
-class Module implements Feature\ConfigProviderInterface, Feature\BootstrapListenerInterface
+final class Module implements
+    Feature\ConfigProviderInterface,
+    Feature\BootstrapListenerInterface,
+    Feature\ConsoleUsageProviderInterface
 {
     public function getConfig(): array
     {
@@ -40,9 +46,19 @@ class Module implements Feature\ConfigProviderInterface, Feature\BootstrapListen
         $em = $app->getEventManager();
         $em->attach(
             MvcEvent::EVENT_DISPATCH,
-            function (MvcEvent $event) {
+            static function (MvcEvent $event) {
                 $event->getApplication()->getServiceManager()->get(ContactNavigationService::class)->update();
             }
         );
+    }
+
+    public function getConsoleUsage(AdapterInterface $console): array
+    {
+        return [
+            'Contact management',
+            // Describe available commands
+            'contact reset-access' => 'Reset the access-rights of contacts',
+            'contact cleanup'      => 'Perform a cleanup of to be unwanted contacts',
+        ];
     }
 }

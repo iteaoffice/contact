@@ -30,20 +30,19 @@ use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Entity\Cv;
 use Contact\Entity\Dnd;
+use Contact\Entity\Email;
+use Contact\Entity\Log;
+use Contact\Entity\Note;
 use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\Photo;
 use Contact\Entity\Profile;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionContact;
-use function count;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
-use Contact\Entity\Log;
-use Contact\Entity\Note;
-use Contact\Entity\Email;
 use ErrorHeroModule\Handler\Logging;
 use Event\Entity\Badge\Badge;
 use Event\Entity\Exhibition\Tour;
@@ -95,9 +94,11 @@ use Testing\Util\AbstractServiceTest;
 use Zend\I18n\Translator\Translator;
 use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Stdlib\DispatchableInterface;
+use function count;
 
 /**
  * Class MergeContactTest
+ *
  * @package ContactTest\Controller\Plugin
  */
 final class MergeContactTest extends AbstractServiceTest
@@ -120,446 +121,11 @@ final class MergeContactTest extends AbstractServiceTest
     /**
      * Set up basic properties
      */
-    public function setUp()
+    public function setUp(): void
     {
-        $this->source      = $this->createSource();
-        $this->target      = $this->createTarget();
-        $this->translator  = $this->setUpTranslatorMock();
-    }
-
-    /**
-     * Test the basic __invoke magic method returning the plugin instance
-     *
-     * @covers \Contact\Controller\Plugin\MergeContact::__invoke
-     * @covers \Contact\Controller\Plugin\MergeContact::__construct
-     */
-    public function testInvoke(): void
-    {
-        $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
-        $instance = $mergeContact();
-        $this->assertSame($mergeContact, $instance);
-    }
-
-    /**
-     * Test the pre-merge checks
-     *
-     * @covers \Contact\Controller\Plugin\MergeContact::checkMerge
-     */
-    public function testCheckMerge(): void
-    {
-        $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
-
-        // Run the merge check
-        $errors = $mergeContact()->checkMerge($this->source, $this->target);
-
-        $this->assertEquals([], $errors);
-    }
-
-    /**
-     * Test the pre-merge checks failing
-     *
-     * @covers \Contact\Controller\Plugin\MergeContact::checkMerge
-     */
-    public function testCheckMergeFail(): void
-    {
-        $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
-
-        // Run the merge check
-        $errors = $mergeContact()->checkMerge($this->source, $this->source);
-
-        $this->assertEquals('txt-cant-merge-the-same-contact', $errors[0]);
-    }
-
-    /**
-     * Test the actual merge
-     *
-     * @covers \Contact\Controller\Plugin\MergeContact::merge
-     */
-    public function testMerge(): void
-    {
-        /** @var DispatchableInterface $controllerMock */
-        $controllerMock = $this->setUpControllerMock();
-        $mergeOrganisation = new MergeContact($this->setUpEntityManagerMock(), $this->translator);
-        $mergeOrganisation->setController($controllerMock);
-
-        $result = $mergeOrganisation()->merge($this->source, $this->target);
-
-        $this->assertTrue($result['success']);
-        $this->assertSame($this->source->getFirstName(), $this->target->getFirstName());
-        $this->assertSame($this->source->getMiddleName(), $this->target->getMiddleName());
-        $this->assertSame($this->source->getLastName(), $this->target->getLastName());
-        $this->assertSame($this->source->getEmail(), $this->target->getEmail());
-        $this->assertSame($this->source->getGender(), $this->target->getGender());
-        $this->assertSame($this->source->getTitle(), $this->target->getTitle());
-        $this->assertSame($this->source->getPosition(), $this->target->getPosition());
-        $this->assertSame($this->source->getDepartment(), $this->target->getDepartment());
-        $this->assertSame($this->source->getDateOfBirth(), $this->target->getDateOfBirth());
-        $this->assertSame($this->source->getDateCreated(), $this->target->getDateCreated());
-        $this->assertSame($this->source->getLastUpdate(), $this->target->getLastUpdate());
-
-        $this->assertSame(1, $this->target->getAccess()->count());
-        $this->assertSame(1, $this->target->getAccess()->first()->getId());
-
-        $this->assertSame(2, $this->target->getEmailAddress()->count());
-        $this->assertSame('duplicate@itea3.org', $this->target->getEmailAddress()->get(0)->getEmail());
-        $this->assertSame('test.von.dummy@itea3.org', $this->target->getEmailAddress()->get(1)->getEmail());
-
-        $this->assertSame(1, $this->target->getCv()->getId());
-
-        $this->assertSame(1, $this->target->getAddress()->count());
-        $this->assertSame(1, $this->target->getAddress()->first()->getId());
-
-        $this->assertSame(1, $this->target->getPhone()->count());
-        $this->assertSame(1, $this->target->getPhone()->first()->getId());
-
-        $this->assertSame(2, $this->target->getOptIn()->count());
-        $this->assertSame(2, $this->target->getOptIn()->get(0)->getId());
-        $this->assertSame(1, $this->target->getOptIn()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getProject()->count());
-        $this->assertSame(1, $this->target->getProject()->first()->getId());
-
-        $this->assertSame(1, $this->target->getRationale()->count());
-        $this->assertSame(1, $this->target->getRationale()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectDescription()->count());
-        $this->assertSame(1, $this->target->getProjectDescription()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectVersion()->count());
-        $this->assertSame(1, $this->target->getProjectVersion()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectReportItem()->count());
-        $this->assertSame(1, $this->target->getProjectReportItem()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectReportWorkpackageDescription()->count());
-        $this->assertSame(1, $this->target->getProjectReportWorkpackageDescription()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectReportEffortSpent()->count());
-        $this->assertSame(1, $this->target->getProjectReportEffortSpent()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectDocument()->count());
-        $this->assertSame(1, $this->target->getProjectDocument()->first()->getId());
-
-        $this->assertSame(1, $this->target->getDnd()->count());
-        $this->assertSame(1, $this->target->getDnd()->first()->getId());
-
-        $this->assertSame(1, $this->target->getContract()->count());
-        $this->assertSame(1, $this->target->getContract()->first()->getId());
-
-        $this->assertSame(1, $this->target->getContractVersion()->count());
-        $this->assertSame(1, $this->target->getContractVersion()->first()->getId());
-
-        $this->assertSame(2, $this->target->getNda()->count());
-        $this->assertSame(1, $this->target->getNda()->first()->getId());
-        $this->assertSame(2, $this->target->getNda()->next()->getId());
-
-        $this->assertSame(1, $this->target->getNdaApprover()->count());
-        $this->assertSame(3, $this->target->getNdaApprover()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProgramDoa()->count());
-        $this->assertSame(1, $this->target->getProgramDoa()->first()->getId());
-
-        $this->assertSame(1, $this->target->getParentDoa()->count());
-        $this->assertSame(1, $this->target->getParentDoa()->first()->getId());
-
-        $this->assertSame(1, $this->target->getContactOrganisation()->getId());
-
-        $this->assertSame(1, $this->target->getIdea()->count());
-        $this->assertSame(1, $this->target->getIdea()->first()->getId());
-
-        $this->assertSame(2, $this->target->getFavouriteIdea()->count());
-        $this->assertSame(3, $this->target->getFavouriteIdea()->get(0)->getId());
-        $this->assertSame(2, $this->target->getFavouriteIdea()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getOrganisationLog()->count());
-        $this->assertSame(1, $this->target->getOrganisationLog()->first()->getId());
-
-        $this->assertSame(1, $this->target->getIdeaPartner()->count());
-        $this->assertSame(1, $this->target->getIdeaPartner()->first()->getId());
-
-        $this->assertSame(1, $this->target->getAffiliation()->count());
-        $this->assertSame(1, $this->target->getAffiliation()->first()->getId());
-
-        $this->assertSame(1, $this->target->getAffiliationLog()->count());
-        $this->assertSame(1, $this->target->getAffiliationLog()->first()->getId());
-
-        $this->assertSame(1, $this->target->getFinancial()->count());
-        $this->assertSame(1, $this->target->getFinancial()->first()->getId());
-
-        $this->assertSame(1, $this->target->getAffiliationDescription()->count());
-        $this->assertSame(1, $this->target->getAffiliationDescription()->first()->getId());
-
-        $this->assertSame(1, $this->target->getAffiliationVersion()->count());
-        $this->assertSame(1, $this->target->getAffiliationVersion()->first()->getId());
-
-        $this->assertSame(1, $this->target->getInvoice()->count());
-        $this->assertSame(1, $this->target->getInvoice()->first()->getId());
-
-        $this->assertSame(1, $this->target->getParent()->count());
-        $this->assertSame(1, $this->target->getParent()->first()->getId());
-
-        $this->assertSame(1, $this->target->getParentFinancial()->count());
-        $this->assertSame(1, $this->target->getParentFinancial()->first()->getId());
-
-        $this->assertSame(1, $this->target->getParentOrganisation()->count());
-        $this->assertSame(1, $this->target->getParentOrganisation()->first()->getId());
-
-        $this->assertSame(1, $this->target->getPublication()->count());
-        $this->assertSame(1, $this->target->getPublication()->first()->getId());
-
-        $this->assertSame(1, $this->target->getPublicationDownload()->count());
-        $this->assertSame(1, $this->target->getPublicationDownload()->first()->getId());
-
-        $this->assertSame(1, $this->target->getPhoto()->count());
-        $this->assertSame(1, $this->target->getPhoto()->first()->getId());
-
-        $this->assertSame(2, $this->target->getAssociate()->count());
-        $this->assertSame(3, $this->target->getAssociate()->get(0)->getId());
-        $this->assertSame(2, $this->target->getAssociate()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getFunder()->getId());
-
-        $this->assertSame(1, $this->target->getDeeplinkContact()->count());
-        $this->assertSame(1, $this->target->getDeeplinkContact()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProfile()->getId());
-
-        $this->assertSame(1, $this->target->getRegistration()->count());
-        $this->assertSame(1, $this->target->getRegistration()->first()->getId());
-
-        $this->assertSame(1, $this->target->getBadge()->count());
-        $this->assertSame(1, $this->target->getBadge()->first()->getId());
-
-        $this->assertSame(2, $this->target->getBadgeContact()->count());
-        $this->assertSame(3, $this->target->getBadgeContact()->get(0)->getBadge()->getId());
-        $this->assertSame(2, $this->target->getBadgeContact()->get(1)->getBadge()->getId());
-        $this->assertSame(2, $this->target->getBadgeContact()->get(0)->getId());
-        $this->assertSame(1, $this->target->getBadgeContact()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getBoothContact()->count());
-        $this->assertSame(1, $this->target->getBoothContact()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectBooth()->count());
-        $this->assertSame(1, $this->target->getProjectBooth()->first()->getId());
-
-        $this->assertSame(1, $this->target->getOrganisationBooth()->count());
-        $this->assertSame(1, $this->target->getOrganisationBooth()->first()->getId());
-
-        $this->assertSame(1, $this->target->getBoothFinancial()->count());
-        $this->assertSame(1, $this->target->getBoothFinancial()->first()->getId());
-
-        $this->assertSame(2, $this->target->getNote()->count());
-        $this->assertSame(
-            'Merged contact Test von Dummy (1) into Test von Dummy (2)',
-            $this->target->getNote()->get(0)->getNote()
-        );
-        $this->assertSame(1, $this->target->getNote()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getSelection()->count());
-        $this->assertSame(1, $this->target->getSelection()->first()->getId());
-
-        $this->assertSame(2, $this->target->getSelectionContact()->count());
-        $this->assertSame(3, $this->target->getSelectionContact()->get(0)->getSelection()->getId());
-        $this->assertSame(2, $this->target->getSelectionContact()->get(1)->getSelection()->getId());
-        $this->assertSame(2, $this->target->getSelectionContact()->get(0)->getId());
-        $this->assertSame(1, $this->target->getSelectionContact()->get(1)->getId());
-
-        $this->assertSame(2, $this->target->getMailingContact()->count());
-        $this->assertSame(3, $this->target->getMailingContact()->get(0)->getMailing()->getId());
-        $this->assertSame(2, $this->target->getMailingContact()->get(1)->getMailing()->getId());
-        $this->assertSame(2, $this->target->getMailingContact()->get(0)->getId());
-        $this->assertSame(1, $this->target->getMailingContact()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getMailing()->count());
-        $this->assertSame(1, $this->target->getMailing()->first()->getId());
-
-        $this->assertSame(1, $this->target->getEmailMessage()->count());
-        $this->assertSame(1, $this->target->getEmailMessage()->first()->getId());
-
-        $this->assertSame(1, $this->target->getResult()->count());
-        $this->assertSame(1, $this->target->getResult()->first()->getId());
-
-        $this->assertSame(1, $this->target->getWorkpackage()->count());
-        $this->assertSame(1, $this->target->getWorkpackage()->first()->getId());
-
-        $this->assertSame(1, $this->target->getWorkpackageDocument()->count());
-        $this->assertSame(1, $this->target->getWorkpackageDocument()->first()->getId());
-
-        $this->assertSame(1, $this->target->getIdeaMessage()->count());
-        $this->assertSame(1, $this->target->getIdeaMessage()->first()->getId());
-
-        $this->assertSame(1, $this->target->getEvaluation()->count());
-        $this->assertSame(1, $this->target->getEvaluation()->first()->getId());
-
-        $this->assertSame(1, $this->target->getCalendar()->count());
-        $this->assertSame(1, $this->target->getCalendar()->first()->getId());
-
-        $this->assertSame(1, $this->target->getCalendarContact()->count());
-        $this->assertSame(1, $this->target->getCalendarContact()->first()->getId());
-
-        $this->assertSame(1, $this->target->getCalendarDocument()->count());
-        $this->assertSame(1, $this->target->getCalendarDocument()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectReview()->count());
-        $this->assertSame(1, $this->target->getProjectReview()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectReviewContact()->getId());
-
-        $this->assertSame(1, $this->target->getProjectVersionReview()->count());
-        $this->assertSame(1, $this->target->getProjectVersionReview()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectReport()->count());
-        $this->assertSame(1, $this->target->getProjectReport()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectCalendarReview()->count());
-        $this->assertSame(1, $this->target->getProjectCalendarReview()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectReportReview()->count());
-        $this->assertSame(1, $this->target->getProjectReportReview()->first()->getId());
-
-        $this->assertSame(1, $this->target->getInvite()->count());
-        $this->assertSame(1, $this->target->getInvite()->first()->getId());
-
-        $this->assertSame(2, $this->target->getInviteContact()->count());
-        $this->assertSame(3, $this->target->getInviteContact()->get(0)->getId());
-        $this->assertSame(2, $this->target->getInviteContact()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getIdeaInvite()->count());
-        $this->assertSame(1, $this->target->getIdeaInvite()->first()->getId());
-
-        $this->assertSame(2, $this->target->getIdeaInviteContact()->count());
-        $this->assertSame(3, $this->target->getIdeaInviteContact()->get(0)->getId());
-        $this->assertSame(2, $this->target->getIdeaInviteContact()->get(1)->getId());
-
-        $this->assertSame(2, $this->target->getLoi()->count());
-        $this->assertSame(1, $this->target->getLoi()->first()->getId());
-        $this->assertSame(2, $this->target->getLoi()->next()->getId());
-
-        $this->assertSame(1, $this->target->getLoiApprover()->count());
-        $this->assertSame(3, $this->target->getLoiApprover()->first()->getId());
-
-        $this->assertSame(1, $this->target->getAffiliationDoa()->count());
-        $this->assertSame(1, $this->target->getAffiliationDoa()->first()->getId());
-
-        $this->assertSame(1, $this->target->getPermitContact()->count());
-        $this->assertSame(1, $this->target->getPermitContact()->first()->getId());
-
-        $this->assertSame(1, $this->target->getSession()->count());
-        $this->assertSame(1, $this->target->getSession()->first()->getId());
-
-        $this->assertSame(1, $this->target->getPca()->count());
-        $this->assertSame(1, $this->target->getPca()->first()->getId());
-
-        $this->assertSame(2, $this->target->getVoter()->count());
-        $this->assertSame(2, $this->target->getVoter()->get(0)->getId());
-        $this->assertSame(1, $this->target->getVoter()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getTour()->count());
-        $this->assertSame(1, $this->target->getTour()->first()->getId());
-
-        $this->assertSame(2, $this->target->getTourContact()->count());
-        $this->assertSame(3, $this->target->getTourContact()->get(0)->getId());
-        $this->assertSame(2, $this->target->getTourContact()->get(1)->getId());
-
-        $this->assertSame(1, $this->target->getDoaReminderReceiver()->count());
-        $this->assertSame(1, $this->target->getDoaReminderReceiver()->first()->getId());
-
-        $this->assertSame(1, $this->target->getDoaReminderSender()->count());
-        $this->assertSame(2, $this->target->getDoaReminderSender()->first()->getId());
-
-        $this->assertSame(1, $this->target->getLoiReminderReceiver()->count());
-        $this->assertSame(1, $this->target->getLoiReminderReceiver()->first()->getId());
-
-        $this->assertSame(1, $this->target->getLoiReminderSender()->count());
-        $this->assertSame(2, $this->target->getLoiReminderSender()->first()->getId());
-
-        $this->assertSame(1, $this->target->getBlog()->count());
-        $this->assertSame(1, $this->target->getBlog()->first()->getId());
-
-        $this->assertSame(1, $this->target->getBlogMessage()->count());
-        $this->assertSame(1, $this->target->getBlogMessage()->first()->getId());
-
-        $this->assertSame(1, $this->target->getJournalEntry()->count());
-        $this->assertSame(1, $this->target->getJournalEntry()->first()->getId());
-
-        $this->assertSame(1, $this->target->getJournal()->count());
-        $this->assertSame(1, $this->target->getJournal()->first()->getId());
-
-        $this->assertSame(1, $this->target->getOrganisationJournal()->count());
-        $this->assertSame(2, $this->target->getOrganisationJournal()->first()->getId());
-
-        $this->assertSame(1, $this->target->getInvoiceLog()->count());
-        $this->assertSame(1, $this->target->getInvoiceLog()->first()->getId());
-
-        $this->assertSame(1, $this->target->getReminder()->count());
-        $this->assertSame(1, $this->target->getReminder()->first()->getId());
-
-        $this->assertSame(1, $this->target->getAchievement()->count());
-        $this->assertSame(1, $this->target->getAchievement()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectLog()->count());
-        $this->assertSame(1, $this->target->getProjectLog()->first()->getId());
-
-        $this->assertSame(1, $this->target->getProjectChangelog()->count());
-        $this->assertSame(1, $this->target->getProjectChangelog()->first()->getId());
-
-        $this->assertSame(1, $this->target->getChangeRequestProcess()->count());
-        $this->assertSame(1, $this->target->getChangeRequestProcess()->first()->getId());
-
-        $this->assertSame(1, $this->target->getChangeRequestCostChange()->count());
-        $this->assertSame(1, $this->target->getChangeRequestCostChange()->first()->getId());
-
-        $this->assertSame(1, $this->target->getChangeRequestCountry()->count());
-        $this->assertSame(1, $this->target->getChangeRequestCountry()->first()->getId());
-
-        $this->assertSame(1, $this->target->getVersionContact()->count());
-        $this->assertSame(1, $this->target->getVersionContact()->first()->getId());
-
-        $this->assertSame(1, $this->target->getWorkpackageContact()->count());
-        $this->assertSame(1, $this->target->getWorkpackageContact()->first()->getId());
-
-        $this->assertSame(1, $this->target->getLogCreatedBy()->count());
-        $this->assertSame(1, $this->target->getLogCreatedBy()->first()->getId());
-
-        $this->assertSame(2, $this->target->getLog()->count());
-        $this->assertSame(2, $this->target->getLog()->first()->getId());
-
-        $this->assertSame(1, $this->target->getPageview()->count());
-        $this->assertSame(1, $this->target->getPageview()->first()->getId());
-
-        $this->assertSame(
-            'Merged contact Test von Dummy (1) into Test von Dummy (2)',
-            $this->target->getLog()->get(1)->getLog()
-        );
-    }
-
-    /**
-     * Test a failing merge
-     *
-     * @covers \Contact\Controller\Plugin\MergeContact::merge
-     */
-    public function testMergeFail(): void
-    {
-        $entityManagerMock = $this->setUpEntityManagerMock(true);
-
-        $mergeContactNoLog = new MergeContact($entityManagerMock, $this->translator);
-        $responseNoLog     = $mergeContactNoLog->merge($this->source, $this->target);
-        $this->assertEquals(false, $responseNoLog['success']);
-        $this->assertEquals('Oops!', $responseNoLog['errorMessage']);
-
-        $errorLoggerMock = $this->getMockBuilder(Logging::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['handleErrorException'])
-            ->getMock();
-
-        $errorLoggerMock->expects($this->once())
-            ->method('handleErrorException')
-            ->with($this->isInstanceOf('Exception'));
-
-        $mergeContactLog = new MergeContact($entityManagerMock, $this->translator, $errorLoggerMock);
-        $responseLog     = $mergeContactLog()->merge($this->source, $this->target);
-
-        $this->assertEquals(false, $responseLog['success']);
+        $this->source = $this->createSource();
+        $this->target = $this->createTarget();
+        $this->translator = $this->setUpTranslatorMock();
     }
 
     /**
@@ -1231,6 +797,412 @@ final class MergeContactTest extends AbstractServiceTest
     }
 
     /**
+     * Test the basic __invoke magic method returning the plugin instance
+     *
+     * @covers \Contact\Controller\Plugin\MergeContact::__invoke
+     * @covers \Contact\Controller\Plugin\MergeContact::__construct
+     */
+    public function testInvoke(): void
+    {
+        $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
+        $instance = $mergeContact();
+        $this->assertSame($mergeContact, $instance);
+    }
+
+    /**
+     * Test the pre-merge checks
+     *
+     * @covers \Contact\Controller\Plugin\MergeContact::checkMerge
+     */
+    public function testCheckMerge(): void
+    {
+        $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
+
+        // Run the merge check
+        $errors = $mergeContact()->checkMerge($this->source, $this->target);
+
+        $this->assertEquals([], $errors);
+    }
+
+    /**
+     * Test the pre-merge checks failing
+     *
+     * @covers \Contact\Controller\Plugin\MergeContact::checkMerge
+     */
+    public function testCheckMergeFail(): void
+    {
+        $mergeContact = new MergeContact($this->getEntityManagerMock(), $this->translator);
+
+        // Run the merge check
+        $errors = $mergeContact()->checkMerge($this->source, $this->source);
+
+        $this->assertEquals('txt-cant-merge-the-same-contact', $errors[0]);
+    }
+
+    /**
+     * Test the actual merge
+     *
+     * @covers \Contact\Controller\Plugin\MergeContact::merge
+     */
+    public function testMerge(): void
+    {
+        /** @var DispatchableInterface $controllerMock */
+        $controllerMock = $this->setUpControllerMock();
+        $mergeOrganisation = new MergeContact($this->setUpEntityManagerMock(), $this->translator);
+        $mergeOrganisation->setController($controllerMock);
+
+        $result = $mergeOrganisation()->merge($this->source, $this->target);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame($this->source->getFirstName(), $this->target->getFirstName());
+        $this->assertSame($this->source->getMiddleName(), $this->target->getMiddleName());
+        $this->assertSame($this->source->getLastName(), $this->target->getLastName());
+        $this->assertSame($this->source->getEmail(), $this->target->getEmail());
+        $this->assertSame($this->source->getGender(), $this->target->getGender());
+        $this->assertSame($this->source->getTitle(), $this->target->getTitle());
+        $this->assertSame($this->source->getPosition(), $this->target->getPosition());
+        $this->assertSame($this->source->getDepartment(), $this->target->getDepartment());
+        $this->assertSame($this->source->getDateOfBirth(), $this->target->getDateOfBirth());
+        $this->assertSame($this->source->getDateCreated(), $this->target->getDateCreated());
+        $this->assertSame($this->source->getLastUpdate(), $this->target->getLastUpdate());
+
+        $this->assertSame(1, $this->target->getAccess()->count());
+        $this->assertSame(1, $this->target->getAccess()->first()->getId());
+
+        $this->assertSame(2, $this->target->getEmailAddress()->count());
+        $this->assertSame('duplicate@itea3.org', $this->target->getEmailAddress()->get(0)->getEmail());
+        $this->assertSame('test.von.dummy@itea3.org', $this->target->getEmailAddress()->get(1)->getEmail());
+
+        $this->assertSame(1, $this->target->getCv()->getId());
+
+        $this->assertSame(1, $this->target->getAddress()->count());
+        $this->assertSame(1, $this->target->getAddress()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPhone()->count());
+        $this->assertSame(1, $this->target->getPhone()->first()->getId());
+
+        $this->assertSame(2, $this->target->getOptIn()->count());
+        $this->assertSame(2, $this->target->getOptIn()->get(0)->getId());
+        $this->assertSame(1, $this->target->getOptIn()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getProject()->count());
+        $this->assertSame(1, $this->target->getProject()->first()->getId());
+
+        $this->assertSame(1, $this->target->getRationale()->count());
+        $this->assertSame(1, $this->target->getRationale()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectDescription()->count());
+        $this->assertSame(1, $this->target->getProjectDescription()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectVersion()->count());
+        $this->assertSame(1, $this->target->getProjectVersion()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectReportItem()->count());
+        $this->assertSame(1, $this->target->getProjectReportItem()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectReportWorkpackageDescription()->count());
+        $this->assertSame(1, $this->target->getProjectReportWorkpackageDescription()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectReportEffortSpent()->count());
+        $this->assertSame(1, $this->target->getProjectReportEffortSpent()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectDocument()->count());
+        $this->assertSame(1, $this->target->getProjectDocument()->first()->getId());
+
+        $this->assertSame(1, $this->target->getDnd()->count());
+        $this->assertSame(1, $this->target->getDnd()->first()->getId());
+
+        $this->assertSame(1, $this->target->getContract()->count());
+        $this->assertSame(1, $this->target->getContract()->first()->getId());
+
+        $this->assertSame(1, $this->target->getContractVersion()->count());
+        $this->assertSame(1, $this->target->getContractVersion()->first()->getId());
+
+        $this->assertSame(2, $this->target->getNda()->count());
+        $this->assertSame(1, $this->target->getNda()->first()->getId());
+        $this->assertSame(2, $this->target->getNda()->next()->getId());
+
+        $this->assertSame(1, $this->target->getNdaApprover()->count());
+        $this->assertSame(3, $this->target->getNdaApprover()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProgramDoa()->count());
+        $this->assertSame(1, $this->target->getProgramDoa()->first()->getId());
+
+        $this->assertSame(1, $this->target->getParentDoa()->count());
+        $this->assertSame(1, $this->target->getParentDoa()->first()->getId());
+
+        $this->assertSame(1, $this->target->getContactOrganisation()->getId());
+
+        $this->assertSame(1, $this->target->getIdea()->count());
+        $this->assertSame(1, $this->target->getIdea()->first()->getId());
+
+        $this->assertSame(2, $this->target->getFavouriteIdea()->count());
+        $this->assertSame(3, $this->target->getFavouriteIdea()->get(0)->getId());
+        $this->assertSame(2, $this->target->getFavouriteIdea()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getOrganisationLog()->count());
+        $this->assertSame(1, $this->target->getOrganisationLog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getIdeaPartner()->count());
+        $this->assertSame(1, $this->target->getIdeaPartner()->first()->getId());
+
+        $this->assertSame(1, $this->target->getAffiliation()->count());
+        $this->assertSame(1, $this->target->getAffiliation()->first()->getId());
+
+        $this->assertSame(1, $this->target->getAffiliationLog()->count());
+        $this->assertSame(1, $this->target->getAffiliationLog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getFinancial()->count());
+        $this->assertSame(1, $this->target->getFinancial()->first()->getId());
+
+        $this->assertSame(1, $this->target->getAffiliationDescription()->count());
+        $this->assertSame(1, $this->target->getAffiliationDescription()->first()->getId());
+
+        $this->assertSame(1, $this->target->getAffiliationVersion()->count());
+        $this->assertSame(1, $this->target->getAffiliationVersion()->first()->getId());
+
+        $this->assertSame(1, $this->target->getInvoice()->count());
+        $this->assertSame(1, $this->target->getInvoice()->first()->getId());
+
+        $this->assertSame(1, $this->target->getParent()->count());
+        $this->assertSame(1, $this->target->getParent()->first()->getId());
+
+        $this->assertSame(1, $this->target->getParentFinancial()->count());
+        $this->assertSame(1, $this->target->getParentFinancial()->first()->getId());
+
+        $this->assertSame(1, $this->target->getParentOrganisation()->count());
+        $this->assertSame(1, $this->target->getParentOrganisation()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPublication()->count());
+        $this->assertSame(1, $this->target->getPublication()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPublicationDownload()->count());
+        $this->assertSame(1, $this->target->getPublicationDownload()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPhoto()->count());
+        $this->assertSame(1, $this->target->getPhoto()->first()->getId());
+
+        $this->assertSame(2, $this->target->getAssociate()->count());
+        $this->assertSame(3, $this->target->getAssociate()->get(0)->getId());
+        $this->assertSame(2, $this->target->getAssociate()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getFunder()->getId());
+
+        $this->assertSame(1, $this->target->getDeeplinkContact()->count());
+        $this->assertSame(1, $this->target->getDeeplinkContact()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProfile()->getId());
+
+        $this->assertSame(1, $this->target->getRegistration()->count());
+        $this->assertSame(1, $this->target->getRegistration()->first()->getId());
+
+        $this->assertSame(1, $this->target->getBadge()->count());
+        $this->assertSame(1, $this->target->getBadge()->first()->getId());
+
+        $this->assertSame(2, $this->target->getBadgeContact()->count());
+        $this->assertSame(3, $this->target->getBadgeContact()->get(0)->getBadge()->getId());
+        $this->assertSame(2, $this->target->getBadgeContact()->get(1)->getBadge()->getId());
+        $this->assertSame(2, $this->target->getBadgeContact()->get(0)->getId());
+        $this->assertSame(1, $this->target->getBadgeContact()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getBoothContact()->count());
+        $this->assertSame(1, $this->target->getBoothContact()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectBooth()->count());
+        $this->assertSame(1, $this->target->getProjectBooth()->first()->getId());
+
+        $this->assertSame(1, $this->target->getOrganisationBooth()->count());
+        $this->assertSame(1, $this->target->getOrganisationBooth()->first()->getId());
+
+        $this->assertSame(1, $this->target->getBoothFinancial()->count());
+        $this->assertSame(1, $this->target->getBoothFinancial()->first()->getId());
+
+        $this->assertSame(2, $this->target->getNote()->count());
+        $this->assertSame(
+            'Merged contact Test von Dummy (1) into Test von Dummy (2)',
+            $this->target->getNote()->get(0)->getNote()
+        );
+        $this->assertSame(1, $this->target->getNote()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getSelection()->count());
+        $this->assertSame(1, $this->target->getSelection()->first()->getId());
+
+        $this->assertSame(2, $this->target->getSelectionContact()->count());
+        $this->assertSame(3, $this->target->getSelectionContact()->get(0)->getSelection()->getId());
+        $this->assertSame(2, $this->target->getSelectionContact()->get(1)->getSelection()->getId());
+        $this->assertSame(2, $this->target->getSelectionContact()->get(0)->getId());
+        $this->assertSame(1, $this->target->getSelectionContact()->get(1)->getId());
+
+        $this->assertSame(2, $this->target->getMailingContact()->count());
+        $this->assertSame(3, $this->target->getMailingContact()->get(0)->getMailing()->getId());
+        $this->assertSame(2, $this->target->getMailingContact()->get(1)->getMailing()->getId());
+        $this->assertSame(2, $this->target->getMailingContact()->get(0)->getId());
+        $this->assertSame(1, $this->target->getMailingContact()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getMailing()->count());
+        $this->assertSame(1, $this->target->getMailing()->first()->getId());
+
+        $this->assertSame(1, $this->target->getEmailMessage()->count());
+        $this->assertSame(1, $this->target->getEmailMessage()->first()->getId());
+
+        $this->assertSame(1, $this->target->getResult()->count());
+        $this->assertSame(1, $this->target->getResult()->first()->getId());
+
+        $this->assertSame(1, $this->target->getWorkpackage()->count());
+        $this->assertSame(1, $this->target->getWorkpackage()->first()->getId());
+
+        $this->assertSame(1, $this->target->getWorkpackageDocument()->count());
+        $this->assertSame(1, $this->target->getWorkpackageDocument()->first()->getId());
+
+        $this->assertSame(1, $this->target->getIdeaMessage()->count());
+        $this->assertSame(1, $this->target->getIdeaMessage()->first()->getId());
+
+        $this->assertSame(1, $this->target->getEvaluation()->count());
+        $this->assertSame(1, $this->target->getEvaluation()->first()->getId());
+
+        $this->assertSame(1, $this->target->getCalendar()->count());
+        $this->assertSame(1, $this->target->getCalendar()->first()->getId());
+
+        $this->assertSame(1, $this->target->getCalendarContact()->count());
+        $this->assertSame(1, $this->target->getCalendarContact()->first()->getId());
+
+        $this->assertSame(1, $this->target->getCalendarDocument()->count());
+        $this->assertSame(1, $this->target->getCalendarDocument()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectReview()->count());
+        $this->assertSame(1, $this->target->getProjectReview()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectReviewContact()->getId());
+
+        $this->assertSame(1, $this->target->getProjectVersionReview()->count());
+        $this->assertSame(1, $this->target->getProjectVersionReview()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectReport()->count());
+        $this->assertSame(1, $this->target->getProjectReport()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectCalendarReview()->count());
+        $this->assertSame(1, $this->target->getProjectCalendarReview()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectReportReview()->count());
+        $this->assertSame(1, $this->target->getProjectReportReview()->first()->getId());
+
+        $this->assertSame(1, $this->target->getInvite()->count());
+        $this->assertSame(1, $this->target->getInvite()->first()->getId());
+
+        $this->assertSame(2, $this->target->getInviteContact()->count());
+        $this->assertSame(3, $this->target->getInviteContact()->get(0)->getId());
+        $this->assertSame(2, $this->target->getInviteContact()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getIdeaInvite()->count());
+        $this->assertSame(1, $this->target->getIdeaInvite()->first()->getId());
+
+        $this->assertSame(2, $this->target->getIdeaInviteContact()->count());
+        $this->assertSame(3, $this->target->getIdeaInviteContact()->get(0)->getId());
+        $this->assertSame(2, $this->target->getIdeaInviteContact()->get(1)->getId());
+
+        $this->assertSame(2, $this->target->getLoi()->count());
+        $this->assertSame(1, $this->target->getLoi()->first()->getId());
+        $this->assertSame(2, $this->target->getLoi()->next()->getId());
+
+        $this->assertSame(1, $this->target->getLoiApprover()->count());
+        $this->assertSame(3, $this->target->getLoiApprover()->first()->getId());
+
+        $this->assertSame(1, $this->target->getAffiliationDoa()->count());
+        $this->assertSame(1, $this->target->getAffiliationDoa()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPermitContact()->count());
+        $this->assertSame(1, $this->target->getPermitContact()->first()->getId());
+
+        $this->assertSame(1, $this->target->getSession()->count());
+        $this->assertSame(1, $this->target->getSession()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPca()->count());
+        $this->assertSame(1, $this->target->getPca()->first()->getId());
+
+        $this->assertSame(2, $this->target->getVoter()->count());
+        $this->assertSame(2, $this->target->getVoter()->get(0)->getId());
+        $this->assertSame(1, $this->target->getVoter()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getTour()->count());
+        $this->assertSame(1, $this->target->getTour()->first()->getId());
+
+        $this->assertSame(2, $this->target->getTourContact()->count());
+        $this->assertSame(3, $this->target->getTourContact()->get(0)->getId());
+        $this->assertSame(2, $this->target->getTourContact()->get(1)->getId());
+
+        $this->assertSame(1, $this->target->getDoaReminderReceiver()->count());
+        $this->assertSame(1, $this->target->getDoaReminderReceiver()->first()->getId());
+
+        $this->assertSame(1, $this->target->getDoaReminderSender()->count());
+        $this->assertSame(2, $this->target->getDoaReminderSender()->first()->getId());
+
+        $this->assertSame(1, $this->target->getLoiReminderReceiver()->count());
+        $this->assertSame(1, $this->target->getLoiReminderReceiver()->first()->getId());
+
+        $this->assertSame(1, $this->target->getLoiReminderSender()->count());
+        $this->assertSame(2, $this->target->getLoiReminderSender()->first()->getId());
+
+        $this->assertSame(1, $this->target->getBlog()->count());
+        $this->assertSame(1, $this->target->getBlog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getBlogMessage()->count());
+        $this->assertSame(1, $this->target->getBlogMessage()->first()->getId());
+
+        $this->assertSame(1, $this->target->getJournalEntry()->count());
+        $this->assertSame(1, $this->target->getJournalEntry()->first()->getId());
+
+        $this->assertSame(1, $this->target->getJournal()->count());
+        $this->assertSame(1, $this->target->getJournal()->first()->getId());
+
+        $this->assertSame(1, $this->target->getOrganisationJournal()->count());
+        $this->assertSame(2, $this->target->getOrganisationJournal()->first()->getId());
+
+        $this->assertSame(1, $this->target->getInvoiceLog()->count());
+        $this->assertSame(1, $this->target->getInvoiceLog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getReminder()->count());
+        $this->assertSame(1, $this->target->getReminder()->first()->getId());
+
+        $this->assertSame(1, $this->target->getAchievement()->count());
+        $this->assertSame(1, $this->target->getAchievement()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectLog()->count());
+        $this->assertSame(1, $this->target->getProjectLog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getProjectChangelog()->count());
+        $this->assertSame(1, $this->target->getProjectChangelog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getChangeRequestProcess()->count());
+        $this->assertSame(1, $this->target->getChangeRequestProcess()->first()->getId());
+
+        $this->assertSame(1, $this->target->getChangeRequestCostChange()->count());
+        $this->assertSame(1, $this->target->getChangeRequestCostChange()->first()->getId());
+
+        $this->assertSame(1, $this->target->getChangeRequestCountry()->count());
+        $this->assertSame(1, $this->target->getChangeRequestCountry()->first()->getId());
+
+        $this->assertSame(1, $this->target->getVersionContact()->count());
+        $this->assertSame(1, $this->target->getVersionContact()->first()->getId());
+
+        $this->assertSame(1, $this->target->getWorkpackageContact()->count());
+        $this->assertSame(1, $this->target->getWorkpackageContact()->first()->getId());
+
+        $this->assertSame(1, $this->target->getLogCreatedBy()->count());
+        $this->assertSame(1, $this->target->getLogCreatedBy()->first()->getId());
+
+        $this->assertSame(2, $this->target->getLog()->count());
+        $this->assertSame(2, $this->target->getLog()->first()->getId());
+
+        $this->assertSame(1, $this->target->getPageview()->count());
+        $this->assertSame(1, $this->target->getPageview()->first()->getId());
+
+        $this->assertSame(
+            'Merged contact Test von Dummy (1) into Test von Dummy (2)',
+            $this->target->getLog()->get(1)->getLog()
+        );
+    }
+
+    /**
      * Set up the controller mock object.
      *
      * @return Translator|MockObject
@@ -1254,6 +1226,7 @@ final class MergeContactTest extends AbstractServiceTest
 
     /**
      * Set up the entity manager mock object with expectations depending on the chosen merge strategy.
+     *
      * @param bool $throwException
      *
      * @return EntityManager|MockObject
@@ -1289,12 +1262,41 @@ final class MergeContactTest extends AbstractServiceTest
     }
 
     /**
+     * Test a failing merge
+     *
+     * @covers \Contact\Controller\Plugin\MergeContact::merge
+     */
+    public function testMergeFail(): void
+    {
+        $entityManagerMock = $this->setUpEntityManagerMock(true);
+
+        $mergeContactNoLog = new MergeContact($entityManagerMock, $this->translator);
+        $responseNoLog = $mergeContactNoLog->merge($this->source, $this->target);
+        $this->assertEquals(false, $responseNoLog['success']);
+        $this->assertEquals('Oops!', $responseNoLog['errorMessage']);
+
+        $errorLoggerMock = $this->getMockBuilder(Logging::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['handleErrorException'])
+            ->getMock();
+
+        $errorLoggerMock->expects($this->once())
+            ->method('handleErrorException')
+            ->with($this->isInstanceOf('Exception'));
+
+        $mergeContactLog = new MergeContact($entityManagerMock, $this->translator, $errorLoggerMock);
+        $responseLog = $mergeContactLog()->merge($this->source, $this->target);
+
+        $this->assertEquals(false, $responseLog['success']);
+    }
+
+    /**
      * Free memory
      */
-    public function tearDown()
+    public function tearDown(): void
     {
-        $this->source     = null;
-        $this->target     = null;
+        $this->source = null;
+        $this->target = null;
         $this->translator = null;
     }
 }

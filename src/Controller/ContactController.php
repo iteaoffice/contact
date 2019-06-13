@@ -69,7 +69,9 @@ final class ContactController extends ContactAbstractController
             $formData = $form->getData();
             $this->contactService->updatePasswordForContact($formData['password'], $this->identity());
 
-            $this->flashMessenger()->addSuccessMessage($this->translator->translate("txt-password-successfully-been-updated"));
+            $this->flashMessenger()->addSuccessMessage($this->translator->translate(
+                'txt-password-successfully-been-updated'
+            ));
 
             return $this->redirect()->toRoute('community/contact/profile/view');
         }

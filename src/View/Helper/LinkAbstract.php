@@ -15,10 +15,11 @@ namespace Contact\View\Helper;
 
 use BjyAuthorize\Controller\Plugin\IsAllowed;
 use BjyAuthorize\Service\Authorize;
+use Contact\Acl\Assertion\AbstractAssertion;
 use Contact\Acl\Assertion\AssertionAbstract;
+use Contact\Entity\AbstractEntity;
 use Contact\Entity\Address;
 use Contact\Entity\Contact;
-use Contact\Entity\AbstractEntity;
 use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
@@ -145,7 +146,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                 $this->routerParams,
                 \is_null($this->getFragment()) ? [] : ['fragment' => $this->getFragment()]
             ),
-            htmlentities((string) $this->text),
+            htmlentities((string)$this->text),
             implode(' ', $this->classes),
             \in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
                 : htmlentities(implode('', $this->linkContent))
@@ -170,6 +171,8 @@ abstract class LinkAbstract extends AbstractViewHelper
             case 'button':
                 switch ($this->getAction()) {
                     case 'edit-profile':
+                    case 'edit':
+                    case 'edit-admin':
                         $this->addLinkContent('<i class="fa fa-pencil-square-o"></i>');
                         break;
                     case 'change-password':
@@ -179,7 +182,12 @@ abstract class LinkAbstract extends AbstractViewHelper
                     case 'view':
                         $this->addLinkContent('<i class="fa fa-user"></i>');
                         break;
+                    case 'edit-contacts':
+                        $this->addLinkContent('<i class="fa fa-users"></i>');
+                        break;
                     case 'add-contact':
+                    case 'new':
+                    case 'add-project':
                         $this->addLinkContent('<i class="fa fa-plus"></i>');
                         break;
                     case 'export-excel':
@@ -192,14 +200,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                     case 'send-message':
                         $this->addLinkContent('<i class="fa fa-envelope"></i>');
                         break;
-                    case 'new':
-                    case 'add-project':
-                        $this->addLinkContent('<i class="fa fa-plus"></i>');
-                        break;
-                    case 'edit':
-                    case 'edit-admin':
-                        $this->addLinkContent('<i class="fa fa-pencil-square-o"></i>');
-                        break;
+
                     default:
                         $this->addLinkContent('<i class="fa fa-link"></i>');
                         break;
@@ -379,8 +380,8 @@ abstract class LinkAbstract extends AbstractViewHelper
 
     /**
      * @param AbstractEntity $entity
-     * @param string $assertion
-     * @param string $action
+     * @param string         $assertion
+     * @param string         $action
      *
      * @return bool
      */
@@ -401,7 +402,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     /**
      * @param string $assertion
      *
-     * @return AssertionAbstract
+     * @return AbstractAssertion
      */
     public function getAssertion($assertion)
     {
@@ -418,7 +419,7 @@ abstract class LinkAbstract extends AbstractViewHelper
 
     /**
      * @param null|AbstractEntity $resource
-     * @param string $privilege
+     * @param string              $privilege
      *
      * @return bool
      */
@@ -437,7 +438,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      *
      * @param string $key
      * @param        $value
-     * @param bool $allowNull
+     * @param bool   $allowNull
      */
     public function addRouterParam($key, $value, $allowNull = true)
     {
@@ -454,7 +455,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      *
      * @param string $key
      * @param        $value
-     * @param bool $allowNull
+     * @param bool   $allowNull
      */
     public function addQueryParam($key, $value, $allowNull = true)
     {
@@ -519,7 +520,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     }
 
     /**
-     * @param  string $hash
+     * @param string $hash
      *
      * @return LinkAbstract
      */

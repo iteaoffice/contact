@@ -25,6 +25,7 @@ use DoctrineExtensions\Query\Mysql\Replace;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
+use Zend\Form\ElementFactory;
 use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Zend\Stdlib;
 
@@ -36,6 +37,7 @@ $config = [
             Controller\ContactAdminController::class     => ConfigAbstractFactory::class,
             Controller\ContactController::class          => ConfigAbstractFactory::class,
             Controller\FacebookController::class         => ConfigAbstractFactory::class,
+            Controller\DndController::class              => ConfigAbstractFactory::class,
             Controller\ImageController::class            => ConfigAbstractFactory::class,
             Controller\FacebookManagerController::class  => ConfigAbstractFactory::class,
             Controller\NoteManagerController::class      => ConfigAbstractFactory::class,
@@ -67,6 +69,7 @@ $config = [
     'view_helpers'       => [
         'aliases'   => [
             'contactLink'        => View\Helper\ContactLink::class,
+            'dndLink'            => View\Helper\DndLink::class,
             'profileLink'        => View\Helper\ProfileLink::class,
             'selectionLink'      => View\Helper\SelectionLink::class,
             'facebookLink'       => View\Helper\FacebookLink::class,
@@ -79,6 +82,7 @@ $config = [
         ],
         'factories' => [
             View\Helper\ContactLink::class             => View\Factory\ViewHelperFactory::class,
+            View\Helper\DndLink::class                 => View\Factory\ViewHelperFactory::class,
             View\Helper\ProfileLink::class             => View\Factory\ViewHelperFactory::class,
             View\Helper\SelectionLink::class           => View\Factory\ViewHelperFactory::class,
             View\Helper\FacebookLink::class            => View\Factory\ViewHelperFactory::class,
@@ -95,7 +99,7 @@ $config = [
             'Contact' => Form\Element\Contact::class,
         ],
         'factories' => [
-            Form\Element\Contact::class => \Zend\Form\ElementFactory::class,
+            Form\Element\Contact::class => ElementFactory::class,
         ],
     ],
     'service_manager'    => [
@@ -106,6 +110,7 @@ $config = [
             Navigation\Invokable\OptInLabel::class                  => Factory\InvokableFactory::class,
             Navigation\Invokable\SelectionLabel::class              => Factory\InvokableFactory::class,
             Navigation\Invokable\AddressLabel::class                => Factory\InvokableFactory::class,
+            Navigation\Invokable\DndLabel::class                    => Factory\InvokableFactory::class,
             Navigation\Invokable\NoteLabel::class                   => Factory\InvokableFactory::class,
             Navigation\Invokable\PhoneLabel::class                  => Factory\InvokableFactory::class,
             Provider\Identity\AuthenticationIdentityProvider::class => Factory\AuthenticationIdentityProviderServiceFactory::class,
@@ -115,6 +120,7 @@ $config = [
             Service\AddressService::class                           => ConfigAbstractFactory::class,
             Service\FormService::class                              => Factory\FormServiceFactory::class,
             InputFilter\FacebookFilter::class                       => Factory\InputFilterFactory::class,
+            InputFilter\DndFilter::class                            => Factory\InputFilterFactory::class,
             InputFilter\ContactFilter::class                        => Factory\InputFilterFactory::class,
             InputFilter\OptInFilter::class                          => Factory\InputFilterFactory::class,
             InputFilter\SelectionFilter::class                      => Factory\InputFilterFactory::class,

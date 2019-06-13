@@ -15,13 +15,15 @@ namespace Contact\Repository;
 use Contact\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use function array_key_exists;
+use function in_array;
 
 /**
  * Class Selection
  *
  * @package Contact\Repository
  */
-class Selection extends EntityRepository
+final class Selection extends EntityRepository
 {
     public function findFiltered(array $filter): QueryBuilder
     {
@@ -29,7 +31,7 @@ class Selection extends EntityRepository
         $qb->select('contact_entity_selection');
         $qb->from(Entity\Selection::class, 'contact_entity_selection');
 
-        if (\array_key_exists('search', $filter)) {
+        if (array_key_exists('search', $filter)) {
             $qb->andWhere(
                 $qb->expr()->orX(
                     $qb->expr()->like(
@@ -44,25 +46,25 @@ class Selection extends EntityRepository
             $qb->setParameter('like', sprintf("%%%s%%", $filter['search']));
         }
 
-        if (\array_key_exists('sql', $filter)) {
+        if (array_key_exists('sql', $filter)) {
             $qb->join('contact_entity_selection.sql', 'sql');
         }
 
-        if (\array_key_exists('tags', $filter)) {
+        if (array_key_exists('tags', $filter)) {
             $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['tags']));
         }
 
-        if (!\array_key_exists('includeDeleted', $filter)) {
+        if (!array_key_exists('includeDeleted', $filter)) {
             //Do not show the deleted ones
             $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
         }
 
-        if (\array_key_exists('core', $filter)) {
+        if (array_key_exists('core', $filter)) {
             $qb->andWhere($qb->expr()->in('contact_entity_selection.core', $filter['core']));
         }
 
         $direction = 'ASC';
-        if (isset($filter['direction']) && \in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
             $direction = strtoupper($filter['direction']);
         }
 

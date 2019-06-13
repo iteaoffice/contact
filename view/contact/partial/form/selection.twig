@@ -19,6 +19,12 @@
         {% if form.has('delete') %}
             {{ ztbformelement(form.get('delete')) }}
         {% endif %}
+        {% if form.has('deactivate') %}
+            {{ ztbformelement(form.get('deactivate')) }}
+        {% endif %}
+        {% if form.has('reactivate') %}
+            {{ ztbformelement(form.get('reactivate')) }}
+        {% endif %}
     </div>
 </div>
 

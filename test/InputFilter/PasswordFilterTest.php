@@ -22,7 +22,7 @@ class PasswordFilterTest extends AbstractInputFilterTest
     /**
      * Set up basic properties
      */
-    public function setUp()
+    public function setUp(): void
     {
     }
 

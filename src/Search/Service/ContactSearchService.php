@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Contact\Search\Service;
 
-use function in_array;
 use Search\Service\AbstractSearchService;
 use Search\Service\SearchServiceInterface;
 use Solarium\QueryType\Select\Query\Query;
+use function in_array;
 
 /**
  * Contact Solr search service
@@ -75,9 +75,9 @@ class ContactSearchService extends AbstractSearchService
         }
 
         if ($hasTerm) {
-            $this->getQuery()->addSort('country_sort', Query::SORT_DESC);
-        } else {
-            $this->getQuery()->addSort('country_sort', Query::SORT_ASC);
+            $this->getQuery()->addSort('score', Query::SORT_DESC);
+        } elseif (!$hasSort) {
+            $this->getQuery()->addSort('contact_id', Query::SORT_DESC);
         }
 
         $facetSet = $this->getQuery()->getFacetSet();
@@ -86,15 +86,23 @@ class ContactSearchService extends AbstractSearchService
         if (('*' !== $searchTerm) && (strlen($searchTerm) > 2)) {
             $facetSet->createFacetField('organisation')->setField('organisation')->setSort('index')->setMinCount(1);
         }
-        $facetSet->createFacetField('country')->setField('country')->setSort('index')->setMinCount(1)->setExcludes(['country']);
-        $facetSet->createFacetField('office')->setField('is_office_text')->setSort('index')->setMinCount(1)->setExcludes(
-            ['is_office_text']
+        $facetSet->createFacetField('country')->setField('country')->setSort('index')->setMinCount(1)->setExcludes(
+            ['country']
         );
-        $facetSet->createFacetField('funder')->setField('is_funder_text')->setSort('index')->setMinCount(1)->setExcludes(
-            ['is_funder_text']
+        $facetSet->createFacetField('office')->setField('is_office_text')->setSort('index')->setMinCount(1)
+            ->setExcludes(
+                ['is_office_text']
+            );
+        $facetSet->createFacetField('funder')->setField('is_funder_text')->setSort('index')->setMinCount(1)
+            ->setExcludes(
+                ['is_funder_text']
+            );
+        $facetSet->createFacetField('access')->setField('access')->setSort('index')->setMinCount(1)->setExcludes(
+            ['access']
         );
-        $facetSet->createFacetField('access')->setField('access')->setSort('index')->setMinCount(1)->setExcludes(['access']);
-        $facetSet->createFacetField('opt_in')->setField('optin')->setSort('index')->setMinCount(1)->setExcludes(['optin']);
+        $facetSet->createFacetField('opt_in')->setField('optin')->setSort('index')->setMinCount(1)->setExcludes(
+            ['optin']
+        );
 
 
         return $this;

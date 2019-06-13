@@ -115,7 +115,7 @@
 
 <script>
     $(function () {
-        var actionTemplate = '{{ url('zfcadmin/contact-admin/merge',  {'sourceId': '-src-', 'targetId': contact.id})|raw }}',
+        var actionTemplate = '{{ url('zfcadmin/contact/merge',  {'sourceId': '-src-', 'targetId': contact.id})|raw }}',
             $form = $('#contact-merge');
         $('#btn-preview').click(function () {
             var selected = $form.find('input[name="source-main"]:checked').val(),

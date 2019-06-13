@@ -64,56 +64,36 @@ class ContactLink extends LinkAbstract
     {
         switch ($this->getAction()) {
             case 'new':
-                $this->setRouter('zfcadmin/contact-admin/new');
+                $this->setRouter('zfcadmin/contact/new');
                 $this->setText($this->translate('txt-new-contact'));
                 break;
             case 'list':
-                $this->setRouter('zfcadmin/contact-admin/list');
+                $this->setRouter('zfcadmin/contact/list');
                 $this->setText($this->translate('txt-list-contacts'));
                 break;
             case 'list-old':
-                $this->setRouter('zfcadmin/contact-admin/list-old');
+                $this->setRouter('zfcadmin/contact/list-old');
                 $this->setText($this->translate('txt-list-contacts-legacy'));
                 break;
             case 'import':
-                $this->setRouter('zfcadmin/contact-admin/import');
+                $this->setRouter('zfcadmin/contact/import');
                 $this->setText($this->translate('txt-import-contacts'));
                 break;
             case 'edit-admin':
-                $this->setRouter('zfcadmin/contact-admin/edit');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-edit-contact-in-admin-%s'),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $this->setRouter('zfcadmin/contact/edit');
+                $this->setText($this->translate('txt-edit-contact-in-admin'));
                 break;
             case 'view-admin':
-                $this->setRouter('zfcadmin/contact-admin/view');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-view-contact-in-admin-%s'),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $this->setRouter('zfcadmin/contact/view');
+                $this->setText($this->translate('txt-view-contact-in-admin'));
                 break;
             case 'impersonate':
-                $this->setRouter('zfcadmin/contact-admin/impersonate');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-impersonate-contact-%s'),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $this->setRouter('zfcadmin/contact/impersonate');
+                $this->setText($this->translate('txt-impersonate-contact'));
                 break;
             case 'permit':
-                $this->setRouter('zfcadmin/contact-admin/permit');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-permit-of-contact-%s'),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $this->setRouter('zfcadmin/contact/permit');
+                $this->setText($this->translate('txt-permits-of-contact'));
                 break;
             case 'change-password':
                 $this->setRouter('community/contact/change-password');
@@ -129,7 +109,7 @@ class ContactLink extends LinkAbstract
                 }
                 break;
             case 'add-project':
-                $this->setRouter('zfcadmin/contact-admin/add-project');
+                $this->setRouter('zfcadmin/contact/add-project');
                 $this->setText(
                     sprintf(
                         $this->translate('txt-add-%s-to-a-project'),

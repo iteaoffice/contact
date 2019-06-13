@@ -20,9 +20,9 @@ use Zend\Navigation\Navigation;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * NodeService.
+ * Class ContactNavigationServiceFactory
  *
- * this is a wrapper for node entity related services
+ * @package Contact\Navigation\Factory
  */
 final class ContactNavigationServiceFactory implements FactoryInterface
 {

@@ -13,10 +13,32 @@ declare(strict_types=1);
 
 namespace Contact\Controller;
 
+use Contact\Service\ContactService;
+
 /**
- * Class ContactController.
+ * Class ConsoleController
  *
+ * @package Contact\Controller
  */
 final class ConsoleController extends ContactAbstractController
 {
+    /**
+     * @var ContactService;
+     */
+    private $contactService;
+
+    public function __construct(ContactService $contactService)
+    {
+        $this->contactService = $contactService;
+    }
+
+    public function resetAccessRolesAction(): void
+    {
+        $this->contactService->resetAccessRoles();
+    }
+
+    public function contactCleanupAction(): void
+    {
+        $this->contactService->removeInactiveContacts();
+    }
 }

@@ -116,17 +116,17 @@ class Selection extends AbstractEntity
      */
     private $core;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="selection")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist","remove"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
+     * @var SelectionContact[]|Collections\ArrayCollection
      */
     private $selectionContact;
     /**
-     * @ORM\OneToOne(targetEntity="Contact\Entity\SelectionSql", cascade={"persist"}, mappedBy="selection")
+     * @ORM\OneToOne(targetEntity="Contact\Entity\SelectionSql", cascade={"persist","remove"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\SelectionSql
+     * @var SelectionSql
      */
     private $sql;
     /**
@@ -261,7 +261,7 @@ class Selection extends AbstractEntity
         return $this->dateDeleted;
     }
 
-    public function setDateDeleted(DateTime $dateDeleted): Selection
+    public function setDateDeleted(?DateTime $dateDeleted): Selection
     {
         $this->dateDeleted = $dateDeleted;
         return $this;

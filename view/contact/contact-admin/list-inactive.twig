@@ -1,76 +1,35 @@
 {% do headTitle().append(translate("txt-inactive-contacts")) %}
 
-{% do form.prepare() %}
-{{ form().openTag(form)|raw }}
+<h1>{{ translate("txt-inactive-contacts") }}</h1>
 
-{% set filter = form.get('filter') %}
-
-
-
-
-<div class="row">
-
-    <div class="col-md-9">
-
-        <h1>{{ translate("txt-inactive-contacts") }}</h1>
-
-        <div class="row">
-            <div class="col-md-6">
-                <p>{{ translate("txt-inactive-contacts-explanation") }}</p>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group">
-                    {{ formelement(filter.get('search')) }}
-                    <div class="input-group-append input-group-btn">
-                        {{ formelement(form.get('submit')) }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {% if paginator.pageRange > 0 %}
-            <table class="table table-hover table-striped table-sm">
-                <thead>
-                <tr>
-                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-                    <th>{{ translate('txt-email') }}</th>
-                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
-                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
-                </tr>
-                </thead>
-                <tfoot>
-                </tfoot>
-                <tbody>
-                {% for contact in paginator.getCurrentItems() %}
-                    <tr>
-                        <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
-                        <td><a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
-                                        class="fa fa-envelope-o"></i> </a></td>
-                        <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
-                        <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
-                        <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-            {% include 'application/partial/pagination-control' %}
-        {% else %}
-            {{ ztbalert().info(translate("txt-no-contacts-found"))|raw }}
-        {% endif %}
-    </div>
-    <div class="col-md-3">
-        <div class="well well-sm">
-            <fieldset>
-                {{ ztbformelement(filter.get('options'), true) }}
-                {{ ztbformelement(filter.get('gender'), true) }}
-                {{ ztbformelement(filter.get('country'), true) }}
-
-                                   {{ ztbformelement(form.get('submit')) }}
-                    {{ ztbformelement(form.get('clear')) }}
-            </fieldset>
-        </div>
-    </div>
-</div>
-
-{{ form().closeTag()|raw }}
+{% if inactiveContacts|length > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <td>{{ translate("txt-nr") }}</td>
+            <td>{{ translate("txt-contact-id") }}</td>
+            <td>{{ translate("txt-email-name") }}</td>
+            <td>{{ translate("txt-firstname") }}</td>
+            <td>{{ translate("txt-middle-name") }}</td>
+            <td>{{ translate("txt-last-name") }}</td>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody>
+        {% for contact in inactiveContacts %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ url('zfcadmin/contact/view',{'id':contact.id}) }}">{{ contact.id }}</a></td>
+                <td>{{ contact.email }} <a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
+                                class="fa fa-envelope-o"></i> </a></td>
+                <td>{{ contact.firstName }}</td>
+                <td>{{ contact.middleName }}</td>
+                <td>{{ contact.lastName }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-no-inactive-contacts-could-be-found"))|raw }}
+{% endif %}

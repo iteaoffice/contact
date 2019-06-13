@@ -15,7 +15,7 @@ return [
         'routes' => [
             'zfcadmin' => [
                 'child_routes' => [
-                    'contact-admin' => [
+                    'contact'   => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/contact',
@@ -65,9 +65,9 @@ return [
                                 ],
                             ],
                             'list-inactive'  => [
-                                'type'    => 'Segment',
+                                'type'    => 'Literal',
                                 'options' => [
-                                    'route'    => '/list/inactive[/f-:encodedFilter][/page-:page].html',
+                                    'route'    => '/list/inactive.html',
                                     'defaults' => [
                                         'action' => 'list-inactive',
                                     ],
@@ -91,7 +91,47 @@ return [
                                     ],
                                 ],
                             ],
-                            'impersonate'    => [
+                            'dnd'            => [
+                                'type'         => 'Literal',
+                                'options'      => [
+                                    'route'    => '/dnd',
+                                    'defaults' => [
+                                        'action'     => 'dnd',
+                                        'controller' => Controller\DndController::class,
+                                    ],
+                                ],
+                                'child_routes' => [
+                                    'new'      => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/new/contact-[:contactId].html',
+                                            'defaults' => [
+                                                'action' => 'new',
+                                            ],
+                                        ],
+                                    ],
+                                    'edit'     => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/edit/[:id].html',
+                                            'defaults' => [
+                                                'action' => 'edit',
+                                            ],
+                                        ],
+                                    ],
+                                    'download' => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/download/[:id].html',
+                                            'defaults' => [
+                                                'action' => 'download',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+
+                            'impersonate' => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/impersonate/[:id].html',
@@ -100,7 +140,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit'           => [
+                            'edit'        => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit/[:id].html',
@@ -109,7 +149,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'permit'         => [
+                            'permit'      => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/permissions/[:id].html',
@@ -118,7 +158,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'search'         => [
+                            'search'      => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/search.html',
@@ -127,7 +167,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'import'         => [
+                            'import'      => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/import.html',
@@ -136,7 +176,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'merge'          => [
+                            'merge'       => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/merge/[:sourceId]/into/[:targetId].html',
@@ -145,7 +185,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'add-project'    => [
+                            'add-project' => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/add-project/[:id].html',
@@ -156,7 +196,7 @@ return [
                             ],
                         ],
                     ],
-                    'selection'     => [
+                    'selection' => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/selection',
@@ -256,7 +296,7 @@ return [
                             ],
                         ],
                     ],
-                    'facebook'      => [
+                    'facebook'  => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/facebook',
@@ -310,7 +350,7 @@ return [
                             ],
                         ],
                     ],
-                    'opt-in'        => [
+                    'opt-in'    => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/opt-in',
@@ -364,7 +404,7 @@ return [
                             ],
                         ],
                     ],
-                    'address'       => [
+                    'address'   => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/address',
@@ -396,7 +436,7 @@ return [
                             ],
                         ],
                     ],
-                    'phone'         => [
+                    'phone'     => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/phone',
@@ -428,7 +468,7 @@ return [
                             ],
                         ],
                     ],
-                    'note'          => [
+                    'note'      => [
                         'type'          => 'Segment',
                         'options'       => [
                             'route'    => '/note',

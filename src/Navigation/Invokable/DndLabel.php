@@ -17,7 +17,8 @@ declare(strict_types=1);
 namespace Contact\Navigation\Invokable;
 
 use Admin\Navigation\Invokable\AbstractNavigationInvokable;
-use Contact\Entity\Selection;
+use Contact\Entity\Contact;
+use Contact\Entity\Dnd;
 use Zend\Navigation\Page\Mvc;
 
 /**
@@ -25,25 +26,26 @@ use Zend\Navigation\Page\Mvc;
  *
  * @package Funder\Navigation\Invokable
  */
-final class SelectionLabel extends AbstractNavigationInvokable
+final class DndLabel extends AbstractNavigationInvokable
 {
     public function __invoke(Mvc $page): void
     {
-        $label = $this->translate('txt-nav-selection');
+        $label = $this->translate('txt-nav-dnd');
 
-        if ($this->getEntities()->containsKey(Selection::class)) {
-            /** @var Selection $selection */
-            $selection = $this->getEntities()->get(Selection::class);
+        if ($this->getEntities()->containsKey(Dnd::class)) {
+            /** @var Dnd $dnd */
+            $dnd = $this->getEntities()->get(Dnd::class);
+            $this->getEntities()->set(Contact::class, $dnd->getContact());
 
             $page->setParams(
                 array_merge(
                     $page->getParams(),
                     [
-                        'id' => $selection->getId(),
+                        'id' => $dnd->getId(),
                     ]
                 )
             );
-            $label = (string)$selection->getSelection();
+            $label = (string)$dnd->parseFileName();
         }
         $page->set('label', $label);
     }

@@ -17,11 +17,11 @@
     <table class="table table-hover table-striped table-sm">
         <thead>
         <tr>
-            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'email', 'text': translate('txt-email')} %}</th>
-            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
-            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
-            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'projects', 'text': translate('txt-projects')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'email', 'text': translate('txt-email')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'projects', 'text': translate('txt-projects')} %}</th>
             <th></th>
         </tr>
         </thead>
@@ -32,8 +32,8 @@
 
             <tr {% if not contactResult.fields.is_active %}class="table-danger"{% endif %}>
                 <td>
-                    <a href="{{ url('zfcadmin/contact-admin/view',{'id': contactResult.fields.contact_id}) }}">{{ contactResult.fields.fullname }}</a>
-                    <a href="{{ url('zfcadmin/contact-admin/edit',{'id': contactResult.fields.contact_id}) }}"><i
+                    <a href="{{ url('zfcadmin/contact/view',{'id': contactResult.fields.contact_id}) }}">{{ contactResult.fields.fullname }}</a>
+                    <a href="{{ url('zfcadmin/contact/edit',{'id': contactResult.fields.contact_id}) }}"><i
                                 class="fa fa-pencil-square-o"></i></a></td>
                 <td><a href="mailto:{{ contactResult.fields.email }}"
                        title="{{ contact.email }}">{{ contactResult.fields.email }}</a></td>
@@ -42,7 +42,7 @@
                 <td>{% if not contactResult.fields.has_organiation %}<a
                         href="{{ url('zfcadmin/country/view',{'id': contactResult.fields.country_id}) }}">{{ contactResult.fields.country_iso3 }}</a>{% endif %}
                 <td>
-                    <a href="{{ url('zfcadmin/contact-admin/view',{'id': contactResult.fields.contact_id}) }}#projects">{{ contactResult.fields.projects }}</a>
+                    <a href="{{ url('zfcadmin/contact/view',{'id': contactResult.fields.contact_id}) }}#projects">{{ contactResult.fields.projects }}</a>
                 </td>
                 <td>
                     {% if contactResult.fields.is_funder %}<strong class="text-highlight" title="{{ translate("txt-funder") }}">PA</strong>{% endif %}
@@ -54,7 +54,7 @@
     </table>
 
     {% include 'application/partial/pagination-control' %}
-    <a href="{{ url('zfcadmin/contact-admin/export',{'encodedFilter': encodedFilter}) }}"
+    <a href="{{ url('zfcadmin/contact/export',{'encodedFilter': encodedFilter}) }}"
        class="btn btn-primary btn-sm"><i
                 class="fa fa-file-excel-o"></i> {{ translate("txt-export-csv") }}</a>
 {% else %}

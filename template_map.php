@@ -60,6 +60,8 @@ return array(
     'contact/opt-in-manager/new'                   => __DIR__ . '//view/contact/opt-in-manager/new.twig',
     'contact/opt-in-manager/list'                  => __DIR__ . '//view/contact/opt-in-manager/list.twig',
     'contact/opt-in-manager/edit'                  => __DIR__ . '//view/contact/opt-in-manager/edit.twig',
+    'contact/dnd/new'                              => __DIR__ . '//view/contact/dnd/new.twig',
+    'contact/dnd/edit'                             => __DIR__ . '//view/contact/dnd/edit.twig',
     'contact/partial/form/address'                 => __DIR__ . '//view/contact/partial/form/address.twig',
     'contact/partial/form/opt-in'                  => __DIR__ . '//view/contact/partial/form/opt-in.twig',
     'contact/partial/form/note'                    => __DIR__ . '//view/contact/partial/form/note.twig',

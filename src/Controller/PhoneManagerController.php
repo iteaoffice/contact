@@ -72,7 +72,7 @@ final class PhoneManagerController extends ContactAbstractController
             }
 
             return $this->redirect()
-                ->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()], ['fragment' => 'phone']);
+                ->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()], ['fragment' => 'phone']);
         }
 
         return new ViewModel(
@@ -102,7 +102,7 @@ final class PhoneManagerController extends ContactAbstractController
 
                 return $this->redirect()
                     ->toRoute(
-                        'zfcadmin/contact-admin/view',
+                        'zfcadmin/contact/view',
                         ['id' => $phone->getContact()->getId()],
                         ['fragment' => 'phone']
                     );
@@ -114,7 +114,7 @@ final class PhoneManagerController extends ContactAbstractController
             }
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact-admin/view',
+                'zfcadmin/contact/view',
                 ['id' => $phone->getContact()->getId()],
                 ['fragment' => 'phone']
             );

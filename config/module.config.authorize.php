@@ -8,7 +8,6 @@
  * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
  */
 
-use Admin\Entity\Access;
 use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
@@ -113,80 +112,82 @@ return [
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
-
+                ['route' => 'zfcadmin/contact/dnd/new', 'roles' => ['office']],
+                ['route' => 'zfcadmin/contact/dnd/edit', 'roles' => ['office']],
+                ['route' => 'zfcadmin/contact/dnd/download', 'roles' => ['office']],
                 [
-                    'route'     => 'zfcadmin/contact-admin',
+                    'route'     => 'zfcadmin/contact',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/new',
+                    'route'     => 'zfcadmin/contact/new',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/list',
+                    'route'     => 'zfcadmin/contact/list',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ], [
-                    'route' => 'zfcadmin/contact-admin/list-old',
+                    'route' => 'zfcadmin/contact/list-old',
                     'roles' => ['office']
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/export',
+                    'route'     => 'zfcadmin/contact/export',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/list-duplicate',
+                    'route'     => 'zfcadmin/contact/list-duplicate',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ], [
-                    'route'     => 'zfcadmin/contact-admin/list-inactive',
+                    'route'     => 'zfcadmin/contact/list-inactive',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/edit',
+                    'route'     => 'zfcadmin/contact/edit',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/permit',
+                    'route'     => 'zfcadmin/contact/permit',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/view',
+                    'route'     => 'zfcadmin/contact/view',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/impersonate',
+                    'route'     => 'zfcadmin/contact/impersonate',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/statistics',
+                    'route'     => 'zfcadmin/contact/statistics',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/import',
+                    'route'     => 'zfcadmin/contact/import',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact-admin/search',
+                    'route'     => 'zfcadmin/contact/search',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route' => 'zfcadmin/contact-admin/merge',
+                    'route' => 'zfcadmin/contact/merge',
                     'roles' => ['office'],
                 ],
                 [
-                    'route' => 'zfcadmin/contact-admin/add-project',
+                    'route' => 'zfcadmin/contact/add-project',
                     'roles' => ['office'],
                 ],
                 [
@@ -287,10 +288,8 @@ return [
                     'roles'     => [],
                     'assertion' => NoteAssertion::class,
                 ],
-                [
-                    'route' => 'cli-partner-search-reset',
-                    'roles' => [],
-                ],
+                ['route' => 'cli-contact-reset-access', 'roles' => [],],
+                ['route' => 'cli-contact-cleanup', 'roles' => [],],
             ],
         ],
     ],

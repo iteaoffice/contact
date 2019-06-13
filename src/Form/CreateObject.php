@@ -15,8 +15,8 @@ namespace Contact\Form;
 use Contact\Entity\AbstractEntity;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
-use Zend\Form\Form;
 use Zend\Form\Element;
+use Zend\Form\Form;
 
 /**
  * Class CreateObject
@@ -76,8 +76,8 @@ class CreateObject extends Form
                 'type'       => Element\Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
-                    'class' => "btn btn-primary",
-                    'value' => _("txt-submit"),
+                    'class' => 'btn btn-primary',
+                    'value' => _('txt-submit'),
                 ],
             ]
         );
@@ -86,8 +86,8 @@ class CreateObject extends Form
                 'type'       => Element\Submit::class,
                 'name'       => 'cancel',
                 'attributes' => [
-                    'class' => "btn btn-warning",
-                    'value' => _("txt-cancel"),
+                    'class' => 'btn btn-warning',
+                    'value' => _('txt-cancel'),
                 ],
             ]
         );
@@ -96,8 +96,8 @@ class CreateObject extends Form
                 'type'       => Element\Submit::class,
                 'name'       => 'delete',
                 'attributes' => [
-                    'class' => "btn btn-danger",
-                    'value' => _("txt-delete"),
+                    'class' => 'btn btn-danger',
+                    'value' => _('txt-delete'),
                 ],
             ]
         );
@@ -106,8 +106,8 @@ class CreateObject extends Form
                 'type'       => Element\Submit::class,
                 'name'       => 'restore',
                 'attributes' => [
-                    'class' => "btn btn-info",
-                    'value' => _("txt-restore"),
+                    'class' => 'btn btn-info',
+                    'value' => _('txt-restore'),
                 ],
             ]
         );
@@ -116,8 +116,8 @@ class CreateObject extends Form
                 'type'       => Element\Submit::class,
                 'name'       => 'redirect',
                 'attributes' => [
-                    'class' => "btn btn-info",
-                    'value' => _("txt-redirect-to-front"),
+                    'class' => 'btn btn-info',
+                    'value' => _('txt-redirect-to-front'),
                 ],
             ]
         );
@@ -126,8 +126,8 @@ class CreateObject extends Form
                 'type'       => Element\Submit::class,
                 'name'       => 'reactivate',
                 'attributes' => [
-                    'class' => "btn btn-warning",
-                    'value' => _("txt-undelete-contact"),
+                    'class' => 'btn btn-warning',
+                    'value' => _('txt-reactivate'),
                 ],
             ]
         );
@@ -136,8 +136,8 @@ class CreateObject extends Form
                 'type'       => Element\Submit::class,
                 'name'       => 'deactivate',
                 'attributes' => [
-                    'class' => "btn btn-danger",
-                    'value' => _("txt-delete-contact"),
+                    'class' => 'btn btn-danger',
+                    'value' => _('txt-deactivate'),
                 ],
             ]
         );

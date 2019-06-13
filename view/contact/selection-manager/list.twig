@@ -1,21 +1,14 @@
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-selection-list")) %}
 
-{{ form().closeTag()|raw }}
-
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
 
 {% set filter = form.get('filter') %}
-
-
+<h1>{{ translate("txt-selection-list") }} {{ selectionLink(null,'new', 'button') }}</h1>
 
 <div class="row">
-
     <div class="col-md-9">
-
-        <h1>{{ translate("txt-selection-list") }} {{ selectionLink(null,'new', 'button') }}</h1>
-
         <div class="row">
             <div class="col-md-6">
                 <p class="lead">{{ translate("txt-selection-list-explanation") }}</p>
@@ -77,8 +70,8 @@
                 {{ ztbformelement(filter.get('core'), true) }}
                 {{ ztbformelement(filter.get('tags'), true) }}
 
-                                   {{ ztbformelement(form.get('submit')) }}
-                    {{ ztbformelement(form.get('clear')) }}
+                {{ ztbformelement(form.get('submit')) }}
+                {{ ztbformelement(form.get('clear')) }}
             </fieldset>
         </div>
     </div>

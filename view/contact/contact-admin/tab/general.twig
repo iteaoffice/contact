@@ -37,6 +37,7 @@
                     <dd>{{ translate("txt-no-organisation-provided") }}</dd>
                 {% endif %}
 
+
                 {% if contact.contactOrganisation.branch %}
                     <dt>{{ translate("txt-branch") }}</dt>
                     <dd><code>{{ contact.contactOrganisation.branch }}</code></dd>
@@ -63,6 +64,11 @@
                 {% else %}
                     <dd>{{ translate("txt-no-access-defined") }}</dd>
                 {% endfor %}
+
+                {% if contact.triggerUpdate %}
+                    <dt>{{ translate("txt-trigger-update") }}</dt>
+                    <dd>{{ translate("txt-no") }}</dd>
+                {% endif %}
 
                 <dt>{{ translate("txt-date-created") }}</dt>
                 <dd>{{ contact.dateCreated|string_date }}</dd>
@@ -176,5 +182,8 @@
     {{ contactLink(contact,'edit-admin','button') }}
     {{ contactLink(contact,'permit','button') }}
     {{ contactLink(contact,'impersonate','button') }}
+
+    <input type="submit" name="flushpermissions" value="{{ translate("txt-flush-permissions") }}"
+           class="btn btn-outline-warning">
 
 </form>

@@ -50,6 +50,8 @@ _("txt-show-mobile-phone-to-members");
 _("txt-show-phone-to-all");
 _("txt-cannot-send-message");
 _("txt-not-public");
+_("txt-contact-dnd-program-label");
+_("txt-program-dnd-program-help-block");
 _("txt-dnd-file");
 _("txt-selection");
 _("txt-tag");

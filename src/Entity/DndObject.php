@@ -15,21 +15,17 @@ namespace Contact\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Entity for a DND.
- *
  * @ORM\Table(name="contact_dnd_object")
  * @ORM\Entity
- *
- * @category    Contact
  */
 class DndObject extends AbstractEntity
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="object_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @var integer
      */
     private $id;
     /**
@@ -40,11 +36,9 @@ class DndObject extends AbstractEntity
     private $object;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Dnd", cascade="persist", inversedBy="object")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="dnd_id", referencedColumnName="dnd_id", unique=true)
-     * })
      *
-     * @var \Contact\Entity\Dnd;
+     * @var Dnd;
      */
     private $dnd;
 
@@ -63,51 +57,36 @@ class DndObject extends AbstractEntity
         return isset($this->$property);
     }
 
-    /**
-     * @return \Contact\Entity\Dnd
-     */
-    public function getDnd()
-    {
-        return $this->dnd;
-    }
-
-    /**
-     * @param \Contact\Entity\Dnd $dnd
-     */
-    public function setDnd($dnd)
-    {
-        $this->dnd = $dnd;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): DndObject
     {
         $this->id = $id;
+        return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getObject()
     {
         return $this->object;
     }
 
-    /**
-     * @param string $object
-     */
-    public function setObject($object)
+    public function setObject(string $object): DndObject
     {
         $this->object = $object;
+        return $this;
+    }
+
+    public function getDnd(): ?Dnd
+    {
+        return $this->dnd;
+    }
+
+    public function setDnd(Dnd $dnd): DndObject
+    {
+        $this->dnd = $dnd;
+        return $this;
     }
 }

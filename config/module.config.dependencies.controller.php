@@ -20,9 +20,11 @@ namespace Contact;
 use Admin\Service\AdminService;
 use Affiliation\Service\AffiliationService;
 use Contact\Search\Service\ContactSearchService;
+use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
+use Event\Service\BoothService;
 use Event\Service\MeetingService;
 use Event\Service\RegistrationService;
 use General\Service\EmailService;
@@ -30,6 +32,7 @@ use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
 use Program\Options\ModuleOptions;
 use Program\Service\CallService;
+use Program\Service\ProgramService;
 use Project\Service\IdeaService;
 use Project\Service\ProjectService;
 use Zend\I18n\Translator\TranslatorInterface;
@@ -37,12 +40,15 @@ use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 
 return [
     ConfigAbstractFactory::class => [
-        Controller\AddressManagerController::class   => [
+        Controller\AddressManagerController::class => [
             Service\ContactService::class,
             Service\FormService::class,
             TranslatorInterface::class
         ],
-        Controller\ConsoleController::class          => [],
+        Controller\ConsoleController::class        => [
+            ContactService::class
+        ],
+
         Controller\ContactAdminController::class     => [
             Service\ContactService::class,
             ContactSearchService::class,
@@ -56,6 +62,7 @@ return [
             DeeplinkService::class,
             GeneralService::class,
             AffiliationService::class,
+            BoothService::class,
             FormService::class,
             TranslatorInterface::class,
             EntityManager::class
@@ -64,6 +71,14 @@ return [
             Service\ContactService::class,
             TranslatorInterface::class,
             Search\Service\ProfileSearchService::class
+        ],
+        Controller\DndController::class              => [
+            Service\ContactService::class,
+            ProgramService::class,
+            Service\FormService::class,
+            GeneralService::class,
+            TranslatorInterface::class,
+
         ],
         Controller\FacebookController::class         => [
             'Config',

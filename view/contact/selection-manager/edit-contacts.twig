@@ -312,7 +312,7 @@
     function getContacts(q) {
         $.ajax({
             method: 'post',
-            url: '{{ url('zfcadmin/contact-admin/search') }}',
+            url: '{{ url('zfcadmin/contact/search') }}',
             dataType: 'json',
             data: {
                 q: q
