@@ -27,6 +27,8 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use DoctrineExtensions\Query\Mysql\Year;
+use Evaluation\Entity\Reviewer;
+use Evaluation\Repository\ReviewerRepository;
 use General\Entity\Country;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Type;
@@ -42,7 +44,6 @@ use Project\Entity\Pca;
 use Project\Entity\Project;
 use Project\Entity\Rationale;
 use Project\Entity\Result\Result;
-use Project\Entity\Review\Review;
 use Project\Entity\Version\Version;
 use Project\Entity\Workpackage\Workpackage;
 use function array_key_exists;
@@ -311,7 +312,7 @@ final class Contact extends EntityRepository
             'calendarContact',
             'calendarDocument',
             'calendar',
-            'projectReview',
+            'projectReviewer',
             'projectReport',
             'projectChangelog',
             'projectCalendarReview',
@@ -428,10 +429,11 @@ final class Contact extends EntityRepository
         $qb->setParameter('contact', $contact);
 
         $relations = [
-            'projectReview'         => Review::class,
-            'projectCalendarReview' => \Project\Entity\Calendar\Review::class,
-            'projectReportReview'   => \Project\Entity\Report\Review::class,
-            'projectReviewContact'  => \Project\Entity\Review\Contact::class
+            'projectReviewer'         => Reviewer::class,
+            'projectCalendarReviewer' => \Project\Entity\Calendar\Review::class,
+            'projectReportReviewer'   => \Project\Entity\Report\Review::class,
+            'projectVersionReviewer'  => \Project\Entity\Version\Review::class,
+            'projectReviewerContact'  => \Evaluation\Entity\Reviewer\Contact::class
         ];
 
         foreach ($relations as $key => $relation) {
@@ -444,7 +446,7 @@ final class Contact extends EntityRepository
             $qb->andWhere($qb->expr()->notIn('contact_entity_contact', $subQuery->getDQL()));
         }
 
-        return null === $qb->getQuery()->getOneOrNullResult();
+        return (null === $qb->getQuery()->getOneOrNullResult());
     }
 
     public function contactIsPresentAtEvent(Entity\Contact $contact, int $years = 2, string $which = 'recent'): bool
@@ -905,18 +907,16 @@ final class Contact extends EntityRepository
 
     public function findPossibleContactByCalendar(Calendar $calendar): array
     {
-        /*
-         * Use the contactQueryBuilder and exclude the ones which are already present based on the roles
-         */
+        // Use the contactQueryBuilder and exclude the ones which are already present based on the roles
         $findContactByProjectIdQueryBuilder = $this->findContactByProjectIdQueryBuilder();
 
-        //Find the reviewers
-        /** @var \Project\Repository\Review\Review $reviewRepository */
-        $reviewRepository = $this->getEntityManager()->getRepository(Review::class);
+        // Find the reviewers
+        /** @var ReviewerRepository $reviewRepository */
+        $reviewRepository = $this->getEntityManager()->getRepository(Reviewer::class);
 
         $findReviewContactByProjectQueryBuilder = $reviewRepository->findReviewContactByProjectQueryBuilder();
 
-        //Remove all the contacts which are already in the project as associate or otherwise affected
+        // Remove all the contacts which are already in the project as associate or otherwise affected
         $findContactByProjectIdQueryBuilder->andWhere(
             $findContactByProjectIdQueryBuilder->expr()
                 ->notIn(
@@ -934,8 +934,8 @@ final class Contact extends EntityRepository
 
     public function findMergeCandidatesFor(Entity\Contact $contact): array
     {
-        //Short circuit the contact when the first name and lastname are not filled in
-        //The query will case an loop than and will crash
+        // Short circuit the contact when the first name and lastname are not filled in
+        // The query will case an loop than and will crash
         if (empty($contact->getFirstName()) && empty($contact->getLastName())) {
             return [];
         }

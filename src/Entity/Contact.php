@@ -662,24 +662,24 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $calendarDocument;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Review\Review", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Evaluation\Entity\Reviewer", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Review\Review[]|Collections\ArrayCollection
+     * @var \Evaluation\Entity\Reviewer[]|Collections\ArrayCollection
      */
-    private $projectReview;
+    private $projectReviewer;
     /**
-     * @ORM\OneToOne(targetEntity="Project\Entity\Review\Contact", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="Evaluation\Entity\Reviewer\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Project\Entity\Review\Contact
+     * @var \Evaluation\Entity\Reviewer\Contact
      */
-    private $projectReviewContact;
+    private $projectReviewerContact;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Version\Review", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Version\Reviewer", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Version\Review[]|Collections\ArrayCollection
+     * @var \Project\Entity\Version\Reviewer[]|Collections\Collection
      */
-    private $projectVersionReview;
+    private $projectVersionReviewer;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Report\Report", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -993,7 +993,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->calendarDocument = new Collections\ArrayCollection();
         $this->calendar = new Collections\ArrayCollection();
         $this->proxyProject = new Collections\ArrayCollection();
-        $this->projectReview = new Collections\ArrayCollection();
+        $this->projectReviewer = new Collections\ArrayCollection();
         $this->projectVersionReview = new Collections\ArrayCollection();
         $this->projectReport = new Collections\ArrayCollection();
         $this->projectReportItem = new Collections\ArrayCollection();
@@ -2301,61 +2301,61 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Review\Review
+     * @return Collections\ArrayCollection|\Evaluation\Entity\Reviewer
      */
-    public function getProjectReview()
+    public function getProjectReviewer()
     {
-        return $this->projectReview;
+        return $this->projectReviewer;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Review\Review $projectReview
+     * @param Collections\ArrayCollection|\Evaluation\Entity\Reviewer $projectReviewer
      *
      * @return Contact
      */
-    public function setProjectReview($projectReview): Contact
+    public function setProjectReviewer($projectReviewer): Contact
     {
-        $this->projectReview = $projectReview;
+        $this->projectReviewer = $projectReviewer;
 
         return $this;
     }
 
     /**
-     * @return \Project\Entity\Review\Contact
+     * @return \Evaluation\Entity\Reviewer\Contact
      */
-    public function getProjectReviewContact()
+    public function getProjectReviewerContact()
     {
-        return $this->projectReviewContact;
+        return $this->projectReviewerContact;
     }
 
     /**
-     * @param \Project\Entity\Review\Contact $projectReviewContact
+     * @param \Evaluation\Entity\Reviewer\Contact $projectReviewerContact
      *
      * @return Contact
      */
-    public function setProjectReviewContact($projectReviewContact): Contact
+    public function setProjectReviewerContact($projectReviewerContact): Contact
     {
-        $this->projectReviewContact = $projectReviewContact;
+        $this->projectReviewerContact = $projectReviewerContact;
 
         return $this;
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Review\Review
+     * @return Collections\Collection|\Project\Entity\Version\Reviewer
      */
-    public function getProjectVersionReview()
+    public function getProjectVersionReviewer()
     {
-        return $this->projectVersionReview;
+        return $this->projectVersionReviewer;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Review\Review $projectVersionReview
+     * @param Collections\Collection|\Project\Entity\Version\Reviewer $projectVersionReviewer
      *
      * @return Contact
      */
-    public function setProjectVersionReview($projectVersionReview): Contact
+    public function setProjectVersionReviewer($projectVersionReviewer): Contact
     {
-        $this->projectVersionReview = $projectVersionReview;
+        $this->projectVersionReviewer = $projectVersionReviewer;
 
         return $this;
     }

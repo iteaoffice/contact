@@ -215,14 +215,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $cannotDeleteContact[] = 'Contact is active in a project';
         }
 
-        if ($repository->contactIsActiveInProject($contact)) {
-            $cannotDeleteContact[] = 'Contact is active in a project';
-        }
-
-        if ($repository->contactIsActiveInProject($contact)) {
-            $cannotDeleteContact[] = 'Contact is active in a project';
-        }
-
         if ($repository->contactIsReviewer($contact)) {
             $cannotDeleteContact[] = 'Contact is reviewer in a project';
         }
