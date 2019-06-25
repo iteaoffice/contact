@@ -25,7 +25,6 @@ use Calendar\Entity\Calendar;
 use Contact\Controller\ContactAdminController;
 use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Address;
-use Contact\Entity\Community;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
 use Contact\Entity\Cv;
@@ -72,7 +71,7 @@ use Project\Entity\ChangeRequest\Process;
 use Project\Entity\Contract;
 use Project\Entity\Description\Description;
 use Project\Entity\Document\Document;
-use Project\Entity\Evaluation\Evaluation;
+use Evaluation\Entity\Evaluation;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Idea\Message;
 use Project\Entity\Idea\Partner;
@@ -85,7 +84,7 @@ use Project\Entity\Report\Item;
 use Project\Entity\Report\Report;
 use Project\Entity\Report\WorkpackageDescription;
 use Project\Entity\Result\Result;
-use Project\Entity\Review\Review;
+use Evaluation\Entity\Reviewer;
 use Project\Entity\Version\Version;
 use Project\Entity\Workpackage\Workpackage;
 use Publication\Entity\Download;
@@ -128,9 +127,6 @@ final class MergeContactTest extends AbstractServiceTest
         $this->translator = $this->setUpTranslatorMock();
     }
 
-    /**
-     * @return Contact
-     */
     private function createSource(): Contact
     {
         $gender = new Gender();
@@ -481,20 +477,20 @@ final class MergeContactTest extends AbstractServiceTest
         $calendarDocument->setContact($source);
         $source->setCalendarDocument(new ArrayCollection([$calendarDocument]));
 
-        $projectReview = new Review();
+        $projectReview = new Reviewer();
         $projectReview->setId(1);
         $projectReview->setContact($source);
-        $source->setProjectReview(new ArrayCollection([$projectReview]));
+        $source->setProjectReviewer(new ArrayCollection([$projectReview]));
 
-        $reviewContact = new \Project\Entity\Review\Contact();
+        $reviewContact = new \Evaluation\Entity\Reviewer\Contact();
         $reviewContact->setId(1);
         $reviewContact->setContact($source);
-        $source->setProjectReviewContact($reviewContact);
+        $source->setProjectReviewerContact($reviewContact);
 
-        $projectVersionReview = new \Project\Entity\Version\Review();
-        $projectVersionReview->setId(1);
-        $projectVersionReview->setContact($source);
-        $source->setProjectVersionReview(new ArrayCollection([$projectVersionReview]));
+        $projectVersionReviewer = new \Project\Entity\Version\Reviewer();
+        $projectVersionReviewer->setId(1);
+        $projectVersionReviewer->setContact($source);
+        $source->setProjectVersionReviewer(new ArrayCollection([$projectVersionReviewer]));
 
         $projectReport = new Report();
         $projectReport->setId(1);
@@ -506,10 +502,10 @@ final class MergeContactTest extends AbstractServiceTest
         $projectCalendarReview->setContact($source);
         $source->setProjectCalendarReview(new ArrayCollection([$projectCalendarReview]));
 
-        $projectReportReview = new \Project\Entity\Report\Review();
-        $projectReportReview->setId(1);
-        $projectReportReview->setContact($source);
-        $source->setProjectReportReview(new ArrayCollection([$projectReportReview]));
+        $projectReportReviewer = new \Project\Entity\Report\Reviewer();
+        $projectReportReviewer->setId(1);
+        $projectReportReviewer->setContact($source);
+        $source->setProjectReportReviewer(new ArrayCollection([$projectReportReviewer]));
 
         $invite = new Invite();
         $invite->setId(1);
@@ -699,9 +695,6 @@ final class MergeContactTest extends AbstractServiceTest
         return $source;
     }
 
-    /**
-     * @return Contact
-     */
     private function createTarget(): Contact
     {
         $target = new Contact();
@@ -1069,13 +1062,13 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getCalendarDocument()->count());
         $this->assertSame(1, $this->target->getCalendarDocument()->first()->getId());
 
-        $this->assertSame(1, $this->target->getProjectReview()->count());
-        $this->assertSame(1, $this->target->getProjectReview()->first()->getId());
+        $this->assertSame(1, $this->target->getProjectReviewer()->count());
+        $this->assertSame(1, $this->target->getProjectReviewer()->first()->getId());
 
-        $this->assertSame(1, $this->target->getProjectReviewContact()->getId());
+        $this->assertSame(1, $this->target->getProjectReviewerContact()->getId());
 
-        $this->assertSame(1, $this->target->getProjectVersionReview()->count());
-        $this->assertSame(1, $this->target->getProjectVersionReview()->first()->getId());
+        $this->assertSame(1, $this->target->getProjectVersionReviewer()->count());
+        $this->assertSame(1, $this->target->getProjectVersionReviewer()->first()->getId());
 
         $this->assertSame(1, $this->target->getProjectReport()->count());
         $this->assertSame(1, $this->target->getProjectReport()->first()->getId());
@@ -1083,8 +1076,8 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getProjectCalendarReview()->count());
         $this->assertSame(1, $this->target->getProjectCalendarReview()->first()->getId());
 
-        $this->assertSame(1, $this->target->getProjectReportReview()->count());
-        $this->assertSame(1, $this->target->getProjectReportReview()->first()->getId());
+        $this->assertSame(1, $this->target->getProjectReportReviewer()->count());
+        $this->assertSame(1, $this->target->getProjectReportReviewer()->first()->getId());
 
         $this->assertSame(1, $this->target->getInvite()->count());
         $this->assertSame(1, $this->target->getInvite()->first()->getId());

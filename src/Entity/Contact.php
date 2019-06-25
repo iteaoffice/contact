@@ -27,6 +27,7 @@ use Calendar\Entity\Document;
 use DateTime;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
+use Evaluation\Entity\Evaluation;
 use Event\Entity\Badge\Badge;
 use Event\Entity\Exhibition\Tour;
 use Event\Entity\Exhibition\Voter;
@@ -57,7 +58,6 @@ use Project\Entity\ChangeRequest\CostChange;
 use Project\Entity\ChangeRequest\Country;
 use Project\Entity\ChangeRequest\Process;
 use Project\Entity\Contract;
-use Project\Entity\Evaluation\Evaluation;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Idea\Invite;
 use Project\Entity\Idea\Partner;
@@ -67,7 +67,7 @@ use Project\Entity\Rationale;
 use Project\Entity\Report\EffortSpent;
 use Project\Entity\Report\Item;
 use Project\Entity\Report\Report;
-use Project\Entity\Report\Review;
+use Project\Entity\Report\Reviewer;
 use Project\Entity\Report\WorkpackageDescription;
 use Project\Entity\Result\Result;
 use Project\Entity\Workpackage\Workpackage;
@@ -257,19 +257,19 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $access;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Email", cascade={"persist","remove"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Email", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Email[]|Collections\ArrayCollection
      */
     private $emailAddress;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\Cv", cascade={"persist","remove"}, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="Contact\Entity\Cv", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var CV
      */
     private $cv;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Address", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\ComposedObject("\Contact\Entity\Address")
      * @var Address[]|Collections\ArrayCollection
      */
@@ -291,91 +291,91 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $optIn;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Project[]|Collections\ArrayCollection
      */
     private $project;
     /**
-     * @ORM\ManyToMany(targetEntity="\Project\Entity\Project", cascade={"persist"}, mappedBy="proxyContact")
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Project", cascade={"persist"}, mappedBy="proxyContact")
      * @Annotation\Exclude()
      * @var Project[]|Collections\ArrayCollection
      */
     private $proxyProject;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Rationale", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Rationale", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Rationale[]|Collections\ArrayCollection
      */
     private $rationale;
     /**
-     * @ORM\ManyToMany(targetEntity="\Project\Entity\Description\Description", cascade={"persist"}, mappedBy="contact")
+     * @ORM\ManyToMany(targetEntity="Project\Entity\Description\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Description\Description[]|Collections\ArrayCollection
      */
     private $projectDescription;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Version\Version", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Version\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Version\Version[]|Collections\ArrayCollection
      */
     private $projectVersion;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Report\Item", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Report\Item", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Item[]|Collections\ArrayCollection
      */
     private $projectReportItem;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Report\WorkpackageDescription", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Report\WorkpackageDescription", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var WorkpackageDescription[]|Collections\ArrayCollection
      */
     private $projectReportWorkpackageDescription;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Report\EffortSpent", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Report\EffortSpent", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Item[]|Collections\ArrayCollection
      */
     private $projectReportEffortSpent;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Document\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Document\Document[]|Collections\ArrayCollection
      */
     private $projectDocument;
     /**
-     * @ORM\OneToMany(targetEntity="\Contact\Entity\Dnd", cascade={"persist","remove"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Dnd", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Dnd|Collections\ArrayCollection
      */
     private $dnd;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Contract", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Contract", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Contract[]|Collections\ArrayCollection
      */
     private $contract;
     /**
-     * @ORM\OneToMany(targetEntity="\Project\Entity\Contract\Version", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Contract\Version", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Contract[]|Collections\ArrayCollection
      */
     private $contractVersion;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist","remove"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Program\Entity\Nda", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Nda[]|Collections\ArrayCollection
      */
     private $nda;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\Nda", cascade={"persist"}, mappedBy="approver")
+     * @ORM\OneToMany(targetEntity="Program\Entity\Nda", cascade={"persist"}, mappedBy="approver")
      * @Annotation\Exclude()
      * @var Nda[]|Collections\ArrayCollection
      */
     private $ndaApprover;
     /**
-     * @ORM\OneToMany(targetEntity="\Program\Entity\Doa", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Program\Entity\Doa", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Program\Entity\Doa|Collections\ArrayCollection
      */
@@ -387,7 +387,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $parentDoa;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, orphanRemoval=true, mappedBy="contact")
+     * @ORM\OneToOne(targetEntity="Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, orphanRemoval=true, mappedBy="contact")
      * @Annotation\Exclude()
      * @var ContactOrganisation
      */
@@ -396,22 +396,17 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactClosed")
      * @Annotation\Exclude()
      * @var Action[]|Collections\ArrayCollection
-     *
-     * This is the user (typically someone of the office who has closed the action
      */
     private $actionClosed;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Action", cascade={"persist"}, mappedBy="contactStatus")
      * @Annotation\Exclude()
      * @var Action[]|Collections\ArrayCollection
-     *
-     * This is the user (typically the PL) which has updated the status of the action
      */
     private $actionStatus;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Action\Comment", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
      * @var Comment[]|Collections\ArrayCollection
      */
     private $actionComment;
@@ -518,7 +513,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $associate;
     /**
-     * @ORM\OneToOne(targetEntity="\Program\Entity\Funder", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="Program\Entity\Funder", cascade={"persist"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var Funder
      */
@@ -530,7 +525,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $deeplinkContact;
     /**
-     * @ORM\OneToOne(targetEntity="\Contact\Entity\Profile", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="Contact\Entity\Profile", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\Exclude()
      * @var Profile
      */
@@ -638,7 +633,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $ideaMessage;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Evaluation\Evaluation", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Evaluation\Entity\Evaluation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Evaluation[]|Collections\ArrayCollection
      */
@@ -693,11 +688,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $projectCalendarReview;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Report\Review", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Report\Reviewer", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var Review[]|Collections\ArrayCollection
+     * @var Reviewer[]|Collections\ArrayCollection
      */
-    private $projectReportReview;
+    private $projectReportReviewer;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -994,12 +989,12 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->calendar = new Collections\ArrayCollection();
         $this->proxyProject = new Collections\ArrayCollection();
         $this->projectReviewer = new Collections\ArrayCollection();
-        $this->projectVersionReview = new Collections\ArrayCollection();
+        $this->projectVersionReviewer = new Collections\ArrayCollection();
         $this->projectReport = new Collections\ArrayCollection();
         $this->projectReportItem = new Collections\ArrayCollection();
         $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
         $this->projectCalendarReview = new Collections\ArrayCollection();
-        $this->projectReportReview = new Collections\ArrayCollection();
+        $this->projectReportReviewer = new Collections\ArrayCollection();
         $this->contract = new Collections\ArrayCollection();
         $this->contractVersion = new Collections\ArrayCollection();
         $this->invite = new Collections\ArrayCollection();
@@ -2401,21 +2396,21 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|Review[]
+     * @return Collections\ArrayCollection|Reviewer[]
      */
-    public function getProjectReportReview()
+    public function getProjectReportReviewer()
     {
-        return $this->projectReportReview;
+        return $this->projectReportReviewer;
     }
 
     /**
-     * @param Collections\ArrayCollection|Review[] $projectReportReview
+     * @param Collections\ArrayCollection|Reviewer[] $projectReportReview
      *
      * @return Contact
      */
-    public function setProjectReportReview($projectReportReview): Contact
+    public function setProjectReportReviewer($projectReportReviewer): Contact
     {
-        $this->projectReportReview = $projectReportReview;
+        $this->projectReportReviewer = $projectReportReviewer;
 
         return $this;
     }
@@ -2829,11 +2824,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this->organisationJournal;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Journal[] $organisationJournal
-     *
-     * @return Contact
-     */
     public function setOrganisationJournal($organisationJournal): Contact
     {
         $this->organisationJournal = $organisationJournal;
@@ -2841,19 +2831,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Invoice\Entity\Log[]
-     */
     public function getInvoiceLog()
     {
         return $this->invoiceLog;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Invoice\Entity\Log[] $invoiceLog
-     *
-     * @return Contact
-     */
     public function setInvoiceLog($invoiceLog): Contact
     {
         $this->invoiceLog = $invoiceLog;
@@ -2861,19 +2843,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|Reminder[]
-     */
     public function getReminder()
     {
         return $this->reminder;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Reminder[] $reminder
-     *
-     * @return Contact
-     */
     public function setReminder($reminder): Contact
     {
         $this->reminder = $reminder;
@@ -2881,19 +2855,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|Achievement[]
-     */
     public function getAchievement()
     {
         return $this->achievement;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Achievement[] $achievement
-     *
-     * @return Contact
-     */
     public function setAchievement($achievement): Contact
     {
         $this->achievement = $achievement;
@@ -2901,19 +2867,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|Partner
-     */
     public function getIdeaPartner()
     {
         return $this->ideaPartner;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Partner $ideaPartner
-     *
-     * @return Contact
-     */
     public function setIdeaPartner($ideaPartner): Contact
     {
         $this->ideaPartner = $ideaPartner;
@@ -2921,19 +2879,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Project\Entity\Log[]
-     */
     public function getProjectLog()
     {
         return $this->projectLog;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Project\Entity\Log[] $projectLog
-     *
-     * @return Contact
-     */
     public function setProjectLog($projectLog): Contact
     {
         $this->projectLog = $projectLog;
@@ -2941,19 +2891,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection
-     */
     public function getProjectChangelog()
     {
         return $this->projectChangelog;
     }
 
-    /**
-     * @param Collections\ArrayCollection $projectChangelog
-     *
-     * @return Contact
-     */
     public function setProjectChangelog(Collections\ArrayCollection $projectChangelog): Contact
     {
         $this->projectChangelog = $projectChangelog;
@@ -3001,19 +2943,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Process[]|Collections\Collection
-     */
     public function getChangeRequestProcess()
     {
         return $this->changeRequestProcess;
     }
 
-    /**
-     * @param Process[]|Collections\Collection $changerequestProcess
-     *
-     * @return Contact
-     */
     public function setChangeRequestProcess($changerequestProcess): Contact
     {
         $this->changeRequestProcess = $changerequestProcess;
@@ -3021,19 +2955,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return CostChange[]|Collections\Collection
-     */
     public function getChangeRequestCostChange()
     {
         return $this->changeRequestCostChange;
     }
 
-    /**
-     * @param CostChange[]|Collections\Collection $changerequestCostChange
-     *
-     * @return Contact
-     */
     public function setChangeRequestCostChange($changerequestCostChange): Contact
     {
         $this->changeRequestCostChange = $changerequestCostChange;
@@ -3041,19 +2967,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Country[]|Collections\Collection
-     */
     public function getChangeRequestCountry()
     {
         return $this->changeRequestCountry;
     }
 
-    /**
-     * @param $changerequestCountry
-     *
-     * @return Contact
-     */
     public function setChangeRequestCountry($changerequestCountry): Contact
     {
         $this->changeRequestCountry = $changerequestCountry;
