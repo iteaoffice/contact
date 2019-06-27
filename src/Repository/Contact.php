@@ -311,11 +311,12 @@ class Contact extends EntityRepository
             'calendarContact',
             'calendarDocument',
             'calendar',
-            'projectReview',
+            'projectReviewer',
             'projectReport',
             'projectChangelog',
             'projectCalendarReview',
             'projectReportReviewer',
+            //'projectVersionReviewer'
             'projectReportEffortSpent',
             'contract',
             'invite',
