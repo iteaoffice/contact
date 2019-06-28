@@ -29,6 +29,7 @@ use Doctrine\ORM\QueryBuilder;
 use DoctrineExtensions\Query\Mysql\Year;
 use Evaluation\Entity\Evaluation;
 use Evaluation\Entity\Reviewer;
+use Evaluation\Repository\ReviewerRepository;
 use General\Entity\Country;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Type;
@@ -913,8 +914,8 @@ class Contact extends EntityRepository
         $findContactByProjectIdQueryBuilder = $this->findContactByProjectIdQueryBuilder();
 
         //Find the reviewers
-        /** @var Review $reviewRepository */
-        $reviewRepository = $this->getEntityManager()->getRepository(Review::class);
+        /** @var ReviewerRepository $reviewRepository */
+        $reviewRepository = $this->getEntityManager()->getRepository(Reviewer::class);
 
         $findReviewContactByProjectQueryBuilder = $reviewRepository->findReviewContactByProjectQueryBuilder();
 

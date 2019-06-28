@@ -441,6 +441,12 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $affiliation;
     /**
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="communication")
+     * @Annotation\Exclude()
+     * @var Affiliation[]|Collections\ArrayCollection
+     */
+    private $affiliationCommunication;
+    /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Affiliation\Entity\Log[]|Collections\ArrayCollection
@@ -951,6 +957,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->projectLog = new Collections\ArrayCollection();
         $this->projectChangelog = new Collections\ArrayCollection();
         $this->affiliation = new Collections\ArrayCollection();
+        $this->affiliationCommunication = new Collections\ArrayCollection();
         $this->actionClosed = new Collections\ArrayCollection();
         $this->actionStatus = new Collections\ArrayCollection();
         $this->actionComment = new Collections\ArrayCollection();
@@ -1768,6 +1775,17 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     {
         $this->affiliation = $affiliation;
 
+        return $this;
+    }
+
+    public function getAffiliationCommunication()
+    {
+        return $this->affiliationCommunication;
+    }
+
+    public function setAffiliationCommunication($affiliationCommunication): Contact
+    {
+        $this->affiliationCommunication = $affiliationCommunication;
         return $this;
     }
 
@@ -3174,19 +3192,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Pageview[]|Collections\Collection
-     */
     public function getPageview()
     {
         return $this->pageview;
     }
 
-    /**
-     * @param Pageview[]|Collections\Collection $pageView
-     *
-     * @return Contact
-     */
     public function setPageview($pageview): Contact
     {
         $this->pageview = $pageview;
