@@ -667,7 +667,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @Annotation\Exclude()
      * @var \Evaluation\Entity\Reviewer[]|Collections\ArrayCollection
      */
-    private $projectReviewer;
+    private $projectReviewers;
     /**
      * @ORM\OneToOne(targetEntity="Evaluation\Entity\Reviewer\Contact", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -680,7 +680,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @Annotation\Exclude()
      * @var \Project\Entity\Version\Reviewer[]|Collections\Collection
      */
-    private $projectVersionReviewer;
+    private $projectVersionReviewers;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Report\Report", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -688,17 +688,17 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $projectReport;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Calendar\Review", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Calendar\Reviewer", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Calendar\Review[]|Collections\ArrayCollection
+     * @var \Project\Entity\Calendar\Reviewer[]|Collections\ArrayCollection
      */
-    private $projectCalendarReview;
+    private $projectCalendarReviewers;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Report\Reviewer", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Reviewer[]|Collections\ArrayCollection
      */
-    private $projectReportReviewer;
+    private $projectReportReviewers;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Invite", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -995,13 +995,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->calendarDocument = new Collections\ArrayCollection();
         $this->calendar = new Collections\ArrayCollection();
         $this->proxyProject = new Collections\ArrayCollection();
-        $this->projectReviewer = new Collections\ArrayCollection();
-        $this->projectVersionReviewer = new Collections\ArrayCollection();
+        $this->projectReviewers = new Collections\ArrayCollection();
+        $this->projectVersionReviewers = new Collections\ArrayCollection();
         $this->projectReport = new Collections\ArrayCollection();
         $this->projectReportItem = new Collections\ArrayCollection();
         $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
-        $this->projectCalendarReview = new Collections\ArrayCollection();
-        $this->projectReportReviewer = new Collections\ArrayCollection();
+        $this->projectCalendarReviewers = new Collections\ArrayCollection();
+        $this->projectReportReviewers = new Collections\ArrayCollection();
         $this->contract = new Collections\ArrayCollection();
         $this->contractVersion = new Collections\ArrayCollection();
         $this->invite = new Collections\ArrayCollection();
@@ -2314,21 +2314,21 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Evaluation\Entity\Reviewer
+     * @return Collections\Collection|\Evaluation\Entity\Reviewer
      */
-    public function getProjectReviewer()
+    public function getProjectReviewers()
     {
-        return $this->projectReviewer;
+        return $this->projectReviewers;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Evaluation\Entity\Reviewer $projectReviewer
+     * @param Collections\Collection|\Evaluation\Entity\Reviewer $projectReviewers
      *
      * @return Contact
      */
-    public function setProjectReviewer($projectReviewer): Contact
+    public function setProjectReviewers($projectReviewers): Contact
     {
-        $this->projectReviewer = $projectReviewer;
+        $this->projectReviewers = $projectReviewers;
 
         return $this;
     }
@@ -2356,19 +2356,19 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @return Collections\Collection|\Project\Entity\Version\Reviewer
      */
-    public function getProjectVersionReviewer()
+    public function getProjectVersionReviewers()
     {
-        return $this->projectVersionReviewer;
+        return $this->projectVersionReviewers;
     }
 
     /**
-     * @param Collections\Collection|\Project\Entity\Version\Reviewer $projectVersionReviewer
+     * @param Collections\Collection|\Project\Entity\Version\Reviewer $projectVersionReviewers
      *
      * @return Contact
      */
-    public function setProjectVersionReviewer($projectVersionReviewer): Contact
+    public function setProjectVersionReviewers($projectVersionReviewers): Contact
     {
-        $this->projectVersionReviewer = $projectVersionReviewer;
+        $this->projectVersionReviewers = $projectVersionReviewers;
 
         return $this;
     }
@@ -2394,21 +2394,21 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|\Project\Entity\Calendar\Review
+     * @return Collections\Collection|\Project\Entity\Calendar\Reviewer
      */
-    public function getProjectCalendarReview()
+    public function getProjectCalendarReviewers()
     {
-        return $this->projectCalendarReview;
+        return $this->projectCalendarReviewers;
     }
 
     /**
-     * @param Collections\ArrayCollection|\Project\Entity\Calendar\Review $projectCalendarReview
+     * @param Collections\Collection $projectCalendarReviewers
      *
      * @return Contact
      */
-    public function setProjectCalendarReview($projectCalendarReview): Contact
+    public function setProjectCalendarReviewers($projectCalendarReviewers): Contact
     {
-        $this->projectCalendarReview = $projectCalendarReview;
+        $this->projectCalendarReviewers = $projectCalendarReviewers;
 
         return $this;
     }
@@ -2416,19 +2416,19 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @return Collections\ArrayCollection|Reviewer[]
      */
-    public function getProjectReportReviewer()
+    public function getProjectReportReviewers()
     {
         return $this->projectReportReviewer;
     }
 
     /**
-     * @param Collections\ArrayCollection|Reviewer[] $projectReportReview
+     * @param Collections\ArrayCollection|Reviewer[] $projectReportReviewers
      *
      * @return Contact
      */
-    public function setProjectReportReviewer($projectReportReviewer): Contact
+    public function setProjectReportReviewers($projectReportReviewers): Contact
     {
-        $this->projectReportReviewer = $projectReportReviewer;
+        $this->projectReportReviewers = $projectReportReviewers;
 
         return $this;
     }
