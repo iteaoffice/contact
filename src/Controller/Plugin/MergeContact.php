@@ -310,20 +310,7 @@ final class MergeContact extends AbstractPlugin
                 $target->setContactOrganisation($contactOrganisation);
             }
             $source->setContactOrganisation(null);
-
-            // Transfer domain (many-to-many, with matching)
-            $targetDomains = [];
-            /** @var Domain $domainTarget */
-            foreach ($target->getDomain() as $domainTarget) {
-                $targetDomains[] = $domainTarget->getId();
-            }
-            /** @var Domain $domainSource */
-            foreach ($source->getDomain() as $domainSource) {
-                if (!\in_array($domainSource->getId(), $targetDomains, true)) {
-                    $target->getDomain()->add($domainSource);
-                }
-            }
-            $source->setDomain(new ArrayCollection());
+            
 
             // Transfer ideas (no matching)
             foreach ($source->getIdea() as $key => $idea) {

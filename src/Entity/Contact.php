@@ -2413,19 +2413,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|Reviewer[]
-     */
     public function getProjectReportReviewers()
     {
-        return $this->projectReportReviewer;
+        return $this->projectReportReviewers;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Reviewer[] $projectReportReviewers
-     *
-     * @return Contact
-     */
     public function setProjectReportReviewers($projectReportReviewers): Contact
     {
         $this->projectReportReviewers = $projectReportReviewers;
