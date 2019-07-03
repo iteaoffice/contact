@@ -312,11 +312,11 @@ class Contact extends EntityRepository
             'calendarContact',
             'calendarDocument',
             'calendar',
-            'projectReviewer',
+            'projectReviewers',
             'projectReport',
             'projectChangelog',
-            'projectCalendarReview',
-            'projectReportReviewer',
+            'projectCalendarReviewers',
+            'projectReportReviewers',
             //'projectVersionReviewer'
             'projectReportEffortSpent',
             'contract',
@@ -430,10 +430,10 @@ class Contact extends EntityRepository
         $qb->setParameter('contact', $contact);
 
         $relations = [
-            'projectReviewer'        => Reviewer::class,
-            'projectCalendarReview'  => \Project\Entity\Calendar\Review::class,
-            'projectReportReviewer'  => \Project\Entity\Report\Reviewer::class,
-            'projectVersionReviewer' => \Project\Entity\Version\Reviewer::class,
+            'projectReviewers'        => Reviewer::class,
+            'projectCalendarReviewers'  => \Project\Entity\Calendar\Reviewer::class,
+            'projectReportReviewers'  => \Project\Entity\Report\Reviewer::class,
+            'projectVersionReviewers' => \Project\Entity\Version\Reviewer::class,
             'projectReviewContact'   => Reviewer\Contact::class
         ];
 
