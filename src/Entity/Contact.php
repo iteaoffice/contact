@@ -19,7 +19,6 @@ use Affiliation\Entity\Affiliation;
 use Affiliation\Entity\Description;
 use Affiliation\Entity\DoaReminder;
 use Affiliation\Entity\Loi;
-use Affiliation\Entity\LoiReminder;
 use Affiliation\Entity\Version;
 use BjyAuthorize\Provider\Role\ProviderInterface;
 use Calendar\Entity\Calendar;
@@ -441,12 +440,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $affiliation;
     /**
-     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Affiliation", cascade={"persist"}, mappedBy="communication")
-     * @Annotation\Exclude()
-     * @var Affiliation[]|Collections\ArrayCollection
-     */
-    private $affiliationCommunication;
-    /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Log", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Affiliation\Entity\Log[]|Collections\ArrayCollection
@@ -748,6 +741,12 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $affiliationDoa;
     /**
+     * @ORM\OneToMany(targetEntity="\Affiliation\Entity\Doa", cascade={"persist"}, mappedBy="approver")
+     * @Annotation\Exclude()
+     * @var Loi[]|Collections\ArrayCollection
+     */
+    private $affiliationDoaApprover;
+    /**
      * @ORM\OneToMany(targetEntity="Admin\Entity\Permit\Contact", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Admin\Entity\Permit\Contact[]|Collections\ArrayCollection
@@ -789,18 +788,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var DoaReminder[]|Collections\ArrayCollection
      */
     private $doaReminderSender;
-    /**
-     * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="receiver")
-     * @Annotation\Exclude();
-     * @var LoiReminder[]|Collections\ArrayCollection
-     */
-    private $loiReminderReceiver;
-    /**
-     * @ORM\OneToMany(targetEntity="Affiliation\Entity\LoiReminder", cascade={"persist"}, mappedBy="sender")
-     * @Annotation\Exclude();
-     * @var LoiReminder[]|Collections\ArrayCollection
-     */
-    private $loiReminderSender;
     /**
      * @ORM\OneToMany(targetEntity="News\Entity\Blog", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -957,7 +944,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->projectLog = new Collections\ArrayCollection();
         $this->projectChangelog = new Collections\ArrayCollection();
         $this->affiliation = new Collections\ArrayCollection();
-        $this->affiliationCommunication = new Collections\ArrayCollection();
         $this->actionClosed = new Collections\ArrayCollection();
         $this->actionStatus = new Collections\ArrayCollection();
         $this->actionComment = new Collections\ArrayCollection();
@@ -1011,6 +997,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->loi = new Collections\ArrayCollection();
         $this->loiApprover = new Collections\ArrayCollection();
         $this->affiliationDoa = new Collections\ArrayCollection();
+        $this->affiliationDoaApprover = new Collections\ArrayCollection();
         $this->parentDoa = new Collections\ArrayCollection();
         $this->permitContact = new Collections\ArrayCollection();
         $this->session = new Collections\ArrayCollection();
@@ -1021,8 +1008,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->tourContact = new Collections\ArrayCollection();
         $this->doaReminderReceiver = new Collections\ArrayCollection();
         $this->doaReminderSender = new Collections\ArrayCollection();
-        $this->loiReminderReceiver = new Collections\ArrayCollection();
-        $this->loiReminderSender = new Collections\ArrayCollection();
         $this->journalEntry = new Collections\ArrayCollection();
         $this->journal = new Collections\ArrayCollection();
         $this->organisationJournal = new Collections\ArrayCollection();
@@ -1775,17 +1760,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     {
         $this->affiliation = $affiliation;
 
-        return $this;
-    }
-
-    public function getAffiliationCommunication()
-    {
-        return $this->affiliationCommunication;
-    }
-
-    public function setAffiliationCommunication($affiliationCommunication): Contact
-    {
-        $this->affiliationCommunication = $affiliationCommunication;
         return $this;
     }
 
@@ -2545,23 +2519,26 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return \Affiliation\Entity\Doa[]|Collections\ArrayCollection
-     */
     public function getAffiliationDoa()
     {
         return $this->affiliationDoa;
     }
 
-    /**
-     * @param \Affiliation\Entity\Doa[]|Collections\ArrayCollection $affiliationDoa
-     *
-     * @return Contact
-     */
     public function setAffiliationDoa($affiliationDoa): Contact
     {
         $this->affiliationDoa = $affiliationDoa;
 
+        return $this;
+    }
+
+    public function getAffiliationDoaApprover()
+    {
+        return $this->affiliationDoaApprover;
+    }
+
+    public function setAffiliationDoaApprover($affiliationDoaApprover): Contact
+    {
+        $this->affiliationDoaApprover = $affiliationDoaApprover;
         return $this;
     }
 
@@ -2645,19 +2622,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|Tour[]
-     */
     public function getTourContact()
     {
         return $this->tourContact;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Tour[] $tourContact
-     *
-     * @return Contact
-     */
     public function setTourContact($tourContact): Contact
     {
         $this->tourContact = $tourContact;
@@ -2665,19 +2634,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return DoaReminder[]|Collections\ArrayCollection
-     */
     public function getDoaReminderReceiver()
     {
         return $this->doaReminderReceiver;
     }
 
-    /**
-     * @param DoaReminder[]|Collections\ArrayCollection $doaReminderReceiver
-     *
-     * @return Contact
-     */
     public function setDoaReminderReceiver($doaReminderReceiver): Contact
     {
         $this->doaReminderReceiver = $doaReminderReceiver;
@@ -2685,62 +2646,14 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return DoaReminder[]|Collections\ArrayCollection
-     */
     public function getDoaReminderSender()
     {
         return $this->doaReminderSender;
     }
 
-    /**
-     * @param DoaReminder[]|Collections\ArrayCollection $doaReminderSender
-     *
-     * @return Contact
-     */
     public function setDoaReminderSender($doaReminderSender): Contact
     {
         $this->doaReminderSender = $doaReminderSender;
-
-        return $this;
-    }
-
-    /**
-     * @return LoiReminder[]|Collections\ArrayCollection
-     */
-    public function getLoiReminderReceiver()
-    {
-        return $this->loiReminderReceiver;
-    }
-
-    /**
-     * @param LoiReminder[]|Collections\ArrayCollection $loiReminderReceiver
-     *
-     * @return Contact
-     */
-    public function setLoiReminderReceiver($loiReminderReceiver): Contact
-    {
-        $this->loiReminderReceiver = $loiReminderReceiver;
-
-        return $this;
-    }
-
-    /**
-     * @return LoiReminder[]|Collections\ArrayCollection
-     */
-    public function getLoiReminderSender()
-    {
-        return $this->loiReminderSender;
-    }
-
-    /**
-     * @param LoiReminder[]|Collections\ArrayCollection $loiReminderSender
-     *
-     * @return Contact
-     */
-    public function setLoiReminderSender($loiReminderSender): Contact
-    {
-        $this->loiReminderSender = $loiReminderSender;
 
         return $this;
     }

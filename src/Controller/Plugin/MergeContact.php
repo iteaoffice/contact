@@ -310,7 +310,7 @@ final class MergeContact extends AbstractPlugin
                 $target->setContactOrganisation($contactOrganisation);
             }
             $source->setContactOrganisation(null);
-            
+
 
             // Transfer ideas (no matching)
             foreach ($source->getIdea() as $key => $idea) {
@@ -332,20 +332,6 @@ final class MergeContact extends AbstractPlugin
                 }
             }
             $source->setFavouriteIdea(new ArrayCollection());
-
-            // Transfer technologies (many-to-many, with matching)
-            $targetTechnologies = [];
-            /** @var Technology $technologyTarget */
-            foreach ($target->getTechnology() as $technologyTarget) {
-                $targetTechnologies[$technologyTarget->getId()] = $technologyTarget->getId();
-            }
-            /** @var Technology $technologySource */
-            foreach ($source->getTechnology() as $technologySource) {
-                if (!isset($targetTechnologies[$technologySource->getId()])) {
-                    $target->getTechnology()->add($technologySource);
-                }
-            }
-            $source->setTechnology(new ArrayCollection());
 
             // Transfer organisation logs (no matching)
             foreach ($source->getOrganisationLog() as $key => $log) {
@@ -491,13 +477,6 @@ final class MergeContact extends AbstractPlugin
                 $target->getPhoto()->add($photo);
             }
             $source->setPhoto([]);
-
-            // Transfer community (no matching)
-            foreach ($source->getCommunity() as $key => $community) {
-                $community->setContact($target);
-                $target->getCommunity()->add($community);
-                $source->getCommunity()->remove($key);
-            }
 
             // Transfer registrations (no matching)
             foreach ($source->getRegistration() as $key => $registration) {
@@ -898,20 +877,6 @@ final class MergeContact extends AbstractPlugin
                 $doaReminder->setSender($target);
                 $target->getDoaReminderSender()->add($doaReminder);
                 $source->getDoaReminderSender()->remove($key);
-            }
-
-            // Transfer loi reminder receivers (no matching)
-            foreach ($source->getLoiReminderReceiver() as $key => $loiReminder) {
-                $loiReminder->setReceiver($target);
-                $target->getLoiReminderReceiver()->add($loiReminder);
-                $source->getLoiReminderReceiver()->remove($key);
-            }
-
-            // Transfer loi reminder senders (no matching)
-            foreach ($source->getLoiReminderSender() as $key => $loiReminder) {
-                $loiReminder->setSender($target);
-                $target->getLoiReminderSender()->add($loiReminder);
-                $source->getLoiReminderSender()->remove($key);
             }
 
             // Transfer blogs (no matching)

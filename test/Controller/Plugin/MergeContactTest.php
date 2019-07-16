@@ -20,7 +20,6 @@ use Affiliation\Entity\Affiliation;
 use Affiliation\Entity\DoaReminder;
 use Affiliation\Entity\Financial;
 use Affiliation\Entity\Loi;
-use Affiliation\Entity\LoiReminder;
 use Calendar\Entity\Calendar;
 use Contact\Controller\ContactAdminController;
 use Contact\Controller\Plugin\MergeContact;
@@ -592,16 +591,6 @@ final class MergeContactTest extends AbstractServiceTest
         $doaReminderSender->setSender($source);
         $source->setDoaReminderSender(new ArrayCollection([$doaReminderSender]));
 
-        $loiReminderReceiver = new LoiReminder();
-        $loiReminderReceiver->setId(1);
-        $loiReminderReceiver->setReceiver($source);
-        $source->setLoiReminderReceiver(new ArrayCollection([$loiReminderReceiver]));
-
-        $loiReminderSender = new LoiReminder();
-        $loiReminderSender->setId(2);
-        $loiReminderSender->setSender($source);
-        $source->setLoiReminderSender(new ArrayCollection([$loiReminderSender]));
-
         $blog = new Blog();
         $blog->setId(1);
         $blog->setContact($source);
@@ -1128,12 +1117,6 @@ final class MergeContactTest extends AbstractServiceTest
 
         $this->assertSame(1, $this->target->getDoaReminderSender()->count());
         $this->assertSame(2, $this->target->getDoaReminderSender()->first()->getId());
-
-        $this->assertSame(1, $this->target->getLoiReminderReceiver()->count());
-        $this->assertSame(1, $this->target->getLoiReminderReceiver()->first()->getId());
-
-        $this->assertSame(1, $this->target->getLoiReminderSender()->count());
-        $this->assertSame(2, $this->target->getLoiReminderSender()->first()->getId());
 
         $this->assertSame(1, $this->target->getBlog()->count());
         $this->assertSame(1, $this->target->getBlog()->first()->getId());
