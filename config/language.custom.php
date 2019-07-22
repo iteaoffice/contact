@@ -11,3 +11,4 @@ _('txt-select-all');
 _('txt-add');
 _('txt-activate-contact');
 _('txt-de-activate-contact');
+_('txt-flush-permissions');

@@ -1139,7 +1139,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function isVisibleInCommunity(): bool
     {
-        return null !== $this->profile && $this->profile->getVisible() === Profile::VISIBLE_COMMUNITY;
+        return $this->hasProfile() && $this->profile->getVisible() === Profile::VISIBLE_COMMUNITY;
     }
 
     public function addOptIn(Collections\Collection $optInCollection): void

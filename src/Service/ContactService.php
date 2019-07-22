@@ -1350,7 +1350,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function updateProfileCollectionInSearchEngine(bool $clearIndex = false): void
     {
-        $contacts = $this->findContactsWithActiveProfile(true);
+        $contacts = $this->findContactsWithActiveProfile();
         $collection = [];
 
         /** @var Contact $contact */
@@ -1360,10 +1360,10 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 continue;
             }
 
-            $collection[] = $this->prepareSearchUpdate($contact);
+            $collection[] = $this->prepareProfileSearchUpdate($contact);
         }
 
-        $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
+        $this->profileSearchService->updateIndexWithCollection($collection, $clearIndex);
     }
 
     public function findContactsWithActiveProfile(bool $onlyPublic = true): array

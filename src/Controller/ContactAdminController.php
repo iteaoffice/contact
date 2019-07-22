@@ -413,7 +413,6 @@ class ContactAdminController extends ContactAbstractController
             return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
         }
 
-        //Handle the optIn
         if ($request->isPost()) {
             if (isset($data['updateOptIn'])) {
                 $this->contactService->updateOptInForContact($contact, $data['optIn'] ?? []);
@@ -514,7 +513,7 @@ class ContactAdminController extends ContactAbstractController
                 $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
             }
 
-            return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact]);
+            return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
         }
 
         $mergeForm = new ContactMerge($this->entityManager, $contact);
