@@ -43,8 +43,36 @@
         {{ selectionLink(null, 'add-contact', 'button', null, null, contact) }}
     </form>
 {% else %}
-    {{ ztbalert().info(translate("txt-contact-%s-is-not-active-in-any-selection"))|raw }}
+    {{ ztbalert().info(translate("txt-contact-%s-is-not-active-in-any-selection")|format(contact.parseFullName()))|raw }}
     {{ selectionLink(null, 'add-contact', 'button', null, null, contact) }}
+{% endif %}
+
+{% if not contact.deeplinkContact.isEmpty() %}
+    <h2>{{ translate("txt-deeplinks") }}</h2>
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-deeplink-id") }}</th>
+            <th>{{ translate("txt-deeplink") }}</th>
+            <th>{{ translate("txt-contact") }}</th>
+            <th>{{ translate("txt-key") }}</th>
+            <th>{{ translate("txt-expire") }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for deeplinkContact in contact.deeplinkContact %}
+            {% set deeplink = deeplinkContact.deeplink %}
+            <tr {% if deeplink.dateEnd|date('Y-m-d') < "now"|date('Y-m-d') %}class="table-danger"
+                title="{{ translate("txt-expired") }}"{% endif %}>
+                <td>{{ deeplink.id }}</td>
+                <td>{{ deeplinkLink(deeplink,'view', 'target') }}</td>
+                <td>{{ contactLink(deeplinkContact.contact,'view-admin','name') }}</td>
+                <td>{{ deeplink.keyId }}</td>
+                <td>{{ deeplink.dateEnd|string_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endif %}
 
 

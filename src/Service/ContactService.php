@@ -193,24 +193,15 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return count($this->cannotDeleteContact($contact)) === 0;
     }
 
-    public function contactWillBeAutoDelete(Contact $contact): bool
-    {
-        /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->entityManager->getRepository(Contact::class);
-
-        return $repository->isInactiveContact($contact);
-    }
-
     public function cannotDeleteContact(Contact $contact): array
     {
         $cannotDeleteContact = [];
 
         $repository = $this->entityManager->getRepository(Contact::class);
 
-        if (!$this->contactWillBeAutoDelete($contact)) {
-            $cannotDeleteContact[] = 'Contact is asdfsafsd in a project';
+        if ($this->contactWillBeAutoDelete($contact)) {
+            $cannotDeleteContact[] = 'Contact is active in a project';
         }
-
         if ($repository->contactIsActiveInProject($contact)) {
             $cannotDeleteContact[] = 'Contact is active in a project';
         }
@@ -236,6 +227,14 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         return $cannotDeleteContact;
+    }
+
+    public function contactWillBeAutoDelete(Contact $contact): bool
+    {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->entityManager->getRepository(Contact::class);
+
+        return $repository->isInactiveContact($contact);
     }
 
     public function contactInCoreSelection(Contact $contact): bool

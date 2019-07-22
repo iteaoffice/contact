@@ -107,7 +107,7 @@ final class ContactActions extends AbstractPlugin
         /** @var Target $target */
         $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate');
         //Create a deep link for the user which redirects to the profile-page
-        $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
+        $deeplink = $this->deeplinkService->createDeeplink($target, $contact, null, null, 7);
 
         $this->emailService->setWebInfo('/auth/register:mail');
         $this->emailService->addToEmailAddress($emailAddress);
@@ -155,7 +155,7 @@ final class ContactActions extends AbstractPlugin
         /** @var Target $target */
         $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate-optin');
         //Create a deep link for the user which redirects to the profile-page
-        $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
+        $deeplink = $this->deeplinkService->createDeeplink($target, $contact, null, null, 7);
 
         $this->emailService->setWebInfo('/auth/subscribe:mail');
         $this->emailService->addToEmailAddress($emailAddress);

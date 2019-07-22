@@ -12,7 +12,8 @@
         <tfoot>
         <tr>
             <td colspan="3"></td>
-            <td><input type="submit" name="updateOptIn" value="{{ translate("txt-update-opt-in") }}" class="btn btn-primary btn-sm"></td>
+            <td><input type="submit" name="updateOptIn" value="{{ translate("txt-update-opt-in") }}"
+                       class="btn btn-primary btn-sm"></td>
         </tr>
         </tfoot>
         <tbody>
@@ -33,38 +34,40 @@
 </form>
 
 
-<h2>{{ translate("txt-mailings") }}</h2>
-<table class="table table-hover table-striped table-sm">
-    <thead>
-    <tr>
-        <th>{{ translate("txt-number") }}</th>
-        <th>{{ translate("txt-id") }}</th>
-        <th>{{ translate("txt-mailing") }}</th>
-        <th>{{ translate("txt-subject") }}</th>
-        <th>{{ translate("txt-owner") }}</th>
-        <th>{{ translate("txt-sent") }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for mailingContact in contact.mailingContact %}
-        <tr {% if mailingContact.mailing.dateDeleted %}class="table-danger"{% endif %}>
-            <td>{{ loop.index }}</td>
-            <td>{{ mailingContact.mailing.id }}
-                {% if mailingContact.mailing.dateDeleted %}
-                    <i class="fa fa-trash"
-                       title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(mailingContact.mailing.dateDeleted|date("d-m-Y")) }}"></i>
-                {% endif %}</td>
-            <td>
-                {{ mailingLink(mailingContact.mailing,'view','name') }}
-                {{ mailingContactLink(mailingContact,'view','icon') }}
-            </td>
-            <td>
-                <span title="{{ mailingContact.mailing.mailSubject }}">{{ mailingContact.mailing.mailSubject|truncate(25, false, "...") }}</span>
-            </td>
-            <td>{{ contactLink(mailingContact.mailing.contact,'view-admin','initials') }}</td>
-            <td>{{ mailingContact.dateSent|string_date }}</td>
+{% if not contact.mailingContact.isEmpty() %}
+    <h2>{{ translate("txt-mailings") }}</h2>
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-number") }}</th>
+            <th>{{ translate("txt-id") }}</th>
+            <th>{{ translate("txt-mailing") }}</th>
+            <th>{{ translate("txt-subject") }}</th>
+            <th>{{ translate("txt-owner") }}</th>
+            <th>{{ translate("txt-sent") }}</th>
         </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {% for mailingContact in contact.mailingContact %}
+            <tr {% if mailingContact.mailing.dateDeleted %}class="table-danger"{% endif %}>
+                <td>{{ loop.index }}</td>
+                <td>{{ mailingContact.mailing.id }}
+                    {% if mailingContact.mailing.dateDeleted %}
+                        <i class="fa fa-trash"
+                           title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(mailingContact.mailing.dateDeleted|date("d-m-Y")) }}"></i>
+                    {% endif %}</td>
+                <td>
+                    {{ mailingLink(mailingContact.mailing,'view','name') }}
+                    {{ mailingContactLink(mailingContact,'view','icon') }}
+                </td>
+                <td>
+                    <span title="{{ mailingContact.mailing.mailSubject }}">{{ mailingContact.mailing.mailSubject|truncate(25, false, "...") }}</span>
+                </td>
+                <td>{{ contactLink(mailingContact.mailing.contact,'view-admin','initials') }}</td>
+                <td>{{ mailingContact.dateSent|string_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
 
