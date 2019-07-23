@@ -199,9 +199,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
         $repository = $this->entityManager->getRepository(Contact::class);
 
-        if ($this->contactWillBeAutoDelete($contact)) {
-            $cannotDeleteContact[] = 'Contact is active in a project';
-        }
         if ($repository->contactIsActiveInProject($contact)) {
             $cannotDeleteContact[] = 'Contact is active in a project';
         }

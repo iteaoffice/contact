@@ -10,14 +10,19 @@
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
             <dd>{{ contact.parseFullName() }}
+            <dt>{{ translate("txt-expertise") }}</dt>
+            <dd>{{ contact.profile.description|nl2br }}</dd>
             <dt>{{ translate("txt-organisation") }}</dt>
             <dd>{{ contactService.parseOrganisation(contact) }}</dd>
             <dt>{{ translate("txt-organisation-type") }}</dt>
             <dd>{{ contact.contactOrganisation.organisation.type }}</dd>
             <dt>{{ translate("txt-country") }}</dt>
             <dd>{{ contactService.parseCountry(contact) }}</dd>
-            <dt>{{ translate("txt-expertise") }}</dt>
-            <dd>{{ contact.profile.description|nl2br }}</dd>
+            {% if contact.contactOrganisation.organisation.description %}
+                <dt>{{ translate("txt-organisation-description") }}</dt>
+                <dd>{{ contact.contactOrganisation.organisation.description|striptags|raw }}</dd>
+            {% endif %}
+
         </dl>
     </div>
 
