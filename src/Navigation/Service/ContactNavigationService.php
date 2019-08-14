@@ -17,8 +17,8 @@ use Contact\Entity\Facebook;
 use Contact\Service\ContactService;
 use Zend\I18n\Translator\Translator;
 use Zend\Navigation\Navigation;
-use Zend\Router\Http\RouteMatch;
-use Zend\Router\Http\TreeRouteStack;
+use Zend\Router\RouteMatch;
+use Zend\Router\SimpleRouteStack;
 
 /**
  * Class ContactNavigationService
@@ -40,7 +40,7 @@ final class ContactNavigationService
      */
     private $navigation;
     /**
-     * @var TreeRouteStack
+     * @var SimpleRouteStack
      */
     private $router;
     /**
@@ -136,7 +136,7 @@ final class ContactNavigationService
         return $this;
     }
 
-    public function setRouter(TreeRouteStack $router): ContactNavigationService
+    public function setRouter(SimpleRouteStack $router): ContactNavigationService
     {
         $this->router = $router;
         return $this;
