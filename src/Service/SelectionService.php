@@ -14,6 +14,7 @@ namespace Contact\Service;
 
 use Contact\Entity;
 use Contact\Repository;
+use Doctrine\DBAL\Exception\SyntaxErrorException;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -96,9 +97,13 @@ class SelectionService extends AbstractService
 
     public function getAmountOfContacts(Entity\Selection $selection): int
     {
-        $repository = $this->entityManager->getRepository(Entity\Contact::class);
+        try {
+            $repository = $this->entityManager->getRepository(Entity\Contact::class);
 
-        return $repository->findAmountOfContactsInSelection($selection);
+            return $repository->findAmountOfContactsInSelection($selection);
+        } catch (SyntaxErrorException $e) {
+            return 0;
+        }
     }
 
     public function findTags(): array

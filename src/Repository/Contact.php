@@ -430,11 +430,11 @@ class Contact extends EntityRepository
         $qb->setParameter('contact', $contact);
 
         $relations = [
-            'projectReviewers'        => Reviewer::class,
-            'projectCalendarReviewers'  => \Project\Entity\Calendar\Reviewer::class,
-            'projectReportReviewers'  => \Project\Entity\Report\Reviewer::class,
-            'projectVersionReviewers' => \Project\Entity\Version\Reviewer::class,
-            'projectReviewContact'   => Reviewer\Contact::class
+            'projectReviewers'         => Reviewer::class,
+            'projectCalendarReviewers' => \Project\Entity\Calendar\Reviewer::class,
+            'projectReportReviewers'   => \Project\Entity\Report\Reviewer::class,
+            'projectVersionReviewers'  => \Project\Entity\Version\Reviewer::class,
+            'projectReviewContact'     => Reviewer\Contact::class
         ];
 
         foreach ($relations as $key => $relation) {
@@ -762,6 +762,7 @@ class Contact extends EntityRepository
         $resultSetMap->addFieldResult('contact_entity_contact', 'middlename', 'middleName');
         $resultSetMap->addFieldResult('contact_entity_contact', 'lastname', 'lastName');
         $resultSetMap->addFieldResult('contact_entity_contact', 'position', 'position');
+        $resultSetMap->addFieldResult('contact_entity_contact', 'date_activated', 'dateActivated');
 
         $queryInString = sprintf(
             'SELECT %s FROM %s WHERE %s',
@@ -778,7 +779,7 @@ class Contact extends EntityRepository
         $query = $this->getEntityManager()
             ->createNativeQuery(
                 sprintf(
-                    'SELECT contact_id, email, firstname, middlename, lastname, position FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ',
+                    'SELECT contact_id, email, firstname, middlename, lastname, position, date_activated FROM contact WHERE contact_id IN (%s) AND date_end IS NULL %s ',
                     $queryInString,
                     $orderBy
                 ),

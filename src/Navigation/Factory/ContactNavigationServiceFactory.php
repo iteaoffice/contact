@@ -16,6 +16,7 @@ use Contact\Navigation\Service\ContactNavigationService;
 use Contact\Service\ContactService;
 use Interop\Container\ContainerInterface;
 use Zend\Authentication\AuthenticationService;
+use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Navigation\Navigation;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
@@ -38,6 +39,7 @@ final class ContactNavigationServiceFactory implements FactoryInterface
         $application = $container->get('application');
         $contactNavigationService->setRouteMatch($application->getMvcEvent()->getRouteMatch());
         $contactNavigationService->setRouter($application->getMvcEvent()->getRouter());
+        $contactNavigationService->setTranslator($container->get(TranslatorInterface::class));
 
         if ($container->get(AuthenticationService::class)->hasIdentity()) {
             $contactNavigationService->setContact(

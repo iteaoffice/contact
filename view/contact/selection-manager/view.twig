@@ -11,9 +11,8 @@
     {{ ztbalert().danger(translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")))|raw }}
 {% endif %}
 
-
 {% if error %}
-    {{ ztbalert().danger(error)|raw }}
+    {{ ztbalert().danger('<pre>' ~ error ~ '</pre>')|raw }}
 {% endif %}
 
 <!-- Nav tabs -->
@@ -61,7 +60,7 @@
 
         {% if selectionService.isSql(selection) %}
             <h2>{{ translate("txt-sql-query") }}</h2>
-            <pre>{{ selection.sql.query }}</pre>
+            <code class="d-block py-3">{{ selection.sql.query }}</code>
         {% endif %}
 
         {{ selectionLink( selection,'edit','button') }}
