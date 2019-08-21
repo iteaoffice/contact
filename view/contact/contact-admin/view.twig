@@ -8,6 +8,9 @@
     {{ ztbalert().danger(translate("txt-%s-has-been-deleted-on-%s-undelte-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
 {% endif %}
 
+{% if contactService.contactWillBeAutoDelete(contact) %}
+    {{ ztbalert().danger(translate("txt-%s-will-be-removed-in-then-next-run-of-the-contact-cleanup")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
+{% endif %}
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">

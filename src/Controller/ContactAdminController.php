@@ -621,13 +621,21 @@ class ContactAdminController extends ContactAbstractController
             $form->remove('deactivate');
         }
 
+        if ($this->contactService->canDeleteContact($contact)) {
+            $form->remove('deactivate');
+        }
+
+        if (!$this->contactService->canDeleteContact($contact)) {
+            $form->remove('delete');
+        }
+
 
         if ($request->isPost()) {
 
             /** Deactivate a contact */
             if (isset($data['deactivate'])) {
                 $changelogMessage = sprintf(
-                    $this->translator->translate('txt-contact-%s-has-been-deleted'),
+                    $this->translator->translate('txt-contact-%s-has-been-marked-as-deleted-because-it-still-has-relevant-connetions'),
                     $contact->parseFullName()
                 );
                 $this->flashMessenger()->addSuccessMessage($changelogMessage);
@@ -643,7 +651,7 @@ class ContactAdminController extends ContactAbstractController
             /** Reactivate a contact */
             if (isset($data['reactivate'])) {
                 $changelogMessage = sprintf(
-                    $this->translator->translate('txt-contact-%s-has-been-undeleted'),
+                    $this->translator->translate('txt-contact-%s-has-been-re-activated'),
                     $contact->parseFullName()
                 );
                 $this->flashMessenger()->addSuccessMessage($changelogMessage);
@@ -654,6 +662,18 @@ class ContactAdminController extends ContactAbstractController
                 $this->contactService->save($contact);
 
                 return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
+            }
+
+            if (isset($data['delete']) && $this->contactService->canDeleteContact($contact)) {
+                $changelogMessage = sprintf(
+                    $this->translator->translate('txt-contact-%s-has-been-deleted'),
+                    $contact->parseFullName()
+                );
+                $this->flashMessenger()->addSuccessMessage($changelogMessage);
+
+                $this->contactService->delete($contact);
+
+                return $this->redirect()->toRoute('zfcadmin/contact/list');
             }
 
             /** Cancel the form */

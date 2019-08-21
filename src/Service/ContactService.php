@@ -203,6 +203,30 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $cannotDeleteContact[] = 'Contact is active in a project';
         }
 
+        if (!$contact->getLoi()->isEmpty()) {
+            $cannotDeleteContact[] = 'Contact is has uploaded an LOI';
+        }
+
+        if (!$contact->getLoiApprover()->isEmpty()) {
+            $cannotDeleteContact[] = 'Contact is has approved an LOI';
+        }
+
+        if (!$contact->getAffiliationDoa()->isEmpty()) {
+            $cannotDeleteContact[] = 'Contact is has uploaded a DoA';
+        }
+
+        if (!$contact->getAffiliationDoaApprover()->isEmpty()) {
+            $cannotDeleteContact[] = 'Contact is has approved a DoA';
+        }
+
+        if (!$contact->getAffiliationVersion()->isEmpty()) {
+            $cannotDeleteContact[] = 'Contact has been a technical contact in an older version';
+        }
+
+        if (!$contact->getAffiliationDescription()->isEmpty()) {
+            $cannotDeleteContact[] = 'Contact has written a description for a partner';
+        }
+
         if ($repository->contactIsReviewer($contact)) {
             $cannotDeleteContact[] = 'Contact is reviewer in a project';
         }
@@ -224,14 +248,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         return $cannotDeleteContact;
-    }
-
-    public function contactWillBeAutoDelete(Contact $contact): bool
-    {
-        /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->entityManager->getRepository(Contact::class);
-
-        return $repository->isInactiveContact($contact);
     }
 
     public function contactInCoreSelection(Contact $contact): bool
@@ -269,6 +285,14 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         return $canAnonymiseContact;
+    }
+
+    public function contactWillBeAutoDelete(Contact $contact): bool
+    {
+        /** @var \Contact\Repository\Contact $repository */
+        $repository = $this->entityManager->getRepository(Contact::class);
+
+        return $repository->isInactiveContact($contact);
     }
 
     public function resetAccessRoles(): void
