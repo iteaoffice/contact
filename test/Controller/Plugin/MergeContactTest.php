@@ -26,7 +26,6 @@ use Contact\Controller\Plugin\MergeContact;
 use Contact\Entity\Address;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
-use Contact\Entity\Cv;
 use Contact\Entity\Dnd;
 use Contact\Entity\Email;
 use Contact\Entity\Log;
@@ -147,10 +146,6 @@ final class MergeContactTest extends AbstractServiceTest
         $source->setDateOfBirth(new DateTime('1970-01-01'));
         $source->setDateCreated(new DateTime('2015-01-01'));
         $source->setLastUpdate(new DateTime());
-
-        $cv = new Cv();
-        $cv->setId(1);
-        $source->setCv($cv);
 
         $contactOrganisation = new ContactOrganisation();
         $contactOrganisation->setId(1);
@@ -854,8 +849,6 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(2, $this->target->getEmailAddress()->count());
         $this->assertSame('duplicate@itea3.org', $this->target->getEmailAddress()->get(0)->getEmail());
         $this->assertSame('test.von.dummy@itea3.org', $this->target->getEmailAddress()->get(1)->getEmail());
-
-        $this->assertSame(1, $this->target->getCv()->getId());
 
         $this->assertSame(1, $this->target->getAddress()->count());
         $this->assertSame(1, $this->target->getAddress()->first()->getId());

@@ -433,16 +433,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 );
             }
         }
-        if (null !== $contact->getCv()) {
-            $cv = str_replace(
-                PHP_EOL,
-                '',
-                strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
-            );
-
-            $contactDocument->setField('cv', $cv);
-            $contactDocument->setField('cv_search', $cv);
-        }
 
         $contactDocument->setField('has_organisation', $this->hasOrganisation($contact));
         $contactDocument->setField('has_organisation_text', $this->hasOrganisation($contact) ? 'Yes' : 'No');
@@ -590,17 +580,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $contactDocument->setField('country', $organisation->getCountry()->getCountry());
             $contactDocument->setField('country_sort', $organisation->getCountry()->getCountry());
             $contactDocument->setField('country_search', $organisation->getCountry()->getCountry());
-        }
-
-        if (null !== $contact->getCv()) {
-            $cv = str_replace(
-                PHP_EOL,
-                '',
-                strip_tags((string)stream_get_contents($contact->getCv()->getCv()))
-            );
-
-            $contactDocument->setField('cv', $cv);
-            $contactDocument->setField('cv_search', $cv);
         }
 
         $update->addDocument($contactDocument);

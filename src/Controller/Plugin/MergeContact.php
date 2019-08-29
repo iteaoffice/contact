@@ -151,13 +151,6 @@ final class MergeContact extends AbstractPlugin
                 }
             }
 
-            // Transfer CV
-            if (($source->getCv() !== null) && ($target->getCv() === null)) {
-                $target->setCv($source->getCv());
-                $target->getCv()->setContact($target);
-            }
-            $source->setCv(null);
-
             // Transfer addresses (no matching)
             foreach ($source->getAddress() as $key => $address) {
                 $address->setContact($target);

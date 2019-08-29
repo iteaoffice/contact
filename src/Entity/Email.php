@@ -13,15 +13,10 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
 
 /**
- * ContactEmail.
- *
  * @ORM\Table(name="contact_email")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("contact_cv")
  *
  * @category    Contact
  */
@@ -31,28 +26,21 @@ class Email extends AbstractEntity
      * @ORM\Column(name="email_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Exclude()
      *
      * @var integer
      */
     private $id;
     /**
      * @ORM\Column(name="email", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-cv-file"})
-     * @Annotation\Exclude()
      *
      * @var string
      */
     private $email;
     /**
      * @ORM\ManyToOne(targetEntity="Contact", cascade={"persist"}, inversedBy="emailAddress")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
-     * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
 
@@ -71,49 +59,31 @@ class Email extends AbstractEntity
         return isset($this->$property);
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
     public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return Contact
-     */
     public function getContact()
     {
         return $this->contact;
     }
 
-    /**
-     * @param Contact $contact
-     */
     public function setContact(Contact $contact): void
     {
         $this->contact = $contact;

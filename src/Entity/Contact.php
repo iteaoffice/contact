@@ -41,6 +41,7 @@ use Invoice\Entity\Journal\Entry;
 use Invoice\Entity\Reminder;
 use Mailing\Entity\Mailing;
 use News\Entity\Blog;
+use News\Entity\Magazine\Article;
 use News\Entity\Message;
 use Organisation\Entity\Booth;
 use Organisation\Entity\OParent;
@@ -261,12 +262,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var Email[]|Collections\ArrayCollection
      */
     private $emailAddress;
-    /**
-     * @ORM\OneToOne(targetEntity="Contact\Entity\Cv", cascade={"persist","remove"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     * @var CV
-     */
-    private $cv;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Address", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
      * @Annotation\ComposedObject("\Contact\Entity\Address")
@@ -753,7 +748,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $permitContact;
     /**
-     * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist","remove"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Session", cascade={"persist","remove"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      * @var Session[]|Collections\ArrayCollection
      */
@@ -803,7 +798,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="News\Entity\Magazine\Article", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \News\Entity\Magazine\Article[]|Collections\ArrayCollection
+     * @var Article[]|Collections\ArrayCollection
      */
     private $magazineArticle;
     /**
@@ -849,14 +844,14 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $achievement;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Log", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Log", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      *
      * @var \Project\Entity\Log[]|Collections\ArrayCollection
      */
     private $projectLog;
     /**
-     * @ORM\OneToMany(targetEntity="Project\Entity\Changelog", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Changelog", cascade={"persist"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      *
      * @var Changelog[]|Collections\ArrayCollection
@@ -905,14 +900,14 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $logCreatedBy;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\Log", cascade={"persist","remove"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\Log", cascade={"persist","remove"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      *
      * @var Log[]|Collections\Collection
      */
     private $log;
     /**
-     * @ORM\OneToMany(targetEntity="Admin\Entity\Pageview", cascade={"persist","remove"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Admin\Entity\Pageview", cascade={"persist","remove"}, mappedBy="contact", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      *
      * @var Pageview[]|Collections\Collection
@@ -1132,14 +1127,14 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return !$this->photo->isEmpty();
     }
 
-    public function hasProfile(): bool
-    {
-        return null !== $this->profile;
-    }
-
     public function isVisibleInCommunity(): bool
     {
         return $this->hasProfile() && $this->profile->getVisible() === Profile::VISIBLE_COMMUNITY;
+    }
+
+    public function hasProfile(): bool
+    {
+        return null !== $this->profile;
     }
 
     public function addOptIn(Collections\Collection $optInCollection): void
@@ -1477,18 +1472,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function setEmailAddress($emailAddress): Contact
     {
         $this->emailAddress = $emailAddress;
-
-        return $this;
-    }
-
-    public function getCv(): ?Cv
-    {
-        return $this->cv;
-    }
-
-    public function setCv($cv): Contact
-    {
-        $this->cv = $cv;
 
         return $this;
     }

@@ -598,17 +598,6 @@ class Contact extends EntityRepository
         return $qb->getQuery()->useQueryCache(true)->getResult();
     }
 
-    public function findContactsWithCV(): array
-    {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('contact_entity_contact');
-        $qb->from(Entity\Contact::class, 'contact_entity_contact');
-        $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
-        $qb->innerJoin('contact_entity_contact.cv', 'cv');
-
-        return $qb->getQuery()->useQueryCache(true)->getResult();
-    }
-
     /**
      * @param bool $onlyPublic
      *

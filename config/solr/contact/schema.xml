@@ -95,9 +95,6 @@
 
     <field name="photo_url" type="string" indexed="true" stored="true" omitNorms="true"/>
 
-    <field name="cv" type="string" indexed="true" stored="true" omitNorms="true"/>
-    <field name="cv_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
-
     <uniqueKey>id</uniqueKey>
 
     <fieldType name="string" class="solr.StrField" sortMissingLast="true"/>
