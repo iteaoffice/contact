@@ -676,6 +676,11 @@ final class MergeContactTest extends AbstractServiceTest
         $pageView->setContact($source);
         $source->getPageview()->add($pageView);
 
+        $officeContact = new \Contact\Entity\Office\Contact();
+        $officeContact->setId(1);
+        $officeContact->setContact($source);
+        $source->setOfficeContact($officeContact);
+
         return $source;
     }
 
@@ -1164,6 +1169,8 @@ final class MergeContactTest extends AbstractServiceTest
 
         $this->assertSame(1, $this->target->getPageview()->count());
         $this->assertSame(1, $this->target->getPageview()->first()->getId());
+
+        $this->assertSame(1, $this->target->getOfficeContact()->getId());
 
         $this->assertSame(
             'Merged contact Test von Dummy (1) into Test von Dummy (2)',

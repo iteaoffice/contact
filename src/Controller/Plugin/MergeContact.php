@@ -126,6 +126,10 @@ final class MergeContact extends AbstractPlugin
             if ($source->getLastUpdate() > $target->getLastUpdate()) {
                 $target->setLastUpdate($source->getLastUpdate());
             }
+            if ($target->getOfficeContact() === null) {
+                $source->getOfficeContact()->setContact($target);
+                $target->setOfficeContact($source->getOfficeContact());
+            }
 
             // Transfer access
             $newAccess = new ArrayCollection();

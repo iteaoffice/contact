@@ -913,6 +913,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var Pageview[]|Collections\Collection
      */
     private $pageview;
+    /**
+     * @ORM\OneToOne(targetEntity="Contact\Entity\Office\Contact", cascade={"persist","remove"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Contact\Entity\Office\Contact
+     */
+    private $officeContact;
 
     public function __construct()
     {
@@ -3132,4 +3139,16 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->triggerUpdate = $triggerUpdate;
         return $this;
     }
+
+    public function getOfficeContact(): ?Office\Contact
+    {
+        return $this->officeContact;
+    }
+
+    public function setOfficeContact(?Office\Contact $officeContact): Contact
+    {
+        $this->officeContact = $officeContact;
+        return $this;
+    }
+
 }
