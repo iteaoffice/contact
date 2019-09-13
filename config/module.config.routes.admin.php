@@ -130,7 +130,6 @@ return [
                                     ],
                                 ],
                             ],
-
                             'impersonate' => [
                                 'type'    => 'Segment',
                                 'options' => [
@@ -191,6 +190,84 @@ return [
                                     'route'    => '/add-project/[:id].html',
                                     'defaults' => [
                                         'action' => 'add-project',
+                                    ],
+                                ],
+                            ],
+                            'office'            => [
+                                'type'         => 'Literal',
+                                'options'      => [
+                                    'route'    => '/office',
+                                    'defaults' => [
+                                        'controller' => Controller\Office\ContactController::class,
+                                    ],
+                                ],
+                                'may_terminate' => false,
+                                'child_routes' => [
+                                    'list'      => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/list.html',
+                                            'defaults' => [
+                                                'action' => 'list',
+                                            ],
+                                        ],
+                                    ],
+                                    'view'      => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/view/[:id].html',
+                                            'defaults' => [
+                                                'action' => 'new',
+                                            ],
+                                        ],
+                                    ],
+                                    'new'      => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/new.html',
+                                            'defaults' => [
+                                                'action' => 'new',
+                                            ],
+                                        ],
+                                    ],
+                                    'edit'     => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/edit/[:id].html',
+                                            'defaults' => [
+                                                'action' => 'edit',
+                                            ],
+                                        ],
+                                    ],
+                                    'leave'     => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/leave',
+                                            'defaults' => [
+                                                'controller' => Controller\Office\LeaveController::class,
+                                            ],
+                                        ],
+                                        'may_terminate' => false,
+                                        'child_routes' => [
+                                            'manage'      => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/manage.html',
+                                                    'defaults' => [
+                                                        'action' => 'manage',
+                                                    ],
+                                                ],
+                                            ],
+                                            'view'      => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/update.json',
+                                                    'defaults' => [
+                                                        'action' => 'new',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],

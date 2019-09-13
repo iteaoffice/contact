@@ -16,16 +16,17 @@ declare(strict_types=1);
 namespace Contact\Controller\Office;
 
 use Contact\Controller\ContactAbstractController;
-use Contact\Entity\Office\Contact;
+use Contact\Entity\Office\Leave;
+use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Service\Office\ContactService as OfficeContactService;
 use Zend\View\Model\ViewModel;
 
 /**
- * Class ContactController
+ * Class LeaveController
  *
  * @package Contact\Controller\Office
  */
-final class ContactController extends ContactAbstractController
+final class LeaveController extends ContactAbstractController
 {
     /**
      * @var OfficeContactService
@@ -37,10 +38,15 @@ final class ContactController extends ContactAbstractController
         $this->officeContactService = $officeContactService;
     }
 
-    public function listAction(): ViewModel
+    public function manageAction(): ViewModel
     {
+        $upcomingLeave = [];
+        if ($this->identity()->getOfficeContact() instanceof OfficeContact) {
+            $upcomingLeave = $this->officeContactService->findUpcomingLeave($this->identity()->getOfficeContact());
+        }
+
         return new ViewModel([
-            'officeContacts' => $this->officeContactService->findAll(Contact::class)
+            'upcomingLeave' => $upcomingLeave
         ]);
     }
 

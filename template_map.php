@@ -13,6 +13,7 @@ return array(
     'contact/profile/events'                       => __DIR__ . '//view/contact/profile/events.twig',
     'contact/contact/search'                       => __DIR__ . '//view/contact/contact/search.twig',
     'contact/contact/change-password'              => __DIR__ . '//view/contact/contact/change-password.twig',
+    'contact/office/leave/manage'                  => __DIR__ . '//view/contact/office/leave/manage.twig',
     'contact/facebook-manager/view'                => __DIR__ . '//view/contact/facebook-manager/view.twig',
     'contact/facebook-manager/new'                 => __DIR__ . '//view/contact/facebook-manager/new.twig',
     'contact/facebook-manager/list'                => __DIR__ . '//view/contact/facebook-manager/list.twig',

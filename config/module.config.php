@@ -20,7 +20,7 @@ use Contact\Search;
 use Contact\Service;
 use Contact\View;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use DoctrineExtensions\Query\Mysql\Replace;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -45,6 +45,8 @@ $config = [
             Controller\ProfileController::class          => ConfigAbstractFactory::class,
             Controller\OptInManagerController::class     => ConfigAbstractFactory::class,
             Controller\SelectionManagerController::class => ConfigAbstractFactory::class,
+            Controller\Office\ContactController::class   => ConfigAbstractFactory::class,
+            Controller\Office\LeaveController::class     => ConfigAbstractFactory::class,
         ],
     ],
     'controller_plugins' => [
@@ -118,6 +120,7 @@ $config = [
             Service\ContactService::class                           => ConfigAbstractFactory::class,
             Service\SelectionContactService::class                  => ConfigAbstractFactory::class,
             Service\AddressService::class                           => ConfigAbstractFactory::class,
+            Service\Office\ContactService::class                    => ConfigAbstractFactory::class,
             Service\FormService::class                              => Factory\FormServiceFactory::class,
             InputFilter\FacebookFilter::class                       => Factory\InputFilterFactory::class,
             InputFilter\DndFilter::class                            => Factory\InputFilterFactory::class,
@@ -146,7 +149,7 @@ $config = [
                 ],
             ],
             'orm_default'               => [
-                'class'   => DriverChain::class,
+                'class'   => MappingDriverChain::class,
                 'drivers' => [
                     __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
                 ],

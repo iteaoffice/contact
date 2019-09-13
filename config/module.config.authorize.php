@@ -183,6 +183,30 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'zfcadmin/contact/office/list',
+                    'roles'     => ['office'],
+                ],
+                [
+                    'route'     => 'zfcadmin/contact/office/view',
+                    'roles'     => ['office'],
+                ],
+                [
+                    'route'     => 'zfcadmin/contact/office/new',
+                    'roles'     => ['office'],
+                ],
+                [
+                    'route'     => 'zfcadmin/contact/office/edit',
+                    'roles'     => ['office'],
+                ],
+                [
+                    'route'     => 'zfcadmin/contact/office/leave/manage',
+                    'roles'     => ['office'],
+                ],
+                [
+                    'route'     => 'zfcadmin/contact/office/leave/update',
+                    'roles'     => ['office'],
+                ],
+                [
                     'route' => 'zfcadmin/contact/merge',
                     'roles' => ['office'],
                 ],
