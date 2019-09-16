@@ -34,6 +34,4 @@ final class ContactController extends ContactAbstractController
     {
         $this->officeContactService = $officeContactService;
     }
-
-
 }

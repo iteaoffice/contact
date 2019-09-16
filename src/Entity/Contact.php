@@ -917,7 +917,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToOne(targetEntity="Contact\Entity\Office\Contact", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\Office\Contact
+     * @var Office\Contact
      */
     private $officeContact;
 
@@ -3150,5 +3150,4 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->officeContact = $officeContact;
         return $this;
     }
-
 }

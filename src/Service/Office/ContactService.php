@@ -20,5 +20,4 @@ use Contact\Service\AbstractService;
  */
 class ContactService extends AbstractService
 {
-
 }

@@ -70,6 +70,7 @@ return [
             'Config'
         ],
         ContactFormElement::class                  => [
+            ContactService::class,
             'ViewHelperManager',
             TranslatorInterface::class
         ],
