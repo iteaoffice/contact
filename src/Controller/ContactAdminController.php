@@ -596,7 +596,7 @@ class ContactAdminController extends ContactAbstractController
 
         //Get contacts in an organisation
         if ($this->contactService->hasOrganisation($contact)) {
-            $data = array_merge(
+            $data = array_merge_recursive(
                 [
                     'contact_entity_contact' => [
                         'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
@@ -606,12 +606,12 @@ class ContactAdminController extends ContactAbstractController
                 $request->getPost()->toArray()
             );
 
-            $form = $this->formService->prepare(Contact::class, $data);
+            $form = $this->formService->prepare($contact, $data);
             $form->get('contact_entity_contact')->get('organisation')
                 ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
             $data = $request->getPost()->toArray();
-            $form = $this->formService->prepare(Contact::class, $data);
+            $form = $this->formService->prepare($contact, $data);
         }
 
         /** Show or hide buttons based on the status of a contact */
