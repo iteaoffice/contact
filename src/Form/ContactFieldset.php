@@ -76,7 +76,7 @@ class ContactFieldset extends Fieldset
                     )
                 );
             }
-            //Add only when a type is provided
+            // Add only when a type is provided
             if (array_key_exists('type', $element->getAttributes())) {
                 $this->add($element);
             }

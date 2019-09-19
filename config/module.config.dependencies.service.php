@@ -50,5 +50,8 @@ return [
             Service\ContactService::class,
             Service\SelectionContactService::class
         ],
+        Service\Office\ContactService::class   => [
+            EntityManager::class
+        ]
     ]
 ];

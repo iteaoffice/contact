@@ -128,6 +128,11 @@ return [
             EntityManager::class,
             TranslatorInterface::class
         ],
-
+        Controller\Office\ContactController::class => [
+            Service\Office\ContactService::class
+        ],
+        Controller\Office\LeaveController::class => [
+            Service\Office\ContactService::class
+        ]
     ]
 ];

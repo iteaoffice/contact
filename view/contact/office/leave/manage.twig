@@ -1,0 +1,69 @@
+{% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.js') %}
+{% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.js') %}
+{% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.3.0/main.min.js') %}
+{% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.3.0/main.min.js') %}
+{% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.css') %}
+{% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.css') %}
+{% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.3.0/main.min.css') %}
+{% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/bootstrap@4.3.0/main.min.css') %}
+
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-edit-leave")) %}
+
+<h1>{{translate("txt-edit-leave") }}</h1>
+
+<div id="calendar"></div>
+
+<div id="leave-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+            plugins: ['dayGrid','timeGrid'],
+            themeSystem: 'bootstrap',
+            editable: true,
+            defaultView: 'dayGridMonth',
+            header: {
+                left: 'prev,next today addEventButton',
+                center: 'title',
+                right:  'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+            },
+            buttonText: {
+                today: '{{ translate("txt-today") }}',
+                month: '{{ translate("txt-month") }}',
+                week: '{{ translate("txt-week") }}',
+                day: '{{ translate("txt-day") }}'
+            },
+            customButtons: {
+                addEventButton: {
+                    text: '{{ translate("txt-add") }}',
+                    click: function(){
+                        $('#leave-modal').modal('show');
+                    }
+                }
+            }
+        });
+
+        calendar.render();
+
+
+    });
+</script>

@@ -39,7 +39,7 @@ class OptIn extends AbstractEntity
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Type("\Zend\Form\Element\Hidden")
      *
-     * @var integer|string|null
+     * @var int|string|null
      */
     private $id;
     /**
@@ -56,7 +56,7 @@ class OptIn extends AbstractEntity
      * @Annotation\Type("\Zend\Form\Element\Radio")
      * @Annotation\Attributes({"array":"activeTemplates"})
      * @Annotation\Options({"label":"txt-opt-in-active-title","help-block": "txt-opt-in-active-help-block"})
-     * @var integer
+     * @var int
      */
     private $active;
     /**

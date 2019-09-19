@@ -84,7 +84,6 @@ use function substr;
 /**
  * @ORM\Table(name="contact")
  * @ORM\Entity(repositoryClass="Contact\Repository\Contact")
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_contact")
  */
 class Contact extends AbstractEntity implements ProviderInterface, UserInterface

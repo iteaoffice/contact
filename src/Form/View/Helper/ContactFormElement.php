@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contact\Form\View\Helper;
 
+use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 use Zend\Form\Element\Select;
 use Zend\Form\ElementInterface;
@@ -88,7 +89,12 @@ final class ContactFormElement extends FormElement
 
         //When we have a value, inject the corresponding contact in the value options
         if (null !== $element->getValue()) {
-            $contact = $this->contactService->findContactById((int)$element->getValue());
+            $value = $element->getValue();
+            if ($element->getValue() instanceof Contact) {
+                $value = $element->getValue()->getId();
+            }
+
+            $contact = $this->contactService->findContactById((int)$value);
             if (null !== $contact) {
                 $element->setValueOptions([$contact->getId() => $contact->getFormName()]);
             }

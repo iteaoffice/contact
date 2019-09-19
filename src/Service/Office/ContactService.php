@@ -12,12 +12,30 @@ declare(strict_types=1);
 
 namespace Contact\Service\Office;
 
+use Contact\Entity\Office\Contact as OfficeContact;
+use Contact\Entity\Office\Leave;
 use Contact\Service\AbstractService;
+use DateTime;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\LazyCriteriaCollection;
 
 /**
  * Class ContactService
+ *
  * @package Contact\Service\Office
  */
 class ContactService extends AbstractService
 {
+    public function findUpcomingLeave(OfficeContact $officeContact): LazyCriteriaCollection
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('officeContact', $officeContact))
+            ->andWhere(Criteria::expr()->gte('dateStart', new DateTime()))
+            ->orderBy(['dateStart' => Criteria::ASC]);
+
+        /** @var LazyCriteriaCollection $upcomingLeave */
+        $upcomingLeave = $this->entityManager->getRepository(Leave::class)->matching($criteria);
+
+        return $upcomingLeave;
+    }
 }

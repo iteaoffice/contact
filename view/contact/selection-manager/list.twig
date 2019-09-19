@@ -46,8 +46,9 @@
 
                             {{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}
                         </td>
-                        <td>{{ translate(selection.getCore(true)) }}</td>
+
                         <td>{{ contactLink(selection.contact,'view-admin','initials') }}</td>
+                        <td>{{ translate(selection.getCore(true)) }}</td>
                         <td>{{ selectionService.getAmountOfContacts(selection) }}{% if selectionService.isSql(selection) %}
                                 <i class="fa fa-code fa-help" aria-hidden="true"
                                    title="{{ translate("txt-selection-is-sql") }}"></i>

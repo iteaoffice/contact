@@ -34,7 +34,7 @@ class Leave extends AbstractEntity
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
@@ -51,6 +51,14 @@ class Leave extends AbstractEntity
      * @var LeaveType
      */
     private $type;
+    /**
+     * @ORM\Column(name="description", type="string", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Options({"label":"txt-description"})
+     *
+     * @var string
+     */
+    private $description;
     /**
      * @ORM\Column(name="date_start", type="datetime", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Date")
@@ -127,6 +135,17 @@ class Leave extends AbstractEntity
     public function setType(LeaveType $type): Leave
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): Leave
+    {
+        $this->description = $description;
         return $this;
     }
 
