@@ -84,7 +84,7 @@ class LeaveType extends AbstractEntity
 
     public function __toString(): string
     {
-        return (string) $this->hours;
+        return (string) $this->type;
     }
 
     public function getId(): ?int
