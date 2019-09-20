@@ -33,7 +33,7 @@ class Photo extends AbstractEntity
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
@@ -47,14 +47,14 @@ class Photo extends AbstractEntity
      * @ORM\Column(name="height", type="integer", nullable=true)
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $height;
     /**
      * @ORM\Column(name="width", type="integer", nullable=true)
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $width;
     /**

@@ -35,7 +35,7 @@ class Dnd extends AbstractEntity
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
@@ -58,7 +58,7 @@ class Dnd extends AbstractEntity
      * @ORM\Column(name="size", type="integer", options={"unsigned":true})
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $size;
     /**

@@ -32,7 +32,7 @@ class ContactOrganisation extends AbstractEntity
      * @ORM\Column(name="contact_organisation_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @var integer
+     * @var int
      */
     private $id;
     /**

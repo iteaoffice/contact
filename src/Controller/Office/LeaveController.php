@@ -63,6 +63,4 @@ final class LeaveController extends ContactAbstractController
 
         ]);
     }
-
-
 }

@@ -21,6 +21,7 @@ use Doctrine\ORM\LazyCriteriaCollection;
 
 /**
  * Class ContactService
+ *
  * @package Contact\Service\Office
  */
 class ContactService extends AbstractService

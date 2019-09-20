@@ -41,7 +41,7 @@ class Profile extends AbstractEntity
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
@@ -58,7 +58,7 @@ class Profile extends AbstractEntity
      * @Annotation\Attributes({"array":"visibleTemplates"})
      * @Annotation\Attributes({"label":"txt-visibility"})
      *
-     * @var integer
+     * @var int
      */
     private $visible;
     /**

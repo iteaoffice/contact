@@ -57,6 +57,4 @@ final class ContactController extends ContactAbstractController
 
         ]);
     }
-
-
 }

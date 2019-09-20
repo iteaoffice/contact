@@ -801,6 +801,18 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $magazineArticle;
     /**
+     * @ORM\OneToMany(targetEntity="News\Entity\Magazine\Download", cascade={"persist","remove"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \News\Entity\Magazine\Download[]|Collections\ArrayCollection
+     */
+    private $magazineDownload;
+    /**
+     * @ORM\OneToMany(targetEntity="News\Entity\Magazine\Article\Download", cascade={"persist","remove"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \News\Entity\Magazine\Article\Download[]|Collections\ArrayCollection
+     */
+    private $magazineArticleDownload;
+    /**
      * @ORM\OneToMany(targetEntity="Invoice\Entity\Journal\Entry", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
@@ -916,7 +928,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\OneToOne(targetEntity="Contact\Entity\Office\Contact", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\Office\Contact
+     * @var Office\Contact
      */
     private $officeContact;
 
@@ -929,6 +941,8 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->projectDocument = new Collections\ArrayCollection();
         $this->address = new Collections\ArrayCollection();
         $this->magazineArticle = new Collections\ArrayCollection();
+        $this->magazineDownload = new Collections\ArrayCollection();
+        $this->magazineArticleDownload = new Collections\ArrayCollection();
         $this->phone = new Collections\ArrayCollection();
         $this->emailAddress = new Collections\ArrayCollection();
         $this->access = new Collections\ArrayCollection();
@@ -3150,4 +3164,25 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
+    public function getMagazineDownload()
+    {
+        return $this->magazineDownload;
+    }
+
+    public function setMagazineDownload($magazineDownload): Contact
+    {
+        $this->magazineDownload = $magazineDownload;
+        return $this;
+    }
+
+    public function getMagazineArticleDownload()
+    {
+        return $this->magazineArticleDownload;
+    }
+
+    public function setMagazineArticleDownload($magazineArticleDownload): Contact
+    {
+        $this->magazineArticleDownload = $magazineArticleDownload;
+        return $this;
+    }
 }

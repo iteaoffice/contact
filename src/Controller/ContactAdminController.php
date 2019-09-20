@@ -596,7 +596,7 @@ class ContactAdminController extends ContactAbstractController
 
         //Get contacts in an organisation
         if ($this->contactService->hasOrganisation($contact)) {
-            $data = array_merge(
+            $data = array_merge_recursive(
                 [
                     'contact_entity_contact' => [
                         'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),

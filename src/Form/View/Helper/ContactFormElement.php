@@ -12,7 +12,12 @@ declare(strict_types=1);
 
 namespace Contact\Form\View\Helper;
 
+use Contact\Entity\Contact;
+use Contact\Service\ContactService;
+use Zend\Form\Element\Select;
 use Zend\Form\ElementInterface;
+use Zend\I18n\Translator\Translator;
+use Zend\View\HelperPluginManager;
 use Zf3Bootstrap4\Form\View\Helper\FormElement;
 
 /**
@@ -22,6 +27,21 @@ use Zf3Bootstrap4\Form\View\Helper\FormElement;
  */
 final class ContactFormElement extends FormElement
 {
+    /**
+     * @var ContactService
+     */
+    private $contactService;
+
+    public function __construct(
+        ContactService $contactService,
+        HelperPluginManager $viewHelperManager,
+        Translator $translator
+    ) {
+        parent::__construct($viewHelperManager, $translator);
+
+        $this->contactService = $contactService;
+    }
+
     public function __invoke(ElementInterface $element = null, bool $inline = false)
     {
         $this->inline = $inline;
@@ -52,6 +72,11 @@ final class ContactFormElement extends FormElement
         return $this;
     }
 
+    /**
+     * @param Select|ElementInterface $element
+     *
+     * @return string
+     */
     public function render(ElementInterface $element): string
     {
         $element->setValueOptions($element->getValueOptions());
@@ -61,6 +86,20 @@ final class ContactFormElement extends FormElement
         $element->setAttribute('data-abs-ajax-url', 'admin/contact/search.html');
 
         $element->setValue($element->getValue());
+
+        //When we have a value, inject the corresponding contact in the value options
+        if (null !== $element->getValue()) {
+            $value = $element->getValue();
+            if ($element->getValue() instanceof Contact) {
+                $value = $element->getValue()->getId();
+            }
+
+            $contact = $this->contactService->findContactById((int)$value);
+            if (null !== $contact) {
+                $element->setValueOptions([$contact->getId() => $contact->getFormName()]);
+            }
+        }
+
 
         return parent::render($element);
     }
