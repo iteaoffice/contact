@@ -606,12 +606,12 @@ class ContactAdminController extends ContactAbstractController
                 $request->getPost()->toArray()
             );
 
-            $form = $this->formService->prepare(Contact::class, $data);
+            $form = $this->formService->prepare($contact, $data);
             $form->get('contact_entity_contact')->get('organisation')
                 ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
             $data = $request->getPost()->toArray();
-            $form = $this->formService->prepare(Contact::class, $data);
+            $form = $this->formService->prepare($contact, $data);
         }
 
         /** Show or hide buttons based on the status of a contact */

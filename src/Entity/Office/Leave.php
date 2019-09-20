@@ -48,6 +48,9 @@ class Leave extends AbstractEntity
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Office\LeaveType", inversedBy="leave")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
+     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Options({"label":"txt-type"})
+     *
      * @var LeaveType
      */
     private $type;
@@ -61,7 +64,7 @@ class Leave extends AbstractEntity
     private $description;
     /**
      * @ORM\Column(name="date_start", type="datetime", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Date")
+     * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-start-date"})
      *
      * @var DateTime
@@ -69,7 +72,7 @@ class Leave extends AbstractEntity
     private $dateStart;
     /**
      * @ORM\Column(name="date_end", type="datetime", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Date")
+     * @Annotation\Type("\Zend\Form\Element\Text")
      * @Annotation\Options({"label":"txt-end-date"})
      *
      * @var DateTime

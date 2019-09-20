@@ -401,7 +401,11 @@ return [
                             ],
                         ],
                     ],
-
+                    'leave'     => [
+                        'label' => _('txt-nav-leave'),
+                        'route' => 'zfcadmin/contact/office/leave/manage',
+                        'order' => 41,
+                    ],
                 ],
             ],
             'tools'   => [

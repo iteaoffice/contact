@@ -70,5 +70,6 @@ return array(
     'contact/partial/form/facebook'                => __DIR__ . '//view/contact/partial/form/facebook.twig',
     'contact/partial/form/selection'               => __DIR__ . '//view/contact/partial/form/selection.twig',
     'contact/partial/form/phone'                   => __DIR__ . '//view/contact/partial/form/phone.twig',
+    'contact/partial/form/office/leave'            => __DIR__ . '//view/contact/partial/form/office/leave.twig',
     'contact/partial/optin-button'                 => __DIR__ . '//view/contact/partial/optin-button.twig',
 );
