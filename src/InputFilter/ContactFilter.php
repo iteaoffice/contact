@@ -63,26 +63,6 @@ class ContactFilter extends InputFilter
             ]
         );
 
-
-        $inputFilter->add(
-            [
-                'name'       => 'organisation',
-                'required'   => false,
-                'validators' => [
-                    [
-                        'name'    => Validator\ObjectExists::class,
-                        'options' => [
-                            'object_repository' => $entityManager->getRepository(Organisation::class),
-                            'object_manager'    => $entityManager,
-                            'use_context'       => true,
-                            'fields'            => 'id',
-                        ],
-                    ],
-                ],
-
-            ]
-        );
-
         $this->add($inputFilter, 'contact_entity_contact');
     }
 }
