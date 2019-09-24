@@ -42,6 +42,7 @@ class ContactSearchService extends AbstractSearchService
                     'organisation_search',
                     'organisation_type_search',
                     'country_search',
+                    'email_search',
                     'cv_search',
                 ]
             )

@@ -1,17 +1,17 @@
 {% do headTitle().append(translate("txt-profile")) %}
 {% do headTitle().append(contact.parseFullname()) %}
 
-<h1 class="home">{{ translate("%s")|format(contact.parseFullname()) }}</h1>
+<h1>{{ translate("%s")|format(contact.parseFullname()) }}</h1>
 
-<div class="row">
+<div class="row pb-3">
     <div class="col-md-8">
-
-        <h2>{{ translate("txt-personal-profile") }}</h2>
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
             <dd>{{ contact.parseFullName() }}
+                {% if contact.profile.description %}
             <dt>{{ translate("txt-expertise") }}</dt>
             <dd>{{ contact.profile.description|nl2br }}</dd>
+            {% endif %}
             <dt>{{ translate("txt-organisation") }}</dt>
             <dd>{{ contactService.parseOrganisation(contact) }}</dd>
             <dt>{{ translate("txt-organisation-type") }}</dt>
@@ -22,14 +22,13 @@
                 <dt>{{ translate("txt-organisation-description") }}</dt>
                 <dd>{{ contact.contactOrganisation.organisation.description|striptags|raw }}</dd>
             {% endif %}
-
         </dl>
     </div>
-
     <div class="col-md-4">
         {{ contactPhoto(contact, 200) }}
     </div>
 </div>
+
 
 {% if identity().hasOrganisation() %}
     {{ ideaInviteLink(null, 'invite','button', null, contact) }}

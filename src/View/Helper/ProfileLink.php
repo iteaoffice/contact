@@ -24,7 +24,7 @@ class ProfileLink extends LinkAbstract
 {
     public function __invoke(
         Contact $contact = null,
-        string $action = 'view',
+        string $action = 'profile',
         string $show = 'name',
         string $hash = null
     ): string {
