@@ -38,4 +38,19 @@ class ContactService extends AbstractService
 
         return $upcomingLeave;
     }
+
+    public function parseFullCalendarEvent(Leave $leave): array
+    {
+        return [
+            'id'            => $leave->getId(),
+            'start'         => $leave->getDateStart()->format('Y-m-d\TH:i:s'),
+            'end'           => $leave->getDateEnd()->format('Y-m-d\TH:i:s'),
+            'title'         => $leave->getDescription(),
+            'allDay'        => true,
+            'extendedProps' => [
+                'hours'  => $leave->getHours(),
+                'typeId' => ($leave->getType() ? $leave->getType()->getId() : null)
+            ]
+        ];
+    }
 }

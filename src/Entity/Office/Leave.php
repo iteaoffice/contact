@@ -32,7 +32,8 @@ class Leave extends AbstractEntity
      * @ORM\Column(name="leave_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Exclude()
+     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Attributes({"id":"leave-id"})
      *
      * @var int
      */
@@ -40,7 +41,7 @@ class Leave extends AbstractEntity
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Office\Contact", cascade={"persist"}, inversedBy="leave")
      * @ORM\JoinColumn(name="office_contact_id", referencedColumnName="office_contact_id")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Exclude()
      *
      * @var Contact
      */
@@ -48,8 +49,9 @@ class Leave extends AbstractEntity
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Office\LeaveType", inversedBy="leave")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
-     * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Options({"label":"txt-type"})
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
+     * @Annotation\Options({"target_class":"Contact\Entity\Office\LeaveType", "label":"txt-type"})
+     * @Annotation\Attributes({"id":"type-id"})
      *
      * @var LeaveType
      */
@@ -57,23 +59,26 @@ class Leave extends AbstractEntity
     /**
      * @ORM\Column(name="description", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Attributes({"maxlength":255, "id":"description"})
      * @Annotation\Options({"label":"txt-description"})
      *
      * @var string
      */
     private $description;
     /**
-     * @ORM\Column(name="date_start", type="datetime", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="date_start", type="date", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Date")
      * @Annotation\Options({"label":"txt-start-date"})
+     * @Annotation\Attributes({"id":"date-start"})
      *
      * @var DateTime
      */
     private $dateStart;
     /**
-     * @ORM\Column(name="date_end", type="datetime", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="date_end", type="date", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Date")
      * @Annotation\Options({"label":"txt-end-date"})
+     * @Annotation\Attributes({"id":"date-end"})
      *
      * @var DateTime
      */
@@ -82,6 +87,7 @@ class Leave extends AbstractEntity
      * @ORM\Column(name="hours", type="decimal", precision=6, scale=2)
      * @Annotation\Type("\Zend\Form\Element\Number")
      * @Annotation\Options({"label":"txt-hours"})
+     * @Annotation\Attributes({"id":"hours"})
      *
      * @var float
      */

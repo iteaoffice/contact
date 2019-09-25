@@ -258,12 +258,12 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'view'      => [
+                                            'update'      => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/update.json',
                                                     'defaults' => [
-                                                        'action' => 'new',
+                                                        'action' => 'update',
                                                     ],
                                                 ],
                                             ],

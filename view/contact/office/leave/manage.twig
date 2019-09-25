@@ -18,17 +18,17 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ translate("txt-add-leave") }}</h5>
+                <h5 class="modal-title">{{ translate("txt-add-or-edit-leave") }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="{{ translate("txt-close") }}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Modal body text goes here.</p>
+                {% include 'contact/partial/form/office/leave' %}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i> {{ translate("txt-cancel") }}</button>
-                <button type="button" class="btn btn-primary"><i class="fa fa-save"></i> {{ translate("txt-save") }}</button>
+                <button id="btn-save" type="button" class="btn btn-primary"><i class="fa fa-save"></i> {{ translate("txt-save") }}</button>
             </div>
         </div>
     </div>
@@ -37,10 +37,26 @@
 <script>
     $(function(){
         var $leaveModal = $('#leave-modal');
+        var showModal = function(info){
+            $leaveModal.find('form').trigger('reset');
+            $leaveModal.modal();
+            if(info.event){
+                $leaveModal.find('#leave-id').val(info.event.id);
+                $leaveModal.find('#date-start').val(info.event.start.toISOString().slice(0,10)).focus();
+                $leaveModal.find('#date-end').val(info.event.end.toISOString().slice(0,10));
+                $leaveModal.find('#description').val(info.event.title);
+                $leaveModal.find('#hours').val(info.event.extendedProps.hours);
+                $leaveModal.find('#type-id').val(info.event.extendedProps.typeId);
+            }else{
+                $leaveModal.find('#date-start').val((info.dateStr || new Date().toISOString().slice(0,10))).focus();
+            }
+        };
         var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+            timeZone: 'UTC',
             plugins: ['interaction','dayGrid','timeGrid'],
             themeSystem: 'bootstrap',
-            editable: true,
+            eventTextColor: '#ffffff',
+            editable: false,
             navLinks: true,
             defaultView: 'dayGridMonth',
             header: {
@@ -57,17 +73,40 @@
             customButtons: {
                 addEventButton: {
                     text: '{{ translate("txt-add") }}',
-                    click: function(){
-                        $('#leave-modal').modal('show');
-                    }
+                    click: showModal
                 }
             },
-            dateClick: function(info) {
-                $leaveModal.modal();
-            }
+            dateClick: showModal,
+            eventClick: showModal
         });
 
         calendar.render();
 
+        $leaveModal.find('#btn-save').click(function(){
+            var id = $leaveModal.find('#leave-id').val();
+            var newLeave = (id === '');
+            $.ajax({
+                url: '{{ url('zfcadmin/contact/office/leave/update') }}',
+                data: $leaveModal.find('form').serialize(),
+                method: 'POST',
+                dataType: 'json'
+            }).then(
+                function(data){
+                    if(newLeave){
+                        calendar.addEvent(data);
+                    }else{
+                        var leave = calendar.getEventById(data.id);
+                        leave.setDates(data.start, data.end, {allDay: data.allDay});
+                        leave.setProp('title', data.title);
+                        leave.setExtendedProp('hours', data.extendedProps.hours);
+                        leave.setExtendedProp('typeId', data.extendedProps.typeId);
+                    }
+                    $leaveModal.modal('toggle');
+                },
+                function(){
+                    alert('Oh no!');
+                }
+            );
+        });
     });
 </script>
