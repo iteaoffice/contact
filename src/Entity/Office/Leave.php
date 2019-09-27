@@ -51,7 +51,7 @@ class Leave extends AbstractEntity
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\Office\LeaveType", "label":"txt-type"})
-     * @Annotation\Attributes({"id":"type-id"})
+     * @Annotation\Attributes({"id":"type-id", "required":"required"})
      *
      * @var LeaveType
      */
@@ -59,7 +59,7 @@ class Leave extends AbstractEntity
     /**
      * @ORM\Column(name="description", type="string", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Text")
-     * @Annotation\Attributes({"maxlength":255, "id":"description"})
+     * @Annotation\Attributes({"maxlength":255, "id":"description", "required":"required"})
      * @Annotation\Options({"label":"txt-description"})
      *
      * @var string
@@ -69,7 +69,7 @@ class Leave extends AbstractEntity
      * @ORM\Column(name="date_start", type="date", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Date")
      * @Annotation\Options({"label":"txt-start-date"})
-     * @Annotation\Attributes({"id":"date-start"})
+     * @Annotation\Attributes({"id":"date-start", "required":"required"})
      *
      * @var DateTime
      */
@@ -78,7 +78,7 @@ class Leave extends AbstractEntity
      * @ORM\Column(name="date_end", type="date", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Date")
      * @Annotation\Options({"label":"txt-end-date"})
-     * @Annotation\Attributes({"id":"date-end"})
+     * @Annotation\Attributes({"id":"date-end", "required":"required"})
      *
      * @var DateTime
      */
@@ -87,7 +87,7 @@ class Leave extends AbstractEntity
      * @ORM\Column(name="hours", type="decimal", precision=6, scale=2)
      * @Annotation\Type("\Zend\Form\Element\Number")
      * @Annotation\Options({"label":"txt-hours"})
-     * @Annotation\Attributes({"id":"hours"})
+     * @Annotation\Attributes({"id":"hours", "required":"required"})
      *
      * @var float
      */
@@ -182,7 +182,7 @@ class Leave extends AbstractEntity
 
     public function getHours(): float
     {
-        return $this->hours;
+        return (float) $this->hours;
     }
 
     public function setHours(float $hours): Leave

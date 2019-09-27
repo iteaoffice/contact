@@ -207,6 +207,18 @@ return [
                     'roles'     => ['office'],
                 ],
                 [
+                    'route'     => 'zfcadmin/contact/office/leave/delete',
+                    'roles'     => ['office'],
+                ],
+                [
+                    'route'     => 'zfcadmin/contact/office/leave/fetch',
+                    'roles'     => ['office'],
+                ],
+                [
+                    'route'     => 'zfcadmin/contact/office/leave/move',
+                    'roles'     => ['office'],
+                ],
+                [
                     'route' => 'zfcadmin/contact/merge',
                     'roles' => ['office'],
                 ],

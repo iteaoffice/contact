@@ -26,17 +26,18 @@ use Doctrine\ORM\LazyCriteriaCollection;
  */
 class ContactService extends AbstractService
 {
-    public function findUpcomingLeave(OfficeContact $officeContact): LazyCriteriaCollection
+    public function findLeave(OfficeContact $officeContact, DateTime $start, DateTime $end): LazyCriteriaCollection
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('officeContact', $officeContact))
-            ->andWhere(Criteria::expr()->gte('dateStart', new DateTime()))
+            ->andWhere(Criteria::expr()->gte('dateStart', $start))
+            ->andWhere(Criteria::expr()->lt('dateEnd', $end))
             ->orderBy(['dateStart' => Criteria::ASC]);
 
-        /** @var LazyCriteriaCollection $upcomingLeave */
-        $upcomingLeave = $this->entityManager->getRepository(Leave::class)->matching($criteria);
+        /** @var LazyCriteriaCollection $leave */
+        $leave = $this->entityManager->getRepository(Leave::class)->matching($criteria);
 
-        return $upcomingLeave;
+        return $leave;
     }
 
     public function parseFullCalendarEvent(Leave $leave): array

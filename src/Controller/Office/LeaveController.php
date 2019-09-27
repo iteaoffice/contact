@@ -20,6 +20,7 @@ use Contact\Entity\Office\Leave;
 use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Service\FormService;
 use Contact\Service\Office\ContactService as OfficeContactService;
+use DateTime;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\View\Model\JsonModel;
@@ -50,16 +51,10 @@ final class LeaveController extends ContactAbstractController
 
     public function manageAction()
     {
-        $upcomingLeave = [];
-        if ($this->identity()->getOfficeContact() instanceof OfficeContact) {
-            $upcomingLeave = $this->officeContactService->findUpcomingLeave($this->identity()->getOfficeContact());
-        }
-
         $form = $this->formService->prepare(Leave::class);
         $form->remove('csrf');
 
         return new ViewModel([
-            'upcomingLeave' => $upcomingLeave,
             'form'          => $form
         ]);
     }
@@ -71,7 +66,7 @@ final class LeaveController extends ContactAbstractController
         if ($request->isPost()) {
             $leave = new Leave();
             if ($request->getPost()->get('id') !== null) {
-                $leave = $this->officeContactService->find(Leave::class, $request->getPost()->get('id'));
+                $leave = $this->officeContactService->find(Leave::class, (int) $request->getPost()->get('id'));
                 if ($leave === null) {
                     return $this->notFoundAction();
                 }
@@ -84,7 +79,8 @@ final class LeaveController extends ContactAbstractController
             if ($form->isValid()) {
                 /** @var Leave $leave */
                 $leave = $form->getData();
-                $leave->setId(1);
+                $leave->setOfficeContact($this->identity()->getOfficeContact());
+                $this->officeContactService->save($leave);
                 return new JsonModel($this->officeContactService->parseFullCalendarEvent($leave));
             }
             /** @var Response $response */
@@ -95,5 +91,53 @@ final class LeaveController extends ContactAbstractController
         }
 
         return $this->notFoundAction();
+    }
+
+    public function moveAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        /** @var Leave $leave */
+        $leave = $this->officeContactService->find(Leave::class, (int) $request->getPost()->get('id'));
+        if ($leave === null) {
+            return $this->notFoundAction();
+        }
+        $leave->setDateStart(new DateTime($request->getPost('start', 'now')));
+        $leave->setDateEnd(new DateTime($request->getPost('end', 'now')));
+        $this->officeContactService->save($leave);
+        return new JsonModel();
+    }
+
+    public function deleteAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $leave = $this->officeContactService->find(Leave::class, (int) $request->getPost()->get('id'));
+            if ($leave === null) {
+                return $this->notFoundAction();
+            }
+            $this->officeContactService->delete($leave);
+            return new JsonModel();
+        }
+
+        return $this->notFoundAction();
+    }
+
+    public function fetchAction()
+    {
+        /** @var Request $request */
+        $request  = $this->getRequest();
+        $timeZone = new \DateTimeZone($request->getQuery('timeZone', 'UTC'));
+        $start    = new DateTime($request->getQuery('start', 'now'), $timeZone);
+        $end      = new DateTime($request->getQuery('end', 'now'), $timeZone);
+
+        $leaveList = $this->officeContactService->findLeave($this->identity()->getOfficeContact(), $start, $end);
+        $eventList = [];
+        foreach ($leaveList as $leave) {
+            $eventList[] = $this->officeContactService->parseFullCalendarEvent($leave);
+        }
+
+        return new JsonModel($eventList);
     }
 }

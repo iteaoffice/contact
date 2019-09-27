@@ -267,6 +267,33 @@ return [
                                                     ],
                                                 ],
                                             ],
+                                            'delete'      => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/delete.json',
+                                                    'defaults' => [
+                                                        'action' => 'delete',
+                                                    ],
+                                                ],
+                                            ],
+                                            'fetch'      => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/fetch.json',
+                                                    'defaults' => [
+                                                        'action' => 'fetch',
+                                                    ],
+                                                ],
+                                            ],
+                                            'move'      => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/move.json',
+                                                    'defaults' => [
+                                                        'action' => 'move',
+                                                    ],
+                                                ],
+                                            ],
                                         ],
                                     ],
                                 ],
