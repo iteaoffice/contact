@@ -4,6 +4,11 @@
 {% do headScript().appendFile('//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js', 'text/javascript') %}
 {% do headScript().appendFile('//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js', 'text/javascript') %}
 
+{% do headScript().appendFile("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js",'text/javascript') %}
+{#{% do headLink().appendStylesheet("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/default.min.css") %}#}
+{% do headLink().appendStylesheet("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github-gist.min.css") %}
+{% do inlineScript().appendScript("hljs.initHighlightingOnLoad();",'text/javascript') %}
+
 
 <h1>{{ selection }}</h1>
 
@@ -60,7 +65,7 @@
 
         {% if selectionService.isSql(selection) %}
             <h2>{{ translate("txt-sql-query") }}</h2>
-            <code class="d-block py-3">{{ selection.sql.query }}</code>
+            <pre><code class="sql d-block py-3">{{ selection.sql.query }}</code></pre>
         {% endif %}
 
         {{ selectionLink( selection,'edit','button') }}

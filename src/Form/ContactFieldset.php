@@ -37,10 +37,6 @@ use Zend\Form\Fieldset;
  */
 class ContactFieldset extends Fieldset
 {
-    /**
-     * @param EntityManager $entityManager
-     * @param Entity\AbstractEntity $object
-     */
     public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
@@ -87,8 +83,8 @@ class ContactFieldset extends Fieldset
                 'type'    => Organisation::class,
                 'name'    => 'organisation',
                 'options' => [
-                    "label"      => _("txt-organisation"),
-                    "help-block" => _("txt-organisation-help-block"),
+                    'label'      => _('txt-organisation'),
+                    'help-block' => _('txt-organisation-help-block'),
                 ],
             ]
         );
@@ -98,8 +94,8 @@ class ContactFieldset extends Fieldset
                 'type'    => Text::class,
                 'name'    => 'branch',
                 'options' => [
-                    "label"      => _("txt-branch"),
-                    "help-block" => _("txt-branch-help-block"),
+                    'label'      => _('txt-branch'),
+                    'help-block' => _('txt-branch-help-block'),
                 ],
             ]
         );
@@ -109,8 +105,8 @@ class ContactFieldset extends Fieldset
                 'type'    => File::class,
                 'name'    => 'file',
                 'options' => [
-                    "label"      => _("txt-contact-photo-label"),
-                    "help-block" => _("txt-contact-photo-help-block"),
+                    'label'      => _('txt-contact-photo-label'),
+                    'help-block' => _('txt-contact-photo-help-block'),
                 ],
             ]
         );
@@ -120,8 +116,8 @@ class ContactFieldset extends Fieldset
                 'type'    => Submit::class,
                 'name'    => 'reactivate',
                 'options' => [
-                    "label"      => _("txt-contact-photo-label"),
-                    "help-block" => _("txt-contact-photo-help-block"),
+                    'label'      => _('txt-contact-photo-label'),
+                    'help-block' => _('txt-contact-photo-help-block'),
                 ],
             ]
         );
@@ -131,8 +127,8 @@ class ContactFieldset extends Fieldset
                 'type'    => Submit::class,
                 'name'    => 'deactivate',
                 'options' => [
-                    "label"      => _("txt-contact-photo-label"),
-                    "help-block" => _("txt-contact-photo-help-block"),
+                    'label'      => _('txt-contact-photo-label'),
+                    'help-block' => _('txt-contact-photo-help-block'),
                 ],
             ]
         );

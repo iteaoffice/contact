@@ -14,9 +14,12 @@ declare(strict_types=1);
 namespace Contact\Form;
 
 use Contact\Entity\Selection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntitySelect;
+use Zend\Form\Element\Hidden;
+use Zend\Form\Element\Radio;
+use Zend\Form\Element\Submit;
+use Zend\Form\Element\Textarea;
 use Zend\Form\Form;
 
 /**
@@ -31,7 +34,8 @@ class SelectionContacts extends Form
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('action', '');
-        $this->setAttribute("onsubmit", "return storeChanges();");
+        $this->setAttribute('class', 'form-horizontal');
+        $this->setAttribute('onsubmit', 'return storeChanges();');
 
         $this->add(
             [
@@ -40,7 +44,7 @@ class SelectionContacts extends Form
                 'options'    => [
                     'target_class'   => Selection::class,
                     'object_manager' => $entityManager,
-                    'help-block'     => _("txt-form-calendar-contacts-selection-help-block"),
+                    'help-block'     => _('txt-form-calendar-contacts-selection-help-block'),
                     'find_method'    => [
                         'name'   => 'findActive',
                         'params' => [
@@ -50,7 +54,7 @@ class SelectionContacts extends Form
                     ],
                 ],
                 'attributes' => [
-                    'id' => 'selection',
+                    'id'    => 'selection',
                     'class' => 'form-control'
                 ]
             ]
@@ -58,7 +62,7 @@ class SelectionContacts extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Hidden',
+                'type'       => Hidden::class,
                 'name'       => 'added',
                 'attributes' => [
                     'id' => 'added',
@@ -68,7 +72,7 @@ class SelectionContacts extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Hidden',
+                'type'       => Hidden::class,
                 'name'       => 'removed',
                 'attributes' => [
                     'id' => 'removed',
@@ -79,7 +83,7 @@ class SelectionContacts extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Radio',
+                'type'       => Radio::class,
                 'name'       => 'type',
                 'options'    => [
                     'value_options' => [
@@ -88,20 +92,20 @@ class SelectionContacts extends Form
                     ],
                 ],
                 'attributes' => [
-                    'label' => _("txt-selection-type"),
+                    'label' => _('txt-selection-type'),
                 ],
             ]
         );
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Textarea',
+                'type'       => Textarea::class,
                 'name'       => 'sql',
                 'options'    => [
 
                 ],
                 'attributes' => [
-                    'label' => _("txt-sql-query"),
+                    'label' => _('txt-sql-query'),
                     'rows'  => 20,
                 ],
             ]
@@ -110,7 +114,7 @@ class SelectionContacts extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
                     'id'    => 'submit',
@@ -122,7 +126,7 @@ class SelectionContacts extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'cancel',
                 'attributes' => [
                     'id'    => 'cancel',

@@ -1,3 +1,10 @@
+{% do headScript().appendFile('assets/js/codemirror.js', 'text/javascript') %}
+{% do headScript().appendFile('assets/js/codemirror/sql.js', 'text/javascript') %}
+{% do headScript().appendFile('assets/js/codemirror/selection-pointer.js', 'text/javascript') %}
+{% do headScript().appendFile('assets/js/codemirror/matchbrackets.js', 'text/javascript') %}
+{% do headLink().appendStylesheet('assets/css/codemirror.css') %}
+
+
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-edit-selection-%s")|format(selection)) %}
 
@@ -361,10 +368,14 @@
     }
 
     window.onload = init;
+
+    var htmlEditor = CodeMirror.fromTextArea(document.getElementById("sql"), {
+        mode: "sql",
+        lineNumbers: true,
+        selectionPointer: true,
+        lineWrapping: true,
+        matchBrackets: true
+    });
+    htmlEditor.setSize(null, 600);
 </script>
 
-<style type="text/css">
-    textarea {
-        font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
-    }
-</style>
