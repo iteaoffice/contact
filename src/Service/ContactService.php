@@ -317,6 +317,11 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $this->updateEntityInSearchEngine($contact);
         }
 
+        if ($contact instanceof ContactOrganisation) {
+            $this->refresh($contact->getContact());
+            $this->updateEntityInSearchEngine($contact->getContact());
+        }
+
         return $contact;
     }
 
