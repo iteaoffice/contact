@@ -26,6 +26,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element;
 use Zend\Form\Element\Radio;
 use Zend\Form\Fieldset;
+use function array_key_exists;
 
 /**
  * Class ObjectFieldset
@@ -62,7 +63,7 @@ class ObjectFieldset extends Fieldset
         foreach ($dataFieldset->getElements() as $element) {
             $this->parseElement($element, $object);
             // Add only when a type is provided
-            if (!\array_key_exists('type', $element->getAttributes())) {
+            if (!array_key_exists('type', $element->getAttributes())) {
                 continue;
             }
 

@@ -5,7 +5,7 @@
  * @category  Content
  *
  * @author    Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license   https://itea3.org/license.txt proprietary
  *
  * @link      https://itea3.org
@@ -17,10 +17,10 @@ namespace Contact\Controller\Office;
 
 use Contact\Controller\ContactAbstractController;
 use Contact\Entity\Office\Leave;
-use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Service\FormService;
 use Contact\Service\Office\ContactService as OfficeContactService;
 use DateTime;
+use DateTimeZone;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\View\Model\JsonModel;
@@ -45,7 +45,7 @@ final class LeaveController extends ContactAbstractController
 
     public function __construct(FormService $formService, OfficeContactService $officeContactService)
     {
-        $this->formService          = $formService;
+        $this->formService = $formService;
         $this->officeContactService = $officeContactService;
     }
 
@@ -54,9 +54,11 @@ final class LeaveController extends ContactAbstractController
         $form = $this->formService->prepare(Leave::class);
         $form->remove('csrf');
 
-        return new ViewModel([
-            'form'          => $form
-        ]);
+        return new ViewModel(
+            [
+                'form' => $form
+            ]
+        );
     }
 
     public function updateAction()
@@ -66,7 +68,7 @@ final class LeaveController extends ContactAbstractController
         if ($request->isPost()) {
             $leave = new Leave();
             if ($request->getPost()->get('id') !== null) {
-                $leave = $this->officeContactService->find(Leave::class, (int) $request->getPost()->get('id'));
+                $leave = $this->officeContactService->find(Leave::class, (int)$request->getPost()->get('id'));
                 if ($leave === null) {
                     return $this->notFoundAction();
                 }
@@ -98,7 +100,7 @@ final class LeaveController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var Leave $leave */
-        $leave = $this->officeContactService->find(Leave::class, (int) $request->getPost()->get('id'));
+        $leave = $this->officeContactService->find(Leave::class, (int)$request->getPost()->get('id'));
         if ($leave === null) {
             return $this->notFoundAction();
         }
@@ -113,7 +115,7 @@ final class LeaveController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $leave = $this->officeContactService->find(Leave::class, (int) $request->getPost()->get('id'));
+            $leave = $this->officeContactService->find(Leave::class, (int)$request->getPost()->get('id'));
             if ($leave === null) {
                 return $this->notFoundAction();
             }
@@ -127,10 +129,10 @@ final class LeaveController extends ContactAbstractController
     public function fetchAction()
     {
         /** @var Request $request */
-        $request  = $this->getRequest();
-        $timeZone = new \DateTimeZone($request->getQuery('timeZone', 'UTC'));
-        $start    = new DateTime($request->getQuery('start', 'now'), $timeZone);
-        $end      = new DateTime($request->getQuery('end', 'now'), $timeZone);
+        $request = $this->getRequest();
+        $timeZone = new DateTimeZone($request->getQuery('timeZone', 'UTC'));
+        $start = new DateTime($request->getQuery('start', 'now'), $timeZone);
+        $end = new DateTime($request->getQuery('end', 'now'), $timeZone);
 
         $leaveList = $this->officeContactService->findLeave($this->identity()->getOfficeContact(), $start, $end);
         $eventList = [];

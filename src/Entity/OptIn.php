@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -14,6 +14,7 @@ namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
+use Mailing\Entity\Mailing;
 use Zend\Form\Annotation;
 
 /**
@@ -72,14 +73,14 @@ class OptIn extends AbstractEntity
      * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="optIn", fetch="EXTRA_LAZY")
      * @Annotation\Exclude();
      *
-     * @var \Contact\Entity\Contact[]|Collections\ArrayCollection
+     * @var Contact[]|Collections\ArrayCollection
      */
     private $contact;
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="optIn", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      *
-     * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
+     * @var Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
 

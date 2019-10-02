@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,6 +15,8 @@ namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
+use Exception;
+use function is_null;
 
 /**
  * Create a link to an selection.
@@ -41,7 +43,7 @@ class SelectionLink extends LinkAbstract
          * If the alternativeShow is not null, use it an otherwise take the page
          */
         $this->setAlternativeShow($page);
-        if (!\is_null($alternativeShow)) {
+        if (!is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         }
 
@@ -104,7 +106,7 @@ class SelectionLink extends LinkAbstract
                 $this->setText($this->translate('txt-view-selection'));
                 break;
             default:
-                throw new \Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));
+                throw new Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));
         }
     }
 }

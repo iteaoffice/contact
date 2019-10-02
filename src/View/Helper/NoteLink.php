@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,6 +15,8 @@ namespace Contact\View\Helper;
 use Contact\Acl\Assertion\Note as NoteAssertion;
 use Contact\Entity\Contact;
 use Contact\Entity\Note;
+use Exception;
+use function is_null;
 
 /**
  * Create a link to an note.
@@ -24,9 +26,9 @@ use Contact\Entity\Note;
 class NoteLink extends LinkAbstract
 {
     /**
-     * @param Note|null $note
-     * @param string $action
-     * @param string $show
+     * @param Note|null    $note
+     * @param string       $action
+     * @param string       $show
      * @param Contact|null $contact
      *
      * @return string
@@ -58,14 +60,14 @@ class NoteLink extends LinkAbstract
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
-                if (\is_null($this->getContact())) {
-                    throw new \Exception(sprintf("A contact is needed for a new note"));
+                if (is_null($this->getContact())) {
+                    throw new Exception(sprintf("A contact is needed for a new note"));
                 }
 
                 $this->setRouter('zfcadmin/note/new');
@@ -76,7 +78,7 @@ class NoteLink extends LinkAbstract
                 $this->setText(sprintf($this->translate("txt-edit-note-%s"), $this->getNote()->getNote()));
                 break;
             default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
+                throw new Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
     }
 }

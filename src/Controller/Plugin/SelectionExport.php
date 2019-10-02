@@ -8,7 +8,7 @@
  * @category    Invoice
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        https://github.com/iteaoffice/invoice for the canonical source repository
@@ -31,6 +31,7 @@ use Zend\Http\Headers;
 use Zend\Http\Response;
 use Zend\I18n\Translator\TranslatorInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use function strlen;
 
 /**
  * Class SelectionExport
@@ -259,7 +260,7 @@ final class SelectionExport extends AbstractPlugin
             [
                 'Content-Disposition' => 'attachment; filename="Export ' . $this->selection->getSelection() . '.csv"',
                 'Content-Type'        => 'text/csv',
-                'Content-Length'      => \strlen($this->csv),
+                'Content-Length'      => strlen($this->csv),
                 'Expires'             => '@0', // @0, because ZF2 parses date as string to \DateTime() object
                 'Cache-Control'       => 'must-revalidate',
                 'Pragma'              => 'public',

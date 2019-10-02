@@ -5,13 +5,14 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use Admin\Entity\Access;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
@@ -205,11 +206,11 @@ class Facebook extends AbstractEntity
      *            joinColumns={@ORM\JoinColumn(name="facebook_id", referencedColumnName="facebook_id")},
      *            inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
      * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({
      *      "target_class":"Admin\Entity\Access",
      *      "find_method":{
-     *          "name":"findBy",
+     *          "name":"findWithoutSelection",
      *          "params": {
      *              "criteria":{},
      *              "orderBy":{
@@ -218,9 +219,11 @@ class Facebook extends AbstractEntity
      *          }
      *      }
      * )
-     * @Annotation\Attributes({"label":"txt-access","help-block":"txt-access-help-block"})
+     * @Annotation\Attributes({"label":"txt-facebook-access-label"})
+     * @Annotation\Options({"help-block":"txt-facebook-access-help-block"})
+     * @Annotation\Attributes({"multiple":true,"data-actions-box":true})
      *
-     * @var \Admin\Entity\Access[]|Collections\ArrayCollection
+     * @var Access[]|Collections\ArrayCollection
      */
     private $access;
 
@@ -274,57 +277,44 @@ class Facebook extends AbstractEntity
         return (string)$this->facebook;
     }
 
-    public function addAccess(Collections\Collection $collection)
+    public function addAccess(Collections\Collection $collection): void
     {
         foreach ($collection as $access) {
             $this->access->add($access);
         }
     }
 
-    public function removeAccess(Collections\Collection $collection)
+    public function removeAccess(Collections\Collection $collection): void
     {
         foreach ($collection as $access) {
             $this->access->removeElement($access);
         }
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId($id): Facebook
     {
         $this->id = $id;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFacebook()
+    public function getFacebook(): ?string
     {
         return $this->facebook;
     }
 
-    /**
-     * @param string $facebook
-     */
-    public function setFacebook($facebook)
+    public function setFacebook($facebook): Facebook
     {
         $this->facebook = $facebook;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return int
-     */
     public function getPublic(bool $textual = false)
     {
         if ($textual) {
@@ -334,83 +324,61 @@ class Facebook extends AbstractEntity
         return $this->public;
     }
 
-    /**
-     * @param int $public
-     */
-    public function setPublic($public)
+    public function setPublic($public): Facebook
     {
         $this->public = $public;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFromClause()
+    public function getFromClause(): ?string
     {
         return $this->fromClause;
     }
 
-    /**
-     * @param string $fromClause
-     */
-    public function setFromClause($fromClause)
+    public function setFromClause($fromClause): Facebook
     {
         $this->fromClause = $fromClause;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getWhereClause()
+    public function getWhereClause(): ?string
     {
         return $this->whereClause;
     }
 
-    /**
-     * @param string $whereClause
-     */
-    public function setWhereClause($whereClause)
+    public function setWhereClause($whereClause): Facebook
     {
         $this->whereClause = $whereClause;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOrderbyClause()
+    public function getOrderbyClause(): ?string
     {
         return $this->orderbyClause;
     }
 
-    /**
-     * @param string $orderbyClause
-     */
     public function setOrderbyClause($orderbyClause)
     {
         $this->orderbyClause = $orderbyClause;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getContactKey()
     {
         return $this->contactKey;
     }
 
-    /**
-     * @param string $contactKey
-     */
     public function setContactKey($contactKey)
     {
         $this->contactKey = $contactKey;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getTitle(bool $textual = false)
     {
         if ($textual) {
@@ -420,19 +388,13 @@ class Facebook extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle($title)
     {
         $this->title = $title;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getSubtitle(bool $textual = false)
     {
         if ($textual) {
@@ -442,19 +404,13 @@ class Facebook extends AbstractEntity
         return $this->subtitle;
     }
 
-    /**
-     * @param string $subtitle
-     */
     public function setSubtitle($subtitle)
     {
         $this->subtitle = $subtitle;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string
-     */
     public function getCanSendMessage(bool $textual = false)
     {
         if ($textual) {
@@ -464,35 +420,25 @@ class Facebook extends AbstractEntity
         return $this->canSendMessage;
     }
 
-    /**
-     * @param int $canSendMessage
-     */
     public function setCanSendMessage($canSendMessage)
     {
         $this->canSendMessage = $canSendMessage;
+
+        return $this;
     }
 
-    /**
-     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
-     */
     public function getAccess()
     {
         return $this->access;
     }
 
-    /**
-     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
-     */
-    public function setAccess($access)
+    public function setAccess($access): Facebook
     {
         $this->access = $access;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getShowEmail(bool $textual = false)
     {
         if ($textual) {
@@ -502,19 +448,13 @@ class Facebook extends AbstractEntity
         return $this->showEmail;
     }
 
-    /**
-     * @param string $showEmail
-     */
-    public function setShowEmail($showEmail)
+    public function setShowEmail($showEmail): Facebook
     {
         $this->showEmail = $showEmail;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getShowPhone(bool $textual = false)
     {
         if ($textual) {
@@ -524,11 +464,10 @@ class Facebook extends AbstractEntity
         return $this->showPhone;
     }
 
-    /**
-     * @param string $showPhone
-     */
     public function setShowPhone($showPhone)
     {
         $this->showPhone = $showPhone;
+
+        return $this;
     }
 }

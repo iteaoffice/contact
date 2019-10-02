@@ -7,7 +7,7 @@
  * @category    Affiliation
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        http://github.com/iteaoffice/affiliation for the canonical source repository
@@ -27,6 +27,7 @@ use General\Entity\Title;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use function strlen;
 
 /**
  * Class MergeContact
@@ -80,7 +81,7 @@ final class ContactActions extends AbstractPlugin
         $contact = new Contact();
         $contact->setEmail($emailAddress);
         $contact->setFirstName($firstName);
-        if (\strlen($middleName) > 0) {
+        if (strlen($middleName) > 0) {
             $contact->setMiddleName($middleName);
         }
 
@@ -128,7 +129,7 @@ final class ContactActions extends AbstractPlugin
         $contact = new Contact();
         $contact->setEmail($emailAddress);
         $contact->setFirstName($firstName);
-        if (\strlen($middleName) > 0) {
+        if (strlen($middleName) > 0) {
             $contact->setMiddleName($middleName);
         }
 

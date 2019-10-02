@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,10 +15,10 @@ namespace Contact\Form;
 
 use Contact\Entity\OptIn;
 use Zend\Form\Element\MultiCheckbox;
-use Zend\Form\Fieldset;
-use Zend\Form\Form;
 use Zend\Form\Element\Submit;
 use Zend\Form\Element\Text;
+use Zend\Form\Fieldset;
+use Zend\Form\Form;
 
 /**
  * Class OptInFilter

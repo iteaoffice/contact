@@ -29,7 +29,8 @@ return array(
     'contact/selection-manager/list'               => __DIR__ . '//view/contact/selection-manager/list.twig',
     'contact/selection-manager/add-contact'        => __DIR__ . '//view/contact/selection-manager/add-contact.twig',
     'contact/selection-manager/edit-contacts'      => __DIR__ . '//view/contact/selection-manager/edit-contacts.twig',
-    'contact/selection-manager/generate-deeplinks' => __DIR__ . '//view/contact/selection-manager/generate-deeplinks.twig',
+    'contact/selection-manager/generate-deeplinks' => __DIR__
+        . '//view/contact/selection-manager/generate-deeplinks.twig',
     'contact/selection-manager/edit'               => __DIR__ . '//view/contact/selection-manager/edit.twig',
     'contact/address-manager/new'                  => __DIR__ . '//view/contact/address-manager/new.twig',
     'contact/address-manager/edit'                 => __DIR__ . '//view/contact/address-manager/edit.twig',

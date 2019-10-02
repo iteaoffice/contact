@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -638,7 +638,9 @@ class ContactAdminController extends ContactAbstractController
             /** Deactivate a contact */
             if (isset($data['deactivate'])) {
                 $changelogMessage = sprintf(
-                    $this->translator->translate('txt-contact-%s-has-been-marked-as-deleted-because-it-still-has-relevant-connetions'),
+                    $this->translator->translate(
+                        'txt-contact-%s-has-been-marked-as-deleted-because-it-still-has-relevant-connetions'
+                    ),
                     $contact->parseFullName()
                 );
                 $this->flashMessenger()->addSuccessMessage($changelogMessage);

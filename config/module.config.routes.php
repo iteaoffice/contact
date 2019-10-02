@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 use Contact\Controller;
@@ -93,7 +93,7 @@ return [
                                     ],
                                 ],
                                 'child_routes' => [
-                                    'edit'           => [
+                                    'edit'            => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/edit.html',
@@ -102,7 +102,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'view'           => [
+                                    'view'            => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/view.html',
@@ -111,7 +111,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'organisation'   => [
+                                    'organisation'    => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/organisation.html',
@@ -120,7 +120,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'events'         => [
+                                    'events'          => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/events.html',
@@ -129,7 +129,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'privacy'        => [
+                                    'privacy'         => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/privacy.html',
@@ -138,7 +138,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'contact'        => [
+                                    'contact'         => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/contact/[:hash].html',
@@ -147,7 +147,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'create'         => [
+                                    'create'          => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/create.html',
@@ -156,7 +156,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'activate'       => [
+                                    'activate'        => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/activate.html',
@@ -165,7 +165,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'activate-optin' => [
+                                    'activate-optin'  => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/activate/optin.html',
@@ -174,7 +174,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'manage-body'    => [
+                                    'manage-body'     => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/manage/body.html',
@@ -183,7 +183,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'manage-hlg'    => [
+                                    'manage-hlg'      => [
                                         'type'    => 'Literal',
                                         'options' => [
                                             'route'    => '/manage/hlg-npc.html',

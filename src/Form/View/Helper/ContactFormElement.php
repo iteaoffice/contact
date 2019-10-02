@@ -14,7 +14,6 @@ namespace Contact\Form\View\Helper;
 
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
-use Zend\Form\Element\Select;
 use Zend\Form\ElementInterface;
 use Zend\I18n\Translator\Translator;
 use Zend\View\HelperPluginManager;
@@ -72,11 +71,6 @@ final class ContactFormElement extends FormElement
         return $this;
     }
 
-    /**
-     * @param Select|ElementInterface $element
-     *
-     * @return string
-     */
     public function render(ElementInterface $element): string
     {
         $element->setValueOptions($element->getValueOptions());

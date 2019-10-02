@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\View\Helper;
 
 use Contact\Entity\OptIn;
+use Exception;
 
 /**
  * Class OptInLink
@@ -63,7 +64,7 @@ class OptInLink extends LinkAbstract
                 $this->setText(sprintf($this->translate("txt-view-opt-in-%s"), $this->optIn->getOptIn()));
                 break;
             default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
+                throw new Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
     }
 }

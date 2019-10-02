@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -96,6 +96,17 @@ class Contact extends AbstractEntity
         return $this->getContact() ? $this->getContact()->parseFullName() : '';
     }
 
+    public function getContact(): ?\Contact\Entity\Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(?\Contact\Entity\Contact $contact): Contact
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,17 +137,6 @@ class Contact extends AbstractEntity
     public function setDateEnd(?DateTime $dateEnd): Contact
     {
         $this->dateEnd = $dateEnd;
-        return $this;
-    }
-
-    public function getContact(): ?\Contact\Entity\Contact
-    {
-        return $this->contact;
-    }
-
-    public function setContact(?\Contact\Entity\Contact $contact): Contact
-    {
-        $this->contact = $contact;
         return $this;
     }
 

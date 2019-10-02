@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -39,7 +39,7 @@ class SelectionSql extends AbstractEntity
      * @ORM\OneToOne(targetEntity="Contact\Entity\Selection", cascade={"persist"}, inversedBy="sql")
      * @ORM\JoinColumn(name="selection_id", referencedColumnName="selection_id", nullable=false)
      *
-     * @var \Contact\Entity\Selection
+     * @var Selection
      */
     private $selection;
     /**

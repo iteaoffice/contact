@@ -5,17 +5,19 @@
  * @category    CalendarTest
  * @package     Entity
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 namespace ContactTest\Entity;
 
 use Contact\Entity\AbstractEntity;
 use PHPUnit\Framework\TestCase;
-
+use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element;
+use function is_array;
+use function str_replace;
 
 class EntityTest extends TestCase
 {
@@ -33,13 +35,13 @@ class EntityTest extends TestCase
 
         foreach ($finder as $file) {
 
-            $className = 'Contact\Entity\\' . \str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname());
+            $className = 'Contact\Entity\\' . str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname());
 
-            $testClass = new \ReflectionClass($className);
+            $testClass = new ReflectionClass($className);
 
             if ($testClass->isInstantiable()) {
                 /** @var AbstractEntity $object */
-                $object = new $className;
+                $object = new $className();
 
                 $this->assertInstanceOf($className, $object);
                 $this->assertNull($object->getId());
@@ -84,7 +86,7 @@ class EntityTest extends TestCase
                 }
 
                 foreach ($testClass->getStaticProperties() as $constant) {
-                    if (\is_array($constant)) {
+                    if (is_array($constant)) {
                         foreach ($constant as $constantValue) {
                             $labels[] = $constantValue;
                         }

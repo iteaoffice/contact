@@ -5,7 +5,7 @@
  * @category    Facebook
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -91,7 +91,7 @@ final class FacebookManagerController extends ContactAbstractController
 
             $this->flashMessenger()->addSuccessMessage(
                 sprintf(
-                    $this->translator->translate("txt-facebook-%s-has-successfully-been-deleted"),
+                    $this->translator->translate('txt-facebook-%s-has-successfully-been-deleted'),
                     $facebook->getFacebook()
                 )
             );
@@ -120,7 +120,7 @@ final class FacebookManagerController extends ContactAbstractController
 
                 $this->contactService->delete($facebook);
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-facebook-has-successfully-been-deleted"))
+                    sprintf($this->translator->translate('txt-facebook-has-successfully-been-deleted'))
                 );
 
                 return $this->redirect()->toRoute('zfcadmin/facebook/list');
@@ -129,15 +129,19 @@ final class FacebookManagerController extends ContactAbstractController
             if (!isset($data['cancel']) && $form->isValid()) {
                 $this->flashMessenger()->addSuccessMessage(
                     sprintf(
-                        $this->translator->translate("txt-facebook-%s-has-successfully-been-updated"),
+                        $this->translator->translate('txt-facebook-%s-has-successfully-been-updated'),
                         $facebook->getFacebook()
                     )
                 );
 
-                $this->contactService->save($facebook);
-            }
+                if (!isset($data['contact_entity_facebook']['access'])) {
+                    $facebook->setAccess(null);
+                }
 
-            return $this->redirect()->toRoute('zfcadmin/facebook/view', ['id' => $facebook->getId()]);
+                $this->contactService->save($facebook);
+
+                return $this->redirect()->toRoute('zfcadmin/facebook/view', ['id' => $facebook->getId()]);
+            }
         }
 
         return new ViewModel(['form' => $form]);

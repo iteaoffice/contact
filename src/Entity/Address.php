@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use General\Entity\Country;
 use Zend\Form\Annotation;
 
 /**
@@ -67,7 +68,7 @@ class Address extends AbstractEntity
      * @Annotation\Options({"target_class":"Contact\Entity\AddressType"})
      * @Annotation\Attributes({"label":"txt-type"})
      *
-     * @var \Contact\Entity\AddressType
+     * @var AddressType
      */
     private $type;
     /**
@@ -94,7 +95,7 @@ class Address extends AbstractEntity
      * )
      * @Annotation\Attributes({"label":"txt-country"})
      *
-     * @var \General\Entity\Country
+     * @var Country
      */
     private $country;
 
@@ -151,7 +152,7 @@ class Address extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return Contact
      */
     public function getContact()
     {
@@ -159,7 +160,7 @@ class Address extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param Contact $contact
      */
     public function setContact($contact)
     {
@@ -167,7 +168,7 @@ class Address extends AbstractEntity
     }
 
     /**
-     * @return \General\Entity\Country
+     * @return Country
      */
     public function getCountry()
     {
@@ -175,7 +176,7 @@ class Address extends AbstractEntity
     }
 
     /**
-     * @param \General\Entity\Country $country
+     * @param Country $country
      */
     public function setCountry($country)
     {

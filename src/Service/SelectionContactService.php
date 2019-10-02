@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,11 +15,11 @@ namespace Contact\Service;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionContact;
-use function count;
 use Doctrine\ORM\PersistentCollection;
 use InvalidArgumentException;
-use function is_array;
 use Throwable;
+use function count;
+use function is_array;
 
 /**
  * Class SelectionContactService

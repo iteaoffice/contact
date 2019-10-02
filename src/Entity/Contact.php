@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Entity
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -228,7 +228,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\Column(name="trigger_update",type="boolean")
      * @Annotation\Exclude()
-     * @var boolean
+     * @var bool
      */
     private $triggerUpdate;
     /**
@@ -238,7 +238,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      *    inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
      * )
      * @ORM\OrderBy({"access"="ASC"})
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({
      *      "target_class":"Admin\Entity\Access",
      *      "find_method":{
@@ -251,7 +251,9 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      *          }
      *      }
      * )
-     * @Annotation\Attributes({"label":"txt-contact-access-label","help-block":"txt-contact-access-help-block"})
+     * @Annotation\Options({"help-block":"txt-contact-access-help-block"})
+     * @Annotation\Attributes({"label":"txt-contact-access-label"})
+     * @Annotation\Attributes({"multiple":true,"data-actions-box":true})
      * @var Access[]|Collections\ArrayCollection
      */
     private $access;
@@ -809,7 +811,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="News\Entity\Magazine\Article\Download", cascade={"persist","remove"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \News\Entity\Magazine\Article\Download[]|Collections\ArrayCollection
+     * @var Article\Download[]|Collections\ArrayCollection
      */
     private $magazineArticleDownload;
     /**

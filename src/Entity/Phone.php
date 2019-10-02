@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -50,7 +50,7 @@ class Phone extends AbstractEntity
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * })
      *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
     /**
@@ -62,7 +62,7 @@ class Phone extends AbstractEntity
      * @Annotation\Options({"target_class":"Contact\Entity\PhoneType"})
      * @Annotation\Attributes({"label":"txt-type"})
      *
-     * @var \Contact\Entity\PhoneType
+     * @var PhoneType
      */
     private $type;
 
@@ -87,7 +87,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return Contact
      */
     public function getContact()
     {
@@ -95,7 +95,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param Contact $contact
      */
     public function setContact($contact)
     {
@@ -135,7 +135,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\PhoneType
+     * @return PhoneType
      */
     public function getType()
     {
@@ -143,7 +143,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\PhoneType $type
+     * @param PhoneType $type
      */
     public function setType($type)
     {

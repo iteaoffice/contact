@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -56,7 +56,6 @@ use function implode;
 use function in_array;
 use function is_array;
 use function str_replace;
-use function stream_get_contents;
 use function strip_tags;
 use function strtolower;
 use function trim;

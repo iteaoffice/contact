@@ -5,8 +5,17 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
+
+use Contact\Entity\Address;
+use Contact\Entity\Contact;
+use Contact\Entity\Dnd;
+use Contact\Entity\Facebook;
+use Contact\Entity\Note;
+use Contact\Entity\OptIn;
+use Contact\Entity\Phone;
+use Contact\Entity\Selection;
 
 return [
     'navigation' => [
@@ -92,7 +101,7 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Contact::class,
+                                        'id' => Contact::class,
                                     ],
                                     'invokables' => [
                                         Contact\Navigation\Invokable\ContactLabel::class,
@@ -105,7 +114,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                         ],
                                     ],
@@ -115,7 +124,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                         ],
                                     ],
@@ -125,7 +134,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                         ],
                                     ],
@@ -135,7 +144,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Note::class,
+                                                'id' => Note::class,
                                             ],
                                             'invokables' => [
                                                 Contact\Navigation\Invokable\NoteLabel::class,
@@ -148,7 +157,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                             'routeParam' => [
                                                 'id' => 'contact',
@@ -161,7 +170,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Address::class,
+                                                'id' => Address::class,
                                             ],
                                             'invokables' => [
                                                 Contact\Navigation\Invokable\AddressLabel::class,
@@ -174,7 +183,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                             'routeParam' => [
                                                 'id' => 'contact',
@@ -187,7 +196,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Phone::class,
+                                                'id' => Phone::class,
                                             ],
                                             'invokables' => [
                                                 Contact\Navigation\Invokable\PhoneLabel::class,
@@ -200,7 +209,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                             'routeParam' => [
                                                 'id' => 'contact',
@@ -213,7 +222,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                             'routeParam' => [
                                                 'id' => 'targetId',
@@ -226,7 +235,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                             'routeParam' => [
                                                 'id' => 'contactId',
@@ -239,7 +248,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                         ],
                                     ],
@@ -249,7 +258,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Contact::class,
+                                                'id' => Contact::class,
                                             ],
                                             'routeParam' => [
                                                 'id' => 'contactId',
@@ -262,7 +271,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => \Contact\Entity\Dnd::class,
+                                                'id' => Dnd::class,
                                             ],
                                             'invokables' => [
                                                 Contact\Navigation\Invokable\DndLabel::class,
@@ -284,7 +293,7 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Selection::class,
+                                        'id' => Selection::class,
                                     ],
                                     'invokables' => [
                                         Contact\Navigation\Invokable\SelectionLabel::class,
@@ -297,7 +306,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Selection::class,
+                                                'id' => Selection::class,
                                             ],
                                         ],
                                     ],
@@ -307,7 +316,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Selection::class,
+                                                'id' => Selection::class,
                                             ],
                                         ],
                                     ],
@@ -317,7 +326,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Selection::class,
+                                                'id' => Selection::class,
                                             ],
                                         ],
                                     ],
@@ -344,7 +353,7 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\Facebook::class,
+                                        'id' => Facebook::class,
                                     ],
                                     'invokables' => [
                                         Contact\Navigation\Invokable\FacebookLabel::class,
@@ -357,7 +366,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\Facebook::class,
+                                                'id' => Facebook::class,
                                             ],
                                         ],
                                     ],
@@ -376,7 +385,7 @@ return [
                                 'visible' => false,
                                 'params'  => [
                                     'entities'   => [
-                                        'id' => \Contact\Entity\OptIn::class,
+                                        'id' => OptIn::class,
                                     ],
                                     'invokables' => [
                                         Contact\Navigation\Invokable\OptInLabel::class,
@@ -389,7 +398,7 @@ return [
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
-                                                'id' => \Contact\Entity\OptIn::class,
+                                                'id' => OptIn::class,
                                             ],
                                         ],
                                     ],
@@ -401,7 +410,7 @@ return [
                             ],
                         ],
                     ],
-                    'leave'     => [
+                    'leave'      => [
                         'label' => _('txt-nav-leave'),
                         'route' => 'zfcadmin/contact/office/leave/manage',
                         'order' => 41,

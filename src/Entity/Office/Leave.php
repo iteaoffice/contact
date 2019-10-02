@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -111,7 +111,7 @@ class Leave extends AbstractEntity
 
     public function __toString(): string
     {
-        return (string) $this->hours;
+        return (string)$this->hours;
     }
 
     public function getId(): ?int
@@ -182,7 +182,7 @@ class Leave extends AbstractEntity
 
     public function getHours(): float
     {
-        return (float) $this->hours;
+        return (float)$this->hours;
     }
 
     public function setHours(float $hours): Leave

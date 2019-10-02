@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -48,7 +48,7 @@ class PhoneType extends AbstractEntity
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="type")
      *
-     * @var \Contact\Entity\Phone[]
+     * @var Phone[]
      */
     private $phone;
 
@@ -120,7 +120,7 @@ class PhoneType extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Phone[]
+     * @return Phone[]
      */
     public function getPhone()
     {
@@ -128,7 +128,7 @@ class PhoneType extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Phone[] $phone
+     * @param Phone[] $phone
      */
     public function setPhone($phone)
     {

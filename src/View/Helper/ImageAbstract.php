@@ -1,14 +1,9 @@
 <?php
 
 /**
- * ITEA Office all rights reserved
- *
- * PHP Version 7
- *
- * @category    Project
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        http://github.com/iteaoffice/project for the canonical source repository
@@ -18,6 +13,7 @@ declare(strict_types=1);
 
 namespace Contact\View\Helper;
 
+use InvalidArgumentException;
 use Thumbor\Url\Builder;
 use Zend\View\Helper\Url;
 
@@ -104,7 +100,7 @@ abstract class ImageAbstract extends AbstractViewHelper
     public function addRouterParam($key, $value, $allowNull = true): void
     {
         if (!$allowNull && null === $value) {
-            throw new \InvalidArgumentException(sprintf('null is not allowed for %s', $key));
+            throw new InvalidArgumentException(sprintf('null is not allowed for %s', $key));
         }
         if (null !== $value) {
             $this->routerParams[$key] = $value;
@@ -117,7 +113,7 @@ abstract class ImageAbstract extends AbstractViewHelper
     }
 
 
-    public function getRouter():?string
+    public function getRouter(): ?string
     {
         return $this->router;
     }
@@ -173,7 +169,7 @@ abstract class ImageAbstract extends AbstractViewHelper
         return $this;
     }
 
-    public function getHeight():?int
+    public function getHeight(): ?int
     {
         return $this->height;
     }

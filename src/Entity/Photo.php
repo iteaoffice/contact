@@ -5,13 +5,14 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use General\Entity\ContentType;
@@ -67,7 +68,7 @@ class Photo extends AbstractEntity
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="update")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateUpdated;
     /**
@@ -82,7 +83,7 @@ class Photo extends AbstractEntity
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", inversedBy="photo", cascade={"persist"})
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
 
@@ -152,7 +153,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return Contact
      */
     public function getContact()
     {
@@ -160,7 +161,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param Contact $contact
      */
     public function setContact($contact)
     {
@@ -168,7 +169,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDateUpdated()
     {
@@ -176,7 +177,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @param \DateTime $dateUpdated
+     * @param DateTime $dateUpdated
      */
     public function setDateUpdated($dateUpdated)
     {

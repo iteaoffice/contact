@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -23,10 +23,14 @@ use Contact\Entity\Contact;
 use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
+use Exception;
+use InvalidArgumentException;
 use Zend\Router\Http\RouteMatch;
 use Zend\View\Helper\ServerUrl;
 use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
+use function in_array;
+use function is_null;
 
 /**
  * Class LinkAbstract.
@@ -144,11 +148,11 @@ abstract class LinkAbstract extends AbstractViewHelper
             $serverUrl() . $url(
                 $this->router,
                 $this->routerParams,
-                \is_null($this->getFragment()) ? [] : ['fragment' => $this->getFragment()]
+                is_null($this->getFragment()) ? [] : ['fragment' => $this->getFragment()]
             ),
             htmlentities((string)$this->text),
             implode(' ', $this->classes),
-            \in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
+            in_array($this->getShow(), ['icon', 'button', 'alternativeShow']) ? implode('', $this->linkContent)
                 : htmlentities(implode('', $this->linkContent))
         );
     }
@@ -162,7 +166,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseShow(): void
     {
@@ -217,7 +221,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                 break;
             case 'paginator':
                 if (null === $this->getAlternativeShow()) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf("this->alternativeShow cannot be null for a paginator link")
                     );
                 }
@@ -231,7 +235,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                 return;
             default:
                 if (!array_key_exists($this->getShow(), $this->showOptions)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf(
                             "The option \"%s\" should be available in the showOptions array, only \"%s\" are available",
                             $this->getShow(),
@@ -388,7 +392,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function hasAccess(AbstractEntity $entity, $assertion, $action)
     {
         $assertion = $this->getAssertion($assertion);
-        if (!\is_null($entity) && !$this->getAuthorizeService()->getAcl()->hasResource($entity)) {
+        if (!is_null($entity) && !$this->getAuthorizeService()->getAcl()->hasResource($entity)) {
             $this->getAuthorizeService()->getAcl()->addResource($entity);
             $this->getAuthorizeService()->getAcl()->allow([], $entity, [], $assertion);
         }
@@ -443,7 +447,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function addRouterParam($key, $value, $allowNull = true)
     {
         if (!$allowNull && null === $value) {
-            throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
+            throw new InvalidArgumentException(sprintf("null is not allowed for %s", $key));
         }
         if (null !== $value) {
             $this->routerParams[$key] = $value;
@@ -460,7 +464,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function addQueryParam($key, $value, $allowNull = true)
     {
         if (!$allowNull && null === $value) {
-            throw new \InvalidArgumentException(sprintf("null is not allowed for %s", $key));
+            throw new InvalidArgumentException(sprintf("null is not allowed for %s", $key));
         }
         if (null !== $value) {
             $this->queryParams[$key] = $value;
@@ -536,7 +540,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getContact()
     {
-        if (\is_null($this->contact)) {
+        if (is_null($this->contact)) {
             $this->contact = new Contact();
         }
 
@@ -560,7 +564,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getAddress()
     {
-        if (\is_null($this->address)) {
+        if (is_null($this->address)) {
             $this->address = new Address();
         }
 
@@ -584,7 +588,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getNote()
     {
-        if (\is_null($this->note)) {
+        if (is_null($this->note)) {
             $this->note = new Note();
         }
 
@@ -608,7 +612,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getPhone()
     {
-        if (\is_null($this->phone)) {
+        if (is_null($this->phone)) {
             $this->phone = new Phone();
         }
 
@@ -632,7 +636,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getSelection()
     {
-        if (\is_null($this->selection)) {
+        if (is_null($this->selection)) {
             $this->selection = new Selection();
         }
 

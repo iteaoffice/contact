@@ -5,7 +5,7 @@
  * @category  Content
  *
  * @author    Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license   https://itea3.org/license.txt proprietary
  *
  * @link      https://itea3.org
@@ -39,22 +39,28 @@ final class ContactController extends ContactAbstractController
 
     public function listAction(): ViewModel
     {
-        return new ViewModel([
-            'officeContacts' => $this->officeContactService->findAll(Contact::class)
-        ]);
+        return new ViewModel(
+            [
+                'officeContacts' => $this->officeContactService->findAll(Contact::class)
+            ]
+        );
     }
 
     public function newAction(): ViewModel
     {
-        return new ViewModel([
+        return new ViewModel(
+            [
 
-        ]);
+            ]
+        );
     }
 
     public function editAction(): ViewModel
     {
-        return new ViewModel([
+        return new ViewModel(
+            [
 
-        ]);
+            ]
+        );
     }
 }

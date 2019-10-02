@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -14,6 +14,9 @@ namespace Contact\View\Helper;
 
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 use Contact\Entity\Facebook;
+use Exception;
+use RuntimeException;
+use function is_null;
 
 /**
  * Create a link to an facebook.
@@ -29,15 +32,15 @@ class FacebookLink extends LinkAbstract
 
     /**
      * @param Facebook $facebook
-     * @param string $action
-     * @param string $show
-     * @param null $page
-     * @param null $alternativeShow
+     * @param string   $action
+     * @param string   $show
+     * @param null     $page
+     * @param null     $alternativeShow
      *
      * @return string
      *
-     * @throws \RuntimeException
-     * @throws \Exception
+     * @throws RuntimeException
+     * @throws Exception
      */
     public function __invoke(
         Facebook $facebook = null,
@@ -58,7 +61,7 @@ class FacebookLink extends LinkAbstract
         /*
          * If the alternativeShow is not null, use it an otherwise take the page
          */
-        if (!\is_null($alternativeShow)) {
+        if (!is_null($alternativeShow)) {
             $this->setAlternativeShow($alternativeShow);
         } else {
             $this->setAlternativeShow($page);
@@ -79,7 +82,7 @@ class FacebookLink extends LinkAbstract
      */
     public function getFacebook()
     {
-        if (\is_null($this->facebook)) {
+        if (is_null($this->facebook)) {
             $this->facebook = new Facebook();
         }
 
@@ -95,7 +98,7 @@ class FacebookLink extends LinkAbstract
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseAction(): void
     {
@@ -136,7 +139,7 @@ class FacebookLink extends LinkAbstract
                 $this->setText(sprintf($this->translate("txt-view-facebook-%s"), $this->getFacebook()->getFacebook()));
                 break;
             default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
+                throw new Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
     }
 }

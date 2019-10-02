@@ -5,7 +5,7 @@
  * @category    Organisation
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -41,6 +41,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use ErrorHeroModule\Handler\Logging;
+use Evaluation\Entity\Evaluation;
+use Evaluation\Entity\Reviewer;
 use Event\Entity\Badge\Badge;
 use Event\Entity\Exhibition\Tour;
 use Event\Entity\Exhibition\Voter;
@@ -69,7 +71,6 @@ use Project\Entity\ChangeRequest\Process;
 use Project\Entity\Contract;
 use Project\Entity\Description\Description;
 use Project\Entity\Document\Document;
-use Evaluation\Entity\Evaluation;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Idea\Message;
 use Project\Entity\Idea\Partner;
@@ -82,7 +83,6 @@ use Project\Entity\Report\Item;
 use Project\Entity\Report\Report;
 use Project\Entity\Report\WorkpackageDescription;
 use Project\Entity\Result\Result;
-use Evaluation\Entity\Reviewer;
 use Project\Entity\Version\Version;
 use Project\Entity\Workpackage\Workpackage;
 use Publication\Entity\Download;
@@ -476,7 +476,7 @@ final class MergeContactTest extends AbstractServiceTest
         $projectReview->setContact($source);
         $source->setProjectReviewers(new ArrayCollection([$projectReview]));
 
-        $reviewContact = new \Evaluation\Entity\Reviewer\Contact();
+        $reviewContact = new Reviewer\Contact();
         $reviewContact->setId(1);
         $reviewContact->setContact($source);
         $source->setProjectReviewerContact($reviewContact);

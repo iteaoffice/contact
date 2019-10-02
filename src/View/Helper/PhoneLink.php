@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,6 +15,8 @@ namespace Contact\View\Helper;
 use Contact\Acl\Assertion\Phone as PhoneAssertion;
 use Contact\Entity\Contact;
 use Contact\Entity\Phone;
+use Exception;
+use function is_null;
 
 /**
  * Create a link to an phone.
@@ -24,9 +26,9 @@ use Contact\Entity\Phone;
 class PhoneLink extends LinkAbstract
 {
     /**
-     * @param Phone|null $phone
-     * @param string $action
-     * @param string $show
+     * @param Phone|null   $phone
+     * @param string       $action
+     * @param string       $show
      * @param Contact|null $contact
      *
      * @return string
@@ -58,14 +60,14 @@ class PhoneLink extends LinkAbstract
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
-                if (\is_null($this->getContact())) {
-                    throw new \Exception(sprintf("A contact is needed for a new phone"));
+                if (is_null($this->getContact())) {
+                    throw new Exception(sprintf("A contact is needed for a new phone"));
                 }
 
                 $this->setRouter('zfcadmin/phone/new');
@@ -76,7 +78,7 @@ class PhoneLink extends LinkAbstract
                 $this->setText(sprintf($this->translate("txt-edit-phone-%s"), $this->getPhone()->getPhone()));
                 break;
             default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
+                throw new Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
     }
 }

@@ -5,13 +5,14 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Zend\Form\Annotation;
@@ -55,14 +56,14 @@ class Note extends AbstractEntity
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateCreated;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="note")
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
 
@@ -103,7 +104,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return Contact
      */
     public function getContact()
     {
@@ -111,7 +112,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param Contact $contact
      */
     public function setContact($contact)
     {
@@ -119,7 +120,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDateCreated()
     {
@@ -127,7 +128,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @param \DateTime $dateCreated
+     * @param DateTime $dateCreated
      */
     public function setDateCreated($dateCreated)
     {

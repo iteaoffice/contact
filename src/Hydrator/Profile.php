@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -20,6 +20,7 @@ use Contact\Entity\PhoneType;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use General\Entity\Country;
 use Organisation\Service\OrganisationService;
+use function in_array;
 
 /**
  * Class Profile.
@@ -116,7 +117,7 @@ class Profile extends DoctrineObject
                 }
             }
             foreach ($currentPhoneNumbers as $phone) {
-                if (!\in_array(
+                if (!in_array(
                     $phone->getType()->getId(),
                     [
                         PhoneType::PHONE_TYPE_MOBILE,

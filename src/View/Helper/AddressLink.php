@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,6 +15,8 @@ namespace Contact\View\Helper;
 use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Entity\Address;
 use Contact\Entity\Contact;
+use Exception;
+use function is_null;
 
 /**
  * Create a link to an address.
@@ -25,8 +27,8 @@ class AddressLink extends LinkAbstract
 {
     /**
      * @param Address|null $address
-     * @param string $action
-     * @param string $show
+     * @param string       $action
+     * @param string       $show
      * @param Contact|null $contact
      *
      * @return string
@@ -63,14 +65,14 @@ class AddressLink extends LinkAbstract
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseAction(): void
     {
         switch ($this->getAction()) {
             case 'new':
-                if (\is_null($this->getContact())) {
-                    throw new \Exception(sprintf("A contact is needed for a new address"));
+                if (is_null($this->getContact())) {
+                    throw new Exception(sprintf("A contact is needed for a new address"));
                 }
 
                 $this->setRouter('zfcadmin/address/new');
@@ -83,7 +85,7 @@ class AddressLink extends LinkAbstract
                 );
                 break;
             default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
+                throw new Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
     }
 }

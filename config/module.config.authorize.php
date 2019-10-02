@@ -5,9 +5,10 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
+use BjyAuthorize\Guard\Route;
 use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
@@ -17,7 +18,7 @@ use Contact\Acl\Assertion\Phone as PhoneAssertion;
 return [
     'bjyauthorize' => [
         'guards' => [
-            \BjyAuthorize\Guard\Route::class => [
+            Route::class => [
                 [
                     'route' => 'image/contact-photo',
                     'roles' => [],
@@ -183,40 +184,40 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/list',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/list',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/view',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/view',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/new',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/new',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/edit',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/edit',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/leave/manage',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/leave/manage',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/leave/update',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/leave/update',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/leave/delete',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/leave/delete',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/leave/fetch',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/leave/fetch',
+                    'roles' => ['office'],
                 ],
                 [
-                    'route'     => 'zfcadmin/contact/office/leave/move',
-                    'roles'     => ['office'],
+                    'route' => 'zfcadmin/contact/office/leave/move',
+                    'roles' => ['office'],
                 ],
                 [
                     'route' => 'zfcadmin/contact/merge',

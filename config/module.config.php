@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 namespace Contact;
@@ -19,8 +19,8 @@ use Contact\Provider;
 use Contact\Search;
 use Contact\Service;
 use Contact\View;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use DoctrineExtensions\Query\Mysql\Replace;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -70,30 +70,32 @@ $config = [
     ],
     'view_helpers'       => [
         'aliases'   => [
-            'contactLink'        => View\Helper\ContactLink::class,
-            'dndLink'            => View\Helper\DndLink::class,
-            'profileLink'        => View\Helper\ProfileLink::class,
-            'selectionLink'      => View\Helper\SelectionLink::class,
-            'facebookLink'       => View\Helper\FacebookLink::class,
-            'optInLink'          => View\Helper\OptInLink::class,
-            'addressLink'        => View\Helper\AddressLink::class,
-            'noteLink'           => View\Helper\NoteLink::class,
-            'phoneLink'          => View\Helper\PhoneLink::class,
-            'contactPhoto'       => View\Helper\ContactPhoto::class,
-            'contactformelement' => Form\View\Helper\ContactFormElement::class,
+            'contactLink'          => View\Helper\ContactLink::class,
+            'dndLink'              => View\Helper\DndLink::class,
+            'profileLink'          => View\Helper\ProfileLink::class,
+            'selectionLink'        => View\Helper\SelectionLink::class,
+            'facebookLink'         => View\Helper\FacebookLink::class,
+            'optInLink'            => View\Helper\OptInLink::class,
+            'addressLink'          => View\Helper\AddressLink::class,
+            'noteLink'             => View\Helper\NoteLink::class,
+            'phoneLink'            => View\Helper\PhoneLink::class,
+            'contactPhoto'         => View\Helper\ContactPhoto::class,
+            'contactformelement'   => Form\View\Helper\ContactFormElement::class,
+            'selectionformelement' => Form\View\Helper\SelectionFormElement::class,
         ],
         'factories' => [
-            View\Helper\ContactLink::class             => View\Factory\ViewHelperFactory::class,
-            View\Helper\DndLink::class                 => View\Factory\ViewHelperFactory::class,
-            View\Helper\ProfileLink::class             => View\Factory\ViewHelperFactory::class,
-            View\Helper\SelectionLink::class           => View\Factory\ViewHelperFactory::class,
-            View\Helper\FacebookLink::class            => View\Factory\ViewHelperFactory::class,
-            View\Helper\OptInLink::class               => View\Factory\ViewHelperFactory::class,
-            View\Helper\AddressLink::class             => View\Factory\ViewHelperFactory::class,
-            View\Helper\NoteLink::class                => View\Factory\ViewHelperFactory::class,
-            View\Helper\PhoneLink::class               => View\Factory\ViewHelperFactory::class,
-            View\Helper\ContactPhoto::class            => View\Factory\ViewHelperFactory::class,
-            Form\View\Helper\ContactFormElement::class => ConfigAbstractFactory::class,
+            View\Helper\ContactLink::class               => View\Factory\ViewHelperFactory::class,
+            View\Helper\DndLink::class                   => View\Factory\ViewHelperFactory::class,
+            View\Helper\ProfileLink::class               => View\Factory\ViewHelperFactory::class,
+            View\Helper\SelectionLink::class             => View\Factory\ViewHelperFactory::class,
+            View\Helper\FacebookLink::class              => View\Factory\ViewHelperFactory::class,
+            View\Helper\OptInLink::class                 => View\Factory\ViewHelperFactory::class,
+            View\Helper\AddressLink::class               => View\Factory\ViewHelperFactory::class,
+            View\Helper\NoteLink::class                  => View\Factory\ViewHelperFactory::class,
+            View\Helper\PhoneLink::class                 => View\Factory\ViewHelperFactory::class,
+            View\Helper\ContactPhoto::class              => View\Factory\ViewHelperFactory::class,
+            Form\View\Helper\ContactFormElement::class   => ConfigAbstractFactory::class,
+            Form\View\Helper\SelectionFormElement::class => ConfigAbstractFactory::class,
         ],
     ],
     'form_elements'      => [

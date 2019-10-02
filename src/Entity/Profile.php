@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -66,7 +66,7 @@ class Profile extends AbstractEntity
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * @Annotation\Type("\Zend\Form\Element\Hidden")
      *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
 

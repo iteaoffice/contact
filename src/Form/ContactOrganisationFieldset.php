@@ -5,7 +5,7 @@
  * @category    Content
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -20,7 +20,7 @@ use Zend\Form\Fieldset;
 class ContactOrganisationFieldset extends Fieldset
 {
     /**
-     * @param EntityManager $entityManager
+     * @param EntityManager         $entityManager
      * @param Entity\AbstractEntity $object
      */
     public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)

@@ -5,7 +5,7 @@
  * @category    Contact
  * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 use Contact\Controller;
@@ -130,7 +130,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'impersonate' => [
+                            'impersonate'    => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/impersonate/[:id].html',
@@ -139,7 +139,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'edit'        => [
+                            'edit'           => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/edit/[:id].html',
@@ -148,7 +148,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'permit'      => [
+                            'permit'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/permissions/[:id].html',
@@ -157,7 +157,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'search'      => [
+                            'search'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/search.html',
@@ -166,7 +166,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'import'      => [
+                            'import'         => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/import.html',
@@ -175,7 +175,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'merge'       => [
+                            'merge'          => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/merge/[:sourceId]/into/[:targetId].html',
@@ -184,7 +184,7 @@ return [
                                     ],
                                 ],
                             ],
-                            'add-project' => [
+                            'add-project'    => [
                                 'type'    => 'Segment',
                                 'options' => [
                                     'route'    => '/add-project/[:id].html',
@@ -193,17 +193,17 @@ return [
                                     ],
                                 ],
                             ],
-                            'office'            => [
-                                'type'         => 'Literal',
-                                'options'      => [
+                            'office'         => [
+                                'type'          => 'Literal',
+                                'options'       => [
                                     'route'    => '/office',
                                     'defaults' => [
                                         'controller' => Controller\Office\ContactController::class,
                                     ],
                                 ],
                                 'may_terminate' => false,
-                                'child_routes' => [
-                                    'list'      => [
+                                'child_routes'  => [
+                                    'list'  => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/list.html',
@@ -212,7 +212,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'view'      => [
+                                    'view'  => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/view/[:id].html',
@@ -221,7 +221,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'new'      => [
+                                    'new'   => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/new.html',
@@ -230,7 +230,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'edit'     => [
+                                    'edit'  => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/edit/[:id].html',
@@ -239,17 +239,17 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'leave'     => [
-                                        'type'    => 'Segment',
-                                        'options' => [
+                                    'leave' => [
+                                        'type'          => 'Segment',
+                                        'options'       => [
                                             'route'    => '/leave',
                                             'defaults' => [
                                                 'controller' => Controller\Office\LeaveController::class,
                                             ],
                                         ],
                                         'may_terminate' => false,
-                                        'child_routes' => [
-                                            'manage'      => [
+                                        'child_routes'  => [
+                                            'manage' => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/manage.html',
@@ -258,7 +258,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'update'      => [
+                                            'update' => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/update.json',
@@ -267,7 +267,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'delete'      => [
+                                            'delete' => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/delete.json',
@@ -276,7 +276,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'fetch'      => [
+                                            'fetch'  => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/fetch.json',
@@ -285,7 +285,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'move'      => [
+                                            'move'   => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/move.json',
