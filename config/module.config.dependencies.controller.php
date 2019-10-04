@@ -124,11 +124,12 @@ return [
             TranslatorInterface::class
         ],
         Controller\Office\ContactController::class   => [
-            Service\Office\ContactService::class
+            Service\Office\ContactService::class,
+            Service\FormService::class,
         ],
         Controller\Office\LeaveController::class     => [
+            Service\Office\ContactService::class,
             Service\FormService::class,
-            Service\Office\ContactService::class
         ]
     ]
 ];

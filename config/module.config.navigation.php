@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
+namespace Contact;
+
 use Contact\Entity\Address;
 use Contact\Entity\Contact;
 use Contact\Entity\Dnd;
@@ -16,6 +18,7 @@ use Contact\Entity\Note;
 use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
+use Contact\Entity\Office\Contact as OfficeContact;
 
 return [
     'navigation' => [
@@ -83,7 +86,6 @@ return [
             ],
         ],
         'admin'     => [
-            // And finally, here is where we define our page hierarchy
             'contact' => [
                 'label'    => _('txt-nav-contact'),
                 'route'    => 'zfcadmin/contact/list',
@@ -104,7 +106,7 @@ return [
                                         'id' => Contact::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\ContactLabel::class,
+                                        Navigation\Invokable\ContactLabel::class,
                                     ],
                                 ],
                                 'pages'   => [
@@ -147,7 +149,7 @@ return [
                                                 'id' => Note::class,
                                             ],
                                             'invokables' => [
-                                                Contact\Navigation\Invokable\NoteLabel::class,
+                                                Navigation\Invokable\NoteLabel::class,
                                             ],
                                         ],
                                     ],
@@ -173,7 +175,7 @@ return [
                                                 'id' => Address::class,
                                             ],
                                             'invokables' => [
-                                                Contact\Navigation\Invokable\AddressLabel::class,
+                                                Navigation\Invokable\AddressLabel::class,
                                             ],
                                         ],
                                     ],
@@ -199,7 +201,7 @@ return [
                                                 'id' => Phone::class,
                                             ],
                                             'invokables' => [
-                                                Contact\Navigation\Invokable\PhoneLabel::class,
+                                                Navigation\Invokable\PhoneLabel::class,
                                             ],
                                         ],
                                     ],
@@ -274,7 +276,7 @@ return [
                                                 'id' => Dnd::class,
                                             ],
                                             'invokables' => [
-                                                Contact\Navigation\Invokable\DndLabel::class,
+                                                Navigation\Invokable\DndLabel::class,
                                             ],
                                         ],
                                     ],
@@ -296,7 +298,7 @@ return [
                                         'id' => Selection::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\SelectionLabel::class,
+                                        Navigation\Invokable\SelectionLabel::class,
                                     ],
                                 ],
                                 'pages'   => [
@@ -356,7 +358,7 @@ return [
                                         'id' => Facebook::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\FacebookLabel::class,
+                                        Navigation\Invokable\FacebookLabel::class,
                                     ],
                                 ],
                                 'pages'   => [
@@ -388,7 +390,7 @@ return [
                                         'id' => OptIn::class,
                                     ],
                                     'invokables' => [
-                                        Contact\Navigation\Invokable\OptInLabel::class,
+                                        Navigation\Invokable\OptInLabel::class,
                                     ],
                                 ],
                                 'pages'   => [
@@ -414,6 +416,43 @@ return [
                         'label' => _('txt-nav-leave'),
                         'route' => 'zfcadmin/contact/office/leave/manage',
                         'order' => 41,
+                    ],
+                    'office-members'      => [
+                        'label' => _('txt-nav-office-members'),
+                        'route' => 'zfcadmin/contact/office/list',
+                        'order' => 42,
+                        'pages' => [
+                            'view'          => [
+                                'label'   => _('txt-view'),
+                                'route'   => 'zfcadmin/contact/office/view',
+                                'visible' => false,
+                                'params'  => [
+                                    'entities'   => [
+                                        'id' => OfficeContact::class,
+                                    ],
+                                    'invokables' => [
+                                        Navigation\Invokable\Office\ContactLabel::class,
+                                    ],
+                                ],
+                                'pages' => [
+                                    'edit'          => [
+                                        'label'   => _('txt-edit'),
+                                        'route'   => 'zfcadmin/contact/office/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => OfficeContact::class,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'new'          => [
+                                'label'   => _('txt-new-office-member'),
+                                'route'   => 'zfcadmin/contact/office/new',
+                                'visible' => false,
+                            ],
+                        ],
                     ],
                 ],
             ],

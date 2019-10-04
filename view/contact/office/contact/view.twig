@@ -1,0 +1,53 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-office-member")) %}
+
+<h1>{{ translate("txt-office-member") }} {{ officeContactLink(officeContact,'edit','button') }}</h1>
+
+<dl class="dl-horizontal">
+    <dt>{{ translate("txt-id") }}</dt>
+    <dd>{{ officeContact.id }}</dd>
+    <dt>{{ translate("txt-name") }}</dt>
+    <dd>{{ contactLink(officeContact.contact, 'view-admin') }}</dd>
+    <dt>{{ translate("txt-hours") }}</dt>
+    <dd>{{ officeContact.hours }}</dd>
+    {% if eviewerContact.dateEnd %}
+    <dt>{{ translate("txt-date-end") }}</dt>
+    <dd>{{ reviewerContact.dateEnd|string_date }}</dd>
+    {% endif %}
+</dl>
+
+<h2>{{ translate("txt-leave") }}</h2>
+
+{% if paginator.pageRange > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate('txt-id') }}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'description', 'text': translate('txt-description')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'type', 'text': translate('txt-type')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'dateStart', 'text': translate('txt-date-start')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'dateEnd', 'text': translate('txt-date-end')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'hours', 'text': translate('txt-hours')} %}</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for leave in paginator.getCurrentItems() %}
+            <tr>
+                <td>{{ leave.id }}</td>
+                <td>{{ leave.description }}</td>
+                <td>{{ leave.type.type }}</td>
+                <td>{{ leave.dateStart|string_date }}</td>
+                <td>{{ leave.dateEnd|string_date }}</td>
+                <td>{{ leave.hours }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+
+    {% include 'application/partial/pagination-control' %}
+
+{% else %}
+    {{ ztbalert().info(translate("txt-no-leave-found"))|raw }}
+{% endif %}

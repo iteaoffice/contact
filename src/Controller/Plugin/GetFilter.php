@@ -48,39 +48,39 @@ final class GetFilter extends AbstractPlugin
     public function __construct(Application $application)
     {
         $this->routeMatch = $application->getMvcEvent()->getRouteMatch();
-        $this->request = $application->getMvcEvent()->getRequest();
+        $this->request    = $application->getMvcEvent()->getRequest();
     }
 
-    public function __invoke(): self
+    public function __invoke(array $defaults = []): self
     {
-        $encodedFilter = urldecode((string)$this->routeMatch->getParam('encodedFilter'));
+        $encodedFilter = urldecode((string) $this->routeMatch->getParam('encodedFilter'));
 
-        $order = $this->request->getQuery('order');
-        $direction = $this->request->getQuery('direction');
-
-        //Take the filter from the URL
-        $filter = [];
+        // Take the filter from the URL
+        $filter = $defaults;
         if (!empty($base64decodedFilter = base64_decode($encodedFilter))) {
-            $filter = (array)Json::decode($base64decodedFilter);
+            $filter = (array) Json::decode($base64decodedFilter);
         }
 
-        //If the form is submitted, refresh the URL
+        // If the form is submitted, refresh the URL
         if ($this->request->isGet() && null !== $this->request->getQuery('submit')) {
             $filter = $this->request->getQuery()->toArray()['filter'];
         }
 
-        //Add a default order and direction if not known in the filter
+        // Add a default order and direction if not known in the filter
         if (!isset($filter['order'])) {
-            $filter['order'] = 'id';
+            $filter['order']     = 'id';
             $filter['direction'] = 'desc';
         }
 
-        //Overrule the order if set in the query
+        $order     = $this->request->getQuery('order');
+        $direction = $this->request->getQuery('direction');
+
+        // Overrule the order if set in the query
         if (null !== $order) {
             $filter['order'] = $order;
         }
 
-        //Overrule the direction if set in the query
+        // Overrule the direction if set in the query
         if (null !== $direction) {
             $filter['direction'] = $direction;
         }

@@ -16,8 +16,16 @@ declare(strict_types=1);
 namespace Contact\Controller\Office;
 
 use Contact\Controller\ContactAbstractController;
-use Contact\Entity\Office\Contact;
+use Contact\Entity\Office\Contact as OfficeContact;
+use Contact\Entity\Office\Leave;
+use Contact\Form\Element\Contact as ContactFormElement;
+use Contact\Service\FormService;
 use Contact\Service\Office\ContactService as OfficeContactService;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
+use Contact\Form\Office\ContactFilter;
+use Zend\Http\Request;
+use Zend\Paginator\Paginator;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -32,35 +40,143 @@ final class ContactController extends ContactAbstractController
      */
     private $officeContactService;
 
-    public function __construct(OfficeContactService $officeContactService)
+    /**
+     * @var FormService
+     */
+    private $formService;
+
+    public function __construct(OfficeContactService $officeContactService, FormService $formService)
     {
         $this->officeContactService = $officeContactService;
+        $this->formService          = $formService;
     }
 
     public function listAction(): ViewModel
     {
-        return new ViewModel(
-            [
-                'officeContacts' => $this->officeContactService->findAll(Contact::class)
-            ]
-        );
+        $page         = $this->params()->fromRoute('page', 1);
+        $filterPlugin = $this->getContactFilter([
+            'order'     => 'contact',
+            'direction' => 'asc'
+        ]);
+        $contactQuery = $this->officeContactService->findFiltered(OfficeContact::class, $filterPlugin->getFilter());
+
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
+        $paginator::setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 20);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
+
+        $form = new ContactFilter();
+        $form->setData(['filter' => $filterPlugin->getFilter()]);
+
+        return new ViewModel([
+            'paginator'     => $paginator,
+            'form'          => $form,
+            'encodedFilter' => urlencode($filterPlugin->getHash()),
+            'order'         => $filterPlugin->getOrder(),
+            'direction'     => $filterPlugin->getDirection(),
+        ]);
     }
 
-    public function newAction(): ViewModel
+    public function viewAction()
     {
-        return new ViewModel(
-            [
+        /** @var OfficeContact $officeContact */
+        $officeContact = $this->officeContactService->find(OfficeContact::class, (int) $this->params('id'));
 
-            ]
+        if ($officeContact === null) {
+            return $this->notFoundAction();
+        }
+
+        $page         = $this->params()->fromRoute('page', 1);
+        $filterPlugin = $this->getContactFilter([
+            'order'           => 'dateStart',
+            'direction'       => 'desc',
+        ]);
+        $filterValues = array_merge(
+            $filterPlugin->getFilter(),
+            ['officeContact' => $officeContact]
         );
+        $leaveQuery = $this->officeContactService->findFiltered(Leave::class, $filterValues);
+
+        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($leaveQuery, false)));
+        $paginator::setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 20);
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
+
+        return new ViewModel([
+            'officeContact' => $officeContact,
+            'paginator'     => $paginator,
+            'order'         => $filterPlugin->getOrder(),
+            'direction'     => $filterPlugin->getDirection(),
+        ]);
     }
 
-    public function editAction(): ViewModel
+    public function newAction()
     {
-        return new ViewModel(
-            [
+        /** @var Request $request */
+        $request = $this->getRequest();
+        $data    = $request->getPost()->toArray();
+        $form    = $this->formService->prepare(new OfficeContact(), $data);
+        $form->remove('delete');
 
-            ]
-        );
+        if ($request->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('zfcadmin/contact/office/list');
+            }
+
+            if ($form->isValid()) {
+                /** @var OfficeContact $officeContact */
+                $officeContact = $form->getData();
+                $this->officeContactService->save($officeContact);
+
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact/office/view',
+                    ['id' => $officeContact->getId()]
+                );
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form
+        ]);
+    }
+
+    public function editAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        /** @var OfficeContact $officeContact */
+        $officeContact = $this->officeContactService->find(OfficeContact::class, (int) $this->params('id'));
+
+        if ($officeContact === null) {
+            return $this->notFoundAction();
+        }
+
+        $data = $request->getPost()->toArray();
+        $form = $this->formService->prepare($officeContact, $data);
+        /** @var ContactFormElement $contactElement */
+        $contactElement = $form->get($officeContact->get('underscore_entity_name'))->get('contact');
+        $contactElement->setValueOptions(
+            [$officeContact->getContact()->getId() => $officeContact->getContact()->getDisplayName()]
+        )->setDisableInArrayValidator(true);
+
+        if ($request->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('zfcadmin/contact/office/list');
+            }
+
+            if ($form->isValid()) {
+                /** @var OfficeContact $officeContact */
+                $officeContact = $form->getData();
+                $this->officeContactService->save($officeContact);
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact/office/view',
+                    ['id' => $officeContact->getId()]
+                );
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form
+        ]);
     }
 }

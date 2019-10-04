@@ -217,7 +217,7 @@ return [
                                         'options' => [
                                             'route'    => '/view/[:id].html',
                                             'defaults' => [
-                                                'action' => 'new',
+                                                'action' => 'view',
                                             ],
                                         ],
                                     ],

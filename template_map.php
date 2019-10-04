@@ -13,6 +13,10 @@ return array(
     'contact/profile/events'                       => __DIR__ . '//view/contact/profile/events.twig',
     'contact/contact/search'                       => __DIR__ . '//view/contact/contact/search.twig',
     'contact/contact/change-password'              => __DIR__ . '//view/contact/contact/change-password.twig',
+    'contact/office/contact/list'                  => __DIR__ . '//view/contact/office/contact/list.twig',
+    'contact/office/contact/view'                  => __DIR__ . '//view/contact/office/contact/view.twig',
+    'contact/office/contact/new'                   => __DIR__ . '//view/contact/office/contact/new.twig',
+    'contact/office/contact/edit'                  => __DIR__ . '//view/contact/office/contact/edit.twig',
     'contact/office/leave/manage'                  => __DIR__ . '//view/contact/office/leave/manage.twig',
     'contact/facebook-manager/view'                => __DIR__ . '//view/contact/facebook-manager/view.twig',
     'contact/facebook-manager/new'                 => __DIR__ . '//view/contact/facebook-manager/new.twig',
@@ -29,8 +33,7 @@ return array(
     'contact/selection-manager/list'               => __DIR__ . '//view/contact/selection-manager/list.twig',
     'contact/selection-manager/add-contact'        => __DIR__ . '//view/contact/selection-manager/add-contact.twig',
     'contact/selection-manager/edit-contacts'      => __DIR__ . '//view/contact/selection-manager/edit-contacts.twig',
-    'contact/selection-manager/generate-deeplinks' => __DIR__
-        . '//view/contact/selection-manager/generate-deeplinks.twig',
+    'contact/selection-manager/generate-deeplinks' => __DIR__ . '//view/contact/selection-manager/generate-deeplinks.twig',
     'contact/selection-manager/edit'               => __DIR__ . '//view/contact/selection-manager/edit.twig',
     'contact/address-manager/new'                  => __DIR__ . '//view/contact/address-manager/new.twig',
     'contact/address-manager/edit'                 => __DIR__ . '//view/contact/address-manager/edit.twig',
@@ -71,5 +74,6 @@ return array(
     'contact/partial/form/selection'               => __DIR__ . '//view/contact/partial/form/selection.twig',
     'contact/partial/form/phone'                   => __DIR__ . '//view/contact/partial/form/phone.twig',
     'contact/partial/form/office/leave'            => __DIR__ . '//view/contact/partial/form/office/leave.twig',
+    'contact/partial/form/office/contact'          => __DIR__ . '//view/contact/partial/form/office/contact.twig',
     'contact/partial/optin-button'                 => __DIR__ . '//view/contact/partial/optin-button.twig',
 );

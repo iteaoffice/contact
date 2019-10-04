@@ -34,19 +34,19 @@ use Zend\View\Model\ViewModel;
 final class LeaveController extends ContactAbstractController
 {
     /**
-     * @var FormService
-     */
-    private $formService;
-
-    /**
      * @var OfficeContactService
      */
     private $officeContactService;
 
-    public function __construct(FormService $formService, OfficeContactService $officeContactService)
+    /**
+     * @var FormService
+     */
+    private $formService;
+
+    public function __construct(OfficeContactService $officeContactService, FormService $formService)
     {
-        $this->formService = $formService;
         $this->officeContactService = $officeContactService;
+        $this->formService = $formService;
     }
 
     public function manageAction()
@@ -54,11 +54,9 @@ final class LeaveController extends ContactAbstractController
         $form = $this->formService->prepare(Leave::class);
         $form->remove('csrf');
 
-        return new ViewModel(
-            [
-                'form' => $form
-            ]
-        );
+        return new ViewModel([
+            'form' => $form
+        ]);
     }
 
     public function updateAction()

@@ -27,7 +27,7 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  * @method IsAllowed isAllowed($resource, $action)
  * @method Plugin\HandleImport handleImport(Contact $contact, string $data, ?array $import, ?array $optIn, ?int $selectionId, ?string $selectionName)
  * @method Plugin\SelectionExport selectionExport(Selection $selection, int $type)
- * @method Plugin\GetFilter getContactFilter()
+ * @method Plugin\GetFilter getContactFilter(array $defaults = [])
  * @method ZfcUserAuthentication zfcUserAuthentication()
  * @method Plugin\MergeContact mergeContact()
  */

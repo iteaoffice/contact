@@ -1,10 +1,8 @@
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.js') %}
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.js') %}
-{% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.3.0/main.min.js') %}
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.3.0/main.min.js') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.css') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.css') %}
-{% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.3.0/main.min.css') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/bootstrap@4.3.0/main.min.css') %}
 
 {% do headTitle().append(translate("txt-admin")) %}
@@ -63,7 +61,7 @@
         var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
             events: '{{ url('zfcadmin/contact/office/leave/fetch') }}',
             timeZone: 'UTC',
-            plugins: ['interaction','dayGrid','timeGrid'],
+            plugins: ['interaction','dayGrid'],
             themeSystem: 'bootstrap',
             eventTextColor: '#ffffff',
             editable: true,
@@ -73,7 +71,7 @@
             header: {
                 left: 'prev,next today addEventButton',
                 center: 'title',
-                right:  'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                //right:  'dayGridMonth,timeGridWeek,listMonth'
             },
             buttonText: {
                 today: '{{ translate("txt-today") }}',

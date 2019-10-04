@@ -1,0 +1,18 @@
+{% do form.prepare() %}
+{{ form().openTag(form)|raw }}
+
+{% set contact = form.get('contact_entity_office_contact') %}
+{{ contactformelement(contact.get('contact')) }}
+{{ ztbformelement(contact.get('hours')) }}
+{{ ztbformelement(contact.get('dateEnd')) }}
+
+{{ ztbformelement(form.get('csrf')) }}
+
+<div class="form-group row">
+    <div class="offset-sm-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('cancel')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}

@@ -23,7 +23,7 @@ use Zend\Form\Annotation;
  * Entity for ITEA office employees.
  *
  * @ORM\Table(name="contact_office")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Contact\Repository\Office\ContactRepository")
  * @Annotation\Name("contact_office")
  *
  * @category    Contact
@@ -58,7 +58,8 @@ class Contact extends AbstractEntity
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="officeContact")
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * @Annotation\Exclude()
+     * @Annotation\Type("Contact\Form\Element\Contact")
+     * @Annotation\Options({"label":"txt-contact"})
      *
      * @var \Contact\Entity\Contact
      */

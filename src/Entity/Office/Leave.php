@@ -21,7 +21,7 @@ use Zend\Form\Annotation;
  * Entity for ITEA office employee leave.
  *
  * @ORM\Table(name="contact_office_leave")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Contact\Repository\Office\LeaveRepository")
  * @Annotation\Name("contact_office_leave")
  *
  * @category    Contact
