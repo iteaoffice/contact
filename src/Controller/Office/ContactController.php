@@ -27,6 +27,7 @@ use Contact\Form\Office\ContactFilter;
 use Zend\Http\Request;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\ViewModel;
+use function date;
 
 /**
  * Class ContactController
@@ -56,7 +57,8 @@ final class ContactController extends ContactAbstractController
         $page         = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter([
             'order'     => 'contact',
-            'direction' => 'asc'
+            'direction' => 'asc',
+            'active'    => 'active'
         ]);
         $contactQuery = $this->officeContactService->findFiltered(OfficeContact::class, $filterPlugin->getFilter());
 
@@ -86,25 +88,24 @@ final class ContactController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $page         = $this->params()->fromRoute('page', 1);
+        $year         = $this->params()->fromQuery('year', date('Y'));
         $filterPlugin = $this->getContactFilter([
             'order'           => 'dateStart',
-            'direction'       => 'desc',
+            'direction'       => 'asc',
         ]);
         $filterValues = array_merge(
             $filterPlugin->getFilter(),
-            ['officeContact' => $officeContact]
+            ['officeContact' => $officeContact, 'year' => $year]
         );
         $leaveQuery = $this->officeContactService->findFiltered(Leave::class, $filterValues);
-
-        $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($leaveQuery, false)));
-        $paginator::setDefaultItemCountPerPage(($page === 'all') ? PHP_INT_MAX : 20);
-        $paginator->setCurrentPageNumber($page);
-        $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
+        $userLeave  = $leaveQuery->getQuery()->getResult();
+        $years      = $this->officeContactService->findLeaveYears($officeContact);
 
         return new ViewModel([
             'officeContact' => $officeContact,
-            'paginator'     => $paginator,
+            'userLeave'     => $userLeave,
+            'selectedYear'  => $year,
+            'years'         => $years,
             'order'         => $filterPlugin->getOrder(),
             'direction'     => $filterPlugin->getDirection(),
         ]);

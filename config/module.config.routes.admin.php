@@ -249,12 +249,39 @@ return [
                                         ],
                                         'may_terminate' => false,
                                         'child_routes'  => [
-                                            'manage' => [
+                                            'calendar' => [
                                                 'type'    => 'Segment',
                                                 'options' => [
-                                                    'route'    => '/manage.html',
+                                                    'route'    => '/calendar.html',
                                                     'defaults' => [
-                                                        'action' => 'manage',
+                                                        'action' => 'calendar',
+                                                    ],
+                                                ],
+                                            ],
+                                            'list' => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/list.html',
+                                                    'defaults' => [
+                                                        'action' => 'list',
+                                                    ],
+                                                ],
+                                            ],
+                                            'new' => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/new.html',
+                                                    'defaults' => [
+                                                        'action' => 'new',
+                                                    ],
+                                                ],
+                                            ],
+                                            'edit' => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/edit/[:id].html',
+                                                    'defaults' => [
+                                                        'action' => 'edit',
                                                     ],
                                                 ],
                                             ],

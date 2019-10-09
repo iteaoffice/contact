@@ -15,6 +15,7 @@ use Contact\Entity\Contact;
 use Contact\Entity\Dnd;
 use Contact\Entity\Facebook;
 use Contact\Entity\Note;
+use Contact\Entity\Office\Leave;
 use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
@@ -412,45 +413,71 @@ return [
                             ],
                         ],
                     ],
-                    'leave'      => [
+                    'leave'               => [
                         'label' => _('txt-nav-leave'),
-                        'route' => 'zfcadmin/contact/office/leave/manage',
+                        'route' => 'zfcadmin/contact/office/leave/calendar',
                         'order' => 41,
-                    ],
-                    'office-members'      => [
-                        'label' => _('txt-nav-office-members'),
-                        'route' => 'zfcadmin/contact/office/list',
-                        'order' => 42,
                         'pages' => [
-                            'view'          => [
-                                'label'   => _('txt-view'),
-                                'route'   => 'zfcadmin/contact/office/view',
-                                'visible' => false,
-                                'params'  => [
-                                    'entities'   => [
-                                        'id' => OfficeContact::class,
-                                    ],
-                                    'invokables' => [
-                                        Navigation\Invokable\Office\ContactLabel::class,
-                                    ],
-                                ],
+                            'list'          => [
+                                'label'   => _('txt-list'),
+                                'route'   => 'zfcadmin/contact/office/leave/list',
                                 'pages' => [
+                                    'new'          => [
+                                        'label'   => _('txt-new-leave'),
+                                        'route'   => 'zfcadmin/contact/office/leave/new',
+                                        'visible' => false,
+                                    ],
                                     'edit'          => [
                                         'label'   => _('txt-edit'),
-                                        'route'   => 'zfcadmin/contact/office/edit',
+                                        'route'   => 'zfcadmin/contact/office/leave/edit',
                                         'visible' => false,
                                         'params'  => [
                                             'entities'   => [
-                                                'id' => OfficeContact::class,
+                                                'id' => Leave::class,
+                                            ],
+                                            'invokables' => [
+                                                Navigation\Invokable\Office\LeaveLabel::class,
                                             ],
                                         ],
                                     ],
                                 ],
                             ],
-                            'new'          => [
-                                'label'   => _('txt-new-office-member'),
-                                'route'   => 'zfcadmin/contact/office/new',
-                                'visible' => false,
+                            'office-members'      => [
+                                'label' => _('txt-nav-office-members'),
+                                'route' => 'zfcadmin/contact/office/list',
+                                'order' => 42,
+                                'pages' => [
+                                    'view'          => [
+                                        'label'   => _('txt-view'),
+                                        'route'   => 'zfcadmin/contact/office/view',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => OfficeContact::class,
+                                            ],
+                                            'invokables' => [
+                                                Navigation\Invokable\Office\ContactLabel::class,
+                                            ],
+                                        ],
+                                        'pages' => [
+                                            'edit'          => [
+                                                'label'   => _('txt-edit'),
+                                                'route'   => 'zfcadmin/contact/office/edit',
+                                                'visible' => false,
+                                                'params'  => [
+                                                    'entities'   => [
+                                                        'id' => OfficeContact::class,
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                    'new'          => [
+                                        'label'   => _('txt-new-office-member'),
+                                        'route'   => 'zfcadmin/contact/office/new',
+                                        'visible' => false,
+                                    ],
+                                ],
                             ],
                         ],
                     ],

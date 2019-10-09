@@ -18,7 +18,17 @@
 
 <h2>{{ translate("txt-leave") }}</h2>
 
-{% if paginator.pageRange > 0 %}
+<p>
+<ul class="nav nav-pills">
+    {% for year in years %}
+        <li class="nav-item">
+            <a class="nav-link{% if year == selectedYear %} active{% endif %}" href="{{ url('zfcadmin/contact/office/view', {'id': officeContact.id}, {'query': {'year': year}}) }}">{{ year }}</a>
+        </li>
+    {% endfor %}
+</ul>
+</p>
+
+{% if userLeave|length > 0 %}
     <table class="table table-hover table-striped table-sm">
         <thead>
         <tr>
@@ -28,26 +38,32 @@
             <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'dateStart', 'text': translate('txt-date-start')} %}</th>
             <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'dateEnd', 'text': translate('txt-date-end')} %}</th>
             <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'hours', 'text': translate('txt-hours')} %}</th>
-
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/view', 'id': officeContact.id, 'criteria': 'hours', 'text': translate('txt-days')} %}</th>
+            <th>{{ translate('txt-balance-hours') }}</th>
+            <th>{{ translate('txt-balance-days') }}</th>
         </tr>
         </thead>
         <tbody>
-        {% for leave in paginator.getCurrentItems() %}
+        {% set balance = 0 %}
+        {% for leave in userLeave %}
+            {% set balance = balance + (leave.hours * leave.type.factor) %}
             <tr>
-                <td>{{ leave.id }}</td>
+                <td>{{ leave.id }} {{ leaveLink(leave, 'edit', 'icon') }}</td>
                 <td>{{ leave.description }}</td>
                 <td>{{ leave.type.type }}</td>
                 <td>{{ leave.dateStart|string_date }}</td>
                 <td>{{ leave.dateEnd|string_date }}</td>
                 <td>{{ leave.hours }}</td>
+                <td>{{ (leave.hours / 8)|number_format }}</td>
+                <td>{{ balance|number_format(2) }}</td>
+                <td>{{ (balance / 8)|number_format }}</td>
             </tr>
         {% endfor %}
         </tbody>
         <tfoot></tfoot>
     </table>
-
-    {% include 'application/partial/pagination-control' %}
-
 {% else %}
     {{ ztbalert().info(translate("txt-no-leave-found"))|raw }}
 {% endif %}
+
+{{ leaveLink(null, 'new', 'button') }}

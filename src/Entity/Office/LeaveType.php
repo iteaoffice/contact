@@ -22,7 +22,7 @@ use Zend\Form\Annotation;
  * Entity for ITEA office employee leave types.
  *
  * @ORM\Table(name="contact_office_leave_type")
- * @ORM\Entity
+ * @ORM\Entity()
  * @Annotation\Name("contact_office_leave_type")
  *
  * @category    Contact
@@ -47,13 +47,23 @@ class LeaveType extends AbstractEntity
      */
     private $type;
     /**
-     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Textarea")
-     * @Annotation\Options({"label":"txt-description"})
+     * @ORM\Column(name="factor", type="smallint", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Number")
+     * @Annotation\Options({"label":"txt-factor"})
      *
-     * @var string
+     * @var int
      */
-    private $description;
+    private $factor = -1;
+
+    /**
+     * @ORM\Column(name="calendar", type="boolean", nullable=false)
+     * @Annotation\Type("\Zend\Form\Element\Checkbox")
+     * @Annotation\Options({"label":"txt-on-calendar"})
+     *
+     * @var bool
+     */
+    private $onCalendar = false;
+
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Office\Leave", mappedBy="type")
      * @Annotation\Exclude()
@@ -109,14 +119,25 @@ class LeaveType extends AbstractEntity
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getFactor(): int
     {
-        return $this->description;
+        return $this->factor;
     }
 
-    public function setDescription(?string $description): LeaveType
+    public function setFactor(int $factor): LeaveType
     {
-        $this->description = $description;
+        $this->factor = $factor;
+        return $this;
+    }
+
+    public function getOnCalendar(): bool
+    {
+        return $this->onCalendar;
+    }
+
+    public function setOnCalendar(bool $onCalendar): LeaveType
+    {
+        $this->onCalendar = $onCalendar;
         return $this;
     }
 

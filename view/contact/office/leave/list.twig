@@ -1,0 +1,65 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-edit-leave")) %}
+
+<h1>{{translate("txt-edit-leave") }} {{ officeContactLink(officeContact, 'list', 'button') }}</h1>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('zfcadmin/contact/office/leave/calendar') }}">{{ translate("txt-calendar") }}</a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link active" href="{{ url('zfcadmin/contact/office/leave/list') }}">{{ translate("txt-list") }}</a>
+    </li>
+</ul>
+
+<p>
+<ul class="nav nav-pills">
+    {% for year in years %}
+        <li class="nav-item">
+            <a class="nav-link{% if year == selectedYear %} active{% endif %}" href="{{ url('zfcadmin/contact/office/leave/list', {}, {'query': {'year': year}}) }}">{{ year }}</a>
+        </li>
+    {% endfor %}
+</ul>
+</p>
+
+<div>
+    {% if userLeave|length > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate('txt-id') }}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'description', 'text': translate('txt-description')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'type', 'text': translate('txt-type')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'dateStart', 'text': translate('txt-date-start')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'dateEnd', 'text': translate('txt-date-end')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'hours', 'text': translate('txt-hours')} %}</th>
+            <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'hours', 'text': translate('txt-days')} %}</th>
+            <th>{{ translate('txt-balance-hours') }}</th>
+            <th>{{ translate('txt-balance-days') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set balance = 0 %}
+        {% for leave in userLeave %}
+            {% set balance = balance + (leave.hours * leave.type.factor) %}
+            <tr>
+                <td>{{ leave.id }} {{ leaveLink(leave, 'edit', 'icon') }}</td>
+                <td>{{ leave.description }}</td>
+                <td>{{ leave.type.type }}</td>
+                <td>{{ leave.dateStart|string_date }}</td>
+                <td>{{ leave.dateEnd|string_date }}</td>
+                <td>{{ leave.hours }}</td>
+                <td>{{ (leave.hours / 8)|number_format }}</td>
+                <td>{{ balance|number_format(2) }}</td>
+                <td>{{ (balance / 8)|number_format }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+    {% else %}
+        {{ ztbalert().info(translate("txt-no-leave-found"))|raw }}
+    {% endif %}
+
+    {{ leaveLink(null, 'new', 'button') }}
+</div>

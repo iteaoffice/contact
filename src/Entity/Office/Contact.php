@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Entity for ITEA office employees.
@@ -47,6 +48,14 @@ class Contact extends AbstractEntity
      * @var int
      */
     private $hours = 0;
+    /**
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     * @Gedmo\Timestampable(on="create")
+     * @Annotation\Exclude()
+     *
+     * @var DateTime
+     */
+    private $dateCreated;
     /**
      * @ORM\Column(name="date_end", type="datetime", nullable=true)
      * @Annotation\Type("\Zend\Form\Element\Date")
@@ -128,6 +137,11 @@ class Contact extends AbstractEntity
     {
         $this->hours = $hours;
         return $this;
+    }
+
+    public function getDateCreated(): ?DateTime
+    {
+        return $this->dateCreated;
     }
 
     public function getDateEnd(): ?DateTime

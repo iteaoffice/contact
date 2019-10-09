@@ -1,15 +1,26 @@
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.js') %}
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.js') %}
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.3.0/main.min.js') %}
+{% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/list@4.3.0/main.min.js') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.css') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.css') %}
+{% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/list@4.3.0/main.min.css') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/bootstrap@4.3.0/main.min.css') %}
 
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-edit-leave")) %}
 
-<h1>{{translate("txt-edit-leave") }}</h1>
+<h1>{{translate("txt-edit-leave") }} {{ officeContactLink(officeContact, 'list', 'button') }}</h1>
 
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item active">
+        <a class="nav-link active" href="{{ url('zfcadmin/contact/office/leave/calendar') }}">{{ translate("txt-calendar") }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('zfcadmin/contact/office/leave/list') }}">{{ translate("txt-list") }}</a>
+    </li>
+</ul>
+<br>
 <div id="calendar"></div>
 
 <div id="leave-modal" class="modal fade" tabindex="-1" role="dialog">
@@ -43,7 +54,8 @@
             if(info.event){
                 $leaveModal.find('#leave-id').val(info.event.id);
                 $leaveModal.find('#date-start').val(info.event.start.toISOString().slice(0,10)).focus();
-                $leaveModal.find('#date-end').val(info.event.end.toISOString().slice(0,10));
+                var endDate = new Date(info.event.end.setDate(info.event.end.getDate()-1));
+                $leaveModal.find('#date-end').val(endDate.toISOString().slice(0,10));
                 $leaveModal.find('#description').val(info.event.title);
                 $leaveModal.find('#hours').val(info.event.extendedProps.hours);
                 $leaveModal.find('#type-id').val(info.event.extendedProps.typeId);
@@ -52,16 +64,17 @@
             }
         };
         var moveEvent = function(info){
+            var endDate = new Date(info.event.end.setDate(info.event.end.getDate()-1));
             $.post('{{ url('zfcadmin/contact/office/leave/move') }}', {
                 id: info.event.id,
                 start: info.event.start.toISOString(),
-                end: info.event.end.toISOString()
+                end: endDate.toISOString()
             });
         };
         var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
             events: '{{ url('zfcadmin/contact/office/leave/fetch') }}',
             timeZone: 'UTC',
-            plugins: ['interaction','dayGrid'],
+            plugins: ['interaction','dayGrid', 'list'],
             themeSystem: 'bootstrap',
             eventTextColor: '#ffffff',
             editable: true,
@@ -71,7 +84,7 @@
             header: {
                 left: 'prev,next today addEventButton',
                 center: 'title',
-                //right:  'dayGridMonth,timeGridWeek,listMonth'
+                right: 'dayGridMonth,listYear'
             },
             buttonText: {
                 today: '{{ translate("txt-today") }}',

@@ -185,22 +185,34 @@ return [
                 ],
                 [
                     'route' => 'zfcadmin/contact/office/list',
-                    'roles' => ['office'],
+                    'roles' => ['management_assistant'],
                 ],
                 [
                     'route' => 'zfcadmin/contact/office/view',
-                    'roles' => ['office'],
+                    'roles' => ['management_assistant'],
                 ],
                 [
                     'route' => 'zfcadmin/contact/office/new',
-                    'roles' => ['office'],
+                    'roles' => ['management_assistant'],
                 ],
                 [
                     'route' => 'zfcadmin/contact/office/edit',
+                    'roles' => ['management_assistant'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/office/leave/calendar',
                     'roles' => ['office'],
                 ],
                 [
-                    'route' => 'zfcadmin/contact/office/leave/manage',
+                    'route' => 'zfcadmin/contact/office/leave/list',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/office/leave/new',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/office/leave/edit',
                     'roles' => ['office'],
                 ],
                 [
