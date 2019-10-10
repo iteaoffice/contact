@@ -77,7 +77,7 @@ class FormService
         } else {
             $form = new CreateObject($this->entityManager, $entity, $this->container);
         }
-
+var_dump($filterName);
         if ($this->container->has($filterName)) {
             /** @var InputFilter $filter */
             $filter = $this->container->get($filterName);

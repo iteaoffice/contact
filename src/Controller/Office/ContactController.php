@@ -79,7 +79,7 @@ final class ContactController extends ContactAbstractController
         ]);
     }
 
-    public function viewAction()
+    public function viewAction(): ViewModel
     {
         /** @var OfficeContact $officeContact */
         $officeContact = $this->officeContactService->find(OfficeContact::class, (int) $this->params('id'));
