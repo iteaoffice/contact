@@ -1,3 +1,5 @@
+{% include 'contact/contact-details/header' %}
+
 <h2>{{ translate("txt-opt-in") }}</h2>
 <form method="post">
     <table class="table table-hover table-striped table-sm">
@@ -33,10 +35,9 @@
     </table>
 </form>
 
-
 {% if not contact.mailingContact.isEmpty() %}
     <h2>{{ translate("txt-mailings") }}</h2>
-    <table class="table table-hover table-striped table-sm">
+    <table class="table table-hover table-striped table-sm table-mailing">
         <thead>
         <tr>
             <th>{{ translate("txt-number") }}</th>
@@ -48,7 +49,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for mailingContact in contact.mailingContact %}
+        {% for mailingContact in contact.mailingContact|reverse %}
             <tr {% if mailingContact.mailing.dateDeleted %}class="table-danger"{% endif %}>
                 <td>{{ loop.index }}</td>
                 <td>{{ mailingContact.mailing.id }}
@@ -71,3 +72,18 @@
     </table>
 {% endif %}
 
+{% do headLink().appendStylesheet('//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css') %}
+{% do headScript().appendFile('//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js', 'text/javascript') %}
+{% do headScript().appendFile('//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js', 'text/javascript') %}
+
+{% do headScript().appendFile("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js",'text/javascript') %}
+{% do headLink().appendStylesheet("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github-gist.min.css") %}
+{% do inlineScript().appendScript("hljs.initHighlightingOnLoad();",'text/javascript') %}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.table-mailing').DataTable(
+            {"lengthMenu": [[30, 50, -1], [30, 50, "All"]]}
+        );
+    });
+</script>

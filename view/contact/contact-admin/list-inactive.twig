@@ -20,7 +20,7 @@
         {% for contact in inactiveContacts %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td><a href="{{ url('zfcadmin/contact/view',{'id':contact.id}) }}">{{ contact.id }}</a></td>
+                <td><a href="{{ url('zfcadmin/contact/view/general',{'id':contact.id}) }}">{{ contact.id }}</a></td>
                 <td>{{ contact.email }} <a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
                                 class="fa fa-envelope-o"></i> </a></td>
                 <td>{{ contact.firstName }}</td>

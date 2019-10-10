@@ -1,3 +1,5 @@
+{% include 'contact/contact-details/header' %}
+
 <h2>{{ translate("txt-event") }}</h2>
 
 {% if contact.registration.count() > 0 %}
@@ -62,7 +64,7 @@
             <tr>
                 <td>{{ boothLink(boothContact.booth,'view-admin') }}</td>
                 <td>{{ exhibitionLink(boothContact.booth.exhibition) }}</td>
-                <td>{{ boothService.parseBoothType(boothContact.booth) }}</td>
+                <td>{{ translate(boothService.parseBoothType(boothContact.booth)) }}</td>
                 <td>{{ translate("txt-booth-crew") }}</td>
             </tr>
         {% endfor %}
@@ -70,7 +72,7 @@
             <tr>
                 <td>{{ boothLink(projectBooth.booth,'view-admin') }}</td>
                 <td>{{ exhibitionLink(projectBooth.booth.exhibition) }}</td>
-                <td>{{ boothService.parseBoothType(projectBooth.booth) }}</td>
+                <td>{{ translate(boothService.parseBoothType(projectBooth.booth)) }}</td>
                 <td>{{ translate("txt-project-booth-contact") }}</td>
             </tr>
         {% endfor %}
@@ -78,7 +80,7 @@
             <tr>
                 <td>{{ boothLink(organisationBooth.booth,'view-admin') }}</td>
                 <td>{{ exhibitionLink(organisationBooth.booth.exhibition) }}</td>
-                <td>{{ boothService.parseBoothType(organisationBooth.booth) }}</td>
+                <td>{{ translate(boothService.parseBoothType(organisationBooth.booth)) }}</td>
                 <td>{{ translate("txt-organisation-booth-contact") }}</td>
             </tr>
         {% endfor %}
@@ -86,7 +88,7 @@
             <tr>
                 <td>{{ boothLink(boothFinancial.booth,'view-admin') }}</td>
                 <td>{{ exhibitionLink(boothFinancial.booth.exhibition) }}</td>
-                <td>{{ boothService.parseBoothType(boothFinancial.booth) }}</td>
+                <td>{{ translate(boothService.parseBoothType(boothFinancial.booth)) }}</td>
                 <td>{{ translate("txt-financial-booth-contact") }}</td>
             </tr>
         {% endfor %}

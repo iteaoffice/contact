@@ -87,7 +87,7 @@ final class DndController extends ContactAbstractController
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
+                    'zfcadmin/contact/view/general',
                     ['id' => $contact->getId()],
                     ['fragment' => 'legal']
                 );
@@ -126,7 +126,7 @@ final class DndController extends ContactAbstractController
                 $this->flashMessenger()->addSuccessMessage($changelogMessage);
 
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
+                    'zfcadmin/contact/view/general',
                     ['id' => $contact->getId()],
                     ['fragment' => 'legal']
                 );
@@ -162,7 +162,7 @@ final class DndController extends ContactAbstractController
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
+                    'zfcadmin/contact/view/general',
                     ['id' => $dnd->getContact()->getId()],
                     ['fragment' => 'legal']
                 );
@@ -179,7 +179,7 @@ final class DndController extends ContactAbstractController
                 $this->flashMessenger()->addSuccessMessage($changelogMessage);
 
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
+                    'zfcadmin/contact/view/general',
                     ['id' => $dnd->getContact()->getId()],
                     ['fragment' => 'legal']
                 );
@@ -224,7 +224,7 @@ final class DndController extends ContactAbstractController
 
 
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
+                    'zfcadmin/contact/view/general',
                     ['id' => $dnd->getContact()->getId()],
                     ['fragment' => 'legal']
                 );

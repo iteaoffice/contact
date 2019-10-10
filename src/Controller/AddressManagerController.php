@@ -74,15 +74,14 @@ final class AddressManagerController extends ContactAbstractController
                 $this->contactService->save($address);
 
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-address-has-successfully-been-created"))
+                    sprintf($this->translator->translate('txt-address-has-successfully-been-created'))
                 );
             }
 
             return $this->redirect()
                 ->toRoute(
-                    'zfcadmin/contact/view',
-                    ['id' => $contact->getId()],
-                    ['fragment' => 'address']
+                    'zfcadmin/contact/view/address',
+                    ['id' => $contact->getId()]
                 );
         }
 
@@ -111,14 +110,13 @@ final class AddressManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->contactService->delete($address);
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-address-has-successfully-been-deleted"))
+                    sprintf($this->translator->translate('txt-address-has-successfully-been-deleted'))
                 );
 
                 return $this->redirect()
                     ->toRoute(
-                        'zfcadmin/contact/view',
-                        ['id' => $address->getContact()->getId()],
-                        ['fragment' => 'address']
+                        'zfcadmin/contact/view/address',
+                        ['id' => $address->getContact()->getId()]
                     );
             }
 
@@ -127,14 +125,13 @@ final class AddressManagerController extends ContactAbstractController
                 $this->contactService->save($address);
 
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-address-has-successfully-been-updated"))
+                    sprintf($this->translator->translate('txt-address-has-successfully-been-updated'))
                 );
             }
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact/view',
-                ['id' => $address->getContact()->getId()],
-                ['fragment' => 'address']
+                'zfcadmin/contact/view/address',
+                ['id' => $address->getContact()->getId()]
             );
         }
 

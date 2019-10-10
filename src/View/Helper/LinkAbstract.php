@@ -23,7 +23,6 @@ use Contact\Entity\Contact;
 use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
-use Exception;
 use InvalidArgumentException;
 use Zend\Router\Http\RouteMatch;
 use Zend\View\Helper\ServerUrl;
@@ -157,17 +156,11 @@ abstract class LinkAbstract extends AbstractViewHelper
         );
     }
 
-    /**
-     *
-     */
     public function parseAction(): void
     {
         $this->action = null;
     }
 
-    /**
-     * @throws Exception
-     */
     public function parseShow(): void
     {
         switch ($this->getShow()) {
@@ -182,12 +175,18 @@ abstract class LinkAbstract extends AbstractViewHelper
                     case 'change-password':
                         $this->addLinkContent('<i class="fa fa-key"></i>');
                         break;
+                    case 'permit':
+                        $this->addLinkContent('<i class="fa fa-lock"></i>');
+                        break;
                     case 'view-admin':
                     case 'view':
                         $this->addLinkContent('<i class="fa fa-user"></i>');
                         break;
                     case 'edit-contacts':
                         $this->addLinkContent('<i class="fa fa-users"></i>');
+                        break;
+                    case 'impersonate':
+                        $this->addLinkContent('<i class="fa fa-user-o"></i>');
                         break;
                     case 'add-contact':
                     case 'new':

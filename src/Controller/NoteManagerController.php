@@ -71,9 +71,8 @@ final class NoteManagerController extends ContactAbstractController
 
             return $this->redirect()
                 ->toRoute(
-                    'zfcadmin/contact/view',
-                    ['id' => $contact->getId()],
-                    ['fragment' => 'general']
+                    'zfcadmin/contact/view/notes',
+                    ['id' => $contact->getId()]
                 );
         }
 
@@ -99,13 +98,12 @@ final class NoteManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->contactService->delete($note);
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-note-has-successfully-been-deleted"))
+                    sprintf($this->translator->translate('txt-note-has-successfully-been-deleted'))
                 );
 
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
-                    ['id' => $note->getContact()->getId()],
-                    ['fragment' => 'general']
+                    'zfcadmin/contact/view/notes',
+                    ['id' => $note->getContact()->getId()]
                 );
             }
 
@@ -115,14 +113,13 @@ final class NoteManagerController extends ContactAbstractController
                 $note = $this->contactService->save($note);
 
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-note-has-successfully-been-updated"))
+                    sprintf($this->translator->translate('txt-note-has-successfully-been-updated'))
                 );
             }
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact/view',
-                ['id' => $note->getContact()->getId()],
-                ['fragment' => 'general']
+                'zfcadmin/contact/view/notes',
+                ['id' => $note->getContact()->getId()]
             );
         }
 

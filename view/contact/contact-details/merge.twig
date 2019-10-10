@@ -1,3 +1,5 @@
+{% include 'contact/contact-details/header' %}
+
 {% do mergeForm.prepare() %}
 
 <h2>{{ translate("txt-merge-contact-%s")|format(contact.parseFullName()) }}</h2>

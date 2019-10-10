@@ -250,7 +250,7 @@ final class SelectionManagerController extends ContactAbstractController
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
-                return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact/view/general', ['id' => $contact->getId()]);
             }
 
             //Find the selection

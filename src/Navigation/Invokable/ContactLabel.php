@@ -20,17 +20,12 @@ use Zend\Navigation\Page\Mvc;
  *
  * @package Contact\Navigation\Invokable
  */
-class ContactLabel extends AbstractNavigationInvokable
+final class ContactLabel extends AbstractNavigationInvokable
 {
-    /**
-     * Parse a Funder Contact label
-     *
-     * @param Mvc $page
-     *
-     * @return void
-     */
     public function __invoke(Mvc $page): void
     {
+        $label = $this->translate('txt-nav-contact');
+
         if ($this->getEntities()->containsKey(Contact::class)) {
             /** @var Contact $contact */
             $contact = $this->getEntities()->get(Contact::class);
@@ -43,9 +38,11 @@ class ContactLabel extends AbstractNavigationInvokable
                     ]
                 )
             );
-            $label = (string)$contact->getDisplayName();
-        } else {
-            $label = $this->translate('txt-nav-contact');
+            $label = $page->getLabel();
+
+            if (null === $label) {
+                $label = (string)$contact->getDisplayName();
+            }
         }
         $page->set('label', $label);
     }

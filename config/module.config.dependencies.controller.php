@@ -35,15 +35,14 @@ use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 
 return [
     ConfigAbstractFactory::class => [
-        Controller\AddressManagerController::class => [
+        Controller\AddressManagerController::class   => [
             Service\ContactService::class,
             Service\FormService::class,
             TranslatorInterface::class
         ],
-        Controller\ConsoleController::class        => [
+        Controller\ConsoleController::class          => [
             ContactService::class
         ],
-
         Controller\ContactAdminController::class     => [
             Service\ContactService::class,
             ContactSearchService::class,
@@ -59,6 +58,18 @@ return [
             AffiliationService::class,
             BoothService::class,
             FormService::class,
+            TranslatorInterface::class,
+            EntityManager::class
+        ],
+        Controller\ContactDetailsController::class   => [
+            Service\ContactService::class,
+            Service\SelectionService::class,
+            CallService::class,
+            ProjectService::class,
+            IdeaService::class,
+            AdminService::class,
+            RegistrationService::class,
+            BoothService::class,
             TranslatorInterface::class,
             EntityManager::class
         ],

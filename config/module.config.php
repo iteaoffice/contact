@@ -36,6 +36,7 @@ $config = [
             Controller\ConsoleController::class          => ConfigAbstractFactory::class,
             Controller\ContactAdminController::class     => ConfigAbstractFactory::class,
             Controller\ContactController::class          => ConfigAbstractFactory::class,
+            Controller\ContactDetailsController::class          => ConfigAbstractFactory::class,
             Controller\FacebookController::class         => ConfigAbstractFactory::class,
             Controller\DndController::class              => ConfigAbstractFactory::class,
             Controller\ImageController::class            => ConfigAbstractFactory::class,

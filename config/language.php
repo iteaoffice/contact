@@ -69,6 +69,7 @@ _("txt-source");
 _("txt-description");
 _("txt-hours");
 _("txt-end-date");
+_("txt-contact");
 _("txt-start-date");
 _("txt-expertise");
 _("txt-visibility");

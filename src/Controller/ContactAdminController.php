@@ -17,9 +17,7 @@ use Affiliation\Entity\Affiliation;
 use Affiliation\Service\AffiliationService;
 use Contact\Entity\Contact;
 use Contact\Entity\ContactOrganisation;
-use Contact\Entity\OptIn;
 use Contact\Entity\Photo;
-use Contact\Entity\Profile;
 use Contact\Form\AddProject;
 use Contact\Form\ContactFilter;
 use Contact\Form\ContactMerge;
@@ -370,172 +368,6 @@ class ContactAdminController extends ContactAbstractController
         return $response;
     }
 
-    public function viewAction()
-    {
-        /** @var Request $request */
-        $request = $this->getRequest();
-        $contact = $this->contactService->findContactById((int)$this->params('id'));
-
-        if ($contact === null) {
-            return $this->notFoundAction();
-        }
-
-        //Refresh the contact to avoid that a proxy is loaded
-        $this->contactService->refresh($contact);
-
-        $selections = $this->selectionService->findSelectionsByContact($contact);
-        $optIn = $this->contactService->findAll(OptIn::class);
-
-        $data = $request->getPost()->toArray();
-        if ($request->isPost() && !empty($data['selection'])) {
-            foreach ((array)$data['selection'] as $selectionId) {
-                $selection = $this->selectionService->findSelectionById((int)$selectionId);
-                if (null === $selection) {
-                    continue;
-                }
-                foreach ($selection->getSelectionContact() as $selectionContact) {
-                    if ($selectionContact->getContact() === $contact) {
-                        $this->selectionService->delete($selectionContact);
-
-                        $this->flashMessenger()->addSuccessMessage(
-                            sprintf(
-                                $this->translator->translate(
-                                    'txt-contact-%s-has-removed-form-selection-%s-successfully'
-                                ),
-                                $contact->getDisplayName(),
-                                $selection->getSelection()
-                            )
-                        );
-                    }
-                }
-            }
-
-            return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
-        }
-
-        if ($request->isPost()) {
-            if (isset($data['updateOptIn'])) {
-                $this->contactService->updateOptInForContact($contact, $data['optIn'] ?? []);
-
-                $changelogMessage = sprintf(
-                    $this->translator->translate('txt-opt-in-of-contact-%s-has-been-updated-successfully'),
-                    $contact->getDisplayName()
-                );
-
-                $this->flashMessenger()->addSuccessMessage($changelogMessage);
-                $this->contactService->addNoteToContact($changelogMessage, 'office', $this->identity());
-            }
-
-            if (isset($data['activate'])) {
-                $contact->setDateActivated(new DateTime());
-
-                $this->contactService->save($contact);
-
-                $changelogMessage = sprintf(
-                    $this->translator->translate('txt-contact-%s-has-been-activated-successfully'),
-                    $contact->getDisplayName()
-                );
-
-                $this->flashMessenger()->addSuccessMessage($changelogMessage);
-
-                $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
-            }
-
-            if (isset($data['deactivate'])) {
-                $contact->setDateActivated(null);
-
-                $this->contactService->save($contact);
-
-                $changelogMessage = sprintf(
-                    $this->translator->translate('txt-contact-%s-has-been-de-activated-successfully'),
-                    $contact->getDisplayName()
-                );
-
-                $this->flashMessenger()->addSuccessMessage($changelogMessage);
-
-                $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
-            }
-
-            if (isset($data['anonymise'])) {
-                $contact->setDateAnonymous(new DateTime());
-                $contact->setFirstName(null);
-                $contact->setMiddleName(null);
-                $contact->setLastName(null);
-                $contact->setEmail(null);
-                $contact->setEmailAddress(null);
-                $contact->setPhoto(null);
-                $contact->setPosition(null);
-                $contact->setDepartment(null);
-                $contact->setOptIn(null);
-                foreach ($contact->getNda() as $nda) {
-                    $this->callService->delete($nda);
-                }
-                if ($contact->getProfile()) {
-                    $contact->getProfile()->setVisible(Profile::VISIBLE_HIDDEN);
-                }
-
-                $this->contactService->save($contact);
-
-                $changelogMessage = sprintf(
-                    $this->translator->translate('txt-contact-%s-has-been-anonymised-successfully'),
-                    $contact->getDisplayName()
-                );
-
-                $this->flashMessenger()->addSuccessMessage($changelogMessage);
-
-                $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
-            }
-
-            if (isset($data['deanonymise'])) {
-                $contact->setDateAnonymous(null);
-
-                $this->contactService->save($contact);
-
-                $changelogMessage = sprintf(
-                    $this->translator->translate('txt-contact-%s-has-been-de-anonymised-successfully'),
-                    $contact->getDisplayName()
-                );
-
-                $this->flashMessenger()->addSuccessMessage($changelogMessage);
-
-                $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
-            }
-
-            if (isset($data['flushpermissions'])) {
-                $this->adminService->flushPermitsByContact($contact);
-                $changelogMessage = sprintf(
-                    $this->translator->translate('txt-permissions-of-contact-%s-has-been-de-flushed-successfully'),
-                    $contact->getDisplayName()
-                );
-
-                $this->flashMessenger()->addSuccessMessage($changelogMessage);
-
-                $this->contactService->addNoteToContact($changelogMessage, 'office', $contact);
-            }
-
-            return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
-        }
-
-        $mergeForm = new ContactMerge($this->entityManager, $contact);
-
-        return new ViewModel(
-            [
-                'contact'             => $contact,
-                'contactService'      => $this->contactService,
-                'boothService'        => $this->boothService,
-                'selections'          => $selections,
-                'selectionService'    => $this->selectionService,
-                'projects'            => $this->projectService->findProjectParticipationByContact($contact),
-                'projectService'      => $this->projectService,
-                'optIn'               => $optIn,
-                'callService'         => $this->callService,
-                'registrationService' => $this->registrationService,
-                'ideaService'         => $this->ideaService,
-                'mergeForm'           => $mergeForm,
-            ]
-        );
-    }
-
     public function permitAction(): ViewModel
     {
         $contact = $this->contactService->findContactById((int)$this->params('id'));
@@ -650,7 +482,7 @@ class ContactAdminController extends ContactAbstractController
                 $contact->setDateEnd(new DateTime());
                 $this->contactService->save($contact);
 
-                return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact/view/general', ['id' => $contact->getId()]);
             }
 
             /** Reactivate a contact */
@@ -666,7 +498,7 @@ class ContactAdminController extends ContactAbstractController
                 $contact->setDateEnd(null);
                 $this->contactService->save($contact);
 
-                return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact/view/general', ['id' => $contact->getId()]);
             }
 
             if (isset($data['delete']) && $this->contactService->canDeleteContact($contact)) {
@@ -683,7 +515,7 @@ class ContactAdminController extends ContactAbstractController
 
             /** Cancel the form */
             if (isset($data['cancel'])) {
-                return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact/view/general', ['id' => $contact->getId()]);
             }
 
             /** Handle the form */
@@ -755,7 +587,7 @@ class ContactAdminController extends ContactAbstractController
                     $this->contactService->save($photo);
                 }
 
-                return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact/view/general', ['id' => $contact->getId()]);
             }
         }
 
@@ -811,7 +643,7 @@ class ContactAdminController extends ContactAbstractController
                     $this->contactService->save($contactOrganisation);
                 }
 
-                return $this->redirect()->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact/view/general', ['id' => $contact->getId()]);
             }
         }
 
@@ -929,9 +761,8 @@ class ContactAdminController extends ContactAbstractController
             // Cancel the merge
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
-                    ['id' => $target->getId()],
-                    ['fragment' => 'merge']
+                    'zfcadmin/contact/view/merge',
+                    ['id' => $target->getId()]
                 );
             }
 
@@ -959,9 +790,8 @@ class ContactAdminController extends ContactAbstractController
                 }
 
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
-                    ['id' => $target->getId()],
-                    ['fragment' => $tab]
+                    'zfcadmin/contact/view/' . $tab,
+                    ['id' => $target->getId()]
                 );
             }
         }
@@ -998,7 +828,7 @@ class ContactAdminController extends ContactAbstractController
             // Cancel
             if (isset($data['cancel'])) {
                 return $this->redirect()->toRoute(
-                    'zfcadmin/contact/view',
+                    'zfcadmin/contact/view/general',
                     ['id' => $contact->getId()],
                     ['fragment' => 'project']
                 );

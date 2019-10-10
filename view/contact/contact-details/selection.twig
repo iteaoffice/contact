@@ -1,3 +1,5 @@
+{% include 'contact/contact-details/header' %}
+
 <h2>{{ translate("txt-selections") }}</h2>
 
 {% if selections|length > 0 %}
@@ -60,7 +62,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for deeplinkContact in contact.deeplinkContact %}
+        {% for deeplinkContact in contact.deeplinkContact|reverse %}
             {% set deeplink = deeplinkContact.deeplink %}
             <tr {% if deeplink.dateEnd|date('Y-m-d') < "now"|date('Y-m-d') %}class="table-danger"
                 title="{{ translate("txt-expired") }}"{% endif %}>

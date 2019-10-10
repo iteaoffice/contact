@@ -1,0 +1,86 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(tab|capitalize) %}
+{% do headTitle().append(contact.parseFullname()) %}
+
+
+<h1>{{ contactService.parseAttention(contact) }} {{ contact.parseFullname() }}</h1>
+
+{% if contact.dateEnd %}
+    {{ ztbalert().danger(translate("txt-%s-has-been-deleted-on-%s-undelte-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
+{% endif %}
+
+{% if contactService.contactWillBeAutoDelete(contact) %}
+    {{ ztbalert().danger(translate("txt-%s-will-be-removed-in-then-next-run-of-the-contact-cleanup")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
+{% endif %}
+
+{% set navigation =
+    {
+        'general' :
+        {   'route': 'zfcadmin/contact/view/general',
+            'text' : translate("txt-general")
+        },
+        'notes' :
+        {   'route': 'zfcadmin/contact/view/notes',
+            'text' : translate("txt-notes")
+        },
+        'address':
+        {
+            'route': 'zfcadmin/contact/view/address',
+            'text' : translate("txt-address")
+        },
+        'phone':
+        {
+            'route': 'zfcadmin/contact/view/phone',
+            'text' : translate("txt-phone")
+        },
+        'selection':
+        {
+            'route': 'zfcadmin/contact/view/selection',
+            'text' : translate("txt-selection")
+        },
+        'mailing' :
+        {   'route': 'zfcadmin/contact/view/mailing',
+            'text' : translate("txt-mailing")
+        },
+        'idea':
+        {
+            'route': 'zfcadmin/contact/view/idea',
+            'text' : translate("txt-idea")
+        },
+        'project':
+        {
+            'route': 'zfcadmin/contact/view/project',
+            'text' : translate("txt-project")
+        },
+        'legal':
+        {
+            'route': 'zfcadmin/contact/view/legal',
+            'text' : translate("txt-legal")
+        },
+        'event':
+        {
+            'route': 'zfcadmin/contact/view/event',
+            'text' : translate("txt-event")
+        },
+        'calendar':
+        {
+            'route': 'zfcadmin/contact/view/calendar',
+            'text' : translate("txt-calendar")
+        },
+        'merge':
+        {
+            'route': 'zfcadmin/contact/view/merge',
+            'text' : translate("txt-merge")
+        },
+
+    } %}
+
+
+<ul class="nav nav-tabs pt-3" role="tablist">
+    {% for key, params in navigation %}
+        <li class="nav-item"><a href="{{ url(params.route,{'id':contact.id}) }}"
+                                aria-controls="{{ key }}"
+                                role="tab"
+                                class="nav-link {% if key == tab %}active{% endif %}">{{ params.text|raw }}</a></li>
+    {% endfor %}
+</ul>

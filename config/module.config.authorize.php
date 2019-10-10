@@ -158,11 +158,57 @@ return [
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
+
+
                 [
-                    'route'     => 'zfcadmin/contact/view',
-                    'roles'     => ['office'],
-                    'assertion' => ContactAssertion::class,
+                    'route' => 'zfcadmin/contact/view/general',
+                    'roles' => ['office'],
                 ],
+                [
+                    'route' => 'zfcadmin/contact/view/notes',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/address',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/phone',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/selection',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/mailing',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/idea',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/project',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/legal',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/event',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/view/calendar',
+                    'roles' => ['office'],
+                ], [
+                    'route' => 'zfcadmin/contact/view/merge',
+                    'roles' => ['office'],
+                ],
+
+
                 [
                     'route'     => 'zfcadmin/contact/impersonate',
                     'roles'     => ['office'],
@@ -187,6 +233,8 @@ return [
                     'route' => 'zfcadmin/contact/office/list',
                     'roles' => ['office'],
                 ],
+
+
                 [
                     'route' => 'zfcadmin/contact/office/view',
                     'roles' => ['office'],

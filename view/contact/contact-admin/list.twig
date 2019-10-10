@@ -32,7 +32,7 @@
 
             <tr {% if not contactResult.fields.is_active %}class="table-danger"{% endif %}>
                 <td>
-                    <a href="{{ url('zfcadmin/contact/view',{'id': contactResult.fields.contact_id}) }}">{{ contactResult.fields.fullname }}</a>
+                    <a href="{{ url('zfcadmin/contact/view/general',{'id': contactResult.fields.contact_id}) }}">{{ contactResult.fields.fullname }}</a>
                     <a href="{{ url('zfcadmin/contact/edit',{'id': contactResult.fields.contact_id}) }}"><i
                                 class="fa fa-pencil-square-o"></i></a></td>
                 <td><a href="mailto:{{ contactResult.fields.email }}"
@@ -42,7 +42,7 @@
                 <td>{% if not contactResult.fields.has_organiation %}<a
                         href="{{ url('zfcadmin/country/view',{'id': contactResult.fields.country_id}) }}">{{ contactResult.fields.country_iso3 }}</a>{% endif %}
                 <td>
-                    <a href="{{ url('zfcadmin/contact/view',{'id': contactResult.fields.contact_id}) }}#projects">{{ contactResult.fields.projects }}</a>
+                    <a href="{{ url('zfcadmin/contact/view/general',{'id': contactResult.fields.contact_id}) }}#projects">{{ contactResult.fields.projects }}</a>
                 </td>
                 <td>
                     {% if contactResult.fields.is_funder %}<strong class="text-highlight" title="{{ translate("txt-funder") }}">PA</strong>{% endif %}

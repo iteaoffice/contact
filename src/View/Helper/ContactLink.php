@@ -84,7 +84,7 @@ class ContactLink extends LinkAbstract
                 $this->setText($this->translate('txt-edit-contact-in-admin'));
                 break;
             case 'view-admin':
-                $this->setRouter('zfcadmin/contact/view');
+                $this->setRouter('zfcadmin/contact/view/general');
                 $this->setText($this->translate('txt-view-contact-in-admin'));
                 break;
             case 'impersonate':

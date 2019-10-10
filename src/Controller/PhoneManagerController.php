@@ -72,7 +72,7 @@ final class PhoneManagerController extends ContactAbstractController
             }
 
             return $this->redirect()
-                ->toRoute('zfcadmin/contact/view', ['id' => $contact->getId()], ['fragment' => 'phone']);
+                ->toRoute('zfcadmin/contact/view/phone', ['id' => $contact->getId()], ['fragment' => 'phone']);
         }
 
         return new ViewModel(
@@ -97,14 +97,13 @@ final class PhoneManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->contactService->delete($phone);
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-phone-has-successfully-been-deleted"))
+                    sprintf($this->translator->translate('txt-phone-has-successfully-been-deleted'))
                 );
 
                 return $this->redirect()
                     ->toRoute(
-                        'zfcadmin/contact/view',
-                        ['id' => $phone->getContact()->getId()],
-                        ['fragment' => 'phone']
+                        'zfcadmin/contact/view/phone',
+                        ['id' => $phone->getContact()->getId()]
                     );
             }
 
@@ -114,9 +113,8 @@ final class PhoneManagerController extends ContactAbstractController
             }
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact/view',
-                ['id' => $phone->getContact()->getId()],
-                ['fragment' => 'phone']
+                'zfcadmin/contact/view/phone',
+                ['id' => $phone->getContact()->getId()]
             );
         }
 
