@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\View\Helper\Office;
 
 use Contact\Entity\Contact;
+use Contact\Acl\Assertion\Office\ContactAssertion;
 use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\View\Helper\LinkAbstract;
 
@@ -36,9 +37,9 @@ class ContactLink extends LinkAbstract
         $this->setAction($action);
         $this->setShow($show);
 
-        /*if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($this->officeContact, ContactAssertion::class, $this->getAction())) {
             return '';
-        }*/
+        }
         $this->setShowOptions([
             'name' => $this->officeContact->getContact()->getDisplayName(),
         ]);

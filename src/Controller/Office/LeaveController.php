@@ -16,11 +16,13 @@ declare(strict_types=1);
 namespace Contact\Controller\Office;
 
 use Contact\Controller\ContactAbstractController;
+use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Entity\Office\Leave;
 use Contact\Service\FormService;
 use Contact\Service\Office\ContactService as OfficeContactService;
 use DateTime;
 use DateTimeZone;
+use Zend\Form\Element;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\View\Model\JsonModel;
@@ -49,10 +51,130 @@ final class LeaveController extends ContactAbstractController
         $this->formService = $formService;
     }
 
-    public function manageAction()
+    public function calendarAction()
     {
         $form = $this->formService->prepare(Leave::class);
         $form->remove('csrf');
+
+        return new ViewModel([
+            'form' => $form
+        ]);
+    }
+
+    public function listAction()
+    {
+        /** @var OfficeContact $officeContact */
+        $officeContact = $this->identity()->getOfficeContact();
+
+        if ($officeContact === null) {
+            return $this->notFoundAction();
+        }
+
+        $years        = $this->officeContactService->findLeaveYears($officeContact);
+        $year         = $this->params()->fromQuery('year', end($years));
+        $filterPlugin = $this->getContactFilter([
+            'order'           => 'dateStart',
+            'direction'       => 'asc',
+        ]);
+        $filterValues = array_merge(
+            $filterPlugin->getFilter(),
+            ['officeContact' => $officeContact, 'year' => $year]
+        );
+        $leaveQuery = $this->officeContactService->findFiltered(Leave::class, $filterValues);
+        $userLeave  = $leaveQuery->getQuery()->getResult();
+
+
+        return new ViewModel([
+            'officeContact' => $officeContact,
+            'userLeave'     => $userLeave,
+            'selectedYear'  => $year,
+            'years'         => $years,
+            'order'         => $filterPlugin->getOrder(),
+            'direction'     => $filterPlugin->getDirection(),
+        ]);
+    }
+
+    public function newAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        $data    = $request->getPost()->toArray();
+        $leave   = new Leave();
+        $form    = $this->formService->prepare($leave, $data);
+        $form->remove('delete');
+        /** @var Element $element */
+        foreach ($form->get($leave->get('underscore_entity_name'))->getElements() as $element) {
+            if ($element->hasAttribute('required')) {
+                $element->removeAttribute('required');
+            }
+        }
+
+        if ($request->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('zfcadmin/contact/office/leave/list');
+            }
+
+            if ($form->isValid()) {
+                /** @var Leave $leave */
+                $leave = $form->getData();
+                $leave->setOfficeContact($this->identity()->getOfficeContact());
+                $this->officeContactService->save($leave);
+
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact/office/leave/list',
+                    [],
+                    ['query' => ['year' => $leave->getDateStart()->format('Y')]]
+                );
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form
+        ]);
+    }
+
+    public function editAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        /** @var Leave $leave */
+        $leave = $this->officeContactService->find(Leave::class, (int) $this->params('id'));
+
+        if ($leave === null) {
+            return $this->notFoundAction();
+        }
+
+        $data = $request->getPost()->toArray();
+        $form = $this->formService->prepare($leave, $data);
+        /** @var Element $element */
+        foreach ($form->get($leave->get('underscore_entity_name'))->getElements() as $element) {
+            if ($element->hasAttribute('required')) {
+                $element->removeAttribute('required');
+            }
+        }
+        $redirectParams = [
+            'zfcadmin/contact/office/leave/list',
+            [],
+            ['query' => ['year' => $leave->getDateStart()->format('Y')]]
+        ];
+
+        if ($request->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+
+            if (isset($data['delete'])) {
+                $this->officeContactService->delete($leave);
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+
+            if ($form->isValid()) {
+                /** @var Leave $leave */
+                $leave = $form->getData();
+                $this->officeContactService->save($leave);
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+        }
 
         return new ViewModel([
             'form' => $form
@@ -98,7 +220,7 @@ final class LeaveController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var Leave $leave */
-        $leave = $this->officeContactService->find(Leave::class, (int)$request->getPost()->get('id'));
+        $leave   = $this->officeContactService->find(Leave::class, (int)$request->getPost()->get('id'));
         if ($leave === null) {
             return $this->notFoundAction();
         }
@@ -127,13 +249,13 @@ final class LeaveController extends ContactAbstractController
     public function fetchAction()
     {
         /** @var Request $request */
-        $request = $this->getRequest();
-        $timeZone = new DateTimeZone($request->getQuery('timeZone', 'UTC'));
-        $start = new DateTime($request->getQuery('start', 'now'), $timeZone);
-        $end = new DateTime($request->getQuery('end', 'now'), $timeZone);
-
+        $request   = $this->getRequest();
+        $timeZone  = new DateTimeZone($request->getQuery('timeZone', 'UTC'));
+        $start     = new DateTime($request->getQuery('start', 'now'), $timeZone);
+        $end       = new DateTime($request->getQuery('end', 'now'), $timeZone);
         $leaveList = $this->officeContactService->findLeave($this->identity()->getOfficeContact(), $start, $end);
         $eventList = [];
+
         foreach ($leaveList as $leave) {
             $eventList[] = $this->officeContactService->parseFullCalendarEvent($leave);
         }

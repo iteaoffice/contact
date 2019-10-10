@@ -1,16 +1,28 @@
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.js') %}
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.js') %}
 {% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.3.0/main.min.js') %}
+{% do headScript().appendFile('//cdn.jsdelivr.net/npm/@fullcalendar/list@4.3.0/main.min.js') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/core@4.3.1/main.min.css') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.css') %}
+{% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/list@4.3.0/main.min.css') %}
 {% do headLink().appendStylesheet('//cdn.jsdelivr.net/npm/@fullcalendar/bootstrap@4.3.0/main.min.css') %}
 
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-edit-leave")) %}
 
-<h1>{{translate("txt-edit-leave") }}</h1>
+<h1>{{ translate("txt-my-user-hours") }} {{ officeContactLink(officeContact, 'list', 'button') }}</h1>
 
-<div id="calendar"></div>
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('zfcadmin/contact/office/leave/list') }}">{{ translate("txt-list") }}</a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link active"
+           href="{{ url('zfcadmin/contact/office/leave/calendar') }}">{{ translate("txt-calendar") }}</a>
+    </li>
+</ul>
+
+<div id="calendar" class="pt-3"></div>
 
 <div id="leave-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -25,43 +37,48 @@
                 {% include 'contact/partial/form/office/leave' %}
             </div>
             <div class="modal-footer">
-                <button id="btn-delete" type="button" class="btn btn-danger"><i class="fa fa-trash"></i> {{ translate("txt-delete") }}</button>
-                <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i> {{ translate("txt-cancel") }}</button>
-                <button id="btn-save" type="button" class="btn btn-primary"><i class="fa fa-save"></i> {{ translate("txt-save") }}</button>
+                <button id="btn-delete" type="button" class="btn btn-danger"><i
+                            class="fa fa-trash"></i> {{ translate("txt-delete") }}</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal"><i
+                            class="fa fa-times"></i> {{ translate("txt-cancel") }}</button>
+                <button id="btn-save" type="button" class="btn btn-primary"><i
+                            class="fa fa-save"></i> {{ translate("txt-save") }}</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    $(function(){
+    $(function () {
         var $leaveModal = $('#leave-modal');
-        var showModal = function(info){
+        var showModal = function (info) {
             $leaveModal.find('form').trigger('reset')[0].classList.remove('was-validated');
             $leaveModal.find('#btn-delete').toggle(Boolean(info.event));
             $leaveModal.modal();
-            if(info.event){
+            if (info.event) {
                 $leaveModal.find('#leave-id').val(info.event.id);
-                $leaveModal.find('#date-start').val(info.event.start.toISOString().slice(0,10)).focus();
-                $leaveModal.find('#date-end').val(info.event.end.toISOString().slice(0,10));
+                $leaveModal.find('#date-start').val(info.event.start.toISOString().slice(0, 10)).focus();
+                var endDate = new Date(info.event.end.setDate(info.event.end.getDate() - 1));
+                $leaveModal.find('#date-end').val(endDate.toISOString().slice(0, 10));
                 $leaveModal.find('#description').val(info.event.title);
                 $leaveModal.find('#hours').val(info.event.extendedProps.hours);
                 $leaveModal.find('#type-id').val(info.event.extendedProps.typeId);
-            }else{
-                $leaveModal.find('#date-start').val((info.dateStr || new Date().toISOString().slice(0,10))).focus();
+            } else {
+                $leaveModal.find('#date-start').val((info.dateStr || new Date().toISOString().slice(0, 10))).focus();
             }
         };
-        var moveEvent = function(info){
+        var moveEvent = function (info) {
+            var endDate = new Date(info.event.end.setDate(info.event.end.getDate() - 1));
             $.post('{{ url('zfcadmin/contact/office/leave/move') }}', {
                 id: info.event.id,
                 start: info.event.start.toISOString(),
-                end: info.event.end.toISOString()
+                end: endDate.toISOString()
             });
         };
         var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
             events: '{{ url('zfcadmin/contact/office/leave/fetch') }}',
             timeZone: 'UTC',
-            plugins: ['interaction','dayGrid'],
+            plugins: ['interaction', 'dayGrid', 'list'],
             themeSystem: 'bootstrap',
             eventTextColor: '#ffffff',
             editable: true,
@@ -71,7 +88,7 @@
             header: {
                 left: 'prev,next today addEventButton',
                 center: 'title',
-                //right:  'dayGridMonth,timeGridWeek,listMonth'
+                right: 'dayGridMonth,listYear'
             },
             buttonText: {
                 today: '{{ translate("txt-today") }}',
@@ -92,11 +109,11 @@
 
         calendar.render();
 
-        $leaveModal.find('#btn-save').click(function(){
+        $leaveModal.find('#btn-save').click(function () {
             $leaveModal.find('form').trigger('submit');
         });
 
-        $leaveModal.find('form').submit(function(event){
+        $leaveModal.find('form').submit(function (event) {
             event.preventDefault();
             var $self = $(this);
             if ($self[0].checkValidity()) {
@@ -128,9 +145,9 @@
             $self[0].classList.add('was-validated');
         });
 
-        $leaveModal.find('#btn-delete').click(function(){
+        $leaveModal.find('#btn-delete').click(function () {
             var id = $leaveModal.find('#leave-id').val();
-            $.post('{{ url('zfcadmin/contact/office/leave/delete') }}', {id: id}, function(){
+            $.post('{{ url('zfcadmin/contact/office/leave/delete') }}', {id: id}, function () {
                 calendar.getEventById(id).remove();
                 $leaveModal.modal('toggle');
             });

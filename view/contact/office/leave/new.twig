@@ -1,0 +1,6 @@
+{% do headTitle().append(translate('txt-admin')) %}
+{% do headTitle().append(translate('txt-new-leave')) %}
+
+<h1>{{ translate('txt-new-leave') }}</h1>
+
+{% include 'contact/partial/form/office/leave' with {'showButtons': true} %}

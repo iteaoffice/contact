@@ -13,10 +13,12 @@ declare(strict_types=1);
 namespace Contact\Repository\Office;
 
 use Contact\Entity\Office\Leave;
+use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Repository\FilteredObjectRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use DoctrineExtensions\Query\Mysql\Year;
 
 /**
  * Can't be final because of unit test
@@ -28,6 +30,9 @@ use Doctrine\ORM\QueryBuilder;
 {
     public function findFiltered(array $filter = []): QueryBuilder
     {
+        $emConfig = $this->_em->getConfiguration();
+        $emConfig->addCustomDatetimeFunction('YEAR', Year::class);
+
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('l', 'lt');
         $queryBuilder->from(Leave::class, 'l');
@@ -41,6 +46,11 @@ use Doctrine\ORM\QueryBuilder;
         if (isset($filter['type'])) {
             $queryBuilder->andWhere($queryBuilder->expr()->eq('lt.id', ':typeId'));
             $queryBuilder->setParameter('typeId', $filter['type']);
+        }
+
+        if (isset($filter['year'])) {
+            $queryBuilder->andWhere($queryBuilder->expr()->eq('YEAR(l.dateStart)', ':year'));
+            $queryBuilder->setParameter('year', $filter['year']);
         }
 
         // Set the sorting
@@ -61,9 +71,25 @@ use Doctrine\ORM\QueryBuilder;
                     break;
             }
         } else {
-            $queryBuilder->orderBy('l.dateStart', Criteria::DESC);
+            $queryBuilder->orderBy('l.dateStart', Criteria::ASC);
         }
 
         return $queryBuilder;
+    }
+
+    public function findYears(OfficeContact $officeContact): array
+    {
+        $emConfig = $this->_em->getConfiguration();
+        $emConfig->addCustomDatetimeFunction('YEAR', Year::class);
+
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('YEAR(l.dateStart) AS year');
+        $queryBuilder->from(Leave::class, 'l');
+        $queryBuilder->where($queryBuilder->expr()->eq('l.officeContact', ':officeContact'));
+        $queryBuilder->groupBy('year');
+        $queryBuilder->orderBy('year', Criteria::ASC);
+        $queryBuilder->setParameter('officeContact', $officeContact);
+
+        return $queryBuilder->getQuery()->getScalarResult();
     }
 }

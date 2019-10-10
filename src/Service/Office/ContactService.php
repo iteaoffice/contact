@@ -18,6 +18,7 @@ use Contact\Service\AbstractService;
 use DateTime;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\LazyCriteriaCollection;
+use function array_column;
 
 /**
  * Class ContactService
@@ -40,12 +41,22 @@ class ContactService extends AbstractService
         return $leave;
     }
 
+    public function findLeaveYears(OfficeContact $officeContact): array
+    {
+        $years = array_column(
+            $this->entityManager->getRepository(Leave::class)->findYears($officeContact),
+            'year'
+        );
+
+        return empty($years) ? [date('Y')] : $years;
+    }
+
     public function parseFullCalendarEvent(Leave $leave): array
     {
         return [
             'id'            => $leave->getId(),
             'start'         => $leave->getDateStart()->format('Y-m-d\TH:i:s'),
-            'end'           => $leave->getDateEnd()->format('Y-m-d\TH:i:s'),
+            'end'           => $leave->getDateEnd()->add(new \DateInterval('P1D'))->format('Y-m-d\TH:i:s'),
             'title'         => $leave->getDescription(),
             'allDay'        => true,
             'extendedProps' => [

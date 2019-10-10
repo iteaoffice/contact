@@ -66,24 +66,8 @@ final class GetFilter extends AbstractPlugin
             $filter = $this->request->getQuery()->toArray()['filter'];
         }
 
-        // Add a default order and direction if not known in the filter
-        if (!isset($filter['order'])) {
-            $filter['order']     = 'id';
-            $filter['direction'] = 'desc';
-        }
-
-        $order     = $this->request->getQuery('order');
-        $direction = $this->request->getQuery('direction');
-
-        // Overrule the order if set in the query
-        if (null !== $order) {
-            $filter['order'] = $order;
-        }
-
-        // Overrule the direction if set in the query
-        if (null !== $direction) {
-            $filter['direction'] = $direction;
-        }
+        $filter['order'] = $this->request->getQuery('order') ?? $defaults['order'] ?? 'id';
+        $filter['direction'] = $this->request->getQuery('direction') ?? $defaults['direction'] ?? 'desc';
 
         $this->filter = $filter;
 
