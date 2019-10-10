@@ -22,13 +22,8 @@ use Zend\InputFilter\InputFilter;
  *
  * @package Contact\InputFilter
  */
-class SelectionFilter extends InputFilter
+final class SelectionFilter extends InputFilter
 {
-    /**
-     * ContactFilter constructor.
-     *
-     * @param EntityManager $entityManager
-     */
     public function __construct(EntityManager $entityManager)
     {
         $inputFilter = new InputFilter();

@@ -167,4 +167,18 @@ final class Selection extends EntityRepository
 
         return $qb->getQuery()->useQueryCache(true)->getResult();
     }
+
+    public function copySelectionContactsFromSourceToDestination(
+        Entity\Selection $source,
+        Entity\Selection $destination
+    ): void {
+        $query = sprintf(
+            'INSERT INTO selection_contact (selection_id, contact_id, date_created) 
+                    SELECT %d, contact_id, NOW() FROM selection_contact WHERE selection_id = %d',
+            $destination->getId(),
+            $source->getId()
+        );
+
+        $this->_em->getConnection()->exec($query);
+    }
 }

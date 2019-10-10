@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Contact\Controller;
 
 use Admin\Service\AdminService;
+use Calendar\Entity\Contact;
+use Calendar\Service\CalendarService;
 use Contact\Entity\OptIn;
 use Contact\Entity\Profile;
 use Contact\Form\ContactMerge;
@@ -23,7 +25,6 @@ use Doctrine\ORM\EntityManager;
 use Event\Service\BoothService;
 use Event\Service\RegistrationService;
 use Program\Service\CallService;
-use Project\Service\IdeaService;
 use Project\Service\ProjectService;
 use Zend\Http\Request;
 use Zend\I18n\Translator\TranslatorInterface;
@@ -54,9 +55,9 @@ final class ContactDetailsController extends ContactAbstractController
      */
     private $projectService;
     /**
-     * @var IdeaService
+     * @var CalendarService
      */
-    private $ideaService;
+    private $calendarService;
     /**
      * @var AdminService
      */
@@ -83,7 +84,7 @@ final class ContactDetailsController extends ContactAbstractController
         SelectionService $selectionService,
         CallService $callService,
         ProjectService $projectService,
-        IdeaService $ideaService,
+        CalendarService $calendarService,
         AdminService $adminService,
         RegistrationService $registrationService,
         BoothService $boothService,
@@ -94,7 +95,7 @@ final class ContactDetailsController extends ContactAbstractController
         $this->selectionService = $selectionService;
         $this->callService = $callService;
         $this->projectService = $projectService;
-        $this->ideaService = $ideaService;
+        $this->calendarService = $calendarService;
         $this->adminService = $adminService;
         $this->registrationService = $registrationService;
         $this->boothService = $boothService;
@@ -287,7 +288,7 @@ final class ContactDetailsController extends ContactAbstractController
 
         $data = $request->getPost()->toArray();
         if ($request->isPost()) {
-            foreach ((array)$data['selection'] as $selectionId) {
+            foreach ((array)($data['selection'] ?? []) as $selectionId) {
                 $selection = $this->selectionService->findSelectionById((int)$selectionId);
                 if (null === $selection) {
                     continue;
@@ -332,6 +333,7 @@ final class ContactDetailsController extends ContactAbstractController
         if ($contact === null) {
             return $this->notFoundAction();
         }
+
         $data = $request->getPost()->toArray();
         if ($request->isPost()) {
             $this->contactService->updateOptInForContact($contact, $data['optIn'] ?? []);
@@ -386,7 +388,8 @@ final class ContactDetailsController extends ContactAbstractController
             [
                 'tab'            => 'project',
                 'contact'        => $contact,
-                'projectService' => $this->projectService
+                'projectService' => $this->projectService,
+                'projects'       => $this->projectService->findProjectParticipationByContact($contact),
             ]
         );
     }
@@ -426,18 +429,34 @@ final class ContactDetailsController extends ContactAbstractController
         );
     }
 
-    public function calendarAction(): ViewModel
+    public function calendarAction()
     {
+        /** @var Request $request */
+        $request = $this->getRequest();
         $contact = $this->contactService->findContactById((int)$this->params('id'));
 
         if ($contact === null) {
             return $this->notFoundAction();
         }
 
+        $data = $request->getPost()->toArray();
+        if ($request->isPost()) {
+            foreach ((array)($data['calendarContact'] ?? []) as $calendarContactId) {
+                /** @var Contact $calendarContact */
+                $calendarContact = $this->calendarService->find(Contact::class, (int)$calendarContactId);
+                if (null !== $calendarContact) {
+                    $this->calendarService->delete($calendarContact);
+                }
+            }
+
+            return $this->redirect()->toRoute('zfcadmin/contact/view/calendar', ['id' => $contact->getId()]);
+        }
+
         return new ViewModel(
             [
-                'tab'     => 'calendar',
-                'contact' => $contact,
+                'tab'             => 'calendar',
+                'contact'         => $contact,
+                'calendarService' => $this->calendarService
             ]
         );
     }

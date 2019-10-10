@@ -192,6 +192,12 @@ class Selection extends AbstractEntity
         $this->$property = $value;
     }
 
+    public function __clone()
+    {
+        $this->id = null;
+        $this->selection = sprintf('%s (copy)', $this->selection);
+    }
+
     public function __isset($property)
     {
         return isset($this->$property);
@@ -217,7 +223,7 @@ class Selection extends AbstractEntity
         return $this->id;
     }
 
-    public function setId(int $id): Selection
+    public function setId(?int $id): Selection
     {
         $this->id = $id;
         return $this;

@@ -101,7 +101,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'notes'   => [
+                                    'notes'     => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/notes/[:id].html',
@@ -173,7 +173,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'event'  => [
+                                    'event'     => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/event/[:id].html',
@@ -191,7 +191,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'merge'  => [
+                                    'merge'     => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/merge/[:id].html',
@@ -369,7 +369,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'list' => [
+                                            'list'     => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/list.html',
@@ -378,7 +378,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'new' => [
+                                            'new'      => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/new.html',
@@ -387,7 +387,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'edit' => [
+                                            'edit'     => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/edit/[:id].html',
@@ -396,7 +396,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'update' => [
+                                            'update'   => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/update.json',
@@ -405,7 +405,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'delete' => [
+                                            'delete'   => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/delete.json',
@@ -414,7 +414,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'fetch'  => [
+                                            'fetch'    => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/fetch.json',
@@ -423,7 +423,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'move'   => [
+                                            'move'     => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/move.json',
@@ -451,17 +451,12 @@ return [
                         'may_terminate' => true,
                         'child_routes'  => [
                             'list'               => [
-                                'type'     => 'Segment',
-                                'priority' => 1000,
-                                'options'  => [
+                                'type'    => 'Segment',
+                                'options' => [
                                     'route'    => '/list[/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list',
                                     ],
-                                ],
-                                'query'    => [
-                                    'search' => null,
-                                    'page'   => null,
                                 ],
                             ],
                             'new'                => [
@@ -470,6 +465,15 @@ return [
                                     'route'    => '/new.html',
                                     'defaults' => [
                                         'action' => 'new',
+                                    ],
+                                ],
+                            ],
+                            'copy'               => [
+                                'type'    => 'Segment',
+                                'options' => [
+                                    'route'    => '/copy/[:id].html',
+                                    'defaults' => [
+                                        'action' => 'copy',
                                     ],
                                 ],
                             ],

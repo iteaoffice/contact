@@ -2,7 +2,6 @@
 {% do headTitle().append(tab|capitalize) %}
 {% do headTitle().append(contact.parseFullname()) %}
 
-
 <h1>{{ contactService.parseAttention(contact) }} {{ contact.parseFullname() }}</h1>
 
 {% if contact.dateEnd %}
@@ -76,7 +75,7 @@
     } %}
 
 
-<ul class="nav nav-tabs pt-3" role="tablist">
+<ul class="nav nav-tabs" role="tablist">
     {% for key, params in navigation %}
         <li class="nav-item"><a href="{{ url(params.route,{'id':contact.id}) }}"
                                 aria-controls="{{ key }}"

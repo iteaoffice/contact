@@ -29,7 +29,6 @@ use Zend\View\Helper\ServerUrl;
 use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
 use function in_array;
-use function is_null;
 
 /**
  * Class LinkAbstract.
@@ -147,7 +146,7 @@ abstract class LinkAbstract extends AbstractViewHelper
             $serverUrl() . $url(
                 $this->router,
                 $this->routerParams,
-                is_null($this->getFragment()) ? [] : ['fragment' => $this->getFragment()]
+                $this->getFragment() === null ? [] : ['fragment' => $this->getFragment()]
             ),
             htmlentities((string)$this->text),
             implode(' ', $this->classes),
@@ -174,6 +173,9 @@ abstract class LinkAbstract extends AbstractViewHelper
                         break;
                     case 'change-password':
                         $this->addLinkContent('<i class="fa fa-key"></i>');
+                        break;
+                    case 'copy':
+                        $this->addLinkContent('<i class="fa fa-files-o"></i>');
                         break;
                     case 'permit':
                         $this->addLinkContent('<i class="fa fa-lock"></i>');
@@ -391,7 +393,7 @@ abstract class LinkAbstract extends AbstractViewHelper
     public function hasAccess(AbstractEntity $entity, $assertion, $action)
     {
         $assertion = $this->getAssertion($assertion);
-        if (!is_null($entity) && !$this->getAuthorizeService()->getAcl()->hasResource($entity)) {
+        if ($entity !== null && !$this->getAuthorizeService()->getAcl()->hasResource($entity)) {
             $this->getAuthorizeService()->getAcl()->addResource($entity);
             $this->getAuthorizeService()->getAcl()->allow([], $entity, [], $assertion);
         }
@@ -539,7 +541,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getContact()
     {
-        if (is_null($this->contact)) {
+        if ($this->contact === null) {
             $this->contact = new Contact();
         }
 
@@ -563,7 +565,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getAddress()
     {
-        if (is_null($this->address)) {
+        if ($this->address === null) {
             $this->address = new Address();
         }
 
@@ -587,7 +589,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getNote()
     {
-        if (is_null($this->note)) {
+        if ($this->note === null) {
             $this->note = new Note();
         }
 
@@ -611,7 +613,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getPhone()
     {
-        if (is_null($this->phone)) {
+        if ($this->phone === null) {
             $this->phone = new Phone();
         }
 
@@ -635,7 +637,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getSelection()
     {
-        if (is_null($this->selection)) {
+        if ($this->selection === null) {
             $this->selection = new Selection();
         }
 

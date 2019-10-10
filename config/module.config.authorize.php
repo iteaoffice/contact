@@ -296,7 +296,15 @@ return [
                     'roles' => ['office'],
                 ],
                 [
+                    'route' => 'zfcadmin/selection/copy',
+                    'roles' => ['office'],
+                ],
+                [
                     'route' => 'zfcadmin/selection/generate-deeplinks',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/selection/copy',
                     'roles' => ['office'],
                 ],
                 [

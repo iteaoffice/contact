@@ -40,7 +40,7 @@
     <table class="table table-hover table-striped table-sm table-mailing">
         <thead>
         <tr>
-            <th>{{ translate("txt-number") }}</th>
+            <th>{{ translate("txt-no") }}</th>
             <th>{{ translate("txt-id") }}</th>
             <th>{{ translate("txt-mailing") }}</th>
             <th>{{ translate("txt-subject") }}</th>
@@ -51,8 +51,8 @@
         <tbody>
         {% for mailingContact in contact.mailingContact|reverse %}
             <tr {% if mailingContact.mailing.dateDeleted %}class="table-danger"{% endif %}>
-                <td>{{ loop.index }}</td>
-                <td>{{ mailingContact.mailing.id }}
+                <td><small class="text-muted">{{ loop.index }}</small></td>
+                <td><code>{{ mailingContact.mailing.id }}</code>
                     {% if mailingContact.mailing.dateDeleted %}
                         <i class="fa fa-trash"
                            title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(mailingContact.mailing.dateDeleted|date("d-m-Y")) }}"></i>

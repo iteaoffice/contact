@@ -90,11 +90,6 @@ class SelectionService extends AbstractService
         return $repository->findNonSqlSelections();
     }
 
-    public function isSql(Entity\Selection $selection): bool
-    {
-        return null !== $selection->getSql();
-    }
-
     public function getAmountOfContacts(Entity\Selection $selection): int
     {
         try {
@@ -194,5 +189,30 @@ class SelectionService extends AbstractService
             $selectionContact->setSelection($selection);
             $this->save($selectionContact);
         }
+    }
+
+    public function duplicateSelection(Entity\Selection $selection, Entity\Selection $source): void
+    {
+        $this->save($selection);
+
+        //Transfer the contacts
+        if ($this->isSql($source)) {
+            $sql = new Entity\SelectionSql();
+            $sql->setSelection($selection);
+            $sql->setQuery($source->getSql()->getQuery());
+            $this->save($sql);
+        }
+
+        if (!$this->isSql($source)) {
+            /** @var Repository\Selection $repository */
+            $repository = $this->entityManager->getRepository(Entity\Selection::class);
+
+            $repository->copySelectionContactsFromSourceToDestination($source, $selection);
+        }
+    }
+
+    public function isSql(Entity\Selection $selection): bool
+    {
+        return null !== $selection->getSql();
     }
 }

@@ -2,7 +2,6 @@
 {% do headTitle().append(translate("txt-view-selection-%s")|format(selection)) %}
 
 
-
 <h1>{{ selection }}</h1>
 
 {% if selection.dateDeleted %}
@@ -62,6 +61,7 @@
         {% endif %}
 
         {{ selectionLink( selection,'edit','button') }}
+        {{ selectionLink( selection,'copy','button') }}
         {{ selectionLink( selection ,'edit-contacts','button') }}
     </div>
     <div class="tab-pane" role="tabpanel" id="contacts">

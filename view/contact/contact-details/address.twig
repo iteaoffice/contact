@@ -6,6 +6,7 @@
     <table class="table table-hover table-striped table-sm">
         <thead>
         <tr>
+            <th>{{ translate("txt-no") }}</th>
             <th>{{ translate("txt-address-id") }}</th>
             <th>{{ translate("txt-address-type") }}</th>
             <th>{{ translate("txt-address-address") }}</th>
@@ -14,10 +15,16 @@
             <th>{{ translate("txt-address-country") }}</th>
         </tr>
         </thead>
+        <tfoot>
+        <tr>
+            <td colspan="7"></td>
+        </tr>
+        </tfoot>
         <tbody>
         {% for address in contact.address %}
             <tr>
-                <td>{{ address.id }} {{ addressLink(address,'edit','icon') }}</td>
+                <td><small class="text-muted">{{ loop.index }}</small></td>
+                <td><code>{{ address.id }}</code> {{ addressLink(address,'edit','icon') }}</td>
                 <td>{{ address.type }}</td>
                 <td>{{ address.address }}</td>
                 <td>{{ address.zipCode }}</td>

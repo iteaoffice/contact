@@ -418,6 +418,50 @@ final class SelectionManagerController extends ContactAbstractController
         return new ViewModel(['form' => $form]);
     }
 
+    public function copyAction()
+    {
+        $source = $this->selectionService->findSelectionById((int)$this->params('id'));
+
+        if (null === $source) {
+            return $this->notFoundAction();
+        }
+
+        $selection = clone $source;
+        $data = $this->getRequest()->getPost()->toArray();
+
+        $form = $this->formService->prepare($selection, $data);
+        $form->get('submit')->setValue($this->translator->translate('txt-copy'));
+        $form->remove('delete');
+        $form->remove('reactivate');
+        $form->remove('deactivate');
+
+        $form->get('contact_entity_selection')->get('contact')->injectContact($this->identity());
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('zfcadmin/selection/list');
+            }
+
+            if ($form->isValid()) {
+                /** @var Selection $selection */
+                $selection = $form->getData();
+                $selection->setId(null);
+                $this->selectionService->duplicateSelection($selection, $source);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(
+                        $this->translator->translate('txt-selection-%s-has-been-copy-successfully'),
+                        $selection->getSelection()
+                    )
+                );
+
+                return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
+            }
+        }
+
+        return new ViewModel(['form' => $form]);
+    }
+
     public function getContactsAction(): JsonModel
     {
         $selection = $this->selectionService->findSelectionById((int)$this->params()->fromPost('id'));

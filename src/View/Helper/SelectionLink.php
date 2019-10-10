@@ -15,13 +15,11 @@ namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
-use Exception;
-use function is_null;
 
 /**
- * Create a link to an selection.
+ * Class SelectionLink
  *
- * @category    Selection
+ * @package Contact\View\Helper
  */
 class SelectionLink extends LinkAbstract
 {
@@ -39,13 +37,6 @@ class SelectionLink extends LinkAbstract
         $this->setPage($page);
         $this->setContact($contact);
 
-        /*
-         * If the alternativeShow is not null, use it an otherwise take the page
-         */
-        $this->setAlternativeShow($page);
-        if (!is_null($alternativeShow)) {
-            $this->setAlternativeShow($alternativeShow);
-        }
 
         $this->setShowOptions(
             [
@@ -65,6 +56,10 @@ class SelectionLink extends LinkAbstract
             case 'new':
                 $this->setRouter('zfcadmin/selection/new');
                 $this->setText($this->translate('txt-new-selection'));
+                break;
+            case 'copy':
+                $this->setRouter('zfcadmin/selection/copy');
+                $this->setText($this->translate('txt-copy-selection'));
                 break;
             case 'list':
                 $this->setRouter('zfcadmin/selection/list');
@@ -105,8 +100,6 @@ class SelectionLink extends LinkAbstract
                 $this->setRouter('zfcadmin/selection/view');
                 $this->setText($this->translate('txt-view-selection'));
                 break;
-            default:
-                throw new Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));
         }
     }
 }

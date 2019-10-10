@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Contact\Form;
 
+use Contact\Entity\Selection;
 use Contact\Service\SelectionService;
+use Zend\Form\Element\Select;
+use Zend\Form\Element\Submit;
 use Zend\Form\Form;
 
 /**
@@ -21,13 +24,8 @@ use Zend\Form\Form;
  *
  * @package Contact\Form
  */
-class AddContactToSelection extends Form
+final class AddContactToSelection extends Form
 {
-    /**
-     * SelectionFilter constructor.
-     *
-     * @param SelectionService $selectionService
-     */
     public function __construct(SelectionService $selectionService)
     {
         parent::__construct();
@@ -36,6 +34,7 @@ class AddContactToSelection extends Form
         $this->setAttribute('class', 'form-horizontal');
 
         $selections = [];
+        /** @var Selection $selection */
         foreach ($selectionService->findNonSqlSelections() as $selection) {
             $selections[$selection->getId()] = (string)$selection;
         }
@@ -43,13 +42,13 @@ class AddContactToSelection extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Select',
+                'type'       => Select::class,
                 'name'       => 'selection',
                 'options'    => [
                     'value_options' => $selections,
                 ],
                 'attributes' => [
-                    'label' => _("txt-choose-selection"),
+                    'label' => _('txt-choose-selection'),
                     'class' => 'form-control',
                 ],
             ]
@@ -57,7 +56,7 @@ class AddContactToSelection extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
                     'id'    => 'submit',
@@ -69,7 +68,7 @@ class AddContactToSelection extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'cancel',
                 'attributes' => [
                     'id'    => 'cancel',

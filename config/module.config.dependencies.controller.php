@@ -14,6 +14,7 @@ namespace Contact;
 
 use Admin\Service\AdminService;
 use Affiliation\Service\AffiliationService;
+use Calendar\Service\CalendarService;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
@@ -66,7 +67,7 @@ return [
             Service\SelectionService::class,
             CallService::class,
             ProjectService::class,
-            IdeaService::class,
+            CalendarService::class,
             AdminService::class,
             RegistrationService::class,
             BoothService::class,

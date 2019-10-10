@@ -394,6 +394,33 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'calendar'            => [
+                                        'label'   => _('txt-calendar'),
+                                        'route'   => 'zfcadmin/contact/view/calendar',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities'   => [
+                                                'id' => Contact::class,
+                                            ],
+                                            'invokables' => [
+                                                Navigation\Invokable\ContactLabel::class,
+                                            ],
+                                        ],
+                                        'pages'   => [
+                                            'add-contact-to-calendar' => [
+                                                'label'  => _('txt-add-contact-to-calendar'),
+                                                'route'  => 'zfcadmin/calendar/add-contact',
+                                                'params' => [
+                                                    'entities'   => [
+                                                        'id' => Contact::class,
+                                                    ],
+                                                    'routeParam' => [
+                                                        'id' => 'contactId',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
                                     'merge'               => [
                                         'label'   => _('txt-merge'),
                                         'route'   => 'zfcadmin/contact/view/merge',
@@ -477,6 +504,16 @@ return [
                                     'edit-selection'     => [
                                         'label'   => _('txt-edit-selection'),
                                         'route'   => 'zfcadmin/selection/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities' => [
+                                                'id' => Selection::class,
+                                            ],
+                                        ],
+                                    ],
+                                    'copy-selection'     => [
+                                        'label'   => _('txt-copy-selection'),
+                                        'route'   => 'zfcadmin/selection/copy',
                                         'visible' => false,
                                         'params'  => [
                                             'entities' => [
