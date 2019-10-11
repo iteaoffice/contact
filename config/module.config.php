@@ -137,6 +137,7 @@ $config = [
             InputFilter\OptInFilter::class                          => Factory\InputFilterFactory::class,
             InputFilter\SelectionFilter::class                      => Factory\InputFilterFactory::class,
             InputFilter\Office\ContactFilter::class                 => Factory\InputFilterFactory::class,
+            InputFilter\Office\LeaveFilter::class                   => Factory\InputFilterFactory::class,
             Search\Service\ContactSearchService::class              => ConfigAbstractFactory::class,
             Search\Service\ProfileSearchService::class              => ConfigAbstractFactory::class,
             Acl\Assertion\Address::class                            => Factory\InvokableFactory::class,

@@ -24,10 +24,12 @@ use Contact\Service\Office\ContactService as OfficeContactService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use Contact\Form\Office\ContactFilter;
+use Zend\Form\Element;
 use Zend\Http\Request;
 use Zend\Paginator\Paginator;
 use Zend\View\Model\ViewModel;
 use function date;
+use function sprintf;
 
 /**
  * Class ContactController
@@ -106,6 +108,7 @@ final class ContactController extends ContactAbstractController
             'userLeave'     => $userLeave,
             'selectedYear'  => $year,
             'years'         => $years,
+            'arguments'     => sprintf('year=%d', $year),
             'order'         => $filterPlugin->getOrder(),
             'direction'     => $filterPlugin->getDirection(),
         ]);
@@ -178,6 +181,105 @@ final class ContactController extends ContactAbstractController
 
         return new ViewModel([
             'form' => $form
+        ]);
+    }
+
+    public function newLeaveAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        /** @var OfficeContact $officeContact */
+        $officeContact = $this->officeContactService->find(OfficeContact::class, (int) $this->params('id'));
+
+        if ($officeContact === null) {
+            return $this->notFoundAction();
+        }
+
+        $data  = $request->getPost()->toArray();
+        $leave = new Leave();
+        $form  = $this->formService->prepare($leave, $data);
+        $form->remove('delete');
+        /** @var Element $element */
+        foreach ($form->get($leave->get('underscore_entity_name'))->getElements() as $element) {
+            if ($element->hasAttribute('required')) {
+                $element->removeAttribute('required');
+            }
+        }
+
+        $redirectParams = [
+            'zfcadmin/contact/office/view',
+            ['id' => $officeContact->getId()],
+            ['query' => ['year' => $leave->getDateStart()->format('Y')]]
+        ];
+
+        if ($request->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+
+            if ($form->isValid()) {
+                /** @var Leave $leave */
+                $leave = $form->getData();
+                $leave->setOfficeContact($officeContact);
+                $this->officeContactService->save($leave);
+
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+        }
+
+        return new ViewModel([
+            'form'          => $form,
+            'officeContact' => $officeContact
+        ]);
+    }
+
+    public function editLeaveAction()
+    {
+        /** @var Request $request */
+        $request = $this->getRequest();
+        /** @var Leave $leave */
+        $leave = $this->officeContactService->find(Leave::class, (int) $this->params('id'));
+
+        if ($leave === null) {
+            return $this->notFoundAction();
+        }
+
+        $data = $request->getPost()->toArray();
+        $form = $this->formService->prepare($leave, $data);
+        /** @var Element $element */
+        foreach ($form->get($leave->get('underscore_entity_name'))->getElements() as $element) {
+            if ($element->hasAttribute('required')) {
+                $element->removeAttribute('required');
+            }
+        }
+
+        $redirectParams = [
+            'zfcadmin/contact/office/view',
+            ['id' => $leave->getOfficeContact()->getId()],
+            ['query' => ['year' => $leave->getDateStart()->format('Y')]]
+        ];
+
+        if ($request->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+
+            if (isset($data['delete'])) {
+                $this->officeContactService->delete($leave);
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+
+            if ($form->isValid()) {
+                /** @var Leave $leave */
+                $leave = $form->getData();
+                $this->officeContactService->save($leave);
+                return $this->redirect()->toRoute(...$redirectParams);
+            }
+        }
+
+        return new ViewModel([
+            'form'          => $form,
+            'officeContact' => $leave->getOfficeContact()
         ]);
     }
 }

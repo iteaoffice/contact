@@ -15,22 +15,22 @@ namespace Contact\InputFilter\Office;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Class ContactFilter
+ * Class LeaveFilter
  *
  * @package Contact\InputFilter\Office
  */
-final class ContactFilter extends InputFilter
+final class LeaveFilter extends InputFilter
 {
     public function __construct()
     {
         $inputFilter = new InputFilter();
         $inputFilter->add(
             [
-                'name'     => 'dateEnd',
+                'name'     => 'officeContact',
                 'required' => false
             ]
         );
 
-        $this->add($inputFilter, 'contact_entity_office_contact');
+        $this->add($inputFilter, 'contact_entity_office_leave');
     }
 }

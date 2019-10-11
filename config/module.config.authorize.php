@@ -130,7 +130,8 @@ return [
                     'route'     => 'zfcadmin/contact/list',
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
-                ], [
+                ],
+                [
                     'route' => 'zfcadmin/contact/list-old',
                     'roles' => ['office']
                 ],
@@ -158,8 +159,6 @@ return [
                     'roles'     => ['office'],
                     'assertion' => ContactAssertion::class,
                 ],
-
-
                 [
                     'route' => 'zfcadmin/contact/view/general',
                     'roles' => ['office'],
@@ -203,12 +202,11 @@ return [
                 [
                     'route' => 'zfcadmin/contact/view/calendar',
                     'roles' => ['office'],
-                ], [
+                ],
+                [
                     'route' => 'zfcadmin/contact/view/merge',
                     'roles' => ['office'],
                 ],
-
-
                 [
                     'route'     => 'zfcadmin/contact/impersonate',
                     'roles'     => ['office'],
@@ -233,8 +231,6 @@ return [
                     'route' => 'zfcadmin/contact/office/list',
                     'roles' => ['management_assistant'],
                 ],
-
-
                 [
                     'route' => 'zfcadmin/contact/office/view',
                     'roles' => ['management_assistant'],
@@ -248,8 +244,20 @@ return [
                     'roles' => ['management_assistant'],
                 ],
                 [
+                    'route' => 'zfcadmin/contact/office/new-leave',
+                    'roles' => ['management_assistant'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/office/edit-leave',
+                    'roles' => ['management_assistant'],
+                ],
+                [
                     'route' => 'zfcadmin/contact/office/leave/calendar',
                     'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/office/leave/office-calendar',
+                    'roles' => ['management_assistant'],
                 ],
                 [
                     'route' => 'zfcadmin/contact/office/leave/list',
@@ -274,6 +282,10 @@ return [
                 [
                     'route' => 'zfcadmin/contact/office/leave/fetch',
                     'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/contact/office/leave/fetch-all',
+                    'roles' => ['management_assistant'],
                 ],
                 [
                     'route' => 'zfcadmin/contact/office/leave/move',

@@ -16,16 +16,14 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('zfcadmin/contact/office/leave/list') }}">{{ translate("txt-list") }}</a>
     </li>
-    <li class="nav-item active">
-        <a class="nav-link active"
+    <li class="nav-item">
+        <a class="nav-link"
            href="{{ url('zfcadmin/contact/office/leave/calendar') }}">{{ translate("txt-calendar") }}</a>
     </li>
-    {% if isManagementAssistant %}
     <li class="nav-item active">
-        <a class="nav-link"
+        <a class="nav-link active"
            href="{{ url('zfcadmin/contact/office/leave/office-calendar') }}">{{ translate("txt-office-calendar") }}</a>
     </li>
-    {% endif %}
 </ul>
 
 <div id="calendar" class="pt-3"></div>
@@ -44,9 +42,10 @@
                 $leaveModal.find('#date-start').val(info.event.start.toISOString().slice(0, 10)).focus();
                 var endDate = new Date(info.event.end.setDate(info.event.end.getDate() - 1));
                 $leaveModal.find('#date-end').val(endDate.toISOString().slice(0, 10));
-                $leaveModal.find('#description').val(info.event.title);
+                $leaveModal.find('#description').val(info.event.extendedProps.description);
                 $leaveModal.find('#hours').val(info.event.extendedProps.hours);
                 $leaveModal.find('#type-id').val(info.event.extendedProps.typeId);
+                $leaveModal.find('#office-contact-id').val(info.event.extendedProps.officeContactId);
             } else {
                 $leaveModal.find('#date-start').val((info.dateStr || new Date().toISOString().slice(0, 10))).focus();
             }
@@ -60,7 +59,7 @@
             });
         };
         var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-            events: '{{ url('zfcadmin/contact/office/leave/fetch') }}',
+            events: '{{ url('zfcadmin/contact/office/leave/fetch-all') }}',
             timeZone: 'UTC',
             plugins: ['interaction', 'dayGrid', 'list'],
             themeSystem: 'bootstrap',
@@ -118,6 +117,9 @@
                             leave.setProp('title', data.title);
                             leave.setExtendedProp('hours', data.extendedProps.hours);
                             leave.setExtendedProp('typeId', data.extendedProps.typeId);
+                            leave.setExtendedProp('officeContactId', data.extendedProps.officeContactId);
+                            leave.setExtendedProp('description', data.extendedProps.description);
+                            leave.setProp('backgroundColor', (data.backgroundColor||null));
                         }
                         $leaveModal.modal('toggle');
                     },

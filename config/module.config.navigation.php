@@ -674,6 +674,21 @@ return [
                                                     ],
                                                 ],
                                             ],
+                                            'edit-leave' => [
+                                                'label'   => _('txt-edit-leave'),
+                                                'route'   => 'zfcadmin/contact/office/edit-leave',
+                                                'visible' => false,
+                                                'params'  => [
+                                                    'entities' => [
+                                                        'id' => Leave::class,
+                                                    ],
+                                                ],
+                                            ],
+                                            'new-leave' => [
+                                                'label'   => _('txt-new-leave'),
+                                                'route'   => 'zfcadmin/contact/office/new-leave',
+                                                'visible' => false,
+                                            ],
                                         ],
                                     ],
                                     'new'  => [

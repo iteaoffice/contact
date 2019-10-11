@@ -9,6 +9,10 @@
 {{ ztbformelement(leave.get('hours')) }}
 {{ ztbformelement(leave.get('type')) }}
 
+{% if leave.has('officeContact') %}
+    {{ ztbformelement(leave.get('officeContact')) }}
+{% endif %}
+
 {% if form.has('csrf') %}
     {{ ztbformelement(form.get('csrf')) }}
 {% endif %}

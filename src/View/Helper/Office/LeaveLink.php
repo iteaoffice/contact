@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\View\Helper\Office;
 
 use Contact\Acl\Assertion\Office\LeaveAssertion;
+use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Entity\Office\Leave;
 use Contact\View\Helper\LinkAbstract;
 
@@ -28,9 +29,10 @@ class LeaveLink extends LinkAbstract
     private $leave;
 
     public function __invoke(
-        Leave $leave = null,
-        $action = 'view',
-        $show = 'name'
+        Leave         $leave = null,
+        string        $action = 'view',
+        string        $show = 'name',
+        OfficeContact $officeContact = null
     ): string {
         $this->leave = $leave ?? new Leave();
         $this->setAction($action);
@@ -66,6 +68,14 @@ class LeaveLink extends LinkAbstract
             case 'view':
                 $this->setRouter('zfcadmin/contact/office/leave/view');
                 $this->setText($this->translate('txt-view-leave'));
+                break;
+            case 'new-admin':
+                $this->setRouter('zfcadmin/contact/office/new-leave');
+                $this->setText($this->translate('txt-new-leave'));
+                break;
+            case 'edit-admin':
+                $this->setRouter('zfcadmin/contact/office/edit-leave');
+                $this->setText($this->translate('txt-edit-leave'));
                 break;
         }
     }

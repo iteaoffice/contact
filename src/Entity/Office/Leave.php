@@ -41,7 +41,20 @@ class Leave extends AbstractEntity
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Office\Contact", cascade={"persist"}, inversedBy="leave")
      * @ORM\JoinColumn(name="office_contact_id", referencedColumnName="office_contact_id")
-     * @Annotation\Exclude()
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
+     * @Annotation\Options({
+     *     "target_class":"Contact\Entity\Office\Contact",
+     *     "label":"txt-office-member",
+     *     "find_method": {
+     *          "name": "findBy",
+     *          "params": {
+     *              "criteria": {
+     *                  "dateEnd": null
+     *              },
+     *          }
+     *      }
+     * })
+     * @Annotation\Attributes({"id":"office-contact-id", "required":"required"})
      *
      * @var Contact
      */
@@ -111,7 +124,7 @@ class Leave extends AbstractEntity
 
     public function __toString(): string
     {
-        return (string)$this->hours;
+        return (string) $this->description;
     }
 
     public function getId(): ?int

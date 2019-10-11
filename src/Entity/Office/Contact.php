@@ -61,6 +61,14 @@ class Contact extends AbstractEntity
      */
     private $dateEnd;
     /**
+     * @ORM\Column(name="calendar_color", type="string", nullable=true)
+     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Options({"label":"txt-calendar-color"})
+     *
+     * @var string
+     */
+    private $calendarColor;
+    /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="officeContact")
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      * @Annotation\Type("Contact\Form\Element\Contact")
@@ -148,6 +156,17 @@ class Contact extends AbstractEntity
     public function getDateEnd(): ?DateTime
     {
         return $this->dateEnd;
+    }
+
+    public function getCalendarColor(): ?string
+    {
+        return $this->calendarColor;
+    }
+
+    public function setCalendarColor(string $calendarColor): Contact
+    {
+        $this->calendarColor = $calendarColor;
+        return $this;
     }
 
     public function setDateEnd(?DateTime $dateEnd): Contact

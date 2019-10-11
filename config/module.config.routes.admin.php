@@ -350,6 +350,24 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'new-leave'   => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/new-leave.html',
+                                            'defaults' => [
+                                                'action' => 'new-leave',
+                                            ],
+                                        ],
+                                    ],
+                                    'edit-leave'  => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/edit-leave/[:id].html',
+                                            'defaults' => [
+                                                'action' => 'edit-leave',
+                                            ],
+                                        ],
+                                    ],
                                     'leave' => [
                                         'type'          => 'Segment',
                                         'options'       => [
@@ -366,6 +384,15 @@ return [
                                                     'route'    => '/calendar.html',
                                                     'defaults' => [
                                                         'action' => 'calendar',
+                                                    ],
+                                                ],
+                                            ],
+                                            'office-calendar' => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/office-calendar.html',
+                                                    'defaults' => [
+                                                        'action' => 'office-calendar',
                                                     ],
                                                 ],
                                             ],
@@ -420,6 +447,15 @@ return [
                                                     'route'    => '/fetch.json',
                                                     'defaults' => [
                                                         'action' => 'fetch',
+                                                    ],
+                                                ],
+                                            ],
+                                            'fetch-all'    => [
+                                                'type'    => 'Segment',
+                                                'options' => [
+                                                    'route'    => '/fetch-all.json',
+                                                    'defaults' => [
+                                                        'action' => 'fetch-all',
                                                     ],
                                                 ],
                                             ],

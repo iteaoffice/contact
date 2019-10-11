@@ -141,6 +141,7 @@ return [
         ],
         Controller\Office\LeaveController::class     => [
             Service\Office\ContactService::class,
+            AdminService::class,
             Service\FormService::class,
         ]
     ]

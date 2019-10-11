@@ -32,17 +32,17 @@ final class LeaveAssertion extends AbstractAssertion
         /** @var Leave $leave */
         $leave = $resource;
 
+        if ($this->rolesHaveAccess(Access::ACCESS_MANAGEMENT_ASSISTANT)) {
+            return true;
+        }
+
         switch ($this->getPrivilege()) {
             case 'new':
             case 'list':
                 return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
             case 'edit':
             case 'view':
-                if ($this->rolesHaveAccess(Access::ACCESS_MANAGEMENT_ASSISTANT)) {
-                    return true;
-                }
-                return $this->rolesHaveAccess(Access::ACCESS_OFFICE)
-                    && ($leave->getOfficeContact()->getContact() === $this->contact);
+                return ($leave->getOfficeContact()->getContact() === $this->contact);
             default:
                 return false;
         }

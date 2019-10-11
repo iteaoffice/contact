@@ -30,8 +30,8 @@ class ContactLink extends LinkAbstract
 
     public function __invoke(
         OfficeContact $officeContact = null,
-        $action = 'view',
-        $show = 'name'
+        string        $action = 'view',
+        string        $show = 'name'
     ): string {
         $this->officeContact = $officeContact ?? (new OfficeContact())->setContact(new Contact());
         $this->setAction($action);

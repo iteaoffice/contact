@@ -12,6 +12,12 @@
         <a class="nav-link"
            href="{{ url('zfcadmin/contact/office/leave/calendar') }}">{{ translate("txt-calendar") }}</a>
     </li>
+    {% if isManagementAssistant %}
+        <li class="nav-item">
+            <a class="nav-link"
+               href="{{ url('zfcadmin/contact/office/leave/office-calendar') }}">{{ translate("txt-office-calendar") }}</a>
+        </li>
+    {% endif %}
 </ul>
 
 <ul class="nav nav-pills my-3">
@@ -28,12 +34,12 @@
         <table class="table table-hover table-striped table-sm">
             <thead>
             <tr>
-                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'description', 'text': translate("txt-description")} %}</th>
-                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'type', 'text': translate("txt-type")} %}</th>
-                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'dateStart', 'text': translate("txt-date-start")} %}</th>
-                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'dateEnd', 'text': translate("txt-date-end")} %}</th>
-                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'hours', 'text': translate("txt-hours")} %}</th>
-                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'criteria': 'hours', 'text': translate("txt-days")} %}</th>
+                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'arguments': arguments, 'criteria': 'description', 'text': translate("txt-description")} %}</th>
+                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'arguments': arguments, 'criteria': 'type', 'text': translate("txt-type")} %}</th>
+                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'arguments': arguments, 'criteria': 'dateStart', 'text': translate("txt-date-start")} %}</th>
+                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'arguments': arguments, 'criteria': 'dateEnd', 'text': translate("txt-date-end")} %}</th>
+                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'arguments': arguments, 'criteria': 'hours', 'text': translate("txt-hours")} %}</th>
+                <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/leave/list', 'arguments': arguments, 'criteria': 'hours', 'text': translate("txt-days")} %}</th>
                 <th>{{ translate("txt-balance-hours") }}</th>
                 <th>{{ translate("txt-balance-days") }}</th>
             </tr>
