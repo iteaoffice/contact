@@ -19,11 +19,11 @@ use Contact\Controller\ContactAbstractController;
 use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Entity\Office\Leave;
 use Contact\Form\Element\Contact as ContactFormElement;
+use Contact\Form\Office\ContactFilter;
 use Contact\Service\FormService;
 use Contact\Service\Office\ContactService as OfficeContactService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Contact\Form\Office\ContactFilter;
 use Zend\Form\Element;
 use Zend\Http\Request;
 use Zend\Paginator\Paginator;
@@ -51,17 +51,19 @@ final class ContactController extends ContactAbstractController
     public function __construct(OfficeContactService $officeContactService, FormService $formService)
     {
         $this->officeContactService = $officeContactService;
-        $this->formService          = $formService;
+        $this->formService = $formService;
     }
 
     public function listAction(): ViewModel
     {
-        $page         = $this->params()->fromRoute('page', 1);
-        $filterPlugin = $this->getContactFilter([
-            'order'     => 'contact',
-            'direction' => 'asc',
-            'active'    => 'active'
-        ]);
+        $page = $this->params()->fromRoute('page', 1);
+        $filterPlugin = $this->getContactFilter(
+            [
+                'order'     => 'contact',
+                'direction' => 'asc',
+                'active'    => 'active'
+            ]
+        );
         $contactQuery = $this->officeContactService->findFiltered(OfficeContact::class, $filterPlugin->getFilter());
 
         $paginator = new Paginator(new PaginatorAdapter(new ORMPaginator($contactQuery, false)));
@@ -72,54 +74,60 @@ final class ContactController extends ContactAbstractController
         $form = new ContactFilter();
         $form->setData(['filter' => $filterPlugin->getFilter()]);
 
-        return new ViewModel([
-            'paginator'     => $paginator,
-            'form'          => $form,
-            'encodedFilter' => urlencode($filterPlugin->getHash()),
-            'order'         => $filterPlugin->getOrder(),
-            'direction'     => $filterPlugin->getDirection(),
-        ]);
+        return new ViewModel(
+            [
+                'paginator'     => $paginator,
+                'form'          => $form,
+                'encodedFilter' => urlencode($filterPlugin->getHash()),
+                'order'         => $filterPlugin->getOrder(),
+                'direction'     => $filterPlugin->getDirection(),
+            ]
+        );
     }
 
     public function viewAction(): ViewModel
     {
         /** @var OfficeContact $officeContact */
-        $officeContact = $this->officeContactService->find(OfficeContact::class, (int) $this->params('id'));
+        $officeContact = $this->officeContactService->find(OfficeContact::class, (int)$this->params('id'));
 
         if ($officeContact === null) {
             return $this->notFoundAction();
         }
 
-        $year         = $this->params()->fromQuery('year', date('Y'));
-        $filterPlugin = $this->getContactFilter([
-            'order'           => 'dateStart',
-            'direction'       => 'asc',
-        ]);
+        $year = $this->params()->fromQuery('year', date('Y'));
+        $filterPlugin = $this->getContactFilter(
+            [
+                'order'     => 'dateStart',
+                'direction' => 'asc',
+            ]
+        );
         $filterValues = array_merge(
             $filterPlugin->getFilter(),
             ['officeContact' => $officeContact, 'year' => $year]
         );
         $leaveQuery = $this->officeContactService->findFiltered(Leave::class, $filterValues);
-        $userLeave  = $leaveQuery->getQuery()->getResult();
-        $years      = $this->officeContactService->findLeaveYears($officeContact);
+        $userLeave = $leaveQuery->getQuery()->getResult();
+        $years = $this->officeContactService->findLeaveYears($officeContact);
 
-        return new ViewModel([
-            'officeContact' => $officeContact,
-            'userLeave'     => $userLeave,
-            'selectedYear'  => $year,
-            'years'         => $years,
-            'arguments'     => sprintf('year=%d', $year),
-            'order'         => $filterPlugin->getOrder(),
-            'direction'     => $filterPlugin->getDirection(),
-        ]);
+        return new ViewModel(
+            [
+                'officeContact' => $officeContact,
+                'userLeave'     => $userLeave,
+                'selectedYear'  => $year,
+                'years'         => $years,
+                'arguments'     => sprintf('year=%d', $year),
+                'order'         => $filterPlugin->getOrder(),
+                'direction'     => $filterPlugin->getDirection(),
+            ]
+        );
     }
 
     public function newAction()
     {
         /** @var Request $request */
         $request = $this->getRequest();
-        $data    = $request->getPost()->toArray();
-        $form    = $this->formService->prepare(new OfficeContact(), $data);
+        $data = $request->getPost()->toArray();
+        $form = $this->formService->prepare(new OfficeContact(), $data);
         $form->remove('delete');
 
         if ($request->isPost()) {
@@ -139,9 +147,11 @@ final class ContactController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'form' => $form
-        ]);
+        return new ViewModel(
+            [
+                'form' => $form
+            ]
+        );
     }
 
     public function editAction()
@@ -149,7 +159,7 @@ final class ContactController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var OfficeContact $officeContact */
-        $officeContact = $this->officeContactService->find(OfficeContact::class, (int) $this->params('id'));
+        $officeContact = $this->officeContactService->find(OfficeContact::class, (int)$this->params('id'));
 
         if ($officeContact === null) {
             return $this->notFoundAction();
@@ -179,9 +189,11 @@ final class ContactController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'form' => $form
-        ]);
+        return new ViewModel(
+            [
+                'form' => $form
+            ]
+        );
     }
 
     public function newLeaveAction()
@@ -189,15 +201,18 @@ final class ContactController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var OfficeContact $officeContact */
-        $officeContact = $this->officeContactService->find(OfficeContact::class, (int) $this->params('id'));
+        $officeContact = $this->officeContactService->find(OfficeContact::class, (int)$this->params('officeContactId'));
 
         if ($officeContact === null) {
             return $this->notFoundAction();
         }
 
-        $data  = $request->getPost()->toArray();
+        $data = array_merge(
+            ['contact_entity_office_leave' => ['officeContact' => (int)$this->params('officeContactId')]],
+            $request->getPost()->toArray()
+        );
         $leave = new Leave();
-        $form  = $this->formService->prepare($leave, $data);
+        $form = $this->formService->prepare($leave, $data);
         $form->remove('delete');
         /** @var Element $element */
         foreach ($form->get($leave->get('underscore_entity_name'))->getElements() as $element) {
@@ -206,31 +221,34 @@ final class ContactController extends ContactAbstractController
             }
         }
 
-        $redirectParams = [
-            'zfcadmin/contact/office/view',
-            ['id' => $officeContact->getId()],
-            ['query' => ['year' => $leave->getDateStart()->format('Y')]]
-        ];
-
         if ($request->isPost()) {
             if (isset($data['cancel'])) {
-                return $this->redirect()->toRoute(...$redirectParams);
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact/office/view',
+                    ['id' => $officeContact->getId()],
+                    ['query' => ['year' => date('Y')]]
+                );
             }
 
             if ($form->isValid()) {
                 /** @var Leave $leave */
                 $leave = $form->getData();
-                $leave->setOfficeContact($officeContact);
                 $this->officeContactService->save($leave);
 
-                return $this->redirect()->toRoute(...$redirectParams);
+                return $this->redirect()->toRoute(
+                    'zfcadmin/contact/office/view',
+                    ['id' => $leave->getOfficeContact()->getId()],
+                    ['query' => ['year' => $leave->getDateStart()->format('Y')]]
+                );
             }
         }
 
-        return new ViewModel([
-            'form'          => $form,
-            'officeContact' => $officeContact
-        ]);
+        return new ViewModel(
+            [
+                'form'          => $form,
+                'officeContact' => $officeContact
+            ]
+        );
     }
 
     public function editLeaveAction()
@@ -238,7 +256,7 @@ final class ContactController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var Leave $leave */
-        $leave = $this->officeContactService->find(Leave::class, (int) $this->params('id'));
+        $leave = $this->officeContactService->find(Leave::class, (int)$this->params('id'));
 
         if ($leave === null) {
             return $this->notFoundAction();
@@ -277,9 +295,11 @@ final class ContactController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'form'          => $form,
-            'officeContact' => $leave->getOfficeContact()
-        ]);
+        return new ViewModel(
+            [
+                'form'          => $form,
+                'officeContact' => $leave->getOfficeContact()
+            ]
+        );
     }
 }

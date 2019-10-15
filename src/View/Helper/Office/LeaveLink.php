@@ -47,6 +47,10 @@ class LeaveLink extends LinkAbstract
 
         $this->addRouterParam('id', $this->leave->getId());
 
+        if (null !== $officeContact) {
+            $this->addRouterParam('officeContactId', $officeContact->getId());
+        }
+
         return $this->createLink();
     }
 

@@ -314,7 +314,7 @@ return [
                                 ],
                                 'may_terminate' => false,
                                 'child_routes'  => [
-                                    'list'  => [
+                                    'list'       => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/list.html',
@@ -323,7 +323,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'view'  => [
+                                    'view'       => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/view/[:id].html',
@@ -332,7 +332,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'new'   => [
+                                    'new'        => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/new.html',
@@ -341,7 +341,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'edit'  => [
+                                    'edit'       => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/edit/[:id].html',
@@ -350,16 +350,16 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'new-leave'   => [
+                                    'new-leave'  => [
                                         'type'    => 'Segment',
                                         'options' => [
-                                            'route'    => '/new-leave.html',
+                                            'route'    => '/new-leave/contact-[:officeContactId].html',
                                             'defaults' => [
                                                 'action' => 'new-leave',
                                             ],
                                         ],
                                     ],
-                                    'edit-leave'  => [
+                                    'edit-leave' => [
                                         'type'    => 'Segment',
                                         'options' => [
                                             'route'    => '/edit-leave/[:id].html',
@@ -368,7 +368,7 @@ return [
                                             ],
                                         ],
                                     ],
-                                    'leave' => [
+                                    'leave'      => [
                                         'type'          => 'Segment',
                                         'options'       => [
                                             'route'    => '/leave',
@@ -378,7 +378,7 @@ return [
                                         ],
                                         'may_terminate' => false,
                                         'child_routes'  => [
-                                            'calendar' => [
+                                            'calendar'        => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/calendar.html',
@@ -396,7 +396,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'list'     => [
+                                            'list'            => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/list.html',
@@ -405,7 +405,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'new'      => [
+                                            'new'             => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/new.html',
@@ -414,7 +414,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'edit'     => [
+                                            'edit'            => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/edit/[:id].html',
@@ -423,7 +423,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'update'   => [
+                                            'update'          => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/update.json',
@@ -432,7 +432,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'delete'   => [
+                                            'delete'          => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/delete.json',
@@ -441,7 +441,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'fetch'    => [
+                                            'fetch'           => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/fetch.json',
@@ -450,7 +450,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'fetch-all'    => [
+                                            'fetch-all'       => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/fetch-all.json',
@@ -459,7 +459,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'move'     => [
+                                            'move'            => [
                                                 'type'    => 'Segment',
                                                 'options' => [
                                                     'route'    => '/move.json',

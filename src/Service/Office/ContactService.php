@@ -65,25 +65,10 @@ class ContactService extends AbstractService
         return empty($years) ? [date('Y')] : $years;
     }
 
-    public function parseCalendarEvent(Leave $leave, array $customProperties = []): array
-    {
-        return array_replace_recursive([
-            'id'            => $leave->getId(),
-            'start'         => $leave->getDateStart()->format('Y-m-d\TH:i:s'),
-            'end'           => $leave->getDateEnd()->add(new \DateInterval('P1D'))->format('Y-m-d\TH:i:s'),
-            'title'         => $customTitle ?? $leave->getDescription(),
-            'allDay'        => true,
-            'extendedProps' => [
-                'hours'  => $leave->getHours(),
-                'typeId' => ($leave->getType() ? $leave->getType()->getId() : null)
-            ]
-        ], $customProperties);
-    }
-
     public function parseOfficeCalendarEvent(Leave $leave): array
     {
         $customOptions = [
-            'title' => sprintf(
+            'title'         => sprintf(
                 '%s: %s (%.1fh)',
                 $leave->getOfficeContact()->getContact()->getFirstName(),
                 $leave->getDescription(),
@@ -95,9 +80,27 @@ class ContactService extends AbstractService
             ]
         ];
         if ($leave->getOfficeContact()->getCalendarColor()) {
-            $customOptions['backgroundColor'] =  $leave->getOfficeContact()->getCalendarColor();
+            $customOptions['backgroundColor'] = $leave->getOfficeContact()->getCalendarColor();
         }
 
         return $this->parseCalendarEvent($leave, $customOptions);
+    }
+
+    public function parseCalendarEvent(Leave $leave, array $customProperties = []): array
+    {
+        return array_replace_recursive(
+            [
+                'id'            => $leave->getId(),
+                'start'         => $leave->getDateStart()->format('Y-m-d\TH:i:s'),
+                'end'           => $leave->getDateEnd()->add(new \DateInterval('P1D'))->format('Y-m-d\TH:i:s'),
+                'title'         => $leave->getDescription(),
+                'allDay'        => true,
+                'extendedProps' => [
+                    'hours'  => $leave->getHours(),
+                    'typeId' => ($leave->getType() ? $leave->getType()->getId() : null)
+                ]
+            ],
+            $customProperties
+        );
     }
 }

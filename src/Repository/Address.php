@@ -36,6 +36,6 @@ class Address extends EntityRepository
         $qb->orderBy('contact_entity_address_type_subsort.sort', 'ASC');
         $qb->setMaxResults(1);
 
-        return $qb->getQuery()->useQueryCache(true)->getOneOrNullResult();
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

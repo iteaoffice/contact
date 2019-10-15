@@ -56,45 +56,49 @@ final class LeaveController extends ContactAbstractController
 
     public function __construct(
         OfficeContactService $officeContactService,
-        AdminService         $adminService,
-        FormService          $formService
-    )
-    {
+        AdminService $adminService,
+        FormService $formService
+    ) {
         $this->officeContactService = $officeContactService;
-        $this->adminService         = $adminService;
-        $this->formService          = $formService;
+        $this->adminService = $adminService;
+        $this->formService = $formService;
     }
 
-    public function calendarAction()
+    public function calendarAction(): ViewModel
     {
         $leave = new Leave();
-        $form  = $this->formService->prepare($leave);
+        $form = $this->formService->prepare($leave);
         $form->remove('csrf');
         $form->get($leave->get('underscore_entity_name'))->remove('officeContact');
 
         $isManagementAssistant = in_array(
             Access::ACCESS_MANAGEMENT_ASSISTANT,
-            $this->adminService->findAccessRolesByContactAsArray($this->identity())
+            $this->adminService->findAccessRolesByContactAsArray($this->identity()),
+            true
         );
 
-        return new ViewModel([
-            'form'                  => $form,
-            'isManagementAssistant' => $isManagementAssistant
-        ]);
+        return new ViewModel(
+            [
+                'form'                  => $form,
+                'isManagementAssistant' => $isManagementAssistant
+            ]
+        );
     }
 
-    public function officeCalendarAction()
+    public function officeCalendarAction(): ViewModel
     {
         $leave = new Leave();
-        $form  = $this->formService->prepare($leave);
+        $form = $this->formService->prepare($leave);
         $form->remove('csrf');
 
-        return new ViewModel([
-            'form' => $form,
-        ]);
+        return new ViewModel(
+            [
+                'form' => $form,
+            ]
+        );
     }
 
-    public function listAction()
+    public function listAction(): ViewModel
     {
         /** @var OfficeContact $officeContact */
         $officeContact = $this->identity()->getOfficeContact();
@@ -103,44 +107,50 @@ final class LeaveController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        $years        = $this->officeContactService->findLeaveYears($officeContact);
-        $year         = $this->params()->fromQuery('year', end($years));
-        $filterPlugin = $this->getContactFilter([
-            'order'           => 'dateStart',
-            'direction'       => 'asc',
-        ]);
+        $years = $this->officeContactService->findLeaveYears($officeContact);
+        $year = $this->params()->fromQuery('year', end($years));
+        $filterPlugin = $this->getContactFilter(
+            [
+                'order'     => 'dateStart',
+                'direction' => 'asc',
+            ]
+        );
         $filterValues = array_merge(
             $filterPlugin->getFilter(),
             ['officeContact' => $officeContact, 'year' => $year]
         );
         $leaveQuery = $this->officeContactService->findFiltered(Leave::class, $filterValues);
-        $userLeave  = $leaveQuery->getQuery()->getResult();
+        $userLeave = $leaveQuery->getQuery()->getResult();
 
         $isManagementAssistant = in_array(
             Access::ACCESS_MANAGEMENT_ASSISTANT,
-            $this->adminService->findAccessRolesByContactAsArray($this->identity())
+            $this->adminService->findAccessRolesByContactAsArray($this->identity()),
+            true
         );
 
-        return new ViewModel([
-            'officeContact'         => $officeContact,
-            'userLeave'             => $userLeave,
-            'selectedYear'          => $year,
-            'years'                 => $years,
-            'arguments'             => sprintf('year=%d', $year),
-            'order'                 => $filterPlugin->getOrder(),
-            'direction'             => $filterPlugin->getDirection(),
-            'isManagementAssistant' => $isManagementAssistant
-        ]);
+        return new ViewModel(
+            [
+                'officeContact'         => $officeContact,
+                'userLeave'             => $userLeave,
+                'selectedYear'          => $year,
+                'years'                 => $years,
+                'arguments'             => sprintf('year=%d', $year),
+                'order'                 => $filterPlugin->getOrder(),
+                'direction'             => $filterPlugin->getDirection(),
+                'isManagementAssistant' => $isManagementAssistant
+            ]
+        );
     }
 
     public function newAction()
     {
         /** @var Request $request */
         $request = $this->getRequest();
-        $data    = $request->getPost()->toArray();
-        $leave   = new Leave();
-        $form    = $this->formService->prepare($leave, $data);
+        $data = $request->getPost()->toArray();
+        $leave = new Leave();
+        $form = $this->formService->prepare($leave, $data);
         $form->remove('delete');
+        $form->get($leave->get('underscore_entity_name'))->remove('officeContact');
         /** @var Element $element */
         foreach ($form->get($leave->get('underscore_entity_name'))->getElements() as $element) {
             if ($element->hasAttribute('required')) {
@@ -167,9 +177,11 @@ final class LeaveController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'form' => $form
-        ]);
+        return new ViewModel(
+            [
+                'form' => $form
+            ]
+        );
     }
 
     public function editAction()
@@ -177,7 +189,7 @@ final class LeaveController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var Leave $leave */
-        $leave = $this->officeContactService->find(Leave::class, (int) $this->params('id'));
+        $leave = $this->officeContactService->find(Leave::class, (int)$this->params('id'));
 
         if ($leave === null) {
             return $this->notFoundAction();
@@ -185,6 +197,7 @@ final class LeaveController extends ContactAbstractController
 
         $data = $request->getPost()->toArray();
         $form = $this->formService->prepare($leave, $data);
+        $form->get($leave->get('underscore_entity_name'))->remove('officeContact');
         /** @var Element $element */
         foreach ($form->get($leave->get('underscore_entity_name'))->getElements() as $element) {
             if ($element->hasAttribute('required')) {
@@ -215,9 +228,11 @@ final class LeaveController extends ContactAbstractController
             }
         }
 
-        return new ViewModel([
-            'form' => $form
-        ]);
+        return new ViewModel(
+            [
+                'form' => $form
+            ]
+        );
     }
 
     public function updateAction()
@@ -241,7 +256,8 @@ final class LeaveController extends ContactAbstractController
             if ($form->isValid()) {
                 $isManagementAssistant = in_array(
                     Access::ACCESS_MANAGEMENT_ASSISTANT,
-                    $this->adminService->findAccessRolesByContactAsArray($this->identity())
+                    $this->adminService->findAccessRolesByContactAsArray($this->identity()),
+                    true
                 );
 
                 /** @var Leave $leave */
@@ -262,9 +278,11 @@ final class LeaveController extends ContactAbstractController
             $response = $this->getResponse();
             $response->setStatusCode(400);
 
-            return new JsonModel([
-                'errors' => $form->getMessages()
-            ]);
+            return new JsonModel(
+                [
+                    'errors' => $form->getMessages()
+                ]
+            );
         }
 
         return $this->notFoundAction();
@@ -275,13 +293,15 @@ final class LeaveController extends ContactAbstractController
         /** @var Request $request */
         $request = $this->getRequest();
         /** @var Leave $leave */
-        $leave  = $this->officeContactService->find(Leave::class, (int) $request->getPost()->get('id'));
+        $leave = $this->officeContactService->find(Leave::class, (int)$request->getPost()->get('id'));
         $isManagementAssistant = in_array(
             Access::ACCESS_MANAGEMENT_ASSISTANT,
-            $this->adminService->findAccessRolesByContactAsArray($this->identity())
+            $this->adminService->findAccessRolesByContactAsArray($this->identity()),
+            true
         );
 
-        if (($leave === null) || (
+        if (($leave === null)
+            || (
                 ($leave->getOfficeContact()->getContact()->getId() !== $this->identity()->getId())
                 && !$isManagementAssistant
             )
@@ -305,10 +325,12 @@ final class LeaveController extends ContactAbstractController
 
             $isManagementAssistant = in_array(
                 Access::ACCESS_MANAGEMENT_ASSISTANT,
-                $this->adminService->findAccessRolesByContactAsArray($this->identity())
+                $this->adminService->findAccessRolesByContactAsArray($this->identity()),
+                true
             );
 
-            if (($leave === null) || (
+            if (($leave === null)
+                || (
                     ($leave->getOfficeContact()->getContact()->getId() !== $this->identity()->getId())
                     && !$isManagementAssistant
                 )
@@ -323,13 +345,13 @@ final class LeaveController extends ContactAbstractController
         return $this->notFoundAction();
     }
 
-    public function fetchAction()
+    public function fetchAction(): JsonModel
     {
         /** @var Request $request */
-        $request   = $this->getRequest();
-        $timeZone  = new DateTimeZone($request->getQuery('timeZone', 'UTC'));
-        $start     = new DateTime($request->getQuery('start', 'now'), $timeZone);
-        $end       = new DateTime($request->getQuery('end', 'now'), $timeZone);
+        $request = $this->getRequest();
+        $timeZone = new DateTimeZone($request->getQuery('timeZone', 'UTC'));
+        $start = new DateTime($request->getQuery('start', 'now'), $timeZone);
+        $end = new DateTime($request->getQuery('end', 'now'), $timeZone);
         $leaveList = $this->officeContactService->findLeave($this->identity()->getOfficeContact(), $start, $end);
         $eventList = [];
 
@@ -340,13 +362,13 @@ final class LeaveController extends ContactAbstractController
         return new JsonModel($eventList);
     }
 
-    public function fetchAllAction()
+    public function fetchAllAction(): JsonModel
     {
         /** @var Request $request */
-        $request   = $this->getRequest();
-        $timeZone  = new DateTimeZone($request->getQuery('timeZone', 'UTC'));
-        $start     = new DateTime($request->getQuery('start', 'now'), $timeZone);
-        $end       = new DateTime($request->getQuery('end', 'now'), $timeZone);
+        $request = $this->getRequest();
+        $timeZone = new DateTimeZone($request->getQuery('timeZone', 'UTC'));
+        $start = new DateTime($request->getQuery('start', 'now'), $timeZone);
+        $end = new DateTime($request->getQuery('end', 'now'), $timeZone);
         $leaveList = $this->officeContactService->findAllLeave($start, $end);
         $eventList = [];
 

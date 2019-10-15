@@ -631,6 +631,10 @@ return [
                                         'route'   => 'zfcadmin/contact/office/leave/new',
                                         'visible' => false,
                                     ],
+                                    'office-calendar' => [
+                                        'label'   => _('txt-office-calendar'),
+                                        'route'   => 'zfcadmin/contact/office/leave/office-calendar',
+                                    ],
                                     'edit' => [
                                         'label'   => _('txt-edit'),
                                         'route'   => 'zfcadmin/contact/office/leave/edit',
@@ -664,6 +668,7 @@ return [
                                             ],
                                         ],
                                         'pages'   => [
+
                                             'edit' => [
                                                 'label'   => _('txt-edit'),
                                                 'route'   => 'zfcadmin/contact/office/edit',

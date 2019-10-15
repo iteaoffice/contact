@@ -18,19 +18,27 @@
         {% if paginator.pageRange > 0 %}
             <table class="table table-hover table-striped table-sm">
                 <thead>
-                    <tr>
-                        <th>{{ translate('txt-id') }}</th>
-                        <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/list', 'criteria': 'contact', 'text': translate('txt-contact')} %}</th>
-                        <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/list', 'criteria': 'hours', 'text': translate('txt-hours')} %}</th>
-                        <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/list', 'criteria': 'dateEnd', 'text': translate('txt-date-end')} %}</th>
-                    </tr>
+                <tr>
+                    <th>{{ translate('txt-id') }}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/list', 'criteria': 'contact', 'text': translate('txt-contact')} %}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/list', 'criteria': 'hours', 'text': translate('txt-hours')} %}</th>
+                    <th>{{ translate('txt-color') }}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/office/list', 'criteria': 'dateEnd', 'text': translate('txt-date-end')} %}</th>
+                </tr>
                 </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="5"></td>
+                    </tr>
+                </tfoot>
                 <tbody>
                 {% for officeContact in paginator.getCurrentItems() %}
                     <tr>
                         <td>{{ officeContact.id }} {{ officeContactLink(officeContact, 'edit', 'icon') }}</td>
                         <td>{{ officeContactLink(officeContact, 'view') }}</td>
                         <td>{{ officeContact.hours }}</td>
+                        <td><span class="badge p-2"
+                                  style="background-color: {{ officeContact.calendarColor }}">&nbsp;</span></td>
                         <td>{{ officeContact.dateEnd|string_date }}</td>
                     </tr>
                 {% endfor %}

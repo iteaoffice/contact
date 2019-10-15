@@ -192,6 +192,7 @@ abstract class LinkAbstract extends AbstractViewHelper
                         break;
                     case 'add-contact':
                     case 'new':
+                    case 'new-admin':
                     case 'add-project':
                         $this->addLinkContent('<i class="fa fa-plus"></i>');
                         break;
