@@ -47,4 +47,5 @@
 {% else %}
     {{ ztbalert().danger(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
 {% endif %}
-        {{ profileLink(contact,'edit', 'button') }}
+{{ profileLink(contact,'edit', 'button') }}
+{{ organisationUpdateLink(null, 'edit', 'button', contact.contactOrganisation.organisation) }}

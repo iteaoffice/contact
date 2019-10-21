@@ -933,6 +933,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var Office\Contact
      */
     private $officeContact;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\Update", cascade={"persist", "remove"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var Collections\Collection
+     */
+    private $organisationUpdates;
 
     public function __construct()
     {
@@ -1041,6 +1048,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->affiliationVersion = new Collections\ArrayCollection();
         $this->note = new Collections\ArrayCollection();
         $this->pageview = new Collections\ArrayCollection();
+        $this->organisationUpdates = new Collections\ArrayCollection();
 
         $this->hash = hash('sha256', Rand::getString(100) . self::HASH_KEY);
         $this->triggerUpdate = false;
@@ -3185,6 +3193,17 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function setMagazineArticleDownload($magazineArticleDownload): Contact
     {
         $this->magazineArticleDownload = $magazineArticleDownload;
+        return $this;
+    }
+
+    public function getOrganisationUpdates(): Collections\Collection
+    {
+        return $this->organisationUpdates;
+    }
+
+    public function setOrganisationUpdates(Collections\Collection $organisationUpdates): Contact
+    {
+        $this->organisationUpdates = $organisationUpdates;
         return $this;
     }
 }
