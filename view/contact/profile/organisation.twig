@@ -43,9 +43,12 @@
             <dt>{{ translate("txt-general-description") }}</dt>
             <dd>{{ contact.contactOrganisation.organisation.description|raw }}</dd>
         {% endif %}
+        {% if contact.contactOrganisation.organisation.logo|length > 0 %}
+            <dt>{{ translate("txt-logo") }}</dt>
+            <dd>{{ organisationLogo(contact.contactOrganisation.organisation, 300, false) }}</dd>
+        {% endif %}
     </dl>
 {% else %}
     {{ ztbalert().danger(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
 {% endif %}
-{{ profileLink(contact,'edit', 'button') }}
 {{ organisationUpdateLink(null, 'edit', 'button', contact.contactOrganisation.organisation) }}
