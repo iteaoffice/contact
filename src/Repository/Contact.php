@@ -357,12 +357,21 @@ class Contact extends EntityRepository
         $qb->andWhere($qb->expr()->notIn('contact_entity_contact.id', $selectionContact->getDQL()));
         $qb->orderBy('contact_entity_contact.id', Criteria::DESC);
 
+        //Add a constraint for a month
+        $lastMonth = new DateTime();
+        $lastMonth->sub(new DateInterval('P1M'));
+
+        $qb->andWhere('contact_entity_contact.dateCreated < :lastMonth');
+        $qb->setParameter('lastMonth', $lastMonth);
+
         return $qb;
     }
 
     public function findInactiveContacts(): array
     {
-        return $this->findInactiveContactQuery()->getQuery()->getArrayResult();
+        $queryBuilder = $this->findInactiveContactQuery();
+
+        return $queryBuilder->getQuery()->getArrayResult();
     }
 
     public function contactIsActiveInProject(Entity\Contact $contact, int $years = 5, string $which = 'recent'): bool

@@ -100,7 +100,7 @@ class Leave extends AbstractEntity
      * @ORM\Column(name="hours", type="decimal", precision=6, scale=2)
      * @Annotation\Type("\Zend\Form\Element\Number")
      * @Annotation\Options({"label":"txt-hours"})
-     * @Annotation\Attributes({"id":"hours", "required":"required"})
+     * @Annotation\Attributes({"id":"hours", "required":"required","step":0.1})
      *
      * @var float
      */
@@ -124,7 +124,7 @@ class Leave extends AbstractEntity
 
     public function __toString(): string
     {
-        return (string) $this->description;
+        return (string)$this->description;
     }
 
     public function getId(): ?int

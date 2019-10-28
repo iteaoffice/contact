@@ -619,12 +619,12 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function delete(AbstractEntity $contact): void
     {
-        parent::delete($contact);
-
         if ($contact instanceof Contact) {
             $this->contactSearchService->deleteDocument($contact);
             $this->profileSearchService->deleteDocument($contact);
         }
+
+        parent::delete($contact);
     }
 
     public function parseLastName(Contact $contact): string
