@@ -149,25 +149,19 @@ class SelectionService extends AbstractService
                 $this->delete($sql);
             }
 
-            //Update the contacts
-            if (!empty($data['added'])) {
-                foreach (explode(',', $data['added']) as $contactId) {
-                    $contact = $this->contactService->findContactById((int)$contactId);
+            $contacts = (array)($data['contacts'] ?? []);
 
-                    if (null !== $contact) {
-                        $this->addContactToSelection($selection, $contact);
-                    }
+            //Update the contacts
+            foreach ($contacts as $contactId) {
+                $contact = $this->contactService->findContactById((int)$contactId);
+                if (null !== $contact) {
+                    $this->addContactToSelection($selection, $contact);
                 }
             }
-
             //Update the contacts
-            if (!empty($data['removed'])) {
-                foreach (explode(',', $data['removed']) as $contactId) {
-                    foreach ($selection->getSelectionContact() as $selectionContact) {
-                        if ($selectionContact->getContact()->getId() === (int)$contactId) {
-                            $this->delete($selectionContact);
-                        }
-                    }
+            foreach ($selection->getSelectionContact() as $selectionContact) {
+                if (!in_array($selectionContact->getContact()->getId(), $contacts, false)) {
+                    $this->delete($selectionContact);
                 }
             }
         } else {

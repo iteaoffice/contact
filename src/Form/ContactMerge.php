@@ -32,15 +32,17 @@ final class ContactMerge extends Form
         $this->setAttribute('action', '');
 
         $mainSuggestions = [];
-        if (!is_null($entityManager) && !is_null($target)) {
+        if ($entityManager !== null && $target !== null) {
             /** @var ContactRepository $repository */
             $repository = $entityManager->getRepository(Contact::class);
             $suggestions = $repository->findMergeCandidatesFor($target);
             /** @var Contact $contact */
             foreach ($suggestions as $contact) {
-                $mainSuggestions[$contact->getId()] = sprintf(
+                $contactId = $contact->getId();
+
+                $mainSuggestions[$contactId] = sprintf(
                     '%s - %s (%s)',
-                    $contact->getId(),
+                    $contactId,
                     $contact->parseFullName(),
                     null === $contact->getContactOrganisation() ? '-'
                         : $contact->getContactOrganisation()->getOrganisation()->getOrganisation()

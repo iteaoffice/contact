@@ -483,7 +483,6 @@ final class SelectionManagerController extends ContactAbstractController
             }
 
             $results[] = [
-                'value'        => $contact->getId(),
                 'text'         => $text,
                 'name'         => $contact->getFormName(),
                 'id'           => $contact->getId(),
@@ -493,7 +492,7 @@ final class SelectionManagerController extends ContactAbstractController
             ];
         }
 
-        return new JsonModel($results);
+        return new JsonModel(['contacts' => $results]);
     }
 
 

@@ -427,24 +427,22 @@ class ContactAdminController extends ContactAbstractController
         }
 
         //Get contacts in an organisation
-        if ($this->contactService->hasOrganisation($contact)) {
+        if ($contact->hasOrganisation()) {
             $data = array_merge(
                 [
-                    'contact_entity_contact' => [
-                        'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
-                        'branch'       => $contact->getContactOrganisation()->getBranch(),
-                    ],
+                    'organisation' => $contact->getContactOrganisation()->getOrganisation()->getId(),
+                    'branch'       => $contact->getContactOrganisation()->getBranch(),
                 ],
                 $request->getPost()->toArray()
             );
 
             $form = $this->formService->prepare(Contact::class, $data);
-            $form->get('contact_entity_contact')->get('organisation')
-                ->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
+            $form->get('organisation')->injectOrganisation($contact->getContactOrganisation()->getOrganisation());
         } else {
             $data = $request->getPost()->toArray();
             $form = $this->formService->prepare(Contact::class, $data);
         }
+
         // Manually re-binding needed because of $contact is a Proxy when editing your own entity and the
         // AnnotationBuilder can't parse a Doctrine Proxy
         $form->bind($contact);
@@ -536,7 +534,7 @@ class ContactAdminController extends ContactAbstractController
                 $this->adminService->resetCachedAccessRolesByContact($contact);
 
                 /** Update the organisation if there is any */
-                if (isset($data['contact_entity_contact']['organisation'])) {
+                if (isset($data['organisation'])) {
                     //Update the contactOrganisation (if set)
                     if (null === $contact->getContactOrganisation()) {
                         $contactOrganisation = new ContactOrganisation();
@@ -545,13 +543,10 @@ class ContactAdminController extends ContactAbstractController
                         $contactOrganisation = $contact->getContactOrganisation();
                     }
 
-                    $contactOrganisation->setBranch(
-                        empty($data['contact_entity_contact']['branch']) ? null
-                            : $data['contact_entity_contact']['branch']
-                    );
+                    $contactOrganisation->setBranch(empty($data['branch']) ? null : $data['branch']);
                     $contactOrganisation->setOrganisation(
                         $this->organisationService->findOrganisationById(
-                            (int)$data['contact_entity_contact']['organisation']
+                            (int)$data['organisation']
                         )
                     );
 
@@ -561,8 +556,8 @@ class ContactAdminController extends ContactAbstractController
                 //Handle the file upload
                 $fileData = $this->params()->fromFiles();
 
-                if (!empty($fileData['contact_entity_contact']['file']['name'])
-                    && $fileData['contact_entity_contact']['file']['error'] === 0
+                if (!empty($fileData['file']['name'])
+                    && $fileData['file']['error'] === 0
                 ) {
                     /** @var Photo $photo */
                     $photo = $contact->getPhoto()->first();
@@ -570,16 +565,16 @@ class ContactAdminController extends ContactAbstractController
                         //Create a photo element
                         $photo = new Photo();
                     }
-                    $photo->setPhoto(file_get_contents($fileData['contact_entity_contact']['file']['tmp_name']));
-                    $photo->setThumb(file_get_contents($fileData['contact_entity_contact']['file']['tmp_name']));
+                    $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
+                    $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
                     $photo->setContact($contact);
                     $imageSizeValidator = new ImageSize();
-                    $imageSizeValidator->isValid($fileData['contact_entity_contact']['file']);
+                    $imageSizeValidator->isValid($fileData['file']);
                     $photo->setWidth($imageSizeValidator->width);
                     $photo->setHeight($imageSizeValidator->height);
 
                     $fileTypeValidator = new MimeType();
-                    $fileTypeValidator->isValid($fileData['contact_entity_contact']['file']);
+                    $fileTypeValidator->isValid($fileData['file']);
                     $photo->setContentType(
                         $this->generalService->findContentTypeByContentTypeName($fileTypeValidator->type)
                     );
@@ -609,7 +604,7 @@ class ContactAdminController extends ContactAbstractController
         $form = $this->formService->prepare($contact, $data);
 
         // Disable the inarray validator for organisations
-        $form->get('contact_entity_contact')->get('organisation')->setDisableInArrayValidator(true);
+        $form->get('organisation')->setDisableInArrayValidator(true);
 
         // Show or hide buttons based on the status of a contact
         $form->remove('reactivate');
@@ -626,17 +621,14 @@ class ContactAdminController extends ContactAbstractController
                 $contact->setDateActivated(new DateTime());
                 $contact = $this->contactService->save($contact);
 
-                if (isset($data['contact_entity_contact']['organisation'])) {
+                if (isset($data['organisation'])) {
                     $contactOrganisation = new ContactOrganisation();
                     $contactOrganisation->setContact($contact);
 
-                    $contactOrganisation->setBranch(
-                        strlen($data['contact_entity_contact']['branch']) === 0 ? null
-                            : $data['contact_entity_contact']['branch']
-                    );
+                    $contactOrganisation->setBranch(empty($data['branch']) ? null : $data['branch']);
                     $contactOrganisation->setOrganisation(
                         $this->organisationService->findOrganisationById(
-                            (int)$data['contact_entity_contact']['organisation']
+                            (int)$data['organisation']
                         )
                     );
 

@@ -22,7 +22,7 @@ use Zend\InputFilter\InputFilter;
  *
  * @package Contact\InputFilter
  */
-class ContactFilter extends InputFilter
+final class ContactFilter extends InputFilter
 {
     public function __construct(EntityManager $entityManager)
     {

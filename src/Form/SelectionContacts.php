@@ -16,7 +16,6 @@ namespace Contact\Form;
 use Contact\Entity\Selection;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntitySelect;
-use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Radio;
 use Zend\Form\Element\Submit;
 use Zend\Form\Element\Textarea;
@@ -27,7 +26,7 @@ use Zend\Form\Form;
  *
  * @package Contact\Form
  */
-class SelectionContacts extends Form
+final class SelectionContacts extends Form
 {
     public function __construct(EntityManager $entityManager)
     {
@@ -35,7 +34,6 @@ class SelectionContacts extends Form
         $this->setAttribute('method', 'post');
         $this->setAttribute('action', '');
         $this->setAttribute('class', 'form-horizontal');
-        $this->setAttribute('onsubmit', 'return storeChanges();');
 
         $this->add(
             [
@@ -54,32 +52,10 @@ class SelectionContacts extends Form
                     ],
                 ],
                 'attributes' => [
-                    'id'    => 'selection',
-                    'class' => 'form-control'
+                    'id' => 'selection',
                 ]
             ]
         );
-
-        $this->add(
-            [
-                'type'       => Hidden::class,
-                'name'       => 'added',
-                'attributes' => [
-                    'id' => 'added',
-                ],
-            ]
-        );
-
-        $this->add(
-            [
-                'type'       => Hidden::class,
-                'name'       => 'removed',
-                'attributes' => [
-                    'id' => 'removed',
-                ],
-            ]
-        );
-
 
         $this->add(
             [
@@ -101,16 +77,12 @@ class SelectionContacts extends Form
             [
                 'type'       => Textarea::class,
                 'name'       => 'sql',
-                'options'    => [
-
-                ],
                 'attributes' => [
                     'label' => _('txt-sql-query'),
                     'rows'  => 20,
                 ],
             ]
         );
-
 
         $this->add(
             [

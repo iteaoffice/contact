@@ -65,12 +65,16 @@ return [
         Search\Service\ProfileSearchService::class => [
             'Config'
         ],
-        ContactFormElement::class                  => [
+        Form\ContactForm::class                    => [
+            EntityManager::class
+        ],
+
+        ContactFormElement::class   => [
             ContactService::class,
             'ViewHelperManager',
             TranslatorInterface::class
         ],
-        SelectionFormElement::class                => [
+        SelectionFormElement::class => [
             'ViewHelperManager',
             TranslatorInterface::class
         ],

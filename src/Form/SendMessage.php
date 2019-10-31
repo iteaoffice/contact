@@ -12,17 +12,18 @@ declare(strict_types=1);
 
 namespace Contact\Form;
 
+use Zend\Form\Element\Submit;
+use Zend\Form\Element\Textarea;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
- * Class SendMessage.
+ * Class SendMessage
+ *
+ * @package Contact\Form
  */
-class SendMessage extends Form implements InputFilterProviderInterface
+final class SendMessage extends Form implements InputFilterProviderInterface
 {
-    /**
-     *
-     */
     public function __construct()
     {
         parent::__construct();
@@ -32,11 +33,11 @@ class SendMessage extends Form implements InputFilterProviderInterface
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Textarea',
+                'type'       => Textarea::class,
                 'name'       => 'message',
                 'options'    => [
-                    'label'      => _("txt-message"),
-                    'help-block' => _("txt-send-message-to-facebook"),
+                    'label'      => _('txt-message'),
+                    'help-block' => _('txt-send-message-to-facebook'),
                 ],
                 'attributes' => [
                     'rows'  => 20,
@@ -47,32 +48,26 @@ class SendMessage extends Form implements InputFilterProviderInterface
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
-                    'class' => "btn btn-primary",
-                    'value' => _("txt-send"),
+                    'class' => 'btn btn-primary',
+                    'value' => _('txt-send'),
                 ],
             ]
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'cancel',
                 'attributes' => [
-                    'class' => "btn btn-warning",
-                    'value' => _("txt-cancel"),
+                    'class' => 'btn btn-warning',
+                    'value' => _('txt-cancel'),
                 ],
             ]
         );
     }
 
-    /**
-     * Should return an array specification compatible with
-     * {@link Zend\InputFilter\Factory::createInputFilter()}.
-     *
-     * @return array
-     */
     public function getInputFilterSpecification(): array
     {
         return [

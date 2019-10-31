@@ -17,14 +17,10 @@ use General\Entity\Country;
 use Zend\Form\Annotation;
 
 /**
- * Entity for the Contact.
- *
  * @ORM\Table(name="contact_address")
  * @ORM\Entity(repositoryClass="Contact\Repository\Address")
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_address")
- *
- * @category    Contact
  */
 class Address extends AbstractEntity
 {
@@ -119,115 +115,90 @@ class Address extends AbstractEntity
         return (string)$this->getAddress();
     }
 
-    /**
-     * @return string
-     */
-    public function getAddress()
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    /**
-     * @param string $address
-     */
-    public function setAddress($address)
+    public function setAddress(?string $address): Address
     {
         $this->address = $address;
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCity()
+    public function toArray(): array
     {
-        return $this->city;
+        return [
+            'address' => $this->address,
+            'zipCode' => $this->zipCode,
+            'city'    => $this->city,
+            'country' => $this->country->getId()
+        ];
     }
 
-    /**
-     * @param string $city
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-    }
-
-    /**
-     * @return Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
-     * @return Country
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
-     * @param Country $country
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-    }
-
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId($id): Address
     {
         $this->id = $id;
+        return $this;
     }
 
-    /**
-     * @return AddressType
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param AddressType $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getZipCode()
+    public function getZipCode(): ?string
     {
         return $this->zipCode;
     }
 
-    /**
-     * @param string $zipCode
-     */
-    public function setZipCode($zipCode)
+    public function setZipCode(?string $zipCode): Address
     {
         $this->zipCode = $zipCode;
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): Address
+    {
+        $this->city = $city;
+        return $this;
+    }
+
+    public function getType(): ?AddressType
+    {
+        return $this->type;
+    }
+
+    public function setType(AddressType $type): Address
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getContact(): ?Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(Contact $contact): Address
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    public function setCountry(Country $country): Address
+    {
+        $this->country = $country;
+        return $this;
     }
 }

@@ -16,14 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation;
 
 /**
- * Profile.
- *
  * @ORM\Table(name="contact_profile")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_profile")
- *
- * @category    Contact
  */
 class Profile extends AbstractEntity
 {
@@ -95,6 +91,14 @@ class Profile extends AbstractEntity
         return isset($this->$property);
     }
 
+    public function toArray(): array
+    {
+        return [
+            'visible'     => $this->visible,
+            'description' => $this->description
+        ];
+    }
+
     public function getId()
     {
         return $this->id;
@@ -111,7 +115,7 @@ class Profile extends AbstractEntity
         return $this->description;
     }
 
-    public function setDescription(string $description): Profile
+    public function setDescription(?string $description): Profile
     {
         $this->description = $description;
         return $this;

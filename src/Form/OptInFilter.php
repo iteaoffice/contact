@@ -25,7 +25,7 @@ use Zend\Form\Form;
  *
  * @package Contact\Form
  */
-class OptInFilter extends Form
+final class OptInFilter extends Form
 {
     public function __construct()
     {
@@ -53,7 +53,7 @@ class OptInFilter extends Form
                 'options' => [
                     'value_options' => OptIn::getActiveTemplates(),
                     'inline'        => true,
-                    'label'         => _("txt-active"),
+                    'label'         => _('txt-active'),
                 ],
             ]
         );

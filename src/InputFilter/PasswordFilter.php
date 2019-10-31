@@ -19,11 +19,8 @@ use Zend\InputFilter\InputFilter;
  *
  * @package Contact\InputFilter
  */
-class PasswordFilter extends InputFilter
+final class PasswordFilter extends InputFilter
 {
-    /**
-     * Have a custom password validator.
-     */
     public function __construct()
     {
         $this->add(

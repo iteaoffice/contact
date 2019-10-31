@@ -2,15 +2,15 @@
 {% do headScript().appendFile('assets/js/codemirror/sql.js', 'text/javascript') %}
 {% do headScript().appendFile('assets/js/codemirror/selection-pointer.js', 'text/javascript') %}
 {% do headScript().appendFile('assets/js/codemirror/matchbrackets.js', 'text/javascript') %}
-{% do headLink().appendStylesheet('assets/css/codemirror.css') %}
 
+{% do headScript().appendFile('//cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.js', 'text/javascript') %}
+
+{% do headLink().appendStylesheet('assets/css/codemirror.css') %}
 
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-edit-selection-%s")|format(selection)) %}
 
 <h1>{{ translate("txt-edit-contacts-selection-%s")|format(selection) }} </h1>
-
-
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
 
@@ -22,66 +22,45 @@
     </div>
 </div>
 
-
 {{ ztbformelement(form.get('type')) }}
 
-
-<div id="pane-fixed" {% if selectionService.isSql(selection) %}style="display: none"{% endif %}>
-    {{ ztbformelement(form.get('added')) }}
-    {{ ztbformelement(form.get('removed')) }}
-
-
-    <div class="row">
-        <div class="col-md-6">
-            <h2>{{ translate("txt-current-selection") }}</h2>
-
-            <table class="table table-hover table-striped table-sm" id="inselection"></table>
-
-
-            <input type="button" class="btn btn-outline-info" onclick="Selection.SelectAll()"
-                   value="{{ translate("txt-select-all") }}">
-            <input type="button" class="btn btn-outline-warning" onclick="Selection.Remove()"
-                   value="{{ translate("txt-remove") }}">
-            <input type="button" class="btn btn-outline-danger" onclick="Selection.Reset()"
-                   value="{{ translate("txt-reset") }}">
-        </div>
-
-        <div class="col-md-6">
-            <h2>{{ translate("txt-choose-contacts") }}</h2>
-
-            <div class="input-group mb-3">
-                {{ formelement(form.get('selection')) }}
-                <div class="input-group-append">
-                    <input type="button" class="btn btn-outline-primary"
-                           onclick="selectionSearch(document.getElementById('selection').value)"
-                           value="Get selection">
-                </div>
-            </div>
-
-            <div class="input-group">
-                <input type="text" id="searchstring" placeholder="Search ..." class="form-control">
-                <div class="input-group-append">
-                    <input type="button" class="btn btn-outline-primary"
-                           onclick="wildSearch(document.getElementById('searchstring').value)"
-                           value="Search">
-                </div>
-            </div>
-
-            <h2>{{ translate("txt-search-results") }}</h2>
-            <table class="table table-hover table-striped table-sm" id="contacts"></table>
-
-
-            <input type="button" class="btn btn-outline-info" onclick="Contacts.SelectAll()"
-                   value="{{ translate("txt-select-all") }}">
-            <input type="button" class="btn btn-outline-success" onclick="Contacts.MoveTo(Selection)"
-                   value="{{ translate("txt-add") }}">
-        </div>
-    </div>
+<div id="pane-sql" class="{% if not selectionService.isSql(selection) %}d-none{% endif %}">
+    {{ ztbformelement(form.get('sql').setAttribute('class','')) }}
 </div>
 
+<div id="pane-fixed" class="{% if selectionService.isSql(selection) %}d-none{% endif %}">
+    <div class="row">
+        <div class="col">
+            <h2>{{ translate("txt-current-selection") }}</h2>
 
-<div id="pane-sql" {% if not selectionService.isSql(selection) %}style="display: none"{% endif %}>
-    {{ ztbformelement(form.get('sql')) }}
+            <table class="table table-sm table-hover table-striped">
+                <tbody id="contacts-table"></tbody>
+            </table>
+
+            <input type="button" class="btn btn-outline-info" id="remove-all" value="{{ translate("txt-remove-all") }}">
+            <input type="button" class="btn btn-outline-danger" id="reset" value="{{ translate("txt-reset") }}">
+        </div>
+        <div class="col">
+            <h2>{{ translate("txt-choose-contacts") }}</h2>
+            {{ selectionformelement(form.get('selection'), true) }}
+            <input type="button" id="selection-search" class="mt-2 btn btn-outline-primary" value="Get selection">
+
+            <div class="input-group pt-3">
+                <input type="text" id="contact-search-string" placeholder="Search ..." class="form-control">
+                <div class="input-group-append">
+                    <input type="button" id="contact-search" class="btn btn-outline-primary" value="Search">
+                </div>
+            </div>
+            <h2>{{ translate("txt-search-results") }}</h2>
+            <table class="table table-sm table-hover table-striped">
+                <tbody id="choose-contacts-table"></tbody>
+            </table>
+            <input type="button" class="btn btn-outline-success" id="add-all" value="{{ translate("txt-add-all") }}">
+            <input type="button" class="btn btn-outline-danger" id="subtract" value="{{ translate("txt-subtract") }}">
+        </div>
+    </div>
+
+    <div id="hidden-elements"></div>
 </div>
 
 <div class="form-group row">
@@ -96,286 +75,164 @@
 
 {{ form().closeTag()|raw }}
 
-<style type="text/css">
-    #sql {
-        position: relative;
-        width: 1200px;
-        height: 600px;
-    }
-</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        function getContacts($query) {
+            $.post('{{ url('zfcadmin/contact/search') }}', {'q': $query}, function (result) {
+                let $template = $('#contact-row-template');
+                let html = Mustache.render($template.html(), {'contacts': result, 'type': 'plus'});
+                $('#choose-contacts-table').html(html);
+            });
+        }
+
+        function getContactsFromSelection($selection, $template) {
+            $.post('{{ url('zfcadmin/selection/get-contacts') }}', {'id': $selection}, function (result) {
+                let $contactTemplate = $('#contact-row-template');
+                let html = Mustache.render($contactTemplate.html(), {'contacts': result.contacts, 'type': 'plus'});
+                $template.html(html);
+            });
+        }
+
+        $('#selection-search').click(function () {
+            let $selection = $('#selection').val();
+            getContactsFromSelection($selection, $('#choose-contacts-table'));
+        });
+        $('#contact-search').click(function () {
+            let $query = $('#contact-search-string').val();
+            getContacts($query, $('#choose-contacts-table'));
+        });
+
+        var $in = [];
+
+        function init($selection) {
+            $.post('{{ url('zfcadmin/selection/get-contacts') }}', {'id': $selection}, function (result) {
+                $in = [];
+                let $contactTemplate = $('#contact-row-template');
+                let html = Mustache.render($contactTemplate.html(), {'contacts': result.contacts, 'type': 'minus'});
+
+                result.contacts.forEach(function (contact) {
+                    $in.push(contact.id);
+                });
+
+                $('#contacts-table').html(html);
+                updateHiddenElements();
+            });
+        }
+
+        init({{ selection.id }});
+
+        function moveItem($element) {
+            let $icon = $element.find('i');
+            let $contactId = $element.data('id');
+
+            if ($icon.hasClass('fa-plus') && $.inArray($contactId, $in) === -1) {
+                $icon.addClass('fa-minus').removeClass('fa-plus');
+                $in.push($contactId);
+                $('#contacts-table').append($element);
+            } else if ($icon.hasClass('fa-minus')) {
+                $icon.addClass('fa-plus').removeClass('fa-minus');
+                $in.remove($contactId);
+                $('#choose-contacts-table').append($element);
+            }
+            updateHiddenElements();
+        }
+
+        function updateHiddenElements() {
+            let $hiddenElementTemplate = $('#hidden-element-template');
+            let html = Mustache.render($hiddenElementTemplate.html(), {'elements': $in});
+            $('#hidden-elements').html(html);
+        }
+
+        $('.table').on('click', 'tr', function () {
+            moveItem($(this));
+        });
+
+        $('#remove-all').click(function () {
+            $('#contacts-table > tr').each(function () {
+                moveItem($(this));
+            });
+        });
+
+        $('#add-all').click(function () {
+            $('#choose-contacts-table > tr').each(function () {
+                moveItem($(this));
+            });
+        });
+        $('#reset').click(function () {
+            init({{ selection.id }});
+            $('#choose-contacts-table').empty();
+        });
+        $('#subtract').click(function () {
+            let $contactsChosen = [];
+            $('#choose-contacts-table > tr').each(function () {
+                $contactsChosen.push($(this).data('id'));
+            });
+
+            $('#contacts-table > tr').each(function () {
+                if ($.inArray($(this).data('id'), $contactsChosen) !== -1) {
+                    $in.remove($(this).data('id'));
+                    $(this).remove();
+                }
+            });
+            updateHiddenElements();
+        });
+
+        Array.prototype.remove = function () {
+            let what, a = arguments, L = a.length, ax;
+            while (L && this.length) {
+                what = a[--L];
+                while ((ax = this.indexOf(what)) !== -1) {
+                    this.splice(ax, 1);
+                }
+            }
+            return this;
+        };
+    });
+</script>
+
+{% verbatim %}
+<template id="contact-row-template">
+        {{#contacts}}
+            <tr data-id="{{ id }}">
+                <td>
+                    <i class="fa fa-{{ type }}" aria-hidden="true"></i>
+                </td>
+                <td>
+                    <small class="text-muted">{{ id }}</small></td>
+                <td>{{ name }}</td>
+                <td>{{ organisation }}</td>
+            </tr>
+         {{/contacts}}
+</template>
+<template id="hidden-element-template">
+        {{#elements}}
+            <input type="hidden" name="contacts[]" value="{{ . }}">
+        {{/elements}}
+</template>
+{% endverbatim %}
 
 
 <script type="text/javascript">
-
-    $('input[type=radio][name=type]').change(function () {
-        if (this.value === '1') {
-            $('#pane-sql').show();
-            $('#pane-fixed').hide();
-        } else if (this.value === '2') {
-            $('#pane-sql').hide();
-            $('#pane-fixed').show();
-        }
-    });
-
-    var Selection;
-
-
-    function oItem(id, displayName, email, org, added, removed) {
-        this.id = id;
-        this.displayName = displayName;
-        this.email = email;
-        this.org = org;
-        this.removed = removed;
-        this.added = added;
-        this.selected = false;
-    }
-
-    function oSelection(oName, Box) {
-
-        this.oName = oName;
-        this.RenderBox = Box;
-        this.items = [];
-
-        this.Add = function (id, displayName, email, org, added, removed) {
-            this.items[this.items.length] = new oItem(id, displayName, email, org, added, removed)
-        }
-
-        this.Reset = function () {
-            for (var i = this.items.length - 1; i >= 0; i--) {
-                if (this.items[i].added) {
-                    this.items.splice(i, 1);
-                } else {
-                    this.items[i].removed = false;
-                }
-            }
-            this.Render();
-        }
-
-        this.Render = function () {
-            var out = '';
-            var item = null;
-            if (this.items.length == 0) {
-                out = 'No items.';
-            } else {
-                for (var i = 0; i < this.items.length; i++) {
-                    item = this.items[i];
-
-                    out += '<tr class="' + (item.selected || item.added ? 'table-success' : '') + (item.removed ? 'table-danger' : '') + '" ' +
-                        '    id="item' + i + '" ' +
-                        '    onclick="' + this.oName + '.Select(' + i + ')" ' +
-                        '    >' +
-                        '<td>' + (item.added ? '<i class="fa fa-plus text-primary"></i> ' : '') + (item.removed ? '<i class="fa fa-trash-o"></i> ' : '') + item.displayName + '</td>' +
-                        '<td>' + item.org + '</td>' +
-                        '</tr>';
-                }
-            }
-            document.getElementById(this.RenderBox).innerHTML = out;
-        }
-
-        this.Select = function (i) {
-            this.items[i].selected = !this.items[i].selected;
-            this.Render();
-        }
-
-        this.SelectAll = function (i) {
-            var item = null;
-            for (var i = 0; i < this.items.length; i++) {
-                item = this.items[i];
-                if (!item.removed) {
-                    item.selected = true;
-                }
-            }
-            this.Render();
-        }
-
-        this.getAddList = function () {
-            var out = '';
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].added) {
-                    out += ((out != '') ? ',' : '') + this.items[i].id;
-                }
-            }
-            return out;
-        }
-
-        this.getRemoveList = function () {
-            var out = '';
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].removed) {
-                    out += ((out != '') ? ',' : '') + this.items[i].id;
-                }
-            }
-            return out;
-        }
-
-        this.UnSelect = function (id) {
-            var item = null;
-            for (var i = this.items.length - 1; i >= 0; i--) {
-                item = this.items[i];
-                if (item.id == id) {
-                    item.selected = false;
-                    break;
-                }
-            }
-        }
-
-
-        this.Delete = function (id) {
-            var item = null;
-            for (var i = this.items.length - 1; i >= 0; i--) {
-                item = this.items[i];
-                if (item.id == id) {
-                    if (item.added) {
-                        this.items.splice(i, 1);
-                    } else {
-                        item.selected = false;
-                        item.removed = !item.removed;
-                    }
-                    break;
-                }
-            }
-        }
-
-        this.Remove = function () {
-            var item = null;
-            for (var i = this.items.length - 1; i >= 0; i--) {
-                item = this.items[i];
-                if (item.selected) {
-                    if (item.added) {
-                        this.items.splice(i, 1);
-                    } else {
-                        item.selected = false;
-                        item.removed = true;
-                    }
-                }
-            }
-            this.Render();
-        }
-
-        this.MoveTo = function (oSel) {
-            var item = null;
-            var p = oSel.items.length;
-            for (var i = this.items.length - 1; i >= 0; i--) {
-                item = this.items[i];
-                if (item.selected) {
-                    if (p > 0) {
-                        while (item.lname < oSel.items[p - 1].lname) {
-                            p--;
-                            if (p == 0) {
-                                break;
-                            }
-                        }
-                    }
-                    if (p == oSel.items.length) {
-                        oSel.items[p] = item;
-                    } else {
-                        oSel.items.splice(p, 0, item);
-                    }
-                    item.added = true;
-                    item.selected = false;
-                    this.items.splice(i, 1);
-                }
-            }
-            this.Render();
-            oSel.Render();
-        }
-    }
-
-    function init() {
-        Selection = new oSelection('Selection', 'inselection');
-        {
-            {% for selectionContact in selection.selectionContact %}
-            Selection.Add(
-                "{{ selectionContact.contact.id }}",
-                "{{ selectionContact.contact.displayName }}",
-                "{{ selectionContact.contact.email }}",
-                "{{ selectionContact.contact.contactOrganisation.organisation }}", false, false
-            );
-            {% endfor %}
-        }
-        Selection.Render();
-        Contacts = new oSelection('Contacts', 'contacts');
-    }
-
-    function loadSelection(id) {
-        getContacts('get=selection&selection=' + id);
-    }
-
-    function wildSearch(id) {
-        getContacts(id);
-    }
-
-    function selectionSearch(id) {
-        getContactsFromSelection(id);
-    }
-
-    function storeChanges() {
-        document.getElementById('added').value = Selection.getAddList();
-        document.getElementById('removed').value = Selection.getRemoveList();
-        return true;
-    }
-
-
-    function getContacts(q) {
-        $.ajax({
-            method: 'post',
-            url: '{{ url('zfcadmin/contact/search') }}',
-            dataType: 'json',
-            data: {
-                q: q
-            },
-            success: function (result, status) {
-                Contacts.items.length = 0;
-                for (var i = 0; i < result.length; i++) {
-                    Contacts.Add(
-                        result[i].id,
-                        result[i].name,
-                        result[i].email,
-                        result[i].organisation
-                    );
-                }
-                Contacts.Render();
-            }
-        });
-    }
-
-    /**
-     * Load the contacts based on a search action
-     * @param q
-     */
-    function getContactsFromSelection(q) {
-
-        $.ajax({
-            method: 'post',
-            url: '{{ url('zfcadmin/selection/get-contacts') }}',
-            dataType: 'json',
-            data: {
-                id: q
-            },
-            success: function (result, status) {
-                Contacts.items.length = 0;
-                for (var i = 0; i < result.length; i++) {
-                    Contacts.Add(
-                        result[i].id,
-                        result[i].name,
-                        result[i].email,
-                        result[i].organisation
-                    );
-                }
-                Contacts.Render();
-            }
-        });
-    }
-
-    window.onload = init;
-
-    var htmlEditor = CodeMirror.fromTextArea(document.getElementById("sql"), {
+    var $htmlEditor = CodeMirror.fromTextArea(document.getElementById("sql"), {
         mode: "sql",
         lineNumbers: true,
         selectionPointer: true,
         lineWrapping: true,
         matchBrackets: true
     });
-    htmlEditor.setSize(null, 600);
-</script>
+    $htmlEditor.setSize(null, 600);
 
+    $('input[type=radio][name=type]').change(function () {
+        if (this.value === '1') {
+            $('#pane-sql').removeClass('d-none');
+            $('#pane-fixed').addClass('d-none');
+            $htmlEditor.refresh();
+        }
+
+        if (this.value === '2') {
+            $('#pane-sql').addClass('d-none');
+            $('#pane-fixed').removeClass('d-none');
+        }
+    });
+</script>

@@ -25,13 +25,6 @@ use Zend\Form\Form;
  */
 class CreateObject extends Form
 {
-    /**
-     * CreateObject constructor.
-     *
-     * @param EntityManager      $entityManager
-     * @param AbstractEntity     $object
-     * @param ContainerInterface $serviceManager
-     */
     public function __construct(
         EntityManager $entityManager,
         AbstractEntity $object,

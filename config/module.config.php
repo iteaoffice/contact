@@ -131,6 +131,9 @@ $config = [
             Service\AddressService::class                           => ConfigAbstractFactory::class,
             Service\Office\ContactService::class                    => ConfigAbstractFactory::class,
             Service\FormService::class                              => Factory\FormServiceFactory::class,
+
+            Form\ContactForm::class                       => ConfigAbstractFactory::class,
+
             InputFilter\FacebookFilter::class                       => Factory\InputFilterFactory::class,
             InputFilter\DndFilter::class                            => Factory\InputFilterFactory::class,
             InputFilter\ContactFilter::class                        => Factory\InputFilterFactory::class,

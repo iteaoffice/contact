@@ -118,6 +118,7 @@ return [
         ],
         Controller\ProfileController::class          => [
             Service\ContactService::class,
+            Service\AddressService::class,
             OrganisationService::class,
             CallService::class,
             ModuleOptions::class,

@@ -18,11 +18,11 @@ use DoctrineModule\Validator;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Class ContactFilter
+ * Class OptInFilter
  *
  * @package Contact\InputFilter
  */
-class OptInFilter extends InputFilter
+final class OptInFilter extends InputFilter
 {
     public function __construct(EntityManager $entityManager)
     {

@@ -15,6 +15,9 @@ namespace Contact\Form;
 
 use Contact\Entity\Selection;
 use Contact\Service\SelectionService;
+use Zend\Form\Element\MultiCheckbox;
+use Zend\Form\Element\Submit;
+use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
 
@@ -23,7 +26,7 @@ use Zend\Form\Form;
  *
  * @package Contact\Form
  */
-class SelectionFilter extends Form
+final class SelectionFilter extends Form
 {
     public function __construct(SelectionService $selectionService)
     {
@@ -35,7 +38,7 @@ class SelectionFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'search',
                 'attributes' => [
                     'class'       => 'form-control',
@@ -46,14 +49,14 @@ class SelectionFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'       => 'Zend\Form\Element\MultiCheckbox',
+                'type'       => MultiCheckbox::class,
                 'name'       => 'includeDeleted',
                 'options'    => [
-                    'value_options' => [1 => _("txt-include-deleted")],
+                    'value_options' => [1 => _('txt-include-deleted')],
                     'inline'        => true,
                 ],
                 'attributes' => [
-                    'label' => _("txt-include-deleted"),
+                    'label' => _('txt-include-deleted'),
                 ],
             ]
         );
@@ -67,28 +70,28 @@ class SelectionFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'       => 'Zend\Form\Element\MultiCheckbox',
+                'type'       => MultiCheckbox::class,
                 'name'       => 'tags',
                 'options'    => [
                     'value_options' => $tags,
                     'inline'        => true,
                 ],
                 'attributes' => [
-                    'label' => _("txt-filter-on-tags"),
+                    'label' => _('txt-filter-on-tags'),
                 ],
             ]
         );
 
         $filterFieldset->add(
             [
-                'type'       => 'Zend\Form\Element\MultiCheckbox',
+                'type'       => MultiCheckbox::class,
                 'name'       => 'core',
                 'options'    => [
                     'value_options' => Selection::getCoreTemplates(),
                     'inline'        => true,
                 ],
                 'attributes' => [
-                    'label' => _("txt-filter-on-core-selections"),
+                    'label' => _('txt-filter-on-core-selections'),
                 ],
             ]
         );
@@ -98,7 +101,7 @@ class SelectionFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
                     'id'    => 'submit',
@@ -110,7 +113,7 @@ class SelectionFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'clear',
                 'attributes' => [
                     'id'    => 'cancel',

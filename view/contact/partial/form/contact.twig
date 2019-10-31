@@ -19,8 +19,8 @@
 
 <fieldset>
     <legend>{{ translate("txt-organisation-information") }}</legend>
-    {{ organisationformelement(contactFieldset.get('organisation')) }}
-    {{ ztbformelement(contactFieldset.get('branch')) }}
+    {{ organisationformelement(form.get('organisation')) }}
+    {{ ztbformelement(form.get('branch')) }}
     {{ ztbformelement(contactFieldset.get('department')) }}
     {{ ztbformelement(contactFieldset.get('position')) }}
 </fieldset>
@@ -38,7 +38,7 @@
     </fieldset>
 {% endif %}
 
-{{ ztbformelement(contactFieldset.get('file')) }}
+{{ ztbformelement(form.get('file')) }}
 
 <fieldset>
     <legend>{{ translate("txt-access-information") }}</legend>

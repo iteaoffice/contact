@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 namespace Contact\Controller;
 
-use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
+use Contact\Entity\PhoneType;
 use Contact\Entity\Photo;
-use Contact\Form\Profile;
 use Contact\Form\ProfileBody;
+use Contact\Form\ProfileForm;
+use Contact\Service\AddressService;
 use Contact\Service\ContactService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
@@ -45,6 +46,10 @@ final class ProfileController extends ContactAbstractController
      * @var ContactService
      */
     private $contactService;
+    /**
+     * @var AddressService
+     */
+    private $addressService;
     /**
      * @var OrganisationService
      */
@@ -76,6 +81,7 @@ final class ProfileController extends ContactAbstractController
 
     public function __construct(
         ContactService $contactService,
+        AddressService $addressService,
         OrganisationService $organisationService,
         CallService $callService,
         ModuleOptions $programModuleOptions,
@@ -85,6 +91,7 @@ final class ProfileController extends ContactAbstractController
         TranslatorInterface $translator
     ) {
         $this->contactService = $contactService;
+        $this->addressService = $addressService;
         $this->organisationService = $organisationService;
         $this->callService = $callService;
         $this->programModuleOptions = $programModuleOptions;
@@ -220,120 +227,24 @@ final class ProfileController extends ContactAbstractController
         );
     }
 
-    public function createAction()
+    public function createAction(): Response
     {
         $contact = $this->identity();
 
-        $organisations = $this->organisationService->findOrganisationForProfileEditByContact($contact);
-
-        $branches = [];
-        if ($this->contactService->hasOrganisation($contact)) {
-            $branches = $this->organisationService->findBranchesByOrganisation(
-                $contact->getContactOrganisation()
-                    ->getOrganisation()
-            );
+        if (null === $contact) {
+            return $this->redirect()->toRoute('zfcuser/login');
         }
 
-        $data = array_merge_recursive(
-            $this->getRequest()->getPost()->toArray(),
-            $this->getRequest()->getFiles()->toArray()
+        $contact->setDateActivated(new DateTime());
+        $this->contactService->save($contact);
+
+        $this->flashMessenger()->addSuccessMessage(
+            $this->translator->translate('txt-your-account-has-been-activated-successfully')
         );
 
-        $form = new Profile($this->entityManager, $this->contactService, $contact);
-        $form->bind($contact);
-
-        //When we have a valid organisation_id, we do not need the country
-        if (isset($data['contact_organisation']['organisation_id'])
-            && $data['contact_organisation']['organisation_id'] !== '0'
-        ) {
-            $form->getInputFilter()->get('contact_organisation')->remove('country');
-        } else {
-            $form->getInputFilter()->get('contact_organisation')->remove('organisation_id');
-        }
-
-        $form->setData($data);
-
-        if ($this->getRequest()->isPost()) {
-            if (isset($data['cancel'])) {
-                $this->flashMessenger()->addInfoMessage(
-                    $this->translator->translate('txt-your-account-registration-has-been-cancelled')
-                );
-                // clear adapters
-                $this->zfcUserAuthentication()->getAuthAdapter()->resetAdapters();
-                $this->zfcUserAuthentication()->getAuthService()->clearIdentity();
-
-
-                return $this->redirect()->toRoute('home');
-            }
-
-            if ($form->isValid()) {
-                $contact = $form->getData();
-
-                if (isset($data['removeFile'])) {
-                    foreach ($contact->getPhoto() as $photo) {
-                        $this->contactService->delete($photo);
-                    }
-                }
-
-
-                /** @var Contact $contact */
-                $contact = $form->getData();
-                $fileData = $this->params()->fromFiles();
-                if (!empty($fileData['file']['name'])) {
-                    /** @var Photo $photo */
-                    $photo = $contact->getPhoto()->first();
-                    if (!$photo) {
-                        //Create a photo element
-                        $photo = new Photo();
-                    }
-                    $photo->setPhoto(file_get_contents($fileData['file']['tmp_name']));
-                    $photo->setThumb(file_get_contents($fileData['file']['tmp_name']));
-                    $photo->setContact($this->identity());
-                    $imageSizeValidator = new ImageSize();
-                    $imageSizeValidator->isValid($fileData['file']);
-                    $photo->setWidth($imageSizeValidator->width);
-                    $photo->setHeight($imageSizeValidator->height);
-
-                    $fileTypeValidator = new MimeType();
-                    $fileTypeValidator->isValid($fileData['file']);
-                    $photo->setContentType(
-                        $this->generalService->findContentTypeByContentTypeName($fileTypeValidator->type)
-                    );
-
-                    $this->contactService->save($photo);
-                }
-
-                //Activate the account
-                $contact->setDateActivated(new DateTime());
-
-                $contact = $this->contactService->save($contact);
-
-                $this->contactService->updateOptInForContact($this->identity(), $data['optIn'] ?? []);
-
-                /**
-                 * The contact_organisation is different and not a drop-down.
-                 * we will extract the organisation name from the contact_organisation text-field
-                 */
-                $this->contactService->updateContactOrganisation($contact, $data['contact_organisation']);
-                $this->flashMessenger()->addSuccessMessage(
-                    $this->translator->translate('txt-your-account-has-been-registered-successfully')
-                );
-
-                return $this->redirect()->toRoute('community/contact/profile/view');
-            }
-        }
-
-        return new ViewModel(
-            [
-                'form'             => $form,
-                'branches'         => $branches,
-                'contactService'   => $this->contactService,
-                'contact'          => $contact,
-                'hasOrganisations' => count($organisations) > 1, ///We need to exclude the none of the above :)
-                'fullVersion'      => true,
-            ]
-        );
+        return $this->redirect()->toRoute('community/contact/profile/edit');
     }
+
 
     public function activateAction(): Response
     {
@@ -512,18 +423,47 @@ final class ProfileController extends ContactAbstractController
             $this->getRequest()->getFiles()->toArray()
         );
 
-        $form = new Profile($this->entityManager, $this->contactService, $contact);
-        $form->bind($contact);
-
-        //When we have a valid organisation_id, we do not need the country
-        if (isset($data['contact_organisation']['organisation_id'])
-            && $data['contact_organisation']['organisation_id'] !== '0'
-        ) {
-            $form->getInputFilter()->get('contact_organisation')->remove('country');
-        } else {
-            $form->getInputFilter()->get('contact_organisation')->remove('organisation_id');
+        $mailAddress = $this->contactService->getMailAddress($contact);
+        $contactOrganisation = false;
+        if ($contact->hasOrganisation()) {
+            $contactOrganisation = $contact->getContactOrganisation();
+        }
+        $profile = false;
+        if ($contact->hasProfile()) {
+            $profile = $contact->getProfile();
         }
 
+        $data = array_merge(
+            [
+                'contact'              => [
+                    'gender'     => $contact->getGender()->getId(),
+                    'title'      => $contact->getTitle()->getId(),
+                    'firstName'  => $contact->getFirstName(),
+                    'middleName' => $contact->getMiddleName(),
+                    'lastName'   => $contact->getLastName(),
+                    'department' => $contact->getDepartment(),
+                    'position'   => $contact->getPosition()
+                ],
+                'phone'                => [
+                    PhoneType::PHONE_TYPE_DIRECT => $this->contactService->getDirectPhone($contact),
+                    PhoneType::PHONE_TYPE_MOBILE => $this->contactService->getMobilePhone($contact),
+                ],
+                'address'              =>
+                    null !== $mailAddress ? $mailAddress->toArray() : [],
+                'contact_organisation' =>
+                    !$contactOrganisation ?: $contactOrganisation->toArray(),
+                'profile'              =>
+                    !$profile ?: $profile->toArray(),
+                'optIn'                => $contact->getOptIn()->map(
+                    static function (OptIn $optIn) {
+                        return $optIn->getId();
+                    }
+                )
+            ],
+            $data
+        );
+
+        $form = new ProfileForm($this->entityManager, $contact);
         $form->setData($data);
 
         if ($this->getRequest()->isPost()) {
@@ -537,9 +477,6 @@ final class ProfileController extends ContactAbstractController
                         $this->contactService->delete($photo);
                     }
                 }
-
-                /** @var Contact $contact */
-                $contact = $form->getData();
 
                 $fileData = $this->params()->fromFiles();
                 if (!empty($fileData['file']['name'])) {
@@ -565,16 +502,10 @@ final class ProfileController extends ContactAbstractController
 
                     $this->contactService->save($photo);
                 }
+                $this->contactService->updateContact($this->identity(), $form->getData());
+                $this->contactService->updateOptInForContact($this->identity(), (array)$data['optIn']);
+                $this->contactService->updateContactOrganisation($this->identity(), $data['contact_organisation']);
 
-                $this->contactService->save($contact);
-
-                $this->contactService->updateOptInForContact($this->identity(), $data['optIn'] ?? []);
-
-                /**
-                 * The contact_organisation is different and not a drop-down.
-                 * we will extract the organisation name from the contact_organisation text-field
-                 */
-                $this->contactService->updateContactOrganisation($contact, $data['contact_organisation']);
                 $this->flashMessenger()->addSuccessMessage(
                     $this->translator->translate('txt-profile-has-successfully-been-updated')
                 );
@@ -589,8 +520,8 @@ final class ProfileController extends ContactAbstractController
                 'branches'         => $branches,
                 'contactService'   => $this->contactService,
                 'contact'          => $contact,
+                'data'             => $data,
                 'hasOrganisations' => count($organisations) > 1, ///We need to exclude the none of the above :)
-                'fullVersion'      => true,
             ]
         );
     }

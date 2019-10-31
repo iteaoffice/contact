@@ -24,6 +24,8 @@ final class SelectionFormElement extends FormElement
 {
     public function __invoke(ElementInterface $element = null, bool $inline = false)
     {
+        $this->inline = $inline;
+
         $this->view->headLink()->appendStylesheet('/assets/css/bootstrap-select.min.css');
         $this->view->headLink()->appendStylesheet('/assets/css/ajax-bootstrap-select.min.css');
         $this->view->headScript()->appendFile(

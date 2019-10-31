@@ -43,9 +43,9 @@ final class AddProject extends Form
                 'type'    => Element\Select::class,
                 'name'    => 'project',
                 'options' => [
-                    'label'         => _("txt-project"),
+                    'label'         => _('txt-project'),
                     'value_options' => $projects,
-                    'help-block'    => _("txt-select-a-project-to-find-its-existing-partners")
+                    'help-block'    => _('txt-select-a-project-to-find-its-existing-partners')
                 ],
             ]
         );

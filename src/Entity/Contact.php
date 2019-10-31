@@ -265,13 +265,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $emailAddress;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Address", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
-     * @Annotation\ComposedObject("\Contact\Entity\Address")
      * @var Address[]|Collections\ArrayCollection
      */
     private $address;
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist","remove"}, mappedBy="contact", orphanRemoval=true)
-     * @Annotation\ComposedObject("\Contact\Entity\Phone")
      * @var Phone[]|Collections\ArrayCollection
      */
     private $phone;
@@ -383,7 +381,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $parentDoa;
     /**
      * @ORM\OneToOne(targetEntity="Contact\Entity\ContactOrganisation", cascade={"persist","remove"}, orphanRemoval=true, mappedBy="contact")
-     * @Annotation\Exclude()
      * @var ContactOrganisation
      */
     private $contactOrganisation;

@@ -12,19 +12,20 @@ declare(strict_types=1);
 
 namespace Contact\Form;
 
+use Deeplink\Entity\Target;
 use Doctrine\ORM\EntityManager;
+use DoctrineORMModule\Form\Element\EntitySelect;
+use Zend\Form\Element\Submit;
+use Zend\Form\Element\Text;
 use Zend\Form\Form;
 
 /**
- * Class Impersonate.
+ * Class Impersonate
+ *
+ * @package Contact\Form
  */
-class Impersonate extends Form
+final class Impersonate extends Form
 {
-    /**
-     * Impersonate constructor.
-     *
-     * @param EntityManager $entityManager
-     */
     public function __construct(EntityManager $entityManager)
     {
         parent::__construct();
@@ -33,10 +34,10 @@ class Impersonate extends Form
         $this->setAttribute('class', 'form-horizontal');
         $this->add(
             [
-                'type'       => 'DoctrineORMModule\Form\Element\EntitySelect',
+                'type'       => EntitySelect::class,
                 'name'       => 'target',
                 'options'    => [
-                    'target_class'   => 'Deeplink\Entity\Target',
+                    'target_class'   => Target::class,
                     'object_manager' => $entityManager,
                     'find_method'    => [
                         'name'   => 'findTargetsWithRoute',
@@ -45,37 +46,37 @@ class Impersonate extends Form
                             'orderBy'  => [],
                         ],
                     ],
-                    'help-block'     => _("txt-deeplink-target-form-element-explanation"),
+                    'help-block'     => _('txt-deeplink-target-form-element-explanation'),
                 ],
                 'attributes' => [
-                    'label' => _("txt-target"),
+                    'label' => _('txt-target'),
                     'class' => 'form-control',
-                    'id'    => "target",
+                    'id'    => 'target',
                 ],
             ]
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'key',
                 'options'    => [
-                    'help-block' => _("txt-deeplink-key-form-element-explanation"),
+                    'help-block' => _('txt-deeplink-key-form-element-explanation'),
                 ],
                 'attributes' => [
-                    'label'       => _("txt-key"),
+                    'label'       => _('txt-key'),
                     'class'       => 'form-control',
-                    'id'          => "key",
-                    'placeholder' => _("txt-key"),
+                    'id'          => 'key',
+                    'placeholder' => _('txt-key'),
                 ],
             ]
         );
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
-                    'class' => "btn btn-primary",
-                    'value' => _("txt-submit"),
+                    'class' => 'btn btn-primary',
+                    'value' => _('txt-submit'),
                 ],
             ]
         );

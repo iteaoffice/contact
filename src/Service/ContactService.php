@@ -28,13 +28,18 @@ use Contact\Entity\OptIn;
 use Contact\Entity\Phone;
 use Contact\Entity\PhoneType;
 use Contact\Entity\Photo;
+use Contact\Entity\Profile;
 use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Event\Entity\Booth\Booth;
 use General\Entity\Country;
+use General\Entity\Gender;
+use General\Entity\Title;
+use General\Service\CountryService;
 use General\Service\GeneralService;
 use InvalidArgumentException;
 use Organisation\Entity\Organisation;
@@ -98,6 +103,10 @@ class ContactService extends AbstractService implements SearchUpdateInterface
      * @var GeneralService
      */
     private $generalService;
+    /**
+     * @var CountryService
+     */
+    private $countryService;
     /**
      * @var AdminService
      */
@@ -169,14 +178,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $repository = $this->entityManager->getRepository(Contact::class);
 
         return $repository->findContactsWithDateOfBirth();
-    }
-
-    public function findContactsWithCV(): array
-    {
-        /** @var \Contact\Repository\Contact $repository */
-        $repository = $this->entityManager->getRepository(Contact::class);
-
-        return $repository->findContactsWithCV();
     }
 
     public function findDuplicateContacts(array $filter): QueryBuilder
@@ -709,9 +710,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $contact->getContactOrganisation()->getOrganisation()->getCountry();
     }
 
-    public function getMailAddress(Contact $contact): ?Address
+    public function getVisitAddress(Contact $contact): ?Address
     {
-        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_MAIL);
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_VISIT);
     }
 
     public function getAddressByTypeId(Contact $contact, int $typeId): ?Address
@@ -725,11 +726,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $this->addressService->findAddressByContactAndType($contact, $addressType);
     }
 
-    public function getVisitAddress(Contact $contact): ?Address
-    {
-        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_VISIT);
-    }
-
     public function getFinancialAddress(Contact $contact): ?Address
     {
         return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_FINANCIAL);
@@ -740,9 +736,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_BOOTH_FINANCIAL);
     }
 
-    public function getDirectPhone(Contact $contact): ?Phone
+    public function getMobilePhone(Contact $contact): ?Phone
     {
-        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
+        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
     }
 
     private function getPhoneByContactAndType(Contact $contact, int $type): ?Phone
@@ -757,11 +753,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 'type'    => $type,
             ]
         );
-    }
-
-    public function getMobilePhone(Contact $contact): ?Phone
-    {
-        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_MOBILE);
     }
 
     public function addNoteToContact(string $text, string $source, Contact $contact): Note
@@ -1291,7 +1282,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         /** Remove first the optIns which are not present in the optIn array */
         $contactOpIn = $contact->getOptIn();
         foreach ($contact->getOptIn() as $optIn) {
-            if (!isset($data['optIn']) || !in_array($optIn->getId(), $optInOptions, false)) {
+            if (!in_array($optIn->getId(), $optInOptions, false)) {
                 $contactOpIn->removeElement($optIn);
             }
         }
@@ -1310,6 +1301,94 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         $this->save($contact->setOptIn($contactOpIn));
+    }
+
+    public function updateContact(Contact $contact, array $formData): void
+    {
+        //Handle the contact information
+        $gender = $this->generalService->find(Gender::class, (int)$formData['contact']['gender']);
+        $title = $this->generalService->find(Title::class, (int)$formData['contact']['title']);
+        $contact->setGender($gender);
+        $contact->setTitle($title);
+        $contact->setFirstName($formData['contact']['firstName']);
+        $contact->setMiddleName(!empty($formData['contact']['middleName']) ? $formData['contact']['middleName'] : null);
+        $contact->setLastName($formData['contact']['lastName']);
+        $contact->setDepartment(!empty($formData['contact']['department']) ? $formData['contact']['department'] : null);
+        $contact->setPosition(!empty($formData['contact']['position']) ? $formData['contact']['position'] : null);
+
+        //Handle the phone data
+        foreach ($formData['phone'] as $phoneTypeId => $phoneNumber) {
+            /** @var PhoneType $type */
+            $type = $this->find(PhoneType::class, (int)$phoneTypeId);
+            $phone = $this->getPhoneByContactAndType($contact, (int)$phoneTypeId);
+
+            if (empty($phoneNumber) && null !== $phone) {
+                $this->delete($phone);
+            }
+
+            if (!empty($phoneNumber)) {
+                if (null === $phone) {
+                    $phone = new Phone();
+                    $phone->setType($type);
+                    $phone->setContact($contact);
+                }
+                $phone->setPhone($phoneNumber);
+                $this->save($phone);
+            }
+        }
+
+        //Handle the address
+        $address = $this->getMailAddress($contact);
+        if (!empty($formData['address']['address'])) {
+            if (null === $address) {
+                /** @var AddressType $mailAddressType */
+                $mailAddressType = $this->find(AddressType::class, AddressType::ADDRESS_TYPE_MAIL);
+                $address = new Address();
+                $address->setType($mailAddressType);
+                $address->setContact($contact);
+            }
+
+            $address->setAddress($formData['address']['address']);
+            $address->setZipCode($formData['address']['zipCode']);
+            $address->setCity($formData['address']['city']);
+
+            /** @var Country $country */
+            $country = $this->generalService->find(Country::class, (int)$formData['address']['country']);
+            $address->setCountry($country);
+
+            $this->save($address);
+        }
+
+        //Delete the address if the form is left empty
+        if (null !== $address && empty($formData['address']['address']) && empty($formData['address']['zipCode'])
+            && empty($data['address']['city'])
+            && empty($data['address']['country'])
+        ) {
+            $this->delete($address);
+        }
+
+        //Handle the profile
+        $profile = $contact->getProfile();
+        if (null === $profile) {
+            $profile = new Profile();
+            $profile->setContact($contact);
+        }
+
+        $profile->setVisible((int)$formData['profile']['visible']);
+        $profile->setDescription(
+            !empty($formData['profile']['description']) ? $formData['profile']['description'] : null
+        );
+        $this->save($profile);
+    }
+
+    public function getMailAddress(Contact $contact): ?Address
+    {
+        return $this->getAddressByTypeId($contact, AddressType::ADDRESS_TYPE_MAIL);
+    }
+
+    public function getDirectPhone(Contact $contact): ?Phone
+    {
+        return $this->getPhoneByContactAndType($contact, PhoneType::PHONE_TYPE_DIRECT);
     }
 
     public function findPossibleContactByCalendar(Calendar $calendar): array

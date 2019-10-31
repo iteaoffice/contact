@@ -14,17 +14,14 @@ namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Organisation\Entity\Organisation;
+use Organisation\Service\OrganisationService;
 use Zend\Form\Annotation;
 
 /**
- * Organisation.
- *
  * @ORM\Table(name="contact_organisation")
  * @ORM\Entity
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_organisation")
- *
- * @category    Contact
  */
 class ContactOrganisation extends AbstractEntity
 {
@@ -69,6 +66,17 @@ class ContactOrganisation extends AbstractEntity
     public function __isset($property)
     {
         return isset($this->$property);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'organisation_id' => $this->organisation->getId(),
+            'organisation'    => OrganisationService::parseBranch($this->branch, $this->organisation),
+            'branch'          => $this->branch,
+            'country'         => $this->organisation->getCountry()->getId(),
+            'type'            => $this->organisation->getType()->getId()
+        ];
     }
 
     public function getBranch(): ?string
