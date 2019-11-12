@@ -2,7 +2,7 @@
 {% do headTitle().append(contact.parseFullName()) %}
 {% do headTitle().append(translate("txt-organisation")) %}
 
-<h1>{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
+<h1>{{ translate("txt-hello-%s")|format(identity().parseFullName()) }}</h1>
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
@@ -25,6 +25,9 @@
 
 <h2>{{ translate("txt-organisation") }}</h2>
 {% if contact.contactOrganisation %}
+
+    {{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
+
     <dl class="dl-horizontal">
         <dt>{{ translate("txt-organisation") }}</dt>
         <dd>{{ contactService.parseOrganisation(contact) }}</dd>

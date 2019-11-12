@@ -34,7 +34,7 @@ use Testing\Util\AbstractServiceTest;
  */
 class ContactServiceTest extends AbstractServiceTest
 {
-    public function testCanCreateService()
+    public function testCanCreateService(): void
     {
         /** @var EntityManager $entityManager */
         $entityManager = $this->getEntityManagerMock();
@@ -42,7 +42,7 @@ class ContactServiceTest extends AbstractServiceTest
         $this->assertInstanceOf(ContactService::class, $service);
     }
 
-    public function testFindLeave()
+    public function testFindLeave(): void
     {
         /** @var EntityManager $entityManagerMock1 */
         $entityManagerMock1 = $this->getEntityManagerMock();
@@ -53,7 +53,7 @@ class ContactServiceTest extends AbstractServiceTest
 
         $repositoryMock = $this->getMockBuilder(LeaveRepository::class)
             ->disableOriginalConstructor()
-            ->setMethods(['matching'])
+            ->onlyMethods(['matching'])
             ->getMock();
         $repositoryMock->expects($this->once())
             ->method('matching')

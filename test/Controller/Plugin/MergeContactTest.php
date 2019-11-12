@@ -1170,7 +1170,8 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertSame(1, $this->target->getPageview()->count());
         $this->assertSame(1, $this->target->getPageview()->first()->getId());
 
-        $this->assertSame(1, $this->target->getOfficeContact()->getId());
+        //Office member cannot be merged
+        $this->assertNull($this->target->getOfficeContact());
 
         $this->assertSame(
             'Merged contact Test von Dummy (1) into Test von Dummy (2)',

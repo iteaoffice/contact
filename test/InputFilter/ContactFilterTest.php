@@ -63,14 +63,10 @@ class ContactFilterTest extends AbstractInputFilterTest
         $this->assertInstanceOf(ContactFilter::class, $contactFilter);
     }
 
-
-    /**
-     *
-     */
-    public function testContactInputFilterHasElements()
+    public function testContactInputFilterHasElements(): void
     {
         $entityManagerMockBuilder = $this->getMockBuilder(EntityManager::class)->disableOriginalConstructor();
-        $entityManagerMockBuilder->setMethods(['getRepository']);
+        $entityManagerMockBuilder->onlyMethods(['getRepository']);
 
         /** @var EntityManager $entityManagerMock */
         $entityManagerMock = $entityManagerMockBuilder->getMock();
@@ -96,6 +92,5 @@ class ContactFilterTest extends AbstractInputFilterTest
         $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('email'));
         $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('dateOfBirth'));
         $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('access'));
-        $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('organisation'));
     }
 }
