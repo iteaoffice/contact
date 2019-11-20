@@ -317,7 +317,7 @@ class Contact extends EntityRepository
             'projectChangelog',
             'projectCalendarReviewers',
             'projectReportReviewers',
-            //'projectVersionReviewer'
+            'projectVersionReviewers',
             'projectReportEffortSpent',
             'contract',
             'invite',
@@ -337,16 +337,17 @@ class Contact extends EntityRepository
             'affiliationVersion',
             'affiliationDescription',
             'projectBooth',
-            'organisationBooth'
+            'organisationBooth',
+            'officeContact',
+            'organisationUpdates'
         ];
-
 
         foreach ($relations as $relation) {
             $qb->leftJoin('contact_entity_contact.' . $relation, $relation);
             $qb->andWhere($qb->expr()->isNull($relation . '.id'));
         }
 
-        //Exclude the active selections
+        // Exclude the active selections
         $selectionContact = $this->_em->createQueryBuilder();
         $selectionContact->select('selectionContact.id');
         $selectionContact->from(Entity\SelectionContact::class, 'contact_entity_selection_contact');
@@ -357,7 +358,7 @@ class Contact extends EntityRepository
         $qb->andWhere($qb->expr()->notIn('contact_entity_contact.id', $selectionContact->getDQL()));
         $qb->orderBy('contact_entity_contact.id', Criteria::DESC);
 
-        //Add a constraint for a month
+        // Add a constraint for a month
         $lastMonth = new DateTime();
         $lastMonth->sub(new DateInterval('P1M'));
 
