@@ -25,6 +25,7 @@ use Contact\Entity\Email;
 use Contact\Entity\Log;
 use Contact\Entity\Note;
 use Contact\Entity\OptIn;
+use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Entity\Photo;
 use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,9 +33,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ErrorHeroModule\Handler\Logging;
 use Event\Entity\Exhibition\Tour;
 use Exception;
-use Program\Entity\Domain;
 use Program\Entity\Nda;
-use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
 use Zend\Http\PhpEnvironment\Request;
@@ -86,6 +85,11 @@ final class MergeContact extends AbstractPlugin
         // Can't merge the same contact
         if ($source->getId() === $target->getId()) {
             $errors[] = $this->translator->translate('txt-cant-merge-the-same-contact');
+        }
+
+        // Can't merge office contacts (too prone to errors and needs manual check)
+        if ($source->getOfficeContact() instanceof OfficeContact) {
+            $errors[] = $this->translator->translate('txt-cant-merge-office-contacts');
         }
 
         return $errors;
