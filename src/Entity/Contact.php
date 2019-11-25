@@ -1069,7 +1069,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function __toString(): string
     {
-        return (string)$this->id;
+        return (string) $this->getDisplayName();
     }
 
     public function parseFullName(): string
