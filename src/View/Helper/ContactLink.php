@@ -36,19 +36,12 @@ class ContactLink extends LinkAbstract
         $this->setHash($hash);
         $this->setFragment($fragment);
 
-        $this->setAlternativeShow($hash);
-        if (null !== $alternativeShow) {
-            $this->setAlternativeShow($alternativeShow);
-        }
-
         if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
             return '';
         }
         $this->setShowOptions(
             [
                 'email'           => $this->getContact()->getEmail(),
-                'paginator'       => $this->getAlternativeShow(),
-                'alternativeShow' => $this->getAlternativeShow(),
                 'firstname'       => $this->getContact()->getFirstName(),
                 'initials'        => $this->getContact()->parseInitials(),
                 'name'            => $this->getContact()->getDisplayName(),

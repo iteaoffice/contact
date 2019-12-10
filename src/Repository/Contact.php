@@ -327,7 +327,7 @@ class Contact extends EntityRepository
             'loi',
             'affiliationDoa',
             'parentDoa',
-            'journal',
+
             'invoiceLog',
             'achievement',
             'changeRequestProcess',
@@ -338,8 +338,9 @@ class Contact extends EntityRepository
             'affiliationDescription',
             'projectBooth',
             'organisationBooth',
-            'officeContact',
-            'organisationUpdates'
+            /* //More than 61 is not possible
+              'journal','officeContact',
+             'organisationUpdates'*/
         ];
 
         foreach ($relations as $relation) {
@@ -405,7 +406,7 @@ class Contact extends EntityRepository
             $subQuery->select('contact_entity_contact_' . $key);
             $subQuery->from($relation, $key);
             $subQuery->join($key . '.contact', 'contact_entity_contact_' . $key);
-            $subQuery->where($qb->expr()->eq('contact_entity_contact_' . $key . '.id', $contact));
+            $subQuery->where($qb->expr()->eq('contact_entity_contact_' . $key . '.id', $contact->getId()));
 
             //Project leaders are exempted from this constraint
             $today = new DateTime();
@@ -452,7 +453,7 @@ class Contact extends EntityRepository
             $subQuery->select('contact_entity_contact_' . $key);
             $subQuery->from($relation, $key);
             $subQuery->join($key . '.contact', 'contact_entity_contact_' . $key);
-            $subQuery->where($qb->expr()->eq('contact_entity_contact_' . $key . '.id', $contact));
+            $subQuery->where($qb->expr()->eq('contact_entity_contact_' . $key . '.id', $contact->getId()));
 
             $qb->andWhere($qb->expr()->notIn('contact_entity_contact', $subQuery->getDQL()));
         }

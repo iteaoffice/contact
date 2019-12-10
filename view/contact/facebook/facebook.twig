@@ -3,16 +3,16 @@
 <h1>{{ facebook }}</h1>
 
 {% if  contacts|length > 0 %}
-    <div class="row card-deck-row">
+    <div class="row row-cols-4 row-cols-lg-6">
         {% for contact in contacts %}
-            <div class="col-md-6 col-lg-3 col-xl-2">
-                <div class="card mb-4">
+            <div class="col mb-4">
+                <div class="card">
 
                     {% if contact.contact.hasPhoto() %}
                         <img class="card-img-top" src="{{ contactPhoto(contact.contact, 300, 350, true) }}"
                              alt="Card image cap">
                     {% else %}
-                        <div style="height: 55%"></div>
+                        <div style="height: 20%"></div>
                     {% endif %}
 
                     <div class="card-body">

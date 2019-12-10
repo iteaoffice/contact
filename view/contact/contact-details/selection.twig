@@ -22,7 +22,7 @@
             </tr>
             </tfoot>
             <tbody>
-            {% for selection in selections if not selection.dateDeleted %}
+            {% for selection in selections|filter(selection => selection.isActive()) -%}
                 <tr>
                     <td>{% if not selectionService.isSql(selection) %}<input type="checkbox" name="selection[]"
                                                                              value="{{ selection.id }}">{% endif %}</td>
@@ -36,10 +36,10 @@
                     <td>{% if selection.sql %}{{ translate("txt-sql") }}{% else %}{{ translate("txt-fixed") }}{% endif %}</td>
                 </tr>
             {% endfor %}
-            <tr>
+            <tr class="table-danger">
                 <td colspan="2">{{ translate("txt-deleted-selections") }}</td>
-                <td colspan="3">
-                    {% for selection in selections if selection.dateDeleted %}
+                <td colspan="4">
+                    {% for selection in selections|filter(selection => not selection.isActive()) -%}
                         {{ selectionLink(selection,'view','name') }},
                     {% endfor %}
                 </td>

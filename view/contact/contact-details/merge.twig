@@ -61,7 +61,7 @@
                             class="fa fa-envelope-o"></i></a></dd>
 
 
-            {% for email in contact.emailAddress if email.email != contact.email %}
+            {% for email in contact.emailAddress|filter(email => email.email != contact.email) -%}
                 {% if loop.first %}
                     <dt>{{ translate("txt-alternative-email") }}</dt>
                 {% endif %}

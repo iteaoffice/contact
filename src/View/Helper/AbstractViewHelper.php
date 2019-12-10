@@ -25,79 +25,46 @@ use ZfcTwig\View\TwigRenderer;
  */
 abstract class AbstractViewHelper extends AbstractHelper
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $serviceManager;
-    /**
-     * @var HelperPluginManager
-     */
-    protected $helperPluginManager;
-    /**
-     * @var RouteMatch
-     */
-    protected $routeMatch = null;
+    protected ContainerInterface $container;
+    protected HelperPluginManager $helperPluginManager;
+    protected ?RouteMatch $routeMatch;
 
     public function getRouteMatch(): ?RouteMatch
     {
         if (null === $this->routeMatch) {
-            $this->routeMatch = $this->getServiceManager()->get('application')->getMvcEvent()->getRouteMatch();
+            $this->routeMatch = $this->container->get('application')->getMvcEvent()->getRouteMatch();
         }
 
         return $this->routeMatch;
     }
 
-    /**
-     * @return ContainerInterface
-     */
-    public function getServiceManager(): ContainerInterface
+    public function getRenderer(): TwigRenderer
     {
-        return $this->serviceManager;
+        return $this->getContainer()->get(TwigRenderer::class);
     }
 
-    /**
-     * @param ContainerInterface $serviceManager
-     *
-     * @return AbstractViewHelper
-     */
-    public function setServiceManager($serviceManager): AbstractViewHelper
+    public function getContainer(): ContainerInterface
     {
-        $this->serviceManager = $serviceManager;
+        return $this->container;
+    }
+
+    public function setContainer($container): AbstractViewHelper
+    {
+        $this->container = $container;
 
         return $this;
     }
 
-    /**
-     * @return TwigRenderer
-     */
-    public function getRenderer()
-    {
-        return $this->getServiceManager()->get('ZfcTwigRenderer');
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
     public function translate($string): string
     {
         return $this->getHelperPluginManager()->get('translate')->__invoke($string);
     }
 
-    /**
-     * @return HelperPluginManager
-     */
     public function getHelperPluginManager(): HelperPluginManager
     {
         return $this->helperPluginManager;
     }
 
-    /**
-     * @param HelperPluginManager $helperPluginManager
-     *
-     * @return AbstractViewHelper
-     */
     public function setHelperPluginManager($helperPluginManager): AbstractViewHelper
     {
         $this->helperPluginManager = $helperPluginManager;

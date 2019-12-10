@@ -249,7 +249,7 @@ final class HandleImport extends AbstractPlugin
             }
 
             if (!empty($this->headerKeys['country'])) {
-                $country = $this->countryService->findCountryByName($content[$this->headerKeys['country']]);
+                $country = $this->countryService->findCountryByIso3($content[$this->headerKeys['country']]);
                 if (null === $country) {
                     $this->warnings[] = sprintf(
                         'Country (%s) in row %s cannot be found',
@@ -360,8 +360,8 @@ final class HandleImport extends AbstractPlugin
 
             $contact->setTitle($title);
 
-            if (isset($this->headerKeys['phone']) && !empty($content[$this->headerKeys['phone']])) {
-                $contact->setPosition($content[$this->headerKeys['phone']]);
+            if (isset($this->headerKeys['position']) && !empty($content[$this->headerKeys['position']])) {
+                $contact->setPosition($content[$this->headerKeys['position']]);
             }
 
             //If found, set the phone number
@@ -383,7 +383,7 @@ final class HandleImport extends AbstractPlugin
             $country = null;
 
             if (isset($this->headerKeys['country']) && !empty($content[$this->headerKeys['country']])) {
-                $country = $this->countryService->findCountryByName($content[$this->headerKeys['country']]);
+                $country = $this->countryService->findCountryByIso3($content[$this->headerKeys['country']]);
             }
 
             $organisation = null;

@@ -37,7 +37,7 @@
             {% endif %}
             <dt>{{ translate("txt-primary-email") }}</dt>
             <dd>{{ source.email }} <a href="mailto:{{ source.email }}"><i class="fa fa-envelope-o"></i></a></dd>
-            {% for email in source.emailAddress if email.email != source.email %}
+            {% for email in source.emailAddress|filter(email => email.email != source.email) -%}
                 {% if loop.first %}
                     <dt>{{ translate("txt-alternative-email") }}</dt>
                 {% endif %}
@@ -109,7 +109,7 @@
             {% endif %}
             <dt>{{ translate("txt-primary-email") }}</dt>
             <dd>{{ target.email }} <a href="mailto:{{ target.email }}"><i class="fa fa-envelope-o"></i></a></dd>
-            {% for email in target.emailAddress if email.email != target.email %}
+            {% for email in target.emailAddress|filter(email => email.email != target.email) -%}
                 {% if loop.first %}
                     <dt>{{ translate("txt-alternative-email") }}</dt>
                 {% endif %}

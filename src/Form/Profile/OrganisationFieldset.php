@@ -133,7 +133,7 @@ final class OrganisationFieldset extends Fieldset implements InputFilterProvider
     public function getInputFilterSpecification(): array
     {
         return [
-            'organisation' => [
+            'organisation'    => [
                 'required'   => true,
                 'validators' => [
                     new NotEmpty(NotEmpty::NULL),
@@ -153,7 +153,10 @@ final class OrganisationFieldset extends Fieldset implements InputFilterProvider
                     )
                 ]
             ],
-            'country'      => [
+            'organisation_id' => [
+                'required' => false,
+            ],
+            'country'         => [
                 'required'   => true,
                 'validators' => [
                     new NotEmpty(NotEmpty::NULL),

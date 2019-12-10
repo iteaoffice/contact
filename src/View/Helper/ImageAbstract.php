@@ -18,47 +18,27 @@ use Thumbor\Url\Builder;
 use Zend\View\Helper\Url;
 
 /**
- * Class LinkAbstract.
+ * Class ImageAbstract
+ *
+ * @package Contact\View\Helper
  */
 abstract class ImageAbstract extends AbstractViewHelper
 {
-    /**
-     * @var string
-     */
-    protected $router;
-    /**
-     * @var string
-     */
-    protected $imageId;
-    /**
-     * @var array List of parameters needed to construct the URL from the router
-     */
-    protected $routerParams = [];
-    /**
-     * @var array Classes to be given to the link
-     */
-    protected $classes = [];
-    /**
-     * @var int|int
-     */
-    protected $width;
-    /**
-     * @var int|null
-     */
-    protected $height;
-    /**
-     * @var array
-     */
-    protected $filter = [];
+    protected string $router;
+    protected string $imageId;
+    protected array $routerParams = [];
+    protected array $classes = [];
+    protected int $width = 100;
+    protected ?int $height = 100;
+    protected array $filter = [];
 
     public function createImageUrl(bool $onlyUrl = false): string
     {
         $url = $this->getHelperPluginManager()->get(Url::class);
 
         //Grab the ServerURL from the config to avoid problems with CLI code
-        $serverUrl = $this->getServiceManager()->get("Config")['deeplink']['serverUrl'];
-
-        $config = $this->getServiceManager()->get('content_module_config');
+        $serverUrl = $this->container->get("Config")['deeplink']['serverUrl'];
+        $config = $this->container->get('content_module_config');
 
         $thumberLink = Builder::construct(
             $config['image']['server'],
@@ -68,10 +48,6 @@ abstract class ImageAbstract extends AbstractViewHelper
             ->resize($this->width, $this->height)
             ->halign('center')
             ->smartCrop(false);
-
-        foreach ($this->filter as $filter) {
-            $thumberLink->addFilter($filter);
-        }
 
         $imageUrl = '<img src="%s" id="%s" class="%s">';
 

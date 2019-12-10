@@ -32,14 +32,12 @@ use Contact\Entity\Profile;
 use Contact\Entity\Selection;
 use Contact\Search\Service\ContactSearchService;
 use Contact\Search\Service\ProfileSearchService;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Event\Entity\Booth\Booth;
 use General\Entity\Country;
 use General\Entity\Gender;
 use General\Entity\Title;
-use General\Service\CountryService;
 use General\Service\GeneralService;
 use InvalidArgumentException;
 use Organisation\Entity\Organisation;
@@ -75,50 +73,17 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     public const WHICH_ALL = 1;
     public const WHICH_ONLY_ACTIVE = 2;
     public const WHICH_ONLY_EXPIRED = 3;
-    /**
-     * @var Contact[]
-     */
-    protected $contacts = [];
-    /**
-     * @var AddressService
-     */
-    private $addressService;
-    /**
-     * @var SelectionContactService
-     */
-    private $selectionContactService;
-    /**
-     * @var ContactSearchService
-     */
-    private $contactSearchService;
-    /**
-     * @var ProfileSearchService
-     */
-    private $profileSearchService;
-    /**
-     * @var OrganisationService
-     */
-    private $organisationService;
-    /**
-     * @var GeneralService
-     */
-    private $generalService;
-    /**
-     * @var CountryService
-     */
-    private $countryService;
-    /**
-     * @var AdminService
-     */
-    private $adminService;
-    /**
-     * @var HelperPluginManager
-     */
-    private $viewHelperManager;
-    /**
-     * @var ModuleOptions
-     */
-    private $userOptions;
+
+    protected array $contacts = [];
+    private AddressService $addressService;
+    private SelectionContactService $selectionContactService;
+    private ContactSearchService $contactSearchService;
+    private ProfileSearchService $profileSearchService;
+    private OrganisationService $organisationService;
+    private GeneralService $generalService;
+    private AdminService $adminService;
+    private HelperPluginManager $viewHelperManager;
+    private ModuleOptions $userOptions;
 
     public function __construct(
         EntityManager $entityManager,

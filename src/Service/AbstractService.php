@@ -24,10 +24,7 @@ use Doctrine\ORM\QueryBuilder;
  */
 abstract class AbstractService
 {
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
+    protected EntityManager $entityManager;
 
     public function __construct(EntityManager $entityManager)
     {

@@ -26,7 +26,7 @@
                 <td>{{ translate(optIn.getActive(true)) }}</td>
                 <td>
                     <input type="checkbox" name="optIn[]" value="{{ optIn.id }}"
-                           {% for contactOptIn in contact.optIn if optIn.id == contactOptIn.id %}checked="checked"{% endfor %}
+                           {% for contactOptIn in contact.optIn|filter(contactOptIn => optIn.id == contactOptIn.id) -%}checked="checked"{% endfor %}
                     >
                 </td>
             </tr>
@@ -50,7 +50,7 @@
         </thead>
         <tbody>
         {% for mailingContact in contact.mailingContact|reverse %}
-            <tr {% if mailingContact.mailing.dateDeleted %}class="table-danger"{% endif %}>
+            <tr {% if mailingContact.mailing.isDeleted() %}class="table-danger"{% endif %}>
                 <td><small class="text-muted">{{ loop.index }}</small></td>
                 <td><code>{{ mailingContact.mailing.id }}</code>
                     {% if mailingContact.mailing.dateDeleted %}
@@ -62,7 +62,7 @@
                     {{ mailingContactLink(mailingContact,'view','icon') }}
                 </td>
                 <td>
-                    <span title="{{ mailingContact.mailing.mailSubject }}">{{ mailingContact.mailing.mailSubject|truncate(25, false, "...") }}</span>
+                    <span title="{{ mailingContact.mailing.mailSubject }}">{{ mailingContact.mailing.mailSubject }}</span>
                 </td>
                 <td>{{ contactLink(mailingContact.mailing.contact,'view-admin','initials') }}</td>
                 <td>{{ mailingContact.dateSent|string_date }}</td>

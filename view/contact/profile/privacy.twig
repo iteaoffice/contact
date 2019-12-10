@@ -63,7 +63,7 @@
                     <td>{{ optIn.optIn }}</td>
                     <td>{{ optIn.description }}</td>
                     <td><input type="checkbox" name="optIn[]" value="{{ optIn.id }}"
-                               {% for contactOptIn in identity().optIn if optIn.id == contactOptIn.id %}checked="checked"{% endfor %}
+                               {% for contactOptIn in identity().optIn|filter(contactOptIn => optIn.id == contactOptIn.id) -%}checked="checked"{% endfor %}
                         ></td>
                 </tr>
             {% endfor %}

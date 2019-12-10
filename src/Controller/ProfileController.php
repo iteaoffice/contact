@@ -42,42 +42,15 @@ use function sprintf;
  */
 final class ProfileController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var AddressService
-     */
-    private $addressService;
-    /**
-     * @var OrganisationService
-     */
-    private $organisationService;
-    /**
-     * @var CallService
-     */
-    private $callService;
-    /**
-     * @var ModuleOptions
-     */
-    private $programModuleOptions;
-    /**
-     * @var GeneralService
-     */
-    private $generalService;
-    /**
-     * @var MeetingService
-     */
-    private $meetingService;
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private AddressService $addressService;
+    private OrganisationService $organisationService;
+    private CallService $callService;
+    private ModuleOptions $programModuleOptions;
+    private GeneralService $generalService;
+    private MeetingService $meetingService;
+    private EntityManager $entityManager;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,

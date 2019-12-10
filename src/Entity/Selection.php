@@ -213,6 +213,11 @@ class Selection extends AbstractEntity
         return $this->core === self::CORE;
     }
 
+    public function isSql(): bool
+    {
+        return null !== $this->sql;
+    }
+
     public function isActive(): bool
     {
         return null === $this->dateDeleted;

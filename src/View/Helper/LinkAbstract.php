@@ -16,18 +16,16 @@ namespace Contact\View\Helper;
 use BjyAuthorize\Controller\Plugin\IsAllowed;
 use BjyAuthorize\Service\Authorize;
 use Contact\Acl\Assertion\AbstractAssertion;
-use Contact\Acl\Assertion\AssertionAbstract;
 use Contact\Entity\AbstractEntity;
 use Contact\Entity\Address;
 use Contact\Entity\Contact;
 use Contact\Entity\Note;
 use Contact\Entity\Phone;
 use Contact\Entity\Selection;
+use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
-use Zend\Router\Http\RouteMatch;
 use Zend\View\Helper\ServerUrl;
 use Zend\View\Helper\Url;
-use Zend\View\HelperPluginManager;
 use function in_array;
 
 /**
@@ -35,92 +33,26 @@ use function in_array;
  */
 abstract class LinkAbstract extends AbstractViewHelper
 {
-    /**
-     * @var HelperPluginManager
-     */
-    protected $container;
-    /**
-     * @var RouteMatch
-     */
-    protected $routeMatch = null;
-    /**
-     * @var string Text to be placed as title or as part of the linkContent
-     */
-    protected $text;
-    /**
-     * @var string
-     */
-    protected $router;
-    /**
-     * @var string
-     */
-    protected $hash;
-    /**
-     * @var string
-     */
-    protected $action;
-    /**
-     * @var string
-     */
-    protected $show;
-    /**
-     * @var string
-     */
-    protected $alternativeShow;
-    /**
-     * @var array List of parameters needed to construct the URL from the router
-     */
-    protected $fragment = null;
-    /**
-     * @var array List of parameters needed to construct the URL from the router
-     */
-    protected $routerParams = [];
-    /**
-     * @var array List of parameters needed to construct the URL from the router
-     */
-    protected $queryParams = [];
-    /**
-     * @var array content of the link (will be imploded during creation of the link)
-     */
-    protected $linkContent = [];
-    /**
-     * @var array Classes to be given to the link
-     */
-    protected $classes = [];
-    /**
-     * @var array
-     */
-    protected $showOptions = [];
-    /**
-     * @var int
-     */
-    protected $page;
-    /**
-     * @var Contact
-     */
-    protected $contact;
-    /**
-     * @var Address
-     */
-    protected $address;
-    /**
-     * @var Note
-     */
-    protected $note;
-    /**
-     * @var Phone
-     */
-    protected $phone;
-    /**
-     * @var Selection
-     */
-    protected $selection;
+    protected ContainerInterface $container;
+    protected string $text;
+    protected string $router;
+    protected ?string $hash;
+    protected string $action;
+    protected string $show;
+    protected ?string $alternativeShow;
+    protected ?string $fragment;
+    protected array $routerParams = [];
+    protected array $queryParams = [];
+    protected array $linkContent = [];
+    protected array $classes = [];
+    protected array $showOptions = [];
+    protected ?int $page;
+    protected ?Contact $contact;
+    protected ?Address $address;
+    protected ?Note $note;
+    protected ?Phone $phone;
+    protected Selection $selection;
 
-    /**
-     * This function produces the link in the end.
-     *
-     * @return string
-     */
     public function createLink(): string
     {
         /**
@@ -157,7 +89,7 @@ abstract class LinkAbstract extends AbstractViewHelper
 
     public function parseAction(): void
     {
-        $this->action = null;
+        $this->action = '';
     }
 
     public function parseShow(): void
@@ -412,7 +344,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getAssertion($assertion)
     {
-        return $this->getServiceManager()->get($assertion);
+        return $this->container->get($assertion);
     }
 
     /**
@@ -420,7 +352,7 @@ abstract class LinkAbstract extends AbstractViewHelper
      */
     public function getAuthorizeService()
     {
-        return $this->getServiceManager()->get('BjyAuthorize\Service\Authorize');
+        return $this->container->get('BjyAuthorize\Service\Authorize');
     }
 
     /**

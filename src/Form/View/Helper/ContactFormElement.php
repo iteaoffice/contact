@@ -29,7 +29,7 @@ final class ContactFormElement extends FormElement
     /**
      * @var ContactService
      */
-    private $contactService;
+    private ContactService $contactService;
 
     public function __construct(
         ContactService $contactService,

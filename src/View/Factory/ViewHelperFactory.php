@@ -15,7 +15,6 @@ namespace Contact\View\Factory;
 use Contact\View\Helper\AbstractViewHelper;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\View\HelperPluginManager;
 
 /**
  * Class LinkInvokableFactory
@@ -24,20 +23,11 @@ use Zend\View\HelperPluginManager;
  */
 final class ViewHelperFactory implements FactoryInterface
 {
-    /**
-     * Create an instance of the requested class name.
-     *
-     * @param ContainerInterface|HelperPluginManager $container
-     * @param string                                 $requestedName
-     * @param null|array                             $options
-     *
-     * @return object
-     */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /** @var AbstractViewHelper $viewHelper */
         $viewHelper = new $requestedName($options);
-        $viewHelper->setServiceManager($container);
+        $viewHelper->setContainer($container);
         $viewHelper->setHelperPluginManager($container->get('ViewHelperManager'));
 
         return $viewHelper;

@@ -52,7 +52,7 @@
                                         class="fa fa-envelope-o"></i> </a></td>
                         <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
                         <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
-                        <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
+                        <td><a href="{{ contactLink(contact,'view-admin','social') }}">{{ projectService.findProjectParticipationByContact(contact)|length }}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

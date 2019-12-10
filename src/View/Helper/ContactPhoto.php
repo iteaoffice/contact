@@ -25,7 +25,7 @@ use Contact\Entity\Contact;
  *
  * @package Contact\View\Helper
  */
-class ContactPhoto extends ImageAbstract
+final class ContactPhoto extends ImageAbstract
 {
     public function __invoke(
         Contact $contact,

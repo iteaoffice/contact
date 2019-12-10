@@ -39,7 +39,7 @@ return [
                             'list-old'       => [
                                 'type'    => 'Segment',
                                 'options' => [
-                                    'route'    => '/list-old/[/f-:encodedFilter][/page-:page].html',
+                                    'route'    => '/list-old[/f-:encodedFilter][/page-:page].html',
                                     'defaults' => [
                                         'action' => 'list-old',
                                     ],

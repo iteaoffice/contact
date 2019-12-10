@@ -26,7 +26,7 @@
             </tr>
             </tfoot>
             <tbody>
-            {% for calendarContact in calendarService.findCalendarContactByContact(contact) if calendarContact.calendar.dateFrom|date('ymd') >= "now"|date('ymd') %}
+            {% for calendarContact in calendarService.findCalendarContactByContact(contact)|filter(calendarContact => calendarContact.calendar.dateFrom|date('ymd') >= "now"|date('ymd')) -%}
                 {% set calendar = calendarContact.calendar %}
                 <tr>
                     <td><input type="checkbox" name="calendarContact[]"
@@ -62,10 +62,10 @@
         </tr>
         </tfoot>
         <tbody>
-        {% for calendarContact in calendarService.findCalendarContactByContact(contact)|reverse  if calendarContact.calendar.dateFrom|date('ymd') < "now"|date('ymd') %}
+        {% for calendarContact in calendarService.findCalendarContactByContact(contact)|reverse|filter(calendarContact => calendarContact.calendar.dateFrom|date('ymd') < "now"|date('ymd')) -%}
             {% set calendar = calendarContact.calendar %}
-            <tr {% if calendar.dateFrom|date('ymd') > "now"|date('ymd') %}class="table-success"{% endif %}>
-                <td>{{ loop.index }}</td>
+            <tr>
+                <td><small class="text-muted">{{ loop.index }}</small></td>
                 <td>{{ calendarLink(calendar, 'view-admin', 'name') }}</td>
                 <td>{{ calendar.dateFrom|from_to_date(calendar.dateEnd) }} </td>
                 <td>{{ calendarContact.role }}</td>
