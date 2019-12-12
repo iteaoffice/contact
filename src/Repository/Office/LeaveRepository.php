@@ -1,6 +1,6 @@
 <?php
 /**
-*
+ *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Contact\Repository\Office;
 
-use Contact\Entity\Office\Leave;
 use Contact\Entity\Office\Contact as OfficeContact;
+use Contact\Entity\Office\Leave;
 use Contact\Repository\FilteredObjectRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
@@ -26,7 +26,9 @@ use DoctrineExtensions\Query\Mysql\Year;
  * Class LeaveRepository
  * @package Contact\Office\Repository
  */
-/*final*/ class LeaveRepository extends EntityRepository implements FilteredObjectRepository
+/*final*/
+
+class LeaveRepository extends EntityRepository implements FilteredObjectRepository
 {
     public function findFiltered(array $filter = []): QueryBuilder
     {
@@ -68,6 +70,9 @@ use DoctrineExtensions\Query\Mysql\Year;
                     break;
                 case 'dateEnd':
                     $queryBuilder->orderBy('l.dateEnd', $direction);
+                    break;
+                case 'type':
+                    $queryBuilder->orderBy('lt.type', $direction);
                     break;
             }
         } else {

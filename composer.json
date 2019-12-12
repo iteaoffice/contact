@@ -37,7 +37,8 @@
     "iteaoffice/testing": "^1.2",
     "iteaoffice/general": "^4.1",
     "iteaoffice/search": "^1.1",
-    "iteaoffice/affiliation": "^4.1"
+    "iteaoffice/affiliation": "^4.1",
+    "setasign/fpdi-tcpdf": "^2.2"
   },
   "autoload": {
     "psr-4": {
