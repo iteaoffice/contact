@@ -1,84 +1,77 @@
 <?php
+
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
+ *
+ * @link        http://github.com/iteaoffice/general for the canonical source repository
  */
 
 declare(strict_types=1);
 
 namespace Contact\View\Helper;
 
-use Contact\Acl\Assertion\Note as NoteAssertion;
 use Contact\Entity\Contact;
 use Contact\Entity\Note;
-use Exception;
-use function is_null;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
- * Create a link to an note.
- *
- * @category    Note
+ * Class PasswordLink
+ * @package General\View\Helper
  */
-class NoteLink extends LinkAbstract
+final class NoteLink extends AbstractLink
 {
-    /**
-     * @param Note|null    $note
-     * @param string       $action
-     * @param string       $show
-     * @param Contact|null $contact
-     *
-     * @return string
-     */
     public function __invoke(
         Note $note = null,
-        $action = 'view',
-        $show = 'name',
+        string $action = 'view',
+        string $show = 'text',
         Contact $contact = null
-    ) {
-        $this->setNote($note);
-        $this->setAction($action);
-        $this->setShow($show);
-        $this->setContact($contact);
+    ): string {
+        $note ??= new Note();
 
-        if (!$this->hasAccess($this->getNote(), NoteAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($note, \Contact\Acl\Assertion\Note::class, $action)) {
             return '';
         }
 
-        $this->setShowOptions(
-            [
-                'name' => $this->getNote()->getNote(),
-            ]
-        );
-        $this->addRouterParam('id', $this->getNote()->getId());
-        $this->addRouterParam('contact', $this->getContact()->getId());
+        $routeParams = [];
+        $showOptions = [];
 
-        return $this->createLink();
-    }
+        if (!$note->isEmpty()) {
+            $routeParams['id'] = $note->getId();
+            $showOptions['name'] = $note->getNote();
+        }
 
-    /**
-     * @throws Exception
-     */
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        if (null !== $contact) {
+            $routeParams['contact'] = $contact->getId();
+        }
+
+
+        switch ($action) {
             case 'new':
-                if (is_null($this->getContact())) {
-                    throw new Exception(sprintf("A contact is needed for a new note"));
-                }
-
-                $this->setRouter('zfcadmin/note/new');
-                $this->setText($this->translate("txt-new-note"));
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/note/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-note')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/note/edit');
-                $this->setText(sprintf($this->translate("txt-edit-note-%s"), $this->getNote()->getNote()));
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/note/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-note')
+                ];
                 break;
-            default:
-                throw new Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

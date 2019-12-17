@@ -49,7 +49,7 @@
         {% endif %}
         {% if contact.contactOrganisation.organisation.logo|length > 0 %}
             <dt>{{ translate("txt-logo") }}</dt>
-            <dd>{{ organisationLogo(contact.contactOrganisation.organisation, 300, false) }}</dd>
+            <dd>{{ organisationLogo(contact.contactOrganisation.organisation, 300) }}</dd>
         {% endif %}
     </dl>
 {% else %}

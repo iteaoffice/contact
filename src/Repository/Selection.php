@@ -23,7 +23,7 @@ use function in_array;
  *
  * @package Contact\Repository
  */
-final class Selection extends EntityRepository
+class Selection extends EntityRepository
 {
     public function findFiltered(array $filter): QueryBuilder
     {

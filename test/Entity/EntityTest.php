@@ -45,10 +45,7 @@ class EntityTest extends TestCase
 
                 $this->assertInstanceOf($className, $object);
                 $this->assertNull($object->getId());
-                $this->assertNull($object->id);
 
-                $object->id = 'test';
-                $this->assertSame('test', $object->id);
                 $this->assertTrue(isset($object));
 
                 $builder = new AnnotationBuilder();
@@ -97,7 +94,7 @@ class EntityTest extends TestCase
 
         file_put_contents(
             __DIR__ . '/../../config/language.php',
-            "<?php\n_(\"" . implode("\");\n_(\"", array_unique($labels)) . '");'
+            "<?php\n_(\"" . implode("');P\n_('", array_unique($labels)) . '");' . PHP_EOL
         );
     }
 }

@@ -1,73 +1,82 @@
 <?php
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
 
 namespace Contact\View\Helper\Office;
 
-use Contact\Entity\Contact;
 use Contact\Acl\Assertion\Office\ContactAssertion;
-use Contact\Entity\Office\Contact as OfficeContact;
-use Contact\View\Helper\LinkAbstract;
+use Contact\Entity\Office\Contact;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
  * Class ContactLink
  * @package Contact\View\Helper\Office
  */
-class ContactLink extends LinkAbstract
+final class ContactLink extends AbstractLink
 {
-    /**
-     * @var OfficeContact
-     */
-    private $officeContact;
-
     public function __invoke(
-        OfficeContact $officeContact = null,
-        string        $action = 'view',
-        string        $show = 'name'
+        Contact $officeContact = null,
+        string $action = 'view',
+        string $show = 'name'
     ): string {
-        $this->officeContact = $officeContact ?? (new OfficeContact())->setContact(new Contact());
-        $this->setAction($action);
-        $this->setShow($show);
+        $officeContact ??= new Contact();
 
-        if (!$this->hasAccess($this->officeContact, ContactAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($officeContact, ContactAssertion::class, $action)) {
             return '';
         }
-        $this->setShowOptions([
-            'name' => $this->officeContact->getContact()->getDisplayName(),
-        ]);
 
-        $this->addRouterParam('id', $this->officeContact->getId());
+        $routeParams = [];
+        $showOptions = [];
 
-        return $this->createLink();
-    }
+        if (!$officeContact->isEmpty()) {
+            $routeParams['id'] = $officeContact->getId();
+            $showOptions['name'] = $officeContact->getContact()->getDisplayName();
+        }
 
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        switch ($action) {
             case 'new':
-                $this->setRouter('zfcadmin/contact/office/new');
-                $this->setText($this->translate('txt-new-office-member'));
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/contact/office/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-office-member')
+                ];
                 break;
             case 'list':
-                $this->setRouter('zfcadmin/contact/office/list');
-                $this->setText($this->translate('txt-list-office-members'));
+                $linkParams = [
+                    'icon' => 'fa-list-ul',
+                    'route' => 'zfcadmin/contact/office/list',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-list-office-members')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/contact/office/edit');
-                $this->setText($this->translate('txt-edit-office-member'));
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/contact/office/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-office-member')
+                ];
                 break;
             case 'view':
-                $this->setRouter('zfcadmin/contact/office/view');
-                $this->setText($this->translate('txt-view-office-member'));
+                $linkParams = [
+                    'icon' => 'fa-user-o',
+                    'route' => 'zfcadmin/contact/office/view',
+                    'text' => $showOptions[$show] ?? $this->translator->translate('txt-view-office-member')
+                ];
                 break;
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

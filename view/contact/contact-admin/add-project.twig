@@ -70,7 +70,7 @@
                     </div>
                     <i class="fa fa-plus"></i> {{ translate("txt-add-new-affiliation") }} {{ organisationLink(organisation, 'view-admin') }}
                 </td>
-                <td>{{ organisationTypeLink(organisation.type,'view','type') }}</td>
+                <td>{{ organisationTypeLink(organisation.type,'view','name') }}</td>
                 <td>{{ organisation.country.iso3 }}</td>
                 <td>{{ contactLink(contact, 'view-admin','name') }}</td>
                 <td>0</td>
@@ -95,7 +95,7 @@
             {% for affiliation in associateIn %}
                 <tr>
                     <td>{{ affiliationLink(affiliation,'view-admin', 'organisation-branch') }}</td>
-                    <td>{% if affiliation.parentOrganisation %}{{ organisationTypeLink(affiliation.parentOrganisation.organisation.type,'view','type') }}{% else %}{{ organisationTypeLink(affiliation.organisation.type,'view','type') }}{% endif %}</td>
+                    <td>{% if affiliation.parentOrganisation %}{{ organisationTypeLink(affiliation.parentOrganisation.organisation.type,'view','name') }}{% else %}{{ organisationTypeLink(affiliation.organisation.type,'view','type') }}{% endif %}</td>
                     <td>{{ affiliation.organisation.country.iso3 }}</td>
                     <td>{{ contactLink(affiliation.contact, 'view-admin','name') }}</td>
                     <td>{{ affiliation.associate.count }}</td>

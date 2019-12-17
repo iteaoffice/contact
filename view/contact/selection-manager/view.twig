@@ -229,7 +229,7 @@
                         <td>{{ cost.description }} {{ meetingOptionCostLink(cost, 'edit', 'icon') }}</td>
                         <td>{{ meetingOptionLink(cost.option,'view') }}</td>
                         <td>&euro; {{ cost.amount }}  </td>
-                        <td>{{ vatLink(cost.vat,'view','code') }}</td>
+                        <td>{{ vatLink(cost.vat,'view','name') }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

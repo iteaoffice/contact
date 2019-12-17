@@ -9,7 +9,7 @@
                 <div class="card">
 
                     {% if contact.contact.hasPhoto() %}
-                        <img class="card-img-top" src="{{ contactPhoto(contact.contact, 300, 350, true) }}"
+                        <img class="card-img-top" src="{{ contactPhoto(contact.contact, 300, constant("\\General\\ValueObject\\Image\\ImageDecoration::SHOW_RAW")) }}"
                              alt="Card image cap">
                     {% else %}
                         <div style="height: 20%"></div>

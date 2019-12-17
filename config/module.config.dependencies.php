@@ -68,7 +68,6 @@ return [
         Form\ContactForm::class                    => [
             EntityManager::class
         ],
-
         ContactFormElement::class   => [
             ContactService::class,
             'ViewHelperManager',

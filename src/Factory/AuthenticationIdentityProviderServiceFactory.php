@@ -24,13 +24,6 @@ use Zend\ServiceManager\Factory\FactoryInterface;
  */
 final class AuthenticationIdentityProviderServiceFactory implements FactoryInterface
 {
-    /**
-     * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param array|null         $options
-     *
-     * @return AuthenticationIdentityProvider
-     */
     public function __invoke(
         ContainerInterface $container,
         $requestedName,

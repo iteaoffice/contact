@@ -19,53 +19,41 @@ declare(strict_types=1);
 namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
+use General\ValueObject\Image\Image;
+use General\ValueObject\Image\ImageDecoration;
+use General\View\Helper\AbstractImage;
 
 /**
  * Class ContactPhoto
  *
  * @package Contact\View\Helper
  */
-final class ContactPhoto extends ImageAbstract
+final class ContactPhoto extends AbstractImage
 {
     public function __invoke(
         Contact $contact,
         int $width = null,
-        int $height = null,
-        bool $onlyUrl = false,
-        bool $responsive = false,
-        bool $grayscale = false
+        string $show = ImageDecoration::SHOW_IMAGE
     ): string {
-        $this->filter = [];
-        $this->classes = [];
-
         $photo = null === $contact->getPhoto() ? false : $contact->getPhoto()->first();
 
         if (!$photo) {
             return '';
         }
 
-        $this->setRouter('image/contact-photo');
+        $linkParams = [];
+        $linkParams['route'] = 'image/contact-photo';
+        $linkParams['show'] = $show;
+        $linkParams['width'] = $width;
 
-        $this->addRouterParam('ext', $photo->getContentType()->getExtension());
-        $this->addRouterParam('last-update', $photo->getDateUpdated()->getTimestamp());
-        $this->addRouterParam('id', $photo->getId());
+        $routeParams = [
+            'id' => $photo->getId(),
+            'ext' => $photo->getContentType()->getExtension(),
+            'last-update' => $photo->getDateUpdated()->getTimestamp(),
+        ];
 
-        $this->setImageId('contact_photo_' . $photo->getId());
+        $linkParams['routeParams'] = $routeParams;
 
-        if ($grayscale) {
-            $this->addFilter('grayscale');
-        }
-        if ($responsive) {
-            $this->addClasses('img-responsive img-fluid');
-        }
-
-        if (null !== $width) {
-            $this->setWidth($width);
-        }
-        if (null !== $height) {
-            $this->setHeight($height);
-        }
-
-        return $this->createImageUrl($onlyUrl);
+        return $this->parse(Image::fromArray($linkParams));
     }
 }

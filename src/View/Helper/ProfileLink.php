@@ -1,68 +1,67 @@
 <?php
+
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
+ *
+ * @link        http://github.com/iteaoffice/general for the canonical source repository
  */
 
 declare(strict_types=1);
 
 namespace Contact\View\Helper;
 
-use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Entity\Contact;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
- * Class ProfileLink
- *
- * @package Contact\View\Helper
+ * Class PasswordLink
+ * @package General\View\Helper
  */
-class ProfileLink extends LinkAbstract
+final class ProfileLink extends AbstractLink
 {
     public function __invoke(
-        Contact $contact = null,
+        Contact $contact,
         string $action = 'profile',
-        string $show = 'name',
-        string $hash = null
+        string $show = 'name'
     ): string {
-        $this->setContact($contact);
-        $this->setAction($action);
-        $this->setShow($show);
-        $this->setHash($hash);
-
-        if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
+        if (!$this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
             return '';
         }
-        $this->setShowOptions(
-            [
-                'name' => $this->getContact()->getDisplayName(),
-            ]
-        );
-        $this->addRouterParam('hash', $hash);
-        $this->addRouterParam('id', $this->getContact()->getId());
 
-        return $this->createLink();
-    }
+        $routeParams = [];
+        $showOptions = [];
 
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        $routeParams['id'] = $contact->getId();
+        $showOptions['name'] = $contact->parseFullName();
+
+
+        switch ($action) {
             case 'profile':
-                $this->setRouter('community/contact/profile/view');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-view-profile-of-contact-%s'),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $linkParams = [
+                    'icon' => 'fa-user-o',
+                    'route' => 'community/contact/profile/view',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-view-profile')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('community/contact/profile/edit');
-                $this->setText($this->translate('txt-edit-your-profile'));
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'community/contact/profile/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-your-profile')
+                ];
                 break;
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

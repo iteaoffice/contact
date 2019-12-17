@@ -1,115 +1,83 @@
 <?php
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
 
 namespace Contact\View\Helper;
 
-use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 use Contact\Entity\Facebook;
-use Exception;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
- * Create a link to an facebook.
- *
- * @category    Facebook
+ * Class FacebookLink
+ * @package Contact\View\Helper
  */
-final class FacebookLink extends LinkAbstract
+final class FacebookLink extends AbstractLink
 {
-    protected Facebook $facebook;
-
     public function __invoke(
         Facebook $facebook = null,
-        $action = 'view',
-        $show = 'name',
-        $page = null,
-        $alternativeShow = null
-    ) {
-        $this->setFacebook($facebook);
-        $this->setAction($action);
-        $this->setShow($show);
-        $this->setPage($page);
+        string $action = 'view',
+        string $show = 'name'
+    ): string {
+        $facebook ??= new Facebook();
 
-        if (!$this->hasAccess($this->getFacebook(), FacebookAssertion::class, $this->getAction())) {
-            return '';
+        $routeParams = [];
+        $showOptions = [];
+        if (!$facebook->isEmpty()) {
+            $routeParams['id'] = $facebook->getId();
+            $showOptions['name'] = $facebook->getFacebook();
         }
 
-        /*
-         * If the alternativeShow is not null, use it an otherwise take the page
-         */
-        if ($alternativeShow !== null) {
-            $this->setAlternativeShow($alternativeShow);
-        } else {
-            $this->setAlternativeShow($page);
-        }
-
-        $this->setShowOptions(
-            [
-                'name' => $this->getFacebook()->getFacebook(),
-            ]
-        );
-        $this->addRouterParam('id', $this->getFacebook()->getId());
-
-        return $this->createLink();
-    }
-
-    public function getFacebook()
-    {
-        if ($this->facebook === null) {
-            $this->facebook = new Facebook();
-        }
-
-        return $this->facebook;
-    }
-
-    public function setFacebook($facebook)
-    {
-        $this->facebook = $facebook;
-    }
-
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        switch ($action) {
             case 'new':
-                $this->setRouter('zfcadmin/facebook/new');
-                $this->setText($this->translate('txt-new-facebook'));
-                break;
-            case 'list':
-                $this->setRouter('zfcadmin/facebook/list');
-                $this->setText($this->translate('txt-list-facebooks'));
-                $this->addQueryParam('page', $this->getPage());
-
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/facebook/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-facebook')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/facebook/edit');
-                $this->setText(sprintf($this->translate('txt-edit-facebook-%s'), $this->getFacebook()->getFacebook()));
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/facebook/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-facebook')
+                ];
                 break;
             case 'view-community':
-                $this->setRouter('community/contact/facebook/view');
-                $this->setText(sprintf($this->translate('txt-view-facebook-%s'), $this->getFacebook()->getFacebook()));
+                $linkParams = [
+                    'icon' => 'fa-users',
+                    'route' => 'community/contact/facebook/view',
+                    'text' => $showOptions[$show] ?? $facebook->getFacebook()
+                ];
                 break;
             case 'send-message':
-                $this->setRouter('community/contact/facebook/send-message');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-send-message-to-%s'),
-                        $this->getFacebook()->getFacebook()
-                    )
-                );
+                $linkParams = [
+                'icon' => 'fa-users',
+                'route' => 'community/contact/facebook/send-message',
+                'text' => $showOptions[$show] ?? $this->translator->translate('txt-send-message')
+                ];
                 break;
             case 'view-admin':
-                $this->setRouter('zfcadmin/facebook/view');
-                $this->setText(sprintf($this->translate('txt-view-facebook-%s'), $this->getFacebook()->getFacebook()));
+                $linkParams = [
+                    'icon' => 'fa-users',
+                    'route' => 'zfcadmin/facebook/view',
+                    'text' => $showOptions[$show] ?? $facebook->getFacebook()
+                ];
                 break;
-            default:
-                throw new Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

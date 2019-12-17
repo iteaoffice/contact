@@ -24,7 +24,7 @@ use function in_array;
  *
  * @package Contact\Repository
  */
-final class OptIn extends EntityRepository
+class OptIn extends EntityRepository
 {
     public function findFiltered(array $filter): QueryBuilder
     {

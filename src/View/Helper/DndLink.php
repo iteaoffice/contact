@@ -1,15 +1,9 @@
 <?php
-
 /**
- * ITEA Office all rights reserved
  *
- * @category   Program
- *
- * @author     Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright  Copyright (c) 2019 ITEA Office (https://itea3.org)
- * @license    https://itea3.org/license.txt proprietary
- *
- * @link       https://itea3.org
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -18,51 +12,63 @@ namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Dnd;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
  * Class DndLink
- *
- * @package Program\View\Helper
+ * @package Contact\View\Helper
  */
-class DndLink extends LinkAbstract
+final class DndLink extends AbstractLink
 {
     public function __invoke(
         Dnd $dnd = null,
         string $action = 'view',
-        string $show = 'button',
-        ?Contact $contact = null
+        string $show = 'name',
+        Contact $contact = null
     ): string {
-        $this->setAction($action);
-        $this->setShow($show);
+        $dnd ??= new Dnd();
 
-        if ($dnd !== null) {
-            $this->addRouterParam('id', $dnd->getId());
-        }
-        if ($contact !== null) {
-            $this->addRouterParam('contactId', $contact->getId());
+        $routeParams = [];
+        $showOptions = [];
+        if (!$dnd->isEmpty()) {
+            $routeParams['id'] = $dnd->getId();
         }
 
-        $this->parseAction();
+        if (null !== $contact) {
+            $routeParams['contactId'] = $contact->getId();
+        }
 
-        return $this->createLink();
-    }
-
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        switch ($action) {
             case 'new':
-                $this->setRouter('zfcadmin/contact/dnd/new');
-                $this->setText($this->translate('txt-upload-dnd'));
+                $linkParams = [
+                    'icon' => 'fa-upload',
+                    'route' => 'zfcadmin/contact/dnd/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-upload-dnd')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/contact/dnd/edit');
-                $this->setText($this->translate('txt-edit-dnd'));
-                break;
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/contact/dnd/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-dnd')
+                ];
                 break;
             case 'download':
-                $this->setRouter('zfcadmin/contact/dnd/download');
-                $this->setText($this->translate('txt-download-dnd'));
+                $linkParams = [
+                    'icon' => 'fa-download',
+                    'route' => 'zfcadmin/contact/dnd/download',
+                    'text' => $showOptions[$show] ?? $this->translator->translate('txt-download-dnd')
+                ];
                 break;
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

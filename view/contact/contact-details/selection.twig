@@ -1,6 +1,6 @@
 {% include 'contact/contact-details/header' %}
 
-<h2>{{ translate("txt-selections") }} {{ selectionLink(null, 'add-contact', 'button', null, null, contact) }}</h2>
+<h2>{{ translate("txt-selections") }} {{ selectionLink(null, 'add-contact', 'button', contact) }}</h2>
 
 {% if selections|length > 0 %}
     <form method="post">
@@ -50,7 +50,7 @@
     </form>
 {% else %}
     {{ ztbalert().info(translate("txt-contact-%s-is-not-active-in-any-selection")|format(contact.parseFullName()))|raw }}
-    {{ selectionLink(null, 'add-contact', 'button', null, null, contact) }}
+    {{ selectionLink(null, 'add-contact', 'button', ontact) }}
 {% endif %}
 
 {% if not contact.deeplinkContact.isEmpty() %}

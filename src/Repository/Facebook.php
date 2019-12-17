@@ -22,7 +22,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
  *
  * @package Contact\Repository
  */
-final class Facebook extends EntityRepository
+class Facebook extends EntityRepository
 {
     public function findFacebookByRoles(array $roles): array
     {

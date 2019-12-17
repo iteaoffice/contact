@@ -244,6 +244,7 @@ final class SelectionExport extends AbstractPlugin
                 break;
 
             case self::EXPORT_EXCEL:
+            default:
                 return $this->parseExcelResponse();
         }
     }
@@ -259,11 +260,11 @@ final class SelectionExport extends AbstractPlugin
         $headers->addHeaders(
             [
                 'Content-Disposition' => 'attachment; filename="Export ' . $this->selection->getSelection() . '.csv"',
-                'Content-Type'        => 'text/csv',
-                'Content-Length'      => strlen($this->csv),
-                'Expires'             => '@0', // @0, because ZF2 parses date as string to \DateTime() object
-                'Cache-Control'       => 'must-revalidate',
-                'Pragma'              => 'public',
+                'Content-Type' => 'text/csv',
+                'Content-Length' => strlen($this->csv),
+                'Expires' => '@0', // @0, because ZF2 parses date as string to \DateTime() object
+                'Cache-Control' => 'must-revalidate',
+                'Pragma' => 'public',
             ]
         );
         $response->setHeaders($headers);
@@ -300,11 +301,11 @@ final class SelectionExport extends AbstractPlugin
         $headers->addHeaders(
             [
                 'Content-Disposition' => 'attachment; filename="Export ' . $this->selection->getSelection() . '.xlsx"',
-                'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Length'      => $contentLength,
-                'Expires'             => '@0', // @0, because ZF2 parses date as string to \DateTime() object
-                'Cache-Control'       => 'must-revalidate',
-                'Pragma'              => 'public',
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Length' => $contentLength,
+                'Expires' => '@0', // @0, because ZF2 parses date as string to \DateTime() object
+                'Cache-Control' => 'must-revalidate',
+                'Pragma' => 'public',
             ]
         );
         if ($gzip) {
