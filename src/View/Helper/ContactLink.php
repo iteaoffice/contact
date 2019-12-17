@@ -27,6 +27,10 @@ final class ContactLink extends AbstractLink
     ): string {
         $contact ??= new Contact();
 
+        if (!$this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
+            return '';
+        }
+
         $routeParams = [];
         $showOptions = [];
         if (!$contact->isEmpty()) {

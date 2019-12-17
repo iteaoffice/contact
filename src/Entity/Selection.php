@@ -182,25 +182,10 @@ class Selection extends AbstractEntity
         return self::$coreTemplates;
     }
 
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
     public function __clone()
     {
         $this->id = null;
         $this->selection = sprintf('%s (copy)', $this->selection);
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
     }
 
     public function __toString(): string

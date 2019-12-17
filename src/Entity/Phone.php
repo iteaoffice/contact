@@ -46,18 +46,13 @@ class Phone extends AbstractEntity
     private $phone;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="phone")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
-     *
      * @var Contact
      */
     private $contact;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\PhoneType", cascade={"persist"}, inversedBy="phone")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false)
-     * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\PhoneType"})
      * @Annotation\Attributes({"label":"txt-type"})
