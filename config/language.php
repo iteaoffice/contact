@@ -1,5 +1,5 @@
 <?php
-_("txt-opt-in-title-placeholder');
+_('txt-opt-in-title-placeholder');
 _('txt-opt-in-title-title');
 _('txt-opt-in-title-help-block');
 _('txt-opt-in-active-title');
@@ -104,4 +104,4 @@ _('txt-contact-department-help-block');
 _('txt-contact-date-of-birth-label');
 _('txt-contact-date-of-birth-help-block');
 _('txt-contact-access-label');
-_('txt-contact-access-help-block");
+_('txt-contact-access-help-block');
