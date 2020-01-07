@@ -15,11 +15,11 @@ namespace Contact\Form;
 
 use Contact\Entity\Selection;
 use Contact\Service\SelectionService;
-use Zend\Form\Element\MultiCheckbox;
-use Zend\Form\Element\Submit;
-use Zend\Form\Element\Text;
-use Zend\Form\Fieldset;
-use Zend\Form\Form;
+use Laminas\Form\Element\MultiCheckbox;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Element\Text;
+use Laminas\Form\Fieldset;
+use Laminas\Form\Form;
 
 /**
  * Class SelectionFilter
@@ -63,7 +63,7 @@ final class SelectionFilter extends Form
 
         $tags = [];
         foreach ($selectionService->findTags() as $tag) {
-            if (!empty($tag['tag'])) {
+            if (! empty($tag['tag'])) {
                 $tags[$tag['tag']] = $tag['tag'];
             }
         }

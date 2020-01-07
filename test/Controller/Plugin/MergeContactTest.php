@@ -89,9 +89,9 @@ use Project\Entity\Workpackage\Workpackage;
 use Publication\Entity\Download;
 use Publication\Entity\Publication;
 use Testing\Util\AbstractServiceTest;
-use Zend\I18n\Translator\Translator;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Stdlib\DispatchableInterface;
+use Laminas\I18n\Translator\Translator;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Stdlib\DispatchableInterface;
 use function count;
 
 /**

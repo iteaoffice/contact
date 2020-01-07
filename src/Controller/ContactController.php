@@ -21,11 +21,11 @@ use Contact\Service\ContactService;
 use Search\Form\SearchResult;
 use Search\Paginator\Adapter\SolariumPaginator;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
-use Zend\Http\Request;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Paginator\Paginator;
-use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
+use Laminas\Http\Request;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Paginator\Paginator;
+use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
 use function sprintf;
 
 /**
@@ -35,18 +35,9 @@ use function sprintf;
  */
 final class ContactController extends ContactAbstractController
 {
-    /***
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var ProfileSearchService
-     */
-    private $profileSearchService;
+    private ContactService $contactService;
+    private TranslatorInterface $translator;
+    private ProfileSearchService $profileSearchService;
 
     public function __construct(
         ContactService $contactService,

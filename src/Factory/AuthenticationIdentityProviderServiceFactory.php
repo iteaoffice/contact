@@ -1,13 +1,10 @@
 <?php
-
 /**
- * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize).
  *
- * @link    https://github.com/bjyoungblood/BjyAuthorize for the canonical source repository
- *
- * @license http://framework.zend.com/license/new-bsd New BSD License
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
-
 declare(strict_types=1);
 
 namespace Contact\Factory;
@@ -15,7 +12,7 @@ namespace Contact\Factory;
 use Admin\Service\AdminService;
 use Contact\Provider\Identity\AuthenticationIdentityProvider;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Class AuthenticationIdentityProviderServiceFactory

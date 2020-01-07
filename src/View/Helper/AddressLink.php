@@ -32,14 +32,14 @@ final class AddressLink extends AbstractLink
     ): string {
         $address ??= new Address();
 
-        if (!$this->hasAccess($address, \Contact\Acl\Assertion\Address::class, $action)) {
+        if (! $this->hasAccess($address, \Contact\Acl\Assertion\Address::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (!$address->isEmpty()) {
+        if (! $address->isEmpty()) {
             $routeParams['id'] = $address->getId();
             $showOptions['name'] = $address->getAddress();
         }

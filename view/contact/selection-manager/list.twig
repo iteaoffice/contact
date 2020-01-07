@@ -27,6 +27,7 @@
             <table class="table table-hover table-striped table-sm">
                 <thead>
                 <tr>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'id', 'text': translate("txt-id")} %}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'name', 'text': translate("txt-name")} %}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'owner', 'text': translate("txt-owner")} %}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'core', 'text': translate("txt-core")} %}</th>
@@ -39,6 +40,7 @@
                 <tbody>
                 {% for selection in paginator.getCurrentItems() %}
                     <tr {% if selection.dateDeleted %}class="table-danger"{% endif %}>
+                        <td><small class="text-muted">{{ selection.id }}</small> </td>
                         <td>
                             {% if selection.dateDeleted %}
                                 <i class="fa fa-trash" title="{{ selection.dateDeleted|string_date }}"></i>

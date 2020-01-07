@@ -20,7 +20,6 @@
 {% if deeplink %}
     <h2>{{ translate("txt-deeplinks") }}</h2>
     <p>{{ translate("txt-use-the-deeplink-to-visit-the-target-use-a-new-private-session") }}</p>
-    {{ deeplinkLink(deeplink,'view') }}
-    {{ deeplinkLink(deeplink,'view','qr-code') }}
-    <a href="{{ deeplinkLink(deeplink,'view') }}" class="btn btn-primary">{{ translate("txt-impersonate") }}</a>
+    {{ deeplinkLink(deeplink) }}
+    <a href="{{ deeplinkLink(deeplink) }}" class="btn btn-primary">{{ translate("txt-impersonate") }}</a>
 {% endif %}

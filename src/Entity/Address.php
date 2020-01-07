@@ -14,12 +14,12 @@ namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use General\Entity\Country;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * @ORM\Table(name="contact_address")
  * @ORM\Entity(repositoryClass="Contact\Repository\Address")
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_address")
  */
 class Address extends AbstractEntity
@@ -35,7 +35,7 @@ class Address extends AbstractEntity
     private $id;
     /**
      * @ORM\Column(name="address", type="string", length=1000, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @Annotation\Type("\Laminas\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-address"})
      *
      * @var string
@@ -43,7 +43,7 @@ class Address extends AbstractEntity
     private $address;
     /**
      * @ORM\Column(name="zipcode", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-zip-code"})
      *
      * @var string
@@ -51,7 +51,7 @@ class Address extends AbstractEntity
     private $zipCode;
     /**
      * @ORM\Column(name="city", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-city"})
      *
      * @var string
@@ -70,7 +70,7 @@ class Address extends AbstractEntity
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="address")
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
      * @var Contact
      */

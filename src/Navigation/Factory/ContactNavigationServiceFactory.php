@@ -15,10 +15,10 @@ namespace Contact\Navigation\Factory;
 use Contact\Navigation\Service\ContactNavigationService;
 use Contact\Service\ContactService;
 use Interop\Container\ContainerInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Navigation\Navigation;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Navigation\Navigation;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Class ContactNavigationServiceFactory

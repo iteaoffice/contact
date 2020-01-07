@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * @ORM\Table(name="contact_office")
@@ -38,7 +38,7 @@ class Contact extends AbstractEntity
     private $id;
     /**
      * @ORM\Column(name="hours", type="smallint", options={"unsigned":true})
-     * @Annotation\Type("\Zend\Form\Element\Number")
+     * @Annotation\Type("\Laminas\Form\Element\Number")
      * @Annotation\Options({"label":"txt-hours"})
      *
      * @var int
@@ -54,7 +54,7 @@ class Contact extends AbstractEntity
     private $dateCreated;
     /**
      * @ORM\Column(name="date_end", type="datetime", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Date")
+     * @Annotation\Type("\Laminas\Form\Element\Date")
      * @Annotation\Options({"label":"txt-end-date"})
      *
      * @var DateTime
@@ -62,7 +62,7 @@ class Contact extends AbstractEntity
     private $dateEnd;
     /**
      * @ORM\Column(name="calendar_color", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Color")
+     * @Annotation\Type("\Laminas\Form\Element\Color")
      * @Annotation\Options({"label":"txt-calendar-color"})
      *
      * @var string

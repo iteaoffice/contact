@@ -16,8 +16,8 @@ use Contact\Entity\Address;
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\View\Model\ViewModel;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\View\Model\ViewModel;
 
 /**
  * Class AddressManagerController
@@ -26,18 +26,9 @@ use Zend\View\Model\ViewModel;
  */
 final class AddressManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private FormService $formService;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
@@ -67,7 +58,7 @@ final class AddressManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /** @var Address $address */
                 $address = $form->getData();
                 $address->setContact($contact);
@@ -120,7 +111,7 @@ final class AddressManagerController extends ContactAbstractController
                     );
             }
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 $address = $form->getData();
                 $this->contactService->save($address);
 

@@ -31,7 +31,7 @@ final class SelectionLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (!$selection->isEmpty()) {
+        if (! $selection->isEmpty()) {
             $routeParams['id'] = $selection->getId();
             $showOptions['name'] = $selection->getSelection();
         }

@@ -19,9 +19,9 @@ namespace Contact\Service;
 use Contact\Entity\AbstractEntity;
 use Contact\Form\CreateObject;
 use Doctrine\ORM\EntityManager;
-use Zend\Form\Form;
-use Zend\InputFilter\InputFilter;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\Form\Form;
+use Laminas\InputFilter\InputFilter;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class FormService
@@ -53,7 +53,7 @@ class FormService
          *
          * But if the class a class is injected, we will change it into the className but hint the user to use a string
          */
-        if (!$classNameOrEntity instanceof AbstractEntity) {
+        if (! $classNameOrEntity instanceof AbstractEntity) {
             $classNameOrEntity = new $classNameOrEntity();
         }
 

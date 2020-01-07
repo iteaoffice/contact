@@ -16,42 +16,48 @@ return [
                     'contact' => [
                         'order' => 60,
                         'label' => _('txt-contacts'),
-                        'id'    => 'community/contact',
+                        'id' => 'community/contact',
                         'route' => 'community/contact/profile/view',
                         'pages' => [
                             'view-profile' => [
                                 'label' => _('txt-account-information'),
                                 'route' => 'community/contact/profile/view',
                                 'pages' => [
-                                    'organisation'                => [
+                                    'organisation' => [
                                         'label' => _('txt-profile-organisation'),
                                         'route' => 'community/contact/profile/organisation',
+                                        'pages' => [
+                                            'update-organisation' => [
+                                                'label' => _('txt-update-organisation'),
+                                                'route' => 'community/organisation/update',
+                                            ],
+                                        ]
                                     ],
-                                    'events'                      => [
+                                    'events' => [
                                         'label' => _('txt-profile-events'),
                                         'route' => 'community/contact/profile/events',
                                     ],
-                                    'privacy'                     => [
+                                    'privacy' => [
                                         'label' => _('txt-profile-privacy'),
                                         'route' => 'community/contact/profile/privacy',
                                     ],
-                                    'edit'                        => [
+                                    'edit' => [
                                         'label' => _('txt-profile-edit'),
                                         'route' => 'community/contact/profile/edit',
                                     ],
-                                    'manage-body'                 => [
+                                    'manage-body' => [
                                         'label' => _('txt-manage-profile'),
                                         'route' => 'community/contact/profile/manage-body',
                                     ],
-                                    'manage-hlg'                  => [
+                                    'manage-hlg' => [
                                         'label' => _('txt-manage-hlg-npc'),
                                         'route' => 'community/contact/profile/manage-hlg',
                                     ],
-                                    'manage-external'             => [
+                                    'manage-external' => [
                                         'label' => _('txt-manage-subscriptions'),
                                         'route' => 'community/contact/profile/manage-external',
                                     ],
-                                    'change-password'             => [
+                                    'change-password' => [
                                         'label' => _('txt-manage-password'),
                                         'route' => 'community/contact/change-password',
                                     ],
@@ -59,7 +65,7 @@ return [
                                         'label' => _('txt-subscribe'),
                                         'route' => 'community/mailing/subscribe',
                                     ],
-                                    'manage-subscriptions'        => [
+                                    'manage-subscriptions' => [
                                         'label' => _('txt-manage-subscriptions'),
                                         'route' => 'community/mailing/manage-subscriptions',
                                     ],

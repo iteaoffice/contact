@@ -27,9 +27,9 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use General\View\Factory\ImageHelperFactory;
 use General\View\Factory\LinkHelperFactory;
-use Zend\Form\ElementFactory;
-use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
-use Zend\Stdlib;
+use Laminas\Form\ElementFactory;
+use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
+use Laminas\Stdlib;
 
 $config = [
     'controllers' => [

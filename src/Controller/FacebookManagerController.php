@@ -15,26 +15,18 @@ namespace Contact\Controller;
 use Contact\Entity\Facebook;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\View\Model\ViewModel;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\View\Model\ViewModel;
 
 /**
- *
+ * Class FacebookManagerController
+ * @package Contact\Controller
  */
 final class FacebookManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private FormService $formService;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
@@ -126,7 +118,7 @@ final class FacebookManagerController extends ContactAbstractController
                 return $this->redirect()->toRoute('zfcadmin/facebook/list');
             }
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 $this->flashMessenger()->addSuccessMessage(
                     sprintf(
                         $this->translator->translate('txt-facebook-%s-has-successfully-been-updated'),
@@ -134,7 +126,7 @@ final class FacebookManagerController extends ContactAbstractController
                     )
                 );
 
-                if (!isset($data['contact_entity_facebook']['access'])) {
+                if (! isset($data['contact_entity_facebook']['access'])) {
                     $facebook->setAccess(null);
                 }
 

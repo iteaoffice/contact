@@ -150,18 +150,18 @@ class Contact extends EntityRepository
 
 
         /** Only when the filter is turned on, omit this extra rule */
-        if (!(array_key_exists('options', $filter)
+        if (! (array_key_exists('options', $filter)
                 && in_array(
                     'includeDeactivated',
                     $filter['options'],
                     true
                 ))
-            && (isset($filter['options']) && !in_array('onlyDeactivated', $filter['options'], true))
+            && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options'], true))
         ) {
             $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
         }
 
-        if (!isset($filter['options'])) {
+        if (! isset($filter['options'])) {
             $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
         }
 
@@ -174,7 +174,7 @@ class Contact extends EntityRepository
         }
 
 
-        if (array_key_exists('country', $filter) && !empty($filter['country'])) {
+        if (array_key_exists('country', $filter) && ! empty($filter['country'])) {
             $qb->innerJoin(
                 'contact_entity_contact.contactOrganisation',
                 'contact_entity_contact_organisation_for_country'
@@ -587,7 +587,7 @@ class Contact extends EntityRepository
         $qb->orWhere('contact_entity_contact.email = ?1');
         $qb->setParameter(1, $email);
 
-        if (!$onlyMain) {
+        if (! $onlyMain) {
             $qb->leftJoin('contact_entity_contact.emailAddress', 'contact_entity_email');
             $qb->orWhere('contact_entity_email.email = ?2');
             $qb->setParameter(2, $email);

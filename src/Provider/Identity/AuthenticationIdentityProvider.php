@@ -1,12 +1,12 @@
 <?php
 /**
- * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize).
  *
- * @link    https://github.com/bjyoungblood/BjyAuthorize for the canonical source repository
+ * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  *
- * @license http://framework.zend.com/license/new-bsd New BSD License
+ * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
-
 declare(strict_types=1);
 
 namespace Contact\Provider\Identity;
@@ -14,20 +14,17 @@ namespace Contact\Provider\Identity;
 use Admin\Service\AdminService;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\Permissions\Acl\Role\RoleInterface;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Permissions\Acl\Role\RoleInterface;
 
 /**
  * Class AuthenticationIdentityProvider
  *
  * @package Contact\Provider\Identity
  */
-class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityProvider
+final class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityProvider
 {
-    /**
-     * @var AdminService;
-     */
-    private $adminService;
+    private AdminService $adminService;
 
     public function __construct(AuthenticationService $authService, AdminService $adminService)
     {
@@ -37,7 +34,7 @@ class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityP
 
     public function getIdentityRoles(): array
     {
-        if (!$identity = $this->authService->getIdentity()) {
+        if (! $identity = $this->authService->getIdentity()) {
             return [$this->defaultRole];
         }
         if ($identity instanceof RoleInterface) {

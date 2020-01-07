@@ -18,7 +18,7 @@ use Contact\Service\SelectionContactService;
 use Doctrine\ORM\EntityManager;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
-use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
+use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 
 return [
     ConfigAbstractFactory::class => [

@@ -18,13 +18,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use General\Entity\ContentType;
 use Program\Entity\Program;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 use function sprintf;
 
 /**
  * @ORM\Table(name="contact_dnd")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_dnd")
  */
 class Dnd extends AbstractEntity
@@ -95,7 +95,7 @@ class Dnd extends AbstractEntity
      */
     private $program;
     /**
-     * @Annotation\Type("\Zend\Form\Element\File")
+     * @Annotation\Type("\Laminas\Form\Element\File")
      * @Annotation\Options({"label":"txt-dnd-file"})
      *
      * @var ContentType

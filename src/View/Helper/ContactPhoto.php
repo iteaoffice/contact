@@ -37,7 +37,7 @@ final class ContactPhoto extends AbstractImage
     ): string {
         $photo = null === $contact->getPhoto() ? false : $contact->getPhoto()->first();
 
-        if (!$photo) {
+        if (! $photo) {
             return '';
         }
 

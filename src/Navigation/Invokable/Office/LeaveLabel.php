@@ -6,7 +6,7 @@ namespace Contact\Navigation\Invokable\Office;
 
 use Admin\Navigation\Invokable\AbstractNavigationInvokable;
 use Contact\Entity\Office\Leave;
-use Zend\Navigation\Page\Mvc;
+use Laminas\Navigation\Page\Mvc;
 
 /**
  * Class LeaveLabel

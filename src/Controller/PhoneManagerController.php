@@ -15,8 +15,8 @@ namespace Contact\Controller;
 use Contact\Entity\Phone;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\View\Model\ViewModel;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\View\Model\ViewModel;
 
 /**
  * Class PhoneManagerController
@@ -25,18 +25,9 @@ use Zend\View\Model\ViewModel;
  */
 final class PhoneManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private FormService $formService;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
@@ -62,7 +53,7 @@ final class PhoneManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /**
                  * @var $phone Phone
                  */
@@ -107,7 +98,7 @@ final class PhoneManagerController extends ContactAbstractController
                     );
             }
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 $phone = $form->getData();
                 $this->contactService->save($phone);
             }

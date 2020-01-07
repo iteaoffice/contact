@@ -31,11 +31,11 @@ use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use InvalidArgumentException;
 use Throwable;
-use Zend\Http\Response;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Paginator\Paginator;
-use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
+use Laminas\Http\Response;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Paginator\Paginator;
+use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
 use function set_time_limit;
 use function strlen;
 
@@ -46,34 +46,13 @@ use function strlen;
  */
 final class SelectionManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var SelectionContactService
-     */
-    private $selectionContactService;
-    /**
-     * @var SelectionService
-     */
-    private $selectionService;
-    /**
-     * @var DeeplinkService
-     */
-    private $deeplinkService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private SelectionContactService $selectionContactService;
+    private SelectionService $selectionService;
+    private DeeplinkService $deeplinkService;
+    private FormService $formService;
+    private EntityManager $entityManager;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
@@ -173,7 +152,7 @@ final class SelectionManagerController extends ContactAbstractController
 
             /** @var Target $target */
             $target = $this->deeplinkService->find(Target::class, (int)$data['target']);
-            $key = (!empty($data['key']) ? $data['key'] : null);
+            $key = (! empty($data['key']) ? $data['key'] : null);
 
             //Create a deeplink for the user which redirects to the profile-page
             foreach ($this->selectionContactService->findContactsInSelection($selection) as $contact) {
@@ -299,14 +278,14 @@ final class SelectionManagerController extends ContactAbstractController
             );
         }
 
-        if (!$this->selectionService->canRemoveSelection($selection)) {
+        if (! $this->selectionService->canRemoveSelection($selection)) {
             $form->remove('delete');
 
             if ($selection->isActive()) {
                 $form->remove('reactivate');
             }
 
-            if (!$selection->isActive()) {
+            if (! $selection->isActive()) {
                 $form->remove('deactivate');
             }
         }
@@ -487,7 +466,7 @@ final class SelectionManagerController extends ContactAbstractController
                 'name'         => $contact->getFormName(),
                 'id'           => $contact->getId(),
                 'email'        => $contact->getEmail(),
-                'organisation' => !$contact->hasOrganisation() ? null
+                'organisation' => ! $contact->hasOrganisation() ? null
                     : $contact->getContactOrganisation()->getOrganisation()->getOrganisation(),
             ];
         }

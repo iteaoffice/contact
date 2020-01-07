@@ -45,15 +45,15 @@ use Project\Service\ProjectService;
 use Search\Form\SearchResult;
 use Search\Paginator\Adapter\SolariumPaginator;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
-use Zend\Http\Request;
-use Zend\Http\Response;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Paginator\Paginator;
-use Zend\Session\Container;
-use Zend\Validator\File\ImageSize;
-use Zend\Validator\File\MimeType;
-use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Paginator\Paginator;
+use Laminas\Session\Container;
+use Laminas\Validator\File\ImageSize;
+use Laminas\Validator\File\MimeType;
+use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
 use function array_merge_recursive;
 use function http_build_query;
 use function implode;
@@ -69,70 +69,22 @@ use function trim;
  */
 class ContactAdminController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var ContactSearchService
-     */
-    private $contactSearchService;
-    /**
-     * @var SelectionService
-     */
-    private $selectionService;
-    /**
-     * @var OrganisationService
-     */
-    private $organisationService;
-    /**
-     * @var CallService
-     */
-    private $callService;
-    /**
-     * @var ProjectService
-     */
-    private $projectService;
-    /**
-     * @var IdeaService
-     */
-    private $ideaService;
-    /**
-     * @var AdminService
-     */
-    private $adminService;
-    /**
-     * @var RegistrationService
-     */
-    private $registrationService;
-    /**
-     * @var DeeplinkService
-     */
-    private $deeplinkService;
-    /**
-     * @var GeneralService
-     */
-    private $generalService;
-    /**
-     * @var AffiliationService
-     */
-    private $affiliationService;
-    /**
-     * @var BoothService
-     */
-    private $boothService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
+    private ContactService $contactService;
+    private ContactSearchService $contactSearchService;
+    private SelectionService $selectionService;
+    private OrganisationService $organisationService;
+    private CallService $callService;
+    private ProjectService $projectService;
+    private IdeaService $ideaService;
+    private AdminService $adminService;
+    private RegistrationService $registrationService;
+    private DeeplinkService $deeplinkService;
+    private GeneralService $generalService;
+    private AffiliationService $affiliationService;
+    private BoothService $boothService;
+    private FormService $formService;
+    private TranslatorInterface $translator;
+    private EntityManager $entityManager;
 
     public function __construct(
         ContactService $contactService,
@@ -401,7 +353,7 @@ class ContactAdminController extends ContactAbstractController
 
             /** @var Target $target */
             $target = $this->deeplinkService->find(Target::class, (int)$data['target']);
-            $key = (!empty($data['key']) ? $data['key'] : null);
+            $key = (! empty($data['key']) ? $data['key'] : null);
             //Create a deeplink for the user which redirects to the profile-page
             $deeplink = $this->deeplinkService->createDeeplink($target, $contact, null, $key);
         }
@@ -458,7 +410,7 @@ class ContactAdminController extends ContactAbstractController
             $form->remove('deactivate');
         }
 
-        if (!$this->contactService->canDeleteContact($contact)) {
+        if (! $this->contactService->canDeleteContact($contact)) {
             $form->remove('delete');
         }
 
@@ -524,7 +476,7 @@ class ContactAdminController extends ContactAbstractController
                 $contact = $form->getData();
 
                 //Reset the access when the array is empty
-                if (!isset($data['contact_entity_contact']['access'])) {
+                if (! isset($data['contact_entity_contact']['access'])) {
                     $contact->setAccess(new ArrayCollection());
                 }
 
@@ -556,12 +508,12 @@ class ContactAdminController extends ContactAbstractController
                 //Handle the file upload
                 $fileData = $this->params()->fromFiles();
 
-                if (!empty($fileData['file']['name'])
+                if (! empty($fileData['file']['name'])
                     && $fileData['file']['error'] === 0
                 ) {
                     /** @var Photo $photo */
                     $photo = $contact->getPhoto()->first();
-                    if (!$photo) {
+                    if (! $photo) {
                         //Create a photo element
                         $photo = new Photo();
                     }
@@ -838,7 +790,7 @@ class ContactAdminController extends ContactAbstractController
                 } else {
                     $affiliation = $this->affiliationService->find(Affiliation::class, (int)$data['affiliation']);
                 }
-                if (!$affiliation->getAssociate()->contains($contact)) {
+                if (! $affiliation->getAssociate()->contains($contact)) {
                     $affiliation->addAssociate($contact);
                 }
                 $this->affiliationService->save($affiliation);

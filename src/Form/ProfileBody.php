@@ -15,9 +15,9 @@ namespace Contact\Form;
 use Contact\Entity\OptIn;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
-use Zend\Form\Element\Submit;
-use Zend\Form\Form;
-use Zend\InputFilter\InputFilterProviderInterface;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Form;
+use Laminas\InputFilter\InputFilterProviderInterface;
 use function sprintf;
 
 final class ProfileBody extends Form implements InputFilterProviderInterface

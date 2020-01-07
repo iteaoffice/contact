@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Contact\Form\View\Helper;
 
-use Zend\Form\ElementInterface;
+use Laminas\Form\ElementInterface;
 use Zf3Bootstrap4\Form\View\Helper\FormElement;
 
 /**

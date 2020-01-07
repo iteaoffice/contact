@@ -27,10 +27,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Zend\Http\Headers;
-use Zend\Http\Response;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Http\Headers;
+use Laminas\Http\Response;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use function strlen;
 
 /**
@@ -43,38 +43,14 @@ final class SelectionExport extends AbstractPlugin
     public const EXPORT_CSV = 1;
     public const EXPORT_EXCEL = 2;
 
-    /**
-     * @var Spreadsheet
-     */
-    private $excel;
-    /**
-     * @var string
-     */
-    private $csv;
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var SelectionContactService
-     */
-    private $selectionContactService;
-    /**
-     * @var  AddressService
-     */
-    private $addressService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var int
-     */
-    private $type = self::EXPORT_CSV;
-    /**
-     * @var Selection
-     */
-    private $selection;
+    private Spreadsheet $excel;
+    private string $csv;
+    private ContactService $contactService;
+    private SelectionContactService $selectionContactService;
+    private AddressService $addressService;
+    private TranslatorInterface $translator;
+    private int $type = self::EXPORT_CSV;
+    private Selection $selection;
 
     public function __construct(
         ContactService $contactService,
@@ -275,7 +251,7 @@ final class SelectionExport extends AbstractPlugin
     public function parseExcelResponse(): Response
     {
         $response = new Response();
-        if (!($this->excel instanceof Spreadsheet)) {
+        if (! ($this->excel instanceof Spreadsheet)) {
             return $response->setStatusCode(Response::STATUS_CODE_404);
         }
 

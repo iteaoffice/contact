@@ -14,7 +14,7 @@ namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * AddressType.

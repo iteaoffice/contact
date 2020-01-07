@@ -19,11 +19,11 @@ use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Country;
 use Organisation\Entity\Organisation;
 use Organisation\Entity\Type;
-use Zend\Form\Element;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
-use Zend\Validator\Callback;
-use Zend\Validator\NotEmpty;
+use Laminas\Form\Element;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\Callback;
+use Laminas\Validator\NotEmpty;
 use function sprintf;
 
 /**
@@ -143,11 +143,11 @@ final class OrganisationFieldset extends Fieldset implements InputFilterProvider
                                 Callback::INVALID_VALUE => 'Please choose an organisation when "None of the above" is chosen',
                             ],
                             'callback' => static function (string $value, array $context) {
-                                if (!empty($value)) {
+                                if (! empty($value)) {
                                     return true;
                                 }
 
-                                return !empty($context['organisation_id']);
+                                return ! empty($context['organisation_id']);
                             },
                         ]
                     )
@@ -166,11 +166,11 @@ final class OrganisationFieldset extends Fieldset implements InputFilterProvider
                                 Callback::INVALID_VALUE => 'Please choose a country when "None of the above" is chosen',
                             ],
                             'callback' => static function (string $value, array $context) {
-                                if (!empty($value)) {
+                                if (! empty($value)) {
                                     return true;
                                 }
 
-                                return !empty($context['organisation_id']);
+                                return ! empty($context['organisation_id']);
                             },
                         ]
                     )

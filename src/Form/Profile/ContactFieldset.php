@@ -17,9 +17,9 @@ use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Gender;
 use General\Entity\Title;
-use Zend\Form\Element;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
+use Laminas\Form\Element;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
 /**
  * Class AddressFieldset

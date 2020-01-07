@@ -20,13 +20,13 @@ use Event\Entity\Meeting\Meeting;
 use Event\Entity\Meeting\OptionCost;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Mailing\Entity\Mailing;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * @ORM\Table(name="selection")
  * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
  * @Gedmo\SoftDeleteable(fieldName="dateDeleted")
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_selection")
  */
 class Selection extends AbstractEntity
@@ -42,7 +42,7 @@ class Selection extends AbstractEntity
     public const TYPE_SQL = 1;
     public const TYPE_FIXED = 2;
 
-    protected static $coreTemplates
+    protected static array $coreTemplates
         = [
             self::NOT_CORE => 'txt-not-core',
             self::CORE     => 'txt-core',
@@ -52,14 +52,14 @@ class Selection extends AbstractEntity
      * @ORM\Column(name="selection_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
      * @var int
      */
     private $id;
     /**
      * @ORM\Column(name="selection", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-selection"})
      *
      * @var string
@@ -67,7 +67,7 @@ class Selection extends AbstractEntity
     private $selection;
     /**
      * @ORM\Column(name="tag", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-tag"})
      *
      * @var string
@@ -90,7 +90,7 @@ class Selection extends AbstractEntity
     private $dateDeleted;
     /**
      * @ORM\Column(name="note", type="text", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @Annotation\Type("\Laminas\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-selection-note-label","help-block":"txt-selection-note-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-selection-note-placeholder"})
      *
@@ -108,7 +108,7 @@ class Selection extends AbstractEntity
     private $contact;
     /**
      * @ORM\Column(name="core", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"coreTemplates"})
      * @Annotation\Options({"label":"txt-selection-core-label","help-block":"txt-selection-core-help-block"})
      *

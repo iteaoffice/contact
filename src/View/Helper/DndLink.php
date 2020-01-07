@@ -31,7 +31,7 @@ final class DndLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (!$dnd->isEmpty()) {
+        if (! $dnd->isEmpty()) {
             $routeParams['id'] = $dnd->getId();
         }
 

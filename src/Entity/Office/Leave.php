@@ -15,7 +15,7 @@ namespace Contact\Entity\Office;
 use Contact\Entity\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Entity for ITEA office employee leave.
@@ -32,7 +32,7 @@ class Leave extends AbstractEntity
      * @ORM\Column(name="leave_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      * @Annotation\Attributes({"id":"leave-id"})
      *
      * @var int
@@ -71,7 +71,7 @@ class Leave extends AbstractEntity
     private $type;
     /**
      * @ORM\Column(name="description", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"maxlength":255, "id":"description", "required":"required"})
      * @Annotation\Options({"label":"txt-description"})
      *
@@ -80,7 +80,7 @@ class Leave extends AbstractEntity
     private $description;
     /**
      * @ORM\Column(name="date_start", type="date", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Date")
+     * @Annotation\Type("\Laminas\Form\Element\Date")
      * @Annotation\Options({"label":"txt-start-date"})
      * @Annotation\Attributes({"id":"date-start", "required":"required"})
      *
@@ -89,7 +89,7 @@ class Leave extends AbstractEntity
     private $dateStart;
     /**
      * @ORM\Column(name="date_end", type="date", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Date")
+     * @Annotation\Type("\Laminas\Form\Element\Date")
      * @Annotation\Options({"label":"txt-end-date"})
      * @Annotation\Attributes({"id":"date-end", "required":"required"})
      *
@@ -98,7 +98,7 @@ class Leave extends AbstractEntity
     private $dateEnd;
     /**
      * @ORM\Column(name="hours", type="decimal", precision=6, scale=2)
-     * @Annotation\Type("\Zend\Form\Element\Number")
+     * @Annotation\Type("\Laminas\Form\Element\Number")
      * @Annotation\Options({"label":"txt-hours"})
      * @Annotation\Attributes({"id":"hours", "required":"required","step":0.1})
      *

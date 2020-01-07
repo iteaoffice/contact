@@ -42,8 +42,8 @@
         {% for deeplink in deeplinks %}
             <tr>
                 <td>{{ contactLink(deeplink.contact,'view-admin','name') }}</td>
-                <td>{{ deeplinkLink(deeplink.deeplink,'view') }}</td>
-                <td><a href="{{ deeplinkLink(deeplink.deeplink,'view') }}">{{ deeplinkLink(deeplink.deeplink,'view') }}</a></td>
+                <td>{{ deeplinkLink(deeplink.deeplink) }}</td>
+                <td><a href="{{ deeplinkLink(deeplink.deeplink) }}">{{ deeplinkLink(deeplink.deeplink) }}</a></td>
             </tr>
         {% endfor %}
         </tbody>

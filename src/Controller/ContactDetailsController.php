@@ -26,9 +26,9 @@ use Event\Service\BoothService;
 use Event\Service\RegistrationService;
 use Program\Service\CallService;
 use Project\Service\ProjectService;
-use Zend\Http\Request;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\View\Model\ViewModel;
+use Laminas\Http\Request;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\View\Model\ViewModel;
 use function sprintf;
 
 /**
@@ -38,46 +38,16 @@ use function sprintf;
  */
 final class ContactDetailsController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var SelectionService
-     */
-    private $selectionService;
-    /**
-     * @var CallService
-     */
-    private $callService;
-    /**
-     * @var ProjectService
-     */
-    private $projectService;
-    /**
-     * @var CalendarService
-     */
-    private $calendarService;
-    /**
-     * @var AdminService
-     */
-    private $adminService;
-    /**
-     * @var RegistrationService
-     */
-    private $registrationService;
-    /**
-     * @var BoothService
-     */
-    private $boothService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
+    private ContactService $contactService;
+    private SelectionService $selectionService;
+    private CallService $callService;
+    private ProjectService $projectService;
+    private CalendarService $calendarService;
+    private AdminService $adminService;
+    private RegistrationService $registrationService;
+    private BoothService $boothService;
+    private TranslatorInterface $translator;
+    private EntityManager $entityManager;
 
     public function __construct(
         ContactService $contactService,

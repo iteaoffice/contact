@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Contact\Form;
 
-use Zend\Form\Element\Submit;
-use Zend\Form\Form;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Form;
 
 final class Password extends Form
 {

@@ -17,11 +17,11 @@ use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity;
-use Zend\Form\Element\MultiCheckbox;
-use Zend\Form\Element\Submit;
-use Zend\Form\Element\Text;
-use Zend\Form\Fieldset;
-use Zend\Form\Form;
+use Laminas\Form\Element\MultiCheckbox;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Element\Text;
+use Laminas\Form\Fieldset;
+use Laminas\Form\Form;
 
 /**
  * Class ContactFilter

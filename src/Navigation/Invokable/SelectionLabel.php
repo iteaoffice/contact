@@ -13,7 +13,7 @@ namespace Contact\Navigation\Invokable;
 
 use Admin\Navigation\Invokable\AbstractNavigationInvokable;
 use Contact\Entity\Selection;
-use Zend\Navigation\Page\Mvc;
+use Laminas\Navigation\Page\Mvc;
 
 /**
  * Class FunderLabel

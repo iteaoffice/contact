@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Contact\Form\Element;
 
 use Contact\Entity;
-use Zend\Form\Element;
+use Laminas\Form\Element;
 
 /**
  * Class Contact

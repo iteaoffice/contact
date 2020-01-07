@@ -15,14 +15,14 @@ namespace Contact\Entity;
 use Admin\Entity\Access;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Entity for the Facebook.
  *
  * @ORM\Table(name="facebook")
  * @ORM\Entity(repositoryClass="Contact\Repository\Facebook")
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_facebook")
  *
  * @category    Contact
@@ -58,7 +58,7 @@ class Facebook extends AbstractEntity
      */
     public const IS_PUBLIC = 1;
 
-    protected static $displayTemplates
+    protected static array $displayTemplates
         = [
             self::DISPLAY_NONE         => 'txt-empty',
             self::DISPLAY_ORGANISATION => 'txt-organisation',
@@ -67,14 +67,14 @@ class Facebook extends AbstractEntity
             self::DISPLAY_PROJECTS     => 'txt-projects',
         ];
 
-    protected static $showEmailTemplates
+    protected static array $showEmailTemplates
         = [
             self::SHOW_EMAIL_NO     => 'txt-hide-email',
             self::SHOW_EMAIL_MEMBER => 'txt-show-email-to-members',
             self::SHOW_EMAIL_ALL    => 'txt-show-email-to-all',
         ];
 
-    protected static $showPhoneTemplates
+    protected static array $showPhoneTemplates
         = [
             self::SHOW_PHONE_NO            => 'txt-hide-phone',
             self::SHOW_PHONE_MEMBER        => 'txt-show-phone-to-members',
@@ -82,13 +82,13 @@ class Facebook extends AbstractEntity
             self::SHOW_PHONE_ALL           => 'txt-show-phone-to-all',
         ];
 
-    protected static $canSendMessageTemplates
+    protected static array $canSendMessageTemplates
         = [
             self::CAN_NOT_SEND_MESSAGE => 'txt-cannot-send-message',
             self::CAN_SEND_MESSAGE     => 'txt-can-send-message',
         ];
 
-    protected static $publicTemplates
+    protected static array $publicTemplates
         = [
             self::NOT_PUBLIC => 'txt-not-public',
             self::IS_PUBLIC  => 'txt-public',
@@ -103,7 +103,7 @@ class Facebook extends AbstractEntity
     private $id;
     /**
      * @ORM\Column(name="facebook", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-facebook"})
      *
      * @var string
@@ -111,7 +111,7 @@ class Facebook extends AbstractEntity
     private $facebook;
     /**
      * @ORM\Column(name="public", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"publicTemplates"})
      * @Annotation\Attributes({"label":"txt-public"})
      *
@@ -120,7 +120,7 @@ class Facebook extends AbstractEntity
     private $public;
     /**
      * @ORM\Column(name="can_send_message", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"canSendMessageTemplates"})
      * @Annotation\Attributes({"label":"txt-can-send-message", "required":"true","help-block": "txt-can-send-message-explanation"})
      *
@@ -129,7 +129,7 @@ class Facebook extends AbstractEntity
     private $canSendMessage;
     /**
      * @ORM\Column(name="from_clause", type="text", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-from-clause"})
      * @Annotation\Options({"label":"txt-from-clause","help-block": "txt-from-clause-explanation"})
      *
@@ -138,7 +138,7 @@ class Facebook extends AbstractEntity
     private $fromClause;
     /**
      * @ORM\Column(name="where_clause", type="text", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-where-clause"})
      * @Annotation\Options({"label":"txt-where-clause","help-block": "txt-where-clause-explanation"})
      *
@@ -147,7 +147,7 @@ class Facebook extends AbstractEntity
     private $whereClause;
     /**
      * @ORM\Column(name="orderby_clause", type="text", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-orderby-clause"})
      * @Annotation\Options({"label":"txt-orderby-clause","help-block": "txt-orderby-clause-explanation"})
      *
@@ -156,7 +156,7 @@ class Facebook extends AbstractEntity
     private $orderbyClause;
     /**
      * @ORM\Column(name="contact_key", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-contact-key"})
      * @Annotation\Options({"label":"txt-contact-key","help-block": "txt-contact-key-explanation"})
      *
@@ -165,7 +165,7 @@ class Facebook extends AbstractEntity
     private $contactKey;
     /**
      * @ORM\Column(name="com_extra", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Options({"label":"txt-title","help-block": "txt-title-explanation"})
      *
@@ -174,7 +174,7 @@ class Facebook extends AbstractEntity
     private $title;
     /**
      * @ORM\Column(name="com_sub", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Options({"label":"txt-sub-title","help-block": "txt-sub-title-explanation"})
      *
@@ -183,7 +183,7 @@ class Facebook extends AbstractEntity
     private $subtitle;
     /**
      * @ORM\Column(name="show_email", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"showEmailTemplates"})
      * @Annotation\Options({"label":"txt-show-email-title","help-block": "txt-show-email-explanation"})
      *
@@ -192,7 +192,7 @@ class Facebook extends AbstractEntity
     private $showEmail;
     /**
      * @ORM\Column(name="show_phone", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"showPhoneTemplates"})
      * @Annotation\Options({"label":"txt-show-phone-title","help-block": "txt-show-phone-explanation"})
      *

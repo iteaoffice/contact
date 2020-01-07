@@ -14,8 +14,8 @@ namespace Contact\Form\Profile;
 
 use Contact\Entity\PhoneType;
 use Doctrine\ORM\EntityManager;
-use Zend\Form\Element;
-use Zend\Form\Fieldset;
+use Laminas\Form\Element;
+use Laminas\Form\Fieldset;
 use function sprintf;
 
 /**

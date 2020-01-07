@@ -29,7 +29,7 @@ final class OptInLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (!$optIn->isEmpty()) {
+        if (! $optIn->isEmpty()) {
             $routeParams['id'] = $optIn->getId();
             $showOptions['name'] = $optIn->getOptIn();
         }

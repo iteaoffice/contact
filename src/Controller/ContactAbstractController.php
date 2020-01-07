@@ -16,9 +16,9 @@ use BjyAuthorize\Controller\Plugin\IsAllowed;
 use Contact\Controller\Plugin;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\Plugin\FlashMessenger\FlashMessenger;
-use Zend\View\Helper\Identity;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
+use Laminas\View\Helper\Identity;
 use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**

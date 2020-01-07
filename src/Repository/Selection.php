@@ -54,7 +54,7 @@ class Selection extends EntityRepository
             $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['tags']));
         }
 
-        if (!array_key_exists('includeDeleted', $filter)) {
+        if (! array_key_exists('includeDeleted', $filter)) {
             //Do not show the deleted ones
             $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
         }

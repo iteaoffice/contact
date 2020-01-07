@@ -14,9 +14,9 @@ namespace Contact\Acl\Assertion;
 
 use Admin\Entity\Access;
 use Contact\Entity\Facebook as FacebookEntity;
-use Zend\Permissions\Acl\Acl;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
-use Zend\Permissions\Acl\Role\RoleInterface;
+use Laminas\Permissions\Acl\Acl;
+use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use Laminas\Permissions\Acl\Role\RoleInterface;
 
 final class Facebook extends AbstractAssertion
 {
@@ -33,12 +33,12 @@ final class Facebook extends AbstractAssertion
         $this->setPrivilege($privilege);
         $id = $this->getId();
 
-        if (!$facebook instanceof FacebookEntity && null !== $id) {
+        if (! $facebook instanceof FacebookEntity && null !== $id) {
             /** @var FacebookEntity $facebook */
             $facebook = $this->contactService->find(FacebookEntity::class, $id);
         }
 
-        if (!$facebook instanceof FacebookEntity && $facebook = $this->getRouteMatch()->getParam('facebook')) {
+        if (! $facebook instanceof FacebookEntity && $facebook = $this->getRouteMatch()->getParam('facebook')) {
             /** @var FacebookEntity $facebook */
             $facebook = $this->contactService->find(FacebookEntity::class, (int)$facebook);
         }

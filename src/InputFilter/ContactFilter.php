@@ -15,7 +15,7 @@ namespace Contact\InputFilter;
 use Contact\Entity\Contact;
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Validator;
-use Zend\InputFilter\InputFilter;
+use Laminas\InputFilter\InputFilter;
 
 /**
  * Class ContactFilter

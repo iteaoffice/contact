@@ -15,11 +15,11 @@ namespace Contact\Form\Profile;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Country;
-use Zend\Form\Element;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
-use Zend\Validator\Callback;
-use Zend\Validator\NotEmpty;
+use Laminas\Form\Element;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\Callback;
+use Laminas\Validator\NotEmpty;
 
 /**
  * Class AddressFieldset
@@ -110,8 +110,8 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                     return true;
                                 }
                                 if (empty($value)
-                                    && (!empty($context['zipCode']) || !empty($context['city'])
-                                        || !empty($context['country']))
+                                    && (! empty($context['zipCode']) || ! empty($context['city'])
+                                        || ! empty($context['country']))
                                 ) {
                                     return false;
                                 }
@@ -138,8 +138,8 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                     return true;
                                 }
                                 if (empty($value)
-                                    && (!empty($context['address']) || !empty($context['city'])
-                                        || !empty($context['country']))
+                                    && (! empty($context['address']) || ! empty($context['city'])
+                                        || ! empty($context['country']))
                                 ) {
                                     return false;
                                 }
@@ -166,8 +166,8 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                     return true;
                                 }
                                 if (empty($value)
-                                    && (!empty($context['address']) || !empty($context['zipCode'])
-                                        || !empty($context['country']))
+                                    && (! empty($context['address']) || ! empty($context['zipCode'])
+                                        || ! empty($context['country']))
                                 ) {
                                     return false;
                                 }
@@ -195,8 +195,8 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                 }
 
                                 if (empty($value)
-                                    && (!empty($context['address']) || !empty($context['zipCode'])
-                                        || !empty($context['city']))
+                                    && (! empty($context['address']) || ! empty($context['zipCode'])
+                                        || ! empty($context['city']))
                                 ) {
                                     return false;
                                 }

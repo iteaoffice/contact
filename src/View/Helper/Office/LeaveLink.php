@@ -29,14 +29,14 @@ final class LeaveLink extends AbstractLink
     ): string {
         $leave ??= new Leave();
 
-        if (!$this->hasAccess($leave, LeaveAssertion::class, $action)) {
+        if (! $this->hasAccess($leave, LeaveAssertion::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (!$leave->isEmpty()) {
+        if (! $leave->isEmpty()) {
             $routeParams['id'] = $leave->getId();
             $showOptions['name'] = $leave->getDescription();
         }
@@ -64,7 +64,7 @@ final class LeaveLink extends AbstractLink
                 break;
             case 'list':
                 $linkParams = [
-                    'icon' => 'fa-list-ul',
+                    'icon' => 'fa-list',
                     'route' => 'zfcadmin/contact/office/leave/list',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-list-leave')

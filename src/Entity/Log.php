@@ -15,7 +15,7 @@ namespace Contact\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Contact Log

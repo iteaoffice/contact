@@ -73,8 +73,8 @@ use Project\Entity\Result\Result;
 use Project\Entity\Workpackage\Workpackage;
 use Publication\Entity\Download;
 use Publication\Entity\Publication;
-use Zend\Form\Annotation;
-use Zend\Math\Rand;
+use Laminas\Form\Annotation;
+use Laminas\Math\Rand;
 use ZfcUser\Entity\UserInterface;
 use function explode;
 use function in_array;
@@ -97,13 +97,13 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @ORM\Column(name="contact_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      * @var int
      */
     private $id;
     /**
      * @ORM\Column(name="firstname", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-contact-first-name-label","help-block":"txt-contact-first-name-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-first-name-placeholder"})
      * @var string
@@ -111,7 +111,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $firstName;
     /**
      * @ORM\Column(name="middlename", type="string",nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-contact-middle-name-label","help-block":"txt-contact-middle-name-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-middle-name-placeholder"})
      * @var string
@@ -119,7 +119,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $middleName;
     /**
      * @ORM\Column(name="lastname", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-contact-last-name-label","help-block":"txt-contact-last-name-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-last-name-placeholder"})
      * @var string
@@ -127,7 +127,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $lastName;
     /**
      * @ORM\Column(name="email",type="string",nullable=false, unique=true)
-     * @Annotation\Type("\Zend\Form\Element\Email")
+     * @Annotation\Type("\Laminas\Form\Element\Email")
      * @Annotation\Options({"label":"txt-contact-email-address-label","help-block":"txt-contact-email-address-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-email-address-placeholder"})
      * @var string
@@ -166,7 +166,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $title;
     /**
      * @ORM\Column(name="position", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-contact-position-label","help-block":"txt-contact-position-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-position-placeholder"})
      * @var string
@@ -174,7 +174,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $position;
     /**
      * @ORM\Column(name="department", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-contact-department-label","help-block":"txt-contact-department-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-contact-department-placeholder"})
      * @var string
@@ -182,7 +182,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     private $department;
     /**
      * @ORM\Column(name="date_birth", type="date", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Date")
+     * @Annotation\Type("\Laminas\Form\Element\Date")
      * @Annotation\Options({"label":"txt-contact-date-of-birth-label","help-block":"txt-contact-date-of-birth-help-block"})
      * @var DateTime
      */
@@ -1066,7 +1066,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     {
         $name = sprintf('%s %s', $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return (string)(!empty(trim($name)) ? $name : $this->email);
+        return (string)(! empty(trim($name)) ? $name : $this->email);
     }
 
     public function parseInitials(): string
@@ -1136,7 +1136,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function hasPhoto(): bool
     {
-        return !$this->photo->isEmpty();
+        return ! $this->photo->isEmpty();
     }
 
     public function isVisibleInCommunity(): bool
@@ -1426,14 +1426,14 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getFormName(): string
     {
         $name = sprintf('%s, %s', trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getHash(): ?string
@@ -1514,7 +1514,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function getOptIn(bool $onlyActive = false)
     {
-        if (!$onlyActive) {
+        if (! $onlyActive) {
             return $this->optIn;
         }
 

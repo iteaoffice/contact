@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * SelectionSql.
  *
  * @ORM\Table(name="selection_sql")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_organisation")
  *
  * @category    Contact

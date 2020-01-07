@@ -24,11 +24,11 @@ use Contact\Service\FormService;
 use Contact\Service\Office\ContactService as OfficeContactService;
 use DateTime;
 use DateTimeZone;
-use Zend\Form\Element;
-use Zend\Http\Request;
-use Zend\Http\Response;
-use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
+use Laminas\Form\Element;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
+use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
 use function in_array;
 use function sprintf;
 
@@ -39,20 +39,9 @@ use function sprintf;
  */
 final class LeaveController extends ContactAbstractController
 {
-    /**
-     * @var OfficeContactService
-     */
-    private $officeContactService;
-
-    /**
-     * @var AdminService
-     */
-    private $adminService;
-
-    /**
-     * @var FormService
-     */
-    private $formService;
+    private OfficeContactService $officeContactService;
+    private AdminService $adminService;
+    private FormService $formService;
 
     public function __construct(
         OfficeContactService $officeContactService,
@@ -262,7 +251,7 @@ final class LeaveController extends ContactAbstractController
 
                 /** @var Leave $leave */
                 $leave = $form->getData();
-                if (!$isManagementAssistant) {
+                if (! $isManagementAssistant) {
                     $leave->setOfficeContact($this->identity()->getOfficeContact());
                 }
                 $this->officeContactService->save($leave);
@@ -303,7 +292,7 @@ final class LeaveController extends ContactAbstractController
         if (($leave === null)
             || (
                 ($leave->getOfficeContact()->getContact()->getId() !== $this->identity()->getId())
-                && !$isManagementAssistant
+                && ! $isManagementAssistant
             )
         ) {
             return $this->notFoundAction();
@@ -332,7 +321,7 @@ final class LeaveController extends ContactAbstractController
             if (($leave === null)
                 || (
                     ($leave->getOfficeContact()->getContact()->getId() !== $this->identity()->getId())
-                    && !$isManagementAssistant
+                    && ! $isManagementAssistant
                 )
             ) {
                 return $this->notFoundAction();

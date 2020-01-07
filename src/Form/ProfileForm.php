@@ -16,10 +16,10 @@ use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
-use Zend\Form\Element;
-use Zend\Form\Form;
-use Zend\InputFilter\InputFilterProviderInterface;
-use Zend\Validator\File\IsImage;
+use Laminas\Form\Element;
+use Laminas\Form\Form;
+use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\File\IsImage;
 
 /**
  * Class ContactFieldset

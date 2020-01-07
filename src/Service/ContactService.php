@@ -40,18 +40,18 @@ use General\Entity\Gender;
 use General\Entity\Title;
 use General\Service\GeneralService;
 use InvalidArgumentException;
+use Laminas\Crypt\Password\Bcrypt;
+use Laminas\Mvc\Exception\RuntimeException;
+use Laminas\View\Helper\Url;
+use Laminas\View\HelperPluginManager;
 use Organisation\Entity\Organisation;
 use Organisation\Service\OrganisationService;
 use Project\Entity\Project;
-use Project\View\Helper\ProjectLink;
+use Project\View\Helper\Project\ProjectLink;
 use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
 use Solarium\QueryType\Update\Query\Document;
-use Zend\Crypt\Password\Bcrypt;
-use Zend\Mvc\Exception\RuntimeException;
-use Zend\View\Helper\Url;
-use Zend\View\HelperPluginManager;
 use ZfcUser\Options\ModuleOptions;
 use function array_key_exists;
 use function count;
@@ -168,27 +168,27 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $cannotDeleteContact[] = 'Contact is active in a project';
         }
 
-        if (!$contact->getLoi()->isEmpty()) {
+        if (! $contact->getLoi()->isEmpty()) {
             $cannotDeleteContact[] = 'Contact is has uploaded an LOI';
         }
 
-        if (!$contact->getLoiApprover()->isEmpty()) {
+        if (! $contact->getLoiApprover()->isEmpty()) {
             $cannotDeleteContact[] = 'Contact is has approved an LOI';
         }
 
-        if (!$contact->getAffiliationDoa()->isEmpty()) {
+        if (! $contact->getAffiliationDoa()->isEmpty()) {
             $cannotDeleteContact[] = 'Contact is has uploaded a DoA';
         }
 
-        if (!$contact->getAffiliationDoaApprover()->isEmpty()) {
+        if (! $contact->getAffiliationDoaApprover()->isEmpty()) {
             $cannotDeleteContact[] = 'Contact is has approved a DoA';
         }
 
-        if (!$contact->getAffiliationVersion()->isEmpty()) {
+        if (! $contact->getAffiliationVersion()->isEmpty()) {
             $cannotDeleteContact[] = 'Contact has been a technical contact in an older version';
         }
 
-        if (!$contact->getAffiliationDescription()->isEmpty()) {
+        if (! $contact->getAffiliationDescription()->isEmpty()) {
             $cannotDeleteContact[] = 'Contact has written a description for a partner';
         }
 
@@ -395,9 +395,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                     $url(
                         'image/contact-photo',
                         [
-                            'ext'         => $photo->getContentType()->getExtension(),
+                            'ext' => $photo->getContentType()->getExtension(),
                             'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                            'id'          => $photo->getId(),
+                            'id' => $photo->getId(),
                         ]
                     )
                 );
@@ -528,9 +528,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                     $url(
                         'image/contact-photo',
                         [
-                            'ext'         => $photo->getContentType()->getExtension(),
+                            'ext' => $photo->getContentType()->getExtension(),
                             'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                            'id'          => $photo->getId(),
+                            'id' => $photo->getId(),
                         ]
                     )
                 );
@@ -646,7 +646,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function parseOrganisation(Contact $contact): ?string
     {
-        if (!$this->hasOrganisation($contact)) {
+        if (! $this->hasOrganisation($contact)) {
             return null;
         }
 
@@ -668,7 +668,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function parseCountry(Contact $contact): ?Country
     {
-        if (!$this->hasOrganisation($contact)) {
+        if (! $this->hasOrganisation($contact)) {
             return null;
         }
 
@@ -708,14 +708,14 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     private function getPhoneByContactAndType(Contact $contact, int $type): ?Phone
     {
-        if (!in_array($type, PhoneType::getPhoneTypes(), true)) {
+        if (! in_array($type, PhoneType::getPhoneTypes(), true)) {
             throw new InvalidArgumentException(sprintf('A invalid phone type chosen'));
         }
 
         return $this->entityManager->getRepository(Phone::class)->findOneBy(
             [
                 'contact' => $contact,
-                'type'    => $type,
+                'type' => $type,
             ]
         );
     }
@@ -828,7 +828,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     }
 
     /**
-     * @param Contact      $contact
+     * @param Contact $contact
      * @param string|array $role
      * @param              $entity
      *
@@ -866,11 +866,11 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     {
         $cannotDeleteOptIn = [];
 
-        if (!$optIn->getContact()->isEmpty()) {
+        if (! $optIn->getContact()->isEmpty()) {
             $cannotDeleteOptIn[] = 'This Opt In still has contacts';
         }
 
-        if (!$optIn->getMailing()->isEmpty()) {
+        if (! $optIn->getMailing()->isEmpty()) {
             $cannotDeleteOptIn[] = 'This Opt In still has mailings';
         }
 
@@ -980,7 +980,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
      * $contactOrganisation['country'] > CountryId
      *
      * @param Contact $contact
-     * @param array   $contactOrganisation
+     * @param array $contactOrganisation
      */
     public function updateContactOrganisation(Contact $contact, array $contactOrganisation): void
     {
@@ -1003,7 +1003,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             );
             $currentContactOrganisation->setOrganisation($organisation);
             //Take te branch form the form element ($contactOrganisation['branch'])
-            if (!empty($contactOrganisation['branch'])) {
+            if (! empty($contactOrganisation['branch'])) {
                 $currentContactOrganisation->setBranch($contactOrganisation['branch']);
             } else {
                 $currentContactOrganisation->setBranch(null);
@@ -1042,7 +1042,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             //First go over the organisations and try to see if we can find one with the same name and stop if we find one
             /** @var Organisation $foundOrganisation */
             foreach ($organisations as $foundOrganisation) {
-                if (!$organisation //Continue until the organisation is found
+                if (! $organisation //Continue until the organisation is found
                     && $foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
                 ) {
                     $organisation = $foundOrganisation;
@@ -1052,7 +1052,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             //We have not found an organisation with an exact match so we will now try to see if we find one
             //With a almost perfect match and use that. We want to see if we can find the company name _in_ the given name
             foreach ($organisations as $foundOrganisation) {
-                if (!$organisation //Continue until the organisation is found
+                if (! $organisation //Continue until the organisation is found
                     && strpos($contactOrganisation['organisation'], $foundOrganisation->getOrganisation()) !== false
                 ) {
                     $organisation = $foundOrganisation;
@@ -1060,7 +1060,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             }
 
             //If the organisation is still not found, create a new one
-            if (!$organisation) {
+            if (! $organisation) {
                 $organisation = $this->organisationService->createOrganisationFromNameCountryTypeAndEmail(
                     $contactOrganisation['organisation'],
                     $country,
@@ -1069,7 +1069,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 );
             }
 
-            if (!$organisation) {
+            if (! $organisation) {
                 throw new RuntimeException('Update of profile failed, the organisation cannot be found');
             }
 
@@ -1153,7 +1153,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         return [
-            'items'                => $inCompleteness,
+            'items' => $inCompleteness,
             'incompletenessWeight' => $incompletenessWeight,
         ];
     }
@@ -1247,17 +1247,17 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         /** Remove first the optIns which are not present in the optIn array */
         $contactOpIn = $contact->getOptIn();
         foreach ($contact->getOptIn() as $optIn) {
-            if (!in_array($optIn->getId(), $optInOptions, false)) {
+            if (! in_array($optIn->getId(), $optInOptions, false)) {
                 $contactOpIn->removeElement($optIn);
             }
         }
 
         /** Inject the new optIns */
-        if (!empty($optInOptions)) {
+        if (! empty($optInOptions)) {
             foreach ($optInOptions as $optInId) {
                 $optIn = $this->find(OptIn::class, (int)$optInId);
 
-                if (!$contactOpIn->contains($optIn)) {
+                if (! $contactOpIn->contains($optIn)) {
                     $contactOpIn->add($optIn);
                 }
             }
@@ -1276,10 +1276,10 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $contact->setGender($gender);
         $contact->setTitle($title);
         $contact->setFirstName($formData['contact']['firstName']);
-        $contact->setMiddleName(!empty($formData['contact']['middleName']) ? $formData['contact']['middleName'] : null);
+        $contact->setMiddleName(! empty($formData['contact']['middleName']) ? $formData['contact']['middleName'] : null);
         $contact->setLastName($formData['contact']['lastName']);
-        $contact->setDepartment(!empty($formData['contact']['department']) ? $formData['contact']['department'] : null);
-        $contact->setPosition(!empty($formData['contact']['position']) ? $formData['contact']['position'] : null);
+        $contact->setDepartment(! empty($formData['contact']['department']) ? $formData['contact']['department'] : null);
+        $contact->setPosition(! empty($formData['contact']['position']) ? $formData['contact']['position'] : null);
 
         //Handle the phone data
         foreach ($formData['phone'] as $phoneTypeId => $phoneNumber) {
@@ -1291,7 +1291,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 $this->delete($phone);
             }
 
-            if (!empty($phoneNumber)) {
+            if (! empty($phoneNumber)) {
                 if (null === $phone) {
                     $phone = new Phone();
                     $phone->setType($type);
@@ -1304,7 +1304,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
         //Handle the address
         $address = $this->getMailAddress($contact);
-        if (!empty($formData['address']['address'])) {
+        if (! empty($formData['address']['address'])) {
             if (null === $address) {
                 /** @var AddressType $mailAddressType */
                 $mailAddressType = $this->find(AddressType::class, AddressType::ADDRESS_TYPE_MAIL);
@@ -1341,7 +1341,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
         $profile->setVisible((int)$formData['profile']['visible']);
         $profile->setDescription(
-            !empty($formData['profile']['description']) ? $formData['profile']['description'] : null
+            ! empty($formData['profile']['description']) ? $formData['profile']['description'] : null
         );
         $this->save($profile);
     }
@@ -1403,7 +1403,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         /** @var Contact $contact */
         foreach ($contacts as $contact) {
             //Skip the inactive, the not activated and the not anonymised
-            if (!$contact->isActive() || !$contact->isActivated() || $contact->isAnonymised()) {
+            if (! $contact->isActive() || ! $contact->isActivated() || $contact->isAnonymised()) {
                 continue;
             }
 

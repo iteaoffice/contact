@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Phone.
  *
  * @ORM\Table(name="contact_phone")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_phone")
  *
  * @category    Contact
@@ -31,14 +31,14 @@ class Phone extends AbstractEntity
      * @ORM\Column(name="phone_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
      * @var int
      */
     private $id;
     /**
      * @ORM\Column(name="phone", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-phone-number"})
      *
      * @var string

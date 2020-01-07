@@ -29,7 +29,7 @@ final class FacebookLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (!$facebook->isEmpty()) {
+        if (! $facebook->isEmpty()) {
             $routeParams['id'] = $facebook->getId();
             $showOptions['name'] = $facebook->getFacebook();
         }

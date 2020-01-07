@@ -16,7 +16,7 @@ use Contact\Entity\AbstractEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Entity for ITEA office employee leave types.
@@ -40,7 +40,7 @@ class LeaveType extends AbstractEntity
     private $id;
     /**
      * @ORM\Column(name="type", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-type"})
      *
      * @var string
@@ -48,7 +48,7 @@ class LeaveType extends AbstractEntity
     private $type;
     /**
      * @ORM\Column(name="factor", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Number")
+     * @Annotation\Type("\Laminas\Form\Element\Number")
      * @Annotation\Options({"label":"txt-factor"})
      *
      * @var int
@@ -57,7 +57,7 @@ class LeaveType extends AbstractEntity
 
     /**
      * @ORM\Column(name="calendar", type="boolean", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Checkbox")
+     * @Annotation\Type("\Laminas\Form\Element\Checkbox")
      * @Annotation\Options({"label":"txt-on-calendar"})
      *
      * @var bool

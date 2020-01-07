@@ -15,12 +15,12 @@ namespace Contact\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Organisation\Entity\Organisation;
 use Organisation\Service\OrganisationService;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * @ORM\Table(name="contact_organisation")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_organisation")
  */
 class ContactOrganisation extends AbstractEntity

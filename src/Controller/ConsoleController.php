@@ -22,10 +22,7 @@ use Contact\Service\ContactService;
  */
 final class ConsoleController extends ContactAbstractController
 {
-    /**
-     * @var ContactService;
-     */
-    private $contactService;
+    private ContactService $contactService;
 
     public function __construct(ContactService $contactService)
     {

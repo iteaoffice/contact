@@ -15,10 +15,10 @@ namespace Contact\Navigation\Service;
 use Contact\Entity\Contact;
 use Contact\Entity\Facebook;
 use Contact\Service\ContactService;
-use Zend\I18n\Translator\Translator;
-use Zend\Navigation\Navigation;
-use Zend\Router\RouteMatch;
-use Zend\Router\SimpleRouteStack;
+use Laminas\I18n\Translator\Translator;
+use Laminas\Navigation\Navigation;
+use Laminas\Router\RouteMatch;
+use Laminas\Router\SimpleRouteStack;
 
 /**
  * Class ContactNavigationService

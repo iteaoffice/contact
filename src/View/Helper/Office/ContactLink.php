@@ -27,14 +27,14 @@ final class ContactLink extends AbstractLink
     ): string {
         $officeContact ??= new Contact();
 
-        if (!$this->hasAccess($officeContact, ContactAssertion::class, $action)) {
+        if (! $this->hasAccess($officeContact, ContactAssertion::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (!$officeContact->isEmpty()) {
+        if (! $officeContact->isEmpty()) {
             $routeParams['id'] = $officeContact->getId();
             $showOptions['name'] = $officeContact->getContact()->getDisplayName();
         }
@@ -50,7 +50,7 @@ final class ContactLink extends AbstractLink
                 break;
             case 'list':
                 $linkParams = [
-                    'icon' => 'fa-list-ul',
+                    'icon' => 'fa-list',
                     'route' => 'zfcadmin/contact/office/list',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-list-office-members')

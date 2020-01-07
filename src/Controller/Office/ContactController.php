@@ -24,10 +24,10 @@ use Contact\Service\FormService;
 use Contact\Service\Office\ContactService as OfficeContactService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Zend\Form\Element;
-use Zend\Http\Request;
-use Zend\Paginator\Paginator;
-use Zend\View\Model\ViewModel;
+use Laminas\Form\Element;
+use Laminas\Http\Request;
+use Laminas\Paginator\Paginator;
+use Laminas\View\Model\ViewModel;
 use function date;
 use function sprintf;
 
@@ -38,15 +38,8 @@ use function sprintf;
  */
 final class ContactController extends ContactAbstractController
 {
-    /**
-     * @var OfficeContactService
-     */
-    private $officeContactService;
-
-    /**
-     * @var FormService
-     */
-    private $formService;
+    private OfficeContactService $officeContactService;
+    private FormService $formService;
 
     public function __construct(OfficeContactService $officeContactService, FormService $formService)
     {

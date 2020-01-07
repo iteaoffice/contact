@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Contact\Form\Profile;
 
 use Contact\Entity\Profile;
-use Zend\Form\Element;
-use Zend\Form\Fieldset;
+use Laminas\Form\Element;
+use Laminas\Form\Fieldset;
 
 /**
  * Class ProfileFieldset

@@ -15,8 +15,8 @@ namespace Contact\Form;
 use Contact\Entity\AbstractEntity;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
-use Zend\Form\Element;
-use Zend\Form\Form;
+use Laminas\Form\Element;
+use Laminas\Form\Form;
 
 /**
  * Class CreateObject

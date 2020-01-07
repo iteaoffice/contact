@@ -12,7 +12,7 @@ namespace Contact\Factory;
 use Contact\Service\FormService;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Class FormServiceFactory

@@ -15,7 +15,7 @@ namespace Contact\Entity;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
 use Mailing\Entity\Mailing;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Optin.
@@ -28,7 +28,7 @@ class OptIn extends AbstractEntity
     public const ACTIVE_INACTIVE = 0;
     public const ACTIVE_ACTIVE = 1;
 
-    protected static $activeTemplates
+    protected static array $activeTemplates
         = [
             self::ACTIVE_INACTIVE => 'txt-inactive',
             self::ACTIVE_ACTIVE   => 'txt-active',
@@ -38,14 +38,14 @@ class OptIn extends AbstractEntity
      * @ORM\Column(name="optin_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
      * @var int|string|null
      */
     private $id;
     /**
      * @ORM\Column(name="optin", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-opt-in-title-title","help-block": "txt-opt-in-title-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-opt-in-title-placeholder"})
      *
@@ -54,7 +54,7 @@ class OptIn extends AbstractEntity
     private $optIn;
     /**
      * @ORM\Column(name="active", type="integer", options={"unsigned":true})
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"activeTemplates"})
      * @Annotation\Options({"label":"txt-opt-in-active-title","help-block": "txt-opt-in-active-help-block"})
      * @var int
@@ -62,7 +62,7 @@ class OptIn extends AbstractEntity
     private $active;
     /**
      * @ORM\Column(name="description", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-opt-in-description-title","help-block": "txt-opt-in-description-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-opt-in-description-placeholder"})
      *

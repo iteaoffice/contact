@@ -13,8 +13,8 @@ namespace Contact\Form;
 use Contact\Entity\Contact;
 use Contact\Repository\Contact as ContactRepository;
 use Doctrine\ORM\EntityManager;
-use Zend\Form\Element;
-use Zend\Form\Form;
+use Laminas\Form\Element;
+use Laminas\Form\Form;
 
 /**
  * Class OrganisationMerge

@@ -22,10 +22,10 @@ use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 use Doctrine\ORM\PersistentCollection;
 use Interop\Container\ContainerInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\Http\PhpEnvironment\Request;
-use Zend\Permissions\Acl\Assertion\AssertionInterface;
-use Zend\Router\Http\RouteMatch;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Http\PhpEnvironment\Request;
+use Laminas\Permissions\Acl\Assertion\AssertionInterface;
+use Laminas\Router\Http\RouteMatch;
 use function count;
 use function in_array;
 use function is_array;
@@ -123,7 +123,7 @@ abstract class AbstractAssertion implements AssertionInterface
         if (null !== $this->getRequest()->getPost('id')) {
             return (int)$this->getRequest()->getPost('id');
         }
-        if (!$this->hasRouteMatch()) {
+        if (! $this->hasRouteMatch()) {
             return null;
         }
         if (null !== $this->getRouteMatch()->getParam('id')) {
@@ -167,13 +167,13 @@ abstract class AbstractAssertion implements AssertionInterface
 
     private function prepareAccessRoles($accessRoleOrCollection): array
     {
-        if (!$accessRoleOrCollection instanceof PersistentCollection) {
+        if (! $accessRoleOrCollection instanceof PersistentCollection) {
             /*
              * We only have a string or array, so we need to lookup the role
              */
             if (is_array($accessRoleOrCollection)) {
                 foreach ($accessRoleOrCollection as $key => $accessItem) {
-                    if (!$accessItem instanceof Access) {
+                    if (! $accessItem instanceof Access) {
                         $access = $this->adminService->findAccessByName($accessItem);
                     } else {
                         $access = $accessItem;

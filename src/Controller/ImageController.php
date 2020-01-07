@@ -17,7 +17,7 @@ namespace Contact\Controller;
 
 use Contact\Entity\Photo;
 use Contact\Service\ContactService;
-use Zend\Http\Response;
+use Laminas\Http\Response;
 use function stream_get_contents;
 
 /**
@@ -27,10 +27,7 @@ use function stream_get_contents;
  */
 final class ImageController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
+    private ContactService $contactService;
 
     public function __construct(ContactService $contactService)
     {

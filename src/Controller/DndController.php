@@ -18,11 +18,11 @@ use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use General\Service\GeneralService;
 use Program\Service\ProgramService;
-use Zend\Http\Response;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Validator\File\FilesSize;
-use Zend\Validator\File\MimeType;
-use Zend\View\Model\ViewModel;
+use Laminas\Http\Response;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Validator\File\FilesSize;
+use Laminas\Validator\File\MimeType;
+use Laminas\View\Model\ViewModel;
 use function count;
 
 /**
@@ -32,26 +32,11 @@ use function count;
  */
 final class DndController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var ProgramService
-     */
-    private $programService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var GeneralService
-     */
-    private $generalService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private ProgramService $programService;
+    private FormService $formService;
+    private GeneralService $generalService;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,

@@ -15,9 +15,9 @@ namespace Contact\Form;
 
 use Contact\Entity\Selection;
 use Contact\Service\SelectionService;
-use Zend\Form\Element\Select;
-use Zend\Form\Element\Submit;
-use Zend\Form\Form;
+use Laminas\Form\Element\Select;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Form;
 
 /**
  * Class SelectionContacts

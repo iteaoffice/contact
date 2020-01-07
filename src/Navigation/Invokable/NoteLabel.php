@@ -14,7 +14,7 @@ namespace Contact\Navigation\Invokable;
 use Admin\Navigation\Invokable\AbstractNavigationInvokable;
 use Contact\Entity\Contact;
 use Contact\Entity\Note;
-use Zend\Navigation\Page\Mvc;
+use Laminas\Navigation\Page\Mvc;
 
 /**
  * Class NoteLabel

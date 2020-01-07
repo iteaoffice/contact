@@ -18,9 +18,9 @@ use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Paginator\Paginator;
-use Zend\View\Model\ViewModel;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Paginator\Paginator;
+use Laminas\View\Model\ViewModel;
 
 /**
  * Class OptInManagerController
@@ -29,18 +29,9 @@ use Zend\View\Model\ViewModel;
  */
 final class OptInManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private FormService $formService;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
@@ -115,7 +106,7 @@ final class OptInManagerController extends ContactAbstractController
 
             $this->flashMessenger()->addSuccessMessage(
                 sprintf(
-                    $this->translator->translate("txt-optIn-%s-has-successfully-been-deleted"),
+                    $this->translator->translate('txt-optIn-%s-has-successfully-been-deleted'),
                     $optIn->getOptIn()
                 )
             );
@@ -135,7 +126,7 @@ final class OptInManagerController extends ContactAbstractController
         $data = $this->getRequest()->getPost()->toArray();
         $form = $this->formService->prepare($optIn, $data);
 
-        if (!$this->contactService->canDeleteOptIn($optIn)) {
+        if (! $this->contactService->canDeleteOptIn($optIn)) {
             $form->remove('delete');
         }
 
@@ -143,17 +134,17 @@ final class OptInManagerController extends ContactAbstractController
             if (isset($data['delete']) && $this->contactService->canDeleteOptIn($optIn)) {
                 $this->contactService->delete($optIn);
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-opt-in-has-successfully-been-deleted"))
+                    sprintf($this->translator->translate('txt-opt-in-has-successfully-been-deleted'))
                 );
 
                 return $this->redirect()->toRoute('zfcadmin/opt-in/list');
             }
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 $optIn = $form->getData();
                 $this->flashMessenger()->addSuccessMessage(
                     sprintf(
-                        $this->translator->translate("txt-opt-in-%s-has-successfully-been-updated"),
+                        $this->translator->translate('txt-opt-in-%s-has-successfully-been-updated'),
                         $optIn->getOptIn()
                     )
                 );

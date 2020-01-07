@@ -26,7 +26,7 @@ use General\Entity\Gender;
 use General\Entity\Title;
 use General\Service\EmailService;
 use General\Service\GeneralService;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use function strlen;
 
 /**
@@ -36,22 +36,10 @@ use function strlen;
  */
 final class ContactActions extends AbstractPlugin
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var GeneralService
-     */
-    private $generalService;
-    /**
-     * @var DeeplinkService
-     */
-    private $deeplinkService;
-    /**
-     * @var EmailService
-     */
-    private $emailService;
+    private ContactService $contactService;
+    private GeneralService $generalService;
+    private DeeplinkService $deeplinkService;
+    private EmailService $emailService;
 
     public function __construct(
         ContactService $contactService,
@@ -145,7 +133,7 @@ final class ContactActions extends AbstractPlugin
 
         /** @var OptIn $optIn */
         foreach ($this->contactService->findAll(OptIn::class) as $optIn) {
-            if (!$optIn->isActive()) {
+            if (! $optIn->isActive()) {
                 continue;
             }
             $contact->getOptIn()->add($optIn);
@@ -196,7 +184,7 @@ final class ContactActions extends AbstractPlugin
 
         $this->contactService->save($contact);
 
-        if (!empty($note)) {
+        if (! empty($note)) {
             $this->contactService->addNoteToContact($note, 'Account creation', $contact);
         }
 

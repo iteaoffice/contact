@@ -48,7 +48,7 @@ class ContactSearchService extends AbstractSearchService
             )
         );
 
-        $hasTerm = !in_array($searchTerm, ['*', ''], true);
+        $hasTerm = ! in_array($searchTerm, ['*', ''], true);
         $hasSort = ($order !== '');
 
         if ($hasSort) {
@@ -77,7 +77,7 @@ class ContactSearchService extends AbstractSearchService
 
         if ($hasTerm) {
             $this->getQuery()->addSort('score', Query::SORT_DESC);
-        } elseif (!$hasSort) {
+        } elseif (! $hasSort) {
             $this->getQuery()->addSort('contact_id', Query::SORT_DESC);
         }
 

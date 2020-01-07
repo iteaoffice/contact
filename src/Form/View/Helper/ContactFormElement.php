@@ -14,9 +14,9 @@ namespace Contact\Form\View\Helper;
 
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
-use Zend\Form\ElementInterface;
-use Zend\I18n\Translator\Translator;
-use Zend\View\HelperPluginManager;
+use Laminas\Form\ElementInterface;
+use Laminas\I18n\Translator\Translator;
+use Laminas\View\HelperPluginManager;
 use Zf3Bootstrap4\Form\View\Helper\FormElement;
 
 /**

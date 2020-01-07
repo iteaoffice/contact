@@ -30,11 +30,11 @@ class SelectionContactService extends AbstractService
 {
     public function contactInSelection(Contact $contact, $selections): bool
     {
-        if (!is_array($selections) && !$selections instanceof PersistentCollection) {
+        if (! is_array($selections) && ! $selections instanceof PersistentCollection) {
             $selections = [$selections];
         }
         foreach ($selections as $selection) {
-            if (!$selection instanceof Selection) {
+            if (! $selection instanceof Selection) {
                 throw new InvalidArgumentException('Selection should be instance of Selection');
             }
             if (null === $selection->getId()) {
@@ -53,7 +53,7 @@ class SelectionContactService extends AbstractService
         $repository = $this->entityManager->getRepository(Contact::class);
 
         //A contact is never in an inactive selection
-        if (!$selection->isActive()) {
+        if (! $selection->isActive()) {
             return false;
         }
 

@@ -15,14 +15,14 @@ namespace Contact\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * SelectionContact.
  *
  * @ORM\Table(name="selection_contact")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_organisation")
  *
  * @category    Contact

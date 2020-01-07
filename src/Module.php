@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace Contact;
 
 use Contact\Navigation\Service\ContactNavigationService;
-use Zend\Console\Adapter\AdapterInterface;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\EventManager;
-use Zend\ModuleManager\Feature;
-use Zend\Mvc\MvcEvent;
+use Laminas\Console\Adapter\AdapterInterface;
+use Laminas\EventManager\EventInterface;
+use Laminas\EventManager\EventManager;
+use Laminas\ModuleManager\Feature;
+use Laminas\Mvc\MvcEvent;
 
 /**
  * Class Module

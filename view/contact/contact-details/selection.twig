@@ -71,7 +71,7 @@
             <tr {% if deeplink.dateEnd|date('Y-m-d') < "now"|date('Y-m-d') %}class="table-danger"
                 title="{{ translate("txt-expired") }}"{% endif %}>
                 <td>{{ deeplink.id }}</td>
-                <td>{{ deeplinkLink(deeplink,'view', 'target') }}</td>
+                <td>{{ deeplinkLink(deeplink,'target') }}</td>
                 <td>{{ contactLink(deeplinkContact.contact,'view-admin','name') }}</td>
                 <td>{{ deeplink.keyId }}</td>
                 <td>{{ deeplink.dateEnd|string_date }}</td>

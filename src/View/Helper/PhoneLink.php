@@ -32,14 +32,14 @@ final class PhoneLink extends AbstractLink
     ): string {
         $phone ??= new Phone();
 
-        if (!$this->hasAccess($phone, \Contact\Acl\Assertion\Phone::class, $action)) {
+        if (! $this->hasAccess($phone, \Contact\Acl\Assertion\Phone::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (!$phone->isEmpty()) {
+        if (! $phone->isEmpty()) {
             $routeParams['id'] = $phone->getId();
             $showOptions['name'] = $phone->getPhone();
         }

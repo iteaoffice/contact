@@ -36,9 +36,9 @@ use Exception;
 use Program\Entity\Nda;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
-use Zend\Http\PhpEnvironment\Request;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Http\PhpEnvironment\Request;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use function array_unshift;
 use function in_array;
 use function sprintf;
@@ -50,18 +50,9 @@ use function sprintf;
  */
 final class MergeContact extends AbstractPlugin
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var Logging
-     */
-    private $errorLogger;
+    private EntityManagerInterface $entityManager;
+    private TranslatorInterface $translator;
+    private ? Logging $errorLogger;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -73,7 +64,7 @@ final class MergeContact extends AbstractPlugin
         $this->errorLogger = $errorLogger;
     }
 
-    public function __invoke(): MergeContact
+    public function __invoke() : MergeContact
     {
         return $this;
     }
@@ -138,7 +129,7 @@ final class MergeContact extends AbstractPlugin
             // Transfer access
             $newAccess = new ArrayCollection();
             foreach ($source->getAccess() as $access) {
-                if (!$target->getAccess()->contains($access)) {
+                if (! $target->getAccess()->contains($access)) {
                     $newAccess->add($access);
                 }
             }
@@ -153,7 +144,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Email $emailSource */
             foreach ($source->getEmailAddress() as $emailSource) {
-                if (!in_array($emailSource->getEmail(), $targetEmailAddresses, false)) {
+                if (! in_array($emailSource->getEmail(), $targetEmailAddresses, false)) {
                     $emailSource->setContact($target);
                     $target->getEmailAddress()->add($emailSource);
                 }
@@ -181,7 +172,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var OptIn $optInSource */
             foreach ($source->getOptIn() as $optInSource) {
-                if (!in_array($optInSource->getId(), $targetOptIns, false)) {
+                if (! in_array($optInSource->getId(), $targetOptIns, false)) {
                     $target->getOptIn()->add($optInSource);
                 }
             }
@@ -328,7 +319,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Idea $ideaSource */
             foreach ($source->getFavouriteIdea() as $ideaSource) {
-                if (!isset($targetIdeas[$ideaSource->getId()])) {
+                if (! isset($targetIdeas[$ideaSource->getId()])) {
                     $target->getFavouriteIdea()->add($ideaSource);
                 }
             }
@@ -426,7 +417,7 @@ final class MergeContact extends AbstractPlugin
             }
 
             // Transfer photo (database unique constraint on 1 photo per contact!)
-            if (!$target->hasPhoto() && $source->hasPhoto()) {
+            if (! $target->hasPhoto() && $source->hasPhoto()) {
                 $photo = $source->getPhoto()->first();
                 $photo->setContact($target);
                 $target->getPhoto()->add($photo);
@@ -441,7 +432,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Affiliation $affiliationSource */
             foreach ($source->getAssociate() as $affiliationSource) {
-                if (!isset($targetAssociates[$affiliationSource->getId()])) {
+                if (! isset($targetAssociates[$affiliationSource->getId()])) {
                     $target->getAssociate()->add($affiliationSource);
                 }
             }
@@ -471,7 +462,7 @@ final class MergeContact extends AbstractPlugin
             $source->setProfile(null);
 
             // Transfer photo (many-to-one)
-            if ($target->getPhoto()->isEmpty() === null && !$source->getPhoto()->isEmpty()) {
+            if ($target->getPhoto()->isEmpty() === null && ! $source->getPhoto()->isEmpty()) {
                 /** @var Photo $photo */
                 $photo = $source->getPhoto()->first();
                 $photo->setContact($target);
@@ -501,7 +492,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var \Event\Entity\Badge\Contact $badgeContactSource */
             foreach ($source->getBadgeContact() as $badgeContactSource) {
-                if (!in_array($badgeContactSource->getBadge()->getId(), $targetBadges, true)) {
+                if (! in_array($badgeContactSource->getBadge()->getId(), $targetBadges, true)) {
                     $badgeContactSource->setContact($target);
                     $target->getBadgeContact()->add($badgeContactSource);
                 }
@@ -558,7 +549,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var SelectionContact $selectionContactSource */
             foreach ($source->getSelectionContact() as $key => $selectionContactSource) {
-                if (!in_array($selectionContactSource->getSelection()->getId(), $targetSelections, false)) {
+                if (! in_array($selectionContactSource->getSelection()->getId(), $targetSelections, false)) {
                     $selectionContactSource->setContact($target);
                     $target->getSelectionContact()->add($selectionContactSource);
                 }
@@ -576,7 +567,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var \Mailing\Entity\Contact $mailingContactSource */
             foreach ($source->getMailingContact() as $key => $mailingContactSource) {
-                if (!in_array($mailingContactSource->getMailing()->getId(), $targetMailings, false)) {
+                if (! in_array($mailingContactSource->getMailing()->getId(), $targetMailings, false)) {
                     $mailingContactSource->setContact($target);
                     $target->getMailingContact()->add($mailingContactSource);
                 }
@@ -741,7 +732,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getInviteContact() as $inviteContactSource) {
-                if (!in_array($inviteContactSource->getId(), $targetInviteContacts, false)) {
+                if (! in_array($inviteContactSource->getId(), $targetInviteContacts, false)) {
                     $target->getInviteContact()->add($inviteContactSource);
                 }
             }
@@ -762,7 +753,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getIdeaInviteContact() as $ideaInviteContactSource) {
-                if (!in_array($ideaInviteContactSource->getId(), $targetIdeaInviteContacts, true)) {
+                if (! in_array($ideaInviteContactSource->getId(), $targetIdeaInviteContacts, true)) {
                     $target->getIdeaInviteContact()->add($ideaInviteContactSource);
                 }
             }
@@ -817,7 +808,7 @@ final class MergeContact extends AbstractPlugin
                     $sourcePermitContact->getKeyId()
                 );
                 // Prevent duplicates
-                if (!isset($targetPermits[$key])) {
+                if (! isset($targetPermits[$key])) {
                     $sourcePermitContact->setContact($target);
                     $target->getPermitContact()->add($sourcePermitContact);
                 }
@@ -839,7 +830,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getVoter() as $voterSource) {
-                if (!in_array($voterSource->getId(), $targetVoters)) {
+                if (! in_array($voterSource->getId(), $targetVoters)) {
                     $target->getVoter()->add($voterSource);
                 }
             }
@@ -860,7 +851,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getTourContact() as $tourContactSource) {
-                if (!in_array($tourContactSource->getId(), $targetTourContacts, false)) {
+                if (! in_array($tourContactSource->getId(), $targetTourContacts, false)) {
                     $target->getTourContact()->add($tourContactSource);
                 }
             }

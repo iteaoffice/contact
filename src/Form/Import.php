@@ -21,15 +21,15 @@ use Contact\Entity\OptIn;
 use Contact\Entity\Selection;
 use Contact\Service\ContactService;
 use Contact\Service\SelectionService;
-use Zend\Form\Form;
-use Zend\InputFilter\InputFilterProviderInterface;
-use Zend\Validator\File\MimeType;
-use Zend\Validator\File\Size;
-use Zend\Form\Element\Submit;
-use Zend\Form\Element\File;
-use Zend\Form\Element\Text;
-use Zend\Form\Element\MultiCheckbox;
-use Zend\Form\Element\Select;
+use Laminas\Form\Form;
+use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\File\MimeType;
+use Laminas\Validator\File\Size;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Element\File;
+use Laminas\Form\Element\Text;
+use Laminas\Form\Element\MultiCheckbox;
+use Laminas\Form\Element\Select;
 
 /**
  * Class Import

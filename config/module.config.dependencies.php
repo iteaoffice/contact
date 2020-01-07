@@ -26,8 +26,8 @@ use General\Service\CountryService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\ServiceManager\AbstractFactory\ConfigAbstractFactory;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 
 return [
     ConfigAbstractFactory::class => [

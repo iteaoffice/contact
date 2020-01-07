@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Contact\InputFilter\Office;
 
-use Zend\InputFilter\InputFilter;
+use Laminas\InputFilter\InputFilter;
 
 /**
  * Class ContactFilter

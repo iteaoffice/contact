@@ -15,7 +15,7 @@ namespace Contact\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * @ORM\Table(name="contact_note")
@@ -38,7 +38,7 @@ class Note extends AbstractEntity
     private $id;
     /**
      * @ORM\Column(name="note", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @Annotation\Type("\Laminas\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-note"})
      *
      * @var string
@@ -46,7 +46,7 @@ class Note extends AbstractEntity
     private $note;
     /**
      * @ORM\Column(name="source", type="string", length=32, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-source"})
      *
      * @var string

@@ -26,11 +26,11 @@ use General\Service\GeneralService;
 use Organisation\Service\OrganisationService;
 use Program\Options\ModuleOptions;
 use Program\Service\CallService;
-use Zend\Http\Response;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Validator\File\ImageSize;
-use Zend\Validator\File\MimeType;
-use Zend\View\Model\ViewModel;
+use Laminas\Http\Response;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Validator\File\ImageSize;
+use Laminas\Validator\File\MimeType;
+use Laminas\View\Model\ViewModel;
 use function array_merge_recursive;
 use function count;
 use function sprintf;
@@ -77,7 +77,7 @@ final class ProfileController extends ContactAbstractController
 
     public function viewAction()
     {
-        if (!$this->identity()->isActivated()) {
+        if (! $this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
                 $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
@@ -99,7 +99,7 @@ final class ProfileController extends ContactAbstractController
 
     public function privacyAction()
     {
-        if (!$this->identity()->isActivated()) {
+        if (! $this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
                 $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
@@ -136,7 +136,7 @@ final class ProfileController extends ContactAbstractController
 
     public function organisationAction()
     {
-        if (!$this->identity()->isActivated()) {
+        if (! $this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
                 $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
@@ -157,7 +157,7 @@ final class ProfileController extends ContactAbstractController
 
     public function eventsAction()
     {
-        if (!$this->identity()->isActivated()) {
+        if (! $this->identity()->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
                 $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
             );
@@ -188,7 +188,7 @@ final class ProfileController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        if (!$contact->isVisibleInCommunity()) {
+        if (! $contact->isVisibleInCommunity()) {
             return $this->notFoundAction();
         }
 
@@ -406,9 +406,9 @@ final class ProfileController extends ContactAbstractController
                 'address'              =>
                     null !== $mailAddress ? $mailAddress->toArray() : [],
                 'contact_organisation' =>
-                    !$contactOrganisation ?: $contactOrganisation->toArray(),
+                    ! $contactOrganisation ?: $contactOrganisation->toArray(),
                 'profile'              =>
-                    !$profile ?: $profile->toArray(),
+                    ! $profile ?: $profile->toArray(),
                 'optIn'                => $contact->getOptIn()->map(
                     static function (OptIn $optIn) {
                         return $optIn->getId();
@@ -434,10 +434,10 @@ final class ProfileController extends ContactAbstractController
                 }
 
                 $fileData = $this->params()->fromFiles();
-                if (!empty($fileData['file']['name'])) {
+                if (! empty($fileData['file']['name'])) {
                     /** @var Photo $photo */
                     $photo = $contact->getPhoto()->first();
-                    if (!$photo) {
+                    if (! $photo) {
                         //Create a photo element
                         $photo = new Photo();
                     }
@@ -531,9 +531,9 @@ final class ProfileController extends ContactAbstractController
                 'address'              =>
                     null !== $mailAddress ? $mailAddress->toArray() : [],
                 'contact_organisation' =>
-                    !$contactOrganisation ?: $contactOrganisation->toArray(),
+                    ! $contactOrganisation ?: $contactOrganisation->toArray(),
                 'profile'              =>
-                    !$profile ?: $profile->toArray(),
+                    ! $profile ?: $profile->toArray(),
                 'optIn'                => $contact->getOptIn()->map(
                     static function (OptIn $optIn) {
                         return $optIn->getId();
@@ -562,10 +562,10 @@ final class ProfileController extends ContactAbstractController
                 $contact->setDateActivated(new DateTime());
 
                 $fileData = $this->params()->fromFiles();
-                if (!empty($fileData['file']['name'])) {
+                if (! empty($fileData['file']['name'])) {
                     /** @var Photo $photo */
                     $photo = $contact->getPhoto()->first();
-                    if (!$photo) {
+                    if (! $photo) {
                         //Create a photo element
                         $photo = new Photo();
                     }

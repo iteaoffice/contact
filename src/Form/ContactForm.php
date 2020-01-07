@@ -15,8 +15,8 @@ namespace Contact\Form;
 use Contact\Entity\Contact;
 use Doctrine\ORM\EntityManager;
 use Organisation\Form\Element\Organisation;
-use Zend\Form\Element;
-use Zend\Form\Form;
+use Laminas\Form\Element;
+use Laminas\Form\Form;
 
 /**
  * Class ContactFieldset
