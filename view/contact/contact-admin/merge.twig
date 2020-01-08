@@ -19,10 +19,10 @@
 {% endif %}
 
 <div class="row">
-    <div class="col-md-5 col-sm-6">
+    <div class="col-5">
         <h3>{{ translate("txt-source") }} ({{ translate("txt-will-be-deleted") }})</h3>
         <hr>
-        <dl class="dl-horizontal">
+        <dl>
             <dt>{{ translate("txt-id") }}</dt>
             <dd>{{ source.id }}</dd>
             <dt>{{ translate("txt-first-name") }}</dt>
@@ -37,7 +37,7 @@
             {% endif %}
             <dt>{{ translate("txt-primary-email") }}</dt>
             <dd>{{ source.email }} <a href="mailto:{{ source.email }}"><i class="fa fa-envelope-o"></i></a></dd>
-            {% for email in source.emailAddress if email.email != source.email %}
+            {% for email in source.emailAddress|filter(email => email.email != source.email) -%}
                 {% if loop.first %}
                     <dt>{{ translate("txt-alternative-email") }}</dt>
                 {% endif %}
@@ -87,17 +87,14 @@
         {{ contactLink(source, 'view-admin', 'button') }}
     </div>
 
-    <div class="col-md-2 hidden-sm hidden-xs text-center" style="margin-top:200px;">
+    <div class="col-1 text-center">
         <h2><i class="fa fa-arrow-circle-right fa-2x"></i></h2>
     </div>
-    <div class="hidden-lg hidden-md hidden-sm text-center">
-        <h2><i class="fa fa-arrow-circle-down fa-2x"></i></h2>
-    </div>
 
-    <div class="col-md-5 col-sm-6">
+    <div class="col-5 col-lg-5">
         <h3>{{ translate("txt-target") }} ({{ translate("txt-will-remain-active") }})</h3>
         <hr>
-        <dl class="dl-horizontal">
+        <dl>
             <dt>{{ translate("txt-id") }}</dt>
             <dd>{{ target.id }}</dd>
             <dt>{{ translate("txt-first-name") }}</dt>
@@ -112,7 +109,7 @@
             {% endif %}
             <dt>{{ translate("txt-primary-email") }}</dt>
             <dd>{{ target.email }} <a href="mailto:{{ target.email }}"><i class="fa fa-envelope-o"></i></a></dd>
-            {% for email in target.emailAddress if email.email != target.email %}
+            {% for email in target.emailAddress|filter(email => email.email != target.email) -%}
                 {% if loop.first %}
                     <dt>{{ translate("txt-alternative-email") }}</dt>
                 {% endif %}

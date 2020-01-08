@@ -1,0 +1,57 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-project-idea") }}</h2>
+
+{% if contact.idea.count() > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-idea-number") }}</th>
+            <th>{{ translate("txt-idea") }}</th>
+            <th>{{ translate("txt-call") }}</th>
+            <th>{{ translate("txt-comments") }}</th>
+            <th>{{ translate("txt-partners") }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for idea in contact.idea %}
+            <tr>
+                <td>{{ ideaLink(idea,'view-admin','name') }}</td>
+                <td>{{ ideaLink(idea,'view-admin','title') }}</td>
+                <td>{{ ideaToolLink(idea.tool,'view-admin','name') }}</td>
+                <td>{{ idea.message.count() }}</td>
+                <td>{{ idea.partner.count() }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-this-contact-has-no-project-ideas"))|raw }}
+{% endif %}
+
+<h2>{{ translate("txt-project-idea-comments") }}</h2>
+
+{% if contact.ideaMessage.count() > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-idea-number") }}</th>
+            <th>{{ translate("txt-idea") }}</th>
+            <th>{{ translate("txt-call") }}</th>
+            <th>{{ translate("txt-comment") }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for message in contact.ideaMessage %}
+            <tr>
+                <td>{{ ideaLink(message.idea,'view-admin','number') }}</td>
+                <td>{{ message.idea.title }}</td>
+                <td>{{ ideaToolLink(message.idea.tool,'view-admin','name') }}</td>
+                <td>{{ message }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-contact-has-not-commented-on-an-idea"))|raw }}
+{% endif %}

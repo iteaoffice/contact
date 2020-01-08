@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-profile")) %}
 {% do headTitle().append(contact.parseFullName()) %}
 
-<h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
+<h1>{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item active"><a class="nav-link active"
@@ -20,19 +20,24 @@
     </li>
 </ul>
 
-<div class="row">
-    <div class="col-md-9">
+<h2>{{ translate("txt-personal-profile") }}</h2>
 
-        <h2>{{ translate("txt-personal-profile") }}</h2>
+<div class="row">
+
+    <div class="col-md-9">
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
             <dd>{{ contact.parseFullName() }} ({{ contact.id }})</dd>
             <dt>{{ translate("txt-email") }}</dt>
             <dd>{{ contact.email }}</dd>
-            <dt>{{ translate("txt-direct-phone") }}</dt>
-            <dd>{{ contactService.getDirectPhone(contact) }}</dd>
-            <dt>{{ translate("txt-mobile-phone") }}</dt>
-            <dd>{{ contactService.getMobilePhone(contact) }}</dd>
+            {% if contactService.getDirectPhone(contact) %}
+                <dt>{{ translate("txt-direct-phone") }}</dt>
+                <dd>{{ contactService.getDirectPhone(contact) }}</dd>
+            {% endif %}
+            {% if contactService.getMobilePhone(contact) %}
+                <dt>{{ translate("txt-mobile-phone") }}</dt>
+                <dd>{{ contactService.getMobilePhone(contact) }}</dd>
+            {% endif %}
             {% if  contactService.getMailAddress(contact) %}
                 <dt>{{ translate("txt-postal-address") }}</dt>
                 <dd>{{ contactService.getMailAddress(contact).address }}</dd>
@@ -45,10 +50,13 @@
             {% else %}
                 <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
             {% endif %}
-            <dt>{{ translate("txt-expertise") }}</dt>
-            <dd>{{ contact.profile.description|nl2br }}</dd>
-            {% for optIn in contact.optIn(true)  %}
-                {% if loop.first %}<dt>{{ translate("txt-profile-list-opt-in") }}</dt>{% endif %}
+            {% if contact.profile.description %}
+                <dt>{{ translate("txt-expertise") }}</dt>
+                <dd>{{ contact.profile.description|nl2br }}</dd>
+            {% endif %}
+            {% for optIn in contact.optIn(true) %}
+                {% if loop.first %}
+                    <dt>{{ translate("txt-profile-list-opt-in") }}</dt>{% endif %}
                 <dd>{{ optIn.optIn }} ({{ optIn.description }})</dd>
             {% endfor %}
         </dl>
@@ -69,8 +77,6 @@
         {% endif %}
     </div>
     <div class="col-md-3">
-        <br><br>
-        {{ contactPhoto(contact, 150, false, true) }}
+        {{ contactPhoto(contact, 150) }}
     </div>
-
 </div>

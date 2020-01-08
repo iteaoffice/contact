@@ -8,7 +8,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        http://github.com/iteaoffice/Contact for the canonical source repository
@@ -19,47 +19,41 @@ declare(strict_types=1);
 namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
+use General\ValueObject\Image\Image;
+use General\ValueObject\Image\ImageDecoration;
+use General\View\Helper\AbstractImage;
 
 /**
  * Class ContactPhoto
  *
  * @package Contact\View\Helper
  */
-class ContactPhoto extends ImageAbstract
+final class ContactPhoto extends AbstractImage
 {
     public function __invoke(
         Contact $contact,
-        $width = null,
-        $onlyUrl = false,
-        $responsive = false,
-        $grayscale = false
+        int $width = null,
+        string $show = ImageDecoration::SHOW_IMAGE
     ): string {
-        $this->filter = [];
-        $this->classes = [];
-
         $photo = null === $contact->getPhoto() ? false : $contact->getPhoto()->first();
 
-        if (!$photo) {
+        if (! $photo) {
             return '';
         }
 
-        $this->setRouter('image/contact-photo');
+        $linkParams = [];
+        $linkParams['route'] = 'image/contact-photo';
+        $linkParams['show'] = $show;
+        $linkParams['width'] = $width;
 
-        $this->addRouterParam('ext', $photo->getContentType()->getExtension());
-        $this->addRouterParam('last-update', $photo->getDateUpdated()->getTimestamp());
-        $this->addRouterParam('id', $photo->getId());
+        $routeParams = [
+            'id' => $photo->getId(),
+            'ext' => $photo->getContentType()->getExtension(),
+            'last-update' => $photo->getDateUpdated()->getTimestamp(),
+        ];
 
-        $this->setImageId('contact_photo_' . $photo->getId());
+        $linkParams['routeParams'] = $routeParams;
 
-        if ($grayscale) {
-            $this->addFilter('grayscale');
-        }
-        if ($responsive) {
-            $this->addClasses('img-responsive img-fluid');
-        }
-
-        $this->setWidth($width);
-
-        return $this->createImageUrl($onlyUrl);
+        return $this->parse(Image::fromArray($linkParams));
     }
 }

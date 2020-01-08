@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -16,8 +17,8 @@ use Contact\Entity\Facebook;
 use Contact\Form\SendMessage;
 use Contact\Service\ContactService;
 use General\Service\EmailService;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\View\Model\ViewModel;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\View\Model\ViewModel;
 
 /**
  * Class FacebookController
@@ -26,22 +27,10 @@ use Zend\View\Model\ViewModel;
  */
 final class FacebookController extends ContactAbstractController
 {
-    /**
-     * @var array
-     */
-    private $config;
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var EmailService
-     */
-    private $emailService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private array $config;
+    private ContactService $contactService;
+    private EmailService $emailService;
+    private TranslatorInterface $translator;
 
     public function __construct(
         array $config,
@@ -54,7 +43,6 @@ final class FacebookController extends ContactAbstractController
         $this->emailService = $emailService;
         $this->translator = $translator;
     }
-
 
     public function facebookAction(): ViewModel
     {
@@ -129,7 +117,7 @@ final class FacebookController extends ContactAbstractController
                 $this->flashMessenger()
                     ->addSuccessMessage(
                         sprintf(
-                            $this->translator->translate("txt-message-to-members-of-facebook-$%s-has-been-sent"),
+                            $this->translator->translate('txt-message-to-members-of-facebook-$%s-has-been-sent'),
                             $facebook->getFacebook()
                         )
                     );

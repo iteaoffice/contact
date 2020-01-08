@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -13,14 +14,14 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Phone.
  *
  * @ORM\Table(name="contact_phone")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_phone")
  *
  * @category    Contact
@@ -28,17 +29,17 @@ use Zend\Form\Annotation;
 class Phone extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="phone_id", type="integer", nullable=false)
+     * @ORM\Column(name="phone_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
      * @ORM\Column(name="phone", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-phone-number"})
      *
      * @var string
@@ -46,40 +47,20 @@ class Phone extends AbstractEntity
     private $phone;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="phone")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
-     * })
-     *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\PhoneType", cascade={"persist"}, inversedBy="phone")
-     * @ORM\JoinColumns({
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false)
-     * })
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Contact\Entity\PhoneType"})
      * @Annotation\Attributes({"label":"txt-type"})
      *
-     * @var \Contact\Entity\PhoneType
+     * @var PhoneType
      */
     private $type;
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
 
     public function __toString(): string
     {
@@ -87,7 +68,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return Contact
      */
     public function getContact()
     {
@@ -95,7 +76,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param Contact $contact
      */
     public function setContact($contact)
     {
@@ -135,7 +116,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\PhoneType
+     * @return PhoneType
      */
     public function getType()
     {
@@ -143,7 +124,7 @@ class Phone extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\PhoneType $type
+     * @param PhoneType $type
      */
     public function setType($type)
     {

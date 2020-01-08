@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -7,7 +8,7 @@
  * @category    Affiliation
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        http://github.com/iteaoffice/affiliation for the canonical source repository
@@ -26,7 +27,9 @@ use General\Entity\Gender;
 use General\Entity\Title;
 use General\Service\EmailService;
 use General\Service\GeneralService;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+
+use function strlen;
 
 /**
  * Class MergeContact
@@ -35,22 +38,10 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
  */
 final class ContactActions extends AbstractPlugin
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var GeneralService
-     */
-    private $generalService;
-    /**
-     * @var DeeplinkService
-     */
-    private $deeplinkService;
-    /**
-     * @var EmailService
-     */
-    private $emailService;
+    private ContactService $contactService;
+    private GeneralService $generalService;
+    private DeeplinkService $deeplinkService;
+    private EmailService $emailService;
 
     public function __construct(
         ContactService $contactService,
@@ -80,7 +71,7 @@ final class ContactActions extends AbstractPlugin
         $contact = new Contact();
         $contact->setEmail($emailAddress);
         $contact->setFirstName($firstName);
-        if (\strlen($middleName) > 0) {
+        if (strlen($middleName) > 0) {
             $contact->setMiddleName($middleName);
         }
 
@@ -107,9 +98,57 @@ final class ContactActions extends AbstractPlugin
         /** @var Target $target */
         $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate');
         //Create a deep link for the user which redirects to the profile-page
-        $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
+        $deeplink = $this->deeplinkService->createDeeplink($target, $contact, null, null, 7);
 
         $this->emailService->setWebInfo('/auth/register:mail');
+        $this->emailService->addToEmailAddress($emailAddress);
+        $this->emailService->setTemplateVariable('display_name', $contact->getDisplayName());
+        $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
+        $this->emailService->send();
+
+        return $contact;
+    }
+
+    public function subscribe(
+        string $emailAddress,
+        string $firstName,
+        string $middleName,
+        string $lastName
+    ): Contact {
+        //Create the account
+        $contact = new Contact();
+        $contact->setEmail($emailAddress);
+        $contact->setFirstName($firstName);
+        if (strlen($middleName) > 0) {
+            $contact->setMiddleName($middleName);
+        }
+
+        $contact->setLastName($lastName);
+
+        /** @var Gender $gender */
+        $gender = $this->generalService->find(Gender::class, Gender::GENDER_UNKNOWN);
+        $contact->setGender($gender);
+
+        /** @var Title $title */
+        $title = $this->generalService->find(Title::class, Title::TITLE_UNKNOWN);
+        $contact->setTitle($title);
+
+        /** @var OptIn $optIn */
+        foreach ($this->contactService->findAll(OptIn::class) as $optIn) {
+            if (! $optIn->isActive()) {
+                continue;
+            }
+            $contact->getOptIn()->add($optIn);
+        }
+
+        $this->contactService->save($contact);
+
+        /** @var Target $target */
+        $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate-optin');
+        //Create a deep link for the user which redirects to the profile-page
+        $deeplink = $this->deeplinkService->createDeeplink($target, $contact, null, null, 7);
+
+        $this->emailService->setWebInfo('/auth/subscribe:mail');
         $this->emailService->addToEmailAddress($emailAddress);
         $this->emailService->setTemplateVariable('display_name', $contact->getDisplayName());
         $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
@@ -147,7 +186,7 @@ final class ContactActions extends AbstractPlugin
 
         $this->contactService->save($contact);
 
-        if (!empty($note)) {
+        if (! empty($note)) {
             $this->contactService->addNoteToContact($note, 'Account creation', $contact);
         }
 

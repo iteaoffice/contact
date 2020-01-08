@@ -1,0 +1,117 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-add-%s-to-a-project")|format(contact.displayName)) %}
+
+{% do form.prepare() %}
+{{ form().openTag(form)|raw }}
+
+{% if affiliations is null %}
+    <h1>{{ translate("txt-add-%s-to-a-project")|format(contact.displayName) }}</h1>
+
+    {{ ztbformelement(form.get('project')) }}
+
+    <div class="form-group row">
+        <div class="offset-sm-3 col-sm-9">
+            {{ ztbformelement(form.get('submit')) }}
+            {{ ztbformelement(form.get('cancel')) }}
+        </div>
+    </div>
+{% else %}
+    <script type="text/javascript">
+        $(function(){
+            $('#show-inactive').change(function(){
+                $('table .inactive').toggleClass('d-none', !$(this).prop('checked'));
+            });
+        });
+    </script>
+    <h1>{{ translate("txt-add-%s-to-%s")|format(contact.displayName, project.parseFullName()) }}</h1>
+    <h2>{{ translate("txt-partners") }}</h2>
+    <p>{{ translate("txt-add-to-partner-explanation") }}</p>
+    <input type="hidden" name="project" value="{{ project.id }}">
+    <table class="table table-striped table-sm table-hover">
+        <thead>
+            <tr>
+                <th>{{ translate("txt-partner") }} <div class="ml-4 custom-control custom-switch" style="display: inline-block;">
+                        <input type="checkbox" class="custom-control-input" id="show-inactive" value="1">
+                        <label class="custom-control-label" for="show-inactive">{{ translate("txt-show-de-activated partners") }}</label>
+                    </div></th>
+                <th>{{ translate("txt-type") }}</th>
+                <th>{{ translate("txt-country") }}</th>
+                <th>{{ translate("txt-technical-contact") }}</th>
+                <th>{{ translate("txt-associates") }}</th>
+                <th>{{ translate("txt-active") }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for affiliation in affiliations %}
+            <tr{% if not affiliation.isActive() %} class="inactive d-none"{% endif %}>
+                <td>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="affiliation" value="{{ affiliation.id }}">
+                    </div>
+                    {{ affiliationLink(affiliation,'view-admin', 'organisation-branch') }}
+                </td>
+                <td>{% if affiliation.parentOrganisation %}{{ organisationTypeLink(affiliation.parentOrganisation.organisation.type,'view','type') }}{% else %}{{ organisationTypeLink(affiliation.organisation.type,'view','type') }}{% endif %}</td>
+                <td>{{ affiliation.organisation.country.iso3 }}</td>
+                <td>{{ contactLink(affiliation.contact, 'view-admin','name') }}</td>
+                <td>{{ affiliation.associate.count }}</td>
+                <td>{% if affiliation.isActive() %}
+                        <span class="badge badge-success">{{ translate("txt-yes") }}</span>
+                    {% else %}
+                        <span class="badge badge-danger">{{ translate("txt-no") }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        {%  set organisation = contact.contactOrganisation.organisation %}
+            <tr>
+                <td>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="affiliation" value="add">
+                    </div>
+                    <i class="fa fa-plus"></i> {{ translate("txt-add-new-affiliation") }} {{ organisationLink(organisation, 'view-admin') }}
+                </td>
+                <td>{{ organisationTypeLink(organisation.type,'view','name') }}</td>
+                <td>{{ organisation.country.iso3 }}</td>
+                <td>{{ contactLink(contact, 'view-admin','name') }}</td>
+                <td>0</td>
+                <td><span class="badge badge-danger">{{ translate("txt-no") }}</span></td>
+            </tr>
+        </tbody>
+    </table>
+    {% if associateIn is not empty %}
+        <h2>{{ translate("txt-associate-in") }}</h2>
+        <table class="table table-striped table-sm table-hover">
+            <thead>
+            <tr>
+                <th>{{ translate("txt-partner") }}</th>
+                <th>{{ translate("txt-type") }}</th>
+                <th>{{ translate("txt-country") }}</th>
+                <th>{{ translate("txt-technical-contact") }}</th>
+                <th>{{ translate("txt-associations") }}</th>
+                <th>{{ translate("txt-active") }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for affiliation in associateIn %}
+                <tr>
+                    <td>{{ affiliationLink(affiliation,'view-admin', 'organisation-branch') }}</td>
+                    <td>{% if affiliation.parentOrganisation %}{{ organisationTypeLink(affiliation.parentOrganisation.organisation.type,'view','name') }}{% else %}{{ organisationTypeLink(affiliation.organisation.type,'view','type') }}{% endif %}</td>
+                    <td>{{ affiliation.organisation.country.iso3 }}</td>
+                    <td>{{ contactLink(affiliation.contact, 'view-admin','name') }}</td>
+                    <td>{{ affiliation.associate.count }}</td>
+                    <td>{% if affiliation.isActive() %}
+                            <span class="badge badge-success">{{ translate("txt-yes") }}</span>
+                        {% else %}
+                            <span class="badge badge-danger">{{ translate("txt-no") }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {{ ztbformelement(form.get('submit')) }}
+    {{ ztbformelement(form.get('cancel')) }}
+{% endif %}
+
+{{ form().closeTag()|raw }}

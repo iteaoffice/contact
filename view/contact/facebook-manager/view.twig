@@ -1,7 +1,7 @@
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-facebook-%s")|format(facebook)) %}
 
-<h1 class="display-4">{{ translate("txt-facebook-%s")|format(facebook) }}
+<h1>{{ translate("txt-facebook-%s")|format(facebook) }}
     {{ facebookLink(facebook,'edit','button') }}
     {{ facebookLink(facebook,'view-community','button') }}
 </h1>
@@ -42,7 +42,7 @@
 <h3>{{ translate("txt-contacts-in-facebook") }}</h3>
 
 {% if contacts|length > 0 %}
-    <table class="table table-striped table-condensed table-sm table-hover">
+    <table class="table table-striped table-sm table-hover">
         <thead>
         <tr>
             <th>{{ translate("txt-display-name") }}</th>

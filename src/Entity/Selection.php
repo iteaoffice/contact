@@ -1,94 +1,97 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use Admin\Entity\Access;
+use DateTime;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
+use Event\Entity\Meeting\Meeting;
+use Event\Entity\Meeting\OptionCost;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Form\Annotation;
+use Mailing\Entity\Mailing;
+use Laminas\Form\Annotation;
 
 /**
- * Entity for the Selection.
- *
  * @ORM\Table(name="selection")
  * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
  * @Gedmo\SoftDeleteable(fieldName="dateDeleted")
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_selection")
- *
- * @category    Contact
  */
 class Selection extends AbstractEntity
 {
-    public const SELECTION_INVOICE_CORE       = 1;
-    public const SELECTION_BSG                = 46;
-    public const SELECTION_STG                = 47;
+    public const SELECTION_INVOICE_CORE = 1;
+    public const SELECTION_BSG = 46;
+    public const SELECTION_STG = 47;
     public const SELECTION_PROJECT_MANAGEMENT = 219;
 
     public const NOT_CORE = 0;
-    public const CORE     = 1;
+    public const CORE = 1;
 
-    public const TYPE_SQL   = 1;
+    public const TYPE_SQL = 1;
     public const TYPE_FIXED = 2;
 
-    protected static $coreTemplates = [
-        self::NOT_CORE => 'txt-not-core',
-        self::CORE     => 'txt-core',
-    ];
+    protected static array $coreTemplates
+        = [
+            self::NOT_CORE => 'txt-not-core',
+            self::CORE     => 'txt-core',
+        ];
 
     /**
-     * @ORM\Column(name="selection_id", type="integer", nullable=false)
+     * @ORM\Column(name="selection_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
-     * @ORM\Column(name="selection", type="string", length=80, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="selection", type="string", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-selection"})
      *
      * @var string
      */
     private $selection;
     /**
-     * @ORM\Column(name="tag", type="string", length=20, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="tag", type="string", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-tag"})
      *
      * @var string
      */
     private $tag;
     /**
-     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     * @ORM\Column(name="date_created", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      * @Annotation\Exclude()
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateCreated;
     /**
      * @ORM\Column(name="date_deleted", type="datetime", nullable=true)
      * @Annotation\Exclude()
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateDeleted;
     /**
-     * @ORM\Column(name="note", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @ORM\Column(name="note", type="text", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-selection-note-label","help-block":"txt-selection-note-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-selection-note-placeholder"})
      *
@@ -97,7 +100,7 @@ class Selection extends AbstractEntity
     private $note;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="selection")
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=true)
      * @Annotation\Type("Contact\Form\Element\Contact")
      * @Annotation\Options({"label":"txt-selection-owner-label","help-block":"txt-selection-owner-help-block"})
      *
@@ -106,7 +109,7 @@ class Selection extends AbstractEntity
     private $contact;
     /**
      * @ORM\Column(name="core", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"coreTemplates"})
      * @Annotation\Options({"label":"txt-selection-core-label","help-block":"txt-selection-core-help-block"})
      *
@@ -114,52 +117,52 @@ class Selection extends AbstractEntity
      */
     private $core;
     /**
-     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist"}, mappedBy="selection")
+     * @ORM\OneToMany(targetEntity="Contact\Entity\SelectionContact", cascade={"persist","remove"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\SelectionContact[]|Collections\ArrayCollection
+     * @var SelectionContact[]|Collections\ArrayCollection
      */
     private $selectionContact;
     /**
-     * @ORM\OneToOne(targetEntity="Contact\Entity\SelectionSql", cascade={"persist"}, mappedBy="selection")
+     * @ORM\OneToOne(targetEntity="Contact\Entity\SelectionSql", cascade={"persist","remove"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\SelectionSql
+     * @var SelectionSql
      */
     private $sql;
     /**
      * @ORM\ManyToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
+     * @var Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\OptionCost", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Event\Entity\Meeting\OptionCost[]|Collections\ArrayCollection
+     * @var OptionCost[]|Collections\ArrayCollection
      */
     private $meetingOptionCost;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Meeting", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Event\Entity\Meeting\Meeting[]|Collections\ArrayCollection
+     * @var Meeting[]|Collections\ArrayCollection
      */
     private $meeting;
     /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Cost", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
-     * @var \Event\Entity\Meeting\OptionCost[]|Collections\ArrayCollection
+     * @var OptionCost[]|Collections\ArrayCollection
      */
     private $meetingCost;
     /**
      * @ORM\ManyToMany(targetEntity="Admin\Entity\Access", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude();
      *
-     * @var \Admin\Entity\Access[]|Collections\ArrayCollection
+     * @var Access[]|Collections\ArrayCollection
      */
     private $access;
 
@@ -180,19 +183,10 @@ class Selection extends AbstractEntity
         return self::$coreTemplates;
     }
 
-    public function __get($property)
+    public function __clone()
     {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
+        $this->id = null;
+        $this->selection = sprintf('%s (copy)', $this->selection);
     }
 
     public function __toString(): string
@@ -205,133 +199,87 @@ class Selection extends AbstractEntity
         return $this->core === self::CORE;
     }
 
-    /**
-     * @return int
-     */
+    public function isSql(): bool
+    {
+        return null !== $this->sql;
+    }
+
+    public function isActive(): bool
+    {
+        return null === $this->dateDeleted;
+    }
+
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return Selection
-     */
-    public function setId(int $id): Selection
+    public function setId(?int $id): Selection
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSelection()
+    public function getSelection(): ?string
     {
         return $this->selection;
     }
 
-    /**
-     * @param string $selection
-     *
-     * @return Selection
-     */
     public function setSelection(string $selection): Selection
     {
         $this->selection = $selection;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTag()
     {
         return $this->tag;
     }
 
-    /**
-     * @param string $tag
-     *
-     * @return Selection
-     */
     public function setTag(?string $tag): Selection
     {
         $this->tag = $tag;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
+    public function getDateCreated(): ?DateTime
     {
         return $this->dateCreated;
     }
 
-    /**
-     * @param \DateTime $dateCreated
-     *
-     * @return Selection
-     */
-    public function setDateCreated(\DateTime $dateCreated): Selection
+    public function setDateCreated(DateTime $dateCreated): Selection
     {
         $this->dateCreated = $dateCreated;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateDeleted()
+    public function getDateDeleted(): ?DateTime
     {
         return $this->dateDeleted;
     }
 
-    /**
-     * @param \DateTime $dateDeleted
-     *
-     * @return Selection
-     */
-    public function setDateDeleted(\DateTime $dateDeleted): Selection
+    public function setDateDeleted(?DateTime $dateDeleted): Selection
     {
         $this->dateDeleted = $dateDeleted;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNote()
+    public function getNote(): ?string
     {
         return $this->note;
     }
 
-    /**
-     * @param string $note
-     *
-     * @return Selection
-     */
     public function setNote(string $note): Selection
     {
         $this->note = $note;
         return $this;
     }
 
-    /**
-     * @return Contact
-     */
-    public function getContact()
+    public function getContact(): ?Contact
     {
         return $this->contact;
     }
 
-    /**
-     * @param Contact $contact
-     *
-     * @return Selection
-     */
     public function setContact(Contact $contact): Selection
     {
         $this->contact = $contact;
@@ -346,145 +294,85 @@ class Selection extends AbstractEntity
         return $this->core;
     }
 
-    /**
-     * @param int $core
-     *
-     * @return Selection
-     */
     public function setCore(int $core): Selection
     {
         $this->core = $core;
         return $this;
     }
 
-    /**
-     * @return SelectionContact[]|Collections\ArrayCollection
-     */
     public function getSelectionContact()
     {
         return $this->selectionContact;
     }
 
-    /**
-     * @param SelectionContact[]|Collections\ArrayCollection $selectionContact
-     *
-     * @return Selection
-     */
     public function setSelectionContact($selectionContact)
     {
         $this->selectionContact = $selectionContact;
         return $this;
     }
 
-    /**
-     * @return SelectionSql
-     */
-    public function getSql()
+    public function getSql(): ?SelectionSql
     {
         return $this->sql;
     }
 
-    /**
-     * @param SelectionSql $sql
-     *
-     * @return Selection
-     */
     public function setSql(SelectionSql $sql): Selection
     {
         $this->sql = $sql;
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Mailing\Entity\Mailing[]
-     */
     public function getMailing()
     {
         return $this->mailing;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Mailing\Entity\Mailing[] $mailing
-     *
-     * @return Selection
-     */
-    public function setMailing($mailing)
+    public function setMailing($mailing): Selection
     {
         $this->mailing = $mailing;
+
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
-     */
     public function getMeetingOptionCost()
     {
         return $this->meetingOptionCost;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingOptionCost
-     *
-     * @return Selection
-     */
-    public function setMeetingOptionCost($meetingOptionCost)
+    public function setMeetingOptionCost($meetingOptionCost): Selection
     {
         $this->meetingOptionCost = $meetingOptionCost;
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Meeting\Meeting[]
-     */
     public function getMeeting()
     {
         return $this->meeting;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Event\Entity\Meeting\Meeting[] $meeting
-     *
-     * @return Selection
-     */
-    public function setMeeting($meeting)
+    public function setMeeting($meeting): Selection
     {
         $this->meeting = $meeting;
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[]
-     */
     public function getMeetingCost()
     {
         return $this->meetingCost;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Event\Entity\Meeting\OptionCost[] $meetingCost
-     *
-     * @return Selection
-     */
-    public function setMeetingCost($meetingCost)
+    public function setMeetingCost($meetingCost): Selection
     {
         $this->meetingCost = $meetingCost;
         return $this;
     }
 
-    /**
-     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
-     */
     public function getAccess()
     {
         return $this->access;
     }
 
-    /**
-     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
-     *
-     * @return Selection
-     */
-    public function setAccess($access)
+    public function setAccess($access): Selection
     {
         $this->access = $access;
         return $this;

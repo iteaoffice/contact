@@ -1,0 +1,168 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-contact-details") }}</h2>
+
+<form method="post" action="">
+    <div class="row">
+        <div class="col-md-8">
+            <dl class="dl-horizontal">
+                {% if contact.firstName %}
+                    <dt>{{ translate("txt-first-name") }}</dt>
+                    <dd>{{ contact.firstName }}</dd>
+                {% endif %}
+                {% if contact.lastName %}
+                    <dt>{{ translate("txt-last-name") }}</dt>
+                    <dd>{{ contact.lastName }} {% if contact.middleName %}({{ contact.middleName }}){% endif %}</dd>
+                {% endif %}
+                <dt>{{ translate("txt-gender") }}</dt>
+                <dd>{{ contact.gender.name }} ({{ contact.gender }})</dd>
+                {% if contact.title.name %}
+                    <dt>{{ translate("txt-title") }}</dt>
+                    <dd>{{ contact.title }} ({{ contactService.parseAttention(contact) }})</dd>
+                {% endif %}
+                <dt>{{ translate("txt-primary-email") }}</dt>
+                <dd>{{ contact.email }} <a href="mailto:{{ contact.email }}"><i
+                                class="fa fa-envelope-o"></i></a></dd>
+
+
+                {% for email in contact.emailAddress|filter(email => email.email != contact.email) -%}
+                    {% if loop.first %}
+                        <dt>{{ translate("txt-alternative-email") }}</dt>
+                    {% endif %}
+                    <dd>{{ email.email }} <a href="mailto:{{ email.email }}"><i
+                                    class="fa fa-envelope-o"></i></a></dd>
+                {% endfor %}
+
+                <dt>{{ translate("txt-organisation") }}</dt>
+                {% if contactService.hasOrganisation(contact) %}
+                    <dd>{{ organisationLink(
+                            contact.contactOrganisation.organisation,'view-admin', 'name',contact.contactOrganisation.branch
+                        ) }} ({{ contact.contactOrganisation.organisation.type }}),
+                        {{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
+                {% else %}
+                    <dd>{{ translate("txt-no-organisation-provided") }}</dd>
+                {% endif %}
+
+
+                {% if contact.contactOrganisation.branch %}
+                    <dt>{{ translate("txt-branch") }}</dt>
+                    <dd><code>{{ contact.contactOrganisation.branch }}</code></dd>
+                {% endif %}
+
+                <dt>{{ translate("txt-profile-visibility") }}</dt>
+                {% if contact.profile.visible is not null %}
+                    <dd>{{ translate(contact.profile.visible(true)) }}</dd>
+                {% else %}
+                    <dd>{{ translate("txt-no-visibililty-defined") }}</dd>
+                {% endif %}
+                {% if contact.profile.description %}
+                    <dt>{{ translate("txt-expertise") }}</dt>
+                    <dd>{{ contact.profile.description|nl2br }}</dd>
+                {% endif %}
+
+                <dt>{{ translate("txt-department") }}</dt>
+                <dd>{{ contact.department|default(translate("txt-unknown")) }}</dd>
+                <dt>{{ translate("txt-position") }}</dt>
+                <dd>{{ contact.position|default(translate("txt-unknown")) }}</dd>
+                <dt>{{ translate("txt-access") }}</dt>
+                {% for access in contact.access %}
+                    <dd>{{ accessLink(access,'view','name') }} {% if not access.selection.isEmpty() %}*{% endif %}</dd>
+                {% else %}
+                    <dd>{{ translate("txt-no-access-defined") }}</dd>
+                {% endfor %}
+
+                {% if contact.triggerUpdate %}
+                    <dt>{{ translate("txt-trigger-update") }}</dt>
+                    <dd>{{ translate("txt-no") }}</dd>
+                {% endif %}
+
+                <dt>{{ translate("txt-date-created") }}</dt>
+                <dd>{{ contact.dateCreated|string_date }}</dd>
+                {% if contact.dateUpdated %}
+                    <dt>{{ translate("txt-date-updated") }}</dt>
+                    <dd>{{ contact.dateUpdated|string_date }}</dd>
+                {% endif %}
+
+                <dt>{{ translate("txt-date-activated") }}</dt>
+                <dd>{% if contact.dateActivated %}{{ contact.dateActivated|string_date }}  <input type="submit"
+                                                                                                  name="deactivate"
+                                                                                                  value="{{ translate("txt-de-activate-contact") }}"
+                                                                                                  class="btn btn-warning btn-sm">{% else %}{{ translate("txt-contact-is-not-activated-yet") }}
+                        <input type="submit" name="activate" value="{{ translate("txt-activate-contact") }}"
+                               class="btn btn-primary btn-sm">{% endif %}
+
+                </dd>
+
+                <dt>{{ translate("txt-date-anonymised") }}</dt>
+                <dd>{% if contact.dateAnonymous %}{{ contact.dateAnonymous|string_date }}{% else %}{{ translate("txt-contact-is-not-anonymised-yet") }}{% endif %}</dd>
+
+            </dl>
+        </div>
+        <div class="col-md-4">
+            {{ contactPhoto(contact, 150) }}
+        </div>
+    </div>
+
+    <h2>{{ translate("txt-privacy-options") }}</h2>
+    <table class="table table-hover table-sm table-striped">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-action") }}</th>
+            <th>{{ translate("txt-possible") }}</th>
+            <th>{{ translate("txt-reasons") }}</th>
+            <th>{{ translate("txt-button") }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>{{ translate("txt-delete-contact") }}</td>
+            <td>{% if contactService.canDeleteContact(contact) %}<i class="fa fa-check text-success"></i>{% else %}<i
+                        class="fa fa-times text-danger"></i>{% endif %}</td>
+            <td>
+                {% for why in contactService.cannotDeleteContact(contact) %}
+                    {% if loop.first %}<ul>{% endif %}
+                    <li>{{ why }}</li>
+                    {% if loop.last %}</ul>{% endif %}
+                {% endfor %}
+            </td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>{{ translate("txt-anonymise-contact") }}</td>
+            <td>{% if contactService.canAnonymiseContact(contact) %}<i class="fa fa-check text-success"></i>{% else %}<i
+                        class="fa fa-times text-danger"></i>{% endif %}</td>
+            <td>
+                {% for why in contactService.canAnonymiseContactReasons(contact) %}
+                    {% if loop.first %}<ul>{% endif %}
+                    <li>{{ why }}</li>
+                    {% if loop.last %}</ul>{% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% if contactService.canAnonymiseContact(contact) %}
+                    {% if not contact.isAnonymised() %}
+                        <input type="submit" name="anonymise" value="{{ translate("txt-anonymise-contact") }}"
+                               class="btn btn-primary btn-sm">
+                    {% else %}
+                        <input type="submit" name="deanonymise" value="{{ translate("txt-de-anonymise-contact") }}"
+                               class="btn btn-warning btn-sm">
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+    <hr>
+    {{ contactLink(contact,'edit-admin','button') }}
+    {{ contactLink(contact,'permit','button') }}
+    {{ contactLink(contact,'impersonate','button') }}
+
+    <input type="submit" name="flushpermissions" value="{{ translate("txt-flush-permissions") }}"
+           class="btn btn-outline-warning">
+
+</form>

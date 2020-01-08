@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -7,7 +8,7 @@
  * @category    Affiliation
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        http://github.com/iteaoffice/affiliation for the canonical source repository
@@ -25,19 +26,24 @@ use Contact\Entity\Email;
 use Contact\Entity\Log;
 use Contact\Entity\Note;
 use Contact\Entity\OptIn;
+use Contact\Entity\Office\Contact as OfficeContact;
+use Contact\Entity\Photo;
 use Contact\Entity\SelectionContact;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorHeroModule\Handler\Logging;
 use Event\Entity\Exhibition\Tour;
-use Program\Entity\Domain;
+use Exception;
 use Program\Entity\Nda;
-use Program\Entity\Technology;
 use Project\Entity\Idea\Idea;
 use Project\Entity\Invite;
-use Zend\Http\PhpEnvironment\Request;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Http\PhpEnvironment\Request;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+
+use function array_unshift;
+use function in_array;
+use function sprintf;
 
 /**
  * Class MergeContact
@@ -46,18 +52,9 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
  */
 final class MergeContact extends AbstractPlugin
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var Logging
-     */
-    private $errorLogger;
+    private EntityManagerInterface $entityManager;
+    private TranslatorInterface $translator;
+    private ?Logging $errorLogger;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -81,6 +78,11 @@ final class MergeContact extends AbstractPlugin
         // Can't merge the same contact
         if ($source->getId() === $target->getId()) {
             $errors[] = $this->translator->translate('txt-cant-merge-the-same-contact');
+        }
+
+        // Can't merge office contacts (too prone to errors and needs manual check)
+        if ($source->getOfficeContact() instanceof OfficeContact) {
+            $errors[] = $this->translator->translate('txt-cant-merge-office-contacts');
         }
 
         return $errors;
@@ -129,7 +131,7 @@ final class MergeContact extends AbstractPlugin
             // Transfer access
             $newAccess = new ArrayCollection();
             foreach ($source->getAccess() as $access) {
-                if (!$target->getAccess()->contains($access)) {
+                if (! $target->getAccess()->contains($access)) {
                     $newAccess->add($access);
                 }
             }
@@ -144,18 +146,11 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Email $emailSource */
             foreach ($source->getEmailAddress() as $emailSource) {
-                if (!\in_array($emailSource->getEmail(), $targetEmailAddresses, false)) {
+                if (! in_array($emailSource->getEmail(), $targetEmailAddresses, false)) {
                     $emailSource->setContact($target);
                     $target->getEmailAddress()->add($emailSource);
                 }
             }
-
-            // Transfer CV
-            if (($source->getCv() !== null) && ($target->getCv() === null)) {
-                $target->setCv($source->getCv());
-                $target->getCv()->setContact($target);
-            }
-            $source->setCv(null);
 
             // Transfer addresses (no matching)
             foreach ($source->getAddress() as $key => $address) {
@@ -179,7 +174,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var OptIn $optInSource */
             foreach ($source->getOptIn() as $optInSource) {
-                if (!\in_array($optInSource->getId(), $targetOptIns, false)) {
+                if (! in_array($optInSource->getId(), $targetOptIns, false)) {
                     $target->getOptIn()->add($optInSource);
                 }
             }
@@ -310,19 +305,6 @@ final class MergeContact extends AbstractPlugin
             }
             $source->setContactOrganisation(null);
 
-            // Transfer domain (many-to-many, with matching)
-            $targetDomains = [];
-            /** @var Domain $domainTarget */
-            foreach ($target->getDomain() as $domainTarget) {
-                $targetDomains[] = $domainTarget->getId();
-            }
-            /** @var Domain $domainSource */
-            foreach ($source->getDomain() as $domainSource) {
-                if (!\in_array($domainSource->getId(), $targetDomains)) {
-                    $target->getDomain()->add($domainSource);
-                }
-            }
-            $source->setDomain(new ArrayCollection());
 
             // Transfer ideas (no matching)
             foreach ($source->getIdea() as $key => $idea) {
@@ -339,25 +321,11 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Idea $ideaSource */
             foreach ($source->getFavouriteIdea() as $ideaSource) {
-                if (!isset($targetIdeas[$ideaSource->getId()])) {
+                if (! isset($targetIdeas[$ideaSource->getId()])) {
                     $target->getFavouriteIdea()->add($ideaSource);
                 }
             }
             $source->setFavouriteIdea(new ArrayCollection());
-
-            // Transfer technologies (many-to-many, with matching)
-            $targetTechnologies = [];
-            /** @var Technology $technologyTarget */
-            foreach ($target->getTechnology() as $technologyTarget) {
-                $targetTechnologies[$technologyTarget->getId()] = $technologyTarget->getId();
-            }
-            /** @var Technology $technologySource */
-            foreach ($source->getTechnology() as $technologySource) {
-                if (!isset($targetTechnologies[$technologySource->getId()])) {
-                    $target->getTechnology()->add($technologySource);
-                }
-            }
-            $source->setTechnology(new ArrayCollection());
 
             // Transfer organisation logs (no matching)
             foreach ($source->getOrganisationLog() as $key => $log) {
@@ -451,7 +419,7 @@ final class MergeContact extends AbstractPlugin
             }
 
             // Transfer photo (database unique constraint on 1 photo per contact!)
-            if (!$target->hasPhoto() && $source->hasPhoto()) {
+            if (! $target->hasPhoto() && $source->hasPhoto()) {
                 $photo = $source->getPhoto()->first();
                 $photo->setContact($target);
                 $target->getPhoto()->add($photo);
@@ -466,14 +434,14 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Affiliation $affiliationSource */
             foreach ($source->getAssociate() as $affiliationSource) {
-                if (!isset($targetAssociates[$affiliationSource->getId()])) {
+                if (! isset($targetAssociates[$affiliationSource->getId()])) {
                     $target->getAssociate()->add($affiliationSource);
                 }
             }
             $source->setAssociate(new ArrayCollection());
 
             // Transfer funder (one-to-one)
-            if (($target->getFunder() === null) && ($source->getFunder() !== null)) {
+            if ($target->getFunder() === null && $source->getFunder() !== null) {
                 $funder = $source->getFunder();
                 $funder->setContact($target);
                 $target->setFunder($funder);
@@ -488,19 +456,21 @@ final class MergeContact extends AbstractPlugin
             }
 
             // Transfer profile (one-to-one)
-            if (($target->getProfile() === null) && ($source->getProfile() !== null)) {
+            if ($target->getProfile() === null && $source->getProfile() !== null) {
                 $profile = $source->getProfile();
                 $profile->setContact($target);
                 $target->setProfile($profile);
             }
             $source->setProfile(null);
 
-            // Transfer community (no matching)
-            foreach ($source->getCommunity() as $key => $community) {
-                $community->setContact($target);
-                $target->getCommunity()->add($community);
-                $source->getCommunity()->remove($key);
+            // Transfer photo (many-to-one)
+            if ($target->getPhoto()->isEmpty() === null && ! $source->getPhoto()->isEmpty()) {
+                /** @var Photo $photo */
+                $photo = $source->getPhoto()->first();
+                $photo->setContact($target);
+                $target->getPhoto()->add($photo);
             }
+            $source->setPhoto([]);
 
             // Transfer registrations (no matching)
             foreach ($source->getRegistration() as $key => $registration) {
@@ -524,7 +494,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var \Event\Entity\Badge\Contact $badgeContactSource */
             foreach ($source->getBadgeContact() as $badgeContactSource) {
-                if (!\in_array($badgeContactSource->getBadge()->getId(), $targetBadges)) {
+                if (! in_array($badgeContactSource->getBadge()->getId(), $targetBadges, true)) {
                     $badgeContactSource->setContact($target);
                     $target->getBadgeContact()->add($badgeContactSource);
                 }
@@ -580,11 +550,14 @@ final class MergeContact extends AbstractPlugin
                 $targetSelections[] = $selectionContactTarget->getSelection()->getId();
             }
             /** @var SelectionContact $selectionContactSource */
-            foreach ($source->getSelectionContact() as $selectionContactSource) {
-                if (!\in_array($selectionContactSource->getSelection()->getId(), $targetSelections, false)) {
+            foreach ($source->getSelectionContact() as $key => $selectionContactSource) {
+                if (! in_array($selectionContactSource->getSelection()->getId(), $targetSelections, false)) {
                     $selectionContactSource->setContact($target);
                     $target->getSelectionContact()->add($selectionContactSource);
                 }
+
+                // Explicitly remove the key
+                $source->getSelectionContact()->remove($key);
             }
             $source->setSelectionContact(new ArrayCollection());
 
@@ -596,7 +569,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var \Mailing\Entity\Contact $mailingContactSource */
             foreach ($source->getMailingContact() as $key => $mailingContactSource) {
-                if (!\in_array($mailingContactSource->getMailing()->getId(), $targetMailings, false)) {
+                if (! in_array($mailingContactSource->getMailing()->getId(), $targetMailings, false)) {
                     $mailingContactSource->setContact($target);
                     $target->getMailingContact()->add($mailingContactSource);
                 }
@@ -654,6 +627,27 @@ final class MergeContact extends AbstractPlugin
                 $source->getEvaluation()->remove($key);
             }
 
+            //Transfer actions (closed statements)
+            foreach ($source->getActionClosed() as $key => $actionClosed) {
+                $actionClosed->setContactClosed($target);
+                $target->getActionClosed()->add($actionClosed);
+                $source->getActionClosed()->remove($key);
+            }
+
+            //Transfer actions (status updates)
+            foreach ($source->getActionStatus() as $key => $actionStatus) {
+                $actionStatus->setContactStatus($target);
+                $target->getActionStatus()->add($actionStatus);
+                $source->getActionStatus()->remove($key);
+            }
+
+            //Transfer actions (closed comments)
+            foreach ($source->getActionComment() as $key => $actionComment) {
+                $actionComment->setContact($target);
+                $target->getActionComment()->add($actionComment);
+                $source->getActionComment()->remove($key);
+            }
+
             // Transfer calendars (no matching)
             foreach ($source->getCalendar() as $key => $calendar) {
                 $calendar->setContact($target);
@@ -676,25 +670,25 @@ final class MergeContact extends AbstractPlugin
             }
 
             // Transfer project reviewers (no matching)
-            foreach ($source->getProjectReview() as $key => $projectReview) {
-                $projectReview->setContact($target);
-                $target->getProjectReview()->add($projectReview);
-                $source->getProjectReview()->remove($key);
+            foreach ($source->getProjectReviewers() as $key => $projectReviewer) {
+                $projectReviewer->setContact($target);
+                $target->getProjectReviewers()->add($projectReviewer);
+                $source->getProjectReviewers()->remove($key);
             }
 
             // Transfer review contact (one-to-one)
-            if (($target->getProjectReviewContact() === null) && ($source->getProjectReviewContact() !== null)) {
-                $reviewContact = $source->getProjectReviewContact();
+            if (($target->getProjectReviewerContact() === null) && ($source->getProjectReviewerContact() !== null)) {
+                $reviewContact = $source->getProjectReviewerContact();
                 $reviewContact->setContact($target);
-                $target->setProjectReviewContact($reviewContact);
+                $target->setProjectReviewerContact($reviewContact);
             }
-            $source->setProjectReviewContact(null);
+            $source->setProjectReviewerContact(null);
 
             // Transfer project version reviewers (no matching)
-            foreach ($source->getProjectVersionReview() as $key => $projectVersionReview) {
+            foreach ($source->getProjectVersionReviewers() as $key => $projectVersionReview) {
                 $projectVersionReview->setContact($target);
-                $target->getProjectVersionReview()->add($projectVersionReview);
-                $source->getProjectVersionReview()->remove($key);
+                $target->getProjectVersionReviewers()->add($projectVersionReview);
+                $source->getProjectVersionReviewers()->remove($key);
             }
 
             // Transfer project reports (no matching)
@@ -705,17 +699,17 @@ final class MergeContact extends AbstractPlugin
             }
 
             // Transfer project calendar reviewers (no matching)
-            foreach ($source->getProjectCalendarReview() as $key => $projectCalendarReview) {
-                $projectCalendarReview->setContact($target);
-                $target->getProjectCalendarReview()->add($projectCalendarReview);
-                $source->getProjectCalendarReview()->remove($key);
+            foreach ($source->getProjectCalendarReviewers() as $key => $projectCalendarReviewer) {
+                $projectCalendarReviewer->setContact($target);
+                $target->getProjectCalendarReviewers()->add($projectCalendarReviewer);
+                $source->getProjectCalendarReviewers()->remove($key);
             }
 
             // Transfer project report reviewers (no matching)
-            foreach ($source->getProjectReportReview() as $key => $projectReportReview) {
-                $projectReportReview->setContact($target);
-                $target->getProjectReportReview()->add($projectReportReview);
-                $source->getProjectReportReview()->remove($key);
+            foreach ($source->getProjectReportReviewers() as $key => $projectReportReviewer) {
+                $projectReportReviewer->setContact($target);
+                $target->getProjectReportReviewers()->add($projectReportReviewer);
+                $source->getProjectReportReviewers()->remove($key);
             }
 
             // Transfer project invites (no matching)
@@ -740,7 +734,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getInviteContact() as $inviteContactSource) {
-                if (!\in_array($inviteContactSource->getId(), $targetInviteContacts, false)) {
+                if (! in_array($inviteContactSource->getId(), $targetInviteContacts, false)) {
                     $target->getInviteContact()->add($inviteContactSource);
                 }
             }
@@ -761,7 +755,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getIdeaInviteContact() as $ideaInviteContactSource) {
-                if (!\in_array($ideaInviteContactSource->getId(), $targetIdeaInviteContacts)) {
+                if (! in_array($ideaInviteContactSource->getId(), $targetIdeaInviteContacts, true)) {
                     $target->getIdeaInviteContact()->add($ideaInviteContactSource);
                 }
             }
@@ -802,7 +796,7 @@ final class MergeContact extends AbstractPlugin
             $targetPermits = [];
             $keyFormat = '%d-%d';
             foreach ($target->getPermitContact() as $targetPermitContact) {
-                $key = \sprintf(
+                $key = sprintf(
                     $keyFormat,
                     $targetPermitContact->getRole()->getId(),
                     $targetPermitContact->getKeyId()
@@ -810,13 +804,13 @@ final class MergeContact extends AbstractPlugin
                 $targetPermits[$key] = true;
             }
             foreach ($source->getPermitContact() as $key => $sourcePermitContact) {
-                $key = \sprintf(
+                $key = sprintf(
                     $keyFormat,
                     $sourcePermitContact->getRole()->getId(),
                     $sourcePermitContact->getKeyId()
                 );
                 // Prevent duplicates
-                if (!isset($targetPermits[$key])) {
+                if (! isset($targetPermits[$key])) {
                     $sourcePermitContact->setContact($target);
                     $target->getPermitContact()->add($sourcePermitContact);
                 }
@@ -838,7 +832,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getVoter() as $voterSource) {
-                if (!\in_array($voterSource->getId(), $targetVoters)) {
+                if (! in_array($voterSource->getId(), $targetVoters)) {
                     $target->getVoter()->add($voterSource);
                 }
             }
@@ -859,7 +853,7 @@ final class MergeContact extends AbstractPlugin
             }
             /** @var Invite $inviteContactSource */
             foreach ($source->getTourContact() as $tourContactSource) {
-                if (!\in_array($tourContactSource->getId(), $targetTourContacts, false)) {
+                if (! in_array($tourContactSource->getId(), $targetTourContacts, false)) {
                     $target->getTourContact()->add($tourContactSource);
                 }
             }
@@ -877,20 +871,6 @@ final class MergeContact extends AbstractPlugin
                 $doaReminder->setSender($target);
                 $target->getDoaReminderSender()->add($doaReminder);
                 $source->getDoaReminderSender()->remove($key);
-            }
-
-            // Transfer loi reminder receivers (no matching)
-            foreach ($source->getLoiReminderReceiver() as $key => $loiReminder) {
-                $loiReminder->setReceiver($target);
-                $target->getLoiReminderReceiver()->add($loiReminder);
-                $source->getLoiReminderReceiver()->remove($key);
-            }
-
-            // Transfer loi reminder senders (no matching)
-            foreach ($source->getLoiReminderSender() as $key => $loiReminder) {
-                $loiReminder->setSender($target);
-                $target->getLoiReminderSender()->add($loiReminder);
-                $source->getLoiReminderSender()->remove($key);
             }
 
             // Transfer blogs (no matching)
@@ -1020,10 +1000,10 @@ final class MergeContact extends AbstractPlugin
             }
 
             // This flush removes all references to $source that have orphanRemoval=true
-            //$this->entityManager->flush();
+            $this->entityManager->flush();
 
             // Prepare for logging
-            $message = \sprintf(
+            $message = sprintf(
                 'Merged contact %s (%d) into %s (%d)',
                 $source->parseFullName(),
                 $source->getId(),
@@ -1032,6 +1012,7 @@ final class MergeContact extends AbstractPlugin
             );
 
             // Save main contact, remove the other + flush and update permissions
+
             $this->entityManager->remove($source);
             $this->entityManager->flush();
 
@@ -1053,12 +1034,12 @@ final class MergeContact extends AbstractPlugin
             $contactNote->setSource('Account merge');
             $contactNote->setNote($message);
             $notes = $target->getNote()->toArray();
-            \array_unshift($notes, $contactNote);
+            array_unshift($notes, $contactNote);
             $target->setNote(new ArrayCollection($notes));
             $this->entityManager->persist($contactNote);
 
             $this->entityManager->flush();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $response = ['success' => false, 'errorMessage' => $exception->getMessage()];
             if ($this->errorLogger instanceof Logging) {
                 $request = new Request();

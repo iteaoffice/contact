@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -36,6 +37,6 @@ class Address extends EntityRepository
         $qb->orderBy('contact_entity_address_type_subsort.sort', 'ASC');
         $qb->setMaxResults(1);
 
-        return $qb->getQuery()->useQueryCache(true)->getOneOrNullResult();
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

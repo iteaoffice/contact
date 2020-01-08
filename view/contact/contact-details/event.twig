@@ -1,0 +1,96 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-event") }} {{ registrationLink(null, 'add-contact', 'button', null, contact) }}</h2>
+
+{% if contact.registration.count() > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-event") }}</th>
+            <th>{{ translate("txt-registration") }}</th>
+            <th>{{ translate("txt-date") }}</th>
+            <th>{{ translate("txt-location") }}</th>
+            <th>{{ translate("txt-nda") }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for registration in contact.registration %}
+            <tr {% if registrationService.isCancelled(registration) %}class="warning"{% endif %} >
+                <td>{{ meetingLink(registration.meeting,'view-admin', 'name') }}</td>
+                <td>{{ registrationLink(registration,'view-admin', 'text') }}</td>
+                <td>{{ registration.meeting.dateFrom|from_to_date(registration.meeting.dateUntil, false) }}</td>
+                <td>{{ registration.meeting.location }}</td>
+                <td>
+                    {% for call in registration.meeting.call %}
+                        {% set nda = callService.findNdaByCallAndContact(call, contact) %}
+                        {% if nda %}
+                            {% if nda.dateApproved %}
+                                {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}
+                            {% else %}
+                                {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
+                            {% endif %}
+                        {% else %}
+                            {{ ndaLink(null, 'submit', 'text', call) }}
+                        {% endif %}
+                    {% else %}
+                        {{ translate("txt-not-applicable") }}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-no-event-registrations-were-found-for-this-contact"))|raw }}
+{% endif %}
+
+
+
+{% if not (contact.boothContact.isEmpty() and
+    contact.projectBooth.isEmpty() and
+    contact.organisationBooth.isEmpty() and
+    contact.boothFinancial.isEmpty() ) %}
+
+    <h2>{{ translate("txt-booths") }}</h2>
+
+    <table class="table table-hover table-striped table-sm">
+        <tr>
+            <th>{{ translate("txt-booth") }}</th>
+            <th>{{ translate("txt-exhibition") }}</th>
+            <th>{{ translate("txt-type") }}</th>
+            <th>{{ translate("txt-role") }}</th>
+        </tr>
+        {% for boothContact in contact.boothContact %}
+            <tr>
+                <td>{{ boothLink(boothContact.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(boothContact.booth.exhibition) }}</td>
+                <td>{{ translate(boothService.parseBoothType(boothContact.booth)) }}</td>
+                <td>{{ translate("txt-booth-crew") }}</td>
+            </tr>
+        {% endfor %}
+        {% for projectBooth in contact.projectBooth %}
+            <tr>
+                <td>{{ boothLink(projectBooth.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(projectBooth.booth.exhibition) }}</td>
+                <td>{{ translate(boothService.parseBoothType(projectBooth.booth)) }}</td>
+                <td>{{ translate("txt-project-booth-contact") }}</td>
+            </tr>
+        {% endfor %}
+        {% for organisationBooth in contact.organisationBooth %}
+            <tr>
+                <td>{{ boothLink(organisationBooth.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(organisationBooth.booth.exhibition) }}</td>
+                <td>{{ translate(boothService.parseBoothType(organisationBooth.booth)) }}</td>
+                <td>{{ translate("txt-organisation-booth-contact") }}</td>
+            </tr>
+        {% endfor %}
+        {% for boothFinancial in contact.boothFinancial %}
+            <tr>
+                <td>{{ boothLink(boothFinancial.booth,'view-admin') }}</td>
+                <td>{{ exhibitionLink(boothFinancial.booth.exhibition) }}</td>
+                <td>{{ translate(boothService.parseBoothType(boothFinancial.booth)) }}</td>
+                <td>{{ translate("txt-financial-booth-contact") }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}

@@ -1,29 +1,29 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use General\Entity\ContentType;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
- * Domain.
- *
  * @ORM\Table(name="contact_photo")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_photo")
  *
  * @category    Contact
@@ -31,11 +31,11 @@ use Zend\Form\Annotation;
 class Photo extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="photo_id", type="integer", nullable=false)
+     * @ORM\Column(name="photo_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
@@ -49,14 +49,14 @@ class Photo extends AbstractEntity
      * @ORM\Column(name="height", type="integer", nullable=true)
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $height;
     /**
      * @ORM\Column(name="width", type="integer", nullable=true)
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $width;
     /**
@@ -69,7 +69,7 @@ class Photo extends AbstractEntity
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="update")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateUpdated;
     /**
@@ -84,42 +84,11 @@ class Photo extends AbstractEntity
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", inversedBy="photo", cascade={"persist"})
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
 
-    /**
-     * Magic Getter.
-     *
-     * @param $property
-     *
-     * @return mixed
-     */
-    public function __get($property)
-    {
-        return $this->$property;
-    }
 
-    /**
-     * Magic Setter.
-     *
-     * @param $property
-     * @param $value
-     */
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    /**
-     * @param $property
-     *
-     * @return bool
-     */
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
 
     /**
      * @return int
@@ -154,7 +123,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return Contact
      */
     public function getContact()
     {
@@ -162,7 +131,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param Contact $contact
      */
     public function setContact($contact)
     {
@@ -170,7 +139,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDateUpdated()
     {
@@ -178,7 +147,7 @@ class Photo extends AbstractEntity
     }
 
     /**
-     * @param \DateTime $dateUpdated
+     * @param DateTime $dateUpdated
      */
     public function setDateUpdated($dateUpdated)
     {

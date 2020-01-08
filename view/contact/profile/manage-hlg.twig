@@ -1,0 +1,33 @@
+{% do headTitle().append(translate("txt-manage-profile")) %}
+<h1>{{ translate("txt-manage-subscriptions") }}</h1>
+
+<p>Dear {{ identity().parseFullName() }},
+
+<p>ITEA kindly welcomes you as new EUREKA HLG/NPC member. Each month ITEA sends out a news update sharing viewpoints on
+    the latest trends in Software Innovation, information about our upcoming events and reports on world-changing ITEA
+    project outcomes.
+
+    We invite you to subscribe to the ITEA news updates by managing your subscriptions below.
+    {% do form.prepare() %}
+    {{ form().openTag(form)|raw }}
+
+    {{ ztbformelement(form.get('optIn')) }}
+
+<div class="form-group row">
+    <div class="offset-sm-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}
+
+
+<style type="text/css">
+    .navbar-collapse {
+        visibility: hidden;
+    }
+
+    .navbar-collapse, .breadcrumb {
+        display: none;
+    }
+</style>

@@ -1,0 +1,31 @@
+{% do headTitle().append(translate("txt-upload-nda-title")) %}
+
+<h1>{{ translate("txt-new-dnd-for-contact-%s")|format(contact.parseFullName())|raw }}</h1>
+
+{% do form.prepare() %}
+{{ form().openTag(form)|raw }}
+
+<div class="form-group row">
+    <label class="col-sm-3 col-form-label">{{ translate("txt-contact") }}</label>
+
+    <div class="col-sm-9">
+        <p class="form-control-plaintext">{{ contactLink(contact,'view-admin','name') }}</p>
+    </div>
+</div>
+
+{{ ztbformelement(form.get('contact_entity_dnd').get('program')) }}
+{{ ztbformelement(form.get('contact_entity_dnd').get('file')) }}
+{{ formelement(form.get('csrf')) }}
+
+
+<div class="form-group row">
+    <div class="offset-sm-3 col-sm-9">
+        {{ ztbformelement(form.get('submit')) }}
+        {% if form.has('delete') %}
+            {{ ztbformelement(form.get('delete')) }}
+        {% endif %}
+        {{ ztbformelement(form.get('cancel')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Content
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 namespace Contact\Form;
@@ -13,22 +14,16 @@ namespace Contact\Form;
 use Contact\Entity\Contact;
 use Contact\Repository\Contact as ContactRepository;
 use Doctrine\ORM\EntityManager;
-use Zend\Form\Element;
-use Zend\Form\Form;
+use Laminas\Form\Element;
+use Laminas\Form\Form;
 
 /**
  * Class OrganisationMerge
  *
  * @package Organisation\Form
  */
-class ContactMerge extends Form
+final class ContactMerge extends Form
 {
-    /**
-     * OrganisationMerge constructor.
-     *
-     * @param EntityManager $entityManager
-     * @param Contact       $target
-     */
     public function __construct(EntityManager $entityManager = null, Contact $target = null)
     {
         parent::__construct('contact_merge');
@@ -38,15 +33,17 @@ class ContactMerge extends Form
         $this->setAttribute('action', '');
 
         $mainSuggestions = [];
-        if (!is_null($entityManager) && !is_null($target)) {
+        if ($entityManager !== null && $target !== null) {
             /** @var ContactRepository $repository */
             $repository = $entityManager->getRepository(Contact::class);
             $suggestions = $repository->findMergeCandidatesFor($target);
             /** @var Contact $contact */
             foreach ($suggestions as $contact) {
-                $mainSuggestions[$contact->getId()] = sprintf(
+                $contactId = $contact->getId();
+
+                $mainSuggestions[$contactId] = sprintf(
                     '%s - %s (%s)',
-                    $contact->getId(),
+                    $contactId,
                     $contact->parseFullName(),
                     null === $contact->getContactOrganisation() ? '-'
                         : $contact->getContactOrganisation()->getOrganisation()->getOrganisation()

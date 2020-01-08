@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Selection
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -13,6 +14,7 @@ declare(strict_types=1);
 namespace Contact\Controller;
 
 use Contact\Controller\Plugin\SelectionExport;
+use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 use Contact\Form\AddContactToSelection;
 use Contact\Form\Impersonate;
@@ -22,16 +24,22 @@ use Contact\Service\ContactService;
 use Contact\Service\FormService;
 use Contact\Service\SelectionContactService;
 use Contact\Service\SelectionService;
+use DateTime;
 use Deeplink\Entity\Target;
 use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
-use Zend\Http\Response;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Paginator\Paginator;
-use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
+use InvalidArgumentException;
+use Throwable;
+use Laminas\Http\Response;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Paginator\Paginator;
+use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
+
+use function set_time_limit;
+use function strlen;
 
 /**
  * Class SelectionManagerController
@@ -40,34 +48,13 @@ use Zend\View\Model\ViewModel;
  */
 final class SelectionManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var SelectionContactService
-     */
-    private $selectionContactService;
-    /**
-     * @var SelectionService
-     */
-    private $selectionService;
-    /**
-     * @var DeeplinkService
-     */
-    private $deeplinkService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private SelectionContactService $selectionContactService;
+    private SelectionService $selectionService;
+    private DeeplinkService $deeplinkService;
+    private FormService $formService;
+    private EntityManager $entityManager;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
@@ -128,7 +115,7 @@ final class SelectionManagerController extends ContactAbstractController
             $contacts = $this->selectionContactService->findContactsInSelection($selection, true);
 
             $error = false;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $contacts = [];
             $error = $e->getMessage();
         }
@@ -145,7 +132,7 @@ final class SelectionManagerController extends ContactAbstractController
 
     public function generateDeeplinksAction(): ViewModel
     {
-        \set_time_limit(0);
+        set_time_limit(0);
 
         $selection = $this->selectionService->findSelectionById((int)$this->params('id'));
 
@@ -167,7 +154,7 @@ final class SelectionManagerController extends ContactAbstractController
 
             /** @var Target $target */
             $target = $this->deeplinkService->find(Target::class, (int)$data['target']);
-            $key = (!empty($data['key']) ? $data['key'] : null);
+            $key = (! empty($data['key']) ? $data['key'] : null);
 
             //Create a deeplink for the user which redirects to the profile-page
             foreach ($this->selectionContactService->findContactsInSelection($selection) as $contact) {
@@ -205,7 +192,7 @@ final class SelectionManagerController extends ContactAbstractController
         );
 
 
-        $form = new SelectionContacts($this->selectionService);
+        $form = new SelectionContacts($this->entityManager);
         $form->setData($data);
 
 
@@ -244,21 +231,21 @@ final class SelectionManagerController extends ContactAbstractController
 
         if ($this->getRequest()->isPost()) {
             if (isset($data['cancel'])) {
-                return $this->redirect()->toRoute('zfcadmin/contact-admin/view', ['id' => $contact->getId()]);
+                return $this->redirect()->toRoute('zfcadmin/contact/view/general', ['id' => $contact->getId()]);
             }
 
             //Find the selection
             $selection = $this->selectionService->findSelectionById((int)$data['selection']);
 
             if (null === $selection) {
-                throw new \InvalidArgumentException('Selection cannot be found');
+                throw new InvalidArgumentException('Selection cannot be found');
             }
 
             $this->selectionService->addContactToSelection($selection, $contact);
 
             $this->flashMessenger()->addSuccessMessage(
                 sprintf(
-                    $this->translator->translate("txt-contact-%s-has-been-added-to-selection-%s-successfully"),
+                    $this->translator->translate('txt-contact-%s-has-been-added-to-selection-%s-successfully'),
                     $contact->parseFullName(),
                     $selection->getSelection()
                 )
@@ -293,11 +280,22 @@ final class SelectionManagerController extends ContactAbstractController
             );
         }
 
-        if (!$selection->getMailing()->isEmpty()) {
+        if (! $this->selectionService->canRemoveSelection($selection)) {
             $form->remove('delete');
+
+            if ($selection->isActive()) {
+                $form->remove('reactivate');
+            }
+
+            if (! $selection->isActive()) {
+                $form->remove('deactivate');
+            }
         }
-        if (!$selection->getAccess()->isEmpty()) {
+
+        if ($this->selectionService->canRemoveSelection($selection)) {
             $form->remove('delete');
+            $form->remove('reactivate');
+            $form->remove('deactivate');
         }
 
         if ($this->getRequest()->isPost()) {
@@ -305,12 +303,12 @@ final class SelectionManagerController extends ContactAbstractController
                 return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
             }
 
-            if (isset($data['delete'])) {
+            if (isset($data['delete']) && $this->selectionService->canRemoveSelection($selection)) {
                 $this->selectionService->delete($selection);
 
                 $this->flashMessenger()->addSuccessMessage(
                     sprintf(
-                        $this->translator->translate("txt-selection-%s-has-successfully-been-removed"),
+                        $this->translator->translate('txt-selection-%s-has-successfully-been-removed'),
                         $selection->getSelection()
                     )
                 );
@@ -318,9 +316,34 @@ final class SelectionManagerController extends ContactAbstractController
                 return $this->redirect()->toRoute('zfcadmin/selection/list');
             }
 
-            /**
-             * Save the form
-             */
+            if (isset($data['deactivate'])) {
+                $selection->setDateDeleted(new DateTime());
+                $this->selectionService->save($selection);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(
+                        $this->translator->translate('txt-selection-%s-has-successfully-been-deactivated'),
+                        $selection->getSelection()
+                    )
+                );
+
+                return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
+            }
+
+            if (isset($data['reactivate'])) {
+                $selection->setDateDeleted(null);
+                $this->selectionService->save($selection);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(
+                        $this->translator->translate('txt-selection-%s-has-successfully-been-reactivated'),
+                        $selection->getSelection()
+                    )
+                );
+
+                return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
+            }
+
             if ($form->isValid()) {
                 /**
                  * @var $selection Selection
@@ -347,6 +370,8 @@ final class SelectionManagerController extends ContactAbstractController
 
         $form = $this->formService->prepare(Selection::class, $data);
         $form->remove('delete');
+        $form->remove('reactivate');
+        $form->remove('deactivate');
 
         $form->get('contact_entity_selection')->get('contact')->injectContact($this->identity());
 
@@ -362,7 +387,51 @@ final class SelectionManagerController extends ContactAbstractController
 
                 $this->flashMessenger()->addSuccessMessage(
                     sprintf(
-                        $this->translator->translate("txt-selection-%s-has-been-created-successfully"),
+                        $this->translator->translate('txt-selection-%s-has-been-created-successfully'),
+                        $selection->getSelection()
+                    )
+                );
+
+                return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
+            }
+        }
+
+        return new ViewModel(['form' => $form]);
+    }
+
+    public function copyAction()
+    {
+        $source = $this->selectionService->findSelectionById((int)$this->params('id'));
+
+        if (null === $source) {
+            return $this->notFoundAction();
+        }
+
+        $selection = clone $source;
+        $data = $this->getRequest()->getPost()->toArray();
+
+        $form = $this->formService->prepare($selection, $data);
+        $form->get('submit')->setValue($this->translator->translate('txt-copy'));
+        $form->remove('delete');
+        $form->remove('reactivate');
+        $form->remove('deactivate');
+
+        $form->get('contact_entity_selection')->get('contact')->injectContact($this->identity());
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                return $this->redirect()->toRoute('zfcadmin/selection/list');
+            }
+
+            if ($form->isValid()) {
+                /** @var Selection $selection */
+                $selection = $form->getData();
+                $selection->setId(null);
+                $this->selectionService->duplicateSelection($selection, $source);
+
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(
+                        $this->translator->translate('txt-selection-%s-has-been-copy-successfully'),
                         $selection->getSelection()
                     )
                 );
@@ -383,28 +452,28 @@ final class SelectionManagerController extends ContactAbstractController
         }
 
         $results = [];
+        /** @var Contact $contact */
         foreach ($this->selectionContactService->findContactsInSelection($selection) as $contact) {
             $text = trim(sprintf('%s (%s)', $contact->getFormName(), $contact->getEmail()));
 
             /*
              * Do a fall-back to the email when the name is empty
              */
-            if ('' === \strlen($text)) {
+            if ('' === strlen($text)) {
                 $text = $contact->getEmail();
             }
 
             $results[] = [
-                'value'        => $contact->getId(),
                 'text'         => $text,
                 'name'         => $contact->getFormName(),
                 'id'           => $contact->getId(),
                 'email'        => $contact->getEmail(),
-                'organisation' => null === $contact->getContactOrganisation()
-                    ?: $contact->getContactOrganisation()->getOrganisation()->getOrganisation(),
+                'organisation' => ! $contact->hasOrganisation() ? null
+                    : $contact->getContactOrganisation()->getOrganisation()->getOrganisation(),
             ];
         }
 
-        return new JsonModel($results);
+        return new JsonModel(['contacts' => $results]);
     }
 
 

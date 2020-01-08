@@ -6,29 +6,30 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
+
 use Contact\Controller\ConsoleController;
 
 return [
     'console' => [
         'router' => [
             'routes' => [
-                'cli-partner-search-update' => [
+                'cli-contact-reset-access' => [
                     'options' => [
-                        'route'    => 'partner-search update',
+                        'route'    => 'contact reset-access',
                         'defaults' => [
                             'controller' => ConsoleController::class,
-                            'action'     => 'partner-search-update',
+                            'action'     => 'reset-access-roles',
                         ],
                     ],
                 ],
-                'cli-partner-search-reset'  => [
+                'cli-contact-cleanup'      => [
                     'options' => [
-                        'route'    => 'partner-search reset',
+                        'route'    => 'contact cleanup',
                         'defaults' => [
                             'controller' => ConsoleController::class,
-                            'action'     => 'partner-search-reset',
+                            'action'     => 'contact-cleanup',
                         ],
                     ],
                 ],

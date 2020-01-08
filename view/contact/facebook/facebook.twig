@@ -1,53 +1,56 @@
 {% do headTitle().append(translate("txt-contacts")) %}
 {% do headTitle().append(facebook.facebook) %}
-<h1 class="display-4">{{ facebook }}</h1>
+<h1>{{ facebook }}</h1>
 
 {% if  contacts|length > 0 %}
-    <div class="row">
-    {% for contact in contacts %}
-        <div class="col-sm-3">
-            <div class="thumbnail contact-box">
-                <div class="information-box-header">
-                    <h5>{{ contact.contact.displayName }}</h5>
-                </div>
-                <div class="contact-box-image" style="height: 152px;">
-                    {{ contactPhoto(contact.contact, null, false, true) }}
-                </div>
-                <div class="caption caption-relative">
-                    {% if contact.title|length > 0 %}{{ contact.title|raw }}<br>{% endif %}
-                    {% if contact.subTitle|length > 0 %}{{ contact.subTitle|raw }}<br>{% endif %}
+    <div class="row row-cols-4 row-cols-lg-6">
+        {% for contact in contacts %}
+            <div class="col mb-4">
+                <div class="card">
 
-                    {% if facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_ALL") or
-                    (
-                    facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_MEMBER") and
-                    contactInFacebook
-                    ) %}
-                        <i class="fa fa-envelope-o"></i>&nbsp;<a
-                            href="mailto:{{ contact.email }}">{{ translate("txt-email") }}</a><br>
+                    {% if contact.contact.hasPhoto() %}
+                        <img class="card-img-top" src="{{ contactPhoto(contact.contact, 300, constant("\\General\\ValueObject\\Image\\ImageDecoration::SHOW_RAW")) }}"
+                             alt="Card image cap">
+                    {% else %}
+                        <div style="height: 20%"></div>
                     {% endif %}
-                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER") %}
-                        {% if contactInFacebook and contact.mobile|length > 0 %}
-                            <i class="fa fa-mobile"></i>&nbsp;{{ contact.mobile }}
-                        {% elseif contact.phone|length > 0 %}
-                            <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
-                        {% endif %}
-                    {% endif %}
-                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and contact.phone|length > 0 %}
-                        {% if contactInFacebook %}
-                            <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
-                        {% endif %}
-                    {% endif %}
-                    {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") and contact.phone|length > 0 %}
-                        <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
-                    {% endif %}
+
+                    <div class="card-body">
+
+                        <h4 class="card-title">{{ contact.contact.parseFullName() }}</h4>
+
+                        <p class="card-text">
+                            {% if contact.title|length > 0 %}{{ contact.title|raw }}<br>{% endif %}
+                            {% if contact.subTitle|length > 0 %}{{ contact.subTitle|raw }}<br>{% endif %}
+
+                            {% if facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_ALL") or
+                                (
+                                facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_MEMBER") and
+                                contactInFacebook
+                                ) %}
+                                <i class="fa fa-envelope-o"></i>&nbsp;<a
+                                    href="mailto:{{ contact.email }}">{{ translate("txt-email") }}</a><br>
+                            {% endif %}
+                            {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER") %}
+                                {% if contactInFacebook and contact.mobile|length > 0 %}
+                                    <i class="fa fa-mobile"></i>&nbsp;{{ contact.mobile }}
+                                {% elseif contact.phone|length > 0 %}
+                                    <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                                {% endif %}
+                            {% endif %}
+                            {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and contact.phone|length > 0 %}
+                                {% if contactInFacebook %}
+                                    <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                                {% endif %}
+                            {% endif %}
+                            {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") and contact.phone|length > 0 %}
+                                <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        {% if loop.index is divisible by(4) %}
-            </div>
-            <div class="row top-buffer">
-        {% endif %}
-    {% endfor %}
+        {% endfor %}
     </div>
 {% endif %}
 

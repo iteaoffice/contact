@@ -1,0 +1,39 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-address") }}</h2>
+
+{% if contact.address.count() > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-address-id") }}</th>
+            <th>{{ translate("txt-address-type") }}</th>
+            <th>{{ translate("txt-address-address") }}</th>
+            <th>{{ translate("txt-address-zip-code") }}</th>
+            <th>{{ translate("txt-address-city") }}</th>
+            <th>{{ translate("txt-address-country") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <td colspan="6"></td>
+        </tr>
+        </tfoot>
+        <tbody>
+        {% for address in contact.address %}
+            <tr>
+                <td><small class="text-muted">{{ address.id }}</small></td>
+                <td>{{ address.type }}</td>
+                <td>{{ address.address }}  {{ addressLink(address,'edit','icon') }}</td>
+                <td>{{ address.zipCode }}</td>
+                <td>{{ address.city }}</td>
+                <td>{{ address.country }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-no-addresses-known"))|raw }}
+{% endif %}
+
+{{ addressLink(null,'new','button', contact) }}

@@ -2,7 +2,7 @@
 {% do headTitle().append(contact.parseFullName()) %}
 {% do headTitle().append(translate("txt-events")) %}
 
-<h1 class="home">{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
+<h1>{{ translate("txt-hello-%s")|format(zfcUserDisplayName()) }}</h1>
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item"><a class="nav-link"
@@ -49,7 +49,7 @@
 
 {% if optIns|length > 0 %}
     <form method="post" action="">
-        <table class="table table-hover table-condensed table-striped">
+        <table class="table table-hover table-sm table-striped">
             <thead>
             <tr>
                 <th>{{ translate("txt-opt-in") }}</th>
@@ -63,7 +63,7 @@
                     <td>{{ optIn.optIn }}</td>
                     <td>{{ optIn.description }}</td>
                     <td><input type="checkbox" name="optIn[]" value="{{ optIn.id }}"
-                               {% for contactOptIn in identity().optIn if optIn.id == contactOptIn.id %}checked="checked"{% endfor %}
+                               {% for contactOptIn in identity().optIn|filter(contactOptIn => optIn.id == contactOptIn.id) -%}checked="checked"{% endfor %}
                         ></td>
                 </tr>
             {% endfor %}

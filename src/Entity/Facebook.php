@@ -1,27 +1,29 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use Admin\Entity\Access;
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Entity for the Facebook.
  *
  * @ORM\Table(name="facebook")
  * @ORM\Entity(repositoryClass="Contact\Repository\Facebook")
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_facebook")
  *
  * @category    Contact
@@ -57,7 +59,7 @@ class Facebook extends AbstractEntity
      */
     public const IS_PUBLIC = 1;
 
-    protected static $displayTemplates
+    protected static array $displayTemplates
         = [
             self::DISPLAY_NONE         => 'txt-empty',
             self::DISPLAY_ORGANISATION => 'txt-organisation',
@@ -66,14 +68,14 @@ class Facebook extends AbstractEntity
             self::DISPLAY_PROJECTS     => 'txt-projects',
         ];
 
-    protected static $showEmailTemplates
+    protected static array $showEmailTemplates
         = [
             self::SHOW_EMAIL_NO     => 'txt-hide-email',
             self::SHOW_EMAIL_MEMBER => 'txt-show-email-to-members',
             self::SHOW_EMAIL_ALL    => 'txt-show-email-to-all',
         ];
 
-    protected static $showPhoneTemplates
+    protected static array $showPhoneTemplates
         = [
             self::SHOW_PHONE_NO            => 'txt-hide-phone',
             self::SHOW_PHONE_MEMBER        => 'txt-show-phone-to-members',
@@ -81,28 +83,28 @@ class Facebook extends AbstractEntity
             self::SHOW_PHONE_ALL           => 'txt-show-phone-to-all',
         ];
 
-    protected static $canSendMessageTemplates
+    protected static array $canSendMessageTemplates
         = [
             self::CAN_NOT_SEND_MESSAGE => 'txt-cannot-send-message',
             self::CAN_SEND_MESSAGE     => 'txt-can-send-message',
         ];
 
-    protected static $publicTemplates
+    protected static array $publicTemplates
         = [
             self::NOT_PUBLIC => 'txt-not-public',
             self::IS_PUBLIC  => 'txt-public',
         ];
     /**
-     * @ORM\Column(name="facebook_id", type="integer", nullable=false)
+     * @ORM\Column(name="facebook_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
-     * @ORM\Column(name="facebook", type="string", length=80, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="facebook", type="string", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-facebook"})
      *
      * @var string
@@ -110,7 +112,7 @@ class Facebook extends AbstractEntity
     private $facebook;
     /**
      * @ORM\Column(name="public", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"publicTemplates"})
      * @Annotation\Attributes({"label":"txt-public"})
      *
@@ -119,7 +121,7 @@ class Facebook extends AbstractEntity
     private $public;
     /**
      * @ORM\Column(name="can_send_message", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"canSendMessageTemplates"})
      * @Annotation\Attributes({"label":"txt-can-send-message", "required":"true","help-block": "txt-can-send-message-explanation"})
      *
@@ -127,8 +129,8 @@ class Facebook extends AbstractEntity
      */
     private $canSendMessage;
     /**
-     * @ORM\Column(name="from_clause", type="string", length=255, nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="from_clause", type="text", nullable=false)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-from-clause"})
      * @Annotation\Options({"label":"txt-from-clause","help-block": "txt-from-clause-explanation"})
      *
@@ -136,8 +138,8 @@ class Facebook extends AbstractEntity
      */
     private $fromClause;
     /**
-     * @ORM\Column(name="where_clause", type="string", length=255, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="where_clause", type="text", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-where-clause"})
      * @Annotation\Options({"label":"txt-where-clause","help-block": "txt-where-clause-explanation"})
      *
@@ -145,8 +147,8 @@ class Facebook extends AbstractEntity
      */
     private $whereClause;
     /**
-     * @ORM\Column(name="orderby_clause", type="string", length=255, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="orderby_clause", type="text", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-orderby-clause"})
      * @Annotation\Options({"label":"txt-orderby-clause","help-block": "txt-orderby-clause-explanation"})
      *
@@ -154,8 +156,8 @@ class Facebook extends AbstractEntity
      */
     private $orderbyClause;
     /**
-     * @ORM\Column(name="contact_key", type="string", length=60, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="contact_key", type="string", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Attributes({"placeholder":"txt-contact-key"})
      * @Annotation\Options({"label":"txt-contact-key","help-block": "txt-contact-key-explanation"})
      *
@@ -163,8 +165,8 @@ class Facebook extends AbstractEntity
      */
     private $contactKey;
     /**
-     * @ORM\Column(name="com_extra", type="string", length=255, nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @ORM\Column(name="com_extra", type="string", nullable=false)
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Options({"label":"txt-title","help-block": "txt-title-explanation"})
      *
@@ -172,8 +174,8 @@ class Facebook extends AbstractEntity
      */
     private $title;
     /**
-     * @ORM\Column(name="com_sub", type="smallint", length=255, nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @ORM\Column(name="com_sub", type="smallint", nullable=false)
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"displayTemplates"})
      * @Annotation\Options({"label":"txt-sub-title","help-block": "txt-sub-title-explanation"})
      *
@@ -182,7 +184,7 @@ class Facebook extends AbstractEntity
     private $subtitle;
     /**
      * @ORM\Column(name="show_email", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"showEmailTemplates"})
      * @Annotation\Options({"label":"txt-show-email-title","help-block": "txt-show-email-explanation"})
      *
@@ -191,7 +193,7 @@ class Facebook extends AbstractEntity
     private $showEmail;
     /**
      * @ORM\Column(name="show_phone", type="smallint", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"showPhoneTemplates"})
      * @Annotation\Options({"label":"txt-show-phone-title","help-block": "txt-show-phone-explanation"})
      *
@@ -205,11 +207,11 @@ class Facebook extends AbstractEntity
      *            joinColumns={@ORM\JoinColumn(name="facebook_id", referencedColumnName="facebook_id")},
      *            inverseJoinColumns={@ORM\JoinColumn(name="access_id", referencedColumnName="access_id")}
      * )
-     * @Annotation\Type("DoctrineORMModule\Form\Element\EntityMultiCheckbox")
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({
      *      "target_class":"Admin\Entity\Access",
      *      "find_method":{
-     *          "name":"findBy",
+     *          "name":"findWithoutSelection",
      *          "params": {
      *              "criteria":{},
      *              "orderBy":{
@@ -218,15 +220,14 @@ class Facebook extends AbstractEntity
      *          }
      *      }
      * )
-     * @Annotation\Attributes({"label":"txt-access","help-block":"txt-access-help-block"})
+     * @Annotation\Attributes({"label":"txt-facebook-access-label"})
+     * @Annotation\Options({"help-block":"txt-facebook-access-help-block"})
+     * @Annotation\Attributes({"multiple":true,"data-actions-box":true})
      *
-     * @var \Admin\Entity\Access[]|Collections\ArrayCollection
+     * @var Access[]|Collections\ArrayCollection
      */
     private $access;
 
-    /**
-     * Class constructor.
-     */
     public function __construct()
     {
         $this->access = new Collections\ArrayCollection();
@@ -257,77 +258,49 @@ class Facebook extends AbstractEntity
         return self::$publicTemplates;
     }
 
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
-
     public function __toString(): string
     {
         return (string)$this->facebook;
     }
 
-    public function addAccess(Collections\Collection $collection)
+    public function addAccess(Collections\Collection $collection): void
     {
         foreach ($collection as $access) {
             $this->access->add($access);
         }
     }
 
-    public function removeAccess(Collections\Collection $collection)
+    public function removeAccess(Collections\Collection $collection): void
     {
         foreach ($collection as $access) {
             $this->access->removeElement($access);
         }
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId($id): Facebook
     {
         $this->id = $id;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFacebook()
+    public function getFacebook(): ?string
     {
         return $this->facebook;
     }
 
-    /**
-     * @param string $facebook
-     */
-    public function setFacebook($facebook)
+    public function setFacebook($facebook): Facebook
     {
         $this->facebook = $facebook;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return int
-     */
     public function getPublic(bool $textual = false)
     {
         if ($textual) {
@@ -337,83 +310,61 @@ class Facebook extends AbstractEntity
         return $this->public;
     }
 
-    /**
-     * @param int $public
-     */
-    public function setPublic($public)
+    public function setPublic($public): Facebook
     {
         $this->public = $public;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFromClause()
+    public function getFromClause(): ?string
     {
         return $this->fromClause;
     }
 
-    /**
-     * @param string $fromClause
-     */
-    public function setFromClause($fromClause)
+    public function setFromClause($fromClause): Facebook
     {
         $this->fromClause = $fromClause;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getWhereClause()
+    public function getWhereClause(): ?string
     {
         return $this->whereClause;
     }
 
-    /**
-     * @param string $whereClause
-     */
-    public function setWhereClause($whereClause)
+    public function setWhereClause($whereClause): Facebook
     {
         $this->whereClause = $whereClause;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOrderbyClause()
+    public function getOrderbyClause(): ?string
     {
         return $this->orderbyClause;
     }
 
-    /**
-     * @param string $orderbyClause
-     */
     public function setOrderbyClause($orderbyClause)
     {
         $this->orderbyClause = $orderbyClause;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getContactKey()
     {
         return $this->contactKey;
     }
 
-    /**
-     * @param string $contactKey
-     */
     public function setContactKey($contactKey)
     {
         $this->contactKey = $contactKey;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getTitle(bool $textual = false)
     {
         if ($textual) {
@@ -423,19 +374,13 @@ class Facebook extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle($title)
     {
         $this->title = $title;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getSubtitle(bool $textual = false)
     {
         if ($textual) {
@@ -445,19 +390,13 @@ class Facebook extends AbstractEntity
         return $this->subtitle;
     }
 
-    /**
-     * @param string $subtitle
-     */
     public function setSubtitle($subtitle)
     {
         $this->subtitle = $subtitle;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string
-     */
     public function getCanSendMessage(bool $textual = false)
     {
         if ($textual) {
@@ -467,35 +406,25 @@ class Facebook extends AbstractEntity
         return $this->canSendMessage;
     }
 
-    /**
-     * @param int $canSendMessage
-     */
     public function setCanSendMessage($canSendMessage)
     {
         $this->canSendMessage = $canSendMessage;
+
+        return $this;
     }
 
-    /**
-     * @return \Admin\Entity\Access[]|Collections\ArrayCollection
-     */
     public function getAccess()
     {
         return $this->access;
     }
 
-    /**
-     * @param \Admin\Entity\Access[]|Collections\ArrayCollection $access
-     */
-    public function setAccess($access)
+    public function setAccess($access): Facebook
     {
         $this->access = $access;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getShowEmail(bool $textual = false)
     {
         if ($textual) {
@@ -505,19 +434,13 @@ class Facebook extends AbstractEntity
         return $this->showEmail;
     }
 
-    /**
-     * @param string $showEmail
-     */
-    public function setShowEmail($showEmail)
+    public function setShowEmail($showEmail): Facebook
     {
         $this->showEmail = $showEmail;
+
+        return $this;
     }
 
-    /**
-     * @param bool $textual
-     *
-     * @return string|int
-     */
     public function getShowPhone(bool $textual = false)
     {
         if ($textual) {
@@ -527,11 +450,10 @@ class Facebook extends AbstractEntity
         return $this->showPhone;
     }
 
-    /**
-     * @param string $showPhone
-     */
     public function setShowPhone($showPhone)
     {
         $this->showPhone = $showPhone;
+
+        return $this;
     }
 }

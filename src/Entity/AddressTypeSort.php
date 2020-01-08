@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -27,25 +28,25 @@ class AddressTypeSort extends AbstractEntity
     public const ADDRESS_TYPE_FINANCIAL = 3;
     public const ADDRESS_TYPE_HOME = 4;
     /**
-     * @ORM\Column(name="sort_id", type="integer", nullable=false)
+     * @ORM\Column(name="sort_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
      * @ORM\ManyToOne(targetEntity="AddressType", cascade={"persist"}, inversedBy="sort")
      * @ORM\JoinColumn(name="main_type_id", referencedColumnName="type_id", nullable=false)
      *
-     * @var \Contact\Entity\AddressType
+     * @var AddressType
      */
     private $mainType;
     /**
      * @ORM\ManyToOne(targetEntity="AddressType", cascade={"persist"}, inversedBy="subSort")
      * @ORM\JoinColumn(name="sub_type_id", referencedColumnName="type_id", nullable=false)
      *
-     * @var \Contact\Entity\AddressType
+     * @var AddressType
      */
     private $subType;
     /**
@@ -54,21 +55,6 @@ class AddressTypeSort extends AbstractEntity
      * @var string
      */
     private $sort;
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
 
     /**
      * @return int
@@ -87,7 +73,7 @@ class AddressTypeSort extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\AddressType
+     * @return AddressType
      */
     public function getMainType()
     {
@@ -95,7 +81,7 @@ class AddressTypeSort extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\AddressType $mainType
+     * @param AddressType $mainType
      */
     public function setMainType($mainType)
     {
@@ -119,7 +105,7 @@ class AddressTypeSort extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\AddressType
+     * @return AddressType
      */
     public function getSubType()
     {
@@ -127,7 +113,7 @@ class AddressTypeSort extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\AddressType $subType
+     * @param AddressType $subType
      */
     public function setSubType($subType)
     {

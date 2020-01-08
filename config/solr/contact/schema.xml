@@ -25,41 +25,75 @@
     <field name="fullname_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
     <field name="fullname_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
+    <field name="email" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="email_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
+    <field name="email_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"
+           multiValued="true"/>
 
     <field name="lastname" type="string" indexed="true" stored="true" omitNorms="true"/>
     <field name="lastname_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
     <field name="lastname_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
+    <field name="gender" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="gender_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
+    <field name="gender_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
+
+    <field name="optin" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
+    <field name="access" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
+
+    <field name="title" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="title_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
+    <field name="title_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
     <field name="position" type="string" indexed="true" stored="true" omitNorms="true"/>
     <field name="position_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
     <field name="position_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
+    <field name="department" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="department_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
+    <field name="department_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
     <field name="profile" type="string" indexed="true" stored="true" omitNorms="true"/>
     <field name="profile_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
     <field name="profile_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
-
     <field name="organisation" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="organisation_id" type="int" indexed="true" stored="true" omitNorms="true"/>
     <field name="organisation_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
     <field name="organisation_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
+    <field name="country" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="country_id" type="int" indexed="true" stored="true" omitNorms="true"/>
+    <field name="country_iso3" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="country_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
+    <field name="country_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
+
+    <field name="funder_country" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="funder_country_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
+    <field name="funder_country_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
     <field name="organisation_type" type="string" indexed="true" stored="true" omitNorms="true"/>
     <field name="organisation_type_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
     <field name="organisation_type_search" type="text_general_edge_ngram" indexed="true" stored="true"
            omitNorms="true"/>
 
+    <field name="is_active" type="boolean" indexed="true" stored="true"/>
+    <field name="is_active_text" type="string" indexed="true" stored="true"/>
+    <field name="is_office" type="boolean" indexed="true" stored="true"/>
+    <field name="is_office_text" type="string" indexed="true" stored="true"/>
+    <field name="is_activated" type="boolean" indexed="true" stored="true"/>
+    <field name="is_activated_text" type="string" indexed="true" stored="true"/>
+    <field name="is_funder" type="boolean" indexed="true" stored="true"/>
+    <field name="is_funder_text" type="string" indexed="true" stored="true"/>
+    <field name="is_anonymised" type="boolean" indexed="true" stored="true"/>
+    <field name="is_anonymised_text" type="string" indexed="true" stored="true"/>
+    <field name="projects" type="int" indexed="true" stored="true"/>
+    <field name="has_projects" type="boolean" indexed="true" stored="true"/>
+    <field name="has_projects_text" type="string" indexed="true" stored="true"/>
+    <field name="has_organisation" type="boolean" indexed="true" stored="true"/>
+    <field name="has_organisation_text" type="string" indexed="true" stored="true"/>
 
     <field name="photo_url" type="string" indexed="true" stored="true" omitNorms="true"/>
-
-    <field name="country" type="string" indexed="true" stored="true" omitNorms="true"/>
-    <field name="country_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
-    <field name="country_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
-
-    <field name="cv" type="string" indexed="true" stored="true" omitNorms="true"/>
-    <field name="cv_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
 
     <uniqueKey>id</uniqueKey>
 
@@ -80,7 +114,7 @@
                     ignoreCase="true"
                     words="lang/stopwords_en.txt"
             />
-            <filter class="solr.WordDelimiterFilterFactory" generateNumberParts="1"
+            <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1"
                     catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
             <filter class="solr.LowerCaseFilterFactory"/>
             <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
@@ -93,7 +127,7 @@
                     ignoreCase="true"
                     words="lang/stopwords_en.txt"
             />
-            <filter class="solr.WordDelimiterFilterFactory" generateNumberParts="1"
+            <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1"
                     catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1"/>
             <filter class="solr.LowerCaseFilterFactory"/>
             <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>

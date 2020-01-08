@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Address
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -16,8 +17,8 @@ use Contact\Entity\Address;
 use Contact\Entity\Contact;
 use Contact\Service\ContactService;
 use Contact\Service\FormService;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\View\Model\ViewModel;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\View\Model\ViewModel;
 
 /**
  * Class AddressManagerController
@@ -26,18 +27,9 @@ use Zend\View\Model\ViewModel;
  */
 final class AddressManagerController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var FormService
-     */
-    private $formService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContactService $contactService;
+    private FormService $formService;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
@@ -67,22 +59,21 @@ final class AddressManagerController extends ContactAbstractController
         $form->remove('delete');
 
         if ($this->getRequest()->isPost()) {
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 /** @var Address $address */
                 $address = $form->getData();
                 $address->setContact($contact);
                 $this->contactService->save($address);
 
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-address-has-successfully-been-created"))
+                    sprintf($this->translator->translate('txt-address-has-successfully-been-created'))
                 );
             }
 
             return $this->redirect()
                 ->toRoute(
-                    'zfcadmin/contact-admin/view',
-                    ['id' => $contact->getId()],
-                    ['fragment' => 'address']
+                    'zfcadmin/contact/view/address',
+                    ['id' => $contact->getId()]
                 );
         }
 
@@ -111,30 +102,28 @@ final class AddressManagerController extends ContactAbstractController
             if (isset($data['delete'])) {
                 $this->contactService->delete($address);
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-address-has-successfully-been-deleted"))
+                    sprintf($this->translator->translate('txt-address-has-successfully-been-deleted'))
                 );
 
                 return $this->redirect()
                     ->toRoute(
-                        'zfcadmin/contact-admin/view',
-                        ['id' => $address->getContact()->getId()],
-                        ['fragment' => 'address']
+                        'zfcadmin/contact/view/address',
+                        ['id' => $address->getContact()->getId()]
                     );
             }
 
-            if (!isset($data['cancel']) && $form->isValid()) {
+            if (! isset($data['cancel']) && $form->isValid()) {
                 $address = $form->getData();
                 $this->contactService->save($address);
 
                 $this->flashMessenger()->addSuccessMessage(
-                    sprintf($this->translator->translate("txt-address-has-successfully-been-updated"))
+                    sprintf($this->translator->translate('txt-address-has-successfully-been-updated'))
                 );
             }
 
             return $this->redirect()->toRoute(
-                'zfcadmin/contact-admin/view',
-                ['id' => $address->getContact()->getId()],
-                ['fragment' => 'address']
+                'zfcadmin/contact/view/address',
+                ['id' => $address->getContact()->getId()]
             );
         }
 

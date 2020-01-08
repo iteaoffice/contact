@@ -8,7 +8,7 @@
  * @category    Invoice
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
  *
  * @link        https://github.com/iteaoffice/invoice for the canonical source repository
@@ -27,10 +27,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Zend\Http\Headers;
-use Zend\Http\Response;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Http\Headers;
+use Laminas\Http\Response;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+
+use function strlen;
 
 /**
  * Class SelectionExport
@@ -42,38 +44,14 @@ final class SelectionExport extends AbstractPlugin
     public const EXPORT_CSV = 1;
     public const EXPORT_EXCEL = 2;
 
-    /**
-     * @var Spreadsheet
-     */
-    private $excel;
-    /**
-     * @var string
-     */
-    private $csv;
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var SelectionContactService
-     */
-    private $selectionContactService;
-    /**
-     * @var  AddressService
-     */
-    private $addressService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var int
-     */
-    private $type = self::EXPORT_CSV;
-    /**
-     * @var Selection
-     */
-    private $selection;
+    private Spreadsheet $excel;
+    private string $csv;
+    private ContactService $contactService;
+    private SelectionContactService $selectionContactService;
+    private AddressService $addressService;
+    private TranslatorInterface $translator;
+    private int $type = self::EXPORT_CSV;
+    private Selection $selection;
 
     public function __construct(
         ContactService $contactService,
@@ -243,6 +221,7 @@ final class SelectionExport extends AbstractPlugin
                 break;
 
             case self::EXPORT_EXCEL:
+            default:
                 return $this->parseExcelResponse();
         }
     }
@@ -258,11 +237,11 @@ final class SelectionExport extends AbstractPlugin
         $headers->addHeaders(
             [
                 'Content-Disposition' => 'attachment; filename="Export ' . $this->selection->getSelection() . '.csv"',
-                'Content-Type'        => 'text/csv',
-                'Content-Length'      => \strlen($this->csv),
-                'Expires'             => '@0', // @0, because ZF2 parses date as string to \DateTime() object
-                'Cache-Control'       => 'must-revalidate',
-                'Pragma'              => 'public',
+                'Content-Type' => 'text/csv',
+                'Content-Length' => strlen($this->csv),
+                'Expires' => '@0', // @0, because ZF2 parses date as string to \DateTime() object
+                'Cache-Control' => 'must-revalidate',
+                'Pragma' => 'public',
             ]
         );
         $response->setHeaders($headers);
@@ -273,7 +252,7 @@ final class SelectionExport extends AbstractPlugin
     public function parseExcelResponse(): Response
     {
         $response = new Response();
-        if (!($this->excel instanceof Spreadsheet)) {
+        if (! ($this->excel instanceof Spreadsheet)) {
             return $response->setStatusCode(Response::STATUS_CODE_404);
         }
 
@@ -299,11 +278,11 @@ final class SelectionExport extends AbstractPlugin
         $headers->addHeaders(
             [
                 'Content-Disposition' => 'attachment; filename="Export ' . $this->selection->getSelection() . '.xlsx"',
-                'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Length'      => $contentLength,
-                'Expires'             => '@0', // @0, because ZF2 parses date as string to \DateTime() object
-                'Cache-Control'       => 'must-revalidate',
-                'Pragma'              => 'public',
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Length' => $contentLength,
+                'Expires' => '@0', // @0, because ZF2 parses date as string to \DateTime() object
+                'Cache-Control' => 'must-revalidate',
+                'Pragma' => 'public',
             ]
         );
         if ($gzip) {

@@ -5,7 +5,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 namespace ContactTest\Service;
@@ -27,7 +27,7 @@ class ContactFilterTest extends AbstractInputFilterTest
     /**
      * Set up basic properties
      */
-    public function setUp()
+    public function setUp(): void
     {
     }
 
@@ -43,8 +43,10 @@ class ContactFilterTest extends AbstractInputFilterTest
         $entityManagerMock = $entityManagerMockBuilder->getMock();
 
         // Mock the repository, disabling the constructor
-        $contactRepositoryMock = $this->getMockBuilder(Repository\Contact::class)->disableOriginalConstructor()->getMock();
-        $organisationRepositoryMock = $this->getMockBuilder(Organisation::class)->disableOriginalConstructor()->getMock();
+        $contactRepositoryMock = $this->getMockBuilder(Repository\Contact::class)->disableOriginalConstructor()
+            ->getMock();
+        $organisationRepositoryMock = $this->getMockBuilder(Organisation::class)->disableOriginalConstructor()->getMock(
+        );
 
         $map = [
             [Entity\Contact::class, $contactRepositoryMock],
@@ -61,21 +63,19 @@ class ContactFilterTest extends AbstractInputFilterTest
         $this->assertInstanceOf(ContactFilter::class, $contactFilter);
     }
 
-
-    /**
-     *
-     */
-    public function testContactInputFilterHasElements()
+    public function testContactInputFilterHasElements(): void
     {
         $entityManagerMockBuilder = $this->getMockBuilder(EntityManager::class)->disableOriginalConstructor();
-        $entityManagerMockBuilder->setMethods(['getRepository']);
+        $entityManagerMockBuilder->onlyMethods(['getRepository']);
 
         /** @var EntityManager $entityManagerMock */
         $entityManagerMock = $entityManagerMockBuilder->getMock();
 
         // Mock the repository, disabling the constructor
-        $contactRepositoryMock = $this->getMockBuilder(Repository\Contact::class)->disableOriginalConstructor()->getMock();
-        $organisationRepositoryMock = $this->getMockBuilder(Organisation::class)->disableOriginalConstructor()->getMock();
+        $contactRepositoryMock = $this->getMockBuilder(Repository\Contact::class)->disableOriginalConstructor()
+            ->getMock();
+        $organisationRepositoryMock = $this->getMockBuilder(Organisation::class)->disableOriginalConstructor()->getMock(
+        );
 
         $map = [
             [Entity\Contact::class, $contactRepositoryMock],
@@ -92,6 +92,5 @@ class ContactFilterTest extends AbstractInputFilterTest
         $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('email'));
         $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('dateOfBirth'));
         $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('access'));
-        $this->assertNotNull($contactFilter->get('contact_entity_contact')->get('organisation'));
     }
 }

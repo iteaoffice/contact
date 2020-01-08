@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -14,16 +14,18 @@ declare(strict_types=1);
 namespace Contact\Form;
 
 use Contact\Entity\OptIn;
-use Zend\Form\Element\MultiCheckbox;
-use Zend\Form\Fieldset;
-use Zend\Form\Form;
+use Laminas\Form\Element\MultiCheckbox;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Element\Text;
+use Laminas\Form\Fieldset;
+use Laminas\Form\Form;
 
 /**
  * Class OptInFilter
  *
  * @package Contact\Form
  */
-class OptInFilter extends Form
+final class OptInFilter extends Form
 {
     public function __construct()
     {
@@ -35,7 +37,7 @@ class OptInFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'search',
                 'attributes' => [
                     'class'       => 'form-control',
@@ -51,7 +53,7 @@ class OptInFilter extends Form
                 'options' => [
                     'value_options' => OptIn::getActiveTemplates(),
                     'inline'        => true,
-                    'label'         => _("txt-active"),
+                    'label'         => _('txt-active'),
                 ],
             ]
         );
@@ -60,7 +62,7 @@ class OptInFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
                     'id'    => 'submit',
@@ -72,7 +74,7 @@ class OptInFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'clear',
                 'attributes' => [
                     'id'    => 'cancel',

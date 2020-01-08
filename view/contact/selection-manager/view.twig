@@ -1,44 +1,48 @@
 {% do headTitle().append(translate("txt-admin")) %}
 {% do headTitle().append(translate("txt-view-selection-%s")|format(selection)) %}
-{% do headLink().appendStylesheet('//cdn.datatables.net/1.10.9/css/dataTables.bootstrap.min.css') %}
-{% do headScript().appendFile('//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js', 'text/javascript') %}
-{% do headScript().appendFile('//cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js', 'text/javascript') %}
 
 
-<h1 class="display-4">{{ selection }}</h1>
+<h1>{{ selection }}</h1>
 
 {% if selection.dateDeleted %}
     {{ ztbalert().danger(translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")))|raw }}
 {% endif %}
 
-
 {% if error %}
-    {{ ztbalert().danger(error)|raw }}
+    {{ ztbalert().danger('<pre>' ~ error ~ '</pre>')|raw }}
 {% endif %}
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab" role="tab">{{ translate("txt-general") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#contacts" data-toggle="tab" role="tab">{{ translate("txt-contacts") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#mailings" data-toggle="tab" role="tab">{{ translate("txt-mailings") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#access" data-toggle="tab" role="tab">{{ translate("txt-access") }}</a></li>
+    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab"
+                                   role="tab">{{ translate("txt-general") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#contacts" data-toggle="tab"
+                            role="tab">{{ translate("txt-contacts") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mailings" data-toggle="tab"
+                            role="tab">{{ translate("txt-mailings") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#events" data-toggle="tab"
+                            role="tab">{{ translate("txt-events") }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#access" data-toggle="tab"
+                            role="tab">{{ translate("txt-access") }}</a></li>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content">
     <div class="tab-pane active" id="general">
-        <h3>{{ translate("txt-general") }}</h3>
+        <h2 class="pt-3">{{ translate("txt-general") }}</h2>
         <dl class="dl-horizontal">
             <dt>{{ translate("txt-name") }}</dt>
             <dd>{{ selection.selection }}</dd>
             <dt>{{ translate("txt-group-tag") }}</dt>
             <dd>{{ selection.tag|default(translate("txt-not-provided")) }}</dd>
             <dt>{{ translate("txt-note") }}</dt>
-            <dd>{{ selection.note|default(translate("txt-not-provided"))|nl2br|raw }}</dd>
+            <dd>{{ selection.note|default(translate("txt-not-provided"))|raw|nl2br }}</dd>
             <dt>{{ translate("txt-core") }}</dt>
             <dd>{{ translate(selection.getCore(true)) }}</dd>
-            <dt>{{ translate("txt-date-created") }}</dt>
-            <dd>{{ selection.dateCreated|string_date }}</dd>
+            {% if selection.dateCreated %}
+                <dt>{{ translate("txt-date-created") }}</dt>
+                <dd>{{ selection.dateCreated|string_date }}</dd>
+            {% endif %}
             {% if selection.dateDeleted %}
                 <dt>{{ translate("txt-date-deleted") }}</dt>
                 <dd><i class="fa fa-trash"></i> {{ selection.dateDeleted|string_date }}</dd>
@@ -53,17 +57,18 @@
 
         {% if selectionService.isSql(selection) %}
             <h2>{{ translate("txt-sql-query") }}</h2>
-            <pre>{{ selection.sql.query }}</pre>
+            <pre><code class="sql d-block py-3">{{ selection.sql.query }}</code></pre>
         {% endif %}
 
         {{ selectionLink( selection,'edit','button') }}
+        {{ selectionLink( selection,'copy','button') }}
         {{ selectionLink( selection ,'edit-contacts','button') }}
     </div>
     <div class="tab-pane" role="tabpanel" id="contacts">
-        <h3>{{ translate("txt-contacts") }}</h3>
+        <h2 class="pt-3">{{ translate("txt-contacts") }}</h2>
 
         {% if contacts|length > 0 %}
-            <table class="table table-striped table-hover table-condensed table-sm">
+            <table class="table table-contact table-striped table-hover table-sm">
                 <thead>
                 <tr>
                     <th>{{ translate("txt-firstname") }}</th>
@@ -77,13 +82,13 @@
                 {% for contact in contacts %}
                     <tr>
                         <td>
-                            <a href="{{ url('zfcadmin/contact-admin/view',{'id':contact['id']}) }}">{{ contact['firstName'] }}</a>
+                            <a href="{{ url('zfcadmin/contact/view/general',{'id':contact['id']}) }}">{{ contact['firstName'] }}</a>
                         </td>
                         <td>
-                            <a href="{{ url('zfcadmin/contact-admin/view',{'id':contact['id']}) }}">{{ contact['middleName'] }} {{ contact['lastName'] }}</a>
+                            <a href="{{ url('zfcadmin/contact/view/general',{'id':contact['id']}) }}">{{ contact['middleName'] }} {{ contact['lastName'] }}</a>
                         </td>
                         <td>
-                            <a href="{{ url('zfcadmin/contact-admin/view',{'id':contact['id']}) }}">{{ contact['email'] }}</a>
+                            <a href="{{ url('zfcadmin/contact/view/general',{'id':contact['id']}) }}">{{ contact['email'] }}</a>
                             <a href="mailto:{{ contact['email'] }}"><i class="fa fa-envelope-o"></i></a>
                         </td>
                         <td>{{ contact['contactOrganisation']['organisation']['organisation'] }}</td>
@@ -96,16 +101,16 @@
             {{ ztbalert().warning(translate("txt-no-contacts-in-this-selection"))|raw }}
         {% endif %}
 
+        <hr>
         {{ selectionLink( selection ,'edit-contacts','button') }}
-        <br><br>
         {{ selectionLink( selection ,'export-csv','button') }}
         {{ selectionLink( selection ,'export-excel','button') }}
         {{ selectionLink( selection ,'generate-deeplinks','button') }}
     </div>
     <div class="tab-pane" role="tabpanel" id="mailings">
-        <h3>{{ translate("txt-mailings") }}</h3>
+        <h2 class="pt-3">{{ translate("txt-mailings") }}</h2>
         {% if selection.mailing.count() > 0 %}
-            <table class="table table-striped table-condensed">
+            <table class="table table-striped table-sm">
                 <thead>
                 <tr>
                     <th>{{ translate("txt-mailing") }}</th>
@@ -113,6 +118,11 @@
                     <th>{{ translate("txt-owner") }}</th>
                 </tr>
                 </thead>
+                <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                </tr>
+                </tfoot>
                 <tbody>
                 {% for mailing in selection.mailing %}
                     <tr>
@@ -127,11 +137,110 @@
             {{ ztbalert().info(translate("txt-no-mailing-send-with-this-selection"))|raw }}
         {% endif %}
     </div>
+    <div class="tab-pane" role="tabpanel" id="events">
+        <h2 class="pt-2">{{ translate("txt-events") }}</h2>
+
+        <h3>{{ translate("txt-meeting-vip-list") }}</h3>
+        {% if selection.meeting.count() > 0 %}
+            <table class="table table-striped table-sm">
+                <thead>
+                <tr>
+                    <th>{{ translate("txt-meeting") }}</th>
+                    <th>{{ translate("txt-location") }}</th>
+                    <th>{{ translate("txt-date-from") }}</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for meeting in selection.meeting %}
+                    <tr>
+                        <td>{{ meetingLink(meeting,'view','name') }}</td>
+                        <td>{{ meeting.location }}</td>
+                        <td>{{ meeting.meeting.dateFrom|string_date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            {{ ztbalert().info(translate("txt-no-meetings-defined-for-this-selection"))|raw }}
+        {% endif %}
+
+
+        {% if selection.meetingCost.count() > 0 %}
+            <h3>{{ translate("txt-meeting-cost-list") }}</h3>
+            <table class="table table-hover table-striped table-sm">
+                <thead>
+                <tr>
+                    <th>{{ translate("txt-meeting") }}</th>
+                    <th>{{ translate("txt-cost") }}</th>
+                    <th>{{ translate("txt-amount") }}</th>
+                    <th>{{ translate("txt-early-bird-date") }}</th>
+                    <th>{{ translate("txt-amount-early-bird") }}</th>
+                    <th>{{ translate("txt-selection") }}</th>
+                    <th>{{ translate("txt-selection-type") }}</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <td colspan="7"></td>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for cost in selection.meetingCost %}
+                    <tr>
+                        <td>{{ meetingLink(cost.meeting,'view-admin') }}</td>
+                        <td>{{ cost.cost }} {{ meetingCostLink(cost, 'edit', 'icon') }}</td>
+                        <td>&euro; {{ cost.amount }}</td>
+                        <td>{% if cost.earlyBirdDate %}{{ cost.earlyBirdDate|date('d-m-Y') }}{% endif %}</td>
+                        <td>&euro; {{ cost.amountEarlyBird }}</td>
+                        <td>{% for selection in cost.selection %}{{ selectionLink(selection,'view','name') }} {% if not loop.last %} &middot; {% endif %}{% endfor %}</td>
+                        <td>{{ translate(cost.getSelectionType(true)) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        {% if selection.meetingOptionCost.count() > 0 %}
+            <h3>{{ translate("txt-meeting-option-cost-list") }}</h3>
+            <table class="table table-hover table-striped table-sm">
+                <thead>
+                <tr>
+                    <th>{{ translate("txt-meeting") }}</th>
+                    <th>{{ translate("txt-description") }}</th>
+                    <th>{{ translate("txt-meeting-option") }}</th>
+                    <th>{{ translate("txt-amount-excl-vat") }}</th>
+                    <th>{{ translate("txt-vat-type") }}</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <td colspan="5"></td>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for cost in selection.meetingOptionCost %}
+                    <tr>
+                        <td>{{ meetingLink(cost.meeting,'view-admin') }}</td>
+                        <td>{{ cost.description }} {{ meetingOptionCostLink(cost, 'edit', 'icon') }}</td>
+                        <td>{{ meetingOptionLink(cost.option,'view') }}</td>
+                        <td>&euro; {{ cost.amount }}  </td>
+                        <td>{{ vatLink(cost.vat,'view','name') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
     <div class="tab-pane" role="tabpanel" id="access">
-        <h2>{{ translate("txt-access") }}</h2>
+        <h2 class="pt-2">{{ translate("txt-access") }}</h2>
 
         {% if selection.access.count() > 0 %}
-            <table class="table table-striped table-condensed">
+            <table class="table table-striped table-sm">
                 <thead>
                 <tr>
                     <th>{{ translate("txt-access") }}</th>
@@ -151,11 +260,18 @@
     </div>
 </div>
 
+{% do headLink().appendStylesheet('//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css') %}
+{% do headScript().appendFile('//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js', 'text/javascript') %}
+{% do headScript().appendFile('//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js', 'text/javascript') %}
+
+{% do headScript().appendFile("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js",'text/javascript') %}
+{% do headLink().appendStylesheet("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github-gist.min.css") %}
+{% do inlineScript().appendScript("hljs.initHighlightingOnLoad();",'text/javascript') %}
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('table').DataTable(
-            {"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]}
+        $('.table-contact').DataTable(
+            {"lengthMenu": [[20, 50, -1], [20, 50, "All"]]}
         );
     });
 </script>

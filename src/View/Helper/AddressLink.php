@@ -1,89 +1,77 @@
 <?php
+
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
+ *
+ * @link        http://github.com/iteaoffice/general for the canonical source repository
  */
 
 declare(strict_types=1);
 
 namespace Contact\View\Helper;
 
-use Contact\Acl\Assertion\Address as AddressAssertion;
-use Contact\Entity\Address;
 use Contact\Entity\Contact;
+use Contact\Entity\Address;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
- * Create a link to an address.
- *
- * @category    Address
+ * Class PasswordLink
+ * @package General\View\Helper
  */
-class AddressLink extends LinkAbstract
+final class AddressLink extends AbstractLink
 {
-    /**
-     * @param Address|null $address
-     * @param string $action
-     * @param string $show
-     * @param Contact|null $contact
-     *
-     * @return string
-     */
     public function __invoke(
         Address $address = null,
-        $action = 'view',
-        $show = 'name',
+        string $action = 'view',
+        string $show = 'text',
         Contact $contact = null
-    ) {
-        $this->setAddress($address);
-        $this->setAction($action);
-        $this->setShow($show);
-        $this->setContact($contact);
+    ): string {
+        $address ??= new Address();
 
-        if (!$this->hasAccess(
-            $this->getAddress(),
-            AddressAssertion::class,
-            $this->getAction()
-        )
-        ) {
+        if (! $this->hasAccess($address, \Contact\Acl\Assertion\Address::class, $action)) {
             return '';
         }
 
-        $this->setShowOptions(
-            [
-                'name' => $this->getAddress()->getAddress(),
-            ]
-        );
-        $this->addRouterParam('id', $this->getAddress()->getId());
-        $this->addRouterParam('contact', $this->getContact()->getId());
+        $routeParams = [];
+        $showOptions = [];
 
-        return $this->createLink();
-    }
+        if (! $address->isEmpty()) {
+            $routeParams['id'] = $address->getId();
+            $showOptions['name'] = $address->getAddress();
+        }
 
-    /**
-     * @throws \Exception
-     */
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        if (null !== $contact) {
+            $routeParams['contact'] = $contact->getId();
+        }
+
+
+        switch ($action) {
             case 'new':
-                if (\is_null($this->getContact())) {
-                    throw new \Exception(sprintf("A contact is needed for a new address"));
-                }
-
-                $this->setRouter('zfcadmin/address/new');
-                $this->setText($this->translate("txt-new-address"));
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/address/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-address')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/address/edit');
-                $this->setText(
-                    sprintf($this->translate("txt-edit-address-%s"), $this->getAddress()->getAddress())
-                );
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/address/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-address')
+                ];
                 break;
-            default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

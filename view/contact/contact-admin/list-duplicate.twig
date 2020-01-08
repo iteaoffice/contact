@@ -1,20 +1,18 @@
 {% do headTitle().append(translate("txt-duplicate-contacts")) %}
 
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
 {% set filter = form.get('filter') %}
 
 
-<input type="hidden" name="filter[order]" value="{{ order }}">
-<input type="hidden" name="filter[direction]" value="{{ direction }}">
+
 
 <div class="row">
 
     <div class="col-md-9">
 
-        <h1 class="display-4">{{ translate("txt-duplicate-contacts") }}</h1>
+        <h1>{{ translate("txt-duplicate-contacts") }}</h1>
 
         <div class="row">
             <div class="col-md-6">
@@ -23,18 +21,21 @@
             <div class="col-md-6">
                 <div class="input-group">
                     {{ formelement(filter.get('search')) }}
-                    <span class="input-group-btn">{{ formelement(form.get('submit')) }}</span></div>
+                    <div class="input-group-append input-group-btn">
+                        {{ formelement(form.get('submit')) }}
+                    </div>
+                </div>
             </div>
         </div>
 
         {% if paginator.pageRange > 0 %}
-            <table class="table table-hover table-striped table-condensed table-sm">
+            <table class="table table-hover table-striped table-sm">
                 <thead>
                 <tr>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'name', 'text': translate('txt-name')} %}</th>
-                    <th>{{ translate('txt-email') }}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'organisation', 'text': translate('txt-organisation')} %}</th>
-                    <th>{% include 'contact/partial/sortable-table-header' with {'route': 'zfcadmin/contact-admin/list', 'criteria': 'country', 'text': translate('txt-country')} %}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'name', 'text': translate("txt-name")} %}</th>
+                    <th>{{ translate("txt-email") }}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'organisation', 'text': translate("txt-organisation")} %}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'country', 'text': translate("txt-country")} %}</th>
                     <th>{{ translate("txt-amount") }}</th>
                 </tr>
                 </thead>
@@ -51,14 +52,14 @@
                                         class="fa fa-envelope-o"></i> </a></td>
                         <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
                         <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
-                        <td>{{ contactLink(contact,'view-admin','alternativeShow',null, projectService.findProjectParticipationByContact(contact)|length,'project') }}</td>
+                        <td><a href="{{ contactLink(contact,'view-admin',constant("\\General\\ValueObject\\Link\\LinkDecoration::SHOW_RAW")) }}">{{ projectService.findProjectParticipationByContact(contact)|length }}</a></td>
                         <td>{{ contactAndAmount['amount'] }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
 
-            {% include 'contact/partial/pagination-control' %}
+            {% include 'application/partial/pagination-control' %}
         {% else %}
             {{ ztbalert().info(translate("txt-no-contacts-found"))|raw }}
         {% endif %}
@@ -66,14 +67,12 @@
     <div class="col-md-3">
         <div class="well well-sm">
             <fieldset>
-                {{ ztbformelement(filter.get('options')) }}
-                {{ ztbformelement(filter.get('gender')) }}
-                {{ ztbformelement(filter.get('country')) }}
+                {{ ztbformelement(filter.get('options'), true) }}
+                {{ ztbformelement(filter.get('gender'), true) }}
+                {{ ztbformelement(filter.get('country'), true) }}
 
-                <div class="form-group row">
-                    {{ ztbformelement(form.get('submit')) }}
+                                   {{ ztbformelement(form.get('submit')) }}
                     {{ ztbformelement(form.get('clear')) }}
-                </div>
             </fieldset>
         </div>
     </div>

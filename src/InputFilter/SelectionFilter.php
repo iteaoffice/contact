@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,20 +16,15 @@ namespace Contact\InputFilter;
 use Contact\Entity\Selection;
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Validator;
-use Zend\InputFilter\InputFilter;
+use Laminas\InputFilter\InputFilter;
 
 /**
  * Class SelectionFilter
  *
  * @package Contact\InputFilter
  */
-class SelectionFilter extends InputFilter
+final class SelectionFilter extends InputFilter
 {
-    /**
-     * ContactFilter constructor.
-     *
-     * @param EntityManager $entityManager
-     */
     public function __construct(EntityManager $entityManager)
     {
         $inputFilter = new InputFilter();

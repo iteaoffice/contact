@@ -1,24 +1,24 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
- * Domain.
- *
  * @ORM\Table(name="contact_note")
  * @ORM\Entity
  * @Annotation\Name("contact_note")
@@ -30,16 +30,16 @@ class Note extends AbstractEntity
     public const SOURCE_SIGNATURE = 'signature';
 
     /**
-     * @ORM\Column(name="note_id", type="integer", nullable=false)
+     * @ORM\Column(name="note_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
-     * @ORM\Column(name="note", type="string", length=255, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @ORM\Column(name="note", type="string", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-note"})
      *
      * @var string
@@ -47,7 +47,7 @@ class Note extends AbstractEntity
     private $note;
     /**
      * @ORM\Column(name="source", type="string", length=32, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-source"})
      *
      * @var string
@@ -57,31 +57,16 @@ class Note extends AbstractEntity
      * @ORM\Column(name="date_created", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateCreated;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="note")
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
      *
-     * @var \Contact\Entity\Contact
+     * @var Contact
      */
     private $contact;
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
 
     public function __toString(): string
     {
@@ -105,7 +90,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Contact
+     * @return Contact
      */
     public function getContact()
     {
@@ -113,7 +98,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Contact $contact
+     * @param Contact $contact
      */
     public function setContact($contact)
     {
@@ -121,7 +106,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDateCreated()
     {
@@ -129,7 +114,7 @@ class Note extends AbstractEntity
     }
 
     /**
-     * @param \DateTime $dateCreated
+     * @param DateTime $dateCreated
      */
     public function setDateCreated($dateCreated)
     {

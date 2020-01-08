@@ -1,12 +1,10 @@
 <?php
 
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -15,139 +13,112 @@ namespace Contact\View\Helper;
 
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
- * Create a link to an selection.
- *
- * @category    Selection
+ * Class SelectionLink
+ * @package Contact\View\Helper
  */
-class SelectionLink extends LinkAbstract
+final class SelectionLink extends AbstractLink
 {
     public function __invoke(
         Selection $selection = null,
-        $action = 'view',
-        $show = 'name',
-        $page = null,
-        $alternativeShow = null,
+        string $action = 'view',
+        string $show = 'name',
         Contact $contact = null
     ): string {
-        $this->setSelection($selection);
-        $this->setAction($action);
-        $this->setShow($show);
-        $this->setPage($page);
-        $this->setContact($contact);
+        $selection ??= new Selection();
 
-        /*
-         * If the alternativeShow is not null, use it an otherwise take the page
-         */
-        $this->setAlternativeShow($page);
-        if (!\is_null($alternativeShow)) {
-            $this->setAlternativeShow($alternativeShow);
+        $routeParams = [];
+        $showOptions = [];
+        if (! $selection->isEmpty()) {
+            $routeParams['id'] = $selection->getId();
+            $showOptions['name'] = $selection->getSelection();
         }
 
-        $this->setShowOptions(
-            [
-                'name' => $this->getSelection()->getSelection(),
-            ]
-        );
-        $this->addRouterParam('page', $page);
-        $this->addRouterParam('id', $this->getSelection()->getId());
-        $this->addRouterParam('contactId', $this->getContact()->getId());
+        if (null !== $contact) {
+            $routeParams['contactId'] = $contact->getId();
+        }
 
-        return $this->createLink();
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        switch ($action) {
             case 'new':
-                $this->setRouter('zfcadmin/selection/new');
-                $this->setText($this->translate('txt-new-selection'));
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/selection/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-selection')
+                ];
                 break;
-            case 'list':
-                $this->setRouter('zfcadmin/selection/list');
-                $this->setText($this->translate('txt-list-selections'));
-
-                foreach ($this->getServiceManager()->get('application')->getMvcEvent()->getRequest()->getQuery() as $key =>
-                    $param) {
-                    $this->addQueryParam($key, $param);
-                }
-                $this->addQueryParam('page', $this->getPage());
-
+            case 'copy':
+                $linkParams = [
+                    'icon' => 'fa-files-o',
+                    'route' => 'zfcadmin/selection/copy',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-copy-selection')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/selection/edit');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-edit-selection-%s"),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/selection/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-selection')
+                ];
                 break;
             case 'generate-deeplinks':
-                $this->setRouter('zfcadmin/selection/generate-deeplinks');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-generate-deeplinks")
-                    )
-                );
-                break;
-            case 'add-contact':
-                if (\is_null($this->getContact())) {
-                    throw new \Exception('Contact cannot be empty when adding a contact to a selection');
-                }
-
-                $this->setRouter('zfcadmin/selection/add-contact');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-add-%s-to-selection"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $linkParams = [
+                    'icon' => 'fa-external-link',
+                    'route' => 'zfcadmin/selection/generate-deeplinks',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-generate-deeplinks')
+                ];
                 break;
             case 'edit-contacts':
-                $this->setRouter('zfcadmin/selection/edit-contacts');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-edit-contacts-selection-%s'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $linkParams = [
+                    'icon' => 'fa-users',
+                    'route' => 'zfcadmin/selection/edit-contacts',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-contacts-selection')
+                ];
                 break;
-            case 'export-csv':
-                $this->setRouter('zfcadmin/selection/export');
-                $this->addRouterParam('type', 'csv');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-export-selection-to-%s-csv'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
-                break;
-            case 'export-excel':
-                $this->setRouter('zfcadmin/selection/export');
-                $this->addRouterParam('type', 'excel');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-export-selection-to-%s-excel'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+            case 'add-contact':
+                $linkParams = [
+                    'icon' => 'fa-user-plus',
+                    'route' => 'zfcadmin/selection/add-contact',
+                    'text' => $showOptions[$show]
+                        ?? sprintf($this->translator->translate('txt-add-%s-to-selection'), $contact->parseFullName())
+                ];
                 break;
             case 'view':
-                $this->setRouter('zfcadmin/selection/view');
-                $this->setText(
-                    sprintf(
-                        $this->translate('txt-view-selection-%s'),
-                        $this->getSelection()->getSelection()
-                    )
-                );
+                $linkParams = [
+                    'icon' => 'fa-link',
+                    'route' => 'zfcadmin/selection/view',
+                    'text' => $showOptions[$show] ?? $selection->getSelection()
+                ];
                 break;
-            default:
-                throw new \Exception(sprintf('%s is an incorrect action for %s', $this->getAction(), __CLASS__));
+            case 'export-csv':
+                $routeParams['type'] = 'csv';
+                $linkParams = [
+                    'icon' => 'fa-file-text-o',
+                    'route' => 'zfcadmin/selection/export',
+                    'text' => $showOptions[$show] ?? $this->translator->translate('txt-export-selection-to-csv')
+                ];
+                break;
+            case 'export-excel':
+                $routeParams['type'] = 'excel';
+                $linkParams = [
+                    'icon' => 'fa-file-excel-o',
+                    'route' => 'zfcadmin/selection/export',
+                    'text' => $showOptions[$show] ?? $this->translator->translate('txt-export-selection-to-excel')
+                ];
+                break;
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

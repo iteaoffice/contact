@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -13,14 +14,14 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Phone.
  *
  * @ORM\Table(name="phone_type")
  * @ORM\Entity
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("phone_type")
  *
  * @category    Contact
@@ -32,15 +33,15 @@ class PhoneType extends AbstractEntity
     public const PHONE_TYPE_HOME = 3;
     public const PHONE_TYPE_FAX = 4;
     /**
-     * @ORM\Column(name="type_id", type="integer", nullable=false)
+     * @ORM\Column(name="type_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
-     * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     * @ORM\Column(name="type", type="string", nullable=false)
      *
      * @var string
      */
@@ -48,7 +49,7 @@ class PhoneType extends AbstractEntity
     /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Phone", cascade={"persist"}, mappedBy="type")
      *
-     * @var \Contact\Entity\Phone[]
+     * @var Phone[]
      */
     private $phone;
 
@@ -65,21 +66,6 @@ class PhoneType extends AbstractEntity
             self::PHONE_TYPE_FAX,
             self::PHONE_TYPE_HOME,
         ];
-    }
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
     }
 
     public function __toString(): string
@@ -120,7 +106,7 @@ class PhoneType extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Phone[]
+     * @return Phone[]
      */
     public function getPhone()
     {
@@ -128,7 +114,7 @@ class PhoneType extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Phone[] $phone
+     * @param Phone[] $phone
      */
     public function setPhone($phone)
     {

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -21,11 +22,13 @@ use Contact\Service\ContactService;
 use Search\Form\SearchResult;
 use Search\Paginator\Adapter\SolariumPaginator;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
-use Zend\Http\Request;
-use Zend\I18n\Translator\TranslatorInterface;
-use Zend\Paginator\Paginator;
-use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
+use Laminas\Http\Request;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\Paginator\Paginator;
+use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
+
+use function sprintf;
 
 /**
  * Class ContactController
@@ -34,18 +37,9 @@ use Zend\View\Model\ViewModel;
  */
 final class ContactController extends ContactAbstractController
 {
-    /***
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
-     * @var ProfileSearchService
-     */
-    private $profileSearchService;
+    private ContactService $contactService;
+    private TranslatorInterface $translator;
+    private ProfileSearchService $profileSearchService;
 
     public function __construct(
         ContactService $contactService,
@@ -61,7 +55,6 @@ final class ContactController extends ContactAbstractController
     {
         $form = new Password();
         $form->setInputFilter(new PasswordFilter());
-        $form->setAttribute('class', 'form-horizontal');
 
         $data = $this->getRequest()->getPost()->toArray();
 
@@ -70,7 +63,11 @@ final class ContactController extends ContactAbstractController
             $formData = $form->getData();
             $this->contactService->updatePasswordForContact($formData['password'], $this->identity());
 
-            $this->flashMessenger()->addSuccessMessage($this->translator->translate("txt-password-successfully-been-updated"));
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate(
+                    'txt-password-successfully-been-updated'
+                )
+            );
 
             return $this->redirect()->toRoute('community/contact/profile/view');
         }
@@ -140,7 +137,7 @@ final class ContactController extends ContactAbstractController
                 foreach ($data['facet'] as $facetField => $values) {
                     $quotedValues = [];
                     foreach ($values as $value) {
-                        $quotedValues[] = \sprintf('"%s"', $value);
+                        $quotedValues[] = sprintf('"%s"', $value);
                     }
 
                     $this->profileSearchService->addFilterQuery(

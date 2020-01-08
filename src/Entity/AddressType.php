@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -14,7 +15,7 @@ namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * AddressType.
@@ -30,15 +31,15 @@ class AddressType extends AbstractEntity
     public const ADDRESS_TYPE_HOME = 4;
     public const ADDRESS_TYPE_BOOTH_FINANCIAL = 5;
     /**
-     * @ORM\Column(name="type_id", type="integer", nullable=false)
+     * @ORM\Column(name="type_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
-     * @ORM\Column(name="type", type="string", length=20, nullable=false)
+     * @ORM\Column(name="type", type="string", nullable=false)
      *
      * @var string
      */
@@ -47,47 +48,27 @@ class AddressType extends AbstractEntity
      * @ORM\OneToMany(targetEntity="\Contact\Entity\Address", cascade={"persist"}, mappedBy="type")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\Address[]
+     * @var Address[]
      */
     private $address;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\AddressTypeSort", cascade={"persist"}, mappedBy="mainType")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\AddressTypeSort[]
+     * @var AddressTypeSort[]
      */
     private $sort;
     /**
      * @ORM\OneToMany(targetEntity="\Contact\Entity\AddressTypeSort", cascade={"persist"}, mappedBy="subType")
      * @Annotation\Exclude()
      *
-     * @var \Contact\Entity\AddressTypeSort[]
+     * @var AddressTypeSort[]
      */
     private $subSort;
-
-    /**
-     * Class constructor.
-     */
     public function __construct()
     {
         $this->address = new Collections\ArrayCollection();
     }
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
-
 
     public function __toString(): string
     {
@@ -111,7 +92,7 @@ class AddressType extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\Address[]
+     * @return Address[]
      */
     public function getAddress()
     {
@@ -119,7 +100,7 @@ class AddressType extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\Address[] $address
+     * @param Address[] $address
      */
     public function setAddress($address)
     {
@@ -143,7 +124,7 @@ class AddressType extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\AddressTypeSort[]
+     * @return AddressTypeSort[]
      */
     public function getSort()
     {
@@ -151,7 +132,7 @@ class AddressType extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\AddressTypeSort[] $sort
+     * @param AddressTypeSort[] $sort
      */
     public function setSort($sort)
     {
@@ -159,7 +140,7 @@ class AddressType extends AbstractEntity
     }
 
     /**
-     * @return \Contact\Entity\AddressTypeSort[]
+     * @return AddressTypeSort[]
      */
     public function getSubSort()
     {
@@ -167,7 +148,7 @@ class AddressType extends AbstractEntity
     }
 
     /**
-     * @param \Contact\Entity\AddressTypeSort[] $subSort
+     * @param AddressTypeSort[] $subSort
      */
     public function setSubSort($subSort)
     {

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -16,6 +17,11 @@ use Contact\Entity\Contact;
 use Contact\Entity\Selection;
 use Contact\Entity\SelectionContact;
 use Doctrine\ORM\PersistentCollection;
+use InvalidArgumentException;
+use Throwable;
+
+use function count;
+use function is_array;
 
 /**
  * Class SelectionContactService
@@ -26,15 +32,15 @@ class SelectionContactService extends AbstractService
 {
     public function contactInSelection(Contact $contact, $selections): bool
     {
-        if (!\is_array($selections) && !$selections instanceof PersistentCollection) {
+        if (! is_array($selections) && ! $selections instanceof PersistentCollection) {
             $selections = [$selections];
         }
         foreach ($selections as $selection) {
-            if (!$selection instanceof Selection) {
-                throw new \InvalidArgumentException('Selection should be instance of Selection');
+            if (! $selection instanceof Selection) {
+                throw new InvalidArgumentException('Selection should be instance of Selection');
             }
             if (null === $selection->getId()) {
-                throw new \InvalidArgumentException('The given selection cannot be empty');
+                throw new InvalidArgumentException('The given selection cannot be empty');
             }
             if ($this->findContactInSelection($contact, $selection)) {
                 return true;
@@ -48,18 +54,23 @@ class SelectionContactService extends AbstractService
     {
         $repository = $this->entityManager->getRepository(Contact::class);
 
+        //A contact is never in an inactive selection
+        if (! $selection->isActive()) {
+            return false;
+        }
+
         if (null !== $selection->getSql()) {
             try {
                 //We have a dynamic query, check if the contact is in the selection
                 return $repository->isContactInSelectionSQL($contact, $selection->getSql());
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 print sprintf('Selection %s is giving troubles (%s)', $selection->getId(), $e->getMessage());
             }
         }
         /*
          * The selection contains contacts, do an extra query to find the contact
          */
-        if (\count($selection->getSelectionContact()) > 0) {
+        if (count($selection->getSelectionContact()) > 0) {
             $findContact = $this->entityManager->getRepository(SelectionContact::class)->findOneBy(
                 [
                     'contact'   => $contact,
@@ -77,12 +88,6 @@ class SelectionContactService extends AbstractService
         return false;
     }
 
-    /**
-     * @param Selection $selection
-     * @param bool      $toArray
-     *
-     * @return Contact[]
-     */
     public function findContactsInSelection(Selection $selection, bool $toArray = false): array
     {
         $repository = $this->entityManager->getRepository(Contact::class);

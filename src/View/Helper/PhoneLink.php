@@ -1,82 +1,77 @@
 <?php
+
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
+ *
+ * @link        http://github.com/iteaoffice/general for the canonical source repository
  */
 
 declare(strict_types=1);
 
 namespace Contact\View\Helper;
 
-use Contact\Acl\Assertion\Phone as PhoneAssertion;
 use Contact\Entity\Contact;
 use Contact\Entity\Phone;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
- * Create a link to an phone.
- *
- * @category    Phone
+ * Class PasswordLink
+ * @package General\View\Helper
  */
-class PhoneLink extends LinkAbstract
+final class PhoneLink extends AbstractLink
 {
-    /**
-     * @param Phone|null $phone
-     * @param string $action
-     * @param string $show
-     * @param Contact|null $contact
-     *
-     * @return string
-     */
     public function __invoke(
         Phone $phone = null,
-        $action = 'view',
-        $show = 'name',
+        string $action = 'view',
+        string $show = 'text',
         Contact $contact = null
-    ) {
-        $this->setPhone($phone);
-        $this->setAction($action);
-        $this->setShow($show);
-        $this->setContact($contact);
+    ): string {
+        $phone ??= new Phone();
 
-        if (!$this->hasAccess($this->getPhone(), PhoneAssertion::class, $this->getAction())) {
+        if (! $this->hasAccess($phone, \Contact\Acl\Assertion\Phone::class, $action)) {
             return '';
         }
 
-        $this->setShowOptions(
-            [
-                'name' => $this->getPhone()->getPhone(),
-            ]
-        );
-        $this->addRouterParam('id', $this->getPhone()->getId());
-        $this->addRouterParam('contact', $this->getContact()->getId());
+        $routeParams = [];
+        $showOptions = [];
 
-        return $this->createLink();
-    }
+        if (! $phone->isEmpty()) {
+            $routeParams['id'] = $phone->getId();
+            $showOptions['name'] = $phone->getPhone();
+        }
 
-    /**
-     * @throws \Exception
-     */
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        if (null !== $contact) {
+            $routeParams['contact'] = $contact->getId();
+        }
+
+
+        switch ($action) {
             case 'new':
-                if (\is_null($this->getContact())) {
-                    throw new \Exception(sprintf("A contact is needed for a new phone"));
-                }
-
-                $this->setRouter('zfcadmin/phone/new');
-                $this->setText($this->translate("txt-new-phone"));
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/phone/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-phone')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/phone/edit');
-                $this->setText(sprintf($this->translate("txt-edit-phone-%s"), $this->getPhone()->getPhone()));
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/phone/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-phone')
+                ];
                 break;
-            default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

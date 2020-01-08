@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -13,40 +14,37 @@ declare(strict_types=1);
 namespace Contact\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use General\Entity\Country;
+use Laminas\Form\Annotation;
 
 /**
- * Entity for the Contact.
- *
  * @ORM\Table(name="contact_address")
  * @ORM\Entity(repositoryClass="Contact\Repository\Address")
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
  * @Annotation\Name("contact_address")
- *
- * @category    Contact
  */
 class Address extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="address_id", type="integer", nullable=false)
+     * @ORM\Column(name="address_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Annotation\Exclude()
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
-     * @ORM\Column(name="address", type="string", length=255, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Textarea")
+     * @ORM\Column(name="address", type="string", length=1000, nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-address"})
      *
      * @var string
      */
     private $address;
     /**
-     * @ORM\Column(name="zipcode", type="string", length=20, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="zipcode", type="string", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-zip-code"})
      *
      * @var string
@@ -54,7 +52,7 @@ class Address extends AbstractEntity
     private $zipCode;
     /**
      * @ORM\Column(name="city", type="string", nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-city"})
      *
      * @var string
@@ -67,13 +65,13 @@ class Address extends AbstractEntity
      * @Annotation\Options({"target_class":"Contact\Entity\AddressType"})
      * @Annotation\Attributes({"label":"txt-type"})
      *
-     * @var \Contact\Entity\AddressType
+     * @var AddressType
      */
     private $type;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="address")
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
      * @var Contact
      */
@@ -94,139 +92,99 @@ class Address extends AbstractEntity
      * )
      * @Annotation\Attributes({"label":"txt-country"})
      *
-     * @var \General\Entity\Country
+     * @var Country
      */
     private $country;
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
 
     public function __toString(): string
     {
         return (string)$this->getAddress();
     }
 
-    /**
-     * @return string
-     */
-    public function getAddress()
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    /**
-     * @param string $address
-     */
-    public function setAddress($address)
+    public function setAddress(?string $address): Address
     {
         $this->address = $address;
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCity()
+    public function toArray(): array
     {
-        return $this->city;
+        return [
+            'address' => $this->address,
+            'zipCode' => $this->zipCode,
+            'city'    => $this->city,
+            'country' => $this->country->getId()
+        ];
     }
 
-    /**
-     * @param string $city
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-    }
-
-    /**
-     * @return \Contact\Entity\Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param \Contact\Entity\Contact $contact
-     */
-    public function setContact($contact)
-    {
-        $this->contact = $contact;
-    }
-
-    /**
-     * @return \General\Entity\Country
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
-     * @param \General\Entity\Country $country
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-    }
-
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId($id): Address
     {
         $this->id = $id;
+        return $this;
     }
 
-    /**
-     * @return AddressType
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param AddressType $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getZipCode()
+    public function getZipCode(): ?string
     {
         return $this->zipCode;
     }
 
-    /**
-     * @param string $zipCode
-     */
-    public function setZipCode($zipCode)
+    public function setZipCode(?string $zipCode): Address
     {
         $this->zipCode = $zipCode;
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): Address
+    {
+        $this->city = $city;
+        return $this;
+    }
+
+    public function getType(): ?AddressType
+    {
+        return $this->type;
+    }
+
+    public function setType(AddressType $type): Address
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getContact(): ?Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(Contact $contact): Address
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    public function setCountry(Country $country): Address
+    {
+        $this->country = $country;
+        return $this;
     }
 }

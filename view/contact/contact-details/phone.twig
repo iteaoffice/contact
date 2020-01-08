@@ -1,0 +1,33 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-phone") }}</h2>
+
+{% if contact.phone.count() > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-phone-id") }}</th>
+            <th>{{ translate("txt-phone-type") }}</th>
+            <th>{{ translate("txt-phone-phone") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <td colspan="3"></td>
+        </tr>
+        </tfoot>
+        <tbody>
+        {% for phone in contact.phone %}
+            <tr>
+                <td><small class="text-muted">{{ phone.id }}</small></td>
+                <td>{{ phone.type }}</td>
+                <td>{{ phone.phone }} {{ phoneLink(phone,'edit','icon') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-no-phone-numbers-found"))|raw }}
+{% endif %}
+
+{{ phoneLink(null,'new','button', contact) }}

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -14,7 +15,8 @@ namespace Contact\Entity;
 
 use Doctrine\Common\Collections;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Annotation;
+use Mailing\Entity\Mailing;
+use Laminas\Form\Annotation;
 
 /**
  * Optin.
@@ -27,24 +29,24 @@ class OptIn extends AbstractEntity
     public const ACTIVE_INACTIVE = 0;
     public const ACTIVE_ACTIVE = 1;
 
-    protected static $activeTemplates
+    protected static array $activeTemplates
         = [
             self::ACTIVE_INACTIVE => 'txt-inactive',
             self::ACTIVE_ACTIVE   => 'txt-active',
         ];
 
     /**
-     * @ORM\Column(name="optin_id", type="integer", nullable=false)
+     * @ORM\Column(name="optin_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Annotation\Type("\Zend\Form\Element\Hidden")
+     * @Annotation\Type("\Laminas\Form\Element\Hidden")
      *
-     * @var integer|string|null
+     * @var int|string|null
      */
     private $id;
     /**
      * @ORM\Column(name="optin", type="string", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-opt-in-title-title","help-block": "txt-opt-in-title-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-opt-in-title-placeholder"})
      *
@@ -52,16 +54,16 @@ class OptIn extends AbstractEntity
      */
     private $optIn;
     /**
-     * @ORM\Column(name="active", type="integer", nullable=false)
-     * @Annotation\Type("\Zend\Form\Element\Radio")
+     * @ORM\Column(name="active", type="integer", options={"unsigned":true})
+     * @Annotation\Type("\Laminas\Form\Element\Radio")
      * @Annotation\Attributes({"array":"activeTemplates"})
      * @Annotation\Options({"label":"txt-opt-in-active-title","help-block": "txt-opt-in-active-help-block"})
-     * @var integer
+     * @var int
      */
     private $active;
     /**
-     * @ORM\Column(name="description", type="string", length=255, nullable=true)
-     * @Annotation\Type("\Zend\Form\Element\Text")
+     * @ORM\Column(name="description", type="string", nullable=true)
+     * @Annotation\Type("\Laminas\Form\Element\Text")
      * @Annotation\Options({"label":"txt-opt-in-description-title","help-block": "txt-opt-in-description-help-block"})
      * @Annotation\Attributes({"placeholder":"txt-opt-in-description-placeholder"})
      *
@@ -72,14 +74,14 @@ class OptIn extends AbstractEntity
      * @ORM\ManyToMany(targetEntity="Contact\Entity\Contact", cascade={"persist"}, mappedBy="optIn", fetch="EXTRA_LAZY")
      * @Annotation\Exclude();
      *
-     * @var \Contact\Entity\Contact[]|Collections\ArrayCollection
+     * @var Contact[]|Collections\ArrayCollection
      */
     private $contact;
     /**
      * @ORM\OneToMany(targetEntity="Mailing\Entity\Mailing", cascade={"persist"}, mappedBy="optIn", fetch="EXTRA_LAZY")
      * @Annotation\Exclude()
      *
-     * @var \Mailing\Entity\Mailing[]|Collections\ArrayCollection
+     * @var Mailing[]|Collections\ArrayCollection
      */
     private $mailing;
 
@@ -96,21 +98,6 @@ class OptIn extends AbstractEntity
     public static function getActiveTemplates(): array
     {
         return self::$activeTemplates;
-    }
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
     }
 
     public function __toString(): string

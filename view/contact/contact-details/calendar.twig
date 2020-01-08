@@ -1,0 +1,76 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-calendar") }} {{ calendarLink(null, 'add-contact', 'button', null, null, contact) }}</h2>
+
+
+{% if not contact.calendarContact.isEmpty() %}
+    <h3>{{ translate("txt-upcoming") }}</h3>
+    <form method="post" action="">
+        <table class="table table-hover table-striped table-sm table-calendar">
+            <thead>
+            <tr>
+                <th><i class="fa fa-trash"></i></th>
+                <th>{{ translate("txt-id") }}</th>
+                <th>{{ translate("txt-calendar") }}</th>
+                <th>{{ translate("txt-date") }}</th>
+                <th>{{ translate("txt-role") }}</th>
+                <th>{{ translate("txt-presence") }}</th>
+                <th>{{ translate("txt-location") }}</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="7"><input type="submit" value="{{ translate("txt-remove-from-selected-meetings") }}"
+                                       class="btn btn-danger btn-sm"></td>
+            </tr>
+            </tfoot>
+            <tbody>
+            {% for calendarContact in calendarService.findCalendarContactByContact(contact)|filter(calendarContact => calendarContact.calendar.dateFrom|date('ymd') >= "now"|date('ymd')) -%}
+                {% set calendar = calendarContact.calendar %}
+                <tr>
+                    <td><input type="checkbox" name="calendarContact[]"
+                               value="{{ calendarContact.id }}"></td>
+                    <td><small class="text-muted">{{ calendar.id }}</small></td>
+                    <td>{{ calendarLink(calendar, 'view-admin', 'name') }}</td>
+                    <td>{{ calendar.dateFrom|from_to_date(calendar.dateEnd) }} </td>
+                    <td>{{ calendarContact.role }}</td>
+                    <td>{{ calendarContact.getStatus(true) }}</td>
+                    <td>{{ calendar.location }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+    <h3 class="pt-3">{{ translate("txt-past-events") }}</h3>
+    <table class="table table-hover table-striped table-sm table-calendar">
+        <thead>
+        <tr>
+            <th></th>
+            <th>{{ translate("txt-calendar") }}</th>
+            <th>{{ translate("txt-date") }}</th>
+            <th>{{ translate("txt-role") }}</th>
+            <th>{{ translate("txt-presence") }}</th>
+            <th>{{ translate("txt-location") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <td colspan="6"></td>
+        </tr>
+        </tfoot>
+        <tbody>
+        {% for calendarContact in calendarService.findCalendarContactByContact(contact)|reverse|filter(calendarContact => calendarContact.calendar.dateFrom|date('ymd') < "now"|date('ymd')) -%}
+            {% set calendar = calendarContact.calendar %}
+            <tr>
+                <td><small class="text-muted">{{ calendar.id }}</small></td>
+                <td>{{ calendarLink(calendar, 'view-admin', 'name') }}</td>
+                <td>{{ calendar.dateFrom|from_to_date(calendar.dateEnd) }} </td>
+                <td>{{ calendarContact.role }}</td>
+                <td>{{ calendarContact.getStatus(true) }}</td>
+                <td>{{ calendar.location }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

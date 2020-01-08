@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,6 +16,9 @@ namespace Contact\Repository;
 use Contact\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+
+use function array_key_exists;
+use function in_array;
 
 /**
  * Class Selection
@@ -52,17 +56,17 @@ class Selection extends EntityRepository
             $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['tags']));
         }
 
-        if (!array_key_exists('includeDeleted', $filter)) {
+        if (! array_key_exists('includeDeleted', $filter)) {
             //Do not show the deleted ones
             $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
         }
 
         if (array_key_exists('core', $filter)) {
-            $qb->andWhere($qb->expr()->in('contact_entity_selection.tag', $filter['core']));
+            $qb->andWhere($qb->expr()->in('contact_entity_selection.core', $filter['core']));
         }
 
         $direction = 'ASC';
-        if (isset($filter['direction']) && \in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
             $direction = strtoupper($filter['direction']);
         }
 
@@ -164,5 +168,19 @@ class Selection extends EntityRepository
         $qb->andWhere($qb->expr()->in('contact_entity_selection.id', $subSelect->getDQL()));
 
         return $qb->getQuery()->useQueryCache(true)->getResult();
+    }
+
+    public function copySelectionContactsFromSourceToDestination(
+        Entity\Selection $source,
+        Entity\Selection $destination
+    ): void {
+        $query = sprintf(
+            'INSERT INTO selection_contact (selection_id, contact_id, date_created) 
+                    SELECT %d, contact_id, NOW() FROM selection_contact WHERE selection_id = %d',
+            $destination->getId(),
+            $source->getId()
+        );
+
+        $this->_em->getConnection()->exec($query);
     }
 }

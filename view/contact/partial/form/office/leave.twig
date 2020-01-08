@@ -1,0 +1,32 @@
+{% do form.prepare() %}
+{{ form().openTag(form)|raw }}
+
+{% set leave = form.get('contact_entity_office_leave') %}
+{{ ztbformelement(leave.get('id')) }}
+{{ ztbformelement(leave.get('dateStart')) }}
+{{ ztbformelement(leave.get('dateEnd')) }}
+{{ ztbformelement(leave.get('description')) }}
+{{ ztbformelement(leave.get('hours')) }}
+{{ ztbformelement(leave.get('type')) }}
+
+{% if leave.has('officeContact') %}
+    {{ ztbformelement(leave.get('officeContact')) }}
+{% endif %}
+
+{% if form.has('csrf') %}
+    {{ ztbformelement(form.get('csrf')) }}
+{% endif %}
+
+{% if showButtons %}
+    <div class="form-group row">
+        <div class="offset-sm-3 col-sm-9">
+            {{ ztbformelement(form.get('submit')) }}
+            {{ ztbformelement(form.get('cancel')) }}
+            {% if form.has('delete') %}
+                {{ ztbformelement(form.get('delete')) }}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+{{ form().closeTag()|raw }}

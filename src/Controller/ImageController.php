@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category  Content
  *
  * @author    Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license   https://itea3.org/license.txt proprietary
  *
  * @link      https://itea3.org
@@ -17,7 +18,9 @@ namespace Contact\Controller;
 
 use Contact\Entity\Photo;
 use Contact\Service\ContactService;
-use Zend\Http\Response;
+use Laminas\Http\Response;
+
+use function stream_get_contents;
 
 /**
  * Class ImageController
@@ -26,10 +29,7 @@ use Zend\Http\Response;
  */
 final class ImageController extends ContactAbstractController
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
+    private ContactService $contactService;
 
     public function __construct(ContactService $contactService)
     {
@@ -54,7 +54,7 @@ final class ImageController extends ContactAbstractController
             ->addHeaderLine('Pragma: public')
             ->addHeaderLine('Content-Type: ' . $photo->getContentType()->getContentType());
 
-        $response->setContent(\stream_get_contents($photo->getPhoto()));
+        $response->setContent(stream_get_contents($photo->getPhoto()));
 
         return $response;
     }

@@ -1,11 +1,10 @@
 <?php
+
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -13,57 +12,59 @@ declare(strict_types=1);
 namespace Contact\View\Helper;
 
 use Contact\Entity\OptIn;
+use General\ValueObject\Link\Link;
+use General\View\Helper\AbstractLink;
 
 /**
  * Class OptInLink
- *
  * @package Contact\View\Helper
  */
-class OptInLink extends LinkAbstract
+final class OptInLink extends AbstractLink
 {
-    /**
-     * @var OptIn
-     */
-    private $optIn;
-
     public function __invoke(
         OptIn $optIn = null,
-        $action = 'view',
-        $show = 'name'
-    ) {
-        $this->optIn = $optIn;
-        $this->setAction($action);
-        $this->setShow($show);
+        string $action = 'view',
+        string $show = 'name'
+    ): string {
+        $optIn ??= new OptIn();
 
-        if (null !== $optIn) {
-            $this->setShowOptions(
-                [
-                    'name' => $this->optIn->getOptIn(),
-                ]
-            );
-            $this->addRouterParam('id', $this->optIn->getId());
+        $routeParams = [];
+        $showOptions = [];
+        if (! $optIn->isEmpty()) {
+            $routeParams['id'] = $optIn->getId();
+            $showOptions['name'] = $optIn->getOptIn();
         }
 
-        return $this->createLink();
-    }
-
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+        switch ($action) {
             case 'new':
-                $this->setRouter('zfcadmin/opt-in/new');
-                $this->setText($this->translate("txt-new-opt-in"));
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/opt-in/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-opt-in')
+                ];
                 break;
             case 'edit':
-                $this->setRouter('zfcadmin/opt-in/edit');
-                $this->setText(sprintf($this->translate("txt-edit-opt-in-%s"), $this->optIn->getOptIn()));
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/opt-in/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-opt-in')
+                ];
                 break;
             case 'view':
-                $this->setRouter('zfcadmin/opt-in/view');
-                $this->setText(sprintf($this->translate("txt-view-opt-in-%s"), $this->optIn->getOptIn()));
+                $linkParams = [
+                    'icon' => 'fa-link',
+                    'route' => 'zfcadmin/opt-in/view',
+                    'text' => $showOptions[$show] ?? $optIn->getOptIn()
+                ];
                 break;
-            default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

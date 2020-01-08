@@ -1,0 +1,30 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-notes") }}</h2>
+
+{% if contact.note.count() > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-no") }}</th>
+            <th>{{ translate("txt-note-id") }}</th>
+            <th>{{ translate("txt-note-type") }}</th>
+            <th>{{ translate("txt-note-content") }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for note in contact.note %}
+            <tr>
+                <td><small class="text-muted">{{ loop.index }}</small></td>
+                <td><code>{{ note.id }}</code> {{ noteLink(note,'edit','icon') }}</td>
+                <td>{{ note.source }}</td>
+                <td>{{ note.note }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ ztbalert().info(translate("txt-no-notes-available-for-this-contact"))|raw }}
+{% endif %}
+
+    {{ noteLink(null,'new','button', contact) }}

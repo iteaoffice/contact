@@ -1,131 +1,133 @@
 <?php
+
 /**
- * ITEA Office all rights reserved
- *
- * @category    Contact
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
 
 namespace Contact\View\Helper;
 
-use Contact\Acl\Assertion\Contact as ContactAssertion;
 use Contact\Entity\Contact;
+use General\ValueObject\Link\Link;
+use General\ValueObject\Link\LinkDecoration;
+use General\View\Helper\AbstractLink;
 
 /**
- * Create a link to an contact.
- *
- * @category    Contact
+ * Class ContactLink
+ * @package Contact\View\Helper
  */
-class ContactLink extends LinkAbstract
+final class ContactLink extends AbstractLink
 {
     public function __invoke(
         Contact $contact = null,
-        $action = 'view',
-        $show = 'name',
-        $hash = null,
-        $alternativeShow = null,
-        $fragment = null
+        string $action = 'view',
+        string $show = 'name'
     ): string {
-        $this->setContact($contact);
-        $this->setAction($action);
-        $this->setShow($show);
-        $this->setHash($hash);
-        $this->setFragment($fragment);
+        $contact ??= new Contact();
 
-        $this->setAlternativeShow($hash);
-        if (null !== $alternativeShow) {
-            $this->setAlternativeShow($alternativeShow);
-        }
-
-        if (!$this->hasAccess($this->getContact(), ContactAssertion::class, $this->getAction())) {
+        if (! $this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
             return '';
         }
-        $this->setShowOptions(
-            [
-                'email'           => $this->getContact()->getEmail(),
-                'paginator'       => $this->getAlternativeShow(),
-                'alternativeShow' => $this->getAlternativeShow(),
-                'firstname'       => $this->getContact()->getFirstName(),
-                'initials'        => $this->getContact()->parseInitials(),
-                'name'            => $this->getContact()->getDisplayName(),
-            ]
-        );
-        $this->addRouterParam('hash', $hash);
-        $this->addRouterParam('id', $this->getContact()->getId());
 
-        return $this->createLink();
-    }
+        $routeParams = [];
+        $showOptions = [];
+        if (! $contact->isEmpty()) {
+            $routeParams['id'] = $contact->getId();
+            $showOptions['name'] = $contact->parseFullName();
+            $showOptions['email'] = $contact->getEmail();
+            $showOptions['firstname'] = $contact->getFirstName();
+            $showOptions['initials'] = $contact->parseInitials();
+        }
 
-    public function parseAction(): void
-    {
-        switch ($this->getAction()) {
+
+        switch ($action) {
             case 'new':
-                $this->setRouter('zfcadmin/contact-admin/new');
-                $this->setText($this->translate("txt-new-contact"));
+                $linkParams = [
+                    'icon' => 'fa-plus',
+                    'route' => 'zfcadmin/contact/new',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-new-contact')
+                ];
                 break;
-            case 'list':
-                $this->setRouter('zfcadmin/contact-admin/list');
-                $this->setText($this->translate("txt-list-contacts"));
+            case 'list-old':
+                $linkParams = [
+                    'icon' => 'fa-users',
+                    'route' => 'zfcadmin/contact/list-old',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-list-contacts-legacy')
+                ];
                 break;
             case 'import':
-                $this->setRouter('zfcadmin/contact-admin/import');
-                $this->setText($this->translate("txt-import-contacts"));
+                $linkParams = [
+                    'icon' => 'fa-upload',
+                    'route' => 'zfcadmin/contact/import',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-import-contacts')
+                ];
                 break;
             case 'edit-admin':
-                $this->setRouter('zfcadmin/contact-admin/edit');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-edit-contact-in-admin-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
-                break;
-            case 'view-admin':
-                $this->setRouter('zfcadmin/contact-admin/view');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-view-contact-in-admin-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
-                break;
-            case 'impersonate':
-                $this->setRouter('zfcadmin/contact-admin/impersonate');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-impersonate-contact-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
-                break;
-            case 'permit':
-                $this->setRouter('zfcadmin/contact-admin/permit');
-                $this->setText(
-                    sprintf(
-                        $this->translate("txt-permit-of-contact-%s"),
-                        $this->getContact()->getDisplayName()
-                    )
-                );
+                $linkParams = [
+                    'icon' => 'fa-pencil-square-o',
+                    'route' => 'zfcadmin/contact/edit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-edit-contact')
+                ];
                 break;
             case 'change-password':
-                $this->setRouter('community/contact/change-password');
-                /*
-                 * Users can have access without a password (via the deeplink)
-                 * We will therefore have the option to set a password
-                 */
-                if (null === $this->getContact()->getSaltedPassword()) {
-                    $this->setText($this->translate("txt-set-your-password"));
-                    $this->addClasses('btn-danger');
-                } else {
-                    $this->setText($this->translate("txt-update-your-password"));
+                $text = $this->translator->translate('txt-update-your-password');
+
+                if (null === $contact->getSaltedPassword()) {
+                    $text = $this->translator->translate('txt-set-your-password');
+                    $show = LinkDecoration::SHOW_DANGER_BUTTON;
                 }
+
+                $linkParams = [
+                    'icon' => 'fa-key',
+                    'route' => 'community/contact/change-password',
+                    'text' => $text
+                ];
                 break;
-            default:
-                throw new \Exception(sprintf("%s is an incorrect action for %s", $this->getAction(), __CLASS__));
+            case 'view-admin':
+                $linkParams = [
+                    'icon' => 'fa-user-o',
+                    'route' => 'zfcadmin/contact/view/general',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-view-contact-in-admin')
+                ];
+                break;
+            case 'add-project':
+                $linkParams = [
+                    'icon' => 'fa-user-plus',
+                    'route' => 'zfcadmin/contact/add-project',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-add-contact-to-project')
+                ];
+                break;
+            case 'impersonate':
+                $linkParams = [
+                    'icon' => 'fa-user-secret',
+                    'route' => 'zfcadmin/contact/impersonate',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-impersonate-contact')
+                ];
+                break;
+            case 'permit':
+                $linkParams = [
+                    'icon' => 'fa-lock',
+                    'route' => 'zfcadmin/contact/permit',
+                    'text' => $showOptions[$show]
+                        ?? $this->translator->translate('txt-impersonate-contact')
+                ];
+                break;
         }
+
+        $linkParams['action'] = $action;
+        $linkParams['show'] = $show;
+        $linkParams['routeParams'] = $routeParams;
+
+        return $this->parse(Link::fromArray($linkParams));
     }
 }

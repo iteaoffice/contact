@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -14,70 +14,52 @@ declare(strict_types=1);
 namespace Contact\Form;
 
 use Contact\Entity\Selection;
-use Contact\Service\SelectionService;
-use Zend\Form\Form;
+use Doctrine\ORM\EntityManager;
+use DoctrineORMModule\Form\Element\EntitySelect;
+use Laminas\Form\Element\Radio;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Element\Textarea;
+use Laminas\Form\Form;
 
 /**
  * Class SelectionContacts
  *
  * @package Contact\Form
  */
-class SelectionContacts extends Form
+final class SelectionContacts extends Form
 {
-    public function __construct(SelectionService $selectionService)
+    public function __construct(EntityManager $entityManager)
     {
         parent::__construct();
         $this->setAttribute('method', 'post');
         $this->setAttribute('action', '');
-        $this->setAttribute("onsubmit", "return storeChanges();");
-
-        $selections = [];
-        /** @var Selection $selection */
-        foreach ($selectionService->findAll(Selection::class) as $selection) {
-            $selections[$selection->getId()] = $selection->getSelection();
-        }
-
-        asort($selections);
+        $this->setAttribute('class', 'form-horizontal');
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Select',
+                'type'       => EntitySelect::class,
                 'name'       => 'selection',
                 'options'    => [
-                    'inline'        => true,
-                    'value_options' => $selections,
+                    'target_class'   => Selection::class,
+                    'object_manager' => $entityManager,
+                    'help-block'     => _('txt-form-calendar-contacts-selection-help-block'),
+                    'find_method'    => [
+                        'name'   => 'findActive',
+                        'params' => [
+                            'criteria' => [],
+                            'orderBy'  => [],
+                        ],
+                    ],
                 ],
                 'attributes' => [
-                    'id'    => 'selection',
-                    'class' => 'form-control',
-                ],
+                    'id' => 'selection',
+                ]
             ]
         );
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Hidden',
-                'name'       => 'added',
-                'attributes' => [
-                    'id' => 'added',
-                ],
-            ]
-        );
-
-        $this->add(
-            [
-                'type'       => 'Zend\Form\Element\Hidden',
-                'name'       => 'removed',
-                'attributes' => [
-                    'id' => 'removed',
-                ],
-            ]
-        );
-
-
-        $this->add(
-            [
-                'type'       => 'Zend\Form\Element\Radio',
+                'type'       => Radio::class,
                 'name'       => 'type',
                 'options'    => [
                     'value_options' => [
@@ -86,29 +68,25 @@ class SelectionContacts extends Form
                     ],
                 ],
                 'attributes' => [
-                    'label' => _("txt-selection-type"),
+                    'label' => _('txt-selection-type'),
                 ],
             ]
         );
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Textarea',
+                'type'       => Textarea::class,
                 'name'       => 'sql',
-                'options'    => [
-
-                ],
                 'attributes' => [
-                    'label' => _("txt-sql-query"),
+                    'label' => _('txt-sql-query'),
                     'rows'  => 20,
                 ],
             ]
         );
 
-
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
                     'id'    => 'submit',
@@ -120,7 +98,7 @@ class SelectionContacts extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'cancel',
                 'attributes' => [
                     'id'    => 'cancel',

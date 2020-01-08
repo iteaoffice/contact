@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -13,55 +14,92 @@ declare(strict_types=1);
 namespace Contact\Navigation\Service;
 
 use Contact\Entity\Contact;
+use Contact\Entity\Facebook;
+use Contact\Service\ContactService;
+use Laminas\I18n\Translator\Translator;
+use Laminas\Navigation\Navigation;
+use Laminas\Router\RouteMatch;
+use Laminas\Router\SimpleRouteStack;
 
 /**
- * Factory for the Community admin navigation.
+ * Class ContactNavigationService
+ *
+ * @package Contact\Navigation\Service
  */
-class ContactNavigationService extends NavigationServiceAbstract
+final class ContactNavigationService
 {
     /**
      * @var Contact
      */
-    protected $contact;
-
+    private $contact;
     /**
-     * Add the dedicated pages to the navigation.
+     * @var RouteMatch
      */
+    private $routeMatch;
+    /**
+     * @var Navigation
+     */
+    private $navigation;
+    /**
+     * @var SimpleRouteStack
+     */
+    private $router;
+    /**
+     * @var Translator
+     */
+    private $translator;
+    /**
+     * @var ContactService;
+     */
+    private $contactService;
+
+
     public function update(): void
     {
         /*
          * Add a route for the facebook
          */
-        if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'community') === 0) {
+        if (strpos($this->routeMatch->getMatchedRouteName(), 'community') === 0) {
             $this->includeFacebooksInNavigation();
         }
     }
 
 
-    /**
-     * Update the navigation for a publication.
-     */
     public function includeFacebooksInNavigation(): void
     {
-        $navigation = $this->getNavigation()->findOneBy('id', 'community/contact');
+        $navigation = $this->navigation->findOneBy('id', 'community/contact');
 
-        if (\is_null($navigation)) {
+        if (null === $navigation) {
             return;
         }
         /*
          * Update the navigation with the facebooks (if a a contact object is present)
          */
-        if (null !== $this->getContact()) {
-            foreach ($this->getContactService()->findFacebookByContact($this->getContact()) as $facebook) {
+        if (null !== $this->contact) {
+            /** @var Facebook $facebook */
+            foreach ($this->contactService->findFacebookByContact($this->contact) as $facebook) {
                 $page = [
                     'label'      => $facebook->getFacebook(),
                     'route'      => 'community/contact/facebook/view',
-                    'active'     => (int)$this->getRouteMatch()->getParam('facebook') === $facebook->getId(),
-                    'router'     => $this->getRouter(),
-                    'routeMatch' => $this->getRouteMatch(),
+                    'active'     => (int)$this->routeMatch->getParam('facebook') === $facebook->getId(),
+                    'router'     => $this->router,
+                    'routeMatch' => $this->routeMatch,
                     'params'     => [
                         'facebook' => $facebook->getId(),
                     ],
+                    'pages'      => [
+                        [
+                            'label'      => $this->translator->translate('txt-send-message'),
+                            'route'      => 'community/contact/facebook/send-message',
+                            'active'     => $this->routeMatch->getMatchedRouteName()
+                                === 'community/contact/facebook/send-message',
+                            'router'     => $this->router,
+                            'routeMatch' => $this->routeMatch,
+                            'params'     => [
+                                'facebook' => $facebook->getId(),
+                            ],
+                        ]
+                    ]
                 ];
 
                 $navigation->addPage($page);
@@ -69,22 +107,40 @@ class ContactNavigationService extends NavigationServiceAbstract
         }
     }
 
-    /**
-     * @return Contact|null
-     */
-    public function getContact(): ?Contact
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @param Contact $contact
-     * @return ContactNavigationService
-     */
     public function setContact(Contact $contact): ContactNavigationService
     {
         $this->contact = $contact;
 
+        return $this;
+    }
+
+    public function setRouteMatch(RouteMatch $routeMatch): ContactNavigationService
+    {
+        $this->routeMatch = $routeMatch;
+        return $this;
+    }
+
+    public function setTranslator(Translator $translator): ContactNavigationService
+    {
+        $this->translator = $translator;
+        return $this;
+    }
+
+    public function setContactService(ContactService $contactService): ContactNavigationService
+    {
+        $this->contactService = $contactService;
+        return $this;
+    }
+
+    public function setNavigation(Navigation $navigation): ContactNavigationService
+    {
+        $this->navigation = $navigation;
+        return $this;
+    }
+
+    public function setRouter(SimpleRouteStack $router): ContactNavigationService
+    {
+        $this->router = $router;
         return $this;
     }
 }

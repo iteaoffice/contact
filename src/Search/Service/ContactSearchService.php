@@ -1,23 +1,23 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category  Search
  *
  * @author    Bart van Eijck <bart.van.eijck@itea3.org>
- * @copyright Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Search\Service;
 
-use Contact\Entity\Contact;
-use Contact\Entity\Photo;
-use Contact\Service\ContactService;
 use Search\Service\AbstractSearchService;
 use Search\Service\SearchServiceInterface;
 use Solarium\QueryType\Select\Query\Query;
+
+use function in_array;
 
 /**
  * Contact Solr search service
@@ -44,30 +44,69 @@ class ContactSearchService extends AbstractSearchService
                     'organisation_search',
                     'organisation_type_search',
                     'country_search',
+                    'email_search',
                     'cv_search',
                 ]
             )
         );
 
-        $hasTerm = !\in_array($searchTerm, ['*', ''], true);
+        $hasTerm = ! in_array($searchTerm, ['*', ''], true);
         $hasSort = ($order !== '');
 
         if ($hasSort) {
-            $this->getQuery()->addSort($order, $direction);
+            switch ($order) {
+                case 'id':
+                    $this->getQuery()->addSort('contact_id', $direction);
+                    break;
+                case 'name':
+                    $this->getQuery()->addSort('lastname_sort', $direction);
+                    break;
+                case 'country':
+                    $this->getQuery()->addSort('country_sort', $direction);
+                    break;
+                case 'organisation':
+                    $this->getQuery()->addSort('organisation_sort', $direction);
+                    break;
+                case 'projects':
+                    $this->getQuery()->addSort('projects', $direction);
+                    break;
+
+                default:
+                    $this->getQuery()->addSort('contact_id', Query::SORT_DESC);
+                    break;
+            }
         }
+
         if ($hasTerm) {
             $this->getQuery()->addSort('score', Query::SORT_DESC);
-        } else {
-            $this->getQuery()->addSort('lastname_sort', Query::SORT_ASC);
+        } elseif (! $hasSort) {
+            $this->getQuery()->addSort('contact_id', Query::SORT_DESC);
         }
 
         $facetSet = $this->getQuery()->getFacetSet();
-        $facetSet->createFacetField('organisation_type')->setField('organisation_type')->setMinCount(0)
+        $facetSet->createFacetField('org_type')->setField('organisation_type')->setSort('index')->setMinCount(0)
             ->setExcludes(['organisation_type']);
         if (('*' !== $searchTerm) && (strlen($searchTerm) > 2)) {
-            $facetSet->createFacetField('organisation')->setField('organisation')->setMinCount(1);
+            $facetSet->createFacetField('organisation')->setField('organisation')->setSort('index')->setMinCount(1);
         }
-        $facetSet->createFacetField('country')->setField('country')->setMinCount(1)->setExcludes(['country']);
+        $facetSet->createFacetField('country')->setField('country')->setSort('index')->setMinCount(1)->setExcludes(
+            ['country']
+        );
+        $facetSet->createFacetField('office')->setField('is_office_text')->setSort('index')->setMinCount(1)
+            ->setExcludes(
+                ['is_office_text']
+            );
+        $facetSet->createFacetField('funder')->setField('is_funder_text')->setSort('index')->setMinCount(1)
+            ->setExcludes(
+                ['is_funder_text']
+            );
+        $facetSet->createFacetField('access')->setField('access')->setSort('index')->setMinCount(1)->setExcludes(
+            ['access']
+        );
+        $facetSet->createFacetField('opt_in')->setField('optin')->setSort('index')->setMinCount(1)->setExcludes(
+            ['optin']
+        );
+
 
         return $this;
     }

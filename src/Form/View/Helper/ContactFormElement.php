@@ -1,41 +1,51 @@
 <?php
+
 /**
  * Jield BV all rights reserved.
  *
  * @category    Equipment
  *
- * @author      Dr. Ir. Johan van der Heide <info@jield.nl>
- * @copyright   Copyright (c) 2004-2017 Jield BV (http://jield.nl)
+ * @author      Dr. ir. Johan van der Heide <info@jield.nl>
+ * @copyright   Copyright (c) 2004-2017 Jield BV (https://jield.nl)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Form\View\Helper;
 
-use Zend\Form\Element\Select;
-use Zend\Form\ElementInterface;
-use ZfcTwitterBootstrap\Form\View\Helper\FormElement;
+use Contact\Entity\Contact;
+use Contact\Service\ContactService;
+use Laminas\Form\ElementInterface;
+use Laminas\I18n\Translator\Translator;
+use Laminas\View\HelperPluginManager;
+use Zf3Bootstrap4\Form\View\Helper\FormElement;
 
 /**
  * Class ContactFormElement
  *
  * @package Contact\Form\View\Helper
  */
-class ContactFormElement extends FormElement
+final class ContactFormElement extends FormElement
 {
     /**
-     * @param ElementInterface|null $element
-     * @param null                  $groupWrapper
-     * @param null                  $controlWrapper
-     *
-     * @return self|string
+     * @var ContactService
      */
-    public function __invoke(
-        ElementInterface $element = null,
-        $groupWrapper = null,
-        $controlWrapper = null
+    private ContactService $contactService;
+
+    public function __construct(
+        ContactService $contactService,
+        HelperPluginManager $viewHelperManager,
+        Translator $translator
     ) {
-        //Inject the javascript in the header
+        parent::__construct($viewHelperManager, $translator);
+
+        $this->contactService = $contactService;
+    }
+
+    public function __invoke(ElementInterface $element = null, bool $inline = false)
+    {
+        $this->inline = $inline;
+
         $this->view->headLink()
             ->appendStylesheet('/assets/css/bootstrap-select.min.css');
         $this->view->headLink()
@@ -48,116 +58,44 @@ class ContactFormElement extends FormElement
             '/assets/js/ajax-bootstrap-select.min.js',
             'text/javascript'
         );
-
         $this->view->inlineScript()->appendScript(
-            "var options = {
-        ajax: {
-            url: '" . $this->view->url('zfcadmin/contact-admin/search') . "',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                search: '{{{q}}}'
-            }
-        },
-        locale: {
-            emptyTitle: 'Select your contact by start typing'
-        },
-        langCode: 'en',
-    };
-    $('.select-picker-contact').selectpicker().ajaxSelectPicker(options);",
+            "
+                $('.selectpicker-contact').selectpicker().ajaxSelectPicker();",
             'text/javascript'
         );
 
+
         if ($element) {
-            return $this->render($element, $groupWrapper, $controlWrapper);
+            return $this->render($element);
         }
 
         return $this;
     }
 
-    /**
-     * Render.
-     *
-     * @param Select|ElementInterface $element
-     * @param string                  $groupWrapper
-     * @param string                  $controlWrapper
-     *
-     * @return string
-     */
-    public function render(ElementInterface $element, $groupWrapper = null, $controlWrapper = null): string
+    public function render(ElementInterface $element): string
     {
-        $labelHelper = $this->getLabelHelper();
-        $escapeHelper = $this->getEscapeHtmlHelper();
-        $elementHelper = $this->getElementHelper();
-        $elementErrorHelper = $this->getElementErrorHelper();
-        $descriptionHelper = $this->getDescriptionHelper();
-        $groupWrapper = $groupWrapper ?: $this->groupWrapper;
-        $controlWrapper = $controlWrapper ?: $this->controlWrapper;
-        /*
-         * Disable by default the inArrayValidator
-         */
-        $element->setDisableInArrayValidator(true);
-        $elementHelper->getView();
+        $element->setValueOptions($element->getValueOptions());
 
-        $id = $element->getAttribute('id') ?: $element->getAttribute('name');
-        $element->setAttribute('class', 'form-control');
+        $element->setAttribute('class', 'form-control selectpicker selectpicker-contact');
+        $element->setAttribute('data-live-search', 'true');
+        $element->setAttribute('data-abs-ajax-url', 'admin/contact/search.html');
 
-        $controlLabel = '';
-        $label = $element->getLabel();
-        if (empty($label)) {
-            $label = $element->getOption('label') ?: $element->getAttribute('label');
-        }
+        $element->setValue($element->getValue());
 
-        if ($label && !$element->getOption('skipLabel')) {
-            $controlLabel .= $labelHelper->openTag(
-                [
-                    'class' => 'col-md-3 ' . ($element->getOption('wrapCheckboxInLabel') ? 'checkbox'
-                            : 'control-label'),
-                ] + ($element->hasAttribute('id') ? ['for' => $id] : [])
-            );
-
-            if (null !== ($translator = $labelHelper->getTranslator())) {
-                $label = $translator->translate($label, $labelHelper->getTranslatorTextDomain());
+        //When we have a value, inject the corresponding contact in the value options
+        if (null !== $element->getValue()) {
+            $value = $element->getValue();
+            if ($element->getValue() instanceof Contact) {
+                $value = $element->getValue()->getId();
             }
-            if ($element->getOption('wrapCheckboxInLabel')) {
-                $controlLabel .= $elementHelper->render($element) . ' ';
+
+            $contact = $this->contactService->findContactById((int)$value);
+            if (null !== $contact) {
+                $element->setValueOptions([$contact->getId() => $contact->getFormName()]);
             }
-            if ($element->getOption('skipLabelEscape')) {
-                $controlLabel .= $label;
-            } else {
-                $controlLabel .= $escapeHelper($label);
-            }
-            $controlLabel .= $labelHelper->closeTag();
         }
 
-        if ($element->getOption('wrapCheckboxInLabel')) {
-            $controls = $controlLabel;
-            $controlLabel = '';
-        } else {
-            $controls = $elementHelper->render($element);
-        }
 
-        $controls = str_replace(
-            ['<select'],
-            ['<select class="select-picker-contact form-control" data-live-search="true"'],
-            $controls
-        );
-
-        /***
-         * Now apply the magic
-         */
-        if ($element->isMultiple()) {
-            $controls = str_replace(['data-live-search="true"'], ['multiple data-live-search="true"'], $controls);
-        }
-
-        $html = $controlLabel . sprintf(
-            $controlWrapper,
-            $controls,
-            $descriptionHelper->render($element),
-            $elementErrorHelper->render($element)
-        );
-        $addtClass = ($element->getMessages()) ? ' has-error' : '';
-
-        return sprintf($groupWrapper, $addtClass, $id, $html);
+        return parent::render($element);
     }
 }

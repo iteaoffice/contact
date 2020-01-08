@@ -1,9 +1,4 @@
-{% do headLink().appendStylesheet(
-'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css'
-) %}
-
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
 {% set contactFieldset = form.get('contact_entity_contact') %}
@@ -24,8 +19,8 @@
 
 <fieldset>
     <legend>{{ translate("txt-organisation-information") }}</legend>
-    {{ organisationformelement(contactFieldset.get('organisation')) }}
-    {{ ztbformelement(contactFieldset.get('branch')) }}
+    {{ organisationformelement(form.get('organisation')) }}
+    {{ ztbformelement(form.get('branch')) }}
     {{ ztbformelement(contactFieldset.get('department')) }}
     {{ ztbformelement(contactFieldset.get('position')) }}
 </fieldset>
@@ -34,28 +29,31 @@
     <fieldset>
         <legend>{{ translate("txt-photo") }}</legend>
         <div class="form-group row">
-            <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-current-photo") }}</label>
+            <label class="col-sm-3 col-form-label">{{ translate("txt-current-photo") }}</label>
 
             <div class="col-sm-9">
-                <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 400) }}</p>
+                <p class="form-control-plaintext">{{ contactPhoto(contact, 400) }}</p>
             </div>
         </div>
     </fieldset>
 {% endif %}
 
-{{ ztbformelement(contactFieldset.get('file')) }}
+{{ ztbformelement(form.get('file')) }}
 
 <fieldset>
     <legend>{{ translate("txt-access-information") }}</legend>
-    {{ ztbformelement(contactFieldset.get('access')) }}
+    {{ accessformelement(contactFieldset.get('access')) }}
 </fieldset>
 
 {{ ztbformelement(form.get('csrf')) }}
 
 <div class="form-group row">
-    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+    <div class="offset-sm-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
+        {% if form.has('delete') %}
+            {{ ztbformelement(form.get('delete')) }}
+        {% endif %}
         {% if form.has('deactivate') %}
             {{ ztbformelement(form.get('deactivate')) }}
         {% endif %}
@@ -66,10 +64,3 @@
 </div>
 
 {{ form().closeTag()|raw }}
-
-<script type="text/javascript">
-    $('input[type=date]').datepicker({
-        sliderAccessArgs: {touchonly: false},
-        dateFormat: 'yy-mm-dd'
-    });
-</script>

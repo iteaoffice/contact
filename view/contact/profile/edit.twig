@@ -1,30 +1,59 @@
 {% do headTitle().append(translate("txt-edit-profile")) %}
-<h1 class="display-4">{{ translate("txt-edit-profile") }}</h1>
+<h1>{{ translate("txt-edit-profile") }}</h1>
 <p class="lead">{{ translate("txt-edit-profile-explanation") }}</p>
 
 {% do form.prepare() %}
-
 {{ form().openTag(form)|raw }}
 
-{{ ztbformelement(form.get('gender')) }}
-{{ ztbformelement(form.get('title')) }}
-{{ ztbformelement(form.get('firstName')) }}
-{{ ztbformelement(form.get('middleName')) }}
-{{ ztbformelement(form.get('lastName')) }}
+{{ ztbformelement(form.get('contact').get('gender')) }}
+{{ ztbformelement(form.get('contact').get('title')) }}
+{{ ztbformelement(form.get('contact').get('firstName')) }}
+{{ ztbformelement(form.get('contact').get('middleName')) }}
+{{ ztbformelement(form.get('contact').get('lastName')) }}
 
 <div class="form-group row">
-    <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-email-address") }}</label>
+    <label class="col-sm-3 col-form-label">{{ translate("txt-email-address") }}</label>
 
     <div class="col-sm-9">
-        <p class="form-control-static form-control-plaintext">{{ contact.email }}</p>
+        <p class="form-control-plaintext">{{ contact.email }}</p>
     </div>
 </div>
 
 
+<fieldset class="bg-light border-light rounded p-3">
+    <legend>{{ translate("txt-organisation") }}</legend>
+
+    <div class="organisation {% if not hasOrganisations %}d-none{% endif %}">
+        {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
+        <div class="form-group row {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}d-none{% endif %}"
+             id="branch">
+            <label class="col-sm-3 col-form-label">{{ translate("txt-branch-form-label") }}</label>
+
+            <div class="col-sm-9">
+                <select class="form-control" name="contact_organisation[branch]">
+                    {% for key, branch in branches %}
+                        <option value="{{ key }}"
+                                {% if data.contact_organisation.branch == key %}selected="selected"{% endif %}
+                        >{{ branch }}</option>
+                    {% endfor %}
+                </select>
+
+                <small class="fomr-text text-muted">{{ translate("txt-form-branch-explanation") }}</small>
+            </div>
+        </div>
+    </div>
+    <div id="organisation_country"
+         {% if hasOrganisations and form.get('contact_organisation').get('organisation_id').value() != 0 %}class="d-none"{% endif %}>
+        {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
+        {{ ztbformelement(form.get('contact_organisation').get('type')) }}
+        {{ ztbformelement(form.get('contact_organisation').get('country')) }}
+    </div>
+</fieldset>
+
 <fieldset>
     <legend>{{ translate("txt-phone-information") }}</legend>
-    {% for fieldset in form.get('phone').getFieldsets() %}
-        {{ ztbformelement(fieldset.get('phone')) }}
+    {% for element in form.get('phone').getElements() %}
+        {{ ztbformelement(element) }}
     {% endfor %}
 </fieldset>
 
@@ -39,69 +68,33 @@
 
 </fieldset>
 
-
-<fieldset>
-    <legend>{{ translate("txt-organisation") }}</legend>
-
-    <div class="organisation {% if not hasOrganisations %}hidden{% endif %}">
-
-        {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
-
-
-        <div class="form-group {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}hidden{% endif %}"
-             id="branch">
-            <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-branch-form-label") }}</label>
-
-            <div class="col-sm-9">
-                <select class="form-control" name="contact_organisation[branch]">
-                    {% for key, branch in branches %}
-                        <option value="{{ key }}"
-                                {% if contact.contactOrganisation.branch == key %}selected="selected"{% endif %}>{{ branch }}</option>
-                    {% endfor %}
-                </select>
-
-                <p class="help-block">{{ translate("txt-form-branch-explanation") }}</p>
-            </div>
-        </div>
-
-    </div>
-
-
-    <div id="organisation_country"
-         {% if hasOrganisations and form.get('contact_organisation').get('organisation_id').value() != 0 %}class="hidden"{% endif %}>
-        {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
-        {{ ztbformelement(form.get('contact_organisation').get('type')) }}
-        {{ ztbformelement(form.get('contact_organisation').get('country')) }}
-    </div>
-
-    {{ ztbformelement(form.get('department')) }}
-    {{ ztbformelement(form.get('position')) }}
-</fieldset>
-
 <fieldset>
     <legend>{{ translate("txt-profile") }}</legend>
     {% set profile = form.get('profile') %}
     {{ ztbformelement(profile.get('visible')) }}
     {{ ztbformelement(profile.get('description')) }}
+    {{ ztbformelement(form.get('contact').get('department')) }}
+    {{ ztbformelement(form.get('contact').get('position')) }}
 </fieldset>
 
 {% if not contact.photo.isEmpty() %}
     <div class="form-group row">
-        <label class="col-md-3 form-control-label control-label col-form-label">{{ translate("txt-current-photo") }}</label>
+        <label class="col-sm-3 col-form-label">{{ translate("txt-current-photo") }}</label>
 
         <div class="col-sm-9">
-            <p class="form-control-static form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
+            <p class="form-control-plaintext">{{ contactPhoto(contact, 200) }}</p>
         </div>
     </div>
 
     {{ ztbformelement(form.get('removeFile')) }}
 {% endif %}
-{{ ztbformelement(form.get('file')) }}
 
+{{ ztbformelement(form.get('file')) }}
 {{ ztbformelement(form.get('optIn')) }}
+{{ ztbformelement(form.get('csrf')) }}
 
 <div class="form-group row">
-    <div class="offset-md-3 col-sm-offset-3 col-sm-9">
+    <div class="offset-sm-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}
     </div>
@@ -111,50 +104,53 @@
 
 <script type="text/javascript">
     $(function () {
-        var updateFormInformation = function (radio) {
-            if (radio.val() && radio.val() != '0') {
+        const updateFormInformation = function (radio) {
+            if (radio.val() && radio.val() !== '0') {
                 $.ajax({
                     url: '{{ serverUrl() }}{{ url('organisation/json/get-branches') }}',
-                    type: 'post',
-                    data: {
-                        'organisationId': $('input[name="contact_organisation[organisation_id]"]:checked').val()
-                    },
+                    type:
+                        'post',
+                    data:
+                        {
+                            'organisationId':
+                                $('input[name="contact_organisation[organisation_id]"]:checked').val()
+                        }
+                    ,
                     success: function (response) {
 
-                        var branchSelect = $("#branch").find('select');
-
+                        const branchSelect = $("#branch").find('select');
                         /**
                          * Store the branchValue because the options are rebuilt every time
                          * Use the branch val on form change, and take the current branch in any other case
                          */
-                        var branchValue = '{{ contact.contactOrganisation.branch|raw }}';
-
+                        const branchValue = '{{ data.contact_organisation.branch|raw }}';
                         branchSelect.find('option').remove();
-
                         $(response).each(function () {
-                            var option = $('<option />');
+                            const option = $('<option />');
                             option.attr('value', this.value).text(this.label);
 
-                            if (branchValue == this.value) {
+                            if (branchValue === this.value) {
                                 option.attr('selected', 'selected');
                             }
 
                             branchSelect.append(option);
                         });
                     }
-                });
+                })
+                ;
             }
         };
 
-        $('input[name="contact_organisation[organisation_id]"]').change(function () {
-            var self = $(this);
-            var noneOfTheAbove = self.val() === '0';
-
-            $("#organisation_country").toggleClass('hidden', !noneOfTheAbove);
-            $("#branch").toggleClass('hidden', noneOfTheAbove);
-
+        const $selectOrganisation = $('input[name="contact_organisation[organisation_id]"]');
+        $selectOrganisation.change(function () {
+            const self = $(this);
+            const noneOfTheAbove = self.val() === '0';
+            $("#organisation_country").toggleClass('d-none', !noneOfTheAbove);
+            $("#branch").toggleClass('d-none', noneOfTheAbove);
             updateFormInformation(self);
         });
+
+        updateFormInformation($selectOrganisation);
 
     });
 </script>

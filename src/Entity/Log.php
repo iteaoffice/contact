@@ -1,20 +1,22 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category    Organisation
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
 
 namespace Contact\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Contact Log
@@ -26,11 +28,11 @@ use Zend\Form\Annotation;
 class Log extends AbstractEntity
 {
     /**
-     * @ORM\Column(name="log_id", type="integer", length=10, options={"unsigned":true}, nullable=false)
+     * @ORM\Column(name="log_id", type="integer", options={"unsigned":true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @var integer
+     * @var int
      */
     private $id;
     /**
@@ -51,7 +53,7 @@ class Log extends AbstractEntity
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
      * @Gedmo\Timestampable(on="create")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $dateCreated;
     /**
@@ -60,21 +62,6 @@ class Log extends AbstractEntity
      * @var string
      */
     private $log;
-
-    public function __get($property)
-    {
-        return $this->$property;
-    }
-
-    public function __set($property, $value)
-    {
-        $this->$property = $value;
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->$property);
-    }
 
     /**
      * @return int
@@ -134,19 +121,19 @@ class Log extends AbstractEntity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDateCreated(): ?\DateTime
+    public function getDateCreated(): ?DateTime
     {
         return $this->dateCreated;
     }
 
     /**
-     * @param \DateTime $dateCreated
+     * @param DateTime $dateCreated
      *
      * @return Log
      */
-    public function setDateCreated(\DateTime $dateCreated): Log
+    public function setDateCreated(DateTime $dateCreated): Log
     {
         $this->dateCreated = $dateCreated;
         return $this;

@@ -1,0 +1,26 @@
+<div id="leave-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ translate("txt-add-or-edit-leave") }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ translate("txt-close") }}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% include 'contact/partial/form/office/leave' %}
+            </div>
+            <div class="modal-footer">
+                <button id="btn-delete" type="button" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> {{ translate("txt-delete") }}
+                </button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">
+                    <i class="fa fa-times"></i> {{ translate("txt-cancel") }}
+                </button>
+                <button id="btn-save" type="button" class="btn btn-primary">
+                    <i class="fa fa-save"></i> {{ translate("txt-save") }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

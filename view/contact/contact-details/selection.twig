@@ -1,0 +1,89 @@
+{% include 'contact/contact-details/header' %}
+
+<h2>{{ translate("txt-selections") }} {{ selectionLink(null, 'add-contact', 'button', contact) }}</h2>
+
+{% if selections|length > 0 %}
+    <form method="post">
+        <table class="table table-hover table-striped table-sm">
+            <thead>
+            <tr>
+                <th><i class="fa fa-trash"></i></th>
+                <th>{{ translate("txt-no") }}</th>
+                <th>{{ translate("txt-id") }}</th>
+                <th>{{ translate("txt-selection") }}</th>
+                <th>{{ translate("txt-core") }}</th>
+                <th>{{ translate("txt-type") }}</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="6"><input type="submit" value="{{ translate("txt-remove-from-selection") }}"
+                                       class="btn btn-danger btn-sm"></td>
+            </tr>
+            </tfoot>
+            <tbody>
+            {% for selection in selections|filter(selection => selection.isActive()) -%}
+                <tr>
+                    <td>{% if not selectionService.isSql(selection) %}<input type="checkbox" name="selection[]"
+                                                                             value="{{ selection.id }}">{% endif %}</td>
+                    <td><small class="text-muted">{{ loop.index }}</small>{% if selection.dateDeleted %}
+                        <i class="fa fa-trash"
+                           title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")) }}"></i>
+                        {% endif %}</td>
+                    <td><code>{{ selection.id }}</code></td>
+                    <td>{{ selectionLink(selection,'view','name') }}</td>
+                    <td>{% if selection.isCore() %}{{ translate("txt-core") }}{% endif %}</td>
+                    <td>{% if selection.sql %}{{ translate("txt-sql") }}{% else %}{{ translate("txt-fixed") }}{% endif %}</td>
+                </tr>
+            {% endfor %}
+            <tr class="table-danger">
+                <td colspan="2">{{ translate("txt-deleted-selections") }}</td>
+                <td colspan="4">
+                    {% for selection in selections|filter(selection => not selection.isActive()) -%}
+                        {{ selectionLink(selection,'view','name') }},
+                    {% endfor %}
+                </td>
+            </tbody>
+        </table>
+
+
+    </form>
+{% else %}
+    {{ ztbalert().info(translate("txt-contact-%s-is-not-active-in-any-selection")|format(contact.parseFullName()))|raw }}
+    {{ selectionLink(null, 'add-contact', 'button', ontact) }}
+{% endif %}
+
+{% if not contact.deeplinkContact.isEmpty() %}
+    <h2>{{ translate("txt-deeplinks") }}</h2>
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-deeplink-id") }}</th>
+            <th>{{ translate("txt-deeplink") }}</th>
+            <th>{{ translate("txt-contact") }}</th>
+            <th>{{ translate("txt-key") }}</th>
+            <th>{{ translate("txt-expire") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <td colspan="5"></td>
+        </tr>
+        </tfoot>
+        <tbody>
+        {% for deeplinkContact in contact.deeplinkContact|reverse %}
+            {% set deeplink = deeplinkContact.deeplink %}
+            <tr {% if deeplink.dateEnd|date('Y-m-d') < "now"|date('Y-m-d') %}class="table-danger"
+                title="{{ translate("txt-expired") }}"{% endif %}>
+                <td><small class="text-muted">{{ deeplink.id }}</small></td>
+                <td>{{ deeplinkLink(deeplink,'target') }}</td>
+                <td>{{ contactLink(deeplinkContact.contact,'view-admin','name') }}</td>
+                <td class="text-monospace">{{ deeplink.keyId }}</td>
+                <td>{{ deeplink.dateEnd|string_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+

@@ -6,7 +6,7 @@
  * @category    Contact
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -17,21 +17,19 @@ use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity;
-use Zend\Form\Fieldset;
-use Zend\Form\Form;
+use Laminas\Form\Element\MultiCheckbox;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Element\Text;
+use Laminas\Form\Fieldset;
+use Laminas\Form\Form;
 
 /**
  * Class ContactFilter
  *
  * @package Contact\Form
  */
-class ContactFilter extends Form
+final class ContactFilter extends Form
 {
-    /**
-     * ContactFilter constructor.
-     *
-     * @param EntityManager $entityManager
-     */
     public function __construct(EntityManager $entityManager)
     {
         parent::__construct();
@@ -42,7 +40,7 @@ class ContactFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'       => 'Zend\Form\Element\Text',
+                'type'       => Text::class,
                 'name'       => 'search',
                 'attributes' => [
                     'class'       => 'form-control',
@@ -59,7 +57,7 @@ class ContactFilter extends Form
                     'target_class'   => Entity\Gender::class,
                     'inline'         => true,
                     'object_manager' => $entityManager,
-                    'label'          => _("txt-gender"),
+                    'label'          => _('txt-gender'),
                 ],
             ]
         );
@@ -72,7 +70,7 @@ class ContactFilter extends Form
                     'target_class'   => Entity\Country::class,
                     'inline'         => true,
                     'object_manager' => $entityManager,
-                    'label'          => _("txt-country"),
+                    'label'          => _('txt-country'),
                     'find_method'    => [
                         'name'   => 'findForForm',
                         'params' => [
@@ -86,17 +84,17 @@ class ContactFilter extends Form
 
         $filterFieldset->add(
             [
-                'type'    => 'multicheckbox',
+                'type'    => MultiCheckbox::class,
                 'name'    => 'options',
                 'options' => [
                     'value_options' => [
-                        'hasOrganisation'    => _("txt-has-organisation"),
-                        'hasNoOrganisation'  => _("txt-has-no-organisation"),
-                        'includeDeactivated' => _("txt-include-deactivated"),
-                        'onlyDeactivated'    => _("txt-only-deactivated"),
+                        'hasOrganisation'    => _('txt-has-organisation'),
+                        'hasNoOrganisation'  => _('txt-has-no-organisation'),
+                        'includeDeactivated' => _('txt-include-deactivated'),
+                        'onlyDeactivated'    => _('txt-only-deactivated'),
                     ],
                     'inline'        => true,
-                    'label'         => _("txt-organisation"),
+                    'label'         => _('txt-organisation'),
                 ],
             ]
         );
@@ -105,7 +103,7 @@ class ContactFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'submit',
                 'attributes' => [
                     'id'    => 'submit',
@@ -117,7 +115,7 @@ class ContactFilter extends Form
 
         $this->add(
             [
-                'type'       => 'Zend\Form\Element\Submit',
+                'type'       => Submit::class,
                 'name'       => 'clear',
                 'attributes' => [
                     'id'    => 'cancel',

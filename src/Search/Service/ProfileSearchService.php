@@ -1,11 +1,12 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
  * @category  Search
  *
  * @author    Bart van Eijck <bart.van.eijck@itea3.org>
- * @copyright Copyright (c) 2004-2017 ITEA Office (https://itea3.org)
+ * @copyright Copyright (c) 2019 ITEA Office (https://itea3.org)
  */
 
 declare(strict_types=1);
@@ -15,6 +16,8 @@ namespace Contact\Search\Service;
 use Search\Service\AbstractSearchService;
 use Search\Service\SearchServiceInterface;
 use Solarium\QueryType\Select\Query\Query;
+
+use function in_array;
 
 /***
  * Class ProfileSearchService
@@ -34,7 +37,7 @@ class ProfileSearchService extends AbstractSearchService
         $this->setQuery($this->getSolrClient()->createSelect());
         $this->getQuery()->setQuery(static::parseQuery($searchTerm, $searchFields));
 
-        $hasTerm = !\in_array($searchTerm, ['*', ''], true);
+        $hasTerm = ! in_array($searchTerm, ['*', ''], true);
         $hasSort = ($order !== '');
 
         if ($hasSort) {
