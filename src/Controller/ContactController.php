@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -26,6 +27,7 @@ use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Paginator\Paginator;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
+
 use function sprintf;
 
 /**

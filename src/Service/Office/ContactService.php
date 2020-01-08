@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -18,6 +19,7 @@ use Contact\Service\AbstractService;
 use DateTime;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\LazyCriteriaCollection;
+
 use function array_column;
 use function array_replace_recursive;
 

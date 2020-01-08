@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -39,6 +40,7 @@ use Project\Entity\Invite;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+
 use function array_unshift;
 use function in_array;
 use function sprintf;
@@ -52,7 +54,7 @@ final class MergeContact extends AbstractPlugin
 {
     private EntityManagerInterface $entityManager;
     private TranslatorInterface $translator;
-    private ? Logging $errorLogger;
+    private ?Logging $errorLogger;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -64,7 +66,7 @@ final class MergeContact extends AbstractPlugin
         $this->errorLogger = $errorLogger;
     }
 
-    public function __invoke() : MergeContact
+    public function __invoke(): MergeContact
     {
         return $this;
     }

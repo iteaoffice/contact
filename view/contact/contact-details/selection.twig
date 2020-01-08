@@ -65,15 +65,20 @@
             <th>{{ translate("txt-expire") }}</th>
         </tr>
         </thead>
+        <tfoot>
+        <tr>
+            <td colspan="5"></td>
+        </tr>
+        </tfoot>
         <tbody>
         {% for deeplinkContact in contact.deeplinkContact|reverse %}
             {% set deeplink = deeplinkContact.deeplink %}
             <tr {% if deeplink.dateEnd|date('Y-m-d') < "now"|date('Y-m-d') %}class="table-danger"
                 title="{{ translate("txt-expired") }}"{% endif %}>
-                <td>{{ deeplink.id }}</td>
+                <td><small class="text-muted">{{ deeplink.id }}</small></td>
                 <td>{{ deeplinkLink(deeplink,'target') }}</td>
                 <td>{{ contactLink(deeplinkContact.contact,'view-admin','name') }}</td>
-                <td>{{ deeplink.keyId }}</td>
+                <td class="text-monospace">{{ deeplink.keyId }}</td>
                 <td>{{ deeplink.dateEnd|string_date }}</td>
             </tr>
         {% endfor %}

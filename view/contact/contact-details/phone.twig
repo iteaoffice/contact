@@ -6,7 +6,6 @@
     <table class="table table-hover table-striped table-sm">
         <thead>
         <tr>
-            <th>{{ translate("txt-no") }}</th>
             <th>{{ translate("txt-phone-id") }}</th>
             <th>{{ translate("txt-phone-type") }}</th>
             <th>{{ translate("txt-phone-phone") }}</th>
@@ -14,16 +13,15 @@
         </thead>
         <tfoot>
         <tr>
-            <td colspan="4"></td>
+            <td colspan="3"></td>
         </tr>
         </tfoot>
         <tbody>
         {% for phone in contact.phone %}
             <tr>
-                <td><small class="text-muted">{{ loop.index }}</small></td>
-                <td><code>{{ phone.id }}</code> {{ phoneLink(phone,'edit','icon') }}</td>
+                <td><small class="text-muted">{{ phone.id }}</small></td>
                 <td>{{ phone.type }}</td>
-                <td>{{ phone.phone }}</td>
+                <td>{{ phone.phone }} {{ phoneLink(phone,'edit','icon') }}</td>
             </tr>
         {% endfor %}
         </tbody>

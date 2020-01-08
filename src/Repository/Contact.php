@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -46,6 +47,7 @@ use Project\Entity\Rationale;
 use Project\Entity\Result\Result;
 use Project\Entity\Version\Version;
 use Project\Entity\Workpackage\Workpackage;
+
 use function array_key_exists;
 use function count;
 use function in_array;
@@ -94,7 +96,8 @@ class Contact extends EntityRepository
     private function applyContactFilter(QueryBuilder $qb, array $filter, array $order): QueryBuilder
     {
         $direction = Criteria::ASC;
-        if (isset($filter['direction'])
+        if (
+            isset($filter['direction'])
             && in_array(strtoupper($filter['direction']), [Criteria::ASC, Criteria::DESC], true)
         ) {
             $direction = strtoupper($filter['direction']);
@@ -150,7 +153,8 @@ class Contact extends EntityRepository
 
 
         /** Only when the filter is turned on, omit this extra rule */
-        if (! (array_key_exists('options', $filter)
+        if (
+            ! (array_key_exists('options', $filter)
                 && in_array(
                     'includeDeactivated',
                     $filter['options'],

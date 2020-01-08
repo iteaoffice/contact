@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -22,8 +23,8 @@ use Laminas\Permissions\Acl\Role\RoleInterface;
 final class LeaveAssertion extends AbstractAssertion
 {
     public function assert(
-        Acl               $acl,
-        RoleInterface     $role = null,
+        Acl $acl,
+        RoleInterface $role = null,
         ResourceInterface $resource = null,
         $privilege = null
     ): bool {

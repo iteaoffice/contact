@@ -10,7 +10,6 @@
             <thead>
             <tr>
                 <th><i class="fa fa-trash"></i></th>
-                <th>{{ translate("txt-no") }}</th>
                 <th>{{ translate("txt-id") }}</th>
                 <th>{{ translate("txt-calendar") }}</th>
                 <th>{{ translate("txt-date") }}</th>
@@ -21,7 +20,7 @@
             </thead>
             <tfoot>
             <tr>
-                <td colspan="6"><input type="submit" value="{{ translate("txt-remove-from-selected-meetings") }}"
+                <td colspan="7"><input type="submit" value="{{ translate("txt-remove-from-selected-meetings") }}"
                                        class="btn btn-danger btn-sm"></td>
             </tr>
             </tfoot>
@@ -31,8 +30,7 @@
                 <tr>
                     <td><input type="checkbox" name="calendarContact[]"
                                value="{{ calendarContact.id }}"></td>
-                    <td><small class="text-muted">{{ loop.index }}</small></td>
-                    <td><code>{{ calendar.id }}</code></td>
+                    <td><small class="text-muted">{{ calendar.id }}</small></td>
                     <td>{{ calendarLink(calendar, 'view-admin', 'name') }}</td>
                     <td>{{ calendar.dateFrom|from_to_date(calendar.dateEnd) }} </td>
                     <td>{{ calendarContact.role }}</td>
@@ -65,7 +63,7 @@
         {% for calendarContact in calendarService.findCalendarContactByContact(contact)|reverse|filter(calendarContact => calendarContact.calendar.dateFrom|date('ymd') < "now"|date('ymd')) -%}
             {% set calendar = calendarContact.calendar %}
             <tr>
-                <td><small class="text-muted">{{ loop.index }}</small></td>
+                <td><small class="text-muted">{{ calendar.id }}</small></td>
                 <td>{{ calendarLink(calendar, 'view-admin', 'name') }}</td>
                 <td>{{ calendar.dateFrom|from_to_date(calendar.dateEnd) }} </td>
                 <td>{{ calendarContact.role }}</td>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -18,6 +19,7 @@ use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\Form;
 use Laminas\InputFilter\InputFilterProviderInterface;
+
 use function sprintf;
 
 final class ProfileBody extends Form implements InputFilterProviderInterface

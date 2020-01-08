@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -29,6 +30,7 @@ use Laminas\Http\Request;
 use Laminas\Http\Response;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
+
 use function in_array;
 use function sprintf;
 
@@ -289,7 +291,8 @@ final class LeaveController extends ContactAbstractController
             true
         );
 
-        if (($leave === null)
+        if (
+            ($leave === null)
             || (
                 ($leave->getOfficeContact()->getContact()->getId() !== $this->identity()->getId())
                 && ! $isManagementAssistant
@@ -318,7 +321,8 @@ final class LeaveController extends ContactAbstractController
                 true
             );
 
-            if (($leave === null)
+            if (
+                ($leave === null)
                 || (
                     ($leave->getOfficeContact()->getContact()->getId() !== $this->identity()->getId())
                     && ! $isManagementAssistant

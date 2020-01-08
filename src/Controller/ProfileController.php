@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -31,6 +32,7 @@ use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Validator\File\ImageSize;
 use Laminas\Validator\File\MimeType;
 use Laminas\View\Model\ViewModel;
+
 use function array_merge_recursive;
 use function count;
 use function sprintf;

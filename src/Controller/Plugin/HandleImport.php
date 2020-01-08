@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -33,6 +34,7 @@ use Organisation\Entity\Web;
 use Organisation\Service\OrganisationService;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Validator\EmailAddress;
+
 use function array_map;
 use function count;
 use function explode;
@@ -354,7 +356,8 @@ final class HandleImport extends AbstractPlugin
             }
 
 
-            if (isset($this->headerKeys['organisation_id'])
+            if (
+                isset($this->headerKeys['organisation_id'])
                 && ! empty($content[$this->headerKeys['organisation_id']])
             ) {
                 $organisation = $this->organisationService->findOrganisationById(

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -15,6 +16,7 @@ namespace Contact\Repository;
 use Contact\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+
 use function array_key_exists;
 use function in_array;
 

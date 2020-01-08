@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -104,12 +105,14 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                 Callback::INVALID_VALUE => 'Please give a the address',
                             ],
                             'callback' => static function (string $value, array $context) {
-                                if (empty($value) && empty($context['zipCode']) && empty($context['city'])
+                                if (
+                                    empty($value) && empty($context['zipCode']) && empty($context['city'])
                                     && empty($context['country'])
                                 ) {
                                     return true;
                                 }
-                                if (empty($value)
+                                if (
+                                    empty($value)
                                     && (! empty($context['zipCode']) || ! empty($context['city'])
                                         || ! empty($context['country']))
                                 ) {
@@ -132,12 +135,14 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                 Callback::INVALID_VALUE => 'Please give a the zip code',
                             ],
                             'callback' => static function (string $value, array $context) {
-                                if (empty($value) && empty($context['address']) && empty($context['city'])
+                                if (
+                                    empty($value) && empty($context['address']) && empty($context['city'])
                                     && empty($context['country'])
                                 ) {
                                     return true;
                                 }
-                                if (empty($value)
+                                if (
+                                    empty($value)
                                     && (! empty($context['address']) || ! empty($context['city'])
                                         || ! empty($context['country']))
                                 ) {
@@ -160,12 +165,14 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                 Callback::INVALID_VALUE => 'Please give a the city',
                             ],
                             'callback' => static function (string $value, array $context) {
-                                if (empty($value) && empty($context['address']) && empty($context['zipCode'])
+                                if (
+                                    empty($value) && empty($context['address']) && empty($context['zipCode'])
                                     && empty($context['country'])
                                 ) {
                                     return true;
                                 }
-                                if (empty($value)
+                                if (
+                                    empty($value)
                                     && (! empty($context['address']) || ! empty($context['zipCode'])
                                         || ! empty($context['country']))
                                 ) {
@@ -188,13 +195,15 @@ final class AddressFieldset extends Fieldset implements InputFilterProviderInter
                                 Callback::INVALID_VALUE => 'Please select a country',
                             ],
                             'callback' => static function (string $value, array $context) {
-                                if (empty($value) && empty($context['address']) && empty($context['zipCode'])
+                                if (
+                                    empty($value) && empty($context['address']) && empty($context['zipCode'])
                                     && empty($context['city'])
                                 ) {
                                     return true;
                                 }
 
-                                if (empty($value)
+                                if (
+                                    empty($value)
                                     && (! empty($context['address']) || ! empty($context['zipCode'])
                                         || ! empty($context['city']))
                                 ) {

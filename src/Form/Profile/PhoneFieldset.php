@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -16,6 +17,7 @@ use Contact\Entity\PhoneType;
 use Doctrine\ORM\EntityManager;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
+
 use function sprintf;
 
 /**

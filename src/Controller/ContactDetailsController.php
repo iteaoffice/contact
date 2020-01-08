@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -29,6 +30,7 @@ use Project\Service\ProjectService;
 use Laminas\Http\Request;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\View\Model\ViewModel;
+
 use function sprintf;
 
 /**

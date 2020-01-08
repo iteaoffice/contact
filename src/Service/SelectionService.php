@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -123,7 +124,8 @@ class SelectionService extends AbstractService
             /**
              * Skip the deleted selections and the ones the user is in
              */
-            if (null !== $selection->getSql()
+            if (
+                null !== $selection->getSql()
                 && $this->selectionContactService->contactInSelection(
                     $contact,
                     $selection

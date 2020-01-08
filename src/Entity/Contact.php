@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -76,6 +77,7 @@ use Publication\Entity\Publication;
 use Laminas\Form\Annotation;
 use Laminas\Math\Rand;
 use ZfcUser\Entity\UserInterface;
+
 use function explode;
 use function in_array;
 use function strtolower;

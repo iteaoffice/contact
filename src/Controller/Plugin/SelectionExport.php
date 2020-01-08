@@ -31,6 +31,7 @@ use Laminas\Http\Headers;
 use Laminas\Http\Response;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+
 use function strlen;
 
 /**

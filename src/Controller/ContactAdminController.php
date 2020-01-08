@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -54,6 +55,7 @@ use Laminas\Validator\File\ImageSize;
 use Laminas\Validator\File\MimeType;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
+
 use function array_merge_recursive;
 use function http_build_query;
 use function implode;
@@ -508,7 +510,8 @@ class ContactAdminController extends ContactAbstractController
                 //Handle the file upload
                 $fileData = $this->params()->fromFiles();
 
-                if (! empty($fileData['file']['name'])
+                if (
+                    ! empty($fileData['file']['name'])
                     && $fileData['file']['error'] === 0
                 ) {
                     /** @var Photo $photo */

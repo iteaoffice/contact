@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -18,6 +19,7 @@ use Contact\Entity\SelectionContact;
 use Doctrine\ORM\PersistentCollection;
 use InvalidArgumentException;
 use Throwable;
+
 use function count;
 use function is_array;
 

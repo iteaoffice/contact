@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -21,6 +22,7 @@ use Laminas\Form\Element;
 use Laminas\Form\Element\Radio;
 use Laminas\Form\Fieldset;
 use Laminas\Form\FieldsetInterface;
+
 use function array_key_exists;
 use function array_merge;
 use function sprintf;
@@ -46,10 +48,10 @@ class ObjectFieldset extends Fieldset
     }
 
     protected function addElements(
-        Fieldset               $dataFieldset,
-        EntityManager          $entityManager,
+        Fieldset $dataFieldset,
+        EntityManager $entityManager,
         ?Entity\AbstractEntity $object,
-        Fieldset               $baseFieldset = null
+        Fieldset $baseFieldset = null
     ): void {
         /** @var Element $element */
         foreach ($dataFieldset->getElements() as $element) {
@@ -89,7 +91,8 @@ class ObjectFieldset extends Fieldset
 
     protected function parseElement(Element $element, ?Entity\AbstractEntity $object, EntityManager $entityManager): void
     {
-        if (($element instanceof Radio) && ! ($element instanceof EntityRadio)
+        if (
+            ($element instanceof Radio) && ! ($element instanceof EntityRadio)
             && ($object instanceof Entity\AbstractEntity)
         ) {
             $attributes = $element->getAttributes();

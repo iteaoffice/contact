@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -53,6 +54,7 @@ use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
 use Solarium\QueryType\Update\Query\Document;
 use ZfcUser\Options\ModuleOptions;
+
 use function array_key_exists;
 use function count;
 use function implode;
@@ -1042,7 +1044,8 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             //First go over the organisations and try to see if we can find one with the same name and stop if we find one
             /** @var Organisation $foundOrganisation */
             foreach ($organisations as $foundOrganisation) {
-                if (! $organisation //Continue until the organisation is found
+                if (
+                    ! $organisation //Continue until the organisation is found
                     && $foundOrganisation->getOrganisation() === $contactOrganisation['organisation']
                 ) {
                     $organisation = $foundOrganisation;
@@ -1052,7 +1055,8 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             //We have not found an organisation with an exact match so we will now try to see if we find one
             //With a almost perfect match and use that. We want to see if we can find the company name _in_ the given name
             foreach ($organisations as $foundOrganisation) {
-                if (! $organisation //Continue until the organisation is found
+                if (
+                    ! $organisation //Continue until the organisation is found
                     && strpos($contactOrganisation['organisation'], $foundOrganisation->getOrganisation()) !== false
                 ) {
                     $organisation = $foundOrganisation;
@@ -1191,10 +1195,11 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         /*
          * Add the project leader
          */
-        if ($this->contactIsFromOrganisation(
-            $affiliation->getProject()->getContact(),
-            $affiliation->getOrganisation()
-        )
+        if (
+            $this->contactIsFromOrganisation(
+                $affiliation->getProject()->getContact(),
+                $affiliation->getOrganisation()
+            )
         ) {
             $contacts[$affiliation->getProject()->getContact()->getId()] = $affiliation->getProject()->getContact();
             $contactRole[$affiliation->getProject()->getContact()->getId()][] = 'Project leader';
@@ -1325,7 +1330,8 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         }
 
         //Delete the address if the form is left empty
-        if (null !== $address && empty($formData['address']['address']) && empty($formData['address']['zipCode'])
+        if (
+            null !== $address && empty($formData['address']['address']) && empty($formData['address']['zipCode'])
             && empty($data['address']['city'])
             && empty($data['address']['country'])
         ) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -18,6 +19,7 @@ namespace Contact\Controller;
 use Contact\Entity\Photo;
 use Contact\Service\ContactService;
 use Laminas\Http\Response;
+
 use function stream_get_contents;
 
 /**

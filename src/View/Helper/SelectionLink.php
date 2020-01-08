@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -83,7 +84,7 @@ final class SelectionLink extends AbstractLink
                 break;
             case 'add-contact':
                 $linkParams = [
-                    'icon' => 'fa-external-link',
+                    'icon' => 'fa-user-plus',
                     'route' => 'zfcadmin/selection/add-contact',
                     'text' => $showOptions[$show]
                         ?? sprintf($this->translator->translate('txt-add-%s-to-selection'), $contact->parseFullName())
