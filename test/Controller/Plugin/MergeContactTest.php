@@ -101,28 +101,17 @@ use function count;
  */
 final class MergeContactTest extends AbstractServiceTest
 {
-    /**
-     * @var Contact
-     */
-    private $source;
-
-    /**
-     * @var Contact
-     */
-    private $target;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ?Contact $source = null;
+    private ?Contact $target = null;
+    private ?TranslatorInterface $translator = null;
 
     /**
      * Set up basic properties
      */
     public function setUp(): void
     {
-        $this->source = $this->createSource();
-        $this->target = $this->createTarget();
+        $this->source     = $this->createSource();
+        $this->target     = $this->createTarget();
         $this->translator = $this->setUpTranslatorMock();
     }
 
@@ -1249,6 +1238,7 @@ final class MergeContactTest extends AbstractServiceTest
         $this->assertEquals(false, $responseNoLog['success']);
         $this->assertEquals('Oops!', $responseNoLog['errorMessage']);
 
+        /** @var Logging|MockObject $errorLoggerMock */
         $errorLoggerMock = $this->getMockBuilder(Logging::class)
             ->disableOriginalConstructor()
             ->setMethods(['handleErrorException'])
