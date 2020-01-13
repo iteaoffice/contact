@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -33,7 +34,6 @@ class FacebookFilterTest extends AbstractInputFilterTest
     public function testCanCreateFacebookFilterInputFilter()
     {
         $facebookFilter = new FacebookFilter($this->getEntityManagerMock());
-
         $this->assertInstanceOf(FacebookFilter::class, $facebookFilter);
     }
 
@@ -44,9 +44,7 @@ class FacebookFilterTest extends AbstractInputFilterTest
     public function testContactInputFilterHasElements()
     {
         $facebookFilter = new FacebookFilter($this->getEntityManagerMock());
-
         $this->assertInstanceOf(FacebookFilter::class, $facebookFilter);
-
         $this->assertNotNull($facebookFilter->get('contact_entity_facebook'));
         $this->assertNotNull($facebookFilter->get('contact_entity_facebook')->get('facebook'));
         $this->assertNotNull($facebookFilter->get('contact_entity_facebook')->get('public'));

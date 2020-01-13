@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA Office all rights reserved
  *
@@ -33,7 +34,6 @@ class PasswordFilterTest extends AbstractInputFilterTest
     public function testCanCreatePasswordFilterInputFilter()
     {
         $passwordFilter = new PasswordFilter($this->getEntityManagerMock());
-
         $this->assertInstanceOf(PasswordFilter::class, $passwordFilter);
     }
 
@@ -44,9 +44,7 @@ class PasswordFilterTest extends AbstractInputFilterTest
     public function testContactInputFilterHasElements()
     {
         $passwordFilter = new PasswordFilter($this->getEntityManagerMock());
-
         $this->assertInstanceOf(PasswordFilter::class, $passwordFilter);
-
         $this->assertNotNull($passwordFilter->get('password'));
         $this->assertNotNull($passwordFilter->get('passwordVerify'));
     }

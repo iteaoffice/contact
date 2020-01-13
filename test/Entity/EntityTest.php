@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ITEA copyright message placeholder
  *
@@ -16,6 +17,7 @@ use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 use Laminas\Form\Annotation\AnnotationBuilder;
 use Laminas\Form\Element;
+
 use function is_array;
 use function str_replace;
 
@@ -31,7 +33,6 @@ class EntityTest extends TestCase
         $finder->files()->name('*.php')->in($scanFolder);
 
         foreach ($finder as $file) {
-
             $className = 'Contact\Entity\\' . str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname());
 
             $testClass = new ReflectionClass($className);
@@ -50,9 +51,8 @@ class EntityTest extends TestCase
 
                 /** @var Element $element */
                 foreach ($dataFieldset->getElements() as $element) {
-
                     // Add only when a type is provided
-                    if (!array_key_exists('type', $element->getAttributes())) {
+                    if (! array_key_exists('type', $element->getAttributes())) {
                         continue;
                     }
 
