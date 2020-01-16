@@ -28,10 +28,10 @@
     "laminas/laminas-mvc-console": "^1.2.0",
     "laminas/laminas-mvc-plugins": "^1.0.1",
     "laminas/laminas-navigation": "^2.9.0",
-    "jield-webdev/bjy-authorize": "^1.4.0",
+    "jield-webdev/bjy-authorize": "^2.1.0",
     "doctrine/doctrine-orm-module": "@stable",
     "zf-commons/zfc-user": "^3.0.0",
-    "laminas/laminas-dependency-plugin": "^0.2 || ^1.0"
+    "laminas/laminas-dependency-plugin": "^0.2"
   },
   "require-dev": {
     "iteaoffice/testing": "^2.1",
