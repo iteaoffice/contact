@@ -6,6 +6,7 @@
     <table class="table table-hover table-striped table-sm">
         <thead>
         <tr>
+            <th>{{ translate("txt-id") }}</th>
             <th>{{ translate("txt-event") }}</th>
             <th>{{ translate("txt-registration") }}</th>
             <th>{{ translate("txt-date") }}</th>
@@ -13,11 +14,17 @@
             <th>{{ translate("txt-nda") }}</th>
         </tr>
         </thead>
+        <tfoot>
+        <tr>
+            <td colspan="6"></td>
+        </tr>
+        </tfoot>
         <tbody>
         {% for registration in contact.registration %}
-            <tr {% if registrationService.isCancelled(registration) %}class="warning"{% endif %} >
+            <tr {% if registrationService.isCancelled(registration) %}class="table-danger"{% endif %}>
+                <td><small class="text-muted">{{ loop.index }}</small></td>
                 <td>{{ meetingLink(registration.meeting,'view-admin', 'name') }}</td>
-                <td>{{ registrationLink(registration,'view-admin', 'text') }}</td>
+                <td>{{ registrationLink(registration,'view-admin', 'text') }} {% if registrationService.isCancelled(registration) %}({{ translate("txt-cancelled") }}){% endif %}</td>
                 <td>{{ registration.meeting.dateFrom|from_to_date(registration.meeting.dateUntil, false) }}</td>
                 <td>{{ registration.meeting.location }}</td>
                 <td>
@@ -54,12 +61,20 @@
     <h2>{{ translate("txt-booths") }}</h2>
 
     <table class="table table-hover table-striped table-sm">
+        <thead>
         <tr>
             <th>{{ translate("txt-booth") }}</th>
             <th>{{ translate("txt-exhibition") }}</th>
             <th>{{ translate("txt-type") }}</th>
             <th>{{ translate("txt-role") }}</th>
         </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        </tfoot>
+        <tbody>
         {% for boothContact in contact.boothContact %}
             <tr>
                 <td>{{ boothLink(boothContact.booth,'view-admin') }}</td>
@@ -92,5 +107,6 @@
                 <td>{{ translate("txt-financial-booth-contact") }}</td>
             </tr>
         {% endfor %}
+        </tbody>
     </table>
 {% endif %}

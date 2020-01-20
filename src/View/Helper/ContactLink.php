@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
@@ -25,54 +24,55 @@ final class ContactLink extends AbstractLink
         Contact $contact = null,
         string $action = 'view',
         string $show = 'name'
-    ): string {
+    ): string
+    {
         $contact ??= new Contact();
 
-        if (! $this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
+        if (!$this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
-        if (! $contact->isEmpty()) {
-            $routeParams['id'] = $contact->getId();
-            $showOptions['name'] = $contact->parseFullName();
-            $showOptions['email'] = $contact->getEmail();
+        if (!$contact->isEmpty()) {
+            $routeParams['id']        = $contact->getId();
+            $showOptions['name']      = $contact->parseFullName();
+            $showOptions['email']     = $contact->getEmail();
             $showOptions['firstname'] = $contact->getFirstName();
-            $showOptions['initials'] = $contact->parseInitials();
+            $showOptions['initials']  = $contact->parseInitials();
         }
 
 
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon'  => 'fa-plus',
                     'route' => 'zfcadmin/contact/new',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-contact')
                 ];
                 break;
             case 'list-old':
                 $linkParams = [
-                    'icon' => 'fa-users',
+                    'icon'  => 'fa-users',
                     'route' => 'zfcadmin/contact/list-old',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-list-contacts-legacy')
                 ];
                 break;
             case 'import':
                 $linkParams = [
-                    'icon' => 'fa-upload',
+                    'icon'  => 'fa-upload',
                     'route' => 'zfcadmin/contact/import',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-import-contacts')
                 ];
                 break;
             case 'edit-admin':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon'  => 'fa-pencil-square-o',
                     'route' => 'zfcadmin/contact/edit',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-contact')
                 ];
                 break;
@@ -85,47 +85,55 @@ final class ContactLink extends AbstractLink
                 }
 
                 $linkParams = [
-                    'icon' => 'fa-key',
+                    'icon'  => 'fa-key',
                     'route' => 'community/contact/change-password',
-                    'text' => $text
+                    'text'  => $text
                 ];
                 break;
             case 'view-admin':
                 $linkParams = [
-                    'icon' => 'fa-user-o',
+                    'icon'  => 'fa-user-o',
                     'route' => 'zfcadmin/contact/view/general',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-view-contact-in-admin')
+                ];
+                break;
+            case 'view-project-admin':
+                $linkParams = [
+                    'icon'  => 'fa-user-o',
+                    'route' => 'zfcadmin/contact/view/project',
+                    'text'  => $showOptions[$show]
+                        ?? $this->translator->translate('txt-view-projects-of-contact-in-admin')
                 ];
                 break;
             case 'add-project':
                 $linkParams = [
-                    'icon' => 'fa-user-plus',
+                    'icon'  => 'fa-user-plus',
                     'route' => 'zfcadmin/contact/add-project',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-add-contact-to-project')
                 ];
                 break;
             case 'impersonate':
                 $linkParams = [
-                    'icon' => 'fa-user-secret',
+                    'icon'  => 'fa-user-secret',
                     'route' => 'zfcadmin/contact/impersonate',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-impersonate-contact')
                 ];
                 break;
             case 'permit':
                 $linkParams = [
-                    'icon' => 'fa-lock',
+                    'icon'  => 'fa-lock',
                     'route' => 'zfcadmin/contact/permit',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-impersonate-contact')
                 ];
                 break;
         }
 
-        $linkParams['action'] = $action;
-        $linkParams['show'] = $show;
+        $linkParams['action']      = $action;
+        $linkParams['show']        = $show;
         $linkParams['routeParams'] = $routeParams;
 
         return $this->parse(Link::fromArray($linkParams));
