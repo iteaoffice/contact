@@ -11,7 +11,7 @@
 
 namespace Contact;
 
-use Admin\Navigation\Factory\NavigationInvokableFactory;
+use General\Navigation\Factory\NavigationInvokableFactory;
 use Contact\Acl;
 use Contact\Factory;
 use Contact\Form;

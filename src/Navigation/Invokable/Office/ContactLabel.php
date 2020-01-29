@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Contact\Navigation\Invokable\Office;
 
-use Admin\Navigation\Invokable\AbstractNavigationInvokable;
+use General\Navigation\Invokable\AbstractNavigationInvokable;
 use Contact\Entity\Office\Contact as OfficeContact;
 use Contact\Entity\Office\Leave;
 use Laminas\Navigation\Page\Mvc;
