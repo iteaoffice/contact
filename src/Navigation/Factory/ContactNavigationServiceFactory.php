@@ -52,7 +52,7 @@ final class ContactNavigationServiceFactory implements FactoryInterface
         $config = $container->get('Config');
 
         /* @var $navigation Navigation */
-        $navigation = $container->get($config['admin_option']['community_navigation_container']);
+        $navigation = $container->get($config['general_option']['community_navigation_container']);
         $contactNavigationService->setNavigation($navigation);
 
         return $contactNavigationService;
