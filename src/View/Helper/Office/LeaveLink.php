@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
@@ -30,14 +29,14 @@ final class LeaveLink extends AbstractLink
     ): string {
         $leave ??= new Leave();
 
-        if (! $this->hasAccess($leave, LeaveAssertion::class, $action)) {
+        if (!$this->hasAccess($leave, LeaveAssertion::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (! $leave->isEmpty()) {
+        if (!$leave->isEmpty()) {
             $routeParams['id'] = $leave->getId();
             $showOptions['name'] = $leave->getDescription();
         }
@@ -49,7 +48,7 @@ final class LeaveLink extends AbstractLink
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon' => 'fas fa-plus',
                     'route' => 'zfcadmin/contact/office/leave/new',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-leave')
@@ -57,7 +56,7 @@ final class LeaveLink extends AbstractLink
                 break;
             case 'new-admin':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon' => 'fas fa-plus',
                     'route' => 'zfcadmin/contact/office/new-leave',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-leave')
@@ -65,7 +64,7 @@ final class LeaveLink extends AbstractLink
                 break;
             case 'list':
                 $linkParams = [
-                    'icon' => 'fa-list',
+                    'icon' => 'fas fa-list',
                     'route' => 'zfcadmin/contact/office/leave/list',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-list-leave')
@@ -73,7 +72,7 @@ final class LeaveLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/contact/office/leave/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-leave')
@@ -81,7 +80,7 @@ final class LeaveLink extends AbstractLink
                 break;
             case 'edit-admin':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/contact/office/edit-leave',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-leave')

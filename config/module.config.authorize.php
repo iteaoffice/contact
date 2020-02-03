@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ITEA Office copyright message placeholder
  *
@@ -104,12 +103,7 @@ return [
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
-                [
-                    'route'     => 'community/contact/opt-in-update',
-                    'roles'     => [],
-                    'assertion' => ContactAssertion::class,
-                ],
-                [
+                 [
                     'route'     => 'community/contact/change-password',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,

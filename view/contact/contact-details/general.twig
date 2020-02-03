@@ -22,7 +22,7 @@
                 {% endif %}
                 <dt>{{ translate("txt-primary-email") }}</dt>
                 <dd>{{ contact.email }} <a href="mailto:{{ contact.email }}"><i
-                                class="fa fa-envelope-o"></i></a></dd>
+                                class="far fa-envelope"></i></a></dd>
 
 
                 {% for email in contact.emailAddress|filter(email => email.email != contact.email) -%}
@@ -30,7 +30,7 @@
                         <dt>{{ translate("txt-alternative-email") }}</dt>
                     {% endif %}
                     <dd>{{ email.email }} <a href="mailto:{{ email.email }}"><i
-                                    class="fa fa-envelope-o"></i></a></dd>
+                                    class="far fa-envelope"></i></a></dd>
                 {% endfor %}
 
                 <dt>{{ translate("txt-organisation") }}</dt>
@@ -117,8 +117,8 @@
         <tbody>
         <tr>
             <td>{{ translate("txt-delete-contact") }}</td>
-            <td>{% if contactService.canDeleteContact(contact) %}<i class="fa fa-check text-success"></i>{% else %}<i
-                        class="fa fa-times text-danger"></i>{% endif %}</td>
+            <td>{% if contactService.canDeleteContact(contact) %}<i class="fas fa-check text-success"></i>{% else %}<i
+                        class="fas fa-times text-danger"></i>{% endif %}</td>
             <td>
                 {% for why in contactService.cannotDeleteContact(contact) %}
                     {% if loop.first %}<ul>{% endif %}
@@ -131,8 +131,8 @@
 
         <tr>
             <td>{{ translate("txt-anonymise-contact") }}</td>
-            <td>{% if contactService.canAnonymiseContact(contact) %}<i class="fa fa-check text-success"></i>{% else %}<i
-                        class="fa fa-times text-danger"></i>{% endif %}</td>
+            <td>{% if contactService.canAnonymiseContact(contact) %}<i class="fas fa-check text-success"></i>{% else %}<i
+                        class="fas fa-times text-danger"></i>{% endif %}</td>
             <td>
                 {% for why in contactService.canAnonymiseContactReasons(contact) %}
                     {% if loop.first %}<ul>{% endif %}

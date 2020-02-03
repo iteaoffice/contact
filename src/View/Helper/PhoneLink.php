@@ -32,14 +32,14 @@ final class PhoneLink extends AbstractLink
     ): string {
         $phone ??= new Phone();
 
-        if (! $this->hasAccess($phone, \Contact\Acl\Assertion\Phone::class, $action)) {
+        if (!$this->hasAccess($phone, \Contact\Acl\Assertion\Phone::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (! $phone->isEmpty()) {
+        if (!$phone->isEmpty()) {
             $routeParams['id'] = $phone->getId();
             $showOptions['name'] = $phone->getPhone();
         }
@@ -52,7 +52,7 @@ final class PhoneLink extends AbstractLink
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon' => 'fas fa-plus',
                     'route' => 'zfcadmin/phone/new',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-phone')
@@ -60,7 +60,7 @@ final class PhoneLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/phone/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-phone')

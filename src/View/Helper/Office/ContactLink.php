@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
@@ -28,14 +27,14 @@ final class ContactLink extends AbstractLink
     ): string {
         $officeContact ??= new Contact();
 
-        if (! $this->hasAccess($officeContact, ContactAssertion::class, $action)) {
+        if (!$this->hasAccess($officeContact, ContactAssertion::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (! $officeContact->isEmpty()) {
+        if (!$officeContact->isEmpty()) {
             $routeParams['id'] = $officeContact->getId();
             $showOptions['name'] = $officeContact->getContact()->getDisplayName();
         }
@@ -43,7 +42,7 @@ final class ContactLink extends AbstractLink
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon' => 'fas fa-plus',
                     'route' => 'zfcadmin/contact/office/new',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-office-member')
@@ -51,7 +50,7 @@ final class ContactLink extends AbstractLink
                 break;
             case 'list':
                 $linkParams = [
-                    'icon' => 'fa-list',
+                    'icon' => 'fas fa-list',
                     'route' => 'zfcadmin/contact/office/list',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-list-office-members')
@@ -59,7 +58,7 @@ final class ContactLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/contact/office/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-office-member')
@@ -67,7 +66,7 @@ final class ContactLink extends AbstractLink
                 break;
             case 'view':
                 $linkParams = [
-                    'icon' => 'fa-user-o',
+                    'icon' => 'far fa-user',
                     'route' => 'zfcadmin/contact/office/view',
                     'text' => $showOptions[$show] ?? $this->translator->translate('txt-view-office-member')
                 ];

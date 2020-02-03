@@ -28,23 +28,23 @@
                                 facebook.getShowEmail() is constant("Contact\\Entity\\Facebook::SHOW_EMAIL_MEMBER") and
                                 contactInFacebook
                                 ) %}
-                                <i class="fa fa-envelope-o"></i>&nbsp;<a
+                                <i class="far fa-envelope"></i>&nbsp;<a
                                     href="mailto:{{ contact.email }}">{{ translate("txt-email") }}</a><br>
                             {% endif %}
                             {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_MOBILE_PHONE_MEMBER") %}
                                 {% if contactInFacebook and contact.mobile|length > 0 %}
-                                    <i class="fa fa-mobile"></i>&nbsp;{{ contact.mobile }}
+                                    <i class="fas fa-mobile-alt"></i>&nbsp;{{ contact.mobile }}
                                 {% elseif contact.phone|length > 0 %}
-                                    <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                                    <i class="fas fa-phone-alt"></i>&nbsp;{{ contact.phone }}
                                 {% endif %}
                             {% endif %}
                             {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_MEMBER") and contact.phone|length > 0 %}
                                 {% if contactInFacebook %}
-                                    <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                                    <i class="fas fa-phone-alt"></i>&nbsp;{{ contact.phone }}
                                 {% endif %}
                             {% endif %}
                             {% if facebook.getShowPhone() is constant("Contact\\Entity\\Facebook::SHOW_PHONE_ALL") and contact.phone|length > 0 %}
-                                <i class="fa fa-phone"></i>&nbsp;{{ contact.phone }}
+                                <i class="fas fa-phone-alt"></i>&nbsp;{{ contact.phone }}
                             {% endif %}
                         </p>
                     </div>

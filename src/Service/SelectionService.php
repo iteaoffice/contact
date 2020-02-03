@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ITEA Office all rights reserved
  *
@@ -15,7 +14,7 @@ namespace Contact\Service;
 
 use Contact\Entity;
 use Contact\Repository;
-use Doctrine\DBAL\Exception\SyntaxErrorException;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -25,23 +24,18 @@ use Doctrine\ORM\EntityManager;
  */
 class SelectionService extends AbstractService
 {
-    /**
-     * @var ContactService
-     */
-    private $contactService;
-    /**
-     * @var SelectionContactService
-     */
-    private $selectionContactService;
+    private ContactService $contactService;
+    private SelectionContactService $selectionContactService;
 
     public function __construct(
         EntityManager $entityManager,
         ContactService $contactService,
         SelectionContactService $selectionContactService
-    ) {
+    )
+    {
         parent::__construct($entityManager);
 
-        $this->contactService = $contactService;
+        $this->contactService          = $contactService;
         $this->selectionContactService = $selectionContactService;
     }
 
@@ -49,23 +43,23 @@ class SelectionService extends AbstractService
     {
         $cannotRemoveSelection = [];
 
-        if (! $selection->getMailing()->isEmpty()) {
+        if (!$selection->getMailing()->isEmpty()) {
             $cannotRemoveSelection[] = 'This selection has mailings';
         }
 
-        if (! $selection->getAccess()->isEmpty()) {
+        if (!$selection->getAccess()->isEmpty()) {
             $cannotRemoveSelection[] = 'This selection has access';
         }
 
-        if (! $selection->getMeeting()->isEmpty()) {
+        if (!$selection->getMeeting()->isEmpty()) {
             $cannotRemoveSelection[] = 'This selection has meetings';
         }
 
-        if (! $selection->getMeetingCost()->isEmpty()) {
+        if (!$selection->getMeetingCost()->isEmpty()) {
             $cannotRemoveSelection[] = 'This selection has meeting costs';
         }
 
-        if (! $selection->getMeetingOptionCost()->isEmpty()) {
+        if (!$selection->getMeetingOptionCost()->isEmpty()) {
             $cannotRemoveSelection[] = 'This selection has meeting option costs';
         }
 
@@ -97,7 +91,7 @@ class SelectionService extends AbstractService
             $repository = $this->entityManager->getRepository(Entity\Contact::class);
 
             return $repository->findAmountOfContactsInSelection($selection);
-        } catch (SyntaxErrorException $e) {
+        } catch (DBALException $e) {
             return 0;
         }
     }
@@ -124,8 +118,7 @@ class SelectionService extends AbstractService
             /**
              * Skip the deleted selections and the ones the user is in
              */
-            if (
-                null !== $selection->getSql()
+            if (null !== $selection->getSql()
                 && $this->selectionContactService->contactInSelection(
                     $contact,
                     $selection
@@ -162,7 +155,7 @@ class SelectionService extends AbstractService
             }
             //Update the contacts
             foreach ($selection->getSelectionContact() as $selectionContact) {
-                if (! in_array($selectionContact->getContact()->getId(), $contacts, false)) {
+                if (!in_array($selectionContact->getContact()->getId(), $contacts, false)) {
                     $this->delete($selectionContact);
                 }
             }
@@ -179,7 +172,7 @@ class SelectionService extends AbstractService
 
     public function addContactToSelection(Entity\Selection $selection, Entity\Contact $contact): void
     {
-        if (! $this->selectionContactService->contactInSelection($contact, $selection)) {
+        if (!$this->selectionContactService->contactInSelection($contact, $selection)) {
             $selectionContact = new Entity\SelectionContact();
             $selectionContact->setContact($contact);
             $selectionContact->setSelection($selection);
@@ -199,7 +192,7 @@ class SelectionService extends AbstractService
             $this->save($sql);
         }
 
-        if (! $this->isSql($source)) {
+        if (!$this->isSql($source)) {
             /** @var Repository\Selection $repository */
             $repository = $this->entityManager->getRepository(Entity\Selection::class);
 

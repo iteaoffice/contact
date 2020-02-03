@@ -54,7 +54,7 @@
                 <td><small class="text-muted">{{ loop.index }}</small></td>
                 <td><code>{{ mailingContact.mailing.id }}</code>
                     {% if mailingContact.mailing.dateDeleted %}
-                        <i class="fa fa-trash"
+                        <i class="far fa-trash-alt"
                            title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(mailingContact.mailing.dateDeleted|date("d-m-Y")) }}"></i>
                     {% endif %}</td>
                 <td>

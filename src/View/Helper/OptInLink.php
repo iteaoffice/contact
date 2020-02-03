@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -30,7 +29,7 @@ final class OptInLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (! $optIn->isEmpty()) {
+        if (!$optIn->isEmpty()) {
             $routeParams['id'] = $optIn->getId();
             $showOptions['name'] = $optIn->getOptIn();
         }
@@ -38,7 +37,7 @@ final class OptInLink extends AbstractLink
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon' => 'fas fa-plus',
                     'route' => 'zfcadmin/opt-in/new',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-opt-in')
@@ -46,7 +45,7 @@ final class OptInLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/opt-in/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-opt-in')
@@ -54,7 +53,7 @@ final class OptInLink extends AbstractLink
                 break;
             case 'view':
                 $linkParams = [
-                    'icon' => 'fa-link',
+                    'icon' => 'fas fa-link',
                     'route' => 'zfcadmin/opt-in/view',
                     'text' => $showOptions[$show] ?? $optIn->getOptIn()
                 ];

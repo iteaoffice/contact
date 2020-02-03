@@ -37,7 +37,7 @@
     </div>
 
     <div class="col-1 text-center">
-        <h2><i class="fa fa-arrow-circle-right fa-2x"></i></h2>
+        <h2><i class="fas fa-arrow-circle-right fa-2x"></i></h2>
     </div>
 
     <div class="col-5">
@@ -58,7 +58,7 @@
             {% endif %}
             <dt>{{ translate("txt-primary-email") }}</dt>
             <dd>{{ contact.email }} <a href="mailto:{{ contact.email }}"><i
-                            class="fa fa-envelope-o"></i></a></dd>
+                            class="far fa-envelope"></i></a></dd>
 
 
             {% for email in contact.emailAddress|filter(email => email.email != contact.email) -%}
@@ -66,7 +66,7 @@
                     <dt>{{ translate("txt-alternative-email") }}</dt>
                 {% endif %}
                 <dd>{{ email.email }} <a href="mailto:{{ email.email }}"><i
-                                class="fa fa-envelope-o"></i></a></dd>
+                                class="far fa-envelope"></i></a></dd>
             {% endfor %}
 
             <dt>{{ translate("txt-organisation") }}</dt>

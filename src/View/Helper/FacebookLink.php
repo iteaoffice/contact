@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -30,7 +29,7 @@ final class FacebookLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (! $facebook->isEmpty()) {
+        if (!$facebook->isEmpty()) {
             $routeParams['id'] = $facebook->getId();
             $showOptions['name'] = $facebook->getFacebook();
         }
@@ -38,7 +37,7 @@ final class FacebookLink extends AbstractLink
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon' => 'fas fa-plus',
                     'route' => 'zfcadmin/facebook/new',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-facebook')
@@ -46,7 +45,7 @@ final class FacebookLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/facebook/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-facebook')
@@ -54,21 +53,21 @@ final class FacebookLink extends AbstractLink
                 break;
             case 'view-community':
                 $linkParams = [
-                    'icon' => 'fa-users',
+                    'icon' => 'fas fa-users',
                     'route' => 'community/contact/facebook/view',
                     'text' => $showOptions[$show] ?? $facebook->getFacebook()
                 ];
                 break;
             case 'send-message':
                 $linkParams = [
-                'icon' => 'fa-users',
+                'icon' => 'fas fa-users',
                 'route' => 'community/contact/facebook/send-message',
                 'text' => $showOptions[$show] ?? $this->translator->translate('txt-send-message')
                 ];
                 break;
             case 'view-admin':
                 $linkParams = [
-                    'icon' => 'fa-users',
+                    'icon' => 'fas fa-users',
                     'route' => 'zfcadmin/facebook/view',
                     'text' => $showOptions[$show] ?? $facebook->getFacebook()
                 ];

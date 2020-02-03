@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ITEA Office all rights reserved
  *
@@ -47,7 +46,6 @@ use Project\Entity\Rationale;
 use Project\Entity\Result\Result;
 use Project\Entity\Version\Version;
 use Project\Entity\Workpackage\Workpackage;
-
 use function array_key_exists;
 use function count;
 use function in_array;
@@ -96,8 +94,7 @@ class Contact extends EntityRepository
     private function applyContactFilter(QueryBuilder $qb, array $filter, array $order): QueryBuilder
     {
         $direction = Criteria::ASC;
-        if (
-            isset($filter['direction'])
+        if (isset($filter['direction'])
             && in_array(strtoupper($filter['direction']), [Criteria::ASC, Criteria::DESC], true)
         ) {
             $direction = strtoupper($filter['direction']);
@@ -153,19 +150,18 @@ class Contact extends EntityRepository
 
 
         /** Only when the filter is turned on, omit this extra rule */
-        if (
-            ! (array_key_exists('options', $filter)
+        if (!(array_key_exists('options', $filter)
                 && in_array(
                     'includeDeactivated',
                     $filter['options'],
                     true
                 ))
-            && (isset($filter['options']) && ! in_array('onlyDeactivated', $filter['options'], true))
+            && (isset($filter['options']) && !in_array('onlyDeactivated', $filter['options'], true))
         ) {
             $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
         }
 
-        if (! isset($filter['options'])) {
+        if (!isset($filter['options'])) {
             $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateEnd'));
         }
 
@@ -178,7 +174,7 @@ class Contact extends EntityRepository
         }
 
 
-        if (array_key_exists('country', $filter) && ! empty($filter['country'])) {
+        if (array_key_exists('country', $filter) && !empty($filter['country'])) {
             $qb->innerJoin(
                 'contact_entity_contact.contactOrganisation',
                 'contact_entity_contact_organisation_for_country'
@@ -591,7 +587,7 @@ class Contact extends EntityRepository
         $qb->orWhere('contact_entity_contact.email = ?1');
         $qb->setParameter(1, $email);
 
-        if (! $onlyMain) {
+        if (!$onlyMain) {
             $qb->leftJoin('contact_entity_contact.emailAddress', 'contact_entity_email');
             $qb->orWhere('contact_entity_email.email = ?2');
             $qb->setParameter(2, $email);
@@ -846,7 +842,7 @@ class Contact extends EntityRepository
         return count($query->getResult()) > 0;
     }
 
-    public function searchContacts(string $searchItem, int $maxResults = 12): array
+    public function searchContacts(string $searchItem, int $maxResults = PHP_INT_MAX): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(

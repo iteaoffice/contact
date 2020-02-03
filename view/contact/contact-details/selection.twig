@@ -7,7 +7,7 @@
         <table class="table table-hover table-striped table-sm">
             <thead>
             <tr>
-                <th><i class="fa fa-trash"></i></th>
+                <th><i class="far fa-trash-alt"></i></th>
                 <th>{{ translate("txt-no") }}</th>
                 <th>{{ translate("txt-id") }}</th>
                 <th>{{ translate("txt-selection") }}</th>
@@ -27,7 +27,7 @@
                     <td>{% if not selectionService.isSql(selection) %}<input type="checkbox" name="selection[]"
                                                                              value="{{ selection.id }}">{% endif %}</td>
                     <td><small class="text-muted">{{ loop.index }}</small>{% if selection.dateDeleted %}
-                        <i class="fa fa-trash"
+                        <i class="far fa-trash-alt"
                            title="{{ translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")) }}"></i>
                         {% endif %}</td>
                     <td><code>{{ selection.id }}</code></td>
@@ -50,7 +50,6 @@
     </form>
 {% else %}
     {{ ztbalert().info(translate("txt-contact-%s-is-not-active-in-any-selection")|format(contact.parseFullName()))|raw }}
-    {{ selectionLink(null, 'add-contact', 'button', ontact) }}
 {% endif %}
 
 {% if not contact.deeplinkContact.isEmpty() %}

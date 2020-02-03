@@ -32,14 +32,14 @@ final class AddressLink extends AbstractLink
     ): string {
         $address ??= new Address();
 
-        if (! $this->hasAccess($address, \Contact\Acl\Assertion\Address::class, $action)) {
+        if (!$this->hasAccess($address, \Contact\Acl\Assertion\Address::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (! $address->isEmpty()) {
+        if (!$address->isEmpty()) {
             $routeParams['id'] = $address->getId();
             $showOptions['name'] = $address->getAddress();
         }
@@ -52,7 +52,7 @@ final class AddressLink extends AbstractLink
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-plus',
+                    'icon' => 'fas fa-plus',
                     'route' => 'zfcadmin/address/new',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-address')
@@ -60,7 +60,7 @@ final class AddressLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/address/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-address')

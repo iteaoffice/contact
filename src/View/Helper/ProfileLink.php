@@ -28,7 +28,7 @@ final class ProfileLink extends AbstractLink
         string $action = 'profile',
         string $show = 'name'
     ): string {
-        if (! $this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
+        if (!$this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
             return '';
         }
 
@@ -42,7 +42,7 @@ final class ProfileLink extends AbstractLink
         switch ($action) {
             case 'profile':
                 $linkParams = [
-                    'icon' => 'fa-user-o',
+                    'icon' => 'far fa-user',
                     'route' => 'community/contact/profile/view',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-view-profile')
@@ -50,7 +50,7 @@ final class ProfileLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'community/contact/profile/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-your-profile')

@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -32,7 +31,7 @@ final class DndLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (! $dnd->isEmpty()) {
+        if (!$dnd->isEmpty()) {
             $routeParams['id'] = $dnd->getId();
         }
 
@@ -43,7 +42,7 @@ final class DndLink extends AbstractLink
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fa-upload',
+                    'icon' => 'fas fa-upload',
                     'route' => 'zfcadmin/contact/dnd/new',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-upload-dnd')
@@ -51,7 +50,7 @@ final class DndLink extends AbstractLink
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'fa-pencil-square-o',
+                    'icon' => 'far fa-edit',
                     'route' => 'zfcadmin/contact/dnd/edit',
                     'text' => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-dnd')
@@ -59,7 +58,7 @@ final class DndLink extends AbstractLink
                 break;
             case 'download':
                 $linkParams = [
-                    'icon' => 'fa-download',
+                    'icon' => 'fas fa-download',
                     'route' => 'zfcadmin/contact/dnd/download',
                     'text' => $showOptions[$show] ?? $this->translator->translate('txt-download-dnd')
                 ];

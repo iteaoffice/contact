@@ -45,7 +45,7 @@
             {% endif %}
             {% if selection.dateDeleted %}
                 <dt>{{ translate("txt-date-deleted") }}</dt>
-                <dd><i class="fa fa-trash"></i> {{ selection.dateDeleted|string_date }}</dd>
+                <dd><i class="far fa-trash-alt"></i> {{ selection.dateDeleted|string_date }}</dd>
             {% endif %}
             {% if selection.contact %}
                 <dt>{{ translate("txt-owner") }}</dt>
@@ -89,7 +89,7 @@
                         </td>
                         <td>
                             <a href="{{ url('zfcadmin/contact/view/general',{'id':contact['id']}) }}">{{ contact['email'] }}</a>
-                            <a href="mailto:{{ contact['email'] }}"><i class="fa fa-envelope-o"></i></a>
+                            <a href="mailto:{{ contact['email'] }}"><i class="far fa-envelope"></i></a>
                         </td>
                         <td>{{ contact['contactOrganisation']['organisation']['organisation'] }}</td>
                         <td>{{ contact['contactOrganisation']['organisation']['country']['iso3'] }}</td>

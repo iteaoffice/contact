@@ -43,7 +43,7 @@
                         <td><small class="text-muted">{{ selection.id }}</small> </td>
                         <td>
                             {% if selection.dateDeleted %}
-                                <i class="fa fa-trash" title="{{ selection.dateDeleted|string_date }}"></i>
+                                <i class="far fa-trash-alt" title="{{ selection.dateDeleted|string_date }}"></i>
                             {% endif %}
 
                             {{ selectionLink(selection,'view', 'name') }} {{ selectionLink(selection,'edit', 'icon') }}
@@ -51,10 +51,12 @@
 
                         <td>{{ contactLink(selection.contact,'view-admin','initials') }}</td>
                         <td>{{ translate(selection.getCore(true)) }}</td>
-                        <td>{{ selectionService.getAmountOfContacts(selection) }}{% if selectionService.isSql(selection) %}
-                                <i class="fa fa-code fa-help" aria-hidden="true"
+                        <td>{{ selectionService.getAmountOfContacts(selection) }}
+                            {% if selectionService.isSql(selection) %}
+                                <i class="fas fa-code"
                                    title="{{ translate("txt-selection-is-sql") }}"></i>
-                            {% endif %}</td>
+                            {% endif %}
+                        </td>
                         <td>{{ selection.dateCreated|string_date }}</td>
                     </tr>
                 {% endfor %}

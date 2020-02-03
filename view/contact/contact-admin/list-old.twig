@@ -49,7 +49,7 @@
                     <tr {% if contact.dateEnd %}class="table-danger"{% endif %}>
                         <td>{{ contactLink(contact, 'view-admin', 'name') }} {{ contactLink(contact, 'edit-admin', 'icon') }}</td>
                         <td><a href="mailto:{{ contact.email }}" title="{{ contact.email }}"><i
-                                        class="fa fa-envelope-o"></i> </a></td>
+                                        class="far fa-envelope"></i> </a></td>
                         <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
                         <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
                         <td><a href="{{ contactLink(contact,'view-admin',constant("\\General\\ValueObject\\Link\\LinkDecoration::SHOW_RAW")) }}">{{ projectService.findProjectParticipationByContact(contact)|length }}</a></td>
@@ -61,7 +61,7 @@
             {% include 'application/partial/pagination-control' %}
             <a href="{{ url('zfcadmin/contact/export',{'encodedFilter': encodedFilter}) }}"
                class="btn btn-primary btn-sm"><i
-                        class="fa fa-file-excel-o"></i> {{ translate("txt-export-csv") }}</a>
+                        class="far fa-file-excel"></i> {{ translate("txt-export-csv") }}</a>
         {% else %}
             {{ ztbalert().info(translate("txt-no-contact-found"))|raw }}
         {% endif %}
