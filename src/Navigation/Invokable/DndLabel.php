@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Contact\Navigation\Invokable;
 
-use Admin\Navigation\Invokable\AbstractNavigationInvokable;
+use General\Navigation\Invokable\AbstractNavigationInvokable;
 use Contact\Entity\Contact;
 use Contact\Entity\Dnd;
 use Laminas\Navigation\Page\Mvc;
