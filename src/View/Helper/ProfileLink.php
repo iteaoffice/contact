@@ -28,7 +28,7 @@ final class ProfileLink extends AbstractLink
         string $action = 'profile',
         string $show = 'name'
     ): string {
-        if (!$this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
+        if (! $this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
             return '';
         }
 

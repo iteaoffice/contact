@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -29,7 +30,7 @@ final class FacebookLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (!$facebook->isEmpty()) {
+        if (! $facebook->isEmpty()) {
             $routeParams['id'] = $facebook->getId();
             $showOptions['name'] = $facebook->getFacebook();
         }

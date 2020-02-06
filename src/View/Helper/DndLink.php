@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -31,7 +32,7 @@ final class DndLink extends AbstractLink
 
         $routeParams = [];
         $showOptions = [];
-        if (!$dnd->isEmpty()) {
+        if (! $dnd->isEmpty()) {
             $routeParams['id'] = $dnd->getId();
         }
 

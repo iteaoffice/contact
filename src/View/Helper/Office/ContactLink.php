@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
@@ -27,14 +28,14 @@ final class ContactLink extends AbstractLink
     ): string {
         $officeContact ??= new Contact();
 
-        if (!$this->hasAccess($officeContact, ContactAssertion::class, $action)) {
+        if (! $this->hasAccess($officeContact, ContactAssertion::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (!$officeContact->isEmpty()) {
+        if (! $officeContact->isEmpty()) {
             $routeParams['id'] = $officeContact->getId();
             $showOptions['name'] = $officeContact->getContact()->getDisplayName();
         }

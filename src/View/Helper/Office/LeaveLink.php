@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
@@ -29,14 +30,14 @@ final class LeaveLink extends AbstractLink
     ): string {
         $leave ??= new Leave();
 
-        if (!$this->hasAccess($leave, LeaveAssertion::class, $action)) {
+        if (! $this->hasAccess($leave, LeaveAssertion::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (!$leave->isEmpty()) {
+        if (! $leave->isEmpty()) {
             $routeParams['id'] = $leave->getId();
             $showOptions['name'] = $leave->getDescription();
         }

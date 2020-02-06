@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
@@ -26,13 +27,12 @@ final class SelectionLink extends AbstractLink
         string $action = 'view',
         string $show = 'name',
         Contact $contact = null
-    ): string
-    {
+    ): string {
         $selection ??= new Selection();
 
         $routeParams = [];
         $showOptions = [];
-        if (!$selection->isEmpty()) {
+        if (! $selection->isEmpty()) {
             $routeParams['id']   = $selection->getId();
             $showOptions['name'] = $selection->getSelection();
         }

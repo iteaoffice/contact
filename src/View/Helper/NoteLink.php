@@ -32,14 +32,14 @@ final class NoteLink extends AbstractLink
     ): string {
         $note ??= new Note();
 
-        if (!$this->hasAccess($note, \Contact\Acl\Assertion\Note::class, $action)) {
+        if (! $this->hasAccess($note, \Contact\Acl\Assertion\Note::class, $action)) {
             return '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        if (!$note->isEmpty()) {
+        if (! $note->isEmpty()) {
             $routeParams['id'] = $note->getId();
             $showOptions['name'] = $note->getNote();
         }
