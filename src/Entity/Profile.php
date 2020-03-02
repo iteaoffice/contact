@@ -19,7 +19,7 @@ use Laminas\Form\Annotation;
 /**
  * @ORM\Table(name="contact_profile")
  * @ORM\Entity
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_profile")
  */
 class Profile extends AbstractEntity

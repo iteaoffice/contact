@@ -1,4 +1,5 @@
 <?php
+
 _('txt-opt-in-title-placeholder');
 _('txt-opt-in-title-title');
 _('txt-opt-in-title-help-block');

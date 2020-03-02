@@ -27,7 +27,7 @@ use Laminas\Form\Annotation;
  * @ORM\Table(name="selection")
  * @ORM\Entity(repositoryClass="Contact\Repository\Selection")
  * @Gedmo\SoftDeleteable(fieldName="dateDeleted")
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_selection")
  */
 class Selection extends AbstractEntity

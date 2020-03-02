@@ -1,4 +1,5 @@
 <?php
+
 _('txt-no-organisation-found-complete-your-profile-to-participate-in-projects-with-link-%s');
 _('txt-no-event-registrations-were-found-for-this-contact');
 _('txt-selection-has-been-deleted-on-%s');

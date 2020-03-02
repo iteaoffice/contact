@@ -21,7 +21,7 @@ use Laminas\Form\Annotation;
  *
  * @ORM\Table(name="phone_type")
  * @ORM\Entity
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("phone_type")
  *
  * @category    Contact

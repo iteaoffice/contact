@@ -21,7 +21,7 @@ use Laminas\Form\Annotation;
 /**
  * @ORM\Table(name="contact_organisation")
  * @ORM\Entity
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_organisation")
  */
 class ContactOrganisation extends AbstractEntity

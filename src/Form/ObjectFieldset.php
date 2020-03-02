@@ -5,18 +5,16 @@
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
  * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
- *
- * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
 
 declare(strict_types=1);
 
 namespace Contact\Form;
 
-use Doctrine\ORM\EntityManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use DoctrineORMModule\Form\Element\EntityRadio;
 use Contact\Entity;
+use Doctrine\Laminas\Hydrator\DoctrineObject;
+use Doctrine\ORM\EntityManager;
+use DoctrineORMModule\Form\Element\EntityRadio;
 use Laminas\Form\Annotation\AnnotationBuilder;
 use Laminas\Form\Element;
 use Laminas\Form\Element\Radio;
@@ -38,7 +36,7 @@ class ObjectFieldset extends Fieldset
     public function __construct(EntityManager $entityManager, Entity\AbstractEntity $object)
     {
         parent::__construct($object->get('underscore_entity_name'));
-        $doctrineHydrator = new DoctrineHydrator($entityManager);
+        $doctrineHydrator = new DoctrineObject($entityManager);
         $this->setHydrator($doctrineHydrator)->setObject($object);
         $builder = new AnnotationBuilder();
         // createForm() already creates a proper form, so attaching its elements
@@ -95,7 +93,7 @@ class ObjectFieldset extends Fieldset
             ($element instanceof Radio) && ! ($element instanceof EntityRadio)
             && ($object instanceof Entity\AbstractEntity)
         ) {
-            $attributes = $element->getAttributes();
+            $attributes        = $element->getAttributes();
             $valueOptionsArray = sprintf('get%s', ucfirst($attributes['array']));
 
             $element->setOptions(

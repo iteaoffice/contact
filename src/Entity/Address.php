@@ -20,7 +20,7 @@ use Laminas\Form\Annotation;
 /**
  * @ORM\Table(name="contact_address")
  * @ORM\Entity(repositoryClass="Contact\Repository\Address")
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_address")
  */
 class Address extends AbstractEntity

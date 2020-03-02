@@ -23,7 +23,7 @@ use Laminas\Form\Annotation;
  * @ORM\Table(name="contact_photo")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_photo")
  *
  * @category    Contact

@@ -26,7 +26,7 @@ use function sprintf;
 /**
  * @ORM\Table(name="contact_dnd")
  * @ORM\Entity
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_dnd")
  */
 class Dnd extends AbstractEntity

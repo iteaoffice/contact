@@ -23,7 +23,7 @@ use Laminas\Form\Annotation;
  *
  * @ORM\Table(name="facebook")
  * @ORM\Entity(repositoryClass="Contact\Repository\Facebook")
- * @Annotation\Hydrator("Laminas\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_facebook")
  *
  * @category    Contact
