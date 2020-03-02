@@ -11,7 +11,6 @@
 
 namespace Contact;
 
-use General\Navigation\Factory\NavigationInvokableFactory;
 use Contact\Acl;
 use Contact\Factory;
 use Contact\Form;
@@ -21,12 +20,12 @@ use Contact\Provider;
 use Contact\Search;
 use Contact\Service;
 use Contact\View;
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use DoctrineExtensions\Query\Mysql\Replace;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
+use General\Navigation\Factory\NavigationInvokableFactory;
 use General\View\Factory\ImageHelperFactory;
 use General\View\Factory\LinkHelperFactory;
 use Laminas\Form\ElementFactory;
@@ -166,12 +165,6 @@ $config = [
                 'class' => AnnotationDriver::class,
                 'paths' => [
                     __DIR__ . '/../src/Entity/',
-                ],
-            ],
-            'orm_default'               => [
-                'class'   => MappingDriverChain::class,
-                'drivers' => [
-                    __NAMESPACE__ . '\Entity' => 'contact_annotation_driver',
                 ],
             ],
         ],
