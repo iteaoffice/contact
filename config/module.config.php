@@ -163,8 +163,11 @@ $config = [
         'driver'        => [
             'contact_annotation_driver' => [
                 'class' => AnnotationDriver::class,
-                'paths' => [
-                    __DIR__ . '/../src/Entity/',
+                'paths' => [__DIR__ . '/../src/Entity/'],
+            ],
+            'orm_default'               => [
+                'drivers' => [
+                    'Contact\Entity' => 'contact_annotation_driver',
                 ],
             ],
         ],
