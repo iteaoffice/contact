@@ -184,7 +184,7 @@ class Leave extends AbstractEntity
         return (float)$this->hours;
     }
 
-    public function setHours(float $hours): Leave
+    public function setHours($hours): Leave
     {
         $this->hours = $hours;
         return $this;
