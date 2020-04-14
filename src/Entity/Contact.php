@@ -286,6 +286,24 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $optIn;
     /**
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Action", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Quality\Entity\Action[]|Collections\ArrayCollection
+     */
+    private $qualityActions;
+    /**
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Result", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Quality\Entity\Result[]|Collections\ArrayCollection
+     */
+    private $qualityResults;
+    /**
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Result", cascade={"persist"}, mappedBy="contactComment")
+     * @Annotation\Exclude()
+     * @var \Quality\Entity\Result[]|Collections\ArrayCollection
+     */
+    private $qualityResultComments;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Project[]|Collections\ArrayCollection
@@ -965,6 +983,9 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->nda                                 = new Collections\ArrayCollection();
         $this->pca                                 = new Collections\ArrayCollection();
         $this->ndaApprover                         = new Collections\ArrayCollection();
+        $this->qualityActions                      = new Collections\ArrayCollection();
+        $this->qualityResults                      = new Collections\ArrayCollection();
+        $this->qualityResultComments               = new Collections\ArrayCollection();
         $this->programDoa                          = new Collections\ArrayCollection();
         $this->rationale                           = new Collections\ArrayCollection();
         $this->organisationLog                     = new Collections\ArrayCollection();
@@ -3199,6 +3220,39 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function setOrganisationUpdates(Collections\Collection $organisationUpdates): Contact
     {
         $this->organisationUpdates = $organisationUpdates;
+        return $this;
+    }
+
+    public function getQualityResults()
+    {
+        return $this->qualityResults;
+    }
+
+    public function setQualityResults($qualityResults): Contact
+    {
+        $this->qualityResults = $qualityResults;
+        return $this;
+    }
+
+    public function getQualityResultComments()
+    {
+        return $this->qualityResultComments;
+    }
+
+    public function setQualityResultComments($qualityResultComments): Contact
+    {
+        $this->qualityResultComments = $qualityResultComments;
+        return $this;
+    }
+
+    public function getQualityActions()
+    {
+        return $this->qualityActions;
+    }
+
+    public function setQualityActions($qualityActions): Contact
+    {
+        $this->qualityActions = $qualityActions;
         return $this;
     }
 }
