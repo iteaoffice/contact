@@ -42,9 +42,10 @@ final class ContactFormElement extends FormElement
         $this->contactService = $contactService;
     }
 
-    public function __invoke(ElementInterface $element = null, bool $inline = false)
+    public function __invoke(ElementInterface $element = null, bool $inline = false, bool $formElementOnly = false)
     {
-        $this->inline = $inline;
+        $this->inline          = $inline;
+        $this->formElementOnly = $formElementOnly;
 
         $this->view->headLink()
             ->appendStylesheet('/assets/css/bootstrap-select.min.css');

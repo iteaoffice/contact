@@ -28,55 +28,59 @@ final class FacebookLink extends AbstractLink
     ): string {
         $facebook ??= new Facebook();
 
+        if (! $this->hasAccess($facebook, \Contact\Acl\Assertion\Facebook::class, $action)) {
+            return '';
+        }
+
         $routeParams = [];
         $showOptions = [];
         if (! $facebook->isEmpty()) {
-            $routeParams['id'] = $facebook->getId();
+            $routeParams['id']   = $facebook->getId();
             $showOptions['name'] = $facebook->getFacebook();
         }
 
         switch ($action) {
             case 'new':
                 $linkParams = [
-                    'icon' => 'fas fa-plus',
+                    'icon'  => 'fas fa-plus',
                     'route' => 'zfcadmin/facebook/new',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-new-facebook')
                 ];
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'far fa-edit',
+                    'icon'  => 'far fa-edit',
                     'route' => 'zfcadmin/facebook/edit',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-facebook')
                 ];
                 break;
             case 'view-community':
                 $linkParams = [
-                    'icon' => 'fas fa-users',
+                    'icon'  => 'fas fa-users',
                     'route' => 'community/contact/facebook/view',
-                    'text' => $showOptions[$show] ?? $facebook->getFacebook()
+                    'text'  => $showOptions[$show] ?? $facebook->getFacebook()
                 ];
                 break;
             case 'send-message':
                 $linkParams = [
-                'icon' => 'fas fa-users',
-                'route' => 'community/contact/facebook/send-message',
-                'text' => $showOptions[$show] ?? $this->translator->translate('txt-send-message')
+                    'icon'  => 'fas fa-users',
+                    'route' => 'community/contact/facebook/send-message',
+                    'text'  => $showOptions[$show] ?? $this->translator->translate('txt-send-message')
                 ];
                 break;
             case 'view-admin':
                 $linkParams = [
-                    'icon' => 'fas fa-users',
+                    'icon'  => 'fas fa-users',
                     'route' => 'zfcadmin/facebook/view',
-                    'text' => $showOptions[$show] ?? $facebook->getFacebook()
+                    'text'  => $showOptions[$show] ?? $facebook->getFacebook()
                 ];
                 break;
         }
 
-        $linkParams['action'] = $action;
-        $linkParams['show'] = $show;
+        $linkParams['action']      = $action;
+        $linkParams['show']        = $show;
         $linkParams['routeParams'] = $routeParams;
 
         return $this->parse(Link::fromArray($linkParams));
