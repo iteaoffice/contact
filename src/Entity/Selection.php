@@ -20,8 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Event\Entity\Meeting\Meeting;
 use Event\Entity\Meeting\OptionCost;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Mailing\Entity\Mailing;
 use Laminas\Form\Annotation;
+use Mailing\Entity\Mailing;
 
 /**
  * @ORM\Table(name="selection")
@@ -32,15 +32,15 @@ use Laminas\Form\Annotation;
  */
 class Selection extends AbstractEntity
 {
-    public const SELECTION_INVOICE_CORE = 1;
-    public const SELECTION_BSG = 46;
-    public const SELECTION_STG = 47;
+    public const SELECTION_INVOICE_CORE       = 1;
+    public const SELECTION_BSG                = 46;
+    public const SELECTION_STG                = 47;
     public const SELECTION_PROJECT_MANAGEMENT = 219;
 
     public const NOT_CORE = 0;
-    public const CORE = 1;
+    public const CORE     = 1;
 
-    public const TYPE_SQL = 1;
+    public const TYPE_SQL   = 1;
     public const TYPE_FIXED = 2;
 
     protected static array $coreTemplates
@@ -152,6 +152,13 @@ class Selection extends AbstractEntity
      */
     private $meeting;
     /**
+     * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Meeting", cascade={"persist"}, mappedBy="selectionQuotaExempt")
+     * @Annotation\Exclude()
+     *
+     * @var Meeting[]|Collections\ArrayCollection
+     */
+    private $meetingQuotaExempt;
+    /**
      * @ORM\ManyToMany(targetEntity="Event\Entity\Meeting\Cost", cascade={"persist"}, mappedBy="selection")
      * @Annotation\Exclude()
      *
@@ -170,12 +177,13 @@ class Selection extends AbstractEntity
     {
         $this->core = self::NOT_CORE;
 
-        $this->selectionContact = new Collections\ArrayCollection();
-        $this->mailing = new Collections\ArrayCollection();
-        $this->meeting = new Collections\ArrayCollection();
-        $this->meetingOptionCost = new Collections\ArrayCollection();
-        $this->meetingCost = new Collections\ArrayCollection();
-        $this->access = new Collections\ArrayCollection();
+        $this->selectionContact   = new Collections\ArrayCollection();
+        $this->mailing            = new Collections\ArrayCollection();
+        $this->meeting            = new Collections\ArrayCollection();
+        $this->meetingQuotaExempt = new Collections\ArrayCollection();
+        $this->meetingOptionCost  = new Collections\ArrayCollection();
+        $this->meetingCost        = new Collections\ArrayCollection();
+        $this->access             = new Collections\ArrayCollection();
     }
 
     public static function getCoreTemplates(): array
@@ -185,7 +193,7 @@ class Selection extends AbstractEntity
 
     public function __clone()
     {
-        $this->id = null;
+        $this->id        = null;
         $this->selection = sprintf('%s (copy)', $this->selection);
     }
 
@@ -375,6 +383,17 @@ class Selection extends AbstractEntity
     public function setAccess($access): Selection
     {
         $this->access = $access;
+        return $this;
+    }
+
+    public function getMeetingQuotaExempt()
+    {
+        return $this->meetingQuotaExempt;
+    }
+
+    public function setMeetingQuotaExempt($meetingQuotaExempt): Selection
+    {
+        $this->meetingQuotaExempt = $meetingQuotaExempt;
         return $this;
     }
 }

@@ -31,7 +31,7 @@
 
 
 {% if identity().hasOrganisation() %}
-    {{ ideaInviteLink(null, 'invite','button', null, contact) }}
+    {{ ideaInviteLink(null, 'idea-select','button', null, contact) }}
     {{ projectInviteLink(null, 'invite','button', contact) }}
 {% else %}
     <a class="btn btn-primary" disabled="disabled">{{ translate("txt-invite-contact-for-idea") }}</a>
