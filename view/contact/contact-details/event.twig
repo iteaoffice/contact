@@ -28,10 +28,11 @@
                 <td>{{ registration.meeting.dateFrom|from_to_date(registration.meeting.dateUntil, false) }}</td>
                 <td>{{ registration.meeting.location }}</td>
                 <td>
-                    {% for call in registration.meeting.call %}
+                    {% if registration.meeting.ideaTool.hasCall() %}
+                        {% set call = registration.meeting.ideaTool.call %}
                         {% set nda = callService.findNdaByCallAndContact(call, contact) %}
                         {% if nda %}
-                            {% if nda.dateApproved %}
+                            {% if nda.isApproved() %}
                                 {{ translate("txt-nda-approved-on-%s")|format(nda.dateApproved|date('d-m-Y')) }}
                             {% else %}
                                 {{ translate("txt-nda-on-%s-submitted-but-not-approved-yet")|format(nda.dateSigned|date('d-m-Y')) }}
@@ -41,7 +42,7 @@
                         {% endif %}
                     {% else %}
                         {{ translate("txt-not-applicable") }}
-                    {% endfor %}
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
@@ -50,8 +51,6 @@
 {% else %}
     {{ ztbalert().info(translate("txt-no-event-registrations-were-found-for-this-contact"))|raw }}
 {% endif %}
-
-
 
 {% if not (contact.boothContact.isEmpty() and
     contact.projectBooth.isEmpty() and

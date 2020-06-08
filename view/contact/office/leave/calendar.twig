@@ -69,16 +69,20 @@
             eventResizableFromStart: false,
             navLinks: true,
             defaultView: 'dayGridMonth',
+            slotLabelFormat: {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+            },
+            eventTimeFormat: {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+            },
             header: {
                 left: 'prev,next today addEventButton',
                 center: 'title',
                 right: 'dayGridMonth,listYear'
-            },
-            buttonText: {
-                today: '{{ translate("txt-today") }}',
-                month: '{{ translate("txt-month") }}',
-                week: '{{ translate("txt-week") }}',
-                day: '{{ translate("txt-day") }}'
             },
             customButtons: {
                 addEventButton: {

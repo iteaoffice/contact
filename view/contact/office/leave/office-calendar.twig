@@ -73,11 +73,15 @@
                 center: 'title',
                 right: 'dayGridMonth,listYear'
             },
-            buttonText: {
-                today: '{{ translate("txt-today") }}',
-                month: '{{ translate("txt-month") }}',
-                week: '{{ translate("txt-week") }}',
-                day: '{{ translate("txt-day") }}'
+            slotLabelFormat: {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+            },
+            eventTimeFormat: {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
             },
             customButtons: {
                 addEventButton: {

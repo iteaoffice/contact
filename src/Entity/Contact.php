@@ -65,6 +65,7 @@ use Project\Entity\Idea\Idea;
 use Project\Entity\Idea\Invite;
 use Project\Entity\Idea\Meeting\Participant;
 use Project\Entity\Idea\Partner;
+use Project\Entity\Idea\Status;
 use Project\Entity\Pca;
 use Project\Entity\Project;
 use Project\Entity\Rationale;
@@ -448,6 +449,12 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $ideaPartner;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Status", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var Status[]|Collections\ArrayCollection
+     */
+    private $ideaStatus;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Meeting\Participant", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Participant[]|Collections\ArrayCollection
@@ -755,11 +762,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $ideaMeetingInvite;
     /**
-     * @ORM\OneToMany(targetEntity="Program\Entity\Call\Session\Participant", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Project\Entity\Idea\Tool\Session\Participant", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Program\Entity\Call\Session\Participant[]|Collections\ArrayCollection
+     * @var \Project\Entity\Idea\Tool\Session\Participant[]|Collections\ArrayCollection
      */
-    private $callSessionParticipant;
+    private $ideaToolSessionParticipant;
     /**
      * @ORM\OneToMany(targetEntity="Affiliation\Entity\Loi", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -1044,6 +1051,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->favouriteIdea                       = new Collections\ArrayCollection();
         $this->ideaMessage                         = new Collections\ArrayCollection();
         $this->ideaPartner                         = new Collections\ArrayCollection();
+        $this->ideaStatus                          = new Collections\ArrayCollection();
         $this->ideaMeetingParticipant              = new Collections\ArrayCollection();
         $this->blog                                = new Collections\ArrayCollection();
         $this->blogMessage                         = new Collections\ArrayCollection();
@@ -1066,7 +1074,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->ideaInvite                          = new Collections\ArrayCollection();
         $this->ideaInviteContact                   = new Collections\ArrayCollection();
         $this->ideaMeetingInvite                   = new Collections\ArrayCollection();
-        $this->callSessionParticipant              = new Collections\ArrayCollection();
+        $this->ideaToolSessionParticipant          = new Collections\ArrayCollection();
         $this->loi                                 = new Collections\ArrayCollection();
         $this->loiApprover                         = new Collections\ArrayCollection();
         $this->affiliationDoa                      = new Collections\ArrayCollection();
@@ -1113,7 +1121,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     {
         $name = sprintf('%s %s', $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return (string)(!empty(trim($name)) ? $name : $this->email);
+        return (string)(! empty(trim($name)) ? $name : $this->email);
     }
 
     public function parseFullName(): string
@@ -1188,7 +1196,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function hasPhoto(): bool
     {
-        return !$this->photo->isEmpty();
+        return ! $this->photo->isEmpty();
     }
 
     public function isVisibleInCommunity(): bool
@@ -1478,14 +1486,14 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getFormName(): string
     {
         $name = sprintf('%s, %s', trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getHash(): ?string
@@ -1566,7 +1574,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
 
     public function getOptIn(bool $onlyActive = false)
     {
-        if (!$onlyActive) {
+        if (! $onlyActive) {
             return $this->optIn;
         }
 
@@ -3300,14 +3308,25 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    public function getCallSessionParticipant()
+    public function getIdeaToolSessionParticipant()
     {
-        return $this->callSessionParticipant;
+        return $this->ideaToolSessionParticipant;
     }
 
-    public function setCallSessionParticipant($callSessionParticipant): Contact
+    public function setIdeaToolSessionParticipant($ideaToolSessionParticipant): Contact
     {
-        $this->callSessionParticipant = $callSessionParticipant;
+        $this->ideaToolSessionParticipant = $ideaToolSessionParticipant;
+        return $this;
+    }
+
+    public function getIdeaStatus()
+    {
+        return $this->ideaStatus;
+    }
+
+    public function setIdeaStatus($ideaStatus): Contact
+    {
+        $this->ideaStatus = $ideaStatus;
         return $this;
     }
 }

@@ -525,15 +525,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
 
-                print $url(
-                    'image/contact-photo',
-                    [
-                        'ext'         => $photo->getContentType()->getExtension(),
-                        'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                        'id'          => $photo->getId(),
-                    ]
-                );
-
                 $contactDocument->setField(
                     'photo_url',
                     $url(
