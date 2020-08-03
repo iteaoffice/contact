@@ -653,6 +653,12 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $workpackage;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Description", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Workpackage\Description|Collections\ArrayCollection
+     */
+    private $workpackageDescription;
+    /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var \Project\Entity\Workpackage\Document[]|Collections\ArrayCollection
@@ -1047,6 +1053,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->result                              = new Collections\ArrayCollection();
         $this->workpackage                         = new Collections\ArrayCollection();
         $this->workpackageDocument                 = new Collections\ArrayCollection();
+        $this->workpackageDescription              = new Collections\ArrayCollection();
         $this->idea                                = new Collections\ArrayCollection();
         $this->favouriteIdea                       = new Collections\ArrayCollection();
         $this->ideaMessage                         = new Collections\ArrayCollection();
@@ -2222,11 +2229,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this->workpackage;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Workpackage[] $workpackage
-     *
-     * @return Contact
-     */
     public function setWorkpackage($workpackage): Contact
     {
         $this->workpackage = $workpackage;
@@ -2234,19 +2236,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Project\Entity\Workpackage\Document
-     */
     public function getWorkpackageDocument()
     {
         return $this->workpackageDocument;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Project\Entity\Workpackage\Document $workpackageDocument
-     *
-     * @return Contact
-     */
     public function setWorkpackageDocument($workpackageDocument): Contact
     {
         $this->workpackageDocument = $workpackageDocument;
@@ -2254,19 +2248,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|\Project\Entity\Idea\Message
-     */
     public function getIdeaMessage()
     {
         return $this->ideaMessage;
     }
 
-    /**
-     * @param Collections\ArrayCollection|\Project\Entity\Idea\Message $ideaMessage
-     *
-     * @return Contact
-     */
     public function setIdeaMessage($ideaMessage): Contact
     {
         $this->ideaMessage = $ideaMessage;
@@ -2274,19 +2260,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Collections\ArrayCollection|Evaluation
-     */
     public function getEvaluation()
     {
         return $this->evaluation;
     }
 
-    /**
-     * @param Collections\ArrayCollection|Evaluation $evaluation
-     *
-     * @return Contact
-     */
     public function setEvaluation($evaluation): Contact
     {
         $this->evaluation = $evaluation;
@@ -2294,19 +2272,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Calendar|Collections\ArrayCollection
-     */
     public function getCalendar()
     {
         return $this->calendar;
     }
 
-    /**
-     * @param Calendar|Collections\ArrayCollection $calendar
-     *
-     * @return Contact
-     */
     public function setCalendar($calendar): Contact
     {
         $this->calendar = $calendar;
@@ -2314,19 +2284,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return \Calendar\Entity\Contact|Collections\ArrayCollection
-     */
     public function getCalendarContact()
     {
         return $this->calendarContact;
     }
 
-    /**
-     * @param \Calendar\Entity\Contact|Collections\ArrayCollection $calendarContact
-     *
-     * @return Contact
-     */
     public function setCalendarContact($calendarContact): Contact
     {
         $this->calendarContact = $calendarContact;
@@ -2334,9 +2296,6 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
-    /**
-     * @return Document|Collections\ArrayCollection
-     */
     public function getCalendarDocument()
     {
         return $this->calendarDocument;
