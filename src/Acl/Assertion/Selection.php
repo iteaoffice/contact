@@ -26,6 +26,6 @@ final class Selection extends AbstractAssertion
         ResourceInterface $address = null,
         $privilege = null
     ): bool {
-        return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+        return $this->rolesHaveAccess('office');
     }
 }

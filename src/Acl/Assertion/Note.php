@@ -26,6 +26,6 @@ final class Note extends AbstractAssertion
         ResourceInterface $note = null,
         $privilege = null
     ): bool {
-        return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+        return $this->rolesHaveAccess('office');
     }
 }

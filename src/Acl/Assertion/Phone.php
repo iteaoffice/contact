@@ -26,6 +26,6 @@ final class Phone extends AbstractAssertion
         ResourceInterface $phone = null,
         $privilege = null
     ): bool {
-        return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+        return $this->rolesHaveAccess('office');
     }
 }

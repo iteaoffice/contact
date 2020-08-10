@@ -29,6 +29,7 @@
     "laminas/laminas-mvc-plugins": "^1.0.1",
     "laminas/laminas-navigation": "^2.9.0",
     "jield-webdev/bjy-authorize": "^2.1.0",
+    "jield-webdev/laminas-user": "^4.1",
     "doctrine/doctrine-orm-module": "3.*"
   },
   "require-dev": {

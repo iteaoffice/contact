@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Contact\Acl\Assertion;
 
-use Admin\Entity\Access;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
@@ -26,6 +25,6 @@ final class Address extends AbstractAssertion
         ResourceInterface $address = null,
         $privilege = null
     ): bool {
-        return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+        return $this->rolesHaveAccess('office');
     }
 }

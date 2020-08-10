@@ -28,7 +28,7 @@ final class Facebook extends AbstractAssertion
         $privilege = null
     ): bool {
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {
-            return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+            return $this->rolesHaveAccess('office');
         }
 
         $this->setPrivilege($privilege);
@@ -56,7 +56,7 @@ final class Facebook extends AbstractAssertion
                 return $facebook->getCanSendMessage() === FacebookEntity::CAN_SEND_MESSAGE
                     && $this->contactService->isContactInFacebook($this->contact, $facebook);
             default:
-                return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+                return $this->rolesHaveAccess('office');
         }
     }
 }

@@ -29,7 +29,7 @@ final class Contact extends AbstractAssertion
         $this->setPrivilege($privilege);
 
         if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {
-            return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+            return $this->rolesHaveAccess('office');
         }
 
         switch ($this->getPrivilege()) {
@@ -41,7 +41,7 @@ final class Contact extends AbstractAssertion
             case 'list-duplicate':
             case 'list-inactive':
             case 'add-project':
-                return $this->rolesHaveAccess(Access::ACCESS_OFFICE);
+                return $this->rolesHaveAccess('office');
             default:
                 return $this->hasContact();
         }
