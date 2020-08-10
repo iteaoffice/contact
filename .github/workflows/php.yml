@@ -43,8 +43,8 @@ jobs:
       - name: Run fix suite
         run: composer fix
 
-      - name: Run check suite
-        run: composer check
+#      - name: Run check suite
+#        run: composer check
 
       - name: Run test suite
         run: composer test
