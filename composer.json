@@ -37,6 +37,7 @@
     "iteaoffice/general": "^5.1",
     "iteaoffice/search": "^2.1",
     "iteaoffice/affiliation": "^5.1",
+    "iteaoffice/organisation": "^5.1",
     "setasign/fpdi-tcpdf": "^2.2"
   },
   "autoload": {
