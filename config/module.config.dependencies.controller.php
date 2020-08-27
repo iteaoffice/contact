@@ -26,14 +26,14 @@ use Event\Service\MeetingService;
 use Event\Service\RegistrationService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Organisation\Service\OrganisationService;
 use Program\Options\ModuleOptions;
 use Program\Service\CallService;
 use Program\Service\ProgramService;
 use Project\Service\IdeaService;
 use Project\Service\ProjectService;
-use Laminas\I18n\Translator\TranslatorInterface;
-use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 
 return [
     ConfigAbstractFactory::class => [
@@ -119,12 +119,12 @@ return [
         ],
         Controller\ProfileController::class          => [
             Service\ContactService::class,
-            Service\AddressService::class,
             OrganisationService::class,
             CallService::class,
             ModuleOptions::class,
             GeneralService::class,
             MeetingService::class,
+            EmailService::class,
             EntityManager::class,
             TranslatorInterface::class
         ],

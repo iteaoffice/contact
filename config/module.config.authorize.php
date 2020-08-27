@@ -12,6 +12,7 @@
 use BjyAuthorize\Guard\Route;
 use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
+use Contact\Acl\Assertion\Profile as ProfileAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 use Contact\Acl\Assertion\Note as NoteAssertion;
 use Contact\Acl\Assertion\Phone as PhoneAssertion;
@@ -62,7 +63,12 @@ return [
                 [
                     'route'     => 'community/contact/profile/contact',
                     'roles'     => [],
-                    'assertion' => ContactAssertion::class,
+                    'assertion' => ProfileAssertion::class, //This is about YOUR profile, for someone else, we use a different ACL here (for now)
+                ],
+                [
+                    'route'     => 'community/contact/profile/send-message',
+                    'roles'     => [],
+                    'assertion' => ProfileAssertion::class,//This is about YOUR profile, for someone else, we use a different ACL here (for now)
                 ],
                 [
                     'route'     => 'community/contact/profile/create',
@@ -104,7 +110,7 @@ return [
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,
                 ],
-                 [
+                [
                     'route'     => 'community/contact/change-password',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,

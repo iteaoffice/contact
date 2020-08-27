@@ -18,20 +18,21 @@ use Contact\Entity\PhoneType;
 use Contact\Entity\Photo;
 use Contact\Form\ProfileBody;
 use Contact\Form\ProfileForm;
-use Contact\Service\AddressService;
+use Contact\Form\SendMessage;
 use Contact\Service\ContactService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Event\Service\MeetingService;
+use General\Service\EmailService;
 use General\Service\GeneralService;
-use Organisation\Service\OrganisationService;
-use Program\Options\ModuleOptions;
-use Program\Service\CallService;
 use Laminas\Http\Response;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Validator\File\ImageSize;
 use Laminas\Validator\File\MimeType;
 use Laminas\View\Model\ViewModel;
+use Organisation\Service\OrganisationService;
+use Program\Options\ModuleOptions;
+use Program\Service\CallService;
 
 use function array_merge_recursive;
 use function count;
@@ -45,35 +46,35 @@ use function sprintf;
 final class ProfileController extends ContactAbstractController
 {
     private ContactService $contactService;
-    private AddressService $addressService;
     private OrganisationService $organisationService;
     private CallService $callService;
     private ModuleOptions $programModuleOptions;
     private GeneralService $generalService;
     private MeetingService $meetingService;
+    private EmailService $emailService;
     private EntityManager $entityManager;
     private TranslatorInterface $translator;
 
     public function __construct(
         ContactService $contactService,
-        AddressService $addressService,
         OrganisationService $organisationService,
         CallService $callService,
         ModuleOptions $programModuleOptions,
         GeneralService $generalService,
         MeetingService $meetingService,
+        EmailService $emailService,
         EntityManager $entityManager,
         TranslatorInterface $translator
     ) {
-        $this->contactService = $contactService;
-        $this->addressService = $addressService;
-        $this->organisationService = $organisationService;
-        $this->callService = $callService;
+        $this->contactService       = $contactService;
+        $this->organisationService  = $organisationService;
+        $this->callService          = $callService;
         $this->programModuleOptions = $programModuleOptions;
-        $this->generalService = $generalService;
-        $this->meetingService = $meetingService;
-        $this->entityManager = $entityManager;
-        $this->translator = $translator;
+        $this->generalService       = $generalService;
+        $this->meetingService       = $meetingService;
+        $this->emailService         = $emailService;
+        $this->entityManager        = $entityManager;
+        $this->translator           = $translator;
     }
 
 
@@ -190,14 +191,74 @@ final class ProfileController extends ContactAbstractController
             return $this->notFoundAction();
         }
 
-        if (! $contact->isVisibleInCommunity()) {
+        return new ViewModel(
+            [
+                'contactService' => $this->contactService,
+                'contact'        => $contact,
+            ]
+        );
+    }
+
+    public function sendMessageAction()
+    {
+        $contact = $this->contactService->findContactByHash((string)$this->params('hash'));
+
+        if (null === $contact) {
             return $this->notFoundAction();
+        }
+
+
+        $data = $this->getRequest()->getPost()->toArray();
+
+        $form = new SendMessage();
+        $form->setData($data);
+
+        if ($this->getRequest()->isPost()) {
+            if (isset($data['cancel'])) {
+                if (! $contact->isVisibleInCommunity()) {
+                    return $this->redirect()->toRoute('community/contact/search');
+                }
+
+                return $this->redirect()->toRoute('community/contact/profile/contact', ['hash' => $this->params('hash')]);
+            }
+
+            if ($form->isValid()) {
+                $emailBuilder = $this->emailService->createNewWebInfoEmailBuilder('/contact/profile/send-message');
+
+                $emailBuilder->addContactTo($contact);
+                $emailBuilder->setReplyTo($this->identity()->getEmail());
+
+                $variables = [
+                    'message'        => $form->getData()['message'],
+                    'recipient_name' => $contact->parseFullName(),
+                    'sender_name'    => $this->identity()->parseFullName()
+                ];
+
+                $emailBuilder->setTemplateVariables($variables);
+
+                $this->emailService->sendBuilder($emailBuilder);
+
+                $this->flashMessenger()
+                    ->addSuccessMessage(
+                        sprintf(
+                            $this->translator->translate('txt-message-to-%s-has-been-sent-successfully'),
+                            $contact->parseFullName()
+                        )
+                    );
+
+                if (! $contact->isVisibleInCommunity()) {
+                    return $this->redirect()->toRoute('community/contact/search');
+                }
+
+                return $this->redirect()->toRoute('community/contact/profile/contact', ['hash' => $this->params('hash')]);
+            }
         }
 
         return new ViewModel(
             [
                 'contactService' => $this->contactService,
                 'contact'        => $contact,
+                'form'           => $form
             ]
         );
     }
@@ -364,7 +425,7 @@ final class ProfileController extends ContactAbstractController
 
     public function createAction()
     {
-        $contact = $this->identity();
+        $contact       = $this->identity();
         $organisations = $this->organisationService->findOrganisationForProfileEditByContact($contact);
 
         $branches = [];
@@ -380,7 +441,7 @@ final class ProfileController extends ContactAbstractController
             $this->getRequest()->getFiles()->toArray()
         );
 
-        $mailAddress = $this->contactService->getMailAddress($contact);
+        $mailAddress         = $this->contactService->getMailAddress($contact);
         $contactOrganisation = false;
         if ($contact->hasOrganisation()) {
             $contactOrganisation = $contact->getContactOrganisation();
@@ -489,7 +550,7 @@ final class ProfileController extends ContactAbstractController
 
     public function editAction()
     {
-        $contact = $this->identity();
+        $contact       = $this->identity();
         $organisations = $this->organisationService->findOrganisationForProfileEditByContact($contact);
 
         $branches = [];
@@ -505,7 +566,7 @@ final class ProfileController extends ContactAbstractController
             $this->getRequest()->getFiles()->toArray()
         );
 
-        $mailAddress = $this->contactService->getMailAddress($contact);
+        $mailAddress         = $this->contactService->getMailAddress($contact);
         $contactOrganisation = false;
         if ($contact->hasOrganisation()) {
             $contactOrganisation = $contact->getContactOrganisation();

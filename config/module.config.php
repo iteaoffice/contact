@@ -148,6 +148,7 @@ $config = [
             Search\Service\ProfileSearchService::class   => ConfigAbstractFactory::class,
             Acl\Assertion\Address::class                 => Factory\InvokableFactory::class,
             Acl\Assertion\Contact::class                 => Factory\InvokableFactory::class,
+            Acl\Assertion\Profile::class                 => Factory\InvokableFactory::class,
             Acl\Assertion\Facebook::class                => Factory\InvokableFactory::class,
             Acl\Assertion\Note::class                    => Factory\InvokableFactory::class,
             Acl\Assertion\Phone::class                   => Factory\InvokableFactory::class,

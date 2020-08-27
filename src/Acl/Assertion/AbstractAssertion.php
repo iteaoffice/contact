@@ -72,10 +72,10 @@ abstract class AbstractAssertion implements AssertionInterface
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
-        $this->adminService = $container->get(AdminService::class);
+        $this->container      = $container;
+        $this->adminService   = $container->get(AdminService::class);
         $this->contactService = $container->get(ContactService::class);
-        $this->contact = $container->get(AuthenticationService::class)->getIdentity();
+        $this->contact        = $container->get(AuthenticationService::class)->getIdentity();
     }
 
     public function routeHasString(string $string): bool

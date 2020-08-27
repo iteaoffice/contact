@@ -25,41 +25,60 @@ final class ProfileLink extends AbstractLink
 {
     public function __invoke(
         Contact $contact,
-        string $action = 'profile',
+        string $action = 'contact',
         string $show = 'name'
     ): string {
-        if (! $this->hasAccess($contact, \Contact\Acl\Assertion\Contact::class, $action)) {
-            return '';
+        if (! $this->hasAccess($contact, \Contact\Acl\Assertion\Profile::class, $action)) {
+            return $action === 'contact' ? $contact->parseFullName() : '';
         }
 
         $routeParams = [];
         $showOptions = [];
 
-        $routeParams['id'] = $contact->getId();
+        $routeParams['id']   = $contact->getId();
+        $routeParams['hash'] = $contact->getHash();
+
         $showOptions['name'] = $contact->parseFullName();
 
 
         switch ($action) {
-            case 'profile':
+            case 'view':
                 $linkParams = [
-                    'icon' => 'far fa-user',
+                    'icon'  => 'far fa-user',
                     'route' => 'community/contact/profile/view',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-view-profile')
+                ];
+                break;
+            case 'profile': //legacy
+            case 'contact':
+                $linkParams = [
+                    'icon'  => 'far fa-user',
+                    'route' => 'community/contact/profile/contact',
+                    'text'  => $showOptions[$show]
+                        ?? $this->translator->translate('txt-view-profile')
+                ];
+                break;
+            case 'send-message':
+                $linkParams = [
+                    'icon'  => 'far fa-envelope',
+                    'route' => 'community/contact/profile/send-message',
+                    'text'  => $showOptions[$show]
+                        ?? $this->translator->translate('txt-send-message')
                 ];
                 break;
             case 'edit':
                 $linkParams = [
-                    'icon' => 'far fa-edit',
+                    'icon'  => 'far fa-edit',
                     'route' => 'community/contact/profile/edit',
-                    'text' => $showOptions[$show]
+                    'text'  => $showOptions[$show]
                         ?? $this->translator->translate('txt-edit-your-profile')
                 ];
                 break;
         }
 
-        $linkParams['action'] = $action;
-        $linkParams['show'] = $show;
+        $linkParams['action']      = $action;
+        $linkParams['show']        = $show;
         $linkParams['routeParams'] = $routeParams;
 
         return $this->parse(Link::fromArray($linkParams));

@@ -148,6 +148,15 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'send-message'    => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/send-message/[:hash].html',
+                                            'defaults' => [
+                                                'action' => 'send-message',
+                                            ],
+                                        ],
+                                    ],
                                     'create'          => [
                                         'type'    => 'Literal',
                                         'options' => [

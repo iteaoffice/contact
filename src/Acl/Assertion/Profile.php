@@ -18,7 +18,7 @@ use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 
-final class Contact extends AbstractAssertion
+final class Profile extends AbstractAssertion
 {
     public function assert(
         Acl $acl,
@@ -28,31 +28,18 @@ final class Contact extends AbstractAssertion
     ): bool {
         $this->setPrivilege($privilege);
 
-        if (strpos($this->getRouteMatch()->getMatchedRouteName(), 'zfcadmin')) {
-            return $this->rolesHaveAccess('office');
-        }
-
         /** @var \Contact\Entity\Contact $contact */
         $contact = $resource;
 
         switch ($this->getPrivilege()) {
-            case 'view-admin':
-            case 'edit-admin':
-            case 'impersonate':
-            case 'new':
-            case 'permit':
-            case 'list-duplicate':
-            case 'list-inactive':
-            case 'add-project':
-                return $this->rolesHaveAccess('office');
             case 'contact':
-            case 'send-message':
                 if ($contact instanceof GenericResource) {
                     $contact = $this->contactService->findContactByHash($this->getRouteMatch()->getParam('hash'));
                 }
 
                 return $contact->isVisibleInCommunity();
-            default:
+
+            case 'send-message':
                 return $this->hasContact();
         }
     }

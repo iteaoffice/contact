@@ -157,7 +157,7 @@ final class ContactController extends ContactAbstractController
         $paginator = new Paginator(
             new SolariumPaginator($this->profileSearchService->getSolrClient(), $this->profileSearchService->getQuery())
         );
-        $paginator::setDefaultItemCountPerPage(($page === 'all') ? 1000000 : 16);
+        $paginator::setDefaultItemCountPerPage(($page === 'all') ? 1000000 : 25);
         $paginator->setCurrentPageNumber($page);
         $paginator->setPageRange(ceil($paginator->getTotalItemCount() / $paginator::getDefaultItemCountPerPage()));
 

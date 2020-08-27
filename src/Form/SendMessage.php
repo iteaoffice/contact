@@ -41,8 +41,7 @@ final class SendMessage extends Form implements InputFilterProviderInterface
                     'help-block' => _('txt-send-message-to-facebook'),
                 ],
                 'attributes' => [
-                    'rows'  => 20,
-                    'class' => 'form-control',
+                    'rows' => 20,
                 ],
             ]
         );

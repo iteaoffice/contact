@@ -23,6 +23,7 @@ use Contact\Entity\SelectionSql;
 use DateInterval;
 use DateTime;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -368,7 +369,7 @@ class Contact extends EntityRepository
         $lastMonth->sub(new DateInterval('P1M'));
 
         $qb->andWhere('contact_entity_contact.dateCreated < :lastMonth');
-        $qb->setParameter('lastMonth', $lastMonth);
+        $qb->setParameter('lastMonth', $lastMonth, Types::DATETIME_MUTABLE);
 
         return $qb;
     }
@@ -427,7 +428,7 @@ class Contact extends EntityRepository
                     $subQuery->andWhere('project_entity_project_' . $key . '.dateEnd < :dateTime');
                 }
 
-                $qb->setParameter('dateTime', $yearsAgo);
+                $qb->setParameter('dateTime', $yearsAgo, Types::DATETIME_MUTABLE);
             }
 
             $qb->andWhere($qb->expr()->notIn('contact_entity_contact', $subQuery->getDQL()));
@@ -486,7 +487,7 @@ class Contact extends EntityRepository
 
         $today = new DateTime();
         $yearsAgo = $today->sub(new DateInterval(sprintf('P%dY', $years)));
-        $qb->setParameter('dateTime', $yearsAgo);
+        $qb->setParameter('dateTime', $yearsAgo, Types::DATETIME_MUTABLE);
 
         return null !== $qb->getQuery()->getOneOrNullResult();
     }
@@ -513,7 +514,7 @@ class Contact extends EntityRepository
 
         $today = new DateTime();
         $yearsAgo = $today->sub(new DateInterval(sprintf('P%dY', $years)));
-        $qb->setParameter('dateTime', $yearsAgo);
+        $qb->setParameter('dateTime', $yearsAgo, Types::DATETIME_MUTABLE);
 
         return null !== $qb->getQuery()->getOneOrNullResult();
     }

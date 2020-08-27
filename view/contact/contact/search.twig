@@ -29,17 +29,17 @@
             <div class="clearfix"></div>
 
 
-            <div class="row row-cols-1 row-cols-sm-3 row-cols-xl-6">
+            <div class="row row-cols-1 row-cols-sm-3 row-cols-xl-5">
 
                 {% for result in paginator.getCurrentItems() %}
 
                     <div class="col mb-4">
-                        <div class="card">
-
+                        <div class="card h-100">
                             {% if result.fields.photo_url|length > 0 %}
                                 <a class="text-secondary"
                                    href="{{ url("community/contact/profile/contact", {'hash': result.fields.contact_hash}) }}">
-                                    <img class="card-img-top" src="{{ image(serverUrl() ~ result.fields.photo_url, 200, 200, true, false, 2) }}"
+                                    <img class="card-img-top"
+                                         src="{{ image(serverUrl() ~ result.fields.photo_url, 200, 200, true, false, 2) }}"
                                          alt="{{ result.fields.fullname }}">
                                 </a>
                             {% else %}

@@ -80,7 +80,10 @@ return [
                             'search-result' => [
                                 'label' => _('txt-contact-profile'),
                                 'route' => 'community/contact/profile/contact',
-
+                            ],
+                            'send-message'  => [
+                                'label' => _('txt-send-message'),
+                                'route' => 'community/contact/profile/send-message',
                             ],
                         ],
 
@@ -627,16 +630,16 @@ return [
                                 'label' => _('txt-calendar'),
                                 'route' => 'zfcadmin/contact/office/leave/calendar',
                                 'pages' => [
-                                    'new'  => [
+                                    'new'             => [
                                         'label'   => _('txt-new-leave'),
                                         'route'   => 'zfcadmin/contact/office/leave/new',
                                         'visible' => false,
                                     ],
                                     'office-calendar' => [
-                                        'label'   => _('txt-office-calendar'),
-                                        'route'   => 'zfcadmin/contact/office/leave/office-calendar',
+                                        'label' => _('txt-office-calendar'),
+                                        'route' => 'zfcadmin/contact/office/leave/office-calendar',
                                     ],
-                                    'edit' => [
+                                    'edit'            => [
                                         'label'   => _('txt-edit'),
                                         'route'   => 'zfcadmin/contact/office/leave/edit',
                                         'visible' => false,
@@ -670,7 +673,7 @@ return [
                                         ],
                                         'pages'   => [
 
-                                            'edit' => [
+                                            'edit'       => [
                                                 'label'   => _('txt-edit'),
                                                 'route'   => 'zfcadmin/contact/office/edit',
                                                 'visible' => false,
@@ -690,7 +693,7 @@ return [
                                                     ],
                                                 ],
                                             ],
-                                            'new-leave' => [
+                                            'new-leave'  => [
                                                 'label'   => _('txt-new-leave'),
                                                 'route'   => 'zfcadmin/contact/office/new-leave',
                                                 'visible' => false,

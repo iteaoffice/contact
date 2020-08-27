@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace Contact\Repository;
 
-use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ObjectRepository;
 
 interface FilteredObjectRepository extends ObjectRepository
 {
