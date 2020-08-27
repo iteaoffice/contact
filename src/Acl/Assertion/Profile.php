@@ -40,6 +40,7 @@ final class Profile extends AbstractAssertion
                 return $contact->isVisibleInCommunity();
 
             case 'send-message':
+            default:
                 return $this->hasContact();
         }
     }
