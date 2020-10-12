@@ -382,6 +382,12 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         if (null !== $contact->getProfile()) {
             $description = strip_tags((string)$contact->getProfile()->getDescription());
 
+            //Add the organisation description
+            if ($contact->hasOrganisation() && $contact->getContactOrganisation()->getOrganisation()->hasDescription()) {
+                $description = $contact->getContactOrganisation()->getOrganisation()->getDescription();
+                $description .= ' ' . strip_tags($description->getDescription());
+            }
+
             $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
             $contactDocument->setField('profile_sort', str_replace(PHP_EOL, '', $description));
             $contactDocument->setField('profile_search', str_replace(PHP_EOL, '', $description));
@@ -514,6 +520,12 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
         if (null !== $contact->getProfile()) {
             $description = strip_tags((string)$contact->getProfile()->getDescription());
+
+            //Add the organisation description
+            if ($contact->hasOrganisation() && $contact->getContactOrganisation()->getOrganisation()->hasDescription()) {
+                $description = $contact->getContactOrganisation()->getOrganisation()->getDescription();
+                $description .= ' ' . strip_tags($description->getDescription());
+            }
 
             $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
             $contactDocument->setField('profile_sort', str_replace(PHP_EOL, '', $description));

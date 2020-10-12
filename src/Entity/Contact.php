@@ -21,6 +21,10 @@ use Affiliation\Entity\Description;
 use Affiliation\Entity\DoaReminder;
 use Affiliation\Entity\Loi;
 use Affiliation\Entity\Version;
+use Api\Entity\OAuth\AccessToken;
+use Api\Entity\OAuth\AuthorizationCode;
+use Api\Entity\OAuth\Clients;
+use Api\Entity\OAuth\RefreshToken;
 use BjyAuthorize\Provider\Role\ProviderInterface;
 use Calendar\Entity\Calendar;
 use Calendar\Entity\Document;
@@ -655,9 +659,27 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Description", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Project\Entity\Workpackage\Description|Collections\ArrayCollection
+     * @var \Project\Entity\Workpackage\Description[]|Collections\ArrayCollection
      */
     private $workpackageDescription;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Task", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Workpackage\Task[]|Collections\ArrayCollection
+     */
+    private $workpackageTask;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Deliverable", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Workpackage\Deliverable[]|Collections\ArrayCollection
+     */
+    private $workpackageDeliverable;
+    /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Deliverable\Document", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Workpackage\Deliverable\Document[]|Collections\ArrayCollection
+     */
+    private $workpackageDeliverableDocument;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Workpackage\Document", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -961,6 +983,12 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $workpackageContact;
     /**
+     * @ORM\OneToMany(targetEntity="Project\Entity\Selection", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Project\Entity\Selection[]|Collections\ArrayCollection
+     */
+    private $projectSelection;
+    /**
      * @ORM\OneToMany(targetEntity="Contact\Entity\Log", cascade={"persist"}, mappedBy="createdBy")
      * @Annotation\Exclude()
      *
@@ -995,6 +1023,40 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      * @var Collections\Collection
      */
     private $organisationUpdates;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\Selection", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     * @var \Organisation\Entity\Selection[]|Collections\ArrayCollection
+     */
+    private $organisationSelection;
+    /**
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\AccessToken", mappedBy="user", cascade={"persist", "remove"})
+     * @Annotation\Exclude()
+     *
+     * @var AccessToken[]|Collections\ArrayCollection
+     */
+    private $oAuthAccessTokens;
+    /**
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\AuthorizationCode", mappedBy="user", cascade={"persist", "remove"})
+     * @Annotation\Exclude()
+     *
+     * @var AuthorizationCode[]|Collections\ArrayCollection
+     */
+    private $oAuthAuthorizationCodes;
+    /**
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\Clients", mappedBy="user", cascade={"persist", "remove"})
+     * @Annotation\Exclude()
+     *
+     * @var Clients[]|Collections\ArrayCollection
+     */
+    private $oAuthClients;
+    /**
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\RefreshToken", mappedBy="user", cascade={"persist", "remove"})
+     * @Annotation\Exclude()
+     *
+     * @var RefreshToken[]|Collections\ArrayCollection
+     */
+    private $oAuthRefreshTokens;
 
     public function __construct()
     {
@@ -1021,6 +1083,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->programDoa                          = new Collections\ArrayCollection();
         $this->rationale                           = new Collections\ArrayCollection();
         $this->organisationLog                     = new Collections\ArrayCollection();
+        $this->organisationSelection               = new Collections\ArrayCollection();
         $this->affiliationLog                      = new Collections\ArrayCollection();
         $this->affiliationDescription              = new Collections\ArrayCollection();
         $this->projectLog                          = new Collections\ArrayCollection();
@@ -1054,6 +1117,9 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->workpackage                         = new Collections\ArrayCollection();
         $this->workpackageDocument                 = new Collections\ArrayCollection();
         $this->workpackageDescription              = new Collections\ArrayCollection();
+        $this->workpackageTask                     = new Collections\ArrayCollection();
+        $this->workpackageDeliverable              = new Collections\ArrayCollection();
+        $this->workpackageDeliverableDocument      = new Collections\ArrayCollection();
         $this->idea                                = new Collections\ArrayCollection();
         $this->favouriteIdea                       = new Collections\ArrayCollection();
         $this->ideaMessage                         = new Collections\ArrayCollection();
@@ -1074,6 +1140,7 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->projectReportWorkpackageDescription = new Collections\ArrayCollection();
         $this->projectCalendarReviewers            = new Collections\ArrayCollection();
         $this->projectReportReviewers              = new Collections\ArrayCollection();
+        $this->projectSelection                    = new Collections\ArrayCollection();
         $this->contract                            = new Collections\ArrayCollection();
         $this->contractVersion                     = new Collections\ArrayCollection();
         $this->invite                              = new Collections\ArrayCollection();
@@ -1113,6 +1180,11 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         $this->note                                = new Collections\ArrayCollection();
         $this->pageview                            = new Collections\ArrayCollection();
         $this->organisationUpdates                 = new Collections\ArrayCollection();
+
+        $this->oAuthAccessTokens       = new Collections\ArrayCollection();
+        $this->oAuthAuthorizationCodes = new Collections\ArrayCollection();
+        $this->oAuthClients            = new Collections\ArrayCollection();
+        $this->oAuthRefreshTokens      = new Collections\ArrayCollection();
 
         $this->hash          = hash('sha256', Rand::getString(100) . self::HASH_KEY);
         $this->triggerUpdate = false;
@@ -2236,6 +2308,50 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
         return $this;
     }
 
+    public function getWorkpackageDescription()
+    {
+        return $this->workpackageDescription;
+    }
+
+    public function setWorkpackageDescription($workpackageDescription): Contact
+    {
+        $this->workpackageDescription = $workpackageDescription;
+        return $this;
+    }
+
+    public function getWorkpackageTask()
+    {
+        return $this->workpackageTask;
+    }
+
+    public function setWorkpackageTask($workpackageTask): Contact
+    {
+        $this->workpackageTask = $workpackageTask;
+        return $this;
+    }
+
+    public function getWorkpackageDeliverable()
+    {
+        return $this->workpackageDeliverable;
+    }
+
+    public function setWorkpackageDeliverable($workpackageDeliverable): Contact
+    {
+        $this->workpackageDeliverable = $workpackageDeliverable;
+        return $this;
+    }
+
+    public function getWorkpackageDeliverableDocument()
+    {
+        return $this->workpackageDeliverableDocument;
+    }
+
+    public function setWorkpackageDeliverableDocument($workpackageDeliverableDocument): Contact
+    {
+        $this->workpackageDeliverableDocument = $workpackageDeliverableDocument;
+        return $this;
+    }
+
     public function getWorkpackageDocument()
     {
         return $this->workpackageDocument;
@@ -2422,6 +2538,17 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     {
         $this->projectReportReviewers = $projectReportReviewers;
 
+        return $this;
+    }
+
+    public function getProjectSelection()
+    {
+        return $this->projectSelection;
+    }
+
+    public function setProjectSelection($projectSelection): Contact
+    {
+        $this->projectSelection = $projectSelection;
         return $this;
     }
 
@@ -3286,6 +3413,61 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
     public function setIdeaStatus($ideaStatus): Contact
     {
         $this->ideaStatus = $ideaStatus;
+        return $this;
+    }
+
+    public function getOrganisationSelection()
+    {
+        return $this->organisationSelection;
+    }
+
+    public function setOrganisationSelection($organisationSelection): Contact
+    {
+        $this->organisationSelection = $organisationSelection;
+        return $this;
+    }
+
+    public function getOAuthAccessTokens()
+    {
+        return $this->oAuthAccessTokens;
+    }
+
+    public function setOAuthAccessTokens($oAuthAccessTokens): Contact
+    {
+        $this->oAuthAccessTokens = $oAuthAccessTokens;
+        return $this;
+    }
+
+    public function getOAuthAuthorizationCodes()
+    {
+        return $this->oAuthAuthorizationCodes;
+    }
+
+    public function setOAuthAuthorizationCodes($oAuthAuthorizationCodes): Contact
+    {
+        $this->oAuthAuthorizationCodes = $oAuthAuthorizationCodes;
+        return $this;
+    }
+
+    public function getOAuthClients()
+    {
+        return $this->oAuthClients;
+    }
+
+    public function setOAuthClients($oAuthClients): Contact
+    {
+        $this->oAuthClients = $oAuthClients;
+        return $this;
+    }
+
+    public function getOAuthRefreshTokens()
+    {
+        return $this->oAuthRefreshTokens;
+    }
+
+    public function setOAuthRefreshTokens($oAuthRefreshTokens): Contact
+    {
+        $this->oAuthRefreshTokens = $oAuthRefreshTokens;
         return $this;
     }
 }
