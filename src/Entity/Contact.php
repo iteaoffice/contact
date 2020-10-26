@@ -1030,28 +1030,28 @@ class Contact extends AbstractEntity implements ProviderInterface, UserInterface
      */
     private $organisationSelection;
     /**
-     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\AccessToken", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\AccessToken", mappedBy="contact", cascade={"persist", "remove"})
      * @Annotation\Exclude()
      *
      * @var AccessToken[]|Collections\ArrayCollection
      */
     private $oAuthAccessTokens;
     /**
-     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\AuthorizationCode", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\AuthorizationCode", mappedBy="contact", cascade={"persist", "remove"})
      * @Annotation\Exclude()
      *
      * @var AuthorizationCode[]|Collections\ArrayCollection
      */
     private $oAuthAuthorizationCodes;
     /**
-     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\Clients", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\Clients", mappedBy="contact", cascade={"persist", "remove"})
      * @Annotation\Exclude()
      *
      * @var Clients[]|Collections\ArrayCollection
      */
     private $oAuthClients;
     /**
-     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\RefreshToken", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Api\Entity\OAuth\RefreshToken", mappedBy="contact", cascade={"persist", "remove"})
      * @Annotation\Exclude()
      *
      * @var RefreshToken[]|Collections\ArrayCollection
