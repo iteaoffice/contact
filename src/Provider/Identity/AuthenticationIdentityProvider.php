@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Contact\Provider\Identity;
 
+use Admin\Entity\Access;
 use Admin\Service\AdminService;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider as BjyAuthorizeAuthenticationIdentityProvider;
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
@@ -26,12 +27,20 @@ use Laminas\Permissions\Acl\Role\RoleInterface;
  */
 final class AuthenticationIdentityProvider extends BjyAuthorizeAuthenticationIdentityProvider
 {
+    protected $defaultRole = Access::ACCESS_PUBLIC;
+    protected $authenticatedRole = Access::ACCESS_USER;
     private AdminService $adminService;
 
-    public function __construct(AuthenticationService $authService, AdminService $adminService)
-    {
+    public function __construct(
+        AuthenticationService $authService,
+        AdminService $adminService,
+        array $authorizeConfig
+    ) {
         parent::__construct($authService);
         $this->adminService = $adminService;
+
+        $this->defaultRole       = $authorizeConfig['default_role'] ?? Access::ACCESS_PUBLIC;
+        $this->authenticatedRole = $authorizeConfig['authenticated_role'] ?? Access::ACCESS_USER;
     }
 
     public function getIdentityRoles(): array

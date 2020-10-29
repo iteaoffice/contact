@@ -34,8 +34,7 @@ return [
             OrganisationService::class,
             GeneralService::class,
             AdminService::class,
-            'ViewHelperManager',
-            'zfcuser_module_options'
+            'ViewHelperManager'
         ],
         Service\SelectionContactService::class => [
             EntityManager::class

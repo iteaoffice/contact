@@ -21,8 +21,6 @@ namespace Contact\Controller\Plugin;
 use Contact\Entity\Contact;
 use Contact\Entity\OptIn;
 use Contact\Service\ContactService;
-use Deeplink\Entity\Target;
-use Deeplink\Service\DeeplinkService;
 use General\Entity\Gender;
 use General\Entity\Title;
 use General\Service\EmailService;
@@ -32,27 +30,23 @@ use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use function strlen;
 
 /**
- * Class MergeContact
- *
+ * Class ContactActions
  * @package Contact\Controller\Plugin
  */
 final class ContactActions extends AbstractPlugin
 {
     private ContactService $contactService;
     private GeneralService $generalService;
-    private DeeplinkService $deeplinkService;
     private EmailService $emailService;
 
     public function __construct(
         ContactService $contactService,
         GeneralService $generalService,
-        DeeplinkService $deeplinkService,
         EmailService $emailService
     ) {
         $this->contactService = $contactService;
         $this->generalService = $generalService;
-        $this->deeplinkService = $deeplinkService;
-        $this->emailService = $emailService;
+        $this->emailService   = $emailService;
     }
 
     public function __invoke(): ContactActions
@@ -95,16 +89,13 @@ final class ContactActions extends AbstractPlugin
 
         $this->contactService->save($contact);
 
-        /** @var Target $target */
-        $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate');
-        //Create a deep link for the user which redirects to the profile-page
-        $deeplink = $this->deeplinkService->createDeeplink($target, $contact, null, null, 7);
+        //Send the email
+        $email = $this->emailService->createNewWebInfoEmailBuilder('/auth/register:mail');
+        $email->addTo($emailAddress);
+        $email->setTemplateVariable('display_name', $contact->getDisplayName());
+        $email->addDeeplink('community/contact/profile/activate', 'url', $contact);
 
-        $this->emailService->setWebInfo('/auth/register:mail');
-        $this->emailService->addToEmailAddress($emailAddress);
-        $this->emailService->setTemplateVariable('display_name', $contact->getDisplayName());
-        $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
-        $this->emailService->send();
+        $this->emailService->sendBuilder($email);
 
         return $contact;
     }
@@ -143,16 +134,13 @@ final class ContactActions extends AbstractPlugin
 
         $this->contactService->save($contact);
 
-        /** @var Target $target */
-        $target = $this->deeplinkService->createTargetFromRoute('community/contact/profile/activate-optin');
-        //Create a deep link for the user which redirects to the profile-page
-        $deeplink = $this->deeplinkService->createDeeplink($target, $contact, null, null, 7);
+        //Send the email
+        $email = $this->emailService->createNewWebInfoEmailBuilder('/auth/subscribe:mail');
+        $email->addTo($emailAddress);
+        $email->setTemplateVariable('display_name', $contact->getDisplayName());
+        $email->addDeeplink('community/contact/profile/activate-optin', 'url', $contact);
 
-        $this->emailService->setWebInfo('/auth/subscribe:mail');
-        $this->emailService->addToEmailAddress($emailAddress);
-        $this->emailService->setTemplateVariable('display_name', $contact->getDisplayName());
-        $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
-        $this->emailService->send();
+        $this->emailService->sendBuilder($email);
 
         return $contact;
     }
@@ -201,14 +189,11 @@ final class ContactActions extends AbstractPlugin
             return;
         }
 
-        /** @var Target $target */
-        $target = $this->deeplinkService->createTargetFromRoute('community/contact/change-password');
-        //Create a deeplink for the user which redirects to the profile-page
-        $deeplink = $this->deeplinkService->createDeeplink($target, $contact);
+        //Send the email
+        $email = $this->emailService->createNewWebInfoEmailBuilder('/auth/forgotpassword:mail');
+        $email->addContactTo($contact);
+        $email->addDeeplink('community/contact/change-password', 'url', $contact);
 
-        $this->emailService->setWebInfo('/auth/forgotpassword:mail');
-        $this->emailService->addTo($contact);
-        $this->emailService->setTemplateVariable('url', $this->deeplinkService->parseDeeplinkUrl($deeplink));
-        $this->emailService->send();
+        $this->emailService->sendBuilder($email);
     }
 }

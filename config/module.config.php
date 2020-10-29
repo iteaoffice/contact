@@ -11,15 +11,6 @@
 
 namespace Contact;
 
-use Contact\Acl;
-use Contact\Factory;
-use Contact\Form;
-use Contact\InputFilter;
-use Contact\Navigation;
-use Contact\Provider;
-use Contact\Search;
-use Contact\Service;
-use Contact\View;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use DoctrineExtensions\Query\Mysql\Replace;
 use Gedmo\Sluggable\SluggableListener;
@@ -115,7 +106,7 @@ $config = [
         ],
     ],
     'service_manager'    => [
-        'factories' => [
+        'factories'  => [
             Navigation\Service\ContactNavigationService::class      => Navigation\Factory\ContactNavigationServiceFactory::class,
             Navigation\Invokable\ContactLabel::class                => NavigationInvokableFactory::class,
             Navigation\Invokable\FacebookLabel::class               => NavigationInvokableFactory::class,
@@ -127,7 +118,7 @@ $config = [
             Navigation\Invokable\PhoneLabel::class                  => NavigationInvokableFactory::class,
             Navigation\Invokable\Office\ContactLabel::class         => NavigationInvokableFactory::class,
             Navigation\Invokable\Office\LeaveLabel::class           => NavigationInvokableFactory::class,
-            Provider\Identity\AuthenticationIdentityProvider::class => Factory\AuthenticationIdentityProviderServiceFactory::class,
+            Provider\Identity\AuthenticationIdentityProvider::class => ConfigAbstractFactory::class,
             Service\SelectionService::class                         => ConfigAbstractFactory::class,
             Service\ContactService::class                           => ConfigAbstractFactory::class,
             Service\SelectionContactService::class                  => ConfigAbstractFactory::class,
@@ -156,7 +147,10 @@ $config = [
             Acl\Assertion\Office\ContactAssertion::class => Factory\InvokableFactory::class,
             Acl\Assertion\Office\LeaveAssertion::class   => Factory\InvokableFactory::class,
         ],
-        'shared'    => [
+        'invokables' => [
+            Provider\ContactProvider::class,
+        ],
+        'shared'     => [
             Service\ContactService::class => false,
         ],
     ],

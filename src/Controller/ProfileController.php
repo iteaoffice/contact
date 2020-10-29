@@ -269,7 +269,7 @@ final class ProfileController extends ContactAbstractController
         $contact = $this->identity();
 
         if (null === $contact) {
-            return $this->redirect()->toRoute('zfcuser/login');
+            return $this->redirect()->toRoute('user/login');
         }
 
         if ($contact->isActivated()) {
@@ -295,7 +295,7 @@ final class ProfileController extends ContactAbstractController
         $contact = $this->identity();
 
         if (null === $contact) {
-            return $this->redirect()->toRoute('zfcuser/login');
+            return $this->redirect()->toRoute('user/login');
         }
 
         if ($contact->isActivated()) {

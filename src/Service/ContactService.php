@@ -53,7 +53,6 @@ use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
 use Solarium\QueryType\Update\Query\Document;
-use ZfcUser\Options\ModuleOptions;
 
 use function array_key_exists;
 use function count;
@@ -85,7 +84,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     private GeneralService $generalService;
     private AdminService $adminService;
     private HelperPluginManager $viewHelperManager;
-    private ModuleOptions $userOptions;
 
     public function __construct(
         EntityManager $entityManager,
@@ -96,8 +94,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         OrganisationService $organisationService,
         GeneralService $generalService,
         AdminService $adminService,
-        HelperPluginManager $viewHelperManager,
-        ModuleOptions $userOptions
+        HelperPluginManager $viewHelperManager
     ) {
         parent::__construct($entityManager);
 
@@ -109,9 +106,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $this->generalService          = $generalService;
         $this->adminService            = $adminService;
         $this->viewHelperManager       = $viewHelperManager;
-        $this->userOptions             = $userOptions;
     }
-
 
     public function findContactByHash(string $hash): ?Contact
     {
@@ -976,7 +971,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
     public function updatePasswordForContact(string $password, Contact $contact): void
     {
         $Bcrypt = new Bcrypt();
-        $Bcrypt->setCost($this->userOptions->getPasswordCost());
+        $Bcrypt->setCost(14);
         $pass = $Bcrypt->create(md5($password));
 
         $contact->setSaltedPassword($pass);

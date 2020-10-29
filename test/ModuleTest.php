@@ -18,7 +18,6 @@ use Testing\Util\AbstractServiceTest;
 use Laminas\Mvc\Application;
 use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Laminas\View\HelperPluginManager;
-use ZfcUser\Options\ModuleOptions;
 
 use function is_string;
 
@@ -34,8 +33,8 @@ class ModuleTest extends AbstractServiceTest
         $module = new Module();
         $config = $module->getConfig();
 
-        $this->assertArrayHasKey('service_manager', $config);
-        $this->assertArrayHasKey(ConfigAbstractFactory::class, $config);
+        self::assertArrayHasKey('service_manager', $config);
+        self::assertArrayHasKey(ConfigAbstractFactory::class, $config);
     }
 
     public function testInstantiationOfConfigAbstractFactories(): void
@@ -68,9 +67,6 @@ class ModuleTest extends AbstractServiceTest
                 if ($dependency === 'ViewHelperManager') {
                     $dependency = HelperPluginManager::class;
                 }
-                if ($dependency === 'zfcuser_module_options') {
-                    $dependency = ModuleOptions::class;
-                }
                 if (is_string($dependency)) {
                     $instantiatedDependencies[] = $this->getMockBuilder($dependency)->disableOriginalConstructor()
                         ->getMock();
@@ -81,7 +77,7 @@ class ModuleTest extends AbstractServiceTest
 
             $instance = new $service(...$instantiatedDependencies);
 
-            $this->assertInstanceOf($service, $instance);
+            self::assertInstanceOf($service, $instance);
         }
     }
 }

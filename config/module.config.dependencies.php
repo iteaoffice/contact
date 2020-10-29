@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Contact;
 
+use Admin\Service\AdminService;
 use Contact\Controller\Plugin;
 use Contact\Form\View\Helper\ContactFormElement;
 use Contact\Form\View\Helper\SelectionFormElement;
@@ -20,33 +21,32 @@ use Contact\Service\AddressService;
 use Contact\Service\ContactService;
 use Contact\Service\SelectionContactService;
 use Contact\Service\SelectionService;
-use Deeplink\Service\DeeplinkService;
 use Doctrine\ORM\EntityManager;
 use ErrorHeroModule\Handler\Logging;
 use General\Service\CountryService;
 use General\Service\EmailService;
 use General\Service\GeneralService;
-use Organisation\Service\OrganisationService;
+use Laminas\Authentication\AuthenticationService;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
+use Organisation\Service\OrganisationService;
 
 return [
     ConfigAbstractFactory::class => [
-        Plugin\MergeContact::class                 => [
+        Plugin\MergeContact::class                              => [
             EntityManager::class,
             TranslatorInterface::class,
             Logging::class
         ],
-        Plugin\ContactActions::class               => [
+        Plugin\ContactActions::class                            => [
             ContactService::class,
             GeneralService::class,
-            DeeplinkService::class,
             EmailService::class
         ],
-        Plugin\GetFilter::class                    => [
+        Plugin\GetFilter::class                                 => [
             'Application'
         ],
-        Plugin\HandleImport::class                 => [
+        Plugin\HandleImport::class                              => [
             GeneralService::class,
             CountryService::class,
             OrganisationService::class,
@@ -54,29 +54,34 @@ return [
             SelectionContactService::class,
             SelectionService::class
         ],
-        Plugin\SelectionExport::class              => [
+        Plugin\SelectionExport::class                           => [
             ContactService::class,
             SelectionContactService::class,
             AddressService::class,
             TranslatorInterface::class
         ],
-        Search\Service\ContactSearchService::class => [
+        Search\Service\ContactSearchService::class              => [
             'Config'
         ],
-        Search\Service\ProfileSearchService::class => [
+        Search\Service\ProfileSearchService::class              => [
             'Config'
         ],
-        Form\ContactForm::class                    => [
+        Form\ContactForm::class                                 => [
             EntityManager::class
         ],
-        ContactFormElement::class   => [
+        ContactFormElement::class                               => [
             ContactService::class,
             'ViewHelperManager',
             TranslatorInterface::class
         ],
-        SelectionFormElement::class => [
+        SelectionFormElement::class                             => [
             'ViewHelperManager',
             TranslatorInterface::class
         ],
+        Provider\Identity\AuthenticationIdentityProvider::class => [
+            AuthenticationService::class,
+            AdminService::class,
+            'BjyAuthorize\Config'
+        ]
     ]
 ];

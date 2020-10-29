@@ -82,7 +82,6 @@ use Project\Entity\Result\Result;
 use Project\Entity\Workpackage\Workpackage;
 use Publication\Entity\Download;
 use Publication\Entity\Publication;
-use ZfcUser\Entity\UserInterface;
 
 use function explode;
 use function in_array;
@@ -94,7 +93,7 @@ use function substr;
  * @ORM\Entity(repositoryClass="Contact\Repository\Contact")
  * @Annotation\Name("contact_contact")
  */
-class Contact extends AbstractEntity implements ProviderInterface, UserInterface
+class Contact extends AbstractEntity implements ProviderInterface
 {
     /**
      * Key needed for the encryption and decryption of the Keys

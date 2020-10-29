@@ -20,7 +20,6 @@ use Contact\Entity\Selection;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\View\Helper\Identity;
-use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
 
 /**
  * @method Identity|Contact identity()
@@ -29,7 +28,6 @@ use ZfcUser\Controller\Plugin\ZfcUserAuthentication;
  * @method Plugin\HandleImport handleImport(Contact $contact, string $data, ?array $import, ?array $optIn, ?int $selectionId, ?string $selectionName)
  * @method Plugin\SelectionExport selectionExport(Selection $selection, int $type)
  * @method Plugin\GetFilter getContactFilter(array $defaults = [])
- * @method ZfcUserAuthentication zfcUserAuthentication()
  * @method Plugin\MergeContact mergeContact()
  */
 abstract class ContactAbstractController extends AbstractActionController
