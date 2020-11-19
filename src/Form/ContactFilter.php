@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Contact\Form;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityMultiCheckbox;
 use DoctrineORMModule\Form\Element\EntitySelect;
@@ -75,7 +76,7 @@ final class ContactFilter extends Form
                         'name'   => 'findForForm',
                         'params' => [
                             'criteria' => [],
-                            'orderBy'  => ['country' => 'ASC'],
+                            'orderBy'  => [],
                         ],
                     ],
                 ],

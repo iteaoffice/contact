@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Contact\Form\Profile;
 
 use Contact\Entity\Contact;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityRadio;
 use DoctrineORMModule\Form\Element\EntitySelect;
@@ -106,7 +107,7 @@ final class OrganisationFieldset extends Fieldset implements InputFilterProvider
                         'name'   => 'findBy',
                         'params' => [
                             'criteria' => [],
-                            'orderBy'  => ['description' => 'ASC'],
+                            'orderBy'  => ['description' => Criteria::ASC],
                         ],
                     ],
                 ],
