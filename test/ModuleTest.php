@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace ContactTest;
 
 use Contact\Module;
-use Testing\Util\AbstractServiceTest;
 use Laminas\Mvc\Application;
 use Laminas\ServiceManager\AbstractFactory\ConfigAbstractFactory;
 use Laminas\View\HelperPluginManager;
+use Testing\Util\AbstractServiceTest;
 
 use function is_string;
 
@@ -62,6 +62,9 @@ class ModuleTest extends AbstractServiceTest
                     $dependency = Application::class;
                 }
                 if ($dependency === 'Config') {
+                    $dependency = [];
+                }
+                if ($dependency === 'BjyAuthorize\Config') {
                     $dependency = [];
                 }
                 if ($dependency === 'ViewHelperManager') {
