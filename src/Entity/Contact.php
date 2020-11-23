@@ -291,23 +291,17 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $optIn;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Action", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Quality\Entity\Action[]|Collections\ArrayCollection
+     * @var \Quality\Entity\Improvement\Action[]|Collections\ArrayCollection
      */
-    private $qualityActions;
+    private $qualityImprovementActions;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Result", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Quality\Entity\Result[]|Collections\ArrayCollection
+     * @var \Quality\Entity\Improvement\Action\Result[]|Collections\ArrayCollection
      */
-    private $qualityResults;
-    /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Result", cascade={"persist"}, mappedBy="contactComment")
-     * @Annotation\Exclude()
-     * @var \Quality\Entity\Result[]|Collections\ArrayCollection
-     */
-    private $qualityResultComments;
+    private $qualityImprovementActionResults;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -1076,9 +1070,8 @@ class Contact extends AbstractEntity implements ProviderInterface
         $this->nda                                 = new Collections\ArrayCollection();
         $this->pca                                 = new Collections\ArrayCollection();
         $this->ndaApprover                         = new Collections\ArrayCollection();
-        $this->qualityActions                      = new Collections\ArrayCollection();
-        $this->qualityResults                      = new Collections\ArrayCollection();
-        $this->qualityResultComments               = new Collections\ArrayCollection();
+        $this->qualityImprovementActions           = new Collections\ArrayCollection();
+        $this->qualityImprovementActionResults     = new Collections\ArrayCollection();
         $this->programDoa                          = new Collections\ArrayCollection();
         $this->rationale                           = new Collections\ArrayCollection();
         $this->organisationLog                     = new Collections\ArrayCollection();
@@ -1199,7 +1192,7 @@ class Contact extends AbstractEntity implements ProviderInterface
     {
         $name = sprintf('%s %s', $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return (string)(! empty(trim($name)) ? $name : $this->email);
+        return (string)(!empty(trim($name)) ? $name : $this->email);
     }
 
     public function parseFullName(): string
@@ -1274,7 +1267,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function hasPhoto(): bool
     {
-        return ! $this->photo->isEmpty();
+        return !$this->photo->isEmpty();
     }
 
     public function isVisibleInCommunity(): bool
@@ -1564,14 +1557,14 @@ class Contact extends AbstractEntity implements ProviderInterface
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return ! empty($name) ? $name : $this->email;
+        return !empty($name) ? $name : $this->email;
     }
 
     public function getFormName(): string
     {
         $name = sprintf('%s, %s', trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
-        return ! empty($name) ? $name : $this->email;
+        return !empty($name) ? $name : $this->email;
     }
 
     public function getHash(): ?string
@@ -1652,7 +1645,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function getOptIn(bool $onlyActive = false)
     {
-        if (! $onlyActive) {
+        if (!$onlyActive) {
             return $this->optIn;
         }
 
@@ -3338,36 +3331,25 @@ class Contact extends AbstractEntity implements ProviderInterface
         return $this;
     }
 
-    public function getQualityResults()
+    public function getQualityImprovementActions()
     {
-        return $this->qualityResults;
+        return $this->qualityImprovementActions;
     }
 
-    public function setQualityResults($qualityResults): Contact
+    public function setQualityImprovementActions($qualityImprovementActions): Contact
     {
-        $this->qualityResults = $qualityResults;
+        $this->qualityImprovementActions = $qualityImprovementActions;
         return $this;
     }
 
-    public function getQualityResultComments()
+    public function getQualityImprovementActionResults()
     {
-        return $this->qualityResultComments;
+        return $this->qualityImprovementActionResults;
     }
 
-    public function setQualityResultComments($qualityResultComments): Contact
+    public function setQualityImprovementActionResults($qualityImprovementActionResults): Contact
     {
-        $this->qualityResultComments = $qualityResultComments;
-        return $this;
-    }
-
-    public function getQualityActions()
-    {
-        return $this->qualityActions;
-    }
-
-    public function setQualityActions($qualityActions): Contact
-    {
-        $this->qualityActions = $qualityActions;
+        $this->qualityImprovementActionResults = $qualityImprovementActionResults;
         return $this;
     }
 
