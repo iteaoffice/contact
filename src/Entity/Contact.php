@@ -290,17 +290,26 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $optIn;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Action", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Quality\Entity\Improvement\Action[]|Collections\ArrayCollection
+     *
+     * @var \Quality\Entity\Action[]|Collections\Collection
      */
-    private $qualityImprovementActions;
+    private $qualityActions;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action\Result", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Action\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Quality\Entity\Improvement\Action\Result[]|Collections\ArrayCollection
+     *
+     * @var \Quality\Entity\Action\Result[]|Collections\Collection
      */
-    private $qualityImprovementActionResults;
+    private $qualityActionResults;
+    /**
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Kpi\Result", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Quality\Entity\Kpi\Result[]|Collections\Collection
+     */
+    private $qualityKpiResults;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -1069,8 +1078,9 @@ class Contact extends AbstractEntity implements ProviderInterface
         $this->nda                                 = new Collections\ArrayCollection();
         $this->pca                                 = new Collections\ArrayCollection();
         $this->ndaApprover                         = new Collections\ArrayCollection();
-        $this->qualityImprovementActions           = new Collections\ArrayCollection();
-        $this->qualityImprovementActionResults     = new Collections\ArrayCollection();
+        $this->qualityActions                      = new Collections\ArrayCollection();
+        $this->qualityActionResults                = new Collections\ArrayCollection();
+        $this->qualityKpiResults                   = new Collections\ArrayCollection();
         $this->programDoa                          = new Collections\ArrayCollection();
         $this->rationale                           = new Collections\ArrayCollection();
         $this->organisationLog                     = new Collections\ArrayCollection();
