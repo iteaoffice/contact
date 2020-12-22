@@ -1192,7 +1192,7 @@ class Contact extends AbstractEntity implements ProviderInterface
     {
         $name = sprintf('%s %s', $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return (string)(!empty(trim($name)) ? $name : $this->email);
+        return (string)(! empty(trim($name)) ? $name : $this->email);
     }
 
     public function parseFullName(): string
@@ -1267,7 +1267,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function hasPhoto(): bool
     {
-        return !$this->photo->isEmpty();
+        return ! $this->photo->isEmpty();
     }
 
     public function isVisibleInCommunity(): bool
@@ -1557,14 +1557,14 @@ class Contact extends AbstractEntity implements ProviderInterface
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getFormName(): string
     {
         $name = sprintf('%s, %s', trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getHash(): ?string
@@ -1645,7 +1645,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function getOptIn(bool $onlyActive = false)
     {
-        if (!$onlyActive) {
+        if (! $onlyActive) {
             return $this->optIn;
         }
 

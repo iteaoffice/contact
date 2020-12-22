@@ -32,7 +32,6 @@ use function sprintf;
 
 /**
  * Class ContactController
- *
  * @package Contact\Controller
  */
 final class ContactController extends ContactAbstractController
