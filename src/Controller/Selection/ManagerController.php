@@ -3,16 +3,16 @@
 /**
  * ITEA Office all rights reserved
  *
- * @category    Selection
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
 
-namespace Contact\Controller;
+namespace Contact\Controller\Selection;
 
+use Contact\Controller\ContactAbstractController;
 use Contact\Controller\Plugin\SelectionExport;
 use Contact\Entity\Contact;
 use Contact\Entity\Selection;
@@ -31,22 +31,21 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as PaginatorAdapter;
 use InvalidArgumentException;
-use Throwable;
 use Laminas\Http\Response;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Paginator\Paginator;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
+use Throwable;
 
 use function set_time_limit;
 use function strlen;
 
 /**
- * Class SelectionManagerController
- *
- * @package Contact\Controller
+ * Class ManagerController
+ * @package Contact\Controller\Selection
  */
-final class SelectionManagerController extends ContactAbstractController
+final class ManagerController extends ContactAbstractController
 {
     private ContactService $contactService;
     private SelectionContactService $selectionContactService;
@@ -65,19 +64,19 @@ final class SelectionManagerController extends ContactAbstractController
         EntityManager $entityManager,
         TranslatorInterface $translator
     ) {
-        $this->contactService = $contactService;
+        $this->contactService          = $contactService;
         $this->selectionContactService = $selectionContactService;
-        $this->selectionService = $selectionService;
-        $this->deeplinkService = $deeplinkService;
-        $this->formService = $formService;
-        $this->entityManager = $entityManager;
-        $this->translator = $translator;
+        $this->selectionService        = $selectionService;
+        $this->deeplinkService         = $deeplinkService;
+        $this->formService             = $formService;
+        $this->entityManager           = $entityManager;
+        $this->translator              = $translator;
     }
 
 
     public function listAction(): ViewModel
     {
-        $page = $this->params()->fromRoute('page', 1);
+        $page         = $this->params()->fromRoute('page', 1);
         $filterPlugin = $this->getContactFilter();
         $contactQuery = $this->contactService->findFiltered(Selection::class, $filterPlugin->getFilter());
 
@@ -117,7 +116,7 @@ final class SelectionManagerController extends ContactAbstractController
             $error = false;
         } catch (Throwable $e) {
             $contacts = [];
-            $error = $e->getMessage();
+            $error    = $e->getMessage();
         }
 
         return new ViewModel(
@@ -143,7 +142,7 @@ final class SelectionManagerController extends ContactAbstractController
         $form = new Impersonate($this->entityManager);
 
         $request = $this->getRequest();
-        $data = $request->getPost()->toArray();
+        $data    = $request->getPost()->toArray();
 
         $form->setData($data);
 
@@ -154,7 +153,7 @@ final class SelectionManagerController extends ContactAbstractController
 
             /** @var Target $target */
             $target = $this->deeplinkService->find(Target::class, (int)$data['target']);
-            $key = (! empty($data['key']) ? $data['key'] : null);
+            $key    = (! empty($data['key']) ? $data['key'] : null);
 
             //Create a deeplink for the user which redirects to the profile-page
             foreach ($this->selectionContactService->findContactsInSelection($selection) as $contact) {
@@ -280,7 +279,7 @@ final class SelectionManagerController extends ContactAbstractController
             );
         }
 
-        if (! $this->selectionService->canRemoveSelection($selection)) {
+        if (! $this->selectionService->canDeleteSelection($selection)) {
             $form->remove('delete');
 
             if ($selection->isActive()) {
@@ -292,7 +291,7 @@ final class SelectionManagerController extends ContactAbstractController
             }
         }
 
-        if ($this->selectionService->canRemoveSelection($selection)) {
+        if ($this->selectionService->canDeleteSelection($selection)) {
             $form->remove('delete');
             $form->remove('reactivate');
             $form->remove('deactivate');
@@ -303,7 +302,7 @@ final class SelectionManagerController extends ContactAbstractController
                 return $this->redirect()->toRoute('zfcadmin/selection/view', ['id' => $selection->getId()]);
             }
 
-            if (isset($data['delete']) && $this->selectionService->canRemoveSelection($selection)) {
+            if (isset($data['delete']) && $this->selectionService->canDeleteSelection($selection)) {
                 $this->selectionService->delete($selection);
 
                 $this->flashMessenger()->addSuccessMessage(
@@ -408,7 +407,7 @@ final class SelectionManagerController extends ContactAbstractController
         }
 
         $selection = clone $source;
-        $data = $this->getRequest()->getPost()->toArray();
+        $data      = $this->getRequest()->getPost()->toArray();
 
         $form = $this->formService->prepare($selection, $data);
         $form->get('submit')->setValue($this->translator->translate('txt-copy'));

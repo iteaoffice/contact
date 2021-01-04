@@ -1,0 +1,24 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-new-selection-type")) %}
+
+<h1>{{ translate("txt-new-selection-type") }}</h1>
+
+{% do form.prepare() %}
+{{ form().openTag(form)|raw }}
+
+{% set type = form.get('contact_entity_selection_type') %}
+
+{{ ztbformelement(type.get('id')) }}
+{{ ztbformelement(type.get('name')) }}
+{{ ztbformelement(type.get('description')) }}
+
+<div class="form-group row">
+    <div class="offset-sm-3 col-sm-9">
+        {{ ztbformelement(form.get('csrf')) }}
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('cancel')) }}
+    </div>
+</div>
+
+{{ form().closeTag()|raw }}
+

@@ -3,10 +3,9 @@
 /**
  * ITEA Office all rights reserved
  *
- * @category    Contact
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -14,6 +13,7 @@ declare(strict_types=1);
 namespace Contact\Repository;
 
 use Contact\Entity;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -32,6 +32,7 @@ class Selection extends EntityRepository
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_selection');
         $qb->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb->leftJoin('contact_entity_selection.type', 'contact_entity_selection_type');
 
         if (array_key_exists('search', $filter)) {
             $qb->andWhere(
@@ -61,12 +62,12 @@ class Selection extends EntityRepository
             $qb->andWhere($qb->expr()->isNull('contact_entity_selection.dateDeleted'));
         }
 
-        if (array_key_exists('core', $filter)) {
-            $qb->andWhere($qb->expr()->in('contact_entity_selection.core', $filter['core']));
+        if (array_key_exists('type', $filter)) {
+            $qb->andWhere($qb->expr()->in('contact_entity_selection.type', $filter['type']));
         }
 
         $direction = 'ASC';
-        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), ['ASC', 'DESC'], true)) {
+        if (isset($filter['direction']) && in_array(strtoupper($filter['direction']), [Criteria::ASC, Criteria::DESC], true)) {
             $direction = strtoupper($filter['direction']);
         }
 
@@ -77,8 +78,9 @@ class Selection extends EntityRepository
             case 'tag':
                 $qb->addOrderBy('contact_entity_selection.tag', $direction);
                 break;
-            case 'core':
-                $qb->addOrderBy('contact_entity_selection.core', $direction);
+            case 'type':
+                $qb->addOrderBy('contact_entity_selection_type.name', $direction);
+                $qb->addOrderBy('contact_entity_selection.selection', $direction);
                 break;
             case 'owner':
                 $qb->join('contact_entity_selection.contact', 'contact');
@@ -92,6 +94,16 @@ class Selection extends EntityRepository
         }
 
         return $qb;
+    }
+
+    public function findSelectionsByType(array $types): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('contact_entity_selection');
+        $qb->from(Entity\Selection::class, 'contact_entity_selection');
+        $qb->innerJoin('contact_entity_selection.type', 'contact_entity_selection_type');
+        $qb->andWhere($qb->expr()->in('contact_entity_selection.type', $types));
+        return $qb->getQuery()->getResult();
     }
 
     public function findSqlSelections(): array
@@ -181,6 +193,6 @@ class Selection extends EntityRepository
             $source->getId()
         );
 
-        $this->_em->getConnection()->exec($query);
+        $this->_em->getConnection()->executeStatement($query);
     }
 }

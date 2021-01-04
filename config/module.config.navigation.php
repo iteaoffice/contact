@@ -1,12 +1,11 @@
 <?php
 
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office all rights reserved
  *
- * @category    Contact
- * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 namespace Contact;
@@ -729,6 +728,44 @@ return [
                     ],
                 ],
             ],
+            'config'  => [
+                'pages' => [
+                    'selection-type-list' => [
+                        'label' => _('txt-selection-type-list'),
+                        'route' => 'zfcadmin/selection/type/list',
+                        'pages' => [
+                            'selection-type-view' => [
+                                'route'   => 'zfcadmin/selection/type/view',
+                                'visible' => false,
+                                'params'  => [
+                                    'entities'   => [
+                                        'id' => Entity\Selection\Type::class,
+                                    ],
+                                    'invokables' => [
+                                        Navigation\Invokable\Selection\TypeLabel::class,
+                                    ],
+                                ],
+                                'pages'   => [
+                                    'selection-type-edit' => [
+                                        'label'   => _('txt-edit-selection-type'),
+                                        'route'   => 'zfcadmin/selection/type/edit',
+                                        'visible' => false,
+                                        'params'  => [
+                                            'entities' => [
+                                                'id' => Entity\Selection\Type::class,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'selection-type-new'  => [
+                                'label' => _('txt-create-new-selection-type'),
+                                'route' => 'zfcadmin/selection/type/new',
+                            ],
+                        ],
+                    ],
+                ]
+            ]
         ],
     ],
 ];

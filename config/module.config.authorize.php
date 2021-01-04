@@ -1,21 +1,20 @@
 <?php
 
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office all rights reserved
  *
- * @category    Contact
- * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 use BjyAuthorize\Guard\Route;
 use Contact\Acl\Assertion\Address as AddressAssertion;
 use Contact\Acl\Assertion\Contact as ContactAssertion;
-use Contact\Acl\Assertion\Profile as ProfileAssertion;
 use Contact\Acl\Assertion\Facebook as FacebookAssertion;
 use Contact\Acl\Assertion\Note as NoteAssertion;
 use Contact\Acl\Assertion\Phone as PhoneAssertion;
+use Contact\Acl\Assertion\Profile as ProfileAssertion;
 
 return [
     'bjyauthorize' => [
@@ -343,6 +342,22 @@ return [
                 ],
                 [
                     'route' => 'zfcadmin/selection/view',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/selection/type/list',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/selection/type/new',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/selection/type/edit',
+                    'roles' => ['office'],
+                ],
+                [
+                    'route' => 'zfcadmin/selection/type/view',
                     'roles' => ['office'],
                 ],
                 [

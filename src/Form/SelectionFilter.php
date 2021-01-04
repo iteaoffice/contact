@@ -1,19 +1,17 @@
 <?php
 
 /**
- * Jield copyright message placeholder.
- *
- * @category    Contact
+ * ITEA Office all rights reserved
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
 
 namespace Contact\Form;
 
-use Contact\Entity\Selection;
 use Contact\Service\SelectionService;
 use Laminas\Form\Element\MultiCheckbox;
 use Laminas\Form\Element\Submit;
@@ -82,16 +80,21 @@ final class SelectionFilter extends Form
             ]
         );
 
+        $types = [];
+        foreach ($selectionService->findTypes() as $type) {
+            $types[$type->getId()] = $type->getName();
+        }
+
         $filterFieldset->add(
             [
                 'type'       => MultiCheckbox::class,
-                'name'       => 'core',
+                'name'       => 'type',
                 'options'    => [
-                    'value_options' => Selection::getCoreTemplates(),
+                    'value_options' => $types,
                     'inline'        => true,
                 ],
                 'attributes' => [
-                    'label' => _('txt-filter-on-core-selections'),
+                    'label' => _('txt-filter-on-type'),
                 ],
             ]
         );

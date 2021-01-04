@@ -3,10 +3,9 @@
 /**
  * ITEA Office all rights reserved
  *
- * @category    Contact
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -214,7 +213,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function contactInCoreSelection(Contact $contact): bool
     {
-        $coreSelections = $this->entityManager->getRepository(Selection::class)->findBy(['core' => Selection::CORE]);
+        $coreSelections = $this->entityManager->getRepository(Selection::class)->findSelectionsByType([Selection\Type::TYPE_CORE]);
 
         return $this->selectionContactService->contactInSelection($contact, $coreSelections);
     }

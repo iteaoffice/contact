@@ -1,0 +1,41 @@
+{% do headTitle().append(translate("txt-admin")) %}
+{% do headTitle().append(translate("txt-selection-type")) %}
+{% do headTitle().append(type.name) %}
+
+<h1>{{ type.name }} {{ selectionTypeLink(type, 'edit','button') }}</h1>
+
+<dl class="dl-horizontal">
+    <dt>{{ translate("txt-type") }}</dt>
+    <dd>{{ type.name }}</dd>
+    <dt>{{ translate("txt-description") }}</dt>
+    <dd>{{ type.description }}</dd>
+</dl>
+
+{% if type.selection.count() > 0 %}
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+        <tr>
+            <th>{{ translate("txt-id") }}</th>
+            <th>{{ translate("txt-name") }}</th>
+            <th>{{ translate("txt-contact") }}</th>
+            <th>{{ translate("txt-selection-contacts") }}</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        </tfoot>
+        <tbody>
+        {% for selection in type.selection %}
+            <tr>
+                <td><small class="text-muted">{{ selection.id }}</small></td>
+                <td>{{ selectionLink(selection, 'view','selection') }}</td>
+                <td>{{ contactLink(selection.contact,'view-admin','name') }}</td>
+                <td>{{ selection.selectioncontact.count() }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+

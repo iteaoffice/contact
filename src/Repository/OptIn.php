@@ -3,10 +3,9 @@
 /**
  * ITEA Office all rights reserved
  *
- * @category    Contact
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -23,12 +22,11 @@ use function in_array;
 
 /**
  * Class OptIn
- *
  * @package Contact\Repository
  */
-class OptIn extends EntityRepository
+final class OptIn extends EntityRepository implements FilteredObjectRepository
 {
-    public function findFiltered(array $filter): QueryBuilder
+    public function findFiltered(array $filter = []): QueryBuilder
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('contact_entity_optin');

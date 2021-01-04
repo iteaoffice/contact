@@ -3,10 +3,9 @@
 /**
  * ITEA Office all rights reserved
  *
- * @category    Contact
- * @package     Entity
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -861,9 +860,9 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $blog;
     /**
-     * @ORM\OneToMany(targetEntity="News\Entity\Message", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="News\Entity\Blog\Message", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var Message[]|Collections\ArrayCollection
+     * @var \News\Entity\Blog\Message[]|Collections\ArrayCollection
      */
     private $blogMessage;
     /**

@@ -1,12 +1,11 @@
 <?php
 
 /**
+ * ITEA Office all rights reserved
  *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
  * @license     https://itea3.org/license.txt proprietary
- *
- * @link        http://github.com/iteaoffice/project for the canonical source repository
  */
 
 declare(strict_types=1);
@@ -128,13 +127,18 @@ return [
             EntityManager::class,
             TranslatorInterface::class
         ],
-        Controller\SelectionManagerController::class => [
+        Controller\Selection\ManagerController::class => [
             Service\ContactService::class,
             Service\SelectionContactService::class,
             Service\SelectionService::class,
             DeeplinkService::class,
             Service\FormService::class,
             EntityManager::class,
+            TranslatorInterface::class
+        ],
+        Controller\Selection\TypeController::class   => [
+            Service\SelectionService::class,
+            Service\FormService::class,
             TranslatorInterface::class
         ],
         Controller\Office\ContactController::class   => [

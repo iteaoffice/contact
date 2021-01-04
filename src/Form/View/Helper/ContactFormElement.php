@@ -27,9 +27,6 @@ use Zf3Bootstrap4\Form\View\Helper\FormElement;
  */
 final class ContactFormElement extends FormElement
 {
-    /**
-     * @var ContactService
-     */
     private ContactService $contactService;
 
     public function __construct(
@@ -95,7 +92,6 @@ final class ContactFormElement extends FormElement
                 $element->setValueOptions([$contact->getId() => $contact->getFormName()]);
             }
         }
-
 
         return parent::render($element);
     }

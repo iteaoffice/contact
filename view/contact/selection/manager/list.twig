@@ -30,7 +30,7 @@
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'id', 'text': translate("txt-id")} %}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'name', 'text': translate("txt-name")} %}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'owner', 'text': translate("txt-owner")} %}</th>
-                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'core', 'text': translate("txt-core")} %}</th>
+                    <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'type', 'text': translate("txt-type")} %}</th>
                     <th>{{ translate("txt-contacts") }}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/selection/list', 'criteria': 'date', 'text': translate("txt-date")} %}</th>
                 </tr>
@@ -40,7 +40,7 @@
                 <tbody>
                 {% for selection in paginator.getCurrentItems() %}
                     <tr {% if selection.dateDeleted %}class="table-danger"{% endif %}>
-                        <td><small class="text-muted">{{ selection.id }}</small> </td>
+                        <td><small class="text-muted">{{ selection.id }}</small></td>
                         <td>
                             {% if selection.dateDeleted %}
                                 <i class="far fa-trash-alt" title="{{ selection.dateDeleted|string_date }}"></i>
@@ -50,7 +50,7 @@
                         </td>
 
                         <td>{{ contactLink(selection.contact,'view-admin','initials') }}</td>
-                        <td>{{ translate(selection.getCore(true)) }}</td>
+                        <td>{% if selection.type %}{{ selectionTypeLink(selection.type,'view','name') }}{% endif %}</td>
                         <td>{{ selectionService.getAmountOfContacts(selection) }}
                             {% if selectionService.isSql(selection) %}
                                 <i class="fas fa-code"
@@ -72,7 +72,7 @@
             <fieldset>
 
                 {{ ztbformelement(filter.get('includeDeleted'), true) }}
-                {{ ztbformelement(filter.get('core'), true) }}
+                {{ ztbformelement(filter.get('type'), true) }}
                 {{ ztbformelement(filter.get('tags'), true) }}
 
                 {{ ztbformelement(form.get('submit')) }}

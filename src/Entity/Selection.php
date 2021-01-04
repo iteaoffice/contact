@@ -3,10 +3,9 @@
 /**
  * ITEA Office all rights reserved
  *
- * @category    Contact
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -100,7 +99,7 @@ class Selection extends AbstractEntity
     private $note;
     /**
      * @ORM\ManyToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="selection")
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=true)
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      * @Annotation\Type("Contact\Form\Element\Contact")
      * @Annotation\Options({"label":"txt-selection-owner-label","help-block":"txt-selection-owner-help-block"})
      *
@@ -108,12 +107,30 @@ class Selection extends AbstractEntity
      */
     private $contact;
     /**
-     * @ORM\Column(name="core", type="smallint", nullable=false)
-     * @Annotation\Type("\Laminas\Form\Element\Radio")
-     * @Annotation\Attributes({"array":"coreTemplates"})
-     * @Annotation\Options({"label":"txt-selection-core-label","help-block":"txt-selection-core-help-block"})
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Selection\Type", cascade={"persist"}, inversedBy="selection")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=true)
+     * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
+     * @Annotation\Options({
+     *     "target_class":"Contact\Entity\Selection\Type",
+     *     "empty_option":"-- Select a type",
+     *     "allow_empty":"true",
+     *     "find_method": {
+     *          "name": "findBy",
+     *          "params": {
+     *              "criteria": {},
+     *              "orderBy": {"name":"ASC"},
+     *          }
+     *      }
+     * })
+     * @Annotation\Options({"label":"txt-selection-type-label","help-block":"txt-selection-type-help-block"})
      *
-     * @var int
+     * @var ?\Contact\Entity\Selection\Type
+     */
+    private $type;
+    /**
+     * @ORM\Column(name="core", type="smallint", nullable=false)
+     * @Annotation\Exclude();
+     * @deprecated
      */
     private $core;
     /**
@@ -202,6 +219,7 @@ class Selection extends AbstractEntity
         return (string)$this->selection;
     }
 
+    /** @deprecated */
     public function isCore(): bool
     {
         return $this->core === self::CORE;
@@ -394,6 +412,17 @@ class Selection extends AbstractEntity
     public function setMeetingQuotaExempt($meetingQuotaExempt): Selection
     {
         $this->meetingQuotaExempt = $meetingQuotaExempt;
+        return $this;
+    }
+
+    public function getType(): ?Selection\Type
+    {
+        return $this->type;
+    }
+
+    public function setType(?Selection\Type $type): Selection
+    {
+        $this->type = $type;
         return $this;
     }
 }

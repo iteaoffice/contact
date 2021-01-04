@@ -37,8 +37,13 @@
             <dd>{{ selection.tag|default(translate("txt-not-provided")) }}</dd>
             <dt>{{ translate("txt-note") }}</dt>
             <dd>{{ selection.note|default(translate("txt-not-provided"))|raw|nl2br }}</dd>
-            <dt>{{ translate("txt-core") }}</dt>
-            <dd>{{ translate(selection.getCore(true)) }}</dd>
+            <dt>{{ translate("txt-type") }}</dt>
+            {% if selection.type %}
+                <dd>{{ selectionTypeLink(selection.type,'view','name') }}</dd>
+            {% else %}
+                <dd>{{ translate("txt-no-type-selected") }}</dd>
+            {% endif %}
+
             {% if selection.dateCreated %}
                 <dt>{{ translate("txt-date-created") }}</dt>
                 <dd>{{ selection.dateCreated|string_date }}</dd>

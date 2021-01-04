@@ -1,12 +1,11 @@
 <?php
 
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office all rights reserved
  *
- * @category    Contact
- * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 namespace Contact;
@@ -26,22 +25,23 @@ use Laminas\Stdlib;
 $config = [
     'controllers'        => [
         'factories' => [
-            Controller\AddressManagerController::class   => ConfigAbstractFactory::class,
-            Controller\ConsoleController::class          => ConfigAbstractFactory::class,
-            Controller\ContactAdminController::class     => ConfigAbstractFactory::class,
-            Controller\ContactController::class          => ConfigAbstractFactory::class,
-            Controller\ContactDetailsController::class   => ConfigAbstractFactory::class,
-            Controller\FacebookController::class         => ConfigAbstractFactory::class,
-            Controller\DndController::class              => ConfigAbstractFactory::class,
-            Controller\ImageController::class            => ConfigAbstractFactory::class,
-            Controller\FacebookManagerController::class  => ConfigAbstractFactory::class,
-            Controller\NoteManagerController::class      => ConfigAbstractFactory::class,
-            Controller\PhoneManagerController::class     => ConfigAbstractFactory::class,
-            Controller\ProfileController::class          => ConfigAbstractFactory::class,
-            Controller\OptInManagerController::class     => ConfigAbstractFactory::class,
-            Controller\SelectionManagerController::class => ConfigAbstractFactory::class,
-            Controller\Office\ContactController::class   => ConfigAbstractFactory::class,
-            Controller\Office\LeaveController::class     => ConfigAbstractFactory::class,
+            Controller\AddressManagerController::class    => ConfigAbstractFactory::class,
+            Controller\ConsoleController::class           => ConfigAbstractFactory::class,
+            Controller\ContactAdminController::class      => ConfigAbstractFactory::class,
+            Controller\ContactController::class           => ConfigAbstractFactory::class,
+            Controller\ContactDetailsController::class    => ConfigAbstractFactory::class,
+            Controller\FacebookController::class          => ConfigAbstractFactory::class,
+            Controller\DndController::class               => ConfigAbstractFactory::class,
+            Controller\ImageController::class             => ConfigAbstractFactory::class,
+            Controller\FacebookManagerController::class   => ConfigAbstractFactory::class,
+            Controller\NoteManagerController::class       => ConfigAbstractFactory::class,
+            Controller\PhoneManagerController::class      => ConfigAbstractFactory::class,
+            Controller\ProfileController::class           => ConfigAbstractFactory::class,
+            Controller\OptInManagerController::class      => ConfigAbstractFactory::class,
+            Controller\Selection\ManagerController::class => ConfigAbstractFactory::class,
+            Controller\Selection\TypeController::class    => ConfigAbstractFactory::class,
+            Controller\Office\ContactController::class    => ConfigAbstractFactory::class,
+            Controller\Office\LeaveController::class      => ConfigAbstractFactory::class,
         ],
     ],
     'controller_plugins' => [
@@ -71,6 +71,7 @@ $config = [
             'dndLink'              => View\Helper\DndLink::class,
             'profileLink'          => View\Helper\ProfileLink::class,
             'selectionLink'        => View\Helper\SelectionLink::class,
+            'selectionTypeLink'    => View\Helper\Selection\TypeLink::class,
             'facebookLink'         => View\Helper\FacebookLink::class,
             'optInLink'            => View\Helper\OptInLink::class,
             'addressLink'          => View\Helper\AddressLink::class,
@@ -85,6 +86,7 @@ $config = [
             View\Helper\DndLink::class                   => LinkHelperFactory::class,
             View\Helper\ProfileLink::class               => LinkHelperFactory::class,
             View\Helper\SelectionLink::class             => LinkHelperFactory::class,
+            View\Helper\Selection\TypeLink::class        => LinkHelperFactory::class,
             View\Helper\FacebookLink::class              => LinkHelperFactory::class,
             View\Helper\OptInLink::class                 => LinkHelperFactory::class,
             View\Helper\AddressLink::class               => LinkHelperFactory::class,
@@ -116,6 +118,7 @@ $config = [
             Navigation\Invokable\DndLabel::class                    => NavigationInvokableFactory::class,
             Navigation\Invokable\NoteLabel::class                   => NavigationInvokableFactory::class,
             Navigation\Invokable\PhoneLabel::class                  => NavigationInvokableFactory::class,
+            Navigation\Invokable\Selection\TypeLabel::class         => NavigationInvokableFactory::class,
             Navigation\Invokable\Office\ContactLabel::class         => NavigationInvokableFactory::class,
             Navigation\Invokable\Office\LeaveLabel::class           => NavigationInvokableFactory::class,
             Provider\Identity\AuthenticationIdentityProvider::class => ConfigAbstractFactory::class,
@@ -133,6 +136,7 @@ $config = [
             InputFilter\ContactFilter::class             => Factory\InputFilterFactory::class,
             InputFilter\OptInFilter::class               => Factory\InputFilterFactory::class,
             InputFilter\SelectionFilter::class           => Factory\InputFilterFactory::class,
+            InputFilter\Selection\TypeFilter::class      => Factory\InputFilterFactory::class,
             InputFilter\Office\ContactFilter::class      => Factory\InputFilterFactory::class,
             InputFilter\Office\LeaveFilter::class        => Factory\InputFilterFactory::class,
             Search\Service\ContactSearchService::class   => ConfigAbstractFactory::class,

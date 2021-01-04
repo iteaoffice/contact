@@ -1,12 +1,11 @@
 <?php
 
 /**
- * ITEA Office copyright message placeholder
+ * ITEA Office all rights reserved
  *
- * @category    Contact
- * @package     Config
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 use Contact\Controller;
@@ -480,7 +479,7 @@ return [
                         'options'       => [
                             'route'    => '/selection',
                             'defaults' => [
-                                'controller' => Controller\SelectionManagerController::class,
+                                'controller' => Controller\Selection\ManagerController::class,
                                 'action'     => 'list',
                                 'page'       => 1,
                             ],
@@ -574,6 +573,55 @@ return [
                                     'route'    => '/export/[:type]/[:id].html',
                                     'defaults' => [
                                         'action' => 'export',
+                                    ],
+                                ],
+                            ],
+                            'type'                                     => [
+                                'type'          => 'Segment',
+                                'options'       => [
+                                    'route'    => '/type',
+                                    'defaults' => [
+                                        'controller' => Controller\Selection\TypeController::class,
+                                        'action'     => 'index',
+                                    ],
+                                ],
+                                'may_terminate' => false,
+                                'child_routes'  => [
+                                    'list' => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/list[/f-:encodedFilter][/page-:page].html',
+                                            'defaults' => [
+                                                'action' => 'list',
+                                            ],
+                                        ],
+                                    ],
+                                    'new'  => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/new.html',
+                                            'defaults' => [
+                                                'action' => 'new',
+                                            ],
+                                        ],
+                                    ],
+                                    'edit' => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/edit/[:id].html',
+                                            'defaults' => [
+                                                'action' => 'edit',
+                                            ],
+                                        ],
+                                    ],
+                                    'view' => [
+                                        'type'    => 'Segment',
+                                        'options' => [
+                                            'route'    => '/view/[:id].html',
+                                            'defaults' => [
+                                                'action' => 'view',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],

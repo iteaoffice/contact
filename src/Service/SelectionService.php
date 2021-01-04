@@ -3,10 +3,9 @@
 /**
  * ITEA Office all rights reserved
  *
- * @category    Contact
- *
  * @author      Johan van der Heide <johan.van.der.heide@itea3.org>
- * @copyright   Copyright (c) 2019 ITEA Office (https://itea3.org)
+ * @copyright   Copyright (c) 2021 ITEA Office (https://itea3.org)
+ * @license     https://itea3.org/license.txt proprietary
  */
 
 declare(strict_types=1);
@@ -15,6 +14,7 @@ namespace Contact\Service;
 
 use Contact\Entity;
 use Contact\Repository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 
@@ -39,7 +39,7 @@ class SelectionService extends AbstractService
         $this->selectionContactService = $selectionContactService;
     }
 
-    public function canRemoveSelection(Entity\Selection $selection): bool
+    public function canDeleteSelection(Entity\Selection $selection): bool
     {
         $cannotRemoveSelection = [];
 
@@ -66,9 +66,26 @@ class SelectionService extends AbstractService
         return count($cannotRemoveSelection) === 0;
     }
 
+    public function canDeleteType(Entity\Selection\Type $type): bool
+    {
+        $cannotDeleteType = [];
+
+        if (! $type->getSelection()->isEmpty()) {
+            $cannotDeleteType[] = 'This type has selections';
+        }
+
+
+        return count($cannotDeleteType) === 0;
+    }
+
     public function findSelectionById(int $id): ?Entity\Selection
     {
         return $this->entityManager->getRepository(Entity\Selection::class)->find($id);
+    }
+
+    public function findSelectionTypeById(int $id): ?Entity\Selection\Type
+    {
+        return $this->entityManager->getRepository(Entity\Selection\Type::class)->find($id);
     }
 
     public function findSqlSelections(): array
@@ -102,6 +119,12 @@ class SelectionService extends AbstractService
         $repository = $this->entityManager->getRepository(Entity\Selection::class);
 
         return $repository->findTags();
+    }
+
+    public function findTypes(): array
+    {
+        return $this->entityManager->getRepository(Entity\Selection\Type::class)
+            ->findBy([], ['name' => Criteria::ASC]);
     }
 
     public function findSelectionsByContact(Entity\Contact $contact): array
