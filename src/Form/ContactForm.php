@@ -14,7 +14,7 @@ namespace Contact\Form;
 
 use Contact\Entity\Contact;
 use Doctrine\ORM\EntityManager;
-use Organisation\Form\Element\Organisation;
+use Organisation\Form\Element\OrganisationElement;
 use Laminas\Form\Element;
 use Laminas\Form\Form;
 
@@ -40,7 +40,7 @@ final class ContactForm extends Form
 
         $this->add(
             [
-                'type'    => Organisation::class,
+                'type'    => OrganisationElement::class,
                 'name'    => 'organisation',
                 'options' => [
                     'label'      => _('txt-organisation'),

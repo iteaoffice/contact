@@ -57,7 +57,7 @@ use Invoice\Entity\Journal\Entry;
 use Invoice\Entity\Reminder;
 use Mailing\Entity\Mailing;
 use News\Entity\Blog;
-use Organisation\Entity\OParent;
+use Organisation\Entity\ParentEntity;
 use Organisation\Entity\Parent\Organisation;
 use PHPUnit\Framework\MockObject\MockObject;
 use Program\Entity\Doa;
@@ -262,7 +262,7 @@ final class MergeContactTest extends AbstractServiceTest
         $invoice->setId(1);
         $invoice->setContact($source);
         $source->setInvoice(new ArrayCollection([$invoice]));
-        $parent = new OParent();
+        $parent = new ParentEntity();
         $parent->setId(1);
         $parent->setContact($source);
         $source->setParent(new ArrayCollection([$parent]));

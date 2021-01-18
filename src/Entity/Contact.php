@@ -48,9 +48,8 @@ use Laminas\Math\Rand;
 use Mailing\Entity\Mailing;
 use News\Entity\Blog;
 use News\Entity\Magazine\Article;
-use News\Entity\Message;
 use Organisation\Entity\Booth;
-use Organisation\Entity\OParent;
+use Organisation\Entity\ParentEntity;
 use Organisation\Entity\Parent\Doa;
 use Organisation\Entity\Parent\Financial;
 use Organisation\Entity\Parent\Organisation;
@@ -290,26 +289,17 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $optIn;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Action", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
-     * @var \Quality\Entity\Action[]|Collections\Collection
+     * @var \Quality\Entity\Improvement\Action[]|Collections\ArrayCollection
      */
-    private $qualityActions;
+    private $qualityImprovementActions;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Action\Result", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     *
-     * @var \Quality\Entity\Action\Result[]|Collections\Collection
+     * @var \Quality\Entity\Improvement\Action\Result[]|Collections\ArrayCollection
      */
-    private $qualityActionResults;
-    /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Kpi\Result", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     *
-     * @var \Quality\Entity\Kpi\Result[]|Collections\Collection
-     */
-    private $qualityKpiResults;
+    private $qualityImprovementActionResults;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -508,9 +498,9 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $invoice;
     /**
-     * @ORM\OneToMany(targetEntity="Organisation\Entity\OParent", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\ParentEntity", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var OParent[]|Collections\ArrayCollection
+     * @var ParentEntity[]|Collections\ArrayCollection
      */
     private $parent;
     /**
@@ -520,7 +510,7 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $parentFinancial;
     /**
-     * @ORM\OneToMany(targetEntity="Organisation\Entity\Parent\Organisation", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="OrganisationRepository", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Organisation[]|Collections\ArrayCollection
      */
@@ -1078,9 +1068,8 @@ class Contact extends AbstractEntity implements ProviderInterface
         $this->nda                                 = new Collections\ArrayCollection();
         $this->pca                                 = new Collections\ArrayCollection();
         $this->ndaApprover                         = new Collections\ArrayCollection();
-        $this->qualityActions                      = new Collections\ArrayCollection();
-        $this->qualityActionResults                = new Collections\ArrayCollection();
-        $this->qualityKpiResults                   = new Collections\ArrayCollection();
+        $this->qualityImprovementActions           = new Collections\ArrayCollection();
+        $this->qualityImprovementActionResults     = new Collections\ArrayCollection();
         $this->programDoa                          = new Collections\ArrayCollection();
         $this->rationale                           = new Collections\ArrayCollection();
         $this->organisationLog                     = new Collections\ArrayCollection();
@@ -1201,7 +1190,7 @@ class Contact extends AbstractEntity implements ProviderInterface
     {
         $name = sprintf('%s %s', $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return (string)(! empty(trim($name)) ? $name : $this->email);
+        return (string)(!empty(trim($name)) ? $name : $this->email);
     }
 
     public function parseFullName(): string
@@ -1276,7 +1265,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function hasPhoto(): bool
     {
-        return ! $this->photo->isEmpty();
+        return !$this->photo->isEmpty();
     }
 
     public function isVisibleInCommunity(): bool
@@ -1566,14 +1555,14 @@ class Contact extends AbstractEntity implements ProviderInterface
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return ! empty($name) ? $name : $this->email;
+        return !empty($name) ? $name : $this->email;
     }
 
     public function getFormName(): string
     {
         $name = sprintf('%s, %s', trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
-        return ! empty($name) ? $name : $this->email;
+        return !empty($name) ? $name : $this->email;
     }
 
     public function getHash(): ?string
@@ -1654,7 +1643,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function getOptIn(bool $onlyActive = false)
     {
-        if (! $onlyActive) {
+        if (!$onlyActive) {
             return $this->optIn;
         }
 
@@ -3137,7 +3126,7 @@ class Contact extends AbstractEntity implements ProviderInterface
     }
 
     /**
-     * @return Collections\ArrayCollection|OParent[]|Collections\Collection
+     * @return Collections\ArrayCollection|ParentEntity[]|Collections\Collection
      */
     public function getParent()
     {
@@ -3145,7 +3134,7 @@ class Contact extends AbstractEntity implements ProviderInterface
     }
 
     /**
-     * @param Collections\ArrayCollection|OParent[]|Collections\Collection $parent
+     * @param Collections\ArrayCollection|ParentEntity[]|Collections\Collection $parent
      *
      * @return Contact
      */
