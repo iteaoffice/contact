@@ -3329,25 +3329,45 @@ class Contact extends AbstractEntity implements ProviderInterface
         return $this;
     }
 
-    public function getQualityImprovementActions()
+    /**
+     * @return Collections\Collection|\Quality\Entity\Action[]
+     */
+    public function getQualityActions(): Collections\Collection
     {
-        return $this->qualityImprovementActions;
+        return $this->qualityActions;
     }
 
-    public function setQualityImprovementActions($qualityImprovementActions): Contact
+    public function setQualityActions(Collections\Collection $qualityActions): Contact
     {
-        $this->qualityImprovementActions = $qualityImprovementActions;
+        $this->qualityActions = $qualityActions;
         return $this;
     }
 
-    public function getQualityImprovementActionResults()
+    /**
+     * @return Collections\Collection|\Quality\Entity\Action\Result[]
+     */
+    public function getQualityActionResults(): Collections\Collection
     {
-        return $this->qualityImprovementActionResults;
+        return $this->qualityActionResults;
     }
 
-    public function setQualityImprovementActionResults($qualityImprovementActionResults): Contact
+    public function setQualityActionResults(Collections\Collection $qualityActionResults): Contact
     {
-        $this->qualityImprovementActionResults = $qualityImprovementActionResults;
+        $this->qualityActionResults = $qualityActionResults;
+        return $this;
+    }
+
+    /**
+     * @return Collections\Collection|\Quality\Entity\Kpi\Result[]
+     */
+    public function getQualityKpiResults(): Collections\Collection
+    {
+        return $this->qualityKpiResults;
+    }
+
+    public function setQualityKpiResults(Collections\Collection $qualityKpiResults): Contact
+    {
+        $this->qualityKpiResults = $qualityKpiResults;
         return $this;
     }
 
