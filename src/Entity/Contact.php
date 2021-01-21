@@ -17,7 +17,7 @@ use Admin\Entity\Pageview;
 use Admin\Entity\Session;
 use Affiliation\Entity\Affiliation;
 use Affiliation\Entity\Description;
-use Affiliation\Entity\DoaReminder;
+use Affiliation\Entity\Doa\Reminder as DoaReminder;
 use Affiliation\Entity\Loi;
 use Affiliation\Entity\Version;
 use Api\Entity\OAuth\AccessToken;
@@ -49,10 +49,10 @@ use Mailing\Entity\Mailing;
 use News\Entity\Blog;
 use News\Entity\Magazine\Article;
 use Organisation\Entity\Booth;
-use Organisation\Entity\ParentEntity;
 use Organisation\Entity\Parent\Doa;
 use Organisation\Entity\Parent\Financial;
 use Organisation\Entity\Parent\Organisation;
+use Organisation\Entity\ParentEntity;
 use Program\Entity\Funder;
 use Program\Entity\Nda;
 use Project\Entity\Achievement;
@@ -289,17 +289,26 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $optIn;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Action", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Quality\Entity\Improvement\Action[]|Collections\ArrayCollection
+     *
+     * @var \Quality\Entity\Action[]|Collections\Collection
      */
-    private $qualityImprovementActions;
+    private $qualityActions;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Improvement\Action\Result", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Action\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
-     * @var \Quality\Entity\Improvement\Action\Result[]|Collections\ArrayCollection
+     *
+     * @var \Quality\Entity\Action\Result[]|Collections\Collection
      */
-    private $qualityImprovementActionResults;
+    private $qualityActionResults;
+    /**
+     * @ORM\OneToMany(targetEntity="Quality\Entity\Kpi\Result", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Quality\Entity\Kpi\Result[]|Collections\Collection
+     */
+    private $qualityKpiResults;
     /**
      * @ORM\OneToMany(targetEntity="Project\Entity\Project", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
@@ -510,7 +519,7 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $parentFinancial;
     /**
-     * @ORM\OneToMany(targetEntity="OrganisationRepository", cascade={"persist"}, mappedBy="contact")
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\Parent\Organisation", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      * @var Organisation[]|Collections\ArrayCollection
      */
@@ -841,13 +850,13 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $tourContact;
     /**
-     * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="receiver")
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa\Reminder", cascade={"persist"}, mappedBy="receiver")
      * @Annotation\Exclude();
      * @var DoaReminder[]|Collections\ArrayCollection
      */
     private $doaReminderReceiver;
     /**
-     * @ORM\OneToMany(targetEntity="Affiliation\Entity\DoaReminder", cascade={"persist"}, mappedBy="sender")
+     * @ORM\OneToMany(targetEntity="Affiliation\Entity\Doa\Reminder", cascade={"persist"}, mappedBy="sender")
      * @Annotation\Exclude();
      * @var DoaReminder[]|Collections\ArrayCollection
      */
@@ -1068,8 +1077,9 @@ class Contact extends AbstractEntity implements ProviderInterface
         $this->nda                                 = new Collections\ArrayCollection();
         $this->pca                                 = new Collections\ArrayCollection();
         $this->ndaApprover                         = new Collections\ArrayCollection();
-        $this->qualityImprovementActions           = new Collections\ArrayCollection();
-        $this->qualityImprovementActionResults     = new Collections\ArrayCollection();
+        $this->qualityActions                      = new Collections\ArrayCollection();
+        $this->qualityActionResults                = new Collections\ArrayCollection();
+        $this->qualityKpiResults                   = new Collections\ArrayCollection();
         $this->programDoa                          = new Collections\ArrayCollection();
         $this->rationale                           = new Collections\ArrayCollection();
         $this->organisationLog                     = new Collections\ArrayCollection();
@@ -1190,7 +1200,7 @@ class Contact extends AbstractEntity implements ProviderInterface
     {
         $name = sprintf('%s %s', $this->firstName, trim(implode(' ', [$this->middleName, $this->lastName])));
 
-        return (string)(!empty(trim($name)) ? $name : $this->email);
+        return (string)(! empty(trim($name)) ? $name : $this->email);
     }
 
     public function parseFullName(): string
@@ -1265,7 +1275,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function hasPhoto(): bool
     {
-        return !$this->photo->isEmpty();
+        return ! $this->photo->isEmpty();
     }
 
     public function isVisibleInCommunity(): bool
@@ -1555,14 +1565,14 @@ class Contact extends AbstractEntity implements ProviderInterface
             trim(implode(' ', [$this->middleName, $this->lastName]))
         );
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getFormName(): string
     {
         $name = sprintf('%s, %s', trim(implode(' ', [$this->middleName, $this->lastName])), $this->firstName);
 
-        return !empty($name) ? $name : $this->email;
+        return ! empty($name) ? $name : $this->email;
     }
 
     public function getHash(): ?string
@@ -1643,7 +1653,7 @@ class Contact extends AbstractEntity implements ProviderInterface
 
     public function getOptIn(bool $onlyActive = false)
     {
-        if (!$onlyActive) {
+        if (! $onlyActive) {
             return $this->optIn;
         }
 
