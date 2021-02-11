@@ -289,13 +289,6 @@ class Contact extends AbstractEntity implements ProviderInterface
      */
     private $optIn;
     /**
-     * @ORM\OneToMany(targetEntity="Quality\Entity\Action", cascade={"persist"}, mappedBy="contact")
-     * @Annotation\Exclude()
-     *
-     * @var \Quality\Entity\Action[]|Collections\Collection
-     */
-    private $qualityActions;
-    /**
      * @ORM\OneToMany(targetEntity="Quality\Entity\Action\Result", cascade={"persist"}, mappedBy="contact")
      * @Annotation\Exclude()
      *
@@ -1077,7 +1070,6 @@ class Contact extends AbstractEntity implements ProviderInterface
         $this->nda                                 = new Collections\ArrayCollection();
         $this->pca                                 = new Collections\ArrayCollection();
         $this->ndaApprover                         = new Collections\ArrayCollection();
-        $this->qualityActions                      = new Collections\ArrayCollection();
         $this->qualityActionResults                = new Collections\ArrayCollection();
         $this->qualityKpiResults                   = new Collections\ArrayCollection();
         $this->programDoa                          = new Collections\ArrayCollection();
@@ -3336,20 +3328,6 @@ class Contact extends AbstractEntity implements ProviderInterface
     public function setOrganisationUpdates(Collections\Collection $organisationUpdates): Contact
     {
         $this->organisationUpdates = $organisationUpdates;
-        return $this;
-    }
-
-    /**
-     * @return Collections\Collection|\Quality\Entity\Action[]
-     */
-    public function getQualityActions(): Collections\Collection
-    {
-        return $this->qualityActions;
-    }
-
-    public function setQualityActions(Collections\Collection $qualityActions): Contact
-    {
-        $this->qualityActions = $qualityActions;
         return $this;
     }
 
