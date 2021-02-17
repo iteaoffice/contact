@@ -1173,27 +1173,25 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $contacts    = [];
         $contactRole = [];
 
-        /*
-         * Add the technical contact
-         */
+        //Add the technical contact
         $contacts[$affiliation->getContact()->getId()]      = $affiliation->getContact();
         $contactRole[$affiliation->getContact()->getId()][] = 'Technical Contact';
 
-        /*
-         * Add the financial contact
-         */
+        //Add the proxy technical contact
+        /** @var Contact $proxyContact */
+        foreach ($affiliation->getProxyContact() as $proxyContact) {
+            $contacts[$proxyContact->getId()]      = $proxyContact->parseFullName();
+            $contactRole[$proxyContact->getId()][] = 'Proxy Technical Contact';
+        }
+
+        //Add the financial contact
         if (null !== $affiliation->getFinancial()) {
             $contacts[$affiliation->getFinancial()->getContact()->getId()]      = $affiliation->getFinancial()->getContact();
             $contactRole[$affiliation->getFinancial()->getContact()->getId()][] = 'Financial Contact';
         }
 
-        /*
-         * Add the associates
-         */
+        //Add the associates
         foreach ($affiliation->getAssociate() as $associate) {
-            /*
-             * Add the associates
-             */
             $contacts[$associate->getId()]      = $associate;
             $contactRole[$associate->getId()][] = 'Associate';
         }
@@ -1211,23 +1209,15 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             $contactRole[$affiliation->getProject()->getContact()->getId()][] = 'Project leader';
         }
 
-        /*
-         * Add the project leader (proxy)
-         */
+        //Add the project leader (proxy)
         foreach ($affiliation->getProject()->getProxyContact() as $proxyContact) {
-            /*
-             * Add the work package leaders
-             */
             if ($this->contactIsFromOrganisation($proxyContact, $affiliation->getOrganisation())) {
                 $contacts[$proxyContact->getId()]      = $proxyContact;
                 $contactRole[$proxyContact->getId()][] = 'Project leader (proxy)';
             }
         }
 
-
-        /*
-         * Add the work package leaders
-         */
+        //Add the work package leaders
         foreach ($affiliation->getProject()->getWorkpackage() as $workpackage) {
             /*
              * Add the work package leaders

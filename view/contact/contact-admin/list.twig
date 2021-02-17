@@ -36,7 +36,7 @@
                 <td><a href="mailto:{{ contactResult.fields.email }}"
                        title="{{ contact.email }}">{{ contactResult.fields.email }}</a></td>
                 <td>{% if not contactResult.fields.has_organiation %}<a
-                        href="{{ url('zfcadmin/organisation/view',{'id': contactResult.fields.organisation_id}) }}">{{ contactResult.fields.organisation }}</a>{% endif %}
+                        href="{{ url('zfcadmin/organisation/details/general',{'id': contactResult.fields.organisation_id}) }}">{{ contactResult.fields.organisation }}</a>{% endif %}
                 <td>{% if not contactResult.fields.has_organiation %}<a
                         href="{{ url('zfcadmin/country/view',{'id': contactResult.fields.country_id}) }}">{{ contactResult.fields.country_iso3 }}</a>{% endif %}
                 <td>

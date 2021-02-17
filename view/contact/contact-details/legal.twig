@@ -51,7 +51,7 @@
         {% for affiliationDoa in contact.affiliationDoa %}
             <tr>
                 {% set project = affiliationDoa.affiliation.project %}
-                <td>{{ translate("txt-project-doa") }} {{ doaLink(affiliationDoa,'download','icon') }}{{ doaLink(affiliationDoa,'view-admin','icon') }}</td>
+                <td>{{ translate("txt-project-doa") }} {{ affiliationDoaLink(affiliationDoa,'download','icon') }}{{ affiliationDoaLink(affiliationDoa,'view-admin','icon') }}</td>
                 <td>{{ projectLink(project,'view-admin','name') }}</td>
                 <td>{{ callLink(project.call,'view-admin','name') }}</td>
                 <td>{{ project.call.program }}</td>
@@ -65,7 +65,7 @@
         {% for loi in contact.loi %}
             <tr>
                 {% set project = loi.affiliation.project %}
-                <td>{{ translate("txt-loi") }} {% if loi.hasObject() %}{{ loiLink(loi,'download','icon') }}{% endif %} {{ loiLink(loi,'view-admin','icon') }}</td>
+                <td>{{ translate("txt-loi") }} {% if loi.hasObject() %}{{ affiliationLoiLink(loi,'download','icon') }}{% endif %} {{ affiliationLoiLink(loi,'view-admin','icon') }}</td>
                 <td>{{ projectLink(project,'view-admin','name') }}</td>
                 <td>{{ callLink(project.call,'view-admin','name') }}</td>
                 <td>{{ project.call.program }}</td>
