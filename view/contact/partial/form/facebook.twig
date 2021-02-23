@@ -1,7 +1,12 @@
+{% do headScript().appendFile('assets/js/codemirror.js', 'text/javascript') %}
+{% do headScript().appendFile('assets/js/codemirror/sql.js', 'text/javascript') %}
+{% do headScript().appendFile('assets/js/codemirror/selection-pointer.js', 'text/javascript') %}
+{% do headScript().appendFile('assets/js/codemirror/matchbrackets.js', 'text/javascript') %}
+
+{% do headLink().appendStylesheet('assets/css/codemirror.css') %}
+
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
-
-
 {% set facebook = form.get('contact_entity_facebook') %}
 
 {{ ztbformelement(facebook.get('facebook')) }}
@@ -28,3 +33,15 @@
 </div>
 
 {{ form().closeTag()|raw }}
+
+
+<script>
+    var $htmlEditor = CodeMirror.fromTextArea(document.getElementById("whereClause"), {
+        mode: "sql",
+        lineNumbers: true,
+        selectionPointer: true,
+        lineWrapping: true,
+        matchBrackets: true
+    });
+    $htmlEditor.setSize(null, 600);
+</script>

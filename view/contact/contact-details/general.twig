@@ -37,7 +37,7 @@
                 {% if contactService.hasOrganisation(contact) %}
                     <dd>{{ organisationLink(
                             contact.contactOrganisation.organisation,'view-admin', 'name',contact.contactOrganisation.branch
-                        ) }} ({{ contact.contactOrganisation.organisation.type }}),
+                        ) }} ({{ organisationTypeLink(contact.contactOrganisation.organisation.type,'view','description') }}),
                         {{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
                 {% else %}
                     <dd>{{ translate("txt-no-organisation-provided") }}</dd>

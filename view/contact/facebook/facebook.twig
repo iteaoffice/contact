@@ -6,13 +6,13 @@
     <div class="row row-cols-4 row-cols-lg-6">
         {% for contact in contacts %}
             <div class="col mb-4">
-                <div class="card">
+                <div class="card h-100">
 
                     {% if contact.contact.hasPhoto() %}
-                        <img class="card-img-top" src="{{ contactPhoto(contact.contact, 300, constant("\\General\\ValueObject\\Image\\ImageDecoration::SHOW_RAW")) }}"
+                        <img class="card-img-top" src="{{ image(contactPhoto(contact.contact, null, constant("\\General\\ValueObject\\Image\\ImageDecoration::SHOW_RAW")), 200, 200, true, false, 2) }}"
                              alt="Card image cap">
                     {% else %}
-                        <div style="height: 20%"></div>
+                        <div style="height: 200px"></div>
                     {% endif %}
 
                     <div class="card-body">

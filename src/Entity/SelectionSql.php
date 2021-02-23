@@ -16,14 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Laminas\Form\Annotation;
 
 /**
- * SelectionSql.
- *
  * @ORM\Table(name="selection_sql")
  * @ORM\Entity
  * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("contact_organisation")
- *
- * @category    Contact
  */
 class SelectionSql extends AbstractEntity
 {

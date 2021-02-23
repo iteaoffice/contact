@@ -35,14 +35,14 @@ final class ContactPhoto extends AbstractImage
             return '';
         }
 
-        $linkParams = [];
+        $linkParams          = [];
         $linkParams['route'] = 'image/contact-photo';
-        $linkParams['show'] = $show;
+        $linkParams['show']  = $show;
         $linkParams['width'] = $width;
 
         $routeParams = [
-            'id' => $photo->getId(),
-            'ext' => $photo->getContentType()->getExtension(),
+            'id'          => $photo->getId(),
+            'ext'         => $photo->getContentType()->getExtension(),
             'last-update' => $photo->getDateUpdated()->getTimestamp(),
         ];
 

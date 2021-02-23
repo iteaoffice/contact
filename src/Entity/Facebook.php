@@ -138,8 +138,8 @@ class Facebook extends AbstractEntity
     private $fromClause;
     /**
      * @ORM\Column(name="where_clause", type="text", nullable=true)
-     * @Annotation\Type("\Laminas\Form\Element\Text")
-     * @Annotation\Attributes({"placeholder":"txt-where-clause"})
+     * @Annotation\Type("\Laminas\Form\Element\Textarea")
+     * @Annotation\Attributes({"id":"whereClause"})
      * @Annotation\Options({"label":"txt-where-clause","help-block": "txt-where-clause-explanation"})
      *
      * @var string
@@ -210,7 +210,7 @@ class Facebook extends AbstractEntity
      * @Annotation\Options({
      *      "target_class":"Admin\Entity\Access",
      *      "find_method":{
-     *          "name":"findWithoutSelection",
+     *          "name":"findAll",
      *          "params": {
      *              "criteria":{},
      *              "orderBy":{

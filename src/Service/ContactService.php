@@ -1180,7 +1180,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         //Add the proxy technical contact
         /** @var Contact $proxyContact */
         foreach ($affiliation->getProxyContact() as $proxyContact) {
-            $contacts[$proxyContact->getId()]      = $proxyContact->parseFullName();
+            $contacts[$proxyContact->getId()]      = $proxyContact;
             $contactRole[$proxyContact->getId()][] = 'Proxy Technical Contact';
         }
 
@@ -1227,7 +1227,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 $contactRole[$workpackage->getContact()->getId()][] = 'Work package leader';
             }
         }
-
 
         $contactRole = array_map('array_unique', $contactRole);
 
