@@ -383,7 +383,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             }
 
             $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
-            $contactDocument->setField('profile_sort', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_sort', substr(str_replace(PHP_EOL, '', $description), 0, 200));
             $contactDocument->setField('profile_search', str_replace(PHP_EOL, '', $description));
 
             if ($contact->getPhoto()->count() > 0) {
@@ -522,7 +522,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
             }
 
             $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
-            $contactDocument->setField('profile_sort', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_sort', substr(str_replace(PHP_EOL, '', $description), 0, 200));
             $contactDocument->setField('profile_search', str_replace(PHP_EOL, '', $description));
 
             if ($contact->getPhoto()->count() > 0) {
