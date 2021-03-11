@@ -1,0 +1,49 @@
+{% do headTitle().append(translate("txt-profile")) %}
+{% do headTitle().append(contact.parseFullName()) %}
+
+<h1>{{ translate("txt-hello-%s")|format(identity()) }}</h1>
+{{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
+
+{% set navigation =
+    {
+        'general' :
+        {   'route': 'community/contact/profile/view',
+            'text' : translate("txt-general")
+        },
+        'my' :
+        {   'route': 'community/contact/profile/my',
+            'text' : translate("txt-my-public-profile")
+        },
+        'organisation' :
+        {   'route': 'community/contact/profile/organisation',
+            'text' : translate("txt-organisation")
+        },
+        'events' :
+        {   'route': 'community/contact/profile/events',
+            'text' : translate("txt-events")
+        },
+        'privacy' :
+        {   'route': 'community/contact/profile/privacy',
+            'text' : translate("txt-privacy-settings")
+        },
+
+    } %}
+
+<ul class="nav nav-tabs pt-3" role="tablist">
+    {% for key, params in navigation %}
+
+        {% set text = params.text %}
+        {% if key == 'organisation' and not contact.hasOrganisation() %}
+            {% set text  = text ~ ' <i class="text-danger fas fa-exclamation-triangle"></i>' %}
+        {% endif %}
+
+        {% if key == 'my' and not contact.isVisibleInCommunity() %}
+            {% set text = text ~ ' <i class="fas fa-eye-slash"></i>' %}
+        {% endif %}
+
+        <li class="nav-item"><a href="{{ url(params.route) }}"
+                                aria-controls="{{ key }}"
+                                role="tab"
+                                class="nav-link {% if key == tab %}active{% endif %}">{{ text|capitalize|raw }}</a></li>
+    {% endfor %}
+</ul>

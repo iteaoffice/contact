@@ -95,6 +95,7 @@ final class ProfileController extends ContactAbstractController
                 'callService'    => $this->callService,
                 'hasIdentity'    => null !== $this->identity(),
                 'hasNda'         => $this->programModuleOptions->getHasNda(),
+                'tab'            => 'general'
             ]
         );
     }
@@ -113,6 +114,7 @@ final class ProfileController extends ContactAbstractController
             [
                 'contactService' => $this->contactService,
                 'contact'        => $this->identity(),
+                'tab'            => 'my'
             ]
         );
     }
@@ -150,6 +152,7 @@ final class ProfileController extends ContactAbstractController
                 'contactService' => $this->contactService,
                 'contact'        => $this->identity(),
                 'optIns'         => $this->contactService->findActiveOptIns(),
+                'tab'            => 'privacy'
             ]
         );
     }

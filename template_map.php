@@ -5,6 +5,7 @@ return [
     'contact/profile/manage-body'                  => __DIR__ . '//view/contact/profile/manage-body.twig',
     'contact/profile/view'                         => __DIR__ . '//view/contact/profile/view.twig',
     'contact/profile/manage-external'              => __DIR__ . '//view/contact/profile/manage-external.twig',
+    'contact/profile/profile-tabs'                 => __DIR__ . '//view/contact/profile/profile-tabs.twig',
     'contact/profile/privacy'                      => __DIR__ . '//view/contact/profile/privacy.twig',
     'contact/profile/my'                           => __DIR__ . '//view/contact/profile/my.twig',
     'contact/profile/create'                       => __DIR__ . '//view/contact/profile/create.twig',

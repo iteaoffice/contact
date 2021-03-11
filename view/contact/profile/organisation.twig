@@ -1,36 +1,4 @@
-{% do headTitle().append(translate("txt-profile")) %}
-{% do headTitle().append(contact.parseFullName()) %}
-
-<h1>{{ translate("txt-hello-%s")|format(identity().parseFullName()) }}</h1>
-
-{{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
-
-<ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url('community/contact/profile/view') }}">{{ translate("txt-general")|capitalize }}</a>
-    </li>
-    <li class="nav-item"><a class="nav-link"
-                            href="{{ url('community/contact/profile/my') }}">{{ translate("txt-my-public-profile")|capitalize }}</a>
-    </li>
-    <li class="nav-item active">
-        <a class="nav-link active"
-           href="{{ url('community/contact/profile/organisation') }}">{{ translate("txt-organisation")|capitalize }}
-            {% if not contact.contactOrganisation %}
-                <i class="text-danger fas fa-exclamation-triangle"></i>
-            {% endif %}</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url('community/contact/profile/events') }}">{{ translate("txt-events")|capitalize }}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url('community/contact/profile/privacy') }}">{{ translate("txt-privacy-settings")|capitalize }}</a>
-    </li>
-</ul>
-
+{% include 'contact/profile/profile-tabs' %}
 
 <h2>{{ translate("txt-organisation") }}</h2>
 {% if contact.hasOrganisation() %}
