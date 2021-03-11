@@ -2,7 +2,10 @@
 {% do headTitle().append(contact.parseFullName()) %}
 
 <h1>{{ translate("txt-hello-%s")|format(identity()) }}</h1>
-{{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
+
+{% if contact.hasOrganisation() %}
+    {{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
+{% endif %}
 
 {% set navigation =
     {
