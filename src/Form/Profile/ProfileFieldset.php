@@ -15,13 +15,16 @@ namespace Contact\Form\Profile;
 use Contact\Entity\Profile;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\Callback;
+use Laminas\Validator\Uri;
 
 /**
  * Class ProfileFieldset
  *
  * @package Contact\Form\Profile
  */
-final class ProfileFieldset extends Fieldset
+final class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
 {
     public function __construct()
     {
@@ -51,5 +54,40 @@ final class ProfileFieldset extends Fieldset
                 ],
             ]
         );
+        $this->add(
+            [
+                'type'       => Element\Url::class,
+                'name'       => 'linkedIn',
+                'options'    => [
+                    'label'      => _('txt-profile-linked-in-label'),
+                    'help-block' => _('txt-profile-linked-in-help-block'),
+                ],
+                'attributes' => [
+                    'placeholder' => _('txt-give-your-linked-in-profile'),
+                ],
+            ]
+        );
+    }
+
+    public function getInputFilterSpecification(): array
+    {
+        return [
+            'linkedIn' => [
+                'required'   => false,
+                'validators' => [
+                    new Uri(),
+                    new Callback(
+                        [
+                            'messages' => [
+                                Callback::INVALID_VALUE => 'Please give a LinkedIn address (URI should contain linkedin.com)',
+                            ],
+                            'callback' => static function (string $value) {
+                                return strpos($value, 'linkedin.com') !== false;
+                            },
+                        ]
+                    )
+                ]
+            ],
+        ];
     }
 }

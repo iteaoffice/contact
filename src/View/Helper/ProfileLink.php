@@ -58,6 +58,14 @@ final class ProfileLink extends AbstractLink
                         ?? $this->translator->translate('txt-view-profile')
                 ];
                 break;
+            case 'my':
+                $linkParams = [
+                    'icon'  => 'far fa-user',
+                    'route' => 'community/contact/profile/my',
+                    'text'  => $showOptions[$show]
+                        ?? $this->translator->translate('txt-my-public-profile')
+                ];
+                break;
             case 'send-message':
                 $linkParams = [
                     'icon'  => 'far fa-envelope',

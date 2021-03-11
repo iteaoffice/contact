@@ -1,13 +1,17 @@
 {% do headTitle().append(translate("txt-profile")) %}
 {% do headTitle().append(contact.parseFullName()) %}
-{% do headTitle().append(translate("txt-organisation")) %}
 
 <h1>{{ translate("txt-hello-%s")|format(identity().parseFullName()) }}</h1>
+
+{{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
         <a class="nav-link"
-           href="{{ url('community/contact/profile/view') }}">{{ translate("txt-profile")|capitalize }}</a>
+           href="{{ url('community/contact/profile/view') }}">{{ translate("txt-general")|capitalize }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/my') }}">{{ translate("txt-my-public-profile")|capitalize }}</a>
     </li>
     <li class="nav-item active">
         <a class="nav-link active"
@@ -16,6 +20,7 @@
                 <i class="text-danger fas fa-exclamation-triangle"></i>
             {% endif %}</a>
     </li>
+
     <li class="nav-item">
         <a class="nav-link"
            href="{{ url('community/contact/profile/events') }}">{{ translate("txt-events")|capitalize }}</a>
@@ -28,33 +33,31 @@
 
 
 <h2>{{ translate("txt-organisation") }}</h2>
-{% if contact.contactOrganisation %}
-
-    {{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
-
+{% if contact.hasOrganisation() %}
     <div class="row">
         <div class="col-md-9">
-        <dl class="dl-horizontal">
-            <dt>{{ translate("txt-organisation") }}</dt>
-            <dd>{{ contactService.parseOrganisation(contact) }}</dd>
-            <dt>{{ translate("txt-organisation-type") }}</dt>
-            <dd>{{ contact.contactOrganisation.organisation.type.description }}</dd>
-            <dt>{{ translate("txt-country") }}</dt>
-            <dd>{{ contact.contactOrganisation.organisation.country }}</dd>
-            {% if contact.department %}
-                <dt>{{ translate("txt-department") }}</dt>
-                <dd>{{ contact.department }}</dd>
-            {% endif %}
-            {% if contact.position %}
-                <dt>{{ translate("txt-position") }}</dt>
-                <dd>{{ contact.position }}</dd>
-            {% endif %}
-            {% if contact.contactOrganisation.organisation.description|length > 0 %}
-                <dt>{{ translate("txt-general-description") }}</dt>
-                <dd>{{ contact.contactOrganisation.organisation.description|raw }}</dd>
-            {% endif %}
-
-        </dl>
+            <dl class="dl-horizontal">
+                <dt>{{ translate("txt-organisation") }}</dt>
+                <dd>{{ contactService.parseOrganisation(contact) }}</dd>
+                <dt>{{ translate("txt-website") }}</dt>
+                <dd>
+                    {% for web in contact.contactOrganisation.organisation.web|filter(web => web.isMain()) -%}
+                        <a href="{{ web }}">{{ web }}</a><br>
+                    {% else %}
+                        {{ translate("txt-no-website-provided") }}
+                    {% endfor %}
+                </dd>
+                <dt>{{ translate("txt-organisation-type") }}</dt>
+                <dd>{{ contact.contactOrganisation.organisation.type.description }}</dd>
+                <dt>{{ translate("txt-country") }}</dt>
+                <dd>{{ contact.contactOrganisation.organisation.country }}</dd>
+                <dt>{{ translate("txt-organisation-description") }}</dt>
+                {% if contact.contactOrganisation.organisation.description.description %}
+                    <dd>{{ contact.contactOrganisation.organisation.description.description|raw }}</dd>
+                {% else %}
+                    <dd>{{ translate("txt-no-organisation-description-provided") }}</dd>
+                {% endif %}
+            </dl>
         </div>
         <div class="col-md-3">
             {% if contact.contactOrganisation.organisation.logo|length > 0 %}

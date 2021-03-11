@@ -3,12 +3,9 @@
 
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
-
 <div class="row">
 
     <div class="col-md-10">
-
-
         <div class="input-group">
             {{ formelement(form.get('query')) }}
             <div class="input-group-append input-group-btn">

@@ -1,0 +1,87 @@
+{% do headTitle().append(translate("txt-profile")) %}
+{% do headTitle().append(contact.parseFullname()) %}
+
+<h1>{{ translate("txt-hello-%s")|format(identity()) }}</h1>
+{{ organisationUpdateNotification(contact.contactOrganisation.organisation) }}
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item active"><a class="nav-link"
+                                   href="{{ url('community/contact/profile/view') }}">{{ translate("txt-general")|capitalize }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link active"
+                            href="{{ url('community/contact/profile/my') }}">{{ translate("txt-my-public-profile")|capitalize }}</a>
+    </li>
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/organisation') }}">{{ translate("txt-organisation")|capitalize }}
+            {% if not contact.hasOrganisation() %}
+                <i class="text-danger fas fa-exclamation-triangle"></i>
+            {% endif %}</a></li>
+
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/events') }}">{{ translate("txt-events")|capitalize }}</a>
+    </li>
+
+    <li class="nav-item"><a class="nav-link"
+                            href="{{ url('community/contact/profile/privacy') }}">{{ translate("txt-privacy-settings")|capitalize }}</a>
+    </li>
+</ul>
+
+<h2>{{ translate("txt-my-public-profile") }}</h2>
+
+<div class="row pb-3">
+    <div class="col-md-8">
+        <h3>{{ translate("txt-my-profile") }}</h3>
+        <dl class="dl-horizontal">
+            <dt>{{ translate("txt-name") }}</dt>
+            <dd>{{ contact.parseFullName() }}
+
+            <dt>{{ translate("txt-department") }}</dt>
+            <dd>{{ contact.department|default(translate("txt-no-department-provided")) }}</dd>
+
+            <dt>{{ translate("txt-position") }}</dt>
+            <dd>{{ contact.position|default(translate("txt-no-position-provided")) }}</dd>
+
+            <dt>{{ translate("txt-expertise") }}</dt>
+            <dd>{{ contact.profile.description|default(translate("txt-no-expertise-provided")) }}</dd>
+
+
+            <dt>{{ translate("txt-linked-in-profile") }}</dt>
+            {% if contact.profile.linkedIn %}
+                <dd><a href="{{ contact.profile.linkedIn }}" target="_blank">{{ contact.profile.linkedIn }}</a></dd>
+            {% else %}
+                <dd>{{ translate("txt-linked-in-profile-not-provided") }}</dd>
+            {% endif %}
+        </dl>
+        {{ profileLink(contact,'edit','button') }}
+
+        {% if contact.hasOrganisation %}
+            <h3 class="pt-4">{{ translate("txt-my-organisation") }}</h3>
+            <dl class="dl-horizontal">
+                <dt>{{ translate("txt-organisation") }}</dt>
+                <dd>{{ contactService.parseOrganisation(contact) }}</dd>
+                <dt>{{ translate("txt-website") }}</dt>
+                <dd>
+                    {% for web in contact.contactOrganisation.organisation.web|filter(web => web.isMain()) -%}
+                        <a href="{{ web }}">{{ web }}</a><br>
+                    {% else %}
+                        {{ translate("txt-no-website-provided") }}
+                    {% endfor %}
+                </dd>
+                <dt>{{ translate("txt-organisation-type") }}</dt>
+                <dd>{{ contact.contactOrganisation.organisation.type }}</dd>
+                <dt>{{ translate("txt-country") }}</dt>
+                <dd>{{ contactService.parseCountry(contact) }}</dd>
+                <dt>{{ translate("txt-organisation-description") }}</dt>
+
+                {% if contact.contactOrganisation.organisation.description.description %}
+                    <dd>{{ contact.contactOrganisation.organisation.description.description|raw }}</dd>
+                {% else %}
+                    <dd>{{ translate("txt-no-organisation-description-provided") }}</dd>
+                {% endif %}
+            </dl>
+            {{ organisationUpdateLink(null, 'edit', 'button', contact.contactOrganisation.organisation) }}
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        {{ contactPhoto(contact, 200) }}
+    </div>
+</div>

@@ -120,6 +120,15 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'my'              => [
+                                        'type'    => 'Literal',
+                                        'options' => [
+                                            'route'    => '/my.html',
+                                            'defaults' => [
+                                                'action' => 'my',
+                                            ],
+                                        ],
+                                    ],
                                     'events'          => [
                                         'type'    => 'Literal',
                                         'options' => [

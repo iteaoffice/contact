@@ -40,6 +40,10 @@ return [
                                 'label' => _('txt-profile-organisation'),
                                 'route' => 'community/contact/profile/organisation',
                             ],
+                            'my'                          => [
+                                'label' => _('txt-my-public-profile'),
+                                'route' => 'community/contact/profile/my',
+                            ],
                             'events'                      => [
                                 'label' => _('txt-profile-events'),
                                 'route' => 'community/contact/profile/events',

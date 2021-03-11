@@ -50,6 +50,11 @@ return [
                     'assertion' => ContactAssertion::class,
                 ],
                 [
+                    'route'     => 'community/contact/profile/my',
+                    'roles'     => [],
+                    'assertion' => ContactAssertion::class,
+                ],
+                [
                     'route'     => 'community/contact/profile/events',
                     'roles'     => [],
                     'assertion' => ContactAssertion::class,

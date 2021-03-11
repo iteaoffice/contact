@@ -82,8 +82,6 @@ _('txt-contact');
 _('txt-office-member');
 _('txt-description');
 _('txt-start-date');
-_('txt-expertise');
-_('txt-visibility');
 _('txt-visibility-community');
 _('txt-visibility-hidden');
 _('txt-contact-first-name-placeholder');

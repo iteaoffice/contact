@@ -99,6 +99,24 @@ final class ProfileController extends ContactAbstractController
         );
     }
 
+    public function myAction()
+    {
+        if (! $this->identity()->isActivated()) {
+            $this->flashMessenger()->addSuccessMessage(
+                $this->translator->translate('txt-your-profile-has-not-been-activated-yet-active-your-pofile-first')
+            );
+
+            return $this->redirect()->toRoute('community/contact/profile/activate');
+        }
+
+        return new ViewModel(
+            [
+                'contactService' => $this->contactService,
+                'contact'        => $this->identity(),
+            ]
+        );
+    }
+
     public function privacyAction()
     {
         if (! $this->identity()->isActivated()) {

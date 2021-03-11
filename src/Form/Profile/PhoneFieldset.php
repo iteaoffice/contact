@@ -30,7 +30,7 @@ final class PhoneFieldset extends Fieldset
     {
         parent::__construct('phone');
         /** @var PhoneType $phoneType */
-        foreach ($entityManager->getRepository(PhoneType::class)->findAll(PhoneType::class) as $phoneType) {
+        foreach ($entityManager->getRepository(PhoneType::class)->findAll() as $phoneType) {
             if (in_array($phoneType->getId(), [PhoneType::PHONE_TYPE_DIRECT, PhoneType::PHONE_TYPE_MOBILE], true)) {
                 $this->add(
                     [

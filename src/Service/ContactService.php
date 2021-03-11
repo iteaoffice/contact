@@ -1344,6 +1344,9 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         $profile->setDescription(
             ! empty($formData['profile']['description']) ? $formData['profile']['description'] : null
         );
+        $profile->setLinkedIn(
+            ! empty($formData['profile']['linkedIn']) ? $formData['profile']['linkedIn'] : null
+        );
         $this->save($profile);
     }
 

@@ -19,63 +19,48 @@
     </div>
 </div>
 
+<div class="bg-light border-light rounded p-3 mb-3">
+    <fieldset>
+        <h3>{{ translate("txt-organisation") }}</h3>
 
-<fieldset class="bg-light border-light rounded p-3">
-    <legend>{{ translate("txt-organisation") }}</legend>
+        <div class="organisation {% if not hasOrganisations %}d-none{% endif %}">
+            {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
+            <div class="form-group row {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}d-none{% endif %}"
+                 id="branch">
+                <label class="col-sm-3 col-form-label">{{ translate("txt-branch-form-label") }}</label>
 
-    <div class="organisation {% if not hasOrganisations %}d-none{% endif %}">
-        {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
-        <div class="form-group row {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}d-none{% endif %}"
-             id="branch">
-            <label class="col-sm-3 col-form-label">{{ translate("txt-branch-form-label") }}</label>
+                <div class="col-sm-9">
+                    <select class="form-control" name="contact_organisation[branch]">
+                        {% for key, branch in branches %}
+                            <option value="{{ key }}"
+                                    {% if data.contact_organisation.branch == key %}selected="selected"{% endif %}
+                            >{{ branch }}</option>
+                        {% endfor %}
+                    </select>
 
-            <div class="col-sm-9">
-                <select class="form-control" name="contact_organisation[branch]">
-                    {% for key, branch in branches %}
-                        <option value="{{ key }}"
-                                {% if data.contact_organisation.branch == key %}selected="selected"{% endif %}
-                        >{{ branch }}</option>
-                    {% endfor %}
-                </select>
-
-                <small class="fomr-text text-muted">{{ translate("txt-form-branch-explanation") }}</small>
+                    <small class="fomr-text text-muted">{{ translate("txt-form-branch-explanation") }}</small>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="organisation_country"
-         {% if hasOrganisations and form.get('contact_organisation').get('organisation_id').value() != 0 %}class="d-none"{% endif %}>
-        {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
-        {{ ztbformelement(form.get('contact_organisation').get('type')) }}
-        {{ ztbformelement(form.get('contact_organisation').get('country')) }}
-    </div>
-</fieldset>
+        <div id="organisation_country"
+             {% if hasOrganisations and form.get('contact_organisation').get('organisation_id').value() != 0 %}class="d-none"{% endif %}>
+            {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
+            {{ ztbformelement(form.get('contact_organisation').get('type')) }}
+            {{ ztbformelement(form.get('contact_organisation').get('country')) }}
+        </div>
+    </fieldset>
+</div>
 
-<fieldset>
-    <legend>{{ translate("txt-phone-information") }}</legend>
-    {% for element in form.get('phone').getElements() %}
-        {{ ztbformelement(element) }}
-    {% endfor %}
-</fieldset>
 
-<fieldset>
-    <legend>{{ translate("txt-postal-address") }}</legend>
-    {% set address = form.get('address') %}
-
-    {{ ztbformelement(address.get('address')) }}
-    {{ ztbformelement(address.get('zipCode')) }}
-    {{ ztbformelement(address.get('city')) }}
-    {{ ztbformelement(address.get('country')) }}
-
-</fieldset>
-
-<fieldset>
-    <legend>{{ translate("txt-profile") }}</legend>
-    {% set profile = form.get('profile') %}
+<h3>{{ translate("txt-public-profile-information") }}</h3>
+<p>{{ translate("txt-this-information-will-be-included-in-your-public-profile-you-can-choose-to-hide-your-public-profile-by-setting-profile-visiblity") }}</p>
+{% set profile = form.get('profile') %}
     {{ ztbformelement(profile.get('visible')) }}
     {{ ztbformelement(profile.get('description')) }}
+    {{ ztbformelement(profile.get('linkedIn')) }}
     {{ ztbformelement(form.get('contact').get('department')) }}
     {{ ztbformelement(form.get('contact').get('position')) }}
-</fieldset>
+
 
 {% if not contact.photo.isEmpty() %}
     <div class="form-group row">
@@ -90,7 +75,35 @@
 {% endif %}
 
 {{ ztbformelement(form.get('file')) }}
-{{ ztbformelement(form.get('optIn')) }}
+
+
+<div class="bg-light border-light rounded p-3 mb-3">
+    <h3>{{ translate("txt-additional-information") }}</h3>
+    <p>{{ translate("txt-this-information-will-not-be-included-in-your-public-profile") }}</p>
+
+    <fieldset>
+        <legend>{{ translate("txt-phone-information") }}</legend>
+        {% for element in form.get('phone').getElements() %}
+            {{ ztbformelement(element) }}
+        {% endfor %}
+    </fieldset>
+
+    <fieldset>
+        <legend>{{ translate("txt-postal-address") }}</legend>
+        {% set address = form.get('address') %}
+
+        {{ ztbformelement(address.get('address')) }}
+        {{ ztbformelement(address.get('zipCode')) }}
+        {{ ztbformelement(address.get('city')) }}
+        {{ ztbformelement(address.get('country')) }}
+    </fieldset>
+
+    <fieldset>
+        <legend>{{ translate("txt-subscriptions") }}</legend>
+        {{ ztbformelement(form.get('optIn')) }}
+    </fieldset>
+</div>
+
 {{ ztbformelement(form.get('csrf')) }}
 
 <div class="form-group row">

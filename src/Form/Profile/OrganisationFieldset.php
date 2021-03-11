@@ -18,13 +18,13 @@ use Doctrine\ORM\EntityManager;
 use DoctrineORMModule\Form\Element\EntityRadio;
 use DoctrineORMModule\Form\Element\EntitySelect;
 use General\Entity\Country;
-use Organisation\Entity\Organisation;
-use Organisation\Entity\Type;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\Callback;
 use Laminas\Validator\NotEmpty;
+use Organisation\Entity\Organisation;
+use Organisation\Entity\Type;
 
 use function sprintf;
 
@@ -101,6 +101,7 @@ final class OrganisationFieldset extends Fieldset implements InputFilterProvider
                 'options' => [
                     'label'          => _('txt-organisation-type'),
                     'object_manager' => $entityManager,
+                    'empty_option'   => _('txt-choose-an-organisation-type'),
                     'target_class'   => Type::class,
                     'find_method'    => [
                         'name'   => 'findBy',
