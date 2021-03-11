@@ -413,7 +413,7 @@ class Contact extends EntityRepository
             $subQuery->where($qb->expr()->eq('contact_entity_contact_' . $key . '.id', $contact->getId()));
 
             //Project leaders are exempted from this constraint
-            $today = new DateTime();
+            $today    = new DateTime();
             $yearsAgo = $today->sub(new DateInterval(sprintf('P%dY', $years)));
 
             if ($key !== 'project') {
@@ -484,7 +484,7 @@ class Contact extends EntityRepository
             $qb->andWhere('event_entity_meeting.dateFrom < :dateTime');
         }
 
-        $today = new DateTime();
+        $today    = new DateTime();
         $yearsAgo = $today->sub(new DateInterval(sprintf('P%dY', $years)));
         $qb->setParameter('dateTime', $yearsAgo, Types::DATETIME_MUTABLE);
 
@@ -511,7 +511,7 @@ class Contact extends EntityRepository
         }
 
 
-        $today = new DateTime();
+        $today    = new DateTime();
         $yearsAgo = $today->sub(new DateInterval(sprintf('P%dY', $years)));
         $qb->setParameter('dateTime', $yearsAgo, Types::DATETIME_MUTABLE);
 
@@ -861,7 +861,7 @@ class Contact extends EntityRepository
         );
         $qb->from(Entity\Contact::class, 'contact_entity_contact');
         $qb->leftJoin('contact_entity_contact.contactOrganisation', 'co');
-        $qb->join('co.organisation', 'o');
+        $qb->leftJoin('co.organisation', 'o');
         $qb->distinct('contact_entity_contact.id');
 
         $qb->where(
@@ -878,11 +878,14 @@ class Contact extends EntityRepository
                         ),
                     $qb->expr()->literal('%' . $searchItem . '%')
                 ),
-                $qb->expr()->like('contact_entity_contact.email', $qb->expr()->literal('%' . $searchItem . '%'))
+                $qb->expr()->like('contact_entity_contact.email', $qb->expr()->literal('%' . $searchItem . '%')),
+                $qb->expr()->like('contact_entity_contact.firstName', $qb->expr()->literal('%' . $searchItem . '%')),
+                $qb->expr()->like('contact_entity_contact.lastName', $qb->expr()->literal('%' . $searchItem . '%'))
             )
         );
 
         $qb->orderBy('contact_entity_contact.lastName', 'ASC');
+        $qb->addOrderBy('contact_entity_contact.firstName', 'ASC');
 
         $qb->setMaxResults($maxResults);
 

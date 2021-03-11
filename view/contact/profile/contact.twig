@@ -14,6 +14,14 @@
             {% endif %}
             <dt>{{ translate("txt-organisation") }}</dt>
             <dd>{{ contactService.parseOrganisation(contact) }}</dd>
+            <dt>{{ translate("txt-website") }}</dt>
+            <dd>
+                {% for web in contact.contactOrganisation.organisation.web|filter(web => web.isMain()) -%}
+                    <a href="{{ web }}">{{ web }}</a><br>
+                {% else %}
+                    {{ translate("txt-no-website-provided") }}
+                {% endfor %}
+            </dd>
             <dt>{{ translate("txt-organisation-type") }}</dt>
             <dd>{{ contact.contactOrganisation.organisation.type }}</dd>
             <dt>{{ translate("txt-country") }}</dt>
@@ -22,6 +30,7 @@
                 <dt>{{ translate("txt-organisation-description") }}</dt>
                 <dd>{{ contact.contactOrganisation.organisation.description|striptags|raw }}</dd>
             {% endif %}
+
         </dl>
     </div>
     <div class="col-md-4">
