@@ -21,8 +21,6 @@ use Laminas\Form\Annotation;
  * @ORM\Table(name="contact_note")
  * @ORM\Entity
  * @Annotation\Name("contact_note")
- *
- * @category    Contact
  */
 class Note extends AbstractEntity
 {
@@ -37,7 +35,7 @@ class Note extends AbstractEntity
      */
     private $id;
     /**
-     * @ORM\Column(name="note", type="string", nullable=true)
+     * @ORM\Column(name="note", type="text", nullable=true)
      * @Annotation\Type("\Laminas\Form\Element\Textarea")
      * @Annotation\Options({"label":"txt-note"})
      *
