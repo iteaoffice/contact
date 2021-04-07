@@ -72,7 +72,7 @@ class Photo extends AbstractEntity
      */
     private $dateUpdated;
     /**
-     * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade="persist", inversedBy="contactPhoto")
+     * @ORM\ManyToOne(targetEntity="General\Entity\ContentType", cascade={"persist"}, inversedBy="contactPhoto")
      * @ORM\JoinColumn(name="contenttype_id", referencedColumnName="contenttype_id", nullable=false)
      * @Annotation\Exclude()
      *

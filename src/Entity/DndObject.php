@@ -35,7 +35,7 @@ class DndObject extends AbstractEntity
      */
     private $object;
     /**
-     * @ORM\ManyToOne(targetEntity="Contact\Entity\Dnd", cascade="persist", inversedBy="object")
+     * @ORM\ManyToOne(targetEntity="Contact\Entity\Dnd", cascade={"persist"}, inversedBy="object")
      * @ORM\JoinColumn(name="dnd_id", referencedColumnName="dnd_id", unique=true)
      *
      * @var Dnd;

@@ -32,6 +32,9 @@ use Organisation\Service\OrganisationService;
 
 return [
     ConfigAbstractFactory::class => [
+        Provider\ContactProvider::class                         => [
+            Service\AddressService::class
+        ],
         Plugin\MergeContact::class                              => [
             EntityManager::class,
             TranslatorInterface::class,

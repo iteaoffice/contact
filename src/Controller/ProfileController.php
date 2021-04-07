@@ -174,6 +174,7 @@ final class ProfileController extends ContactAbstractController
             [
                 'contactService' => $this->contactService,
                 'contact'        => $this->identity(),
+                'tab'            => 'organisation'
             ]
         );
     }
@@ -199,6 +200,7 @@ final class ProfileController extends ContactAbstractController
                 'meetingService' => $this->meetingService,
                 'hasIdentity'    => null !== $this->identity(),
                 'hasNda'         => $this->programModuleOptions->getHasNda(),
+                'tab'            => 'events'
             ]
         );
     }

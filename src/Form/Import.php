@@ -16,15 +16,15 @@ use Contact\Entity\OptIn;
 use Contact\Entity\Selection;
 use Contact\Service\ContactService;
 use Contact\Service\SelectionService;
+use Laminas\Form\Element\File;
+use Laminas\Form\Element\MultiCheckbox;
+use Laminas\Form\Element\Select;
+use Laminas\Form\Element\Submit;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Form;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\File\MimeType;
 use Laminas\Validator\File\Size;
-use Laminas\Form\Element\Submit;
-use Laminas\Form\Element\File;
-use Laminas\Form\Element\Text;
-use Laminas\Form\Element\MultiCheckbox;
-use Laminas\Form\Element\Select;
 
 /**
  * Class Import
@@ -133,13 +133,14 @@ final class Import extends Form implements InputFilterProviderInterface
                 'validators' => [
                     new Size(
                         [
-                            'min' => '1kB',
+                            'min' => '1B',
                             'max' => '16MB',
                         ]
                     ),
                     new MimeType(
                         [
                             'text/plain',
+                            'application/octet-stream',
                         ]
                     ),
                 ],

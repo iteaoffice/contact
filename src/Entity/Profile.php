@@ -55,7 +55,7 @@ class Profile extends AbstractEntity
      */
     private $visible;
     /**
-     * @ORM\OneToOne(targetEntity="Contact\Entity\Contact", cascade="persist", inversedBy="profile")
+     * @ORM\OneToOne(targetEntity="Contact\Entity\Contact", cascade={"persist"}, inversedBy="profile")
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="contact_id", nullable=false)
      *
      * @var Contact

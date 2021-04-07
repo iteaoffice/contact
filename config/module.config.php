@@ -109,6 +109,8 @@ $config = [
     ],
     'service_manager'    => [
         'factories'  => [
+            Provider\ContactProvider::class => ConfigAbstractFactory::class,
+
             Navigation\Service\ContactNavigationService::class      => Navigation\Factory\ContactNavigationServiceFactory::class,
             Navigation\Invokable\ContactLabel::class                => NavigationInvokableFactory::class,
             Navigation\Invokable\FacebookLabel::class               => NavigationInvokableFactory::class,
@@ -150,9 +152,6 @@ $config = [
             Acl\Assertion\Selection::class               => Factory\InvokableFactory::class,
             Acl\Assertion\Office\ContactAssertion::class => Factory\InvokableFactory::class,
             Acl\Assertion\Office\LeaveAssertion::class   => Factory\InvokableFactory::class,
-        ],
-        'invokables' => [
-            Provider\ContactProvider::class,
         ],
         'shared'     => [
             Service\ContactService::class => false,

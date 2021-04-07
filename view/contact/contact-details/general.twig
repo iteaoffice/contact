@@ -37,7 +37,9 @@
                 {% if contactService.hasOrganisation(contact) %}
                     <dd>{{ organisationLink(
                             contact.contactOrganisation.organisation,'view-admin', 'name',contact.contactOrganisation.branch
-                        ) }} ({{ organisationTypeLink(contact.contactOrganisation.organisation.type,'view','description') }}),
+                        ) }}
+                        ({{ organisationTypeLink(contact.contactOrganisation.organisation.type,'view','description') }}
+                        ),
                         {{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</dd>
                 {% else %}
                     <dd>{{ translate("txt-no-organisation-provided") }}</dd>
@@ -131,8 +133,9 @@
 
         <tr>
             <td>{{ translate("txt-anonymise-contact") }}</td>
-            <td>{% if contactService.canAnonymiseContact(contact) %}<i class="fas fa-check text-success"></i>{% else %}<i
-                        class="fas fa-times text-danger"></i>{% endif %}</td>
+            <td>{% if contactService.canAnonymiseContact(contact) %}<i class="fas fa-check text-success"></i>{% else %}
+                    <i
+                            class="fas fa-times text-danger"></i>{% endif %}</td>
             <td>
                 {% for why in contactService.canAnonymiseContactReasons(contact) %}
                     {% if loop.first %}<ul>{% endif %}
@@ -164,5 +167,16 @@
 
     <input type="submit" name="flushpermissions" value="{{ translate("txt-flush-permissions") }}"
            class="btn btn-outline-warning">
+
+    <div class="float-right">
+        <a class="btn btn-outline-secondary"
+           href="/oauth/authorize?response_type=code&client_id=abcd&redirect_uri=/oauth/receivecode&state=xyz">Generate
+            OAuth2 code</a>
+
+        <a class="btn btn-outline-secondary"
+           href="/oauth/authorize?response_type=token&client_id=abcd&redirect_uri=/oauth/receivecode&state=xyz">Generate
+            OAuth2 token</a>
+    </div>
+
 
 </form>

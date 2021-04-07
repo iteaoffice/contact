@@ -159,6 +159,26 @@ final class OrganisationFieldset extends Fieldset implements InputFilterProvider
             'organisation_id' => [
                 'required' => false,
             ],
+            'type'         => [
+                'required'   => true,
+                'validators' => [
+                    new NotEmpty(NotEmpty::NULL),
+                    new Callback(
+                        [
+                            'messages' => [
+                                Callback::INVALID_VALUE => 'Please choose an organisation type when "None of the above" is chosen',
+                            ],
+                            'callback' => static function (string $value, array $context) {
+                                if (! empty($value)) {
+                                    return true;
+                                }
+
+                                return ! empty($context['organisation_id']);
+                            },
+                        ]
+                    )
+                ]
+            ],
             'country'         => [
                 'required'   => true,
                 'validators' => [

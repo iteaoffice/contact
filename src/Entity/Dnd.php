@@ -86,7 +86,7 @@ class Dnd extends AbstractEntity
      */
     private $contentType;
     /**
-     * @ORM\ManyToOne(targetEntity="Program\Entity\Program", cascade="persist", inversedBy="contactDnd")
+     * @ORM\ManyToOne(targetEntity="Program\Entity\Program", cascade={"persist"}, inversedBy="contactDnd")
      * @ORM\JoinColumn(name="program_id", referencedColumnName="program_id")
      * @Annotation\Type("DoctrineORMModule\Form\Element\EntitySelect")
      * @Annotation\Options({"target_class":"Program\Entity\Program"})

@@ -12,16 +12,40 @@ declare(strict_types=1);
 namespace Contact\Provider;
 
 use Contact\Entity;
+use Contact\Service\AddressService;
 
-final class ContactProvider
+/**
+ * Class ContactProvider
+ * @package Contact\Provider
+ */
+class ContactProvider
 {
+    private AddressService $addressService;
+
+    public function __construct(AddressService $addressService)
+    {
+        $this->addressService = $addressService;
+    }
+
     public function generateArray(Entity\Contact $contact): array
     {
-        return [
-            'id'         => $contact->getHash(),
-            'first_name' => $contact->getFirstName(),
-            'last_name'  => $contact->getLastName(),
-            'email'      => $contact->getEmail(),
-        ];
+        /** @var Entity\AddressType $mailAddress */
+        $mailAddress = $this->addressService->find(\Contact\Entity\AddressType::class, \Contact\Entity\AddressType::ADDRESS_TYPE_MAIL);
+        $address     = $this->addressService->findAddressByContactAndType($contact, $mailAddress);
+
+        $addressData = [];
+        if (null !== $address) {
+            $addressData = [
+                'address'  => $address->getAddress(),
+                'city'     => $address->getCity(),
+                'zip_code' => $address->getZipCode(),
+                'country'  => $address->getCountry()->getCd(),
+            ];
+        }
+
+        return array_merge([
+            'name'  => $contact->parseFullName(),
+            'email' => $contact->getEmail(),
+        ], $addressData);
     }
 }
