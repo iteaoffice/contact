@@ -628,10 +628,10 @@ class Contact extends EntityRepository
         $qb->andWhere($qb->expr()->isNotNull('contact_entity_contact.dateActivated'));
         $qb->andWhere($qb->expr()->isNull('contact_entity_contact.dateAnonymous'));
 
-        $qb->andWhere($qb->expr()->isNotNull('p.description'));
-        //Exclude the empty descriptions
-        $qb->andWhere('p.description <> ?2');
-        $qb->setParameter(2, '');
+        //        $qb->andWhere($qb->expr()->isNotNull('p.description'));
+        //        //Exclude the empty descriptions
+        //        $qb->andWhere('p.description <> ?2');
+        //        $qb->setParameter(2, '');
 
         if ($onlyPublic) {
             $qb->andWhere('p.visible <> ?1');

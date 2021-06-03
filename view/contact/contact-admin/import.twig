@@ -11,7 +11,7 @@
  {{ ztbformelement(form.get('optIn')) }}
  {{ ztbformelement(form.get('file')) }}
 
-<div class="form-group row">
+<div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
         {% if handleImport.hasErrors() %}
             <div class="alert alert-danger" role="alert">
@@ -38,7 +38,7 @@
 </div>
 
 
-<div class="form-group row">
+<div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
         {{ ztbformelement(form.get('upload')) }}
         {{ ztbformelement(form.get('import')) }}
@@ -104,7 +104,7 @@
             </tbody>
         </table>
 
-        <div class="form-group row">
+        <div class="row mb-3">
             <div class="offset-sm-3 col-sm-9">
                 {{ ztbformelement(form.get('import')) }}
             </div>

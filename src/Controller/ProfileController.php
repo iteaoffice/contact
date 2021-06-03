@@ -294,6 +294,11 @@ final class ProfileController extends ContactAbstractController
             return $this->redirect()->toRoute('user/login');
         }
 
+        if (! $contact->isActive()) {
+            $contact->setDateEnd(null);
+            $this->contactService->save($contact);
+        }
+
         if ($contact->isActivated()) {
             $this->flashMessenger()->addSuccessMessage(
                 $this->translator->translate('txt-your-profile-has-already-been-activated-you-will-be-redirected')

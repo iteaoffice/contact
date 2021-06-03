@@ -41,7 +41,7 @@
     <field name="position_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
     <field name="position_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
 
-    <field name="profile" type="string" indexed="true" stored="true" omitNorms="true"/>
+    <field name="profile" type="string" indexed="false" stored="true" omitNorms="true"/>
     <field name="profile_search" type="text_general_edge_ngram" indexed="true" stored="true" omitNorms="true"/>
     <field name="profile_sort" type="string_ci" indexed="true" stored="true" omitNorms="true"/>
 

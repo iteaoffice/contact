@@ -28,7 +28,7 @@
 {% if contact.id %}
     <fieldset>
         <legend>{{ translate("txt-photo") }}</legend>
-        <div class="form-group row">
+        <div class="row mb-3">
             <label class="col-sm-3 col-form-label">{{ translate("txt-current-photo") }}</label>
 
             <div class="col-sm-9">
@@ -47,7 +47,7 @@
 
 {{ ztbformelement(form.get('csrf')) }}
 
-<div class="form-group row">
+<div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
         {{ ztbformelement(form.get('submit')) }}
         {{ ztbformelement(form.get('cancel')) }}

@@ -36,16 +36,31 @@ class ContactProvider
         $addressData = [];
         if (null !== $address) {
             $addressData = [
-                'address'  => $address->getAddress(),
-                'city'     => $address->getCity(),
-                'zip_code' => $address->getZipCode(),
-                'country'  => $address->getCountry()->getCd(),
+                'address' => [
+                    'address'  => $address->getAddress(),
+                    'city'     => $address->getCity(),
+                    'zip_code' => $address->getZipCode(),
+                    'country'  => $address->getCountry()->getCd(),
+                ]
+            ];
+        }
+
+        $funderData = [];
+        if ($contact->isFunder()) {
+            $funderData = [
+                'funder' => [
+                    'country' => $contact->getFunder()->getCountry()->getIso3()
+                ]
             ];
         }
 
         return array_merge([
-            'name'  => $contact->parseFullName(),
-            'email' => $contact->getEmail(),
-        ], $addressData);
+            'id'         => $contact->getId(),
+            'cluster'    => 'itea',
+            'first_name' => $contact->getFirstName(),
+            'last_name'  => trim(implode(' ', [$contact->getMiddleName(), $contact->getLastName()])),
+            'email'      => $contact->getEmail(),
+            'is_funder'  => $contact->isFunder(),
+        ], $addressData, $funderData);
     }
 }

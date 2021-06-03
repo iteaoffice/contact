@@ -68,17 +68,12 @@
         {% endif %}
     </div>
     <div class="col-md-3">
-        <div class="well well-sm">
-            <fieldset>
+        {{ ztbformelement(filter.get('includeDeleted'), true) }}
+        {{ ztbformelement(filter.get('type'), true) }}
+        {{ ztbformelement(filter.get('tags'), true) }}
 
-                {{ ztbformelement(filter.get('includeDeleted'), true) }}
-                {{ ztbformelement(filter.get('type'), true) }}
-                {{ ztbformelement(filter.get('tags'), true) }}
-
-                {{ ztbformelement(form.get('submit')) }}
-                {{ ztbformelement(form.get('clear')) }}
-            </fieldset>
-        </div>
+        {{ ztbformelement(form.get('submit')) }}
+        {{ ztbformelement(form.get('clear')) }}
     </div>
 </div>
 

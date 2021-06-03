@@ -183,6 +183,13 @@ final class ContactActions extends AbstractPlugin
             return;
         }
 
+        if (! $contact->isActive()) {
+            $contact->setDateEnd(null);
+            $this->contactService->save($contact);
+
+            $this->contactService->addNoteToContact('Account reactivated by requesting new password', 'Account creation', $contact);
+        }
+
         //Send the email
         $email = $this->emailService->createNewWebInfoEmailBuilder('/auth/forgotpassword:mail');
         $email->addContactTo($contact);
