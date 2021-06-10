@@ -44,12 +44,10 @@ final class ContactFormElement extends FormElement
         $this->type = $type;
 
         $this->view->headLink()->appendStylesheet('/assets/bootstrap-select-1.14-dev/dist/css/bootstrap-select.min.css');
-//        $this->view->headScript()->appendFile('/assets/bootstrap-select-1.14-dev/dist/js/bootstrap-select.min.js','text/javascript');
-        $this->view->headScript()->appendFile('/assets/bootstrap-select-1.14-dev/dist/js/bootstrap-select.js', 'text/javascript');
+        $this->view->headScript()->appendFile('/assets/bootstrap-select-1.14-dev/dist/js/bootstrap-select.min.js', 'text/javascript');
         $this->view->headLink()->appendStylesheet('/assets/ajax-bootstrap-select/dist/css/ajax-bootstrap-select.css');
         $this->view->headScript()->appendFile('/assets/ajax-bootstrap-select/dist/js/ajax-bootstrap-select.js', 'text/javascript');
         $this->view->inlineScript()->appendScript("$('.selectpicker-contact').selectpicker().ajaxSelectPicker();", 'text/javascript');
-//        $this->view->inlineScript()->appendScript("$('.selectpicker-contact').selectpicker();",'text/javascript');
 
         if ($element) {
             return $this->render($element);

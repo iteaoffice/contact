@@ -25,23 +25,11 @@ final class SelectionFormElement extends FormElement
 {
     public function __invoke(ElementInterface $element = null, $type = self::TYPE_HORIZONTAL, bool $formElementOnly = false)
     {
-        $this->type          = $type;
+        $this->type = $type;
 
-        $this->view->headLink()->appendStylesheet('/assets/css/bootstrap-select.min.css');
-        $this->view->headLink()->appendStylesheet('/assets/css/ajax-bootstrap-select.min.css');
-        $this->view->headScript()->appendFile(
-            '/assets/js/bootstrap-select.min.js',
-            'text/javascript'
-        );
-        $this->view->headScript()->appendFile(
-            '/assets/js/ajax-bootstrap-select.min.js',
-            'text/javascript'
-        );
-        $this->view->inlineScript()->appendScript(
-            "$('.selectpicker-selection').selectpicker();",
-            'text/javascript'
-        );
-
+        $this->view->headLink()->appendStylesheet('/assets/bootstrap-select-1.14-dev/dist/css/bootstrap-select.min.css');
+        $this->view->headScript()->appendFile('/assets/bootstrap-select-1.14-dev/dist/js/bootstrap-select.min.js', 'text/javascript');
+        $this->view->inlineScript()->appendScript("$('.selectpicker-selection').selectpicker();", 'text/javascript');
 
         if ($element) {
             return $this->render($element);

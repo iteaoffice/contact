@@ -43,7 +43,7 @@
             {% endif %}
             {% if contact.profile.description %}
                 <dt>{{ translate("txt-expertise") }}</dt>
-                <dd>{{ contact.profile.description|raw }}</dd>
+                <dd>{{ contact.profile.description|nl2br }}</dd>
             {% endif %}
             <dt>{{ translate("txt-linked-in-profile") }}</dt>
             {% if contact.profile.linkedIn %}

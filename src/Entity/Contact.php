@@ -1057,6 +1057,20 @@ class Contact extends AbstractEntity implements ProviderInterface
      * @var RefreshToken[]|Collections\ArrayCollection
      */
     private $oAuthRefreshTokens;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\AdvisoryBoard\City", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Organisation\Entity\AdvisoryBoard\City[]|Collections\ArrayCollection()
+     */
+    private $advisoryBoardCities;
+    /**
+     * @ORM\OneToMany(targetEntity="Organisation\Entity\AdvisoryBoard\Solution", cascade={"persist"}, mappedBy="contact")
+     * @Annotation\Exclude()
+     *
+     * @var \Organisation\Entity\AdvisoryBoard\Solution[]|Collections\ArrayCollection()
+     */
+    private $advisoryBoardSolutions;
 
     public function __construct()
     {
@@ -1180,6 +1194,8 @@ class Contact extends AbstractEntity implements ProviderInterface
         $this->note                                = new Collections\ArrayCollection();
         $this->pageview                            = new Collections\ArrayCollection();
         $this->organisationUpdates                 = new Collections\ArrayCollection();
+        $this->advisoryBoardCities                 = new Collections\ArrayCollection();
+        $this->advisoryBoardSolutions             = new Collections\ArrayCollection();
 
         $this->oAuthAccessTokens       = new Collections\ArrayCollection();
         $this->oAuthAuthorizationCodes = new Collections\ArrayCollection();
@@ -3477,6 +3493,28 @@ class Contact extends AbstractEntity implements ProviderInterface
     public function setOAuthRefreshTokens($oAuthRefreshTokens): Contact
     {
         $this->oAuthRefreshTokens = $oAuthRefreshTokens;
+        return $this;
+    }
+
+    public function getAdvisoryBoardCities()
+    {
+        return $this->advisoryBoardCities;
+    }
+
+    public function setAdvisoryBoardCities($advisoryBoardCities): Contact
+    {
+        $this->advisoryBoardCities = $advisoryBoardCities;
+        return $this;
+    }
+
+    public function getAdvisoryBoardSolutions()
+    {
+        return $this->advisoryBoardSolutions;
+    }
+
+    public function setAdvisoryBoardSolutions($advisoryBoardSolutions): Contact
+    {
+        $this->advisoryBoardSolutions = $advisoryBoardSolutions;
         return $this;
     }
 }
