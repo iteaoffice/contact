@@ -6,7 +6,7 @@
 <p>{{ translate("txt-selection-generate-deeplinks-for-contacts-in-selection") }}</p>
 
 {% if selection.dateDeleted %}
-    {{ ztbalert().danger(translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")))|raw }}
+    {{ lbs5alert().danger(translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")))|raw }}
 {% endif %}
 
 {% do form.prepare() %}

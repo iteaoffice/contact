@@ -34,7 +34,7 @@
         </div>
     </div>
 {% else %}
-    {{ ztbalert().danger(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
+    {{ lbs5alert().danger(translate("txt-no-organisation-found-complete-your-profile-to-participate-in-projects"))|raw }}
 {% endif %}
 
 {{ organisationUpdateLink(null, 'edit', 'button', contact.contactOrganisation.organisation) }}

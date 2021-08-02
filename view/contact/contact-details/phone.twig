@@ -27,7 +27,7 @@
         </tbody>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-no-phone-numbers-found"))|raw }}
+    {{ lbs5alert().info(translate("txt-no-phone-numbers-found"))|raw }}
 {% endif %}
 
 {{ phoneLink(null,'new','button', contact) }}

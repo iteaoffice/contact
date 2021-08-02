@@ -64,7 +64,7 @@
             </table>
             {% include 'application/partial/pagination-control' with {'paginator': paginator} %}
         {% else %}
-            {{ ztbalert().info(translate("txt-no-selections-found"))|raw }}
+            {{ lbs5alert().info(translate("txt-no-selections-found"))|raw }}
         {% endif %}
     </div>
     <div class="col-md-3">

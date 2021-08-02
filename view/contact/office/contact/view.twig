@@ -4,7 +4,7 @@
 <h1>{{ officeContact.contact.parseFullName() }} {{ officeContactLink(officeContact,'edit','button') }}</h1>
 
 {% if not officeContact.isActive() %}
-    {{ ztbalert().danger(translate("txt-contact-has-been-set-as-inactive-on-%s")|format(officeContact.dateEnd|date('d-m-Y')))|raw }}
+    {{ lbs5alert().danger(translate("txt-contact-has-been-set-as-inactive-on-%s")|format(officeContact.dateEnd|date('d-m-Y')))|raw }}
 {% endif %}
 
 <dl class="dl-horizontal">
@@ -73,7 +73,7 @@
         </tfoot>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-no-leave-found"))|raw }}
+    {{ lbs5alert().info(translate("txt-no-leave-found"))|raw }}
 {% endif %}
 
 {{ leaveLink(null, 'new-admin', 'button', officeContact) }}

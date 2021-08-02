@@ -16,7 +16,7 @@
         <p class="text-muted">{{ translate("txt-%s-items-on-%s-pages")|format(paginator.adapter.count,paginator.pageRange) }}</p>
 
 
-        {{ ztbalert().info(translate("txt-partner-search-engine-explanation"))|raw }}
+        {{ lbs5alert().info(translate("txt-partner-search-engine-explanation"))|raw }}
 
         <hr>
 
@@ -65,7 +65,7 @@
 
 
         {% else %}
-            {{ ztbalert().info(translate("txt-no-search-results-found"))|raw }}
+            {{ lbs5alert().info(translate("txt-no-search-results-found"))|raw }}
         {% endif %}
     </div>
 

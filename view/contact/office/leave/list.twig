@@ -66,7 +66,7 @@
             <tfoot></tfoot>
         </table>
     {% else %}
-        {{ ztbalert().info(translate("txt-no-leave-found"))|raw }}
+        {{ lbs5alert().info(translate("txt-no-leave-found"))|raw }}
     {% endif %}
 
     {{ leaveLink(null, 'new', 'button') }}

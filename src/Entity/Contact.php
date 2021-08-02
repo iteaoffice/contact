@@ -1195,7 +1195,7 @@ class Contact extends AbstractEntity implements ProviderInterface
         $this->pageview                            = new Collections\ArrayCollection();
         $this->organisationUpdates                 = new Collections\ArrayCollection();
         $this->advisoryBoardCities                 = new Collections\ArrayCollection();
-        $this->advisoryBoardSolutions             = new Collections\ArrayCollection();
+        $this->advisoryBoardSolutions              = new Collections\ArrayCollection();
 
         $this->oAuthAccessTokens       = new Collections\ArrayCollection();
         $this->oAuthAuthorizationCodes = new Collections\ArrayCollection();

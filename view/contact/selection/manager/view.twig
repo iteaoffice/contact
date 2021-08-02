@@ -5,24 +5,24 @@
 <h1>{{ selection }}</h1>
 
 {% if selection.dateDeleted %}
-    {{ ztbalert().danger(translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")))|raw }}
+    {{ lbs5alert().danger(translate("txt-selection-has-been-deleted-on-%s")|format(selection.dateDeleted|date("d-m-Y")))|raw }}
 {% endif %}
 
 {% if error %}
-    {{ ztbalert().danger('<pre>' ~ error ~ '</pre>')|raw }}
+    {{ lbs5alert().danger('<pre>' ~ error ~ '</pre>')|raw }}
 {% endif %}
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item active"><a class="nav-link active" href="#general" data-toggle="tab" data-bs-toggle="tab"
+    <li class="nav-item active"><a class="nav-link active" href="#general" data-bs-toggle="tab"
                                    role="tab">{{ translate("txt-general") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#contacts" data-toggle="tab" data-bs-toggle="tab"
+    <li class="nav-item"><a class="nav-link" href="#contacts" data-bs-toggle="tab"
                             role="tab">{{ translate("txt-contacts") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#mailings" data-toggle="tab" data-bs-toggle="tab"
+    <li class="nav-item"><a class="nav-link" href="#mailings" data-bs-toggle="tab"
                             role="tab">{{ translate("txt-mailings") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#events" data-toggle="tab" data-bs-toggle="tab"
+    <li class="nav-item"><a class="nav-link" href="#events" data-bs-toggle="tab"
                             role="tab">{{ translate("txt-events") }}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#access" data-toggle="tab" data-bs-toggle="tab"
+    <li class="nav-item"><a class="nav-link" href="#access" data-bs-toggle="tab"
                             role="tab">{{ translate("txt-access") }}</a></li>
 </ul>
 
@@ -103,7 +103,7 @@
                 </tbody>
             </table>
         {% else %}
-            {{ ztbalert().warning(translate("txt-no-contacts-in-this-selection"))|raw }}
+            {{ lbs5alert().warning(translate("txt-no-contacts-in-this-selection"))|raw }}
         {% endif %}
 
         <hr>
@@ -139,7 +139,7 @@
                 </tbody>
             </table>
         {% else %}
-            {{ ztbalert().info(translate("txt-no-mailing-send-with-this-selection"))|raw }}
+            {{ lbs5alert().info(translate("txt-no-mailing-send-with-this-selection"))|raw }}
         {% endif %}
     </div>
     <div class="tab-pane" role="tabpanel" id="events">
@@ -171,7 +171,7 @@
                 </tbody>
             </table>
         {% else %}
-            {{ ztbalert().info(translate("txt-no-meetings-defined-for-this-selection"))|raw }}
+            {{ lbs5alert().info(translate("txt-no-meetings-defined-for-this-selection"))|raw }}
         {% endif %}
 
 
@@ -260,7 +260,7 @@
                 </tbody>
             </table>
         {% else %}
-            {{ ztbalert().info(translate("txt-no-access-defined-for-this-selection"))|raw }}
+            {{ lbs5alert().info(translate("txt-no-access-defined-for-this-selection"))|raw }}
         {% endif %}
     </div>
 </div>

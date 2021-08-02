@@ -291,7 +291,6 @@ class Contact extends EntityRepository
             'projectDescription',
             'optIn',
             'pca',
-            'deeplinkContact',
             'ndaApprover',
             'programDoa',
             'rationale',
@@ -331,7 +330,6 @@ class Contact extends EntityRepository
             'loi',
             'affiliationDoa',
             'parentDoa',
-
             'invoiceLog',
             'achievement',
             'changeRequestProcess',

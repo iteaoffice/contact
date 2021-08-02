@@ -26,7 +26,7 @@
         </tbody>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-this-contact-has-no-project-ideas"))|raw }}
+    {{ lbs5alert().info(translate("txt-this-contact-has-no-project-ideas"))|raw }}
 {% endif %}
 
 <h2>{{ translate("txt-project-idea-comments") }}</h2>
@@ -53,5 +53,5 @@
         </tbody>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-contact-has-not-commented-on-an-idea"))|raw }}
+    {{ lbs5alert().info(translate("txt-contact-has-not-commented-on-an-idea"))|raw }}
 {% endif %}

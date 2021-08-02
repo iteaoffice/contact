@@ -427,8 +427,6 @@ return [
                     'roles'     => [],
                     'assertion' => NoteAssertion::class,
                 ],
-                ['route' => 'cli-contact-reset-access', 'roles' => [],],
-                ['route' => 'cli-contact-cleanup', 'roles' => [],],
             ],
         ],
     ],

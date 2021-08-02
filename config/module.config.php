@@ -26,7 +26,6 @@ $config = [
     'controllers'        => [
         'factories' => [
             Controller\AddressManagerController::class    => ConfigAbstractFactory::class,
-            Controller\ConsoleController::class           => ConfigAbstractFactory::class,
             Controller\ContactAdminController::class      => ConfigAbstractFactory::class,
             Controller\ContactController::class           => ConfigAbstractFactory::class,
             Controller\ContactDetailsController::class    => ConfigAbstractFactory::class,
@@ -109,6 +108,9 @@ $config = [
     ],
     'service_manager'    => [
         'factories'  => [
+            Command\Cleanup::class => ConfigAbstractFactory::class,
+            Command\ResetAccess::class => ConfigAbstractFactory::class,
+
             Provider\ContactProvider::class => ConfigAbstractFactory::class,
 
             Navigation\Service\ContactNavigationService::class      => Navigation\Factory\ContactNavigationServiceFactory::class,

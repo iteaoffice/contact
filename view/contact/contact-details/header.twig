@@ -5,11 +5,11 @@
 <h1>{{ contactService.parseAttention(contact) }} {{ contact.parseFullname() }}</h1>
 
 {% if contact.dateEnd %}
-    {{ ztbalert().danger(translate("txt-%s-has-been-deleted-on-%s-undelte-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
+    {{ lbs5alert().danger(translate("txt-%s-has-been-deleted-on-%s-undelte-can-be-done-by-editing-the-contact")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
 {% endif %}
 
 {% if contactService.contactWillBeAutoDelete(contact) %}
-    {{ ztbalert().danger(translate("txt-%s-will-be-removed-in-then-next-run-of-the-contact-cleanup")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
+    {{ lbs5alert().danger(translate("txt-%s-will-be-removed-in-then-next-run-of-the-contact-cleanup")|format(contact.parseFullname(), contact.dateEnd|date('d-m-Y')))|raw }}
 {% endif %}
 
 {% set navigation =

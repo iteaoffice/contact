@@ -92,7 +92,7 @@
         </tbody>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-no-legal-document-could-be-found"))|raw }}
+    {{ lbs5alert().info(translate("txt-no-legal-document-could-be-found"))|raw }}
 {% endif %}
 {{ ndaLink(null, 'upload','button', null, contact) }}
 {{ dndLink(null, 'new','button', contact) }}

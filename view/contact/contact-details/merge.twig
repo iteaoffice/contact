@@ -14,7 +14,7 @@
         <div class="form-group">
             {% set main = mergeForm.get('source-main') %}
             {% if main.getValueOptions()|length == 0 %}
-                {{ ztbalert().info(translate("txt-no-suggestions-found"))|raw }}
+                {{ lbs5alert().info(translate("txt-no-suggestions-found"))|raw }}
             {% else %}
                 {% for value, label in main.getValueOptions() %}
                     <div class="form-check">

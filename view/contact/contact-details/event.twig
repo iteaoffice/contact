@@ -49,7 +49,7 @@
         </tbody>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-no-event-registrations-were-found-for-this-contact"))|raw }}
+    {{ lbs5alert().info(translate("txt-no-event-registrations-were-found-for-this-contact"))|raw }}
 {% endif %}
 
 {% if not (contact.boothContact.isEmpty() and

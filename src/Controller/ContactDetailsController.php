@@ -24,11 +24,11 @@ use DateTime;
 use Doctrine\ORM\EntityManager;
 use Event\Service\BoothService;
 use Event\Service\RegistrationService;
-use Program\Service\CallService;
-use Project\Service\ProjectService;
 use Laminas\Http\Request;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\View\Model\ViewModel;
+use Program\Service\CallService;
+use Project\Service\ProjectService;
 
 use function sprintf;
 
@@ -62,16 +62,16 @@ final class ContactDetailsController extends ContactAbstractController
         TranslatorInterface $translator,
         EntityManager $entityManager
     ) {
-        $this->contactService = $contactService;
-        $this->selectionService = $selectionService;
-        $this->callService = $callService;
-        $this->projectService = $projectService;
-        $this->calendarService = $calendarService;
-        $this->adminService = $adminService;
+        $this->contactService      = $contactService;
+        $this->selectionService    = $selectionService;
+        $this->callService         = $callService;
+        $this->projectService      = $projectService;
+        $this->calendarService     = $calendarService;
+        $this->adminService        = $adminService;
         $this->registrationService = $registrationService;
-        $this->boothService = $boothService;
-        $this->translator = $translator;
-        $this->entityManager = $entityManager;
+        $this->boothService        = $boothService;
+        $this->translator          = $translator;
+        $this->entityManager       = $entityManager;
     }
 
     public function generalAction()
@@ -88,7 +88,7 @@ final class ContactDetailsController extends ContactAbstractController
         $this->contactService->refresh($contact);
 
         $selections = $this->selectionService->findSelectionsByContact($contact);
-        $optIn = $this->contactService->findAll(OptIn::class);
+        $optIn      = $this->contactService->findAll(OptIn::class);
 
         $data = $request->getPost()->toArray();
 
@@ -341,8 +341,9 @@ final class ContactDetailsController extends ContactAbstractController
 
         return new ViewModel(
             [
-                'tab'     => 'idea',
-                'contact' => $contact
+                'tab'            => 'idea',
+                'contact'        => $contact,
+                'contactService' => $this->contactService,
             ]
         );
     }
@@ -360,6 +361,7 @@ final class ContactDetailsController extends ContactAbstractController
                 'tab'            => 'project',
                 'contact'        => $contact,
                 'projectService' => $this->projectService,
+                'contactService' => $this->contactService,
                 'projects'       => $this->projectService->findProjectParticipationByContact($contact),
             ]
         );
@@ -375,8 +377,9 @@ final class ContactDetailsController extends ContactAbstractController
 
         return new ViewModel(
             [
-                'tab'     => 'legal',
-                'contact' => $contact
+                'tab'            => 'legal',
+                'contact'        => $contact,
+                'contactService' => $this->contactService,
             ]
         );
     }
@@ -394,6 +397,7 @@ final class ContactDetailsController extends ContactAbstractController
                 'tab'                 => 'event',
                 'contact'             => $contact,
                 'registrationService' => $this->registrationService,
+                'contactService'      => $this->contactService,
                 'callService'         => $this->callService,
                 'boothService'        => $this->boothService
             ]
@@ -427,7 +431,8 @@ final class ContactDetailsController extends ContactAbstractController
             [
                 'tab'             => 'calendar',
                 'contact'         => $contact,
-                'calendarService' => $this->calendarService
+                'calendarService' => $this->calendarService,
+                'contactService'  => $this->contactService,
             ]
         );
     }
@@ -444,9 +449,10 @@ final class ContactDetailsController extends ContactAbstractController
 
         return new ViewModel(
             [
-                'tab'       => 'merge',
-                'contact'   => $contact,
-                'mergeForm' => $mergeForm
+                'tab'            => 'merge',
+                'contactService' => $this->contactService,
+                'contact'        => $contact,
+                'mergeForm'      => $mergeForm
 
             ]
         );

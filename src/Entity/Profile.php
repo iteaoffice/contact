@@ -72,6 +72,11 @@ class Profile extends AbstractEntity
         return self::$visibleTemplates;
     }
 
+    public function isVisible(): bool
+    {
+        return $this->visible === self::VISIBLE_COMMUNITY;
+    }
+
     public function toArray(): array
     {
         return [
@@ -115,6 +120,11 @@ class Profile extends AbstractEntity
     {
         $this->visible = $visible;
         return $this;
+    }
+
+    public function getVisibleText(): string
+    {
+        return self::$visibleTemplates[$this->visible] ?? '';
     }
 
     public function getContact(): ?Contact

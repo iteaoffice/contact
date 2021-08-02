@@ -41,9 +41,6 @@ return [
             Service\FormService::class,
             TranslatorInterface::class
         ],
-        Controller\ConsoleController::class          => [
-            ContactService::class
-        ],
         Controller\ContactAdminController::class     => [
             Service\ContactService::class,
             ContactSearchService::class,

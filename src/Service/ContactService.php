@@ -52,6 +52,7 @@ use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
 use Solarium\Core\Query\AbstractQuery;
 use Solarium\QueryType\Update\Query\Document;
+use Symfony\Component\Console\Output\OutputInterface;
 
 use function array_key_exists;
 use function count;
@@ -256,13 +257,15 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $repository->isInactiveContact($contact);
     }
 
-    public function resetAccessRoles(): void
+    public function resetAccessRoles(OutputInterface $output): void
     {
         $contacts = $this->entityManager->getRepository(Contact::class)->findBy(['triggerUpdate' => true]);
 
         foreach ($contacts as $contact) {
             $contact->setTriggerUpdate(false);
             $this->save($contact);
+
+            $output->writeln(sprintf("Access of %s updated", $contact->parseFullName()));
 
             $this->adminService->resetCachedAccessRolesByContact($contact);
             $this->adminService->flushPermitsByContact($contact);
@@ -382,27 +385,18 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 $description .= ' ' . strip_tags($description->getDescription());
             }
 
-            $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile', substr(str_replace(PHP_EOL, '', $description), 0, 200));
             $contactDocument->setField('profile_sort', substr(str_replace(PHP_EOL, '', $description), 0, 200));
-            $contactDocument->setField('profile_search', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_search', substr(str_replace(PHP_EOL, '', $description), 0, 200));
 
             if ($contact->getPhoto()->count() > 0) {
-                $url = $this->viewHelperManager->get(Url::class);
-
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
 
-                $contactDocument->setField(
-                    'photo_url',
-                    $url(
-                        'image/contact-photo',
-                        [
-                            'ext'         => $photo->getContentType()->getExtension(),
-                            'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                            'id'          => $photo->getId(),
-                        ]
-                    )
-                );
+                //Do a manual construction of the URL (the CLI does not like the URL helper)
+                $url = sprintf('/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
+                print $url;
+                $contactDocument->setField('photo_url', $url);
             }
         }
 
@@ -521,27 +515,18 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 $description .= ' ' . strip_tags($description->getDescription());
             }
 
-            $contactDocument->setField('profile', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile', substr(str_replace(PHP_EOL, '', $description), 0, 200));
             $contactDocument->setField('profile_sort', substr(str_replace(PHP_EOL, '', $description), 0, 200));
-            $contactDocument->setField('profile_search', str_replace(PHP_EOL, '', $description));
+            $contactDocument->setField('profile_search', substr(str_replace(PHP_EOL, '', $description), 0, 200));
 
             if ($contact->getPhoto()->count() > 0) {
-                $url = $this->viewHelperManager->get(Url::class);
-
                 /** @var Photo $photo */
                 $photo = $contact->getPhoto()->first();
 
-                $contactDocument->setField(
-                    'photo_url',
-                    $url(
-                        'image/contact-photo',
-                        [
-                            'ext'         => $photo->getContentType()->getExtension(),
-                            'last-update' => $photo->getDateUpdated()->getTimestamp(),
-                            'id'          => $photo->getId(),
-                        ]
-                    )
-                );
+                //Do a manual construction of the URL (the CLI does not like the URL helper)
+                $url = sprintf('/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
+                print $url;
+                $contactDocument->setField('photo_url', $url);
             }
         }
 
@@ -566,13 +551,15 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         return $update;
     }
 
-    public function removeInactiveContacts(): void
+    public function removeInactiveContacts(OutputInterface $output): void
     {
         $inactiveContacts = $this->findInactiveContacts();
 
         foreach ($inactiveContacts as $inactiveContact) {
             $contact = $this->findContactById($inactiveContact['id']);
             if (null !== $contact) {
+                $output->writeln(sprintf("%s (%d) deleted", $contact->parseFullName(), $contact->getId()));
+
                 $this->delete($contact);
             }
         }

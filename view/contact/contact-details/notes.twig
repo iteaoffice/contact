@@ -24,7 +24,7 @@
         </tbody>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-no-notes-available-for-this-contact"))|raw }}
+    {{ lbs5alert().info(translate("txt-no-notes-available-for-this-contact"))|raw }}
 {% endif %}
 
     {{ noteLink(null,'new','button', contact) }}

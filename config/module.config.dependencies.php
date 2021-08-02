@@ -32,6 +32,12 @@ use Organisation\Service\OrganisationService;
 
 return [
     ConfigAbstractFactory::class => [
+        Command\Cleanup::class     => [
+            Service\ContactService::class,
+        ],
+        Command\ResetAccess::class => [
+            Service\ContactService::class,
+        ],
         Provider\ContactProvider::class                         => [
             Service\AddressService::class
         ],

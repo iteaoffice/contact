@@ -49,7 +49,7 @@
 
     {% include 'application/partial/pagination-control' %}
 {% else %}
-    {{ ztbalert().info(translate("txt-no-selection-types-found"))|raw }}
+    {{ lbs5alert().info(translate("txt-no-selection-types-found"))|raw }}
 {% endif %}
 
 {{ form().closeTag()|raw }}

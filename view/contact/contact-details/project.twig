@@ -23,7 +23,7 @@
         </tbody>
     </table>
 {% else %}
-    {{ ztbalert().info(translate("txt-contact-is-not-active-in-a-project"))|raw }}
+    {{ lbs5alert().info(translate("txt-contact-is-not-active-in-a-project"))|raw }}
 {% endif %}
 
 {{ contactLink(contact,'add-project','button') }}

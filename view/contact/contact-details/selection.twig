@@ -49,7 +49,7 @@
 
     </form>
 {% else %}
-    {{ ztbalert().info(translate("txt-contact-%s-is-not-active-in-any-selection")|format(contact.parseFullName()))|raw }}
+    {{ lbs5alert().info(translate("txt-contact-%s-is-not-active-in-any-selection")|format(contact.parseFullName()))|raw }}
 {% endif %}
 
 {% if not contact.deeplinkContact.isEmpty() %}

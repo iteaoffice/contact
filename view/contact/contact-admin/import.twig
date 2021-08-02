@@ -46,7 +46,7 @@
 </div>
 
 {% if  handleImport.getImportedContacts()|length > 0 %}
-    {{ ztbalert().info(translate("txt-%s-contacts-imported")|format(handleImport.getImportedContacts()|length))|raw }}
+    {{ lbs5alert().info(translate("txt-%s-contacts-imported")|format(handleImport.getImportedContacts()|length))|raw }}
 {% endif %}
 
 
