@@ -27,9 +27,9 @@
                 </tr>
                 </thead>
                 <tfoot>
-                    <tr>
-                        <td colspan="5"></td>
-                    </tr>
+                <tr>
+                    <td colspan="5"></td>
+                </tr>
                 </tfoot>
                 <tbody>
                 {% for officeContact in paginator.getCurrentItems() %}
@@ -54,15 +54,9 @@
     </div>
 
     <div class="col-md-2">
-        <div class="well well-sm">
-            <fieldset>
-                <div class="row mb-3">
-                    {{ ztbformelement(filter.get('active'), true) }}
-                </div>
-                {{ ztbformelement(form.get('submit')) }}
-                {{ ztbformelement(form.get('clear')) }}
-            </fieldset>
-        </div>
+        {{ lbs5formelement(filter.get('active'), 'default') }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('clear')) }}
     </div>
 </div>
 

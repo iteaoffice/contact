@@ -8,17 +8,17 @@
 
 {% set type = form.get('contact_entity_selection_type') %}
 
-{{ ztbformelement(type.get('id')) }}
-{{ ztbformelement(type.get('name')) }}
-{{ ztbformelement(type.get('description')) }}
+{{ lbs5formelement(type.get('id')) }}
+{{ lbs5formelement(type.get('name')) }}
+{{ lbs5formelement(type.get('description')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('csrf')) }}
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('csrf')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
         {% if form.has('delete') %}
-            {{ ztbformelement(form.get('delete')) }}
+            {{ lbs5formelement(form.get('delete')) }}
         {% endif %}
     </div>
 </div>

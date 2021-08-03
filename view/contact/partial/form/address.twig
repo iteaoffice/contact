@@ -10,21 +10,21 @@
 </div>
 
 {% set address = form.get('contact_entity_address') %}
-{{ ztbformelement(address.get('type')) }}
-{{ ztbformelement(address.get('address')) }}
-{{ ztbformelement(address.get('zipCode')) }}
-{{ ztbformelement(address.get('city')) }}
-{{ ztbformelement(address.get('country')) }}
+{{ lbs5formelement(address.get('type')) }}
+{{ lbs5formelement(address.get('address')) }}
+{{ lbs5formelement(address.get('zipCode')) }}
+{{ lbs5formelement(address.get('city')) }}
+{{ lbs5formelement(address.get('country')) }}
 
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
         {% if form.has('delete') %}
-            {{ ztbformelement(form.get('delete')) }}
+            {{ lbs5formelement(form.get('delete')) }}
         {% endif %}
     </div>
 </div>

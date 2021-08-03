@@ -22,10 +22,10 @@
     </div>
 </div>
 
-{{ ztbformelement(form.get('type')) }}
+{{ lbs5formelement(form.get('type')) }}
 
 <div id="pane-sql" class="{% if not selectionService.isSql(selection) %}d-none{% endif %}">
-    {{ ztbformelement(form.get('sql').setAttribute('class','')) }}
+    {{ lbs5formelement(form.get('sql').setAttribute('class','')) }}
 </div>
 
 <div id="pane-fixed" class="{% if selectionService.isSql(selection) %}d-none{% endif %}">
@@ -65,10 +65,10 @@
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
         {% if form.has('delete') %}
-            {{ ztbformelement(form.get('delete')) }}
+            {{ lbs5formelement(form.get('delete')) }}
         {% endif %}
     </div>
 </div>

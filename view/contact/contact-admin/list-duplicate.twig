@@ -6,8 +6,6 @@
 {% set filter = form.get('filter') %}
 
 
-
-
 <div class="row">
 
     <div class="col-md-9">
@@ -36,6 +34,7 @@
                     <th>{{ translate("txt-email") }}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'organisation', 'text': translate("txt-organisation")} %}</th>
                     <th>{% include 'application/partial/sortable-table-header' with {'route': 'zfcadmin/contact/list', 'criteria': 'country', 'text': translate("txt-country")} %}</th>
+                    <th>{{ translate("txt-projects") }}</th>
                     <th>{{ translate("txt-amount") }}</th>
                 </tr>
                 </thead>
@@ -52,7 +51,9 @@
                                         class="far fa-envelope"></i> </a></td>
                         <td>{% if contact.contactOrganisation.organisation %}{{ organisationLink(contact.contactOrganisation.organisation,'view-admin','name') }}{% endif %}</td>
                         <td>{{ countryLink(contact.contactOrganisation.organisation.country,'view-admin','name') }}</td>
-                        <td><a href="{{ contactLink(contact,'view-admin',constant("\\General\\ValueObject\\Link\\LinkDecoration::SHOW_RAW")) }}">{{ projectService.findProjectParticipationByContact(contact)|length }}</a></td>
+                        <td>
+                            <a href="{{ contactLink(contact,'view-admin',constant("\\General\\ValueObject\\Link\\LinkDecoration::SHOW_RAW")) }}">{{ projectService.findProjectParticipationByContact(contact)|length }}</a>
+                        </td>
                         <td>{{ contactAndAmount['amount'] }}</td>
                     </tr>
                 {% endfor %}
@@ -65,16 +66,12 @@
         {% endif %}
     </div>
     <div class="col-md-3">
-        <div class="well well-sm">
-            <fieldset>
-                {{ ztbformelement(filter.get('options'), true) }}
-                {{ ztbformelement(filter.get('gender'), true) }}
-                {{ ztbformelement(filter.get('country'), true) }}
+        {{ lbs5formelement(filter.get('options'), 'default') }}
+        {{ lbs5formelement(filter.get('gender'), 'default') }}
+        {{ lbs5formelement(filter.get('country'), 'default') }}
 
-                                   {{ ztbformelement(form.get('submit')) }}
-                    {{ ztbformelement(form.get('clear')) }}
-            </fieldset>
-        </div>
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('clear')) }}
     </div>
 </div>
 

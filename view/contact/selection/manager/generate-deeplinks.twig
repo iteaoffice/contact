@@ -11,12 +11,12 @@
 
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
-{{ ztbformelement(form.get('target')) }}
-{{ ztbformelement(form.get('key')) }}
+{{ lbs5formelement(form.get('target')) }}
+{{ lbs5formelement(form.get('key')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('submit')) }}
     </div>
 </div>
 

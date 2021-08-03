@@ -10,17 +10,17 @@
 </div>
 
 {% set phone = form.get('contact_entity_phone') %}
-{{ ztbformelement(phone.get('type')) }}
-{{ ztbformelement(phone.get('phone')) }}
+{{ lbs5formelement(phone.get('type')) }}
+{{ lbs5formelement(phone.get('phone')) }}
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
         {% if form.has('delete') %}
-            {{ ztbformelement(form.get('delete')) }}
+            {{ lbs5formelement(form.get('delete')) }}
         {% endif %}
     </div>
 </div>

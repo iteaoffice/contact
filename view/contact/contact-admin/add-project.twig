@@ -7,12 +7,12 @@
 {% if affiliations is null %}
     <h1>{{ translate("txt-add-%s-to-a-project")|format(contact.displayName) }}</h1>
 
-    {{ ztbformelement(form.get('project')) }}
+    {{ lbs5formelement(form.get('project')) }}
 
     <div class="row mb-3">
         <div class="offset-sm-3 col-sm-9">
-            {{ ztbformelement(form.get('submit')) }}
-            {{ ztbformelement(form.get('cancel')) }}
+            {{ lbs5formelement(form.get('submit')) }}
+            {{ lbs5formelement(form.get('cancel')) }}
         </div>
     </div>
 {% else %}
@@ -110,8 +110,8 @@
             </tbody>
         </table>
     {% endif %}
-    {{ ztbformelement(form.get('submit')) }}
-    {{ ztbformelement(form.get('cancel')) }}
+    {{ lbs5formelement(form.get('submit')) }}
+    {{ lbs5formelement(form.get('cancel')) }}
 {% endif %}
 
 {{ form().closeTag()|raw }}

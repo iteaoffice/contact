@@ -8,21 +8,21 @@
 <fieldset>
     <legend>{{ translate("txt-contact-information") }}</legend>
 
-    {{ ztbformelement(contactFieldset.get('firstName')) }}
-    {{ ztbformelement(contactFieldset.get('middleName')) }}
-    {{ ztbformelement(contactFieldset.get('lastName')) }}
-    {{ ztbformelement(contactFieldset.get('email')) }}
-    {{ ztbformelement(contactFieldset.get('gender')) }}
-    {{ ztbformelement(contactFieldset.get('title')) }}
-    {{ ztbformelement(contactFieldset.get('dateOfBirth')) }}
+    {{ lbs5formelement(contactFieldset.get('firstName')) }}
+    {{ lbs5formelement(contactFieldset.get('middleName')) }}
+    {{ lbs5formelement(contactFieldset.get('lastName')) }}
+    {{ lbs5formelement(contactFieldset.get('email')) }}
+    {{ lbs5formelement(contactFieldset.get('gender')) }}
+    {{ lbs5formelement(contactFieldset.get('title')) }}
+    {{ lbs5formelement(contactFieldset.get('dateOfBirth')) }}
 </fieldset>
 
 <fieldset>
     <legend>{{ translate("txt-organisation-information") }}</legend>
     {{ organisationformelement(form.get('organisation')) }}
-    {{ ztbformelement(form.get('branch')) }}
-    {{ ztbformelement(contactFieldset.get('department')) }}
-    {{ ztbformelement(contactFieldset.get('position')) }}
+    {{ lbs5formelement(form.get('branch')) }}
+    {{ lbs5formelement(contactFieldset.get('department')) }}
+    {{ lbs5formelement(contactFieldset.get('position')) }}
 </fieldset>
 
 {% if contact.id %}
@@ -38,27 +38,27 @@
     </fieldset>
 {% endif %}
 
-{{ ztbformelement(form.get('file')) }}
+{{ lbs5formelement(form.get('file')) }}
 
 <fieldset>
     <legend>{{ translate("txt-access-information") }}</legend>
     {{ accessformelement(contactFieldset.get('access')) }}
 </fieldset>
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
         {% if form.has('delete') %}
-            {{ ztbformelement(form.get('delete')) }}
+            {{ lbs5formelement(form.get('delete')) }}
         {% endif %}
         {% if form.has('deactivate') %}
-            {{ ztbformelement(form.get('deactivate')) }}
+            {{ lbs5formelement(form.get('deactivate')) }}
         {% endif %}
         {% if form.has('reactivate') %}
-            {{ ztbformelement(form.get('reactivate')) }}
+            {{ lbs5formelement(form.get('reactivate')) }}
         {% endif %}
     </div>
 </div>

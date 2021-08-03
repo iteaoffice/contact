@@ -6,10 +6,10 @@
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
 
- {{ ztbformelement(form.get('selection_id')) }}
- {{ ztbformelement(form.get('selection')) }}
- {{ ztbformelement(form.get('optIn')) }}
- {{ ztbformelement(form.get('file')) }}
+ {{ lbs5formelement(form.get('selection_id')) }}
+ {{ lbs5formelement(form.get('selection')) }}
+ {{ lbs5formelement(form.get('optIn')) }}
+ {{ lbs5formelement(form.get('file')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
@@ -40,8 +40,8 @@
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('upload')) }}
-        {{ ztbformelement(form.get('import')) }}
+        {{ lbs5formelement(form.get('upload')) }}
+        {{ lbs5formelement(form.get('import')) }}
     </div>
 </div>
 
@@ -106,7 +106,7 @@
 
         <div class="row mb-3">
             <div class="offset-sm-3 col-sm-9">
-                {{ ztbformelement(form.get('import')) }}
+                {{ lbs5formelement(form.get('import')) }}
             </div>
         </div>
 

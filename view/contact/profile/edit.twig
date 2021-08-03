@@ -5,11 +5,11 @@
 {% do form.prepare() %}
 {{ form().openTag(form)|raw }}
 
-{{ ztbformelement(form.get('contact').get('gender')) }}
-{{ ztbformelement(form.get('contact').get('title')) }}
-{{ ztbformelement(form.get('contact').get('firstName')) }}
-{{ ztbformelement(form.get('contact').get('middleName')) }}
-{{ ztbformelement(form.get('contact').get('lastName')) }}
+{{ lbs5formelement(form.get('contact').get('gender')) }}
+{{ lbs5formelement(form.get('contact').get('title')) }}
+{{ lbs5formelement(form.get('contact').get('firstName')) }}
+{{ lbs5formelement(form.get('contact').get('middleName')) }}
+{{ lbs5formelement(form.get('contact').get('lastName')) }}
 
 <div class="row mb-3">
     <label class="col-sm-3 col-form-label">{{ translate("txt-email-address") }}</label>
@@ -24,7 +24,7 @@
         <h3>{{ translate("txt-organisation") }}</h3>
 
         <div class="organisation {% if not hasOrganisations %}d-none{% endif %}">
-            {{ ztbformelement(form.get('contact_organisation').get('organisation_id')) }}
+            {{ lbs5formelement(form.get('contact_organisation').get('organisation_id')) }}
             <div class="row mb-3 {% if not form.get('contact_organisation').get('organisation_id').value() != 0 %}d-none{% endif %}"
                  id="branch">
                 <label class="col-sm-3 col-form-label">{{ translate("txt-branch-form-label") }}</label>
@@ -44,9 +44,9 @@
         </div>
         <div id="organisation_country"
              {% if hasOrganisations and form.get('contact_organisation').get('organisation_id').value() != 0 %}class="d-none"{% endif %}>
-            {{ ztbformelement(form.get('contact_organisation').get('organisation')) }}
-            {{ ztbformelement(form.get('contact_organisation').get('type')) }}
-            {{ ztbformelement(form.get('contact_organisation').get('country')) }}
+            {{ lbs5formelement(form.get('contact_organisation').get('organisation')) }}
+            {{ lbs5formelement(form.get('contact_organisation').get('type')) }}
+            {{ lbs5formelement(form.get('contact_organisation').get('country')) }}
         </div>
     </fieldset>
 </div>
@@ -55,11 +55,11 @@
 <h3>{{ translate("txt-public-profile-information") }}</h3>
 <p>{{ translate("txt-this-information-will-be-included-in-your-public-profile-you-can-choose-to-hide-your-public-profile-by-setting-profile-visiblity") }}</p>
 {% set profile = form.get('profile') %}
-    {{ ztbformelement(profile.get('visible')) }}
-    {{ ztbformelement(profile.get('description')) }}
-    {{ ztbformelement(profile.get('linkedIn')) }}
-    {{ ztbformelement(form.get('contact').get('department')) }}
-    {{ ztbformelement(form.get('contact').get('position')) }}
+    {{ lbs5formelement(profile.get('visible')) }}
+    {{ lbs5formelement(profile.get('description')) }}
+    {{ lbs5formelement(profile.get('linkedIn')) }}
+    {{ lbs5formelement(form.get('contact').get('department')) }}
+    {{ lbs5formelement(form.get('contact').get('position')) }}
 
 
 {% if not contact.photo.isEmpty() %}
@@ -71,10 +71,10 @@
         </div>
     </div>
 
-    {{ ztbformelement(form.get('removeFile')) }}
+    {{ lbs5formelement(form.get('removeFile')) }}
 {% endif %}
 
-{{ ztbformelement(form.get('file')) }}
+{{ lbs5formelement(form.get('file')) }}
 
 
 <div class="bg-light border-light rounded p-3 mb-3">
@@ -84,7 +84,7 @@
     <fieldset>
         <legend>{{ translate("txt-phone-information") }}</legend>
         {% for element in form.get('phone').getElements() %}
-            {{ ztbformelement(element) }}
+            {{ lbs5formelement(element) }}
         {% endfor %}
     </fieldset>
 
@@ -92,24 +92,24 @@
         <legend>{{ translate("txt-postal-address") }}</legend>
         {% set address = form.get('address') %}
 
-        {{ ztbformelement(address.get('address')) }}
-        {{ ztbformelement(address.get('zipCode')) }}
-        {{ ztbformelement(address.get('city')) }}
-        {{ ztbformelement(address.get('country')) }}
+        {{ lbs5formelement(address.get('address')) }}
+        {{ lbs5formelement(address.get('zipCode')) }}
+        {{ lbs5formelement(address.get('city')) }}
+        {{ lbs5formelement(address.get('country')) }}
     </fieldset>
 
     <fieldset>
         <legend>{{ translate("txt-subscriptions") }}</legend>
-        {{ ztbformelement(form.get('optIn')) }}
+        {{ lbs5formelement(form.get('optIn')) }}
     </fieldset>
 </div>
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
     </div>
 </div>
 

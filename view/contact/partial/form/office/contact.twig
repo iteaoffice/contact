@@ -3,16 +3,16 @@
 
 {% set contact = form.get('contact_entity_office_contact') %}
 {{ contactformelement(contact.get('contact')) }}
-{{ ztbformelement(contact.get('hours')) }}
-{{ ztbformelement(contact.get('dateEnd')) }}
-{{ ztbformelement(contact.get('calendarColor')) }}
+{{ lbs5formelement(contact.get('hours')) }}
+{{ lbs5formelement(contact.get('dateEnd')) }}
+{{ lbs5formelement(contact.get('calendarColor')) }}
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
     </div>
 </div>
 

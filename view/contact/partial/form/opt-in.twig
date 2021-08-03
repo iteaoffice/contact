@@ -2,19 +2,19 @@
 {{ form().openTag(form)|raw }}
 
 {% set optin = form.get('contact_entity_optin') %}
-{{ ztbformelement(optin.get('id')) }}
-{{ ztbformelement(optin.get('optIn')) }}
-{{ ztbformelement(optin.get('active')) }}
-{{ ztbformelement(optin.get('description')) }}
+{{ lbs5formelement(optin.get('id')) }}
+{{ lbs5formelement(optin.get('optIn')) }}
+{{ lbs5formelement(optin.get('active')) }}
+{{ lbs5formelement(optin.get('description')) }}
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
         {% if form.has('delete') %}
-            {{ ztbformelement(form.get('delete')) }}
+            {{ lbs5formelement(form.get('delete')) }}
         {% endif %}
     </div>
 </div>

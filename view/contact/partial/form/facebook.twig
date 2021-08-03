@@ -9,26 +9,26 @@
 {{ form().openTag(form)|raw }}
 {% set facebook = form.get('contact_entity_facebook') %}
 
-{{ ztbformelement(facebook.get('facebook')) }}
-{{ ztbformelement(facebook.get('public')) }}
-{{ ztbformelement(facebook.get('canSendMessage')) }}
-{{ ztbformelement(facebook.get('showEmail')) }}
-{{ ztbformelement(facebook.get('showPhone')) }}
-{{ ztbformelement(facebook.get('fromClause')) }}
-{{ ztbformelement(facebook.get('whereClause')) }}
-{{ ztbformelement(facebook.get('orderbyClause')) }}
-{{ ztbformelement(facebook.get('contactKey')) }}
-{{ ztbformelement(facebook.get('title')) }}
-{{ ztbformelement(facebook.get('subtitle')) }}
+{{ lbs5formelement(facebook.get('facebook')) }}
+{{ lbs5formelement(facebook.get('public')) }}
+{{ lbs5formelement(facebook.get('canSendMessage')) }}
+{{ lbs5formelement(facebook.get('showEmail')) }}
+{{ lbs5formelement(facebook.get('showPhone')) }}
+{{ lbs5formelement(facebook.get('fromClause')) }}
+{{ lbs5formelement(facebook.get('whereClause')) }}
+{{ lbs5formelement(facebook.get('orderbyClause')) }}
+{{ lbs5formelement(facebook.get('contactKey')) }}
+{{ lbs5formelement(facebook.get('title')) }}
+{{ lbs5formelement(facebook.get('subtitle')) }}
 {{ accessformelement(facebook.get('access')) }}
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
-        {{ ztbformelement(form.get('delete')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('delete')) }}
     </div>
 </div>
 

@@ -2,28 +2,28 @@
 {{ form().openTag(form)|raw }}
 
 {% set leave = form.get('contact_entity_office_leave') %}
-{{ ztbformelement(leave.get('id')) }}
-{{ ztbformelement(leave.get('dateStart')) }}
-{{ ztbformelement(leave.get('dateEnd')) }}
-{{ ztbformelement(leave.get('description')) }}
-{{ ztbformelement(leave.get('hours')) }}
-{{ ztbformelement(leave.get('type')) }}
+{{ lbs5formelement(leave.get('id')) }}
+{{ lbs5formelement(leave.get('dateStart')) }}
+{{ lbs5formelement(leave.get('dateEnd')) }}
+{{ lbs5formelement(leave.get('description')) }}
+{{ lbs5formelement(leave.get('hours')) }}
+{{ lbs5formelement(leave.get('type')) }}
 
 {% if leave.has('officeContact') %}
-    {{ ztbformelement(leave.get('officeContact')) }}
+    {{ lbs5formelement(leave.get('officeContact')) }}
 {% endif %}
 
 {% if form.has('csrf') %}
-    {{ ztbformelement(form.get('csrf')) }}
+    {{ lbs5formelement(form.get('csrf')) }}
 {% endif %}
 
 {% if showButtons %}
     <div class="row mb-3">
         <div class="offset-sm-3 col-sm-9">
-            {{ ztbformelement(form.get('submit')) }}
-            {{ ztbformelement(form.get('cancel')) }}
+            {{ lbs5formelement(form.get('submit')) }}
+            {{ lbs5formelement(form.get('cancel')) }}
             {% if form.has('delete') %}
-                {{ ztbformelement(form.get('delete')) }}
+                {{ lbs5formelement(form.get('delete')) }}
             {% endif %}
         </div>
     </div>

@@ -3,27 +3,27 @@
 
 {% set selection = form.get('contact_entity_selection') %}
 
-{{ ztbformelement(selection.get('id')) }}
-{{ ztbformelement(selection.get('selection')) }}
-{{ ztbformelement(selection.get('tag')) }}
-{{ ztbformelement(selection.get('note')) }}
+{{ lbs5formelement(selection.get('id')) }}
+{{ lbs5formelement(selection.get('selection')) }}
+{{ lbs5formelement(selection.get('tag')) }}
+{{ lbs5formelement(selection.get('note')) }}
 {{ contactformelement(selection.get('contact')) }}
-{{ ztbformelement(selection.get('type')) }}
+{{ lbs5formelement(selection.get('type')) }}
 
-{{ ztbformelement(form.get('csrf')) }}
+{{ lbs5formelement(form.get('csrf')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
         {% if form.has('delete') %}
-            {{ ztbformelement(form.get('delete')) }}
+            {{ lbs5formelement(form.get('delete')) }}
         {% endif %}
         {% if form.has('deactivate') %}
-            {{ ztbformelement(form.get('deactivate')) }}
+            {{ lbs5formelement(form.get('deactivate')) }}
         {% endif %}
         {% if form.has('reactivate') %}
-            {{ ztbformelement(form.get('reactivate')) }}
+            {{ lbs5formelement(form.get('reactivate')) }}
         {% endif %}
     </div>
 </div>

@@ -6,7 +6,7 @@
 {{ form().openTag(mergeForm)|raw }}
 <h1>{{ translate("txt-merge-contact-%s")|format(target.parseFullName()) }}</h1>
 <p>{{ translate("txt-merge-contact-explanation") }}</p>
-<p>{{ ztbformelement(mergeForm.get('swap')) }}</p>
+<p>{{ lbs5formelement(mergeForm.get('swap')) }}</p>
 {% if errors|length > 0 %}
     <div class="alert alert-danger">
         <strong>{{ translate("txt-contacts-cannot-be-merged-because") }}</strong>
@@ -160,8 +160,8 @@
 </div>
 <hr>
 {% if errors|length == 0 %}
-    {{ ztbformelement(mergeForm.get('merge')) }}
+    {{ lbs5formelement(mergeForm.get('merge')) }}
 {% endif %}
 
-{{ ztbformelement(mergeForm.get('cancel')) }}
+{{ lbs5formelement(mergeForm.get('cancel')) }}
 {{ form().closeTag()|raw }}

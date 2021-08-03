@@ -25,12 +25,12 @@
 </div>
 
 
-{{ ztbformelement(form.get('message').setOption('help-block',translate("txt-write-your-message-to-%s")|format(contact.parseFullName())).setAttribute('placeholder','txt-write-your-message')) }}
+{{ lbs5formelement(form.get('message').setOption('help-block',translate("txt-write-your-message-to-%s")|format(contact.parseFullName())).setAttribute('placeholder','txt-write-your-message')) }}
 
 <div class="row mb-3">
     <div class="offset-sm-3 col-sm-9">
-        {{ ztbformelement(form.get('submit')) }}
-        {{ ztbformelement(form.get('cancel')) }}
+        {{ lbs5formelement(form.get('submit')) }}
+        {{ lbs5formelement(form.get('cancel')) }}
     </div>
 </div>
 
