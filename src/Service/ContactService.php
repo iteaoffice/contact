@@ -395,7 +395,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
                 //Do a manual construction of the URL (the CLI does not like the URL helper)
                 $url = sprintf('/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
-                print $url;
                 $contactDocument->setField('photo_url', $url);
             }
         }
@@ -525,7 +524,6 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
                 //Do a manual construction of the URL (the CLI does not like the URL helper)
                 $url = sprintf('/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
-                print $url;
                 $contactDocument->setField('photo_url', $url);
             }
         }
