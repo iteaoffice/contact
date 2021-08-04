@@ -1372,16 +1372,27 @@ class ContactService extends AbstractService implements SearchUpdateInterface
 
     public function updateCollectionInSearchEngine(bool $clearIndex = false): void
     {
-        $contacts = $this->findAll(Contact::class);
+        //Do a query to find the total amount of entries
+        $amount = $this->findCount(Contact::class);
 
-        $collection = [];
-
-        /** @var Contact $contact */
-        foreach ($contacts as $contact) {
-            $collection[] = $this->prepareSearchUpdate($contact);
+        if ($clearIndex) {
+            $this->contactSearchService->clearIndex(true);
         }
 
-        $this->contactSearchService->updateIndexWithCollection($collection, $clearIndex);
+        $i = 0;
+        while ($i < $amount) {
+            $elements   = $this->findSliced(Contact::class, 10, $i);
+            $collection = [];
+            foreach ($elements as $asset) {
+                $collection[] = $this->prepareSearchUpdate($asset);
+            }
+            $this->contactSearchService->updateIndexWithCollection($collection);
+
+            //clear the entity manager to prevent piling up entities
+            $this->entityManager->clear();
+
+            $i += 10;
+        }
     }
 
     public function updateProfileCollectionInSearchEngine(bool $clearIndex = false): void

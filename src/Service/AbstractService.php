@@ -54,6 +54,16 @@ abstract class AbstractService
         return $this->entityManager->getRepository($entity)->find($id);
     }
 
+    public function findCount(string $entity): int
+    {
+        return $this->entityManager->getRepository($entity)->count([]);
+    }
+
+    public function findSliced(string $entity, int $limit, int $offset): array
+    {
+        return $this->entityManager->getRepository($entity)->findBy([], [], $limit, $offset);
+    }
+
     public function findBy(
         string $entity,
         array $criteria,
