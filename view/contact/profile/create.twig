@@ -21,7 +21,7 @@
 
 
 <fieldset class="bg-light border-light rounded p-3">
-    <legend>{{ translate("txt-organisation") }}</legend>
+    <legend>{{ translate("txt-organisation") }}</legend><br>
 
     <div class="organisation {% if not hasOrganisations %}d-none{% endif %}">
         {{ lbs5formelement(form.get('contact_organisation').get('organisation_id')) }}
@@ -44,6 +44,7 @@
     </div>
     <div id="organisation_country"
          {% if hasOrganisations and form.get('contact_organisation').get('organisation_id').value() != 0 %}class="d-none"{% endif %}>
+
         {{ lbs5formelement(form.get('contact_organisation').get('organisation')) }}
         {{ lbs5formelement(form.get('contact_organisation').get('type')) }}
         {{ lbs5formelement(form.get('contact_organisation').get('country')) }}

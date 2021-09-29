@@ -394,7 +394,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 $photo = $contact->getPhoto()->first();
 
                 //Do a manual construction of the URL (the CLI does not like the URL helper)
-                $url = sprintf('/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
+                $url = sprintf('/img/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
                 $contactDocument->setField('photo_url', $url);
             }
         }
@@ -523,7 +523,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
                 $photo = $contact->getPhoto()->first();
 
                 //Do a manual construction of the URL (the CLI does not like the URL helper)
-                $url = sprintf('/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
+                $url = sprintf('/img/c/%d-%d.%s', $photo->getId(), $photo->getDateUpdated()->getTimestamp(), $photo->getContentType()->getExtension());
                 $contactDocument->setField('photo_url', $url);
             }
         }
@@ -1383,8 +1383,8 @@ class ContactService extends AbstractService implements SearchUpdateInterface
         while ($i < $amount) {
             $elements   = $this->findSliced(Contact::class, 10, $i);
             $collection = [];
-            foreach ($elements as $asset) {
-                $collection[] = $this->prepareSearchUpdate($asset);
+            foreach ($elements as $contact) {
+                $collection[] = $this->prepareSearchUpdate($contact);
             }
             $this->contactSearchService->updateIndexWithCollection($collection);
 

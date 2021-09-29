@@ -31,23 +31,25 @@
                 <dd>{{ translate("txt-linked-in-profile-not-provided") }}</dd>
             {% endif %}
 
-            <dt>{{ translate("txt-organisation") }}</dt>
-            <dd>{{ contactService.parseOrganisation(contact) }}</dd>
-            <dt>{{ translate("txt-website") }}</dt>
-            <dd>
-                {% for web in contact.contactOrganisation.organisation.web|filter(web => web.isMain()) -%}
-                    <a target="_blank" href="{{ web }}">{{ web }}</a><br>
-                {% else %}
-                    {{ translate("txt-no-website-provided") }}
-                {% endfor %}
-            </dd>
-            <dt>{{ translate("txt-organisation-type") }}</dt>
-            <dd>{{ contact.contactOrganisation.organisation.type }}</dd>
-            <dt>{{ translate("txt-country") }}</dt>
-            <dd>{{ contactService.parseCountry(contact) }}</dd>
-            {% if contact.contactOrganisation.organisation.description.description %}
-                <dt>{{ translate("txt-organisation-description") }}</dt>
-                <dd>{{ contact.contactOrganisation.organisation.description.description|raw }}</dd>
+            {% if contact.hasOrganisation() %}
+                <dt>{{ translate("txt-organisation") }}</dt>
+                <dd>{{ contactService.parseOrganisation(contact) }}</dd>
+                <dt>{{ translate("txt-website") }}</dt>
+                <dd>
+                    {% for web in contact.contactOrganisation.organisation.web|filter(web => web.isMain()) -%}
+                        <a target="_blank" href="{{ web }}">{{ web }}</a><br>
+                    {% else %}
+                        {{ translate("txt-no-website-provided") }}
+                    {% endfor %}
+                </dd>
+                <dt>{{ translate("txt-organisation-type") }}</dt>
+                <dd>{{ contact.contactOrganisation.organisation.type }}</dd>
+                <dt>{{ translate("txt-country") }}</dt>
+                <dd>{{ contactService.parseCountry(contact) }}</dd>
+                {% if contact.contactOrganisation.organisation.description.description %}
+                    <dt>{{ translate("txt-organisation-description") }}</dt>
+                    <dd>{{ contact.contactOrganisation.organisation.description.description|raw }}</dd>
+                {% endif %}
             {% endif %}
 
         </dl>
