@@ -1,5 +1,4 @@
 <?php
-
 return [
     'contact/profile/manage-body' => __DIR__ . '/./view/contact/profile/manage-body.twig',
     'contact/profile/view' => __DIR__ . '/./view/contact/profile/view.twig',
