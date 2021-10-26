@@ -50,9 +50,12 @@ use Project\Entity\Project;
 use Project\View\Helper\Project\ProjectLink;
 use Search\Service\SearchUpdateInterface;
 use Solarium\Client;
+use Solarium\Core\Client\Adapter\Http;
 use Solarium\Core\Query\AbstractQuery;
 use Solarium\QueryType\Update\Query\Document;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 use function array_key_exists;
 use function count;
@@ -314,7 +317,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
      */
     public function prepareSearchUpdate($contact): AbstractQuery
     {
-        $searchClient = new Client();
+        $searchClient = new Client(new Http(), new EventDispatcher(), []);
         $update       = $searchClient->createUpdate();
 
         /** @var Document $contactDocument */
@@ -483,7 +486,7 @@ class ContactService extends AbstractService implements SearchUpdateInterface
      */
     public function prepareProfileSearchUpdate($contact): AbstractQuery
     {
-        $searchClient = new Client();
+        $searchClient = new Client(new Http(), new EventDispatcher(), []);
         $update       = $searchClient->createUpdate();
 
         /** @var Document $contactDocument */

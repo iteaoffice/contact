@@ -57,10 +57,11 @@ class ContactProvider
         return array_merge([
             'id'                  => $contact->getId(),
             'cluster'             => 'itea',
+            'full_name'           => trim(sprintf("%s %s", $contact->getTitle(), $contact->parseFullName())),
             'first_name'          => $contact->getFirstName(),
             'last_name'           => trim(implode(' ', [$contact->getMiddleName(), $contact->getLastName()])),
             'email'               => $contact->getEmail(),
-            'cluster_permissions' => 'itea',
+            'cluster_permissions' => ['itea'],
             'is_funder'           => $contact->isFunder(),
             'funder_country'      => $contact->isFunder() ? $contact->getFunder()->getCountry()->getCd() : null,
         ], $addressData, $funderData);
